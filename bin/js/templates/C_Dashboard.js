@@ -290,7 +290,14 @@ function C_Dashboard(_type) {
                     }else{
 	                   doPrefs($(this).parent().parent(), "lesson");
                     }
-                }).tooltip({
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
                         show: {
                             delay: 1500,
                             effect: "fadeIn",
@@ -304,7 +311,14 @@ function C_Dashboard(_type) {
                     } else if (myLevel == "course") {
                         registerContent($(this).parent().parent(), "lesson");
                     }
-                }).tooltip({
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
                         show: {
                             delay: 1500,
                             effect: "fadeIn",
@@ -321,7 +335,14 @@ function C_Dashboard(_type) {
 	                }else{
 		                removeContent($(this).parent().parent(), type);
 	                }
-                }).tooltip({
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
                         show: {
                             delay: 1500,
                             effect: "fadeIn",
@@ -347,8 +368,8 @@ function C_Dashboard(_type) {
                     });
             },
             function () {
-			 $("#myPref").remove();
-            	 $("#myRemove").remove();
+			 	$("#myPref").remove();
+            	$("#myRemove").remove();
                 $("#myAdd").remove();
                 $("#myUserAdd").remove();
                 if (myLevel == "root") {
