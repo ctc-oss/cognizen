@@ -1,0 +1,16 @@
+.idea
+*.log
+bin/programs/*
+*.tgz
+bin/core-files/server/node_modules/*
+bin/server/node_modules/*
+bin/server/repos
+db/
+test/socket-test/node_modules/*
+.DS_Store
+certificate.pem
+certificate-ctc.pem
+certrequest.csr
+privatekey.pem
+post-update
+bin/server/config.json

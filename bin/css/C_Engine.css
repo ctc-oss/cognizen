@@ -1,0 +1,322 @@
+﻿body{
+	position: static;
+	background-color:#FFFFFF;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	outline: 0px;
+	height: 100%;
+	width: 100%; 
+}
+
+/* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
+
+#myCanvas{
+	background-color: #FFFFFF;
+	width:1024px;
+	height: 768px;
+	left: 50%;
+	top: 50%;
+	margin-left: -512px;
+	margin-top: -384px;
+	position: absolute;
+	overflow: hidden;
+	background-image: url(images/background.png);
+}
+
+
+#stage {
+	overflow: auto;
+	position: absolute;
+	top:0px;
+	left:0px;
+	height:768px;
+	width:1024px;
+}
+
+#pageTitle{
+	position: absolute;
+	top:20px;
+	left:50px;
+	width:924px;
+	overflow : auto;
+	font-size : 200%;
+	font-weight: bold;
+	color:	#666666;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	text-align: center;
+}
+
+
+#left{
+	width: 30%;
+	color:	#666666;
+	font-size: 50pt;
+	text-align: left;
+	margin-left: 30px;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+}
+
+.ui-widget-content{
+	background-color: white;
+	font-weight: lighter;
+	font-size:150%;
+	color: #CCCCCC;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+}
+
+
+#content{
+	position: absolute;
+	top:65px;
+	left:50px;
+	width:924px;
+	color: #666666;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	overflow: auto;
+	text-align: center;
+}
+
+#logForm{
+	position: absolute;
+	top: 295px;
+	right: 120px;
+	width: 420px;
+	font-weight: lighter;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	color: white;
+	padding-top: 5px;
+	
+}
+
+#loginFieldSet{
+	border-color: #CCCCCC;
+	border-width: thin;
+	border-radius: 8px;
+}
+
+
+.loginField{
+	text-align: right;
+	width: 90px;
+	float: left;
+	font-weight: lighter;
+	font-size:100%;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	padding-right: 5px;
+	padding-top: 3px;
+	color: #9DA6AB;
+}
+
+.regField{
+	text-align: right;
+	width: 130px;
+	float: left;
+	font-weight: normal;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-size: 12pt;
+	padding-right: 5px;
+}
+
+.ui-button-text{
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-weight: lighter;
+	font-size: 12pt;
+}
+
+.ui-dialog-content{
+	color: #666666;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-size: 12pt;
+	font-weight: lighter;
+}
+
+.ui-dialog-titlebar{
+	color: #9DA6AB;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-size: 16pt;
+	font-weight: lighter;
+}
+
+input.loginText{
+	background:#eeeeee;
+	font-size: 12pt;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	width: 300px;
+	float: left;
+	color: #3383bb;
+}
+
+input.regText{
+	background:#eeeeee;
+	font-size: 100%;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	width: 300px;
+	float: left;
+	color: #3383bb;
+}
+
+#projType{
+	margin-left:auto;
+	margin-right:auto;	
+}
+
+#registerSubmit{
+	position: absolute;
+	top: 460px;
+	right: 245px;
+	width: 150px;
+}
+
+#forgotSubmit{
+	position: absolute;
+	top: 440px;
+	right: 205px;
+	width: 230px;
+}
+
+div#loader {
+	margin: auto;
+	border: 1px solid #fff;
+	overflow: hidden;
+}
+
+
+.C_ModalPreloadGraphic{
+	background: url(images/loadingIcon.gif) center center no-repeat;
+	position:absolute;
+	width:420px;
+	height:350px;
+	background-color: #eeeeee;
+	filter:alpha(opacity=70);
+	opacity:0.7;
+	-moz-opacity:0.7;
+	text-align:center;
+	vertical-align:middle;
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+}
+
+
+/**********************************************************************************************
+TREE MENU STYLES
+**********************************************************************************************/
+#projListHeader{
+	position: absolute;
+	top: 162px;
+	right: 415px;
+	color: #9DA6AB;
+	font-weight: normal;
+	font-size: 20pt;
+	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
+}
+
+#adminAddProgram{
+	position: absolute;
+	top: 580px;
+	right: 415px;
+}
+
+#adminAddUser{
+	position: absolute;
+	top: 580px;
+	right: 105px;
+}
+
+#preloadholder{
+	position: absolute;
+	top: 194px;
+	right: 105px;
+	width: 450px;
+	height: 380px;
+	z-index: 10000;
+}
+
+#projList{
+	position: absolute;
+	overflow: auto;
+	top: 194px;
+	right: 105px;
+	width: 450px;
+	height: 380px;
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+}
+
+.treeview, .treeview ul {
+	padding: 0px;
+	margin: 0px;
+	list-style: none;
+	color: #9DA6AB;
+	font-weight: normal;
+	font-size: 14pt;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+}
+
+.treeview ul {
+	background-color: white;
+	margin-top: 4px;
+}
+
+.treeview .hitarea {
+	height: 30px;
+	width: 16px;
+	margin-left: -10px;
+	float: left;
+	cursor: pointer;
+}
+/* fix for IE6 */
+* html .hitarea {
+	display: inline;
+	float:none;
+}
+
+.treeview li {
+	font-weight: normal;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	margin: 0px;
+	padding: 50px 0pt 0px 0px;
+}
+
+.treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
+.programPref {position: relative; top: -24px; left: 320px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
+.programRemove {position: relative; top: -48px; left: 350px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.programAdd {position: relative; top: -72px; left: 380px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
+.programUserAdd {position: relative; top: -96px; left: 410px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+
+.treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
+.coursePref {position: relative; top: -24px; left: 308px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
+.courseRemove {position: relative; top: -48px; left: 338px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.courseAdd {position: relative; top: -72px; left: 368px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
+.courseUserAdd {position: relative; top: -96px; left: 398px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+
+.treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
+.projectPref {position: relative; top: -24px; left: 326px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
+.projectRemove {position: relative; top: -48px; left: 356px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.projectUserAdd {position: relative; top: -72px; left: 386px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+
+.ui-tooltip{font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
+
+
+.treeview a.selected {
+	background-color: #eee;
+}
+
+.filetree li { padding: 3px 0px 0px 10px; }
+.filetree span.folder, .filetree span.file { padding: 1px 0px 1px 5px; display: block; }
+.filetree li.collapsable { background: url(images/open.png) no-repeat; background-position:0px 13px;}
+.filetree li.expandable  { background: url(images/closed.png) no-repeat; background-position:0px 13px;}
+.filetree span.file { background: url(images/file.gif) 0px 0px no-repeat; }
+
+.filetree span.fileHover{}
+.treeview .placeholder {
+	background: url(images/ajax-loader.gif) 0px 0px no-repeat;
+	height: 24px;
+	width: 24px;
+	display: block;
+}
+

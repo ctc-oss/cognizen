@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><content>
+	<courseInfo>
+		<preferences>
+			<!-- mode options: "review", "edit", "production"-->
+			<mode value="prod"/>
+			<transition value="true"/>
+			<transitionType value="Power2.easeIn"/>
+			<transitionLength value=".5"/>
+			<contentX value="0"/>
+			<contentY value="71"/>
+			<contentW value="1024"/>
+			<contentH value="643"/>
+		</preferences>
+	</courseInfo>
+	<pages>
+		<page id="0" layout="login" title="Login" successID="1">
+			<content><![CDATA[]]></content>
+		</page>
+		<page id="1" layout="dashboard" title="Dashboard" img="media/cognizenLogo.html" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+			<content></content>
+		</page>
+	</pages>
+</content>

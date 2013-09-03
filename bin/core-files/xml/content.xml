@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><content>
+	<courseInfo>
+		<preferences>
+			<!-- mode options: "review", "edit", "production"-->
+			<mode value="edit"/>
+			<courseTitle value="Cognizen Information"/>
+			<lessonTitle value="Cognizen Overview"/>
+			<nextBack value="true"/>
+			<transition value="true"/>
+			<transitionType value="Power2.easeIn"/>
+			<transitionLength value=".3"/>
+			<!--Linear set to false means that the menu is enabled and users can hop from page to page instead of just next last.-->
+			<linear value="false"/>
+			<pageCount value="true"/>
+			<passFail value="false"/>
+			<restartOnFail value="false"/>
+			<scored value="false"/>
+			<minScore value="75"/>
+
+			<scorm value="true"/>
+			<!-- 1.2, 2004, Tin Can -->
+			<scormVersion value="2004"/>			
+			<breadcrumb value="true" x="12" y="80" home="true" id="0"/>
+			<masterIndex value="true"/>
+			<glossary value="false"/>
+			<!-- Enables the page numbering -->
+			<home value="0"/>
+			<menu value="13"/>
+			<courseRetake value="false"/>
+			<feedback value="true"/>
+			<feedbackType value="standard"/>
+			<reloadPage value="true"/>
+		</preferences>
+		<glossary>
+			<!--glossaryItem> 
+				<term><![CDATA[CCT]]></term>
+				<content><![CDATA[Content Creation Tool]]></content>
+			</glossaryItem-->
+        </glossary>
+        <!--docs>
+        	<docItem>
+        		<doc link="media/AirForceStructure.pdf"><![CDATA[US Air Force Structure Guide]]></doc>
+				<description><![CDATA[This US Air Force Structure Guide shows you where US Air Force health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
+        	</docItem>
+        	<docItem>
+        		<doc link="media/Army Structure Module.pdf"><![CDATA[US Army Structure Guide]]></doc>
+				<description><![CDATA[This US Army Structure Guide shows you where US Army health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
+        	</docItem>
+        	<docItem>
+        		<doc link="media/USMC_Structure.pdf"><![CDATA[USMC Structure Guide]]></doc>
+				<description><![CDATA[This USMC Structure Guide shows you where US Army health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-7 of the document.]]></description>
+        	</docItem>
+        	<docItem>
+        		<doc link="media/NavyStructure.pdf"><![CDATA[US Navy Structure Guide]]></doc>
+				<description><![CDATA[This US Navy Structure Guide shows you where US Navy health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
+        	</docItem>
+        </docs-->
+        <resources>
+        	<!--item label="GHSA Cell Phone Laws" link="http://www.ghsa.org/html/stateinfo/laws/cellphone_laws.html"/-->
+        </resources>
+	</courseInfo>
+	<pages>
+		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181986" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+			<title><![CDATA[Objectives]]></title>
+			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+		</page>
+	</pages>
+</content>

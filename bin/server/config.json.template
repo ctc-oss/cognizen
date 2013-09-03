@@ -1,0 +1,12 @@
+{
+    "url": "https://cognizen.ctc.com",
+    "mailServer": "mailhub.ctc.com",
+    "adminEmail": "cognizen@ctc.com",
+    "ssl": true,
+    "port": 443,
+    "logFolder": "./",
+    "dbUrl": "mongodb://localhost:27017/cognizen",
+    "dbUsername": "",
+    "dbPassword": "",
+    "uploadTempDir": "/tmp/cognizen"
+}

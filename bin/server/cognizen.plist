@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.ctc.cognizen.server</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/local/bin/node</string>
+      <string>cognizen-server.js</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Library/WebServer/Documents/cognizen/bin/server</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>FOOZLE</key>
+      <string>Xyzzx</string>
+    </dict>
+    <key>Umask</key>
+    <integer>504</integer>
+    <key>SoftResourceLimits</key>
+    <dict>
+      <key>NumberOfFiles</key>
+      <integer>1024</integer>
+    </dict>
+    <key>Disabled</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>Debug</key>
+    <false/>
+    <key>StandardOutPath</key>
+    <string>/tmp/cognizen-service.out</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/cognizen-service.err</string>
+  </dict>
+</plist>
