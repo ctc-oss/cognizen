@@ -91,7 +91,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_publish{
 	position:absolute;
 	bottom :8px; 
-	left: 200px;
+	left: 170px;
 	width: 30px;
 	height: 30px;
 	background: url(images/publish.png) no-repeat;
@@ -102,7 +102,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_preferences{
 	position: absolute;
 	bottom: 7px;
-	left: 246px;
+	left: 216px;
 	width: 30px;
 	height: 30px;
 	background: url(images/prefs.png) no-repeat;
@@ -113,7 +113,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_comment{
 	position: absolute;
 	bottom: 7px;
-	left: 290px;
+	left: 260px;
 	width: 30px;
 	height: 30px;
 	background: url(images/comment.png) no-repeat;
@@ -123,10 +123,10 @@ body .redactor_toolbar li a.redactor_btn_close{
 
 #toggleMode{
 	position: absolute;
-	bottom: 7px;
+	bottom: 12px;
 	left: 5px;
 	width: 121px;
-	height: 38px;
+	height: 28px;
 	cursor: hand;
 	cursor: pointer;
 }
@@ -246,7 +246,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 #scormform{
 	position:absolute;
 	bottom:5px; 
-	left: 135px;
+	left: 105px;
 	color:	#3383BB;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	cursor: hand; 
