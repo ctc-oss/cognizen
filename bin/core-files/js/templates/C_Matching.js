@@ -77,6 +77,13 @@ function C_Matching(_type) {
 		$('#stage').append('<div id="matchingOptions"></div>');
 		$("#myCanvas").append("<div id='matchingSubmit'></div>");
 		
+		if(type == "matching"){
+			$("#matchingOptions").addClass("matchingOptions");
+			$("#matchingAnswers").addClass("matchingAnswers");
+		}else if(type == "matchingDrag"){
+			$("#matchingOptions").addClass("matchingDragImgOptions");
+			$("#matchingAnswers").addClass("matchingDragImgAnswers");
+		}
 		
 		//Set Page Title		
 		myPageTitle = $(data).find("page").eq(currentPage).find('title').text();
@@ -173,17 +180,44 @@ function C_Matching(_type) {
 				$('#' + myAnswer).droppable({
 					activeClass: "ui-state-hover",
 					hoverClass: "ui-state-active",
+					start: function(event, ui){
+						TweenMax.to(ui.draggable, 1, {css:{scaleX:2, scaleY:2}, ease:Bounce.easeOut, duration: 0.5});
+					},
 					drop: function(event, ui){
-						var tempObject = new Object();
-						tempObject.myDrag = ui.draggable.attr("id");
-						tempObject.myDrop = event.target.id;
+						var updateMove = false;
+						for(var i = 0; i < drop_arr.length; i++){
+							if(drop_arr[i].myDrag == ui.draggable.attr("id")){
+								drop_arr[i].myDrag = ui.draggable.attr("id");
+								drop_arr[i].myDrop = event.target.id;
+								updateMove = true;
+							}
+						}
 						
-						drop_arr.push(tempObject);
+						if(updateMove == false){
+							var tempObject = new Object();
+							tempObject.myDrag = ui.draggable.attr("id");
+							tempObject.myDrop = event.target.id;
 						
-						drops++;
+							drop_arr.push(tempObject);
+						
+							drops++;
+						}
+						
 						if(drops == dropsMax){
 							checkAnswer();
 						}
+						ui.draggable.hover(
+							function(){
+								
+								TweenMax.to($(this), 1, {css:{scaleX:1, scaleY:1}, ease:Bounce.easeOut, duration: 0.5});
+							},
+							function(){
+								TweenMax.to($(this), 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeIn, duration: 0.5});
+							}
+						);
+						TweenMax.to(ui.draggable, 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeOut, duration: 0.5});
+						
+						
 					}
 				});
 			}
@@ -335,7 +369,7 @@ function C_Matching(_type) {
 							drops = 0;
 							var optionStatementY = 0;
 							for(var i=0; i<option_arr.length; i++){
-								TweenMax.to(option_arr[i], transitionLength, {css:{top:optionStatementY, left:0}, ease:transitionType});
+								TweenMax.to(option_arr[i], transitionLength, {css:{top:optionStatementY, scaleX: 1, scaleY: 1, left:0}, ease:transitionType});
 								optionStatementY += option_arr[i].height() + 20;
 							}
 							drop_arr = [];

@@ -12,7 +12,7 @@
  */
 function C_StaticContent(_type) {
 
-    this.myImage;//image to be loaded.
+	this.myImage;//image to be loaded.
     this.myPageTitle;//Title of this page.
     this.myContent;//Body
     this.myCaption;//Caption text if needed.
@@ -32,9 +32,9 @@ function C_StaticContent(_type) {
     var mediaType;
     var hasPop = false;
     
-     var media_arr = [];
-     var caption_arr = [];
-     var captionEditText_arr = [];
+    var media_arr = [];
+    var caption_arr = [];
+    var captionEditText_arr = [];
 	var largeImg = "";
 
     /*****************************************************************************************************************************************************************************************************************
@@ -377,49 +377,70 @@ function C_StaticContent(_type) {
                 ///////////////////////////////////////////////////////////////////////////////////////
                 // MEDIA POPUP CODE
                 //////////////////////////////////////////////////////////////////////////////////////
-                if(hasPop == true || largeImg != ""){
+                 if(hasPop == true || largeImg != ""){
 				
-				if(largeImg != ""){
-					var mediaPopString = "<div id='myImgList' class='imglist'><a rel='mediaPop' href='"+largeImg+"'title='"+ myCaption +"' class='mediaPop'></a>";
-				}else{
-					var mediaPopString = "<div id='myImgList' class='imglist'><a rel='mediaPop' href='"+myImage+"'title='"+ myCaption +"' class='mediaPop'></a>";
-				}
-				if(media_arr.length > 0){
-					mediaPopString += "<span style='display:none;'>";
-					
-					for(var i = 0; i < media_arr.length; i++){
-						mediaPopString += "Gallery Member: <a class='fancybox-thumb' rel='mediaPop' href='"+ media_arr[i] + "' title='"+ caption_arr[i] + "'><img alt='' src='"+media_arr[i]+"'/></a>";
+					 var tempItem;
+					 var tempCaption;
+					 if(largeImg != ""){
+						 	tempItem = largeImg;
+						 	tempCaption = myCaption;
+					}else{
+						tempItem = media_arr[0];
+						tempCaption = caption_arr[0];
 					}
-					
-					
-					mediaPopString += "</span>";
-				}
 				
-				mediaPopString += "</div>";
+					var mediaPopString = "<div id='myImgList' class='imglist'><a rel='mediaPop' class='mediaPop' data-fancybox-group='gallery' href='"+tempItem+"' title='"+ tempCaption +"'></a>";
 				
-				 $("#stage").append(mediaPopString);				 
+				
+					if(media_arr.length > 0){
+						mediaPopString += "<span style='display:none;'>";
+					
+						var startPoint;
+						if(largeImg == ""){
+							startPoint = 1;
+						}else{
+							startPoint = 0;
+						}
+						for(var i = startPoint; i < media_arr.length; i++){
+							mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+						}
+					
+						mediaPopString += "</span>";
+					}
+				
+					mediaPopString += "</div>";
+				
+					$("#stage").append(mediaPopString);				 
 				 
 				 
-				 $("[rel='mediaPop']").fancybox({
-					caption : {
-						type : 'outside'
-					},
-					openEffect  : 'elastic',
-					closeEffect : 'elastic',
-					nextEffect  : 'elastic',
-					prevEffect  : 'elastic',
-					theme : 'light',
-					helpers : {
-						thumbs : true
-					}
-				});
+					$("[rel='mediaPop']").fancybox({
+						caption : {
+							type : 'inside'
+						},
+						openEffect  : 'elastic',
+						closeEffect : 'elastic',
+						nextEffect  : 'elastic',
+						prevEffect  : 'elastic',
+						maxHeight	: 1024,
+						maxWidth	: 768,
+						helpers : {
+							title : tempCaption
+						}
+					});
 				
-				$(".mediaPop").css({'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
-				$(".mediaPop").tooltip({
-					content: "view enlarged image/gallery."
-				});
-			 }
-			 ///////////////////////////////////////////////////////////////////////////////END MEDIA POP UP
+					if(mediaType = "swf"){
+					 	$("[rel='mediaPop']").fancybox({
+							width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
+							height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
+						});
+					}
+				
+					$(".mediaPop").css({'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
+					$(".mediaPop").tooltip({
+						content: "click to view enlarged media"
+					});
+				}
+				///////////////////////////////////////////////////////////////////////////////END MEDIA POP UP
 
                 if(transition == true){
                     TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:setCaption});

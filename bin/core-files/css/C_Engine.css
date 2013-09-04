@@ -538,6 +538,11 @@ SIDEBAR LAYOUTS
 	top: 85px;
 	width: 400px;		
 	height: 500px;
+	border-width: 0px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px; 
+	padding: 10px;
 }
 /****************************************************** SIDEBAR LAYOUTS END *****/
 
@@ -812,18 +817,33 @@ MULTIPLE CHOICE LAYOUTS
 /**************************************************************************************
 MATCHING LAYOUTS
 **************************************************************************************/
-#matchingOptions{
+.matchingOptions{
 	position: absolute;
 	left: 75px;
-	width: 450px;
+	width: 440px;
 	overflow: visible;
 }
 
-#matchingAnswers{
+.matchingDragImgOptions{
+	position: absolute;
+	left: 75px;
+	width: 950px;
+	overflow: visible;
+}
+
+.matchingAnswers{
 	position: absolute;
 	right: 30px;
-	width: 400px;
+	width: 440px;
 }
+
+.matchingDragImgAnswers{
+	position: absolute;
+	right: 30px;
+	width: 300px;
+}
+
+
 
 .matchingStatement{
 	position: absolute;
