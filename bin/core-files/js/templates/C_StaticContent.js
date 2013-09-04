@@ -864,7 +864,8 @@ function C_StaticContent(_type) {
 						});
 						
 						siofu.addEventListener("start", function(event){
-							$("#loader").tooltip("destroy");
+							
+							try { $("#loader").tooltip("destroy"); } catch (e) {}
 							$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
 							$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
 							$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");

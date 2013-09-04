@@ -371,6 +371,7 @@ function C_Matching(_type) {
 							for(var i=0; i<option_arr.length; i++){
 								TweenMax.to(option_arr[i], transitionLength, {css:{top:optionStatementY, scaleX: 1, scaleY: 1, left:0}, ease:transitionType});
 								optionStatementY += option_arr[i].height() + 20;
+								option_arr[i].unbind("mouseenter mouseleave");
 							}
 							drop_arr = [];
 						}
