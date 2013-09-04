@@ -97,7 +97,7 @@ function C_Matching(_type) {
 		//needed to properly postion the options...  Some questions are longer than others... Question height registers as
 		//zero if invisible...
 		if(transition == true){
-			TweenMax.to($('#stage'), 1, {css:{opacity:1}, ease:Power2.easeIn, onComplete:placeOptions});
+			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:Power2.easeIn, onComplete:placeOptions});
 		}
 	}
 	
@@ -233,7 +233,7 @@ function C_Matching(_type) {
 		
 		
 		if(transition == true){
-			TweenMax.to([$("#matchingOptions"), $("#matchingAnswers")], 1, {css:{opacity:1}, ease:Power2.easeIn, onComplete:placematchingSubmit});
+			TweenMax.to([$("#matchingOptions"), $("#matchingAnswers")], transitionLength, {css:{opacity:1}, ease:Power2.easeIn, onComplete:placematchingSubmit});
 		}
 	}
 	
@@ -649,7 +649,7 @@ function C_Matching(_type) {
 	
 	
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), 1, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
     
     function fadeComplete(){
