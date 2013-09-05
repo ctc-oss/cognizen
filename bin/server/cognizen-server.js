@@ -351,13 +351,19 @@ var Content = {
             else {
                 logger.info('HTTP Web Application available on port ' + Ports.external.port);
             }
-            if (process.getuid() == 0) {
-                process.setgid('cognizen');
-                process.setuid('nobody');
-                logger.info('Dropped process from root to nobody');
+
+            if (typeof process.getuid == 'function') {
+                if (process.getuid() == 0) {
+                    process.setgid('cognizen');
+                    process.setuid('nobody');
+                    logger.info('Dropped process from root to nobody');
+                } else {
+                    logger.info('No need to drop from root to nobody');
+                }
             } else {
                 logger.info('No need to drop from root to nobody');
             }
+
             callback();
         });
     }
@@ -545,6 +551,9 @@ var SocketHandler = {
                                 if (found) {
 
                                     var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
+
+                                    console.log('Source: ' + event.file.pathName);
+                                    console.log('Dest: ' + contentPath);
 
                                     //Handle our favorite media types
                                     if (mediaType == "mp4" || mediaType == "swf" || mediaType == "jpg" || mediaType == "png" || mediaType == "html" || mediaType == "gif" || mediaType == "JPG" || mediaType == "jpeg" || mediaType == "JPEG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "MP4") {
@@ -1251,9 +1260,10 @@ var Utils = {
     app.use(express.cookieParser('cognizen'));
     app.use(express.session());
     app.use(express.static(path.join(__dirname, '../')));
-//    app.use(function(req, res){
-//        console.log('SIDD:::::::' + req.sessionID);
-//    });
+    app.use(function(req, res) {
+        // This will redirect 404s to the home page.
+        res.redirect('/');
+    });
 
     io = socketIo.listen(app.listen(Ports.server.port, null, null, function () {
         logger.info('Cognizen Server Started');
