@@ -556,33 +556,41 @@ var SocketHandler = {
                                     console.log('Dest: ' + contentPath);
 
                                     //Handle our favorite media types
-                                    if (mediaType == "mp4" || mediaType == "swf" || mediaType == "jpg" || mediaType == "png" || mediaType == "html" || mediaType == "gif" || mediaType == "JPG" || mediaType == "jpeg" || mediaType == "JPEG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "MP4") {
+                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
+                                    if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+//                                    if (mediaType == "mp4" || mediaType == "swf" || mediaType == "jpg" || mediaType == "png" || mediaType == "html" || mediaType == "gif" || mediaType == "JPG" || mediaType == "jpeg" || mediaType == "JPEG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "MP4") {
                                         fs.createReadStream(event.file.pathName).pipe(fs.createWriteStream(contentPath));
                                         //Git commit
                                     } else {
                                         //Convert files
                                         var convertedPath;
-                                        var stripFolder = contentPath.split("/");
-                                        var mediaFolder = "";
-                                        for (var i = 0; i < stripFolder.length - 1; i++) {
-                                            mediaFolder += stripFolder[i] + "/";
-                                        }
+//                                        var stripFolder = contentPath.split("/");
+//                                        var mediaFolder = "";
+//                                        for (var i = 0; i < stripFolder.length - 1; i++) {
+//                                            mediaFolder += stripFolder[i] + "/";
+//                                        }
 
-                                        if (mediaType == "ogv") {
-                                            convertedPath = contentPath.replace(/ogv/, "mp4");
-                                        } else if (mediaType == "flv") {
-                                            convertedPath = contentPath.replace(/flv/, "mp4");
-                                        } else if (mediaType == "avi") {
-                                            convertedPath = contentPath.replace(/avi/, "mp4");
-                                        } else if (mediaType == "wmv") {
-                                            convertedPath = contentPath.replace(/wmv/, "mp4");
-                                        } else if (mediaType == "mov") {
-                                            convertedPath = contentPath.replace(/mov/, "mp4");
-                                        } else if (mediaType == "webm") {
-                                            convertedPath = contentPath.replace(/webm/, "mp4");
-                                        } else if (mediaType == "3gp") {
-                                            convertedPath = contentPath.replace(/3gp/, "mp4");
-                                        }
+                                        convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+
+//                                        if (mediaType == "ogv") {
+//                                            convertedPath = contentPath.replace(/ogv/, "mp4");
+//                                        } else if (mediaType == "flv") {
+//                                            convertedPath = contentPath.replace(/flv/, "mp4");
+//                                        } else if (mediaType == "avi") {
+//                                            convertedPath = contentPath.replace(/avi/, "mp4");
+//                                        } else if (mediaType == "wmv") {
+//                                            convertedPath = contentPath.replace(/wmv/, "mp4");
+//                                        } else if (mediaType == "mov") {
+//                                            convertedPath = contentPath.replace(/mov/, "mp4");
+//                                        } else if (mediaType == "webm") {
+//                                            convertedPath = contentPath.replace(/webm/, "mp4");
+//                                        } else if (mediaType == "3gp") {
+//                                            convertedPath = contentPath.replace(/3gp/, "mp4");
+//                                        }
+
+                                        console.log('CONVERTED: ' + convertedPath);
+
+
                                         var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
                                             //.usingPreset('cognizen')
                                             .toFormat('mp4')
@@ -603,6 +611,8 @@ var SocketHandler = {
                                                 _this._socket.emit('mediaConversionProgress', progress);
                                             })
                                             .saveToFile(convertedPath, function (stdout, stderr) {
+                                                console.log('FFMPEG err: ' + stderr);
+                                                console.log('FFMPEG out: ' + stdout);
                                                 _this._socket.emit('mediaConversionComplete', convertedPath);
                                             });
                                     }
@@ -794,7 +804,7 @@ var SocketHandler = {
                                 // Success, do nothing.
                             }, function(message) {
                                 _this._socket.emit('generalError', {title: 'Repository Saving Error', message: 'Error occurred when saving repository content.'});
-                                logger.info("Error when committing to the Git Repo: " + message);
+                                logger.error("Error when committing to the Git Repo: " + message);
                             });
                         }
                     });
