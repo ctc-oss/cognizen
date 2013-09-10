@@ -8,14 +8,13 @@ var et = require('elementtree');
 var express = require('express');
 var cookie = require("cookie");
 var connect = require("connect");
-var argv = require('optimist').argv;
 
 var socketIo = require('socket.io');
-var SocketIOFileUploadServer = require('socketio-file-upload')
+var SocketIOFileUploadServer = require('socketio-file-upload');
 
 var GitServer = require('git-server');
 var nodemailer = require("nodemailer");
-var fs = require('fs-extra');//extend filesystem capabilities
+var fs = require('fs-extra');
 var winston = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 var subNodes = [];
@@ -26,8 +25,6 @@ _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
 
-//var dbUrl = "mongodb://localhost:27017/cognizen";//connect to database
-//var url = "https://cognizen.ctc.com/";
 var mongoose = require('mongoose');//mongoose connector
 var FileUtils = require('./file-utils');
 var User = require('./user-model').User;
@@ -405,14 +402,35 @@ var Git = {
         }
     },
 
+    _gitUpdateLocal: function(program, success, error) {
+        var path = Content.diskPath(program.path);
+
+        // Make sure path is a git repo.
+        if (!fs.existsSync(path + '/.git')) {
+            error("The program's folder is not a git repository");
+        }
+        else {
+            var exec = require('child_process').exec;
+            var command = 'git fetch --all && git reset --hard origin/master';
+            exec(command, {cwd: path}, function (err, stdout, stderr) {
+                if (err) {
+                    error(err);
+                }
+                else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+                    error(stderr);
+                }
+                else {
+                    logger.info('Local Git Content is up to date.');
+                    if (success) success();
+                }
+            });
+        }
+    },
+
     _initRepo: function (program, success, error) {
         // Should already exist on the disk, but will make sure it is added to the server cache.
         // TODO need to get the users for this content, and add them in
         var _this = this;
-        var editUser = {
-            username: 'cct',
-            password: 'cct123'
-        };
 
         var feedback = this._git.createRepo({
             name: program.path,
@@ -459,7 +477,6 @@ var Git = {
                 success();
             }
         });
-
     },
 
     startServer: function () {
@@ -481,21 +498,23 @@ var Git = {
                             },
                             push: function() {
                                 console.log('Successful push on ' + program.path + ' repo');
-                                var path = Content.diskPath(program.path);
-
-                                var exec = require('child_process').exec;
-                                var command = 'git fetch --all && git reset --hard origin/master';
-                                exec(command, {cwd: path}, function (err, stdout, stderr) {
-                                    if (err) {
-                                        logger.error(err);
-                                    }
-                                    else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
-                                        logger.error(stderr);
-                                    }
-                                    else {
-                                        // Do nothing.
-                                    }
+                                _this._gitUpdateLocal(program, null, function(err) {
+                                    logger.error(err);
                                 });
+//                                var path = Content.diskPath(program.path);
+//
+//                                var exec = require('child_process').exec;
+//                                var command = 'git fetch --all && git reset --hard origin/master';
+//                                exec(command, {cwd: path}, function (err, stdout, stderr) {
+//                                    if (err) {
+//                                    }
+//                                    else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+//                                        logger.error(stderr);
+//                                    }
+//                                    else {
+//                                        // Do nothing.
+//                                    }
+//                                });
                             }
                         }
                     });
@@ -512,6 +531,10 @@ var Git = {
 
     commitProgramContent: function (program, user, success, error) {
         this._gitCommit(program, user, false, 'Program update from Cognizen by ' + user.username, success, error);
+    },
+
+    updateLocalContent: function(program, success, error) {
+        this._gitUpdateLocal(program, success, error);
     }
 };
 
@@ -1101,47 +1124,55 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                    var serverDetails = Content.serverDetails(found);
+                    var program = found.getProgram();
 
-                    if (serverDetails.running) {
-                        _this._socket.emit('contentServerStarted', {
-                            id: found.id,
-                            path: found.path,
-                            type: data.content.type
-                        });
-                    }
-                    else {
-                        var programPath = path.normalize('../programs/' + found.path + '/server');
-                        var parentDir = require('path').resolve(process.cwd(), programPath);
+                    Git.updateLocalContent(program, function(){
+                        var serverDetails = Content.serverDetails(found);
 
-                        var spawn = require('child_process').spawn;
-                        var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
+                        if (serverDetails.running) {
+                            _this._socket.emit('contentServerStarted', {
+                                id: found.id,
+                                path: found.path,
+                                type: data.content.type
+                            });
+                        }
+                        else {
+                            var programPath = path.normalize('../programs/' + found.path + '/server');
+                            var parentDir = require('path').resolve(process.cwd(), programPath);
 
-                        subNodes.push(subNode);
+                            var spawn = require('child_process').spawn;
+                            var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
 
-                        subNode.stdout.on('data', function (stdoutdata) {
-                            logger.info('stdout: ' + stdoutdata);
-                            var message = stdoutdata.toString();
-                            if (message.indexOf('C_Server started successfully') > -1) {
-                                _this._socket.emit('contentServerStarted', {
-                                    id: found.id,
-                                    path: found.path,
-                                    type: data.content.type
-                                });
-                                serverDetails.running = true;
-                            }
-                            else if (!serverDetails.running && message.indexOf("error") > -1) {
+                            subNodes.push(subNode);
+
+                            subNode.stdout.on('data', function (stdoutdata) {
+                                logger.info('stdout: ' + stdoutdata);
+                                var message = stdoutdata.toString();
+                                if (message.indexOf('C_Server started successfully') > -1) {
+                                    _this._socket.emit('contentServerStarted', {
+                                        id: found.id,
+                                        path: found.path,
+                                        type: data.content.type
+                                    });
+                                    serverDetails.running = true;
+                                }
+                                else if (!serverDetails.running && message.indexOf("error") > -1) {
+                                    _this._socket.emit('contentServerDidNotStart', {message: data});
+                                    serverDetails.running = false;
+                                }
+                            });
+
+                            subNode.stderr.on('data', function (data) {
+                                logger.info('stderr: ' + data);
                                 _this._socket.emit('contentServerDidNotStart', {message: data});
                                 serverDetails.running = false;
-                            }
-                        });
+                            });
+                        }
 
-                        subNode.stderr.on('data', function (data) {
-                            logger.info('stderr: ' + data);
-                            _this._socket.emit('contentServerDidNotStart', {message: data});
-                            serverDetails.running = false;
-                        });
-                    }
+                    }, function(err) {
+                        logger.error(err);
+                        _this._socket.emit('contentServerDidNotStart', {message: err});
+                    })
                 }
             });
         }
@@ -1246,6 +1277,13 @@ var Utils = {
         process.exit(0);
     },
 
+    generalError: function(err) {
+        if (err) {
+            console.log(err);
+            console.log(err.stack);
+        }
+    },
+
     sessionIdFromSocket: function(socket) {
         return connect.utils.parseSignedCookies(cookie.parse(decodeURIComponent(socket.handshake.headers.cookie)), 'cognizen')['connect.sid'];
     },
@@ -1255,9 +1293,9 @@ var Utils = {
 
 // Initializing Code
 (function () {
-//    process.on('exit', killSubNodes);
-    process.on("uncaughtException", Utils.killSubNodes);
+    process.on('exit', Utils.killSubNodes);
     process.on("SIGINT", Utils.killSubNodes);
+    process.on("uncaughtException", Utils.generalError);
     mongoose.connect(config.dbUrl, {
         user: config.dbUsername,
         pass: config.dbPassword
