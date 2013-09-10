@@ -169,8 +169,11 @@ function initScripts(_data){
 		}
 	}
 	//END OF TRACKING SET UP.
-	
-	
+
+    // This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
+    require.config({
+        waitSeconds: 0
+    });
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	//TODO: needs to be updated to build the required files based on the output e.g. SCORM
 	require([		//Funtionality/utilities
