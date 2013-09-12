@@ -48,7 +48,11 @@ window.SocketIOFileUpload = function(socket){
 	self.useText = false;
 	self.serializedOctets = false;
 	var myDiv;
-
+	
+	
+	var SelectedFile;
+	var FReader;
+	var Name;
 	/**
 	 * Private method to dispatch a custom event on the instance.
 	 * @param  {string} eventName  Name for which listeners can listen.
@@ -75,39 +79,37 @@ window.SocketIOFileUpload = function(socket){
 	var _loadOne = function(file, target){
 		// Dispatch an event to listeners and stop now if they don't want
 		// this file to be uploaded.
-		var evntResult = _dispatch("start", {
+		/*var evntResult = _dispatch("start", {
 			file: file
 		});
 		if(!evntResult) return;
+		*/
 		
-		console.log("useText = " + self.useText);
+		
+		var reader;/////////////////////////////////////Just a temp till I see if this is going to work...
+		FReader = new FileReader();
+		Name = file.name;
+		console.log("Name = " + Name);
+		
+		FReader.onload = function(evnt){
+			//console.log("evnt.target.result = " + evnt.target.result);
+	    	cognizenSocket.emit('fileUpload', { 'Name' : Name, Data : evnt.target.result });
+	    }
+		
+		
+		cognizenSocket.emit('startUpload', { 'Name' : Name, 'Size' : SelectedFile.size });
+		
 		// Scope variables
-		var reader = new FileReader(),
+		/*var reader = new FileReader(),
 			transmitPos = 0,
 			id = uploadedFiles.length,
 			useText = self.useText,
 			newName;
-		uploadedFiles.push(file);
-		
-		/*FReader = new FileReader();
-	      Name = document.getElementById('NameBox').value;
-	      
-	      var Content = "<span id='NameArea'>Uploading " + SelectedFile.name + " as " + Name + "</span>";
-	      
-	      Content += '<div id="ProgressContainer"><div id="ProgressBar"></div></div><span id="percent">0%</span>';
-	      Content += "<span id='Uploaded'> - <span id='MB'>0</span>/" + Math.round(SelectedFile.size / 1048576) + "MB</span>";
-	      
-	      document.getElementById('UploadArea').innerHTML = Content;
-	      
-	      FReader.onload = function(evnt){
-	         socket.emit('Upload', { 'Name' : Name, Data : evnt.target.result });
-	      }
-	      
-	      socket.emit('Start', { 'Name' : Name, 'Size' : SelectedFile.size });
-	      */
+			uploadedFiles.push(file);
+		*/
 
 		// Private function to handle transmission of file data
-		var transmitPart = function(loaded){
+		/*var transmitPart = function(loaded){
 			var content;
 			if(useText){
 				content = reader.result.slice(transmitPos, loaded);
@@ -140,7 +142,7 @@ window.SocketIOFileUpload = function(socket){
 				base64: !self.serializedOctets
 			});
 			transmitPos = loaded;
-		};
+		};*/
 
 		// Listen to the "progress" event.  Transmit parts of files
 		// as soon as they are ready.
@@ -151,7 +153,7 @@ window.SocketIOFileUpload = function(socket){
 		// 
 		// To compensate, we will not process any of the "progress"
 		// events until event.loaded >= event.total.
-		reader.addEventListener("progress", function(event){
+		/*reader.addEventListener("progress", function(event){
 			// would call transmitPart(event.loaded) here
 			console.log("client says progress");
 		});
@@ -184,22 +186,22 @@ window.SocketIOFileUpload = function(socket){
 				interrupt: true
 			});
 		});
-		
+		*/
 		
 		
 		// Transmit the "start" message to the server.
-		socket.emit("siofu_start", {
+		/*socket.emit("siofu_start", {
 			name: file.name,
 			mtime: file.lastModifiedDate,
 			encoding: useText ? "text" : "octet",
 			id: id,
 			target: $(target).attr('data-content')
-		});
+		});*/
 
 		// To avoid a race condition, we don't want to start transmitting to the
 		// server until the server says it is ready.
 		var readyCallback;
-		if(useText){
+		/*if(useText){
 			readyCallback = function(_newName){
 				reader.readAsText(file);
 				newName = _newName;
@@ -209,8 +211,8 @@ window.SocketIOFileUpload = function(socket){
 				reader.readAsArrayBuffer(file);
 				newName = _newName;
 			};
-		}
-		readyCallbacks.push(readyCallback);
+		}*/
+		//readyCallbacks.push(readyCallback);
 
 	};
 
@@ -224,8 +226,10 @@ window.SocketIOFileUpload = function(socket){
 	var _load = function(files, target){
 		// Iterate through the array of files.
 		for(var i=0; i<files.length; i++){
+			console.log("files[i] = " + files[i]); 
 			// Evaluate each file in a closure, because we will need a new
 			// instance of FileReader for each file.
+			SelectedFile = files[i];
 			_loadOne(files[i], target);
 		}
 	};
@@ -254,6 +258,8 @@ window.SocketIOFileUpload = function(socket){
 	 */
 	var _fileSelectCallback = function(event){
 		var files = event.target.files || event.dataTransfer.files;
+		console.log("files = " + files);
+		console.log("files.length = " + files.length);
 		event.preventDefault();
 		if(files.length > 0){
 			var evntResult = _dispatch("choose", {
@@ -423,6 +429,35 @@ window.SocketIOFileUpload = function(socket){
 			
 		}
 	});*/
+	
+	socket.on('uploadMoreData', function (data){
+		//UpdateBar(data['Percent']);
+		
+		var Place = data['Place'] * 524288; //The Next Blocks Starting Position
+		console.log("upload more with a place of " + Place);
+		var NewFile; //The Variable that will hold the new Block of Data
+		if(SelectedFile.webkitSlice){ 
+			NewFile = SelectedFile.webkitSlice(Place, Place + Math.min(524288, (SelectedFile.size-Place)));
+		}else{
+			NewFile = SelectedFile.mozSlice(Place, Place + Math.min(524288, (SelectedFile.size-Place)));
+		}
+		FReader.readAsBinaryString(NewFile);
+	});
+	
+	
+	var Path = "http://localhost/";
+	socket.on('uploadDone', function (data){
+		console.log("Video Successfully Uploaded!!");
+		//var Content = "Video Successfully Uploaded !!"
+		//Content += "<img id='Thumb' src='" + Path + data['Image'] + "' alt='" + Name + "'><br>";
+		//Content += "<button	type='button' name='Upload' value='' id='Restart' class='Button'>Upload Another</button>";
+		//document.getElementById('UploadArea').innerHTML = Content;
+		//document.getElementById('Restart').addEventListener('click', Refresh);
+		//document.getElementById('UploadBox').style.width = '270px';
+		//document.getElementById('UploadBox').style.height = '270px';
+		//document.getElementById('UploadBox').style.textAlign = 'center';
+		//document.getElementById('Restart').style.left = '20px';
+	});
 	
 	socket.on("siofu_complete", function(data){
 		console.log("Client is dispatching complete");

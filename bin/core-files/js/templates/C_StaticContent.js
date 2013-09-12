@@ -38,21 +38,21 @@ function C_StaticContent(_type) {
 	var largeImg = "";
 
     /*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     INITIALIZE AND BUILD TEMPLATE
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-    this.initialize = function(){
-        //transition variable in C_Engine - set in content.xml
-        if(transition == true){
-            $('#stage').css({'opacity':0.1});
-        }
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    INITIALIZE AND BUILD TEMPLATE
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    *****************************************************************************************************************************************************************************************************************/
+	this.initialize = function(){
+		//transition variable in C_Engine - set in content.xml
+		if(transition == true){
+        	$('#stage').css({'opacity':0.1});
+		}
 
         /*****************************************
-         **Set template variables.
-         *****************************************/
+        **Set template variables.
+        *****************************************/
 
-           //Sets whether the playable media autoplay or and auto transition to next page.
+		//Sets whether the playable media autoplay or and auto transition to next page.
         autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
         autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
 
@@ -71,7 +71,7 @@ function C_StaticContent(_type) {
         }
         
         if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
-            hasPop = true;
+        	hasPop = true;
             media_arr = $(data).find("page").eq(currentPage).attr('popup').split(",");
             caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");	
         }
@@ -91,14 +91,12 @@ function C_StaticContent(_type) {
                 myAudio = "null";
             }
         }
-
         buildTemplate();
-    }
+	}
 
     //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
-	   
-        //Add the divs for the page title adn the content divs.
+	   	//Add the divs for the page title adn the content divs.
         $('#stage').append('<div id="pageTitle"></div>');
         $("#pageTitle").append(myPageTitle);
 
@@ -151,8 +149,8 @@ function C_StaticContent(_type) {
                 checkMode();
             }
             $(".nano").nanoScroller({
-                    flashDelay: 1000,
-                   flash: true
+                    flashDelay: 3000,
+					flash: true
             });            
         }else{
             $('#stage').append('<div id="loader" class="loading" title="click to browse or drag media to this location" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
@@ -580,19 +578,19 @@ function C_StaticContent(_type) {
      	
      	if(mode == "edit"){
             	
-            	/*******************************************************
+            /*******************************************************
 			* Edit Title
 			********************************************************/
-                //Add and style titleEdit button
-			 $('#stage').append("<div id='titleEdit' class='btn_edit_text' title='Edit Title'></div>");
-			 $("#titleEdit").css({'position':'absolute', 'top':$("#pageTitle").position().top - 18, 'left': $("#pageTitle").position().left + $("#pageTitle").width() - 18});
-			 //Add title Edit functionality
-			 $("#titleEdit").click(function(){
-                	//Create the Dialog
+            //Add and style titleEdit button
+			$('#stage').append("<div id='titleEdit' class='btn_edit_text' title='Edit Title'></div>");
+			$("#titleEdit").css({'position':'absolute', 'top':$("#pageTitle").position().top - 18, 'left': $("#pageTitle").position().left + $("#pageTitle").width() - 18});
+			//Add title Edit functionality
+			$("#titleEdit").click(function(){
+            	//Create the Dialog
 			 	$("#stage").append("<div id='titleDialog' title='Input Page Title'><div id='titleEditText' type='text'>" + myPageTitle + "</div></div>");
 			 	//Style it to jQuery UI dialog
 			 	$("#titleDialog").dialog({
-                    	autoOpen: true,
+                    autoOpen: true,
 					modal: true,
 					width: 550,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
@@ -600,7 +598,7 @@ function C_StaticContent(_type) {
 				});
 
 				$("#titleEditText").redactor({
-                    	focus: true,
+                    focus: true,
 					buttons: ['bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 				});
 			}).tooltip();
@@ -610,11 +608,11 @@ function C_StaticContent(_type) {
 			********************************************************/
 			//Add and style contentEdit button
 			if(type == "sidebar"){
-                	$('#stage').append("<div id='sideEdit' class='btn_edit_text' title='Edit Sidebar Content'></div>");
+                $('#stage').append("<div id='sideEdit' class='btn_edit_text' title='Edit Sidebar Content'></div>");
 			 	$("#sideEdit").css({'position':'absolute', 'top':$("#sidebar").position().top - 18, 'left': $("#sidebar").position().left + $("#sidebar").width() - 18});
 
 			 	$("#sideEdit").click(function(){
-                    	$("#stage").append("<div id='sidebarEditDialog' title='Input Sidebar Content'><div id='sidebarEditText' type='text' style='width:" + $('#sidebar').width() + "; height:85%' >" + $("#sidebar").html() + "</div>");
+                	$("#stage").append("<div id='sidebarEditDialog' title='Input Sidebar Content'><div id='sidebarEditText' type='text' style='width:" + $('#sidebar').width() + "; height:85%' >" + $("#sidebar").html() + "</div>");
 					//Style it to jQuery UI dialog
 					$("#sidebarEditDialog").dialog({
 						autoOpen: true,
@@ -637,12 +635,12 @@ function C_StaticContent(_type) {
 			********************************************************/
 			//Add and style contentEdit button
 			if(type != "graphicOnly"){
-                	$('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
+                $('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
 			 	$("#conEdit").css({'position':'absolute', 'top':$("#contentHolder").position().top - 18, 'left': $("#contentHolder").position().left + $("#content").width() - 18});
 
 			 	$("#conEdit").click(function(){
 
-                    	//Create the Content Edit Dialog
+                    //Create the Content Edit Dialog
 					$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' >" + myContent + "</div>");
 
 					var myHeight;
@@ -675,22 +673,22 @@ function C_StaticContent(_type) {
 			* Edit Image
 			********************************************************/
 			if(type != "textOnly" && type !=  "sidebar"){
-                	//place image edit button
-                	$('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image and Caption'></div>");
+                //place image edit button
+                $('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image and Caption'></div>");
 			 	$("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top - 18, 'left': $("#loader").position().left + $("#loader").width() - 18});
 
-                    //Establish it's functionality
+                //Establish it's functionality
 				$("#imgEdit").click(function(){
 					
-                    	$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:100%;'/><br/><div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div><label id='label'>large version: </label><input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/><input id='lrgImgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:70%;'/><br/><br/></div>");
+                	$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:100%;'/><br/><div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div><label id='label'>large version: </label><input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/><input id='lrgImgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:70%;'/><br/><br/></div>");
                     	
-                    	if(largeImg == ""){
+                    if(largeImg == ""){
 						$("#isEnlargeable").removeAttr('checked');
 					}else{
 						$("#isEnlargeable").attr('checked', 'checked');
-					}
-                    	
-                    	$("#captionEditText").redactor({
+					}	
+                    
+                    $("#captionEditText").redactor({
 						focus: true,
 						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
 					});
@@ -723,7 +721,7 @@ function C_StaticContent(_type) {
 					}
 
 					$("#imgDialog").dialog({
-                            	autoOpen: true,
+                    	autoOpen: true,
 					   	modal: true,
 					   	width: 550,
 					   	buttons: {
@@ -788,7 +786,7 @@ function C_StaticContent(_type) {
 					$loader.find('*').attr('data-content', contentId);
 					
 					//if(!siofuInitialized['loader']) {
-	                    	$loader.click(function(){
+	                    $loader.click(function(){
 							$("#loader").tooltip("destroy");
 							//$loader.unbind();
 							siofu.prompt($loader.attr('data-content'));

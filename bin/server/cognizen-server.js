@@ -48,6 +48,13 @@ var logger = new (winston.Logger)({
     ]
 });
 
+
+//New Uploader Vars - Phil - 9/11/2013
+var Files = {};
+var exec = require('child_process').exec;
+var util = require('util');
+
+
 var _default = function(value, fallback) {
     return (!value ? fallback : value);
 };
@@ -383,7 +390,6 @@ var Git = {
             error("The program's folder is not a git repository");
         }
         else {
-            var exec = require('child_process').exec;
             var command = 'git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
             if (init) {
                 command = 'git init && ' + command;
@@ -557,7 +563,7 @@ var SocketHandler = {
 
         // Do something when a file is saved:
         uploader.on("complete", function (event) {
-            ////////////////////////////////////////////////////////////////// I added this if to keep the app from crashing when getting undefined for event.file.target as it is now.  Phil
+            
             if (event.file.target != undefined) {
                 var target = event.file.target.split("_");
 
@@ -581,39 +587,14 @@ var SocketHandler = {
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-//                                    if (mediaType == "mp4" || mediaType == "swf" || mediaType == "jpg" || mediaType == "png" || mediaType == "html" || mediaType == "gif" || mediaType == "JPG" || mediaType == "jpeg" || mediaType == "JPEG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "MP4") {
+//                                   	
                                         fs.createReadStream(event.file.pathName).pipe(fs.createWriteStream(contentPath));
                                         //Git commit
                                     } else {
                                         //Convert files
                                         var convertedPath;
-//                                        var stripFolder = contentPath.split("/");
-//                                        var mediaFolder = "";
-//                                        for (var i = 0; i < stripFolder.length - 1; i++) {
-//                                            mediaFolder += stripFolder[i] + "/";
-//                                        }
-
+                                        
                                         convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
-
-//                                        if (mediaType == "ogv") {
-//                                            convertedPath = contentPath.replace(/ogv/, "mp4");
-//                                        } else if (mediaType == "flv") {
-//                                            convertedPath = contentPath.replace(/flv/, "mp4");
-//                                        } else if (mediaType == "avi") {
-//                                            convertedPath = contentPath.replace(/avi/, "mp4");
-//                                        } else if (mediaType == "wmv") {
-//                                            convertedPath = contentPath.replace(/wmv/, "mp4");
-//                                        } else if (mediaType == "mov") {
-//                                            convertedPath = contentPath.replace(/mov/, "mp4");
-//                                        } else if (mediaType == "webm") {
-//                                            convertedPath = contentPath.replace(/webm/, "mp4");
-//                                        } else if (mediaType == "3gp") {
-//                                            convertedPath = contentPath.replace(/3gp/, "mp4");
-//                                        }
-
-                                        console.log('CONVERTED: ' + convertedPath);
-
-
                                         var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
                                             //.usingPreset('cognizen')
                                             .toFormat('mp4')
@@ -835,6 +816,186 @@ var SocketHandler = {
             });
         }
     },
+    
+    startUpload: function(data){
+    	var Name = data['Name'];
+		var _this = this;
+		console.log("-----------------------------------------------------------");
+		console.log("-----------------------------------------------------------");
+		console.log("startUpload");
+		console.log("Name = " + data['Name']);
+		console.log("-----------------------------------------------------------");
+		console.log("-----------------------------------------------------------");
+		Files[Name] = {  //Create a new Entry in The Files Variable
+			FileSize : data['Size'],
+			Data	 : "",
+			Downloaded : 0
+		}
+		console.log(data['Size']);
+		var Place = 0;
+		try{
+			console.log("starting the try");
+			console.log("config.uploadTempDir = " + config.uploadTempDir);
+			console.log("")
+			var Stat = fs.statSync(config.uploadTempDir + '/' +  Name);
+			if(Stat.isFile())
+			{
+				Files[Name]['Downloaded'] = Stat.size;
+				Place = Stat.size / 524288;
+			}
+		}
+	  	catch(er){
+		  	console.log("error = " + er);
+	  	} //It's a New File
+		fs.open(config.uploadTempDir + "/" + Name, 'a', 0755, function(err, fd){
+			if(err)
+			{
+				console.log(err);
+			}
+			else
+			{
+				Files[Name]['Handler'] = fd; //We store the file handler so we can write to it later
+				_this._socket.emit('uploadMoreData', { 'Place' : Place, Percent : 0 });
+			}
+		});
+    },
+    
+    fileUpload: function(data) {
+    	
+	    var Name = data['Name']
+	    var _this = this;
+		Files[Name]['Downloaded'] += data['Data'].length;
+		Files[Name]['Data'] += data['Data'];
+		
+		console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+		console.log("Name = " + data['Name']);
+		console.log("Chunk data size = " + data['Data'].length);
+		console.log("Files[Name]['Downloaded'] = " + Files[Name]['Downloaded']);
+		console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+		if(Files[Name]['Downloaded'] >= Files[Name]['FileSize']) //If File is Fully Uploaded
+		{
+			/*fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
+				var inp = fs.createReadStream(config.uploadTempDir + "/" + Name);
+				var out = fs.createWriteStream("../media/" + Name);
+				//util.pump(inp, out, function(){
+				inp.pipe(out, function(){
+					var proc = new ffmpeg({ source: config.uploadTempDir + "/" + Name, timeout: 8000, priority: 2 })
+						.toFormat('mp4')
+						.withVideoBitrate('1200k')
+						.withVideoCodec('libx264')
+						.withAudioBitrate('160k')
+						.withAudioCodec('libfaac')
+						.withAudioChannels(2)
+										   
+						.onCodecData(function(codecinfo) {
+							console.log(codecinfo);
+							//_this._socket.emit('mediaInfo', codecinfo);
+						})
+						.onProgress(function(progress){
+							console.log(progress)
+							//_this._socket.emit('mediaConversionProgress', progress);
+						})
+						.saveToFile("../media/" + Name, function(stdout, stderr) {
+							//_this._socket.emit('mediaConversionComplete', convertedPath);
+							fs.unlink(config.uploadTempDir + "/" + Name, function () { //This Deletes The Temporary File
+								exec("ffmpeg -i ../media/" + Name  + " -ss 01:30 -r 1 -an -vframes 1 -f mjpeg ../media/" + Name  + ".jpg", function(err){
+									_this._socket.emit('uploadDone', {'Image' : '../media/' + Name + '.jpg'});
+								});
+							});
+						});
+					});	
+				});*/
+			var fileSplit = Name.split(".");
+            var mediaType = fileSplit[fileSplit.length - 1];
+
+            var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + Name);
+
+            //console.log('Source: ' + event.file.pathName);
+            console.log('Dest: ' + contentPath);
+
+			//Handle our favorite media types
+            var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
+            if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {     	
+            	fs.createReadStream(event.file.pathName).pipe(fs.createWriteStream(contentPath));
+                //Git commit
+            } else {
+            	//Convert files
+                var convertedPath;
+				convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                var proc = new ffmpeg({ source: config.uploadTempDir + "/" + Name, timeout: 8000, priority: 2 })
+                    .toFormat('mp4')
+                    .withVideoBitrate('1200k')
+                    .withVideoCodec('libx264')
+                    .withAudioBitrate('160k')
+                    .withAudioCodec('libfaac')
+                    .withAudioChannels(2)
+                                            //.addOptions(['-flags', '-strict experimental', '-preset slow', '-maxrate 20000000', '-bufsize 20000000', '-flags2', '+mixed_refs', '-qdiff 4', '-level 13'])
+                                            //.addOptions(['-flags', '+loop', '-cmp', '+chroma', '-partitions','+parti4x4+partp8x8+partb8x8', '-flags2',
+                                            //'+mixed_refs', '-me_method umh', '-subq 5', '-bufsize 2M', '-rc_eq \'blurCplx^(1-qComp)\'',
+                                            //'-qcomp 0.6', '-qmin 10', '-qmax 51', '-qdiff 4', '-level 13' ]);
+                    .onCodecData(function (codecinfo) {
+                    	console.log(codecinfo);
+                        _this._socket.emit('mediaInfo', codecinfo);
+					})
+                    .onProgress(function (progress) {
+                    	_this._socket.emit('mediaConversionProgress', progress);
+                    })
+                    .saveToFile(convertedPath, function (stdout, stderr) {
+                    	console.log('FFMPEG err: ' + stderr);
+						console.log('FFMPEG out: ' + stdout);
+						_this._socket.emit('mediaConversionComplete', convertedPath);
+                    })
+            }
+		}else if(Files[Name]['Data'].length > 10485760){ //If the Data Buffer reaches 10MB
+			fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function(err, Writen){
+				Files[Name]['Data'] = ""; //Reset The Buffer
+				var Place = Files[Name]['Downloaded'] / 524288;
+				var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
+				_this._socket.emit('uploadMoreData', { 'Place' : Place, 'Percent' :  Percent});
+			});
+		}else{
+			var Place = Files[Name]['Downloaded'] / 524288;
+			var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
+			_this._socket.emit('uploadMoreData', { 'Place' : Place, 'Percent' :  Percent});
+		}
+    },
+					
+					/*inp.on("end", function(){
+						console.log("done");
+					}*/
+						/*fs.unlink("Temp/" + Name, function () { //This Deletes The Temporary File
+							var proc = new ffmpeg({ source: "Video/" + Name, timeout: 300, priority: 2 })
+								.toFormat('mp4')
+								.withVideoBitrate('1200k')
+								.withVideoCodec('libx264')
+							     .withAudioBitrate('160k')
+								.withAudioCodec('libfaac')
+								.withAudioChannels(2)
+										   
+								.onCodecData(function(codecinfo) {
+									console.log(codecinfo);
+										    //_this._socket.emit('mediaInfo', codecinfo);
+								})
+								.onProgress(function(progress){
+									console.log(progress)
+											//_this._socket.emit('mediaConversionProgress', progress);
+								})
+								.saveToFile(convertedPath, function(stdout, stderr) {
+									//_this._socket.emit('mediaConversionComplete', convertedPath);
+								});
+						});*/
+					//}
+					/*util.pump(inp, out, function(){
+						fs.unlink("Temp/" + Name, function () { //This Deletes The Temporary File
+							exec("ffmpeg -i Video/" + Name  + " -ss 01:30 -r 1 -an -vframes 1 -f mjpeg Video/" + Name  + ".jpg", function(err){
+								socket.emit('Done', {'Image' : 'Video/' + Name + '.jpg'});
+							});
+						});
+					});*/
+				//});
+			//}
+
 
     _copyProgramFiles: function (program, callback) {
         var baseWritePath = path.normalize(Content.diskPath(program.path) + '/core-prog');
@@ -1454,6 +1615,14 @@ var Utils = {
 
             socket.on('contentSaved', function (data) {
                 SocketHandler.init(socket).contentSaved(data);
+            });
+            
+            socket.on('startUpload', function (data) {
+	            SocketHandler.init(socket).startUpload(data);
+            });
+            
+            socket.on('fileUpload', function (data) {
+	            SocketHandler.init(socket).fileUpload(data);
             });
 
         });
