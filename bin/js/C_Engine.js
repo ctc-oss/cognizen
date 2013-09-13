@@ -79,6 +79,11 @@ function initScripts(_data){
 	data = _data;
 	totalPages = $(data).find('page').length;
 	mode = $(data).find('mode').attr("value");
+	
+	// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
+    require.config({
+        waitSeconds: 0
+    });
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	require([	//Already included in require.js
 				//Funtionality
