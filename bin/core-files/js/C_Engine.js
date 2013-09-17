@@ -901,12 +901,8 @@ function addIndex(){
 				$('#indexContent li').each(function(i)
 				{
 				    if(ui.item.attr('tag') == $(this).attr("tag")){
-				    	if(oldNodePos < $(this).index()){
-					    	/*if($(this).index() == totalPages){
-						    	newNodePos = $(this).index() - 1;
-					    	}else{*/
-					    		newNodePos = $(this).index();
-					    	//}
+				    	if(oldNodePos < $(this).index() && totalPages != $(this).index()){
+					    	newNodePos = $(this).index();
 				    	}else{
 				    		newNodePos = $(this).index() - 1;
 				    	}
