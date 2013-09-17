@@ -40,10 +40,12 @@ var logFolder = config.logFolder ? config.logFolder : './';
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
-            level: 'info'
+            level: 'info',
+            timestamp: true
         }),
         new (winston.transports.File)({
-            filename: logFolder + 'cognizen.log'
+            filename: logFolder + 'cognizen.log',
+            timestamp: true
         })
     ]
 });
@@ -384,7 +386,7 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+            var command = 'rm -f .git/index.lock && git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
             if (init) {
                 command = 'git init && ' + command;
             }
