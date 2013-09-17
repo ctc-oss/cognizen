@@ -158,7 +158,6 @@ function initScripts(_data){
 	
 	//If the course is linear - must complete page by page - setup a page completion tracking array.
 	if($(data).find('linear').attr("value") == 'true'){
-		console.log("isLinear - setting up tracking _arr");
 		isLinear = true;
 		tracking_arr = [];
 		for(var i = 0; i < totalPages; i++){
@@ -903,7 +902,11 @@ function addIndex(){
 				{
 				    if(ui.item.attr('tag') == $(this).attr("tag")){
 				    	if(oldNodePos < $(this).index()){
-					    	newNodePos = $(this).index();
+					    	/*if($(this).index() == totalPages){
+						    	newNodePos = $(this).index() - 1;
+					    	}else{*/
+					    		newNodePos = $(this).index();
+					    	//}
 				    	}else{
 				    		newNodePos = $(this).index() - 1;
 				    	}
@@ -913,10 +916,11 @@ function addIndex(){
 				//If the node moved - update...
 				if(oldNodePos != newNodePos){
 					//Move the node in the xml structure.
-					console.log("updated node pos")
+					console.log("oldNodePos = " + oldNodePos);
+					console.log("newNodePos = " + newNodePos);
+					console.log("totalPage = " + totalPages);
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 					sendUpdateWithRefresh();
-					console.log("update sent to server");
 				}
 			}
 		});
@@ -958,7 +962,6 @@ function updateIndexCommentFlags(){
 
 
 function updateTracking(){
-	console.log(tracking_arr[currentPage]);
 	tracking_arr[currentPage].complete = true;
 	updateMenuItems();
 }
@@ -1834,7 +1837,6 @@ function sendUpdateWithRefresh(){
 		var oSerializer = new XMLSerializer();
 		xmlString = oSerializer.serializeToString(myData[0]);
 	}
-	console.log("xmlString sent to server: " + xmlString);
 	socket.emit('updateXMLWithRefresh', { my: xmlString });
 }
 
