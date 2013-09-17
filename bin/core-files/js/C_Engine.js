@@ -896,15 +896,21 @@ function addIndex(){
 				var oldNodePos = parseInt(ui.item.attr('tag'));
 				//Create variable to hold the new node position
 				var newNodePos;
-
+				var isLast = false;
 				//Search for node with new tag and set its new position in the li
 				$('#indexContent li').each(function(i)
 				{
+					
 				    if(ui.item.attr('tag') == $(this).attr("tag")){
-				    	if(oldNodePos < $(this).index() && totalPages != $(this).index()){
+				    	if(oldNodePos < $(this).index()){
 					    	newNodePos = $(this).index();
 				    	}else{
 				    		newNodePos = $(this).index() - 1;
+				    	}
+				    	
+				    	if(totalPages == $(this).index()){
+					    	console.log("move to end");
+					    	isLast = true;
 				    	}
 				    }
 				});
@@ -915,7 +921,11 @@ function addIndex(){
 					console.log("oldNodePos = " + oldNodePos);
 					console.log("newNodePos = " + newNodePos);
 					console.log("totalPage = " + totalPages);
-					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+					if(isLast == true){
+						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(totalPages -1));
+					}else{
+						$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+					}
 					sendUpdateWithRefresh();
 				}
 			}
