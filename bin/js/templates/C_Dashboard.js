@@ -63,7 +63,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerStarted', function (details) {
-            var url = [window.location.href, 'programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
+            var url = [window.location.protocol, '//', window.location.host, '/programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
             openProject(url);
         });
 
