@@ -75,7 +75,7 @@ window.SocketIOFileUpload = function(socket){
 	var _loadOne = function(file, target){
 		// Dispatch an event to listeners and stop now if they don't want
 		// this file to be uploaded.
-		if(file.size < 20000000){
+		if(file.size < 30000000){
 			var evntResult = _dispatch("start", {
 				file: file
 			});
