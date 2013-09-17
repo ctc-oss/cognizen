@@ -125,7 +125,7 @@ window.SocketIOFileUpload = function(socket){
 				transmitPos = loaded;
 			};
 		}else{
-			alert("Files must be under 20MB to be uploaded in this manner.  Please upload this file using the git method instead.");
+			alert("Files must be under 30MB to be uploaded in this manner.  Please upload this file using the git method instead.");
 		}
 
 		// Listen to the "progress" event.  Transmit parts of files
