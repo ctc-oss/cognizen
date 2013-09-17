@@ -391,10 +391,20 @@ var Git = {
                 command = 'git init && ' + command;
             }
             exec(command, {cwd: path}, function (err, stdout, stderr) {
+                logger.error('ERR: ' + err);
+                logger.error('STDOUT: ' + stdout);
+                logger.error('STDERR: ' + stderr);
+
+                var nothingToCommit = stdout && stdout.toLowerCase().indexOf('nothing to commit') > -1;
+                var stderrError = stderr && stderr.toLowerCase().indexOf('error:') > -1;
+
                 if (err) {
                     error(err);
                 }
-                else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+                else if (nothingToCommit) {
+                    success();
+                }
+                else if (stderrError) {
                     error(stderr);
                 }
                 else {
