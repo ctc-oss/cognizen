@@ -587,43 +587,15 @@ var SocketHandler = {
 
                                     var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
 
-                                    console.log('Source: ' + event.file.pathName);
-                                    console.log('Dest: ' + contentPath);
-
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-//                                    if (mediaType == "mp4" || mediaType == "swf" || mediaType == "jpg" || mediaType == "png" || mediaType == "html" || mediaType == "gif" || mediaType == "JPG" || mediaType == "jpeg" || mediaType == "JPEG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "MP4") {
                                         fs.createReadStream(event.file.pathName).pipe(fs.createWriteStream(contentPath));
                                         //Git commit
                                     } else {
                                         //Convert files
                                         var convertedPath;
-//                                        var stripFolder = contentPath.split("/");
-//                                        var mediaFolder = "";
-//                                        for (var i = 0; i < stripFolder.length - 1; i++) {
-//                                            mediaFolder += stripFolder[i] + "/";
-//                                        }
-
                                         convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
-
-//                                        if (mediaType == "ogv") {
-//                                            convertedPath = contentPath.replace(/ogv/, "mp4");
-//                                        } else if (mediaType == "flv") {
-//                                            convertedPath = contentPath.replace(/flv/, "mp4");
-//                                        } else if (mediaType == "avi") {
-//                                            convertedPath = contentPath.replace(/avi/, "mp4");
-//                                        } else if (mediaType == "wmv") {
-//                                            convertedPath = contentPath.replace(/wmv/, "mp4");
-//                                        } else if (mediaType == "mov") {
-//                                            convertedPath = contentPath.replace(/mov/, "mp4");
-//                                        } else if (mediaType == "webm") {
-//                                            convertedPath = contentPath.replace(/webm/, "mp4");
-//                                        } else if (mediaType == "3gp") {
-//                                            convertedPath = contentPath.replace(/3gp/, "mp4");
-//                                        }
-
-                                        console.log('CONVERTED: ' + convertedPath);
 
 
                                         var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
@@ -670,7 +642,6 @@ var SocketHandler = {
 
     attemptLogin: function (data) {
         var _this = this;
-//        console.log('USER0: ' + _this._socket.user);
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
@@ -682,8 +653,6 @@ var SocketHandler = {
                     if (err) throw err;
 
                     if (isMatch == true) {
-//                        _this._socket.user = user;
-//                        _this._socket.session = Utils.sessionIdFromSocket(_this._socket);
                         Utils.socketUsers[Utils.sessionIdFromSocket(_this._socket)] = user;
                         _this._socket.emit('loginAttemptSuccess', user);
                     } else {
@@ -800,9 +769,6 @@ var SocketHandler = {
 
     sendPackageMail: function (data) {
         var _this = this;
-
-        //var myUser = User.findById(data.user);
-
         User.findById(data.user).exec(function (err, user) {
             if (user) {
 

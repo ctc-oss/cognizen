@@ -64,7 +64,7 @@ io.sockets.on('connection', function (socket) {
     //Update the page content
     socket.on('updateXML', function (data) {
         var file = '../xml/content.xml';
-        console.log(data.my);
+		
         fs.outputFile(file, data.my, function(err) {
             //Refresh the index if successfully updating the content.xml
             if(err == null){
@@ -214,7 +214,6 @@ io.sockets.on('connection', function (socket) {
                         //builds the bin directory
                         for(var i=0;i<res.files.length;i++){
                             var lFile = res.files[i].path.replace(/\\/g,"/")
-                            //console.log(lFile);
                             var file1 = __dirname + '/../' + lFile;
                             archive
                                 .append(fs.createReadStream(file1), { name: 'bin/'+lFile });

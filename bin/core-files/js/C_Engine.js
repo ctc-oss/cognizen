@@ -335,7 +335,6 @@ function buildInterface(){
 	    });
 	    
 	    cognizenSocket.on("updateCommentIndex", function(data){
-		  //console.log(currentPageID);
 		  if(data && data.length > 0){
 			  if(urlParams['id'] == data[0].contentId){
 				  for(var i = 0; i < data.length; i++){
@@ -909,7 +908,6 @@ function addIndex(){
 				    	}
 				    	
 				    	if(totalPages == $(this).index()){
-					    	console.log("move to end");
 					    	isLast = true;
 				    	}
 				    }
@@ -918,9 +916,6 @@ function addIndex(){
 				//If the node moved - update...
 				if(oldNodePos != newNodePos){
 					//Move the node in the xml structure.
-					console.log("oldNodePos = " + oldNodePos);
-					console.log("newNodePos = " + newNodePos);
-					console.log("totalPage = " + totalPages);
 					if(isLast == true){
 						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(totalPages -1));
 					}else{
