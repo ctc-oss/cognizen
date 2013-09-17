@@ -306,8 +306,7 @@ window.SocketIOFileUpload = function(socket){
 	 */
 	this.prompt = function(target){
 		var inpt = _getInputElement();
-		
-		 inpt.setAttribute('data-content', target);
+		inpt.setAttribute('data-content', target);
 		
 		// Listen for the "change" event on the file input element.
 		inpt.addEventListener("change", _fileSelectCallback, false);
