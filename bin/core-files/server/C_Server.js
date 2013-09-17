@@ -46,6 +46,7 @@ io.sockets.on('connection', function (socket) {
 
     //Set listener to update the content.xml file
     socket.on('updateXMLWithRefresh', function (data) {
+        console.log("updateXMLWithRefresh called with data of " + data);
         var file = '../xml/content.xml';
         fs.outputFile(file, data.my, function(err) {
             //Refresh the index if successfully updating the content.xml

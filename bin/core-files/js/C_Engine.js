@@ -913,8 +913,10 @@ function addIndex(){
 				//If the node moved - update...
 				if(oldNodePos != newNodePos){
 					//Move the node in the xml structure.
+					console.log("updated node pos")
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 					sendUpdateWithRefresh();
+					console.log("update sent to server");
 				}
 			}
 		});
@@ -1832,6 +1834,7 @@ function sendUpdateWithRefresh(){
 		var oSerializer = new XMLSerializer();
 		xmlString = oSerializer.serializeToString(myData[0]);
 	}
+	console.log("xmlString sent to server: " + xmlString);
 	socket.emit('updateXMLWithRefresh', { my: xmlString });
 }
 
