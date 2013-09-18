@@ -450,7 +450,7 @@ var Git = {
 
         var feedback = this._git.createRepo({
             name: program.path,
-            anonRead: true,
+            anonRead: false,
             users: [
                 {user: _this._editUser, permissions: ['R', 'W']}
             ]
