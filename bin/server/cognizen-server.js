@@ -425,6 +425,10 @@ var Git = {
             var exec = require('child_process').exec;
             var command = 'git fetch --all && git reset --hard origin/master';
             exec(command, {cwd: path}, function (err, stdout, stderr) {
+                logger.error('Git-ERR: ' + err);
+                logger.error('Git-STDOUT: ' + stdout);
+                logger.error('Git-STDERR: ' + stderr);
+
                 if (err) {
                     error(err);
                 }
