@@ -1285,8 +1285,17 @@ var Utils = {
     var app = express();
     app.use(express.cookieParser('cognizen'));
     app.use(express.session());
+    app.get('/logout', function(req, res) {
+        if (req.session) {
+            req.session.auth = null;
+            res.clearCookie('auth');
+            req.session.destroy(function() {});
+        }
+        res.redirect('/');
+    });
     app.use(express.static(path.join(__dirname, '../')));
     app.use(function(req, res) {
+        logger.info('404: ' + req.url);
         // This will redirect 404s to the home page.
         res.redirect('/');
     });
