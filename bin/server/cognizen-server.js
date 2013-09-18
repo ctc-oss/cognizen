@@ -398,11 +398,11 @@ var Git = {
                 var nothingToCommit = stdout && stdout.toLowerCase().indexOf('nothing to commit') > -1;
                 var stderrError = stderr && stderr.toLowerCase().indexOf('error:') > -1;
 
-                if (err) {
-                    error(err);
-                }
-                else if (nothingToCommit) {
+                if (nothingToCommit) {
                     success();
+                }
+                else if (err) {
+                    error(err);
                 }
                 else if (stderrError) {
                     error(stderr);
