@@ -217,15 +217,21 @@ function initializeSockets(){
 	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
 	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: true});
 	    
-	    cognizenSocket.emit('userPermissionForContent'), {
+	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
 			user: {id: urlParams['u']}
         });
 
 	    cognizenSocket.on("contentPermissionFound", function(data){
-			mode = data.permission;  
+			console.log(data.permission);
+			if(data.permission == "admin" || data.permission == "editor"){
+				mode = "edit";
+			}else if(data.permission == "reviewer"){
+				mode = "review";
+			}
+			 
 			buildInterface();  
-	    }
+	    });
 	    
 	    cognizenSocket.on('connect_failed', function(){
 	    	buildInterface();
