@@ -513,20 +513,6 @@ var Git = {
                                 _this._gitUpdateLocal(program, null, function(err) {
                                     logger.error(err);
                                 });
-//                                var path = Content.diskPath(program.path);
-//
-//                                var exec = require('child_process').exec;
-//                                var command = 'git fetch --all && git reset --hard origin/master';
-//                                exec(command, {cwd: path}, function (err, stdout, stderr) {
-//                                    if (err) {
-//                                    }
-//                                    else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
-//                                        logger.error(stderr);
-//                                    }
-//                                    else {
-//                                        // Do nothing.
-//                                    }
-//                                });
                             }
                         }
                     });
@@ -814,6 +800,38 @@ var SocketHandler = {
         }
     },
 
+    userPermissionForContent: function(data) {
+        var _this = this;
+        var emitter = 'contentPermission';
+        var foundPermission = 'viewer';
+        var contentType = Content.objectType(data.content.type);
+
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    // Get the user associated
+                    User.findById(data.user.id).populate('permissions').exec(function (err, user) {
+                        if (user && user.permissions) {
+
+                            user.permissions.forEach(function(permission) {
+                                if (permission.contentId == data.content.id) {
+                                    foundPermission = permission.permission;
+                                }
+                            });
+                        }
+                        _this._socket.emit(emitter, {permission: foundPermission});
+                    });
+                }
+                else {
+                    _this._socket.emit(emitter, {permission: foundPermission});
+                }
+            });
+        }
+        else {
+            _this._socket.emit(emitter, {permission: foundPermission});
+        }
+    },
+
     _copyProgramFiles: function (program, callback) {
         var baseWritePath = path.normalize(Content.diskPath(program.path) + '/core-prog');
         var root = path.normalize('../core-files');
@@ -1074,12 +1092,15 @@ var SocketHandler = {
 
                 permission.save(function (err, saved) {
                     if (err) {
+                        logger.error(err);
                         if (callback) callback(err);
                     }
-                    foundUser.permissions.push(saved);
-                    foundUser.save(function (err, savedUser) {
-                        if (callback) callback(err);
-                    });
+                    else {
+                        foundUser.permissions.push(saved);
+                        foundUser.save(function (err, savedUser) {
+                            if (callback) callback(err);
+                        });
+                    }
                 });
             }
             else {
@@ -1407,7 +1428,12 @@ var Utils = {
 
             socket.on('assignContentToUser', function (data) {
                 SocketHandler.init(socket).assignContentToUser(data, function(err) {
-                    io.sockets.emit('refreshDashboard');
+                    if (err) {
+                        socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when assigning content.'});
+                    }
+                    else {
+                        io.sockets.emit('refreshDashboard');
+                    }
                 });
             });
 
@@ -1441,6 +1467,10 @@ var Utils = {
 
             socket.on('contentSaved', function (data) {
                 SocketHandler.init(socket).contentSaved(data);
+            });
+
+            socket.on('userPermissionForContent', function (data) {
+                SocketHandler.init(socket).userPermissionForContent(data);
             });
 
         });
