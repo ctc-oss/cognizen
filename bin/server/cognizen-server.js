@@ -802,7 +802,7 @@ var SocketHandler = {
 
     userPermissionForContent: function(data) {
         var _this = this;
-        var emitter = 'contentPermission';
+        var emitter = 'contentPermissionFound';
         var foundPermission = 'viewer';
         var contentType = Content.objectType(data.content.type);
 
