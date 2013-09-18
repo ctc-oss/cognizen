@@ -207,71 +207,31 @@ function initScripts(_data){
 				//Lightbox for media popups and galleries.
 				"js/libs/fancybox/jquery.fancybox.js",
 				"js/libs/fancybox/jquery.fancybox-thumbs.js"
-	], buildInterface);
+	], initializeSockets);
 }
 
-
-var queryStringParameters = function() {
-	var match,
-     pl     = /\+/g,  // Regex for replacing addition symbol with a space
-	search = /([^&=]+)=?([^&]*)/g,
-	decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-	query  = window.location.search.substring(1);
-
-	var urlParams = {};
-	while (match = search.exec(query)) {
-		urlParams[decode(match[1])] = decode(match[2]);
-	}
-	return urlParams;
-}
-
-
-function refreshPageComments(){
-	$("#pageComments").empty();
-	
-	var even = true;
-
-	for(var i = 0; i < pageComments.length; i++){
-		var myFirstName = pageComments[i].user.firstName;
-		var myLastName = pageComments[i].user.lastName;
-		var myTime = pageComments[i].created;
-		var myComment = pageComments[i].comment;
-		
-		if(even == true){
-			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
-		}else{
-			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
-		}
-		if(even == true){
-			even = false;
-		}else{
-			even = true;
-		}
-	}
-	
-	 $(".nano").nanoScroller({
-      	flashDelay: 4000,
-		flash: true,
-		sliderMaxHeight: 350,
-		scroll: 'bottom'
-	});
-}
-
-/****************************************************
-******************************** STEP 3 - BUILD SHELL
-****************************************************/
-//Place all permanent items in the UI - background - title - nav
-function buildInterface(){
-	scorm = pipwerks.SCORM;
-
-
-
-    if(mode == "edit"){
+function initializeSockets(){
+	if(mode == "edit"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
 	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
 	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: true});
 	    
+	    cognizenSocket.emit('userPermissionForContent'), {
+        	content: {type: urlParams['type'], id: urlParams['id']},
+			user: {id: urlParams['u']}
+        });
+
+	    cognizenSocket.on("contentPermissionFound", function(data){
+			mode = data.permission;  
+			buildInterface();  
+	    }
+	    
+	    cognizenSocket.on('connect_failed', function(){
+	    	buildInterface();
+    		alert('There is an error connecting to the production server. You can only view content.');
+		});
+
 	    cognizenSocket.on('commentAdded', function (data) {
 	        	cognizenSocket.emit('getContentComments', {
 				contentId: urlParams['id'],
@@ -317,7 +277,7 @@ function buildInterface(){
 	        if(mode == "edit" || mode == "review"){
 	        	if(pageComments.length > 0){
 	        		$("#comment").removeClass('commentOpen');
-		      	$("#comment").removeClass('commentClosed');
+					$("#comment").removeClass('commentClosed');
 	        		var last = pageComments.length - 1;
 		   		var status = pageComments[last].status;
 		   		
@@ -393,7 +353,69 @@ function buildInterface(){
             });
             updateIndex();
         });
+	}else{
+		buildInterface();
 	}
+	
+}
+
+
+var queryStringParameters = function() {
+	var match,
+     pl     = /\+/g,  // Regex for replacing addition symbol with a space
+	search = /([^&=]+)=?([^&]*)/g,
+	decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+	query  = window.location.search.substring(1);
+
+	var urlParams = {};
+	while (match = search.exec(query)) {
+		urlParams[decode(match[1])] = decode(match[2]);
+	}
+	return urlParams;
+}
+
+
+function refreshPageComments(){
+	$("#pageComments").empty();
+	
+	var even = true;
+
+	for(var i = 0; i < pageComments.length; i++){
+		var myFirstName = pageComments[i].user.firstName;
+		var myLastName = pageComments[i].user.lastName;
+		var myTime = pageComments[i].created;
+		var myComment = pageComments[i].comment;
+		
+		if(even == true){
+			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
+		}else{
+			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
+		}
+		if(even == true){
+			even = false;
+		}else{
+			even = true;
+		}
+	}
+	
+	 $(".nano").nanoScroller({
+      	flashDelay: 4000,
+		flash: true,
+		sliderMaxHeight: 350,
+		scroll: 'bottom'
+	});
+}
+
+/****************************************************
+******************************** STEP 3 - BUILD SHELL
+****************************************************/
+//Place all permanent items in the UI - background - title - nav
+function buildInterface(){
+	scorm = pipwerks.SCORM;
+
+
+
+    
 
 	$('body').empty();
 	$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
