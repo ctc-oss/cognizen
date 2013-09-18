@@ -1156,7 +1156,7 @@ var SocketHandler = {
                                     serverDetails.running = true;
                                 }
                                 else if (!serverDetails.running && message.indexOf("error") > -1) {
-                                    _this._socket.emit('contentServerDidNotStart', {message: data});
+                                    _this._socket.emit('contentServerDidNotStart', {message: message});
                                     serverDetails.running = false;
                                 }
                             });
@@ -1169,8 +1169,9 @@ var SocketHandler = {
                         }
 
                     }, function(err) {
-                        logger.error(err);
-                        _this._socket.emit('contentServerDidNotStart', {message: err});
+                        var error = JSON.stringify(err);
+                        logger.error(error);
+                        _this._socket.emit('contentServerDidNotStart', {message: error});
                     })
                 }
             });
