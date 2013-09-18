@@ -87,9 +87,9 @@ function C_StaticContent(_type) {
             if($(data).find("page").eq(currentPage).attr('audio').length != 0){
                 hasAudio = true;
                 myAudio = $(data).find("page").eq(currentPage).attr('audio');
-            }else{
-                myAudio = "null";
             }
+        }else{
+        	myAudio = "null";
         }
 
         buildTemplate();
