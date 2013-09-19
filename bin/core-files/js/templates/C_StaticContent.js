@@ -383,7 +383,7 @@ function C_StaticContent(_type) {
 						tempCaption = caption_arr[0];
 					}
 				
-					var mediaPopString = "<div id='myImgList' class='imglist'><a rel='mediaPop' class='mediaPop' data-fancybox-group='gallery' href='"+tempItem+"' title='"+ tempCaption +"'></a>";
+					var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='fancybox-thumb' class='fancybox-thumb'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
 					
 					if(media_arr.length > 0){
 						mediaPopString += "<span style='display:none;'>";
@@ -426,8 +426,10 @@ function C_StaticContent(_type) {
 					}
 				
 					$(".mediaPop").css({'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
-					$(".mediaPop").tooltip({
-						content: "click to view enlarged media"
+					$("#myImgList").tooltip();
+					$("#mediaPop").click(function(){
+						try { $("#myImgList").tooltip("destroy"); } catch (e) {}
+						$(this).attr("title", tempCaption);
 					});
 				}
 				///////////////////////////////////////////////////////////////////////////////END MEDIA POP UP
