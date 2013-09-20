@@ -81,7 +81,6 @@ window.SocketIOFileUpload = function(socket){
 			});
 			if(!evntResult) return;
 			
-			console.log("useText = " + self.useText);
 			// Scope variables
 			var reader = new FileReader(),
 				transmitPos = 0,
@@ -103,7 +102,6 @@ window.SocketIOFileUpload = function(socket){
 						// transmission in Base 64.
 						if(self.serializedOctets){
 							content = uintArr;
-							console.log(content);
 						}else{
 							content = _uint8ArrayToBase64(uintArr);
 						}
@@ -139,7 +137,7 @@ window.SocketIOFileUpload = function(socket){
 		// events until event.loaded >= event.total.
 		reader.addEventListener("progress", function(event){
 			// would call transmitPart(event.loaded) here
-			console.log("client says progress");
+			//console.log("client says progress");
 		});
 
 		// When the file is fully loaded, tell the server.
@@ -375,7 +373,6 @@ window.SocketIOFileUpload = function(socket){
 	 * Adapted for SocketIOFileUpload.
 	 */
 	var _uint8ArrayToBase64 = function(bytes) {
-		console.log("in _uint8Array to base64");
 		var i, len = bytes.buffer.byteLength, base64 = "",
 		chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -410,12 +407,9 @@ window.SocketIOFileUpload = function(socket){
 	});*/
 	
 	socket.on("siofu_complete", function(data){
-		console.log("Client is dispatching complete");
 		_dispatch("complete", {
 			file: uploadedFiles[data.id],
 			success: data.success
 		});
-		console.log("fileUpload complete");
-		
 	});
 };

@@ -223,7 +223,6 @@ function initializeSockets(){
         });
 
 	    cognizenSocket.on("contentPermissionFound", function(data){
-			console.log(data.permission);
 			if(data.permission == "admin" || data.permission == "editor"){
 				mode = "edit";
 			}else if(data.permission == "reviewer"){
@@ -1853,7 +1852,7 @@ function updateIndex(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(){
-
+	
 	//Serialize the xml and send it to nodejs using socket.
 	var myData = $(data);
 	var xmlString = undefined;

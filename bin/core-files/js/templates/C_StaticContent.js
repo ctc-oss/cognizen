@@ -694,7 +694,6 @@ function C_StaticContent(_type) {
 						
 						$("#imgDialog").append("<div id='"+galleryItemID+"'><HR><div id='"+removeID+"' value='"+i+"' class='removeMedia'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='imgPath" + i + "' type='text' value="+ media_arr[i] + " defaultValue="+ media_arr[i] + " style='width:80%;'/><br/><div>Edit Caption:</div><div id='"+thisCaption+"' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + caption_arr[i] + "</div></div>");
 						$("#" + removeID).click(function(){
-							console.log("thisSpot = " + $(this).attr('value'));
 							var arrIndex = $(this).attr('value');
 							//captionEditText_arr, media_arr, caption_arr, destroyEditor
 							media_arr.splice(arrIndex,1);
@@ -729,7 +728,6 @@ function C_StaticContent(_type) {
 								
 								$("#imgDialog").append("<div id='"+galleryItemID+"'> <HR><div id='"+removeID+"' value='"+i+"' class='removeMedia'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='" + imgID + "' type='text' value='media/defaultTop.png' defaultValue='media/defaultTop.png' style='width:100%;'/><br/><div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div></div>");
 								$("#" + removeID).click(function(){
-									console.log("thisSpot = " + $(this).attr('value'));
 									var arrIndex = $(this).attr('value');
 									//captionEditText_arr, media_arr, caption_arr, destroyEditor
 									media_arr.splice(arrIndex,1);
@@ -778,9 +776,9 @@ function C_StaticContent(_type) {
 					$loader.find('*').attr('data-content', contentId);
 					
 					$loader.click(function(){
-						$("#loader").tooltip("destroy");
+						try { $("#loader").tooltip("destroy"); } catch (e) {}
 						//$loader.unbind();
-						//siofu.prompt($loader.attr('data-content'));
+						siofu.prompt($loader.attr('data-content'));
 					});
 	
 					siofu.listenOnDrop(document.getElementById("loader"));
@@ -1160,7 +1158,7 @@ function C_StaticContent(_type) {
 	function fadeComplete() {	
         $('#pageTitle').remove();
 	   	$('#contentHolder').remove();
-
+	   	$('#reveal').remove();
 	   	if(hasAudio == true){
             $('#audioCon').remove();
 		  	$('#player').remove();
@@ -1181,6 +1179,13 @@ function C_StaticContent(_type) {
 		$("#imgDialog").remove();
 		$("#audioDialog").remove();
 		$("#swfDialog").remove();
+		
+		if(mode == "edit" && dragFile == true){
+		  	if(type != "textOnly" && type !=  "sidebar"){
+			  	siofu.destroy();
+			  	$("#loader").unbind();
+			}
+		}
 
 		if(type != "textOnly" && type !=  "sidebar"){
         	if(mediaType == 'swf'){
