@@ -1834,17 +1834,6 @@ function updateIndex(){
 	    		alert("unable to load content.xml in updateIndex")
 	    	}
 	});
-	
-	/*$.ajax({
-		type: "GET",
-		url: "xml/content.xml",
-		dataType: "xml",
-		async: false,
-		success: initScripts,
-		error: function(){
-			alert("unable to load content.xml")
-		}
-	});*/
 }
 
 /**
