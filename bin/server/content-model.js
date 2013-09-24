@@ -105,6 +105,10 @@ ProgramSchema.statics.createUnique = function (program, callback) {
     createUnique(Program, program, callback);
 };
 
+ProgramSchema.methods.getProgram = function() {
+    return this;
+};
+
 var ProjectSchema = ContentSchema.extend({
     program: {type: Schema.Types.ObjectId, ref: 'Program'}
 });

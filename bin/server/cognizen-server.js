@@ -386,7 +386,7 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'rm -f .git/index.lock && git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+            var command = 'git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
             if (init) {
                 command = 'git init && ' + command;
             }
@@ -1055,13 +1055,19 @@ var SocketHandler = {
 
         if (content.length > 0) {
             var item = content.pop();
+            var originalPath = item.path;
+            var timestamp = Utils.timestamp();
             item.deleted = true;
-            item.name = item.name + Content.DELETED_SUFFIX;
+            item.name += Content.DELETED_SUFFIX + timestamp;
+            item.path += Content.DELETED_SUFFIX + timestamp;
             item.save(function(err) {
                 if (err) {
                     error(err);
                 }
                 else {
+                    var oldPath = Content.diskPath(originalPath);
+                    var newPath = Content.diskPath(item.path);
+                    fs.renameSync(oldPath, newPath);
                     _this._markContentDeleted(content, error, success);
                 }
             });
@@ -1274,10 +1280,14 @@ var Utils = {
             console.log(err);
             console.log(err.stack);
         }
-        console.log('Killing ' + subNodes.length + ' child node.js instance(s).');
-        subNodes.forEach(function (worker) {
-            process.kill(worker);
-        });
+
+        if (subNodes && subNodes.length > 0) {
+            console.log('Killing ' + subNodes.length + ' child node.js instance(s).');
+            subNodes.forEach(function (worker) {
+                process.kill(worker);
+            });
+        }
+
         process.exit(0);
     },
 
@@ -1290,6 +1300,20 @@ var Utils = {
 
     sessionIdFromSocket: function(socket) {
         return connect.utils.parseSignedCookies(cookie.parse(decodeURIComponent(socket.handshake.headers.cookie)), 'cognizen')['connect.sid'];
+    },
+
+    timestamp: function() {
+        var now = new Date();
+        var parts = [
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            now.getHours(),
+            now.getMinutes(),
+            now.getSeconds(),
+            now.getMilliseconds()
+        ];
+        return parts.join('');
     },
 
     socketUsers: []
