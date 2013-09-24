@@ -109,6 +109,20 @@ ProgramSchema.methods.getProgram = function() {
     return this;
 };
 
+ProgramSchema.methods.getParent = function() {
+    return null;
+};
+
+ProgramSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        type: 'program',
+        name: this.name,
+        parentDir: '',
+        path: this.name
+    };;
+};
+
 var ProjectSchema = ContentSchema.extend({
     program: {type: Schema.Types.ObjectId, ref: 'Program'}
 });
@@ -150,6 +164,21 @@ ApplicationSchema.methods.getProgram = function() {
     return this.program;
 };
 
+ApplicationSchema.methods.getParent = function() {
+    return this.program;
+};
+
+ApplicationSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        type: 'application',
+        name: this.name,
+        parentDir: this.program.name,
+        path: this.path,
+        parent: this.program.id
+    };
+};
+
 ApplicationSchema.statics.findAndPopulate = function(id, callback) {
     Application.findById(id).populate('program').exec(callback);
 };
@@ -162,6 +191,21 @@ var CourseSchema = ProjectSchema.extend({
 
 CourseSchema.methods.getProgram = function() {
     return this.program;
+};
+
+CourseSchema.methods.getParent = function() {
+    return this.program;
+};
+
+CourseSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        type: 'course',
+        name: this.name,
+        parentDir: this.program.name,
+        path: this.path,
+        parent: this.program.id
+    };
 };
 
 CourseSchema.statics.findAndPopulate = function(id, callback) {
@@ -232,6 +276,21 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
 
 LessonSchema.methods.getProgram = function() {
     return this.course.program;
+};
+
+LessonSchema.methods.getParent = function() {
+    return this.course;
+};
+
+LessonSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        type: 'lesson',
+        name: this.name,
+        parentDir: this.course.name,
+        path: this.path,
+        parent: this.course.id
+    };
 };
 
 LessonSchema.statics.findAndPopulate = function(id, callback) {

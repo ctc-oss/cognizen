@@ -135,32 +135,70 @@ var Content = {
     },
 
     userPermittedContent: function (user, allContent) {
-        if (user.admin) {
-            return {directories: _.values(allContent)};
-        }
-
-        var accessibleContentArray = _.filter(allContent, function (content, key) {
-            return content.permission != null;
-        });
-
+//        var allContentArray = [];
+//        return {directories: allContentArray};
+        var allContentArray = _.values(allContent);
+//        if (!user.admin) {
+//            return {directories: allContentArray};
+//        }
+//
+        var parentsToAdd = [];
         var accessibleContent = {};
-        accessibleContentArray.forEach(function (content) {
-            accessibleContent[content.id] = content;
-            // Add all parents in
-            if (content.parent) {
-                var parentId = content.parent;
-                while (parentId) {
-                    var parentContent = allContent[parentId];
-                    accessibleContent[parentId] = parentContent;
-                    parentId = parentContent.parent;
+        allContentArray.forEach(function (content) {
+            user.permissions.forEach(function (permission) {
+                if (permission.contentId == content.id) {
+                    content.permission = permission.permission;
+                    accessibleContent[content.id] = content;
+
+                    var parent = content.getParent();
+                    while (parent) { // This should get all parents to the top.
+//                        console.log('$$$$$' + JSON.stringify(parent.id));
+                        parent = allContent[parent.id];
+                        parentsToAdd.push(parent);
+                        parent = parent.getParent();
+                    }
                 }
-            }
+            });
         });
 
-        return {directories: _.values(accessibleContent)};
+        // At this point, we have all content that the user has been directly tied to.
+        // First, let's get all the parent content and assign permissions as such:
+        parentsToAdd.forEach(function(parent) {
+            accessibleContent[parent.id] = parent;
+        });
+
+        // At this point, we should have programs down to all accessible content.
+        // Now, we just need to get leaves of all accessible content.
+        var parents = _.keys(accessibleContent);
+
+        var childrenToAdd = [];
+        parents.forEach(function(id) {
+            allContentArray.forEach(function (content) {
+                var parent = content.getParent();
+                if (parent && parent.id == id) {
+                    childrenToAdd.push(content);
+                    parents.push(content.id);
+                }
+            });
+        });
+
+        childrenToAdd.forEach(function(child) {
+            accessibleContent[child.id] = child;
+        });
+
+        var accessibleContentArray = [];
+        for (var id in accessibleContent) {
+            if (accessibleContent.hasOwnProperty(id)) {
+                var dashboardItem = accessibleContent[id].toDashboardItem();
+                dashboardItem.permission = 'admin';
+                accessibleContentArray.push(dashboardItem);
+            }
+        }
+        return {directories: accessibleContentArray};
     },
 
     userPermission: function (user, content) {
+        console.log('Checking ' + content.path + ' ...');
         var found = null;
         if (user.permissions) {
             user.permissions.forEach(function (permission) {
@@ -168,9 +206,86 @@ var Content = {
                     found = permission.permission;
                 }
             });
+
+            if (!found) { // Check the parent permission, and assign it.
+                var program = content.getProgram();
+                user.permissions.forEach(function (permission) {
+                    if (permission.contentId == program.id) {
+                        found = permission.permission;
+                    }
+                });
+
+//                if (content.parent) {
+//                    var parent = content.parent;
+//                    while (parent && !found) {
+//                        user.permissions.forEach(function (permission) {
+//                            if (permission.contentId == parent.id) {
+//                                found = permission.permission;
+//                            }
+//                        });
+//                        parent = content.parent
+//                    }
+//                }
+            }
         }
 
         return found;
+    },
+
+    allContentForUserNew: function(socket, user, callback) {
+        var _this = this;
+        if (!user || !user.username) {
+            user = {username: '', admin: false};
+        }
+
+        var allContent = {};
+
+        User.findOne({username: user.username}).populate('permissions').exec(function (err, loggedInUser) {
+            if (!loggedInUser) {
+                var data = _this.userPermittedContent(user, allContent);
+                if (callback) {
+                    callback(data);
+                }
+                else{
+                    socket.emit('receiveProjectsFromDB', data);
+                }
+            }
+            else {
+                var deleted = [{'deleted': null}, {'deleted': false}];
+                Program.find().or(deleted).exec(function (err, programs) {
+                    programs.forEach(function(program) {
+                        allContent[program.id] = program;
+                    });
+
+                    Application.find().or(deleted).populate('program').exec(function(err, applications) {
+                        applications.forEach(function(app) {
+                            allContent[app.id] = app;
+                        });
+
+                        Course.find().or(deleted).populate('program').exec(function(err, courses) {
+                            courses.forEach(function(course) {
+                                allContent[course.id] = course;
+                            });
+
+                            Lesson.find().or(deleted).populate('course').exec(function(err, lessons) {
+                                lessons.forEach(function(lesson) {
+                                    allContent[lesson.id] = lesson;
+                                });
+
+                                var data = _this.userPermittedContent(loggedInUser, allContent);
+                                if (callback) {
+                                    callback(data);
+                                }
+                                else{
+                                    console.log(JSON.stringify(data));
+                                    socket.emit('receiveProjectsFromDB', data);
+                                }
+                            });
+                        });
+                    });
+                });
+            }
+        });
     },
 
     allContentForUser: function (socket, user) {
@@ -220,7 +335,7 @@ var Content = {
                                 var ids = _.pluck(program.courses, 'id');
 
                                 // This is ugly and I hate it, but since mongoose can't seem to populate 2 deep on arrays, I had to lookup the course
-                                Course.find({'_id': {$in: ids}}).or([{'deleted': null}, {'deleted': false}]).populate('lessons').exec(function (err, courses) {
+                                Course.find({'_id': {$in: ids}}).or([{'deleted': null}, {'deleted': false}]).populate('parent lessons').exec(function (err, courses) {
                                     if (courses && courses.length > 0) {
                                         courses.forEach(function (course) {
                                             allContent[course.id] = {
@@ -253,6 +368,7 @@ var Content = {
                                     totalContentCount++;
 
                                     if (totalContentCount == found.length) {
+                                        console.log(JSON.stringify(allContent));
                                         var data = _this.userPermittedContent(loggedInUser, allContent);
                                         socket.emit('receiveProjectsFromDB', data);
                                     }
@@ -1391,6 +1507,11 @@ var Utils = {
     io.configure(function () {
         io.set('close timeout', 60 * 60 * 2);
     });//Set the timeout to two hours - fix for uploading large video files losing connection.
+
+    Content.allContentForUserNew(null, null, function(content) {
+        console.log(JSON.stringify(content))
+    });
+
     Content.startProxyServer(function () {
         Git.startServer();
 
@@ -1408,7 +1529,7 @@ var Utils = {
             });
 
             socket.on('getProjects', function (data) {
-                Content.allContentForUser(socket, data);
+                Content.allContentForUserNew(socket, data);
             });
 
             socket.on('attemptLogin', function (data) {
