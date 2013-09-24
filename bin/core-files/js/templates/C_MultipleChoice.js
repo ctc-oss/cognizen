@@ -64,6 +64,7 @@ function C_MultipleChoice(_myType) {
 			checkQuestionComplete();
 		}
 		
+		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbackType');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackDisplay');
 		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctresponse').text();
