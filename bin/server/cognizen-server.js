@@ -746,6 +746,45 @@ var SocketHandler = {
         this._socket.emit('loadDashboardPage', status);
     },
 
+    getPermissions: function (data) {
+        var _this = this;
+        UserPermission.find({contentId: data.content.id}).populate('user').exec(function (err, permissions) {
+            if (err) {
+                logger.error(err);
+                _this._socket.emit('generalError', {title: 'Error Retrieving Permissions', message: 'An error occurred while retrieving the user permissions for this content.'});
+            }
+
+            var contentPermissions = {};
+
+            if (permissions) {
+                permissions.forEach(function(permission) {
+                    contentPermissions[permission.user.id] = permission.permission;
+                });
+            }
+
+            // Now, get all the users and marry up the permission if it exists.
+            User.find().exec(function(err, users) {
+                if (err) {
+                    logger.error(err);
+                    _this._socket.emit('generalError', {title: 'Error Retrieving Permissions', message: 'An error occurred while retrieving the user permissions for this content.'});
+                }
+
+                var usersToSend = [];
+
+                users.forEach(function(user) {
+                    if (!user.admin) {
+                        var permission = contentPermissions[user.id];
+                        var userToSend = user.toDashboardItem();
+                        userToSend.permission = permission == undefined ? null : permission;
+                        usersToSend.push(userToSend);
+                    }
+                });
+//                _this._socket.emit('contentPermissions', usersToSend);
+                _this._socket.emit('receiveUserList', usersToSend);
+            });
+        });
+    },
+
     attemptLogin: function (data) {
         var _this = this;
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
@@ -1237,6 +1276,42 @@ var SocketHandler = {
     },
 
 
+    assignContentToUsers: function (data, callback) {
+        // data.content.id
+        // data.users = []
+        // user = {username, permission}
+        // if permission is null, they have no permission to that content
+        logger.info('Assigning ' + data.permission + ' to user ' + data.user + ' for content ' + data.content.id + '.')
+        User.findOne({username: data.user}).exec(function (err, foundUser) {
+            if (!err && foundUser) {
+                var permission = new UserPermission({
+                    user: foundUser,
+                    contentType: data.content.type,
+                    contentId: data.content.id,
+                    permission: data.permission
+                });
+
+                permission.save(function (err, saved) {
+                    if (err) {
+                        logger.error(err);
+                        if (callback) callback(err);
+                    }
+                    else {
+                        foundUser.permissions.push(saved);
+                        foundUser.save(function (err, savedUser) {
+                            if (callback) callback(err);
+                        });
+                    }
+                });
+            }
+            else {
+                if (callback) callback(err);
+            }
+        });
+
+    },
+
+
     getContentServerUrl: function (data) {
 //        var serverDetails = Content.serverDetails(data.content);
         this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
@@ -1520,8 +1595,6 @@ var Utils = {
          *******************************************************************************************/
         io.sockets.on('connection', function (socket) {
 
-//            console.log(Utils.sessionIdFromSocket(socket));
-
             SocketHandler.init(socket).setupFileUploadHandler();
 
             socket.on('checkLoginStatus', function() {
@@ -1530,6 +1603,10 @@ var Utils = {
 
             socket.on('getProjects', function (data) {
                 Content.allContentForUserNew(socket, data);
+            });
+
+            socket.on('getPermissions', function (data) {
+                SocketHandler.init(socket).getPermissions(data);
             });
 
             socket.on('attemptLogin', function (data) {
@@ -1576,8 +1653,8 @@ var Utils = {
                 SocketHandler.init(socket).removeContent(data);
             });
 
-            socket.on('assignContentToUser', function (data) {
-                SocketHandler.init(socket).assignContentToUser(data, function(err) {
+            socket.on('assignContentToUsers', function (data) {
+                SocketHandler.init(socket).assignContentToUsers(data, function(err) {
                     if (err) {
                         socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when assigning content.'});
                     }

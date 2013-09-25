@@ -51,6 +51,14 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     });
 };
 
+UserSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        username: this.username
+    };
+};
 var User = mongoose.model('User', UserSchema);
 var UserPermission = mongoose.model('UserPermission', UserPermissionSchema);
 
