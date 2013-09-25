@@ -1284,6 +1284,7 @@ var SocketHandler = {
         // if permission is null, they have no permission to that content
 
         // Get all the user ids.
+        console.log('ASSIGN: ' + JSON.stringify(data));
         var userIds = _.pluck(data.users, 'id');
 
         User.find({'_id':{$in: userIds}}).populate('permissions').exec(function(err, users) {

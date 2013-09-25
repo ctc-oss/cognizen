@@ -19,6 +19,7 @@ function C_Dashboard(_type) {
     var currentParent;
     var currentLevel;
     var parentString = "";
+    var assignParent;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -356,6 +357,7 @@ function C_Dashboard(_type) {
                     });
 
                 $("#myUserAdd").click(function () {
+                	assignParent = $(this).parent().parent();
                     getUserList($(this).parent().parent().attr('id'));
                 }).hover(
                     function () {
@@ -424,20 +426,22 @@ function C_Dashboard(_type) {
     	
     	console.log(data);
     	
-    	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles:</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
+    	var userData = data;
+    	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
     	msg += '<table border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
     	for (var i = 0; i < data.length; i++){
+	    	var adminChecked = data[i].permission == 'admin' ? ' checked' : '';
+	    	var editorChecked = data[i].permission == 'editor' ? ' checked' : '';
+	    	var reviewerChecked = data[i].permission == 'reviewer' ? ' checked' : '';
+	    	var noneChecked = data[i].permission == null ? ' checked' : '';
 	    	
-	    	if(data[i].permission == "admin"){
-		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
-	    	}else if(data[i].permission == "editor"){
-		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
-	    	}else if (data[i].permission == "reviewer"){
-		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
-	    	}else if (data[i].permission == null){
-		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" checked></td></tr>';
-	    	}
+		    msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td>';
+		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" ' + adminChecked + '></td>';
+		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" ' + editorChecked + '></td>';
+		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" ' + reviewerChecked + '></td>';
+		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" ' + noneChecked + '></td></tr>';
     	}
+    	
     	msg += '</table></div>';
     	
     	$("#stage").append(msg);
@@ -457,14 +461,20 @@ function C_Dashboard(_type) {
                     $("#dialog-assignUser").remove();
                 },
                 Assign: function () {
-                    //socket.emit('assignContentToUser', {
-                        //content: {
-                            //type: $parent.data('type'),
-                            //id: $parent.data('id')
-                        //},
-                        //user: $("#userList").val(),
-                        //permission: $("#userRights input[type='radio']:checked").attr('value')
-                    //});
+                    var user_arr = [];
+                    for(var i = 0; i < data.length; i++){
+                    	var tmpObj = {id: data[i].id, permission: $('input:radio[name=rightsLevel'+ i + ']:checked').val()};
+	                    user_arr.push(tmpObj)
+                    }
+                    
+                    
+                    socket.emit('assignContentToUsers', {
+                        content: {
+                            type: assignParent.data('type'),
+                            id: assignParent.data('id')
+                        },
+                        users: user_arr
+                    });
 
                     $(this).dialog("close");
                     //$("#userList").remove();
@@ -473,63 +483,6 @@ function C_Dashboard(_type) {
                 }
             }
         });
-    	
-        //Create the base message.
-        /*var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">You are adding a new user to ' + $parent.find("span").first().text() + '. Select a user and assign rights to them.</p>';
-
-        //Add the user dropdown
-        msg += '<p><label for="userList">Select a user to add:</label><select id="userList" name="userList">';
-        for (var i = 0; i < userRoster.length; i++) {
-            msg += '<option value="' + userRoster[i].username + '">' + userRoster[i].firstName + ' ' + userRoster[i].lastName + '</option>';
-        }
-        msg += '</select></p>';
-
-        $("#userList").spinner();
-        //Temp field to add user until above functionality for dropdown is worked out.
-
-
-        //Add the radio buttons
-        msg += '<form><fieldset>Select a level of user rights:<br/><div id="userRights" class="radioSelector"><input type="radio" name="rightsLevel" value="admin" checked>admin<br><input type="radio" name="rightsLevel" value="editor">editor<br/><input type="radio" name="rightsLevel" value="reviewer">reviewer<br/><input type="radio" name="rightsLevel" value="viewer">viewer</div></fieldset></form>';
-        //Close the form
-        msg += '</div>';
-
-        //Add to stage.
-        $("#stage").append(msg);
-
-        //Make it a dialog
-        $("#dialog-assignUser").dialog({
-            modal: true,
-            width: 550,
-            close: function (event, ui) {
-                enableMainKeyEvents();
-            },
-            open: function (event, ui) {
-                disableMainKeyEvents();
-            },
-            buttons: {
-                Cancel: function () {
-                    $(this).dialog("close");
-                    $("#userList").remove();
-                    $("#userRights").remove();
-                    $("#dialog-assignUser").remove();
-                },
-                Assign: function () {
-                    socket.emit('assignContentToUser', {
-                        content: {
-                            type: $parent.data('type'),
-                            id: $parent.data('id')
-                        },
-                        user: $("#userList").val(),
-                        permission: $("#userRights input[type='radio']:checked").attr('value')
-                    });
-
-                    $(this).dialog("close");
-                    $("#userList").remove();
-                    $("#userRights").remove();
-                    $("#dialog-assignUser").remove();
-                }
-            }
-        });*/
     }
 
     /***********************************************************************************************
