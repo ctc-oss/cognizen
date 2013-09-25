@@ -95,6 +95,39 @@
 	border-radius: 8px;
 }
 
+.assignUserName{
+	color: #3383bb;
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+	padding: 6px;	
+}
+
+.userSelectTable{
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+	padding: 6px;
+}
+
+th{
+	font-weight: lighter;
+	border-style:solid;
+	border-color: #CCCCCC;
+	border-radius: 6px;
+	border-width: thin;
+	padding: 6px;
+}
+
+td{
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+	padding: 6px;
+}
 
 .loginField{
 	text-align: right;

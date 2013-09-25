@@ -428,14 +428,14 @@ function C_Dashboard(_type) {
     	
     	var userData = data;
     	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
-    	msg += '<table border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
+    	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
     	for (var i = 0; i < data.length; i++){
 	    	var adminChecked = data[i].permission == 'admin' ? ' checked' : '';
 	    	var editorChecked = data[i].permission == 'editor' ? ' checked' : '';
 	    	var reviewerChecked = data[i].permission == 'reviewer' ? ' checked' : '';
 	    	var noneChecked = data[i].permission == null ? ' checked' : '';
-	    	
-		    msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td>';
+			
+		    msg += '<tr><td id="user'+ i+ '" class="assignUserName" title="'+data[i].username +'">' + data[i].firstName + ' ' + data[i].lastName + '</td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" ' + adminChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" ' + editorChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" ' + reviewerChecked + '></td>';
@@ -443,8 +443,11 @@ function C_Dashboard(_type) {
     	}
     	
     	msg += '</table></div>';
-    	
     	$("#stage").append(msg);
+    	
+    	for(var i = 0; i < data.length; i++){
+	    	$("#user"+i).tooltip();
+    	}
     	//Make it a dialog
         $("#dialog-assignUser").dialog({
             modal: true,
@@ -462,8 +465,13 @@ function C_Dashboard(_type) {
                 },
                 Assign: function () {
                     var user_arr = [];
+                    
                     for(var i = 0; i < data.length; i++){
-                    	var tmpObj = {id: data[i].id, permission: $('input:radio[name=rightsLevel'+ i + ']:checked').val()};
+                    	var myPermission = $('input:radio[name=rightsLevel'+ i + ']:checked').val();
+	                    if (myPermission == "null"){
+		                    myPermission = null;
+	                    }
+                    	var tmpObj = {id: data[i].id, permission: myPermission};
 	                    user_arr.push(tmpObj)
                     }
                     
@@ -477,8 +485,6 @@ function C_Dashboard(_type) {
                     });
 
                     $(this).dialog("close");
-                    //$("#userList").remove();
-                    //$("#userRights").remove();
                     $("#dialog-assignUser").remove();
                 }
             }
