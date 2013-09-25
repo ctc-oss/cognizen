@@ -34,6 +34,11 @@ function C_Dashboard(_type) {
             //console.log(data);
             userRoster = data;
         });
+        
+        socket.on('contentPermissions', function(data){
+	        //console.log("contentPermissions recieved = " + data);
+	        assignUser(data);
+        });
 
         socket.on('receiveProjectsFromDB', function (data) {
             //console.log(data);
@@ -247,7 +252,7 @@ function C_Dashboard(_type) {
 
         //Once everything is loaded - fade page in.
         if (transition == true) {
-            TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType, onComplete: getUserList});
+            TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType/*, onComplete: getUserList*/});
         }
     }
 
@@ -351,7 +356,7 @@ function C_Dashboard(_type) {
                     });
 
                 $("#myUserAdd").click(function () {
-                    assignUser($(this).parent().parent());
+                    getUserList($(this).parent().parent().attr('id'));
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -408,16 +413,69 @@ function C_Dashboard(_type) {
         moduleLessonWindow.focus();
     }
 
-    function getUserList() {
-        socket.emit('getUserList');
+    function getUserList(_id) {
+        socket.emit('getPermissions', {content: {id: _id}});
     }
 
     /************************************************************************************
      ASSIGN USER TO CONTENT
      ************************************************************************************/
-    function assignUser($parent) {
+    function assignUser(data) {
+    	
+    	console.log(data);
+    	
+    	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles:</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
+    	msg += '<table border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
+    	for (var i = 0; i < data.length; i++){
+	    	
+	    	if(data[i].permission == "admin"){
+		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
+	    	}else if(data[i].permission == "editor"){
+		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
+	    	}else if (data[i].permission == "reviewer"){
+		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" checked></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null"></td></tr>';
+	    	}else if (data[i].permission == null){
+		    	msg += '<tr><td>' + data[i].firstName + ' ' + data[i].lastName + '</td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer"></td><td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" checked></td></tr>';
+	    	}
+    	}
+    	msg += '</table></div>';
+    	
+    	$("#stage").append(msg);
+    	//Make it a dialog
+        $("#dialog-assignUser").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                enableMainKeyEvents();
+            },
+            open: function (event, ui) {
+                disableMainKeyEvents();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                    $("#dialog-assignUser").remove();
+                },
+                Assign: function () {
+                    //socket.emit('assignContentToUser', {
+                        //content: {
+                            //type: $parent.data('type'),
+                            //id: $parent.data('id')
+                        //},
+                        //user: $("#userList").val(),
+                        //permission: $("#userRights input[type='radio']:checked").attr('value')
+                    //});
+
+                    $(this).dialog("close");
+                    //$("#userList").remove();
+                    //$("#userRights").remove();
+                    $("#dialog-assignUser").remove();
+                }
+            }
+        });
+    	
         //Create the base message.
-        var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">You are adding a new user to ' + $parent.find("span").first().text() + '. Select a user and assign rights to them.</p>';
+        /*var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">You are adding a new user to ' + $parent.find("span").first().text() + '. Select a user and assign rights to them.</p>';
 
         //Add the user dropdown
         msg += '<p><label for="userList">Select a user to add:</label><select id="userList" name="userList">';
@@ -471,7 +529,7 @@ function C_Dashboard(_type) {
                     $("#dialog-assignUser").remove();
                 }
             }
-        });
+        });*/
     }
 
     /***********************************************************************************************
@@ -572,7 +630,6 @@ function C_Dashboard(_type) {
             user: user
         };
 
-        console.log(content);
         socket.emit('removeContent', content);
 
         $("#dialog-removeContent").dialog("close");
