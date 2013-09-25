@@ -779,8 +779,8 @@ var SocketHandler = {
                         usersToSend.push(userToSend);
                     }
                 });
-//                _this._socket.emit('contentPermissions', usersToSend);
-                _this._socket.emit('receiveUserList', usersToSend);
+                _this._socket.emit('contentPermissions', usersToSend);
+//                _this._socket.emit('receiveUserList', usersToSend);
             });
         });
     },
@@ -1277,43 +1277,69 @@ var SocketHandler = {
 
 
     assignContentToUsers: function (data, callback) {
-        // data.content.id
-        // data.users = []
-        // user = {username, permission}
-        // if permission is null, they have no permission to that content
-        logger.info('Assigning ' + data.permission + ' to user ' + data.user + ' for content ' + data.content.id + '.')
-        User.findOne({username: data.user}).exec(function (err, foundUser) {
-            if (!err && foundUser) {
-                var permission = new UserPermission({
-                    user: foundUser,
-                    contentType: data.content.type,
-                    contentId: data.content.id,
-                    permission: data.permission
-                });
 
-                permission.save(function (err, saved) {
-                    if (err) {
-                        logger.error(err);
-                        if (callback) callback(err);
-                    }
-                    else {
-                        foundUser.permissions.push(saved);
-                        foundUser.save(function (err, savedUser) {
-                            if (callback) callback(err);
-                        });
-                    }
-                });
+        // data.content.id
+        // data.content.type
+        // data.users = [{id, permission}]
+        // if permission is null, they have no permission to that content
+
+        // Get all the user ids.
+        var userIds = _.pluck(data.users, 'id');
+
+        User.find({'_id':{$in: userIds}}).populate('permissions').exec(function(err, users) {
+            // Remove the permission this user has for the given content, if it exists.
+            if (err) {
+                callback(err);
             }
             else {
-                if (callback) callback(err);
+                var usersToSave = {};
+                var permissionsToSave = [];
+                users.forEach(function(user) {
+                    if (user.permissions) {
+                        var foundPermissionIndex = -1;
+                        for (var i = 0; i < user.permissions.length; i++) {
+                            var permission = user.permissions[i];
+                            if (permission.contentId == data.content.id) {
+                                foundPermissionIndex = i;
+                            }
+                        }
+
+                        if (foundPermissionIndex >= 0) {
+                            user.permissions.splice(foundPermissionIndex, 1);
+                        }
+                    }
+                    usersToSave[user.id] = user;
+                });
+
+                data.users.forEach(function(user) {
+                    if (user.permission) {
+                        var dbUser = usersToSave[user.id];
+
+                        var permission = new UserPermission({
+                            user: dbUser,
+                            contentType: data.content.type,
+                            contentId: data.content.id,
+                            permission: data.permission
+                        });
+
+                        dbUser.permissions.push(permission);
+                        permissionsToSave.push(permission);
+                    }
+                });
+
+                var allItemsToSave = permissionsToSave.concat(_.values(usersToSave));
+
+                Utils.saveAll(allItemsToSave, function(){
+                    callback();
+                }, function(err) {
+                    callback(err);
+                })
             }
         });
-
     },
 
 
     getContentServerUrl: function (data) {
-//        var serverDetails = Content.serverDetails(data.content);
         this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
     },
 
@@ -1505,6 +1531,23 @@ var Utils = {
             now.getMilliseconds()
         ];
         return parts.join('');
+    },
+
+    saveAll: function(mongooseObjects, success, error) {
+        var count = 0;
+        mongooseObjects.forEach(function(doc){
+            doc.save(function(err){
+                if (err) {
+                    error(err);
+                }
+                else {
+                    count++;
+                    if( count == mongooseObjects.length ){
+                        callback();
+                    }
+                }
+            });
+        });
     },
 
     socketUsers: []
