@@ -1276,69 +1276,92 @@ var SocketHandler = {
     },
 
 
+
     assignContentToUsers: function (data, callback) {
 
         // data.content.id
         // data.content.type
         // data.users = [{id, permission}]
-        // if permission is null, they have no permission to that content
 
-        // Get all the user ids.
-        console.log('ASSIGN: ' + JSON.stringify(data));
-        var userIds = _.pluck(data.users, 'id');
-
-        User.find({'_id':{$in: userIds}}).populate('permissions').exec(function(err, users) {
-            // Remove the permission this user has for the given content, if it exists.
+        // First, remove all the permissions for this content.
+        UserPermission.remove({contentId: data.content.id}).exec(function (err) {
             if (err) {
                 callback(err);
             }
             else {
-                var usersToSave = {};
-                var permissionsToSave = [];
-                users.forEach(function(user) {
-                    if (user.permissions) {
-                        var foundPermissionIndex = -1;
-                        for (var i = 0; i < user.permissions.length; i++) {
-                            var permission = user.permissions[i];
-                            if (permission.contentId == data.content.id) {
-                                foundPermissionIndex = i;
-                            }
-                        }
+                // Get all the user ids.
+                console.log('Setting Permissions for ' + data.content.type + '#' + data.content.id);
+                var userIds = _.pluck(data.users, 'id');
 
-                        if (foundPermissionIndex >= 0) {
-                            user.permissions.splice(foundPermissionIndex, 1);
-                        }
+                User.find({'_id':{$in: userIds}}).populate('permissions').exec(function(err, users) {
+                    // Remove the permission this user has for the given content, if it exists.
+                    if (err) {
+                        callback(err);
                     }
-                    usersToSave[user.id] = user;
-                });
+                    else {
+                        var usersToSave = {};
+                        var permissionsToSave = [];
+//                        var permissionsToDelete = [];
+                        users.forEach(function(user) {
+                            console.log('BEFORE');
+                            printPermissions(user);
+                            if (user.permissions) {
+                                var foundPermissionIndex = -1;
+                                for (var i = 0; i < user.permissions.length; i++) {
+                                    var permission = user.permissions[i];
+                                    if (permission.contentId == data.content.id) {
+                                        foundPermissionIndex = i;
+                                        permissionsToDelete.push(permission);
+                                    }
+                                }
 
-                data.users.forEach(function(user) {
-                    if (user.permission) {
-                        var dbUser = usersToSave[user.id];
+                                if (foundPermissionIndex >= 0) {
+                                    user.permissions.splice(foundPermissionIndex, 1);
+                                }
+                            }
 
-                        var permission = new UserPermission({
-                            user: dbUser,
-                            contentType: data.content.type,
-                            contentId: data.content.id,
-                            permission: data.permission
+                            console.log('AFTER Remove Old');
+                            printPermissions(user);
+
+                            usersToSave[user.id] = user;
                         });
 
-                        dbUser.permissions.push(permission);
-                        permissionsToSave.push(permission);
+                        data.users.forEach(function(user) {
+                            if (user.permission && user.permission != 'null') {
+                                var dbUser = usersToSave[user.id];
+
+                                var permission = new UserPermission({
+                                    user: dbUser,
+                                    contentType: data.content.type,
+                                    contentId: data.content.id,
+                                    permission: user.permission
+                                });
+
+                                console.log('BEFORE Add');
+                                printPermissions(dbUser);
+                                dbUser.permissions.push(permission);
+                                console.log('AFTER Add');
+                                printPermissions(dbUser);
+                                permissionsToSave.push(permission);
+                            }
+                        });
+
+                        var allItemsToSave = permissionsToSave.concat(_.values(usersToSave));
+
+//                        Utils.removeAll(permissionsToDelete, function() {
+                            Utils.saveAll(allItemsToSave, function(){
+                                callback();
+                            }, function(err) {
+                                callback(err);
+                            });
+//                        }, function (err) {
+//                            callback(err);
+//                        });
                     }
                 });
-
-                var allItemsToSave = permissionsToSave.concat(_.values(usersToSave));
-
-                Utils.saveAll(allItemsToSave, function(){
-                    callback();
-                }, function(err) {
-                    callback(err);
-                })
             }
         });
     },
-
 
     getContentServerUrl: function (data) {
         this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
@@ -1491,6 +1514,22 @@ var SocketHandler = {
     }
 };
 
+var printPermissions = function(user) {
+
+    if (!user.permissions) {
+        console.log('NO Permissions for ' + user.username);
+    }
+    else {
+        var out = ['Permissions for ' + user.username];
+
+        user.permissions.forEach(function(permission) {
+            out.push(' - ' + permission.contentId + ': ' + permission.permission);
+        });
+
+        console.log(out.join('\n'));
+    }
+};
+
 // This will take care of all the spawned instances of Node, if the main node crashes
 var Utils = {
     killSubNodes: function (err) {
@@ -1544,7 +1583,24 @@ var Utils = {
                 else {
                     count++;
                     if( count == mongooseObjects.length ){
-                        callback();
+                        success();
+                    }
+                }
+            });
+        });
+    },
+
+    removeAll: function(mongooseObjects, success, error) {
+        var count = 0;
+        mongooseObjects.forEach(function(doc){
+            doc.remove(function(err){
+                if (err) {
+                    error(err);
+                }
+                else {
+                    count++;
+                    if( count == mongooseObjects.length ){
+                        success();
                     }
                 }
             });
@@ -1627,10 +1683,6 @@ var Utils = {
         io.set('close timeout', 60 * 60 * 2);
     });//Set the timeout to two hours - fix for uploading large video files losing connection.
 
-    Content.allContentForUserNew(null, null, function(content) {
-        console.log(JSON.stringify(content))
-    });
-
     Content.startProxyServer(function () {
         Git.startServer();
 
@@ -1700,6 +1752,7 @@ var Utils = {
             socket.on('assignContentToUsers', function (data) {
                 SocketHandler.init(socket).assignContentToUsers(data, function(err) {
                     if (err) {
+                        logger.error(err);
                         socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when assigning content.'});
                     }
                     else {
