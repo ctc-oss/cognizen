@@ -25,8 +25,10 @@ _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
 
-var mongoose = require('mongoose');//mongoose connector
 var FileUtils = require('./file-utils');
+var Utils = require('./cognizen-utils');
+
+var mongoose = require('mongoose');
 var User = require('./user-model').User;
 var UserPermission = require('./user-model').UserPermission;
 var Program = require('./content-model').Program;
@@ -119,6 +121,14 @@ var Mail = {
     }
 };
 
+var SocketSessions = {
+    socketUsers: [],
+
+    sessionIdFromSocket: function(socket) {
+        return connect.utils.parseSignedCookies(cookie.parse(decodeURIComponent(socket.handshake.headers.cookie)), 'cognizen')['connect.sid'];
+    }
+};
+
 var Content = {
     DELETED_SUFFIX: '_DELETED',
     currentContentPort: Ports.initialContent.port,
@@ -156,7 +166,6 @@ var Content = {
 
                     var parent = content.getParent();
                     while (parent) { // This should get all parents to the top.
-//                        console.log('$$$$$' + JSON.stringify(parent.id));
                         parent = allContent[parent.id];
                         parentsToAdd.push(parent);
                         parent = parent.getParent();
@@ -201,42 +210,42 @@ var Content = {
         return {directories: accessibleContentArray};
     },
 
-    userPermission: function (user, content) {
-        console.log('Checking ' + content.path + ' ...');
-        var found = null;
-        if (user.permissions) {
-            user.permissions.forEach(function (permission) {
-                if (permission.contentId == content.id) {
-                    found = permission.permission;
-                }
-            });
-
-            if (!found) { // Check the parent permission, and assign it.
-                var program = content.getProgram();
-                user.permissions.forEach(function (permission) {
-                    if (permission.contentId == program.id) {
-                        found = permission.permission;
-                    }
-                });
-
-//                if (content.parent) {
-//                    var parent = content.parent;
-//                    while (parent && !found) {
-//                        user.permissions.forEach(function (permission) {
-//                            if (permission.contentId == parent.id) {
-//                                found = permission.permission;
-//                            }
-//                        });
-//                        parent = content.parent
-//                    }
+//    userPermission: function (user, content) {
+//        console.log('Checking ' + content.path + ' ...');
+//        var found = null;
+//        if (user.permissions) {
+//            user.permissions.forEach(function (permission) {
+//                if (permission.contentId == content.id) {
+//                    found = permission.permission;
 //                }
-            }
-        }
+//            });
+//
+//            if (!found) { // Check the parent permission, and assign it.
+//                var program = content.getProgram();
+//                user.permissions.forEach(function (permission) {
+//                    if (permission.contentId == program.id) {
+//                        found = permission.permission;
+//                    }
+//                });
+//
+////                if (content.parent) {
+////                    var parent = content.parent;
+////                    while (parent && !found) {
+////                        user.permissions.forEach(function (permission) {
+////                            if (permission.contentId == parent.id) {
+////                                found = permission.permission;
+////                            }
+////                        });
+////                        parent = content.parent
+////                    }
+////                }
+//            }
+//        }
+//
+//        return found;
+//    },
 
-        return found;
-    },
-
-    allContentForUserNew: function(socket, user, callback) {
+    allContentForUser: function(socket, user, callback) {
         var _this = this;
         if (!user || !user.username) {
             user = {username: '', admin: false};
@@ -287,104 +296,6 @@ var Content = {
                             });
                         });
                     });
-                });
-            }
-        });
-    },
-
-    allContentForUser: function (socket, user) {
-        var _this = this;
-
-        User.findOne({username: user.username}).populate('permissions').exec(function (err, loggedInUser) {
-            var allContent = {};
-
-            if (err || !loggedInUser) {
-                socket.emit('receiveProjectsFromDB', {directories: []});
-            }
-            else {
-                Program.find().or([{'deleted': null}, {'deleted': false}]).populate('courses applications').exec(function (err, found) {
-                    // For now, and maybe forever, going to mimic the folder structure that we used to return, so the client doesn't have to change
-                    var sendMessage = true;
-                    var totalContentCount = 0;//This is for the Course.find cycle - was sending once for each program.  This ensures that the emit only fires once when combined with found.length.
-                    if (found) {
-                        found.forEach(function (program) {
-                            allContent[program.id] = {
-                                id: program.id,
-                                type: 'program',
-                                name: program.name,
-                                parentDir: '',
-                                path: program.name,
-                                permission: _this.userPermission(loggedInUser, program)
-                            };
-
-                            if (program.applications) {
-                                program.applications.forEach(function (app) {
-                                    if (!app.deleted) {
-                                        allContent[app.id] = {
-                                            id: app.id,
-                                            type: 'application',
-                                            name: app.name,
-                                            parentDir: program.name,
-                                            path: [program.name, '/', app.name].join(''),
-                                            parent: program.id,
-                                            permission: _this.userPermission(loggedInUser, app)
-                                        };
-                                    }
-                                });
-                            }
-
-                            if (program.courses) {
-
-                                sendMessage = false; // Need to wait and let the Course.find send the message
-                                var ids = _.pluck(program.courses, 'id');
-
-                                // This is ugly and I hate it, but since mongoose can't seem to populate 2 deep on arrays, I had to lookup the course
-                                Course.find({'_id': {$in: ids}}).or([{'deleted': null}, {'deleted': false}]).populate('parent lessons').exec(function (err, courses) {
-                                    if (courses && courses.length > 0) {
-                                        courses.forEach(function (course) {
-                                            allContent[course.id] = {
-                                                id: course.id,
-                                                type: 'course',
-                                                name: course.name,
-                                                parentDir: program.name,
-                                                path: [program.name, '/', course.name].join(''),
-                                                parent: program.id,
-                                                permission: _this.userPermission(loggedInUser, course)
-                                            };
-
-                                            if (course.lessons) {
-                                                course.lessons.forEach(function (lesson) {
-                                                    if (!lesson.deleted) {
-                                                        allContent[lesson.id] = {
-                                                            id: lesson.id,
-                                                            type: 'lesson',
-                                                            name: lesson.name,
-                                                            parentDir: [program.name, '/', course.name].join(''),
-                                                            path: [program.name, '/', course.name, '/', lesson.name].join(''),
-                                                            parent: course.id,
-                                                            permission: _this.userPermission(loggedInUser, lesson)
-                                                        };
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                    totalContentCount++;
-
-                                    if (totalContentCount == found.length) {
-                                        console.log(JSON.stringify(allContent));
-                                        var data = _this.userPermittedContent(loggedInUser, allContent);
-                                        socket.emit('receiveProjectsFromDB', data);
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    if (sendMessage) {
-                        var data = _this.userPermittedContent(loggedInUser, allContent);
-                        socket.emit('receiveProjectsFromDB', data);
-                    }
                 });
             }
         });
@@ -745,8 +656,8 @@ var SocketHandler = {
 
     checkLoginStatus: function() {
         var status = {};
-        var sessionId = Utils.sessionIdFromSocket(this._socket);
-        status.user = Utils.socketUsers[sessionId];
+        var sessionId = SocketSessions.sessionIdFromSocket(this._socket);
+        status.user = SocketSessions.socketUsers[sessionId];
         this._socket.emit('loadDashboardPage', status);
     },
 
@@ -784,7 +695,6 @@ var SocketHandler = {
                     }
                 });
                 _this._socket.emit('contentPermissions', usersToSend);
-//                _this._socket.emit('receiveUserList', usersToSend);
             });
         });
     },
@@ -802,7 +712,7 @@ var SocketHandler = {
                     if (err) throw err;
 
                     if (isMatch == true) {
-                        Utils.socketUsers[Utils.sessionIdFromSocket(_this._socket)] = user;
+                        SocketSessions.socketUsers[SocketSessions.sessionIdFromSocket(_this._socket)] = user;
                         _this._socket.emit('loginAttemptSuccess', user);
                     } else {
                         _this._socket.emit('loginPasswordFailed');
@@ -1072,7 +982,6 @@ var SocketHandler = {
                                 }
                                 else {
                                     io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                                    Content.allContentForUser(_this._socket, data.user);
                                 }
                             });
                         }, function (message) {
@@ -1095,8 +1004,7 @@ var SocketHandler = {
         var _this = this;
         Course.createUnique(data, function (saved, callbackData) {
             if (saved) {
-                // Need to create an empty file so git will keep the course folder
-                fs.createFile(path.normalize(Content.diskPath(callbackData.path) + '/.gitkeep'), function (err) {
+                fs.createFile(path.normalize(Content.diskPath(callbackData.path) + '/.gitkeep'), function (err) { // Need to create an empty file so git will keep the course folder
                     if (err) {
                         logger.error(err);
                         _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
@@ -1109,7 +1017,6 @@ var SocketHandler = {
                                 }
                                 else {
                                     io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                                    Content.allContentForUser(_this._socket, data.user);
                                 }
                             });
                         }, function (message) {
@@ -1139,7 +1046,6 @@ var SocketHandler = {
                             }
                             else {
                                 io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                                Content.allContentForUser(_this._socket, data.user);
                             }
                         });
                     }, function (message) {
@@ -1167,7 +1073,6 @@ var SocketHandler = {
                             }
                             else {
                                 io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                                Content.allContentForUser(_this._socket, data.user);
                             }
                         });
                     }, function (message) {
@@ -1195,12 +1100,10 @@ var SocketHandler = {
             contentType.findById(data.id, function (err, found) {
                 contentToMarkDeleted.push(found);
 
-                // After we have gathered all the items, delete them all.
-                _this._markContentDeleted(contentToMarkDeleted, function(err){
+                _this._markContentDeleted(contentToMarkDeleted, function(err){ // After we have gathered all the items, delete them all.
                     _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
                 }, function(){
                     io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                    Content.allContentForUser(_this._socket, data.user);
                 });
             });
         }
@@ -1237,48 +1140,47 @@ var SocketHandler = {
     },
 
     _assignContentPermissionAfterCreation: function (data, contentType, permission, callback) {
-        var fullPermission = {
-            permission: permission,
+        var userPermission = {
             content: {
                 type: contentType,
                 id: '' + data._id
             },
-            user: data.user.username
+            users: [{id: data.user._id, permission: permission}]
         };
-        this.assignContentToUser(fullPermission, callback);
+        this.assignContentToUsers(userPermission, callback);
     },
 
-    assignContentToUser: function (data, callback) {
-        logger.info('Assigning ' + data.permission + ' to user ' + data.user + ' for content ' + data.content.id + '.')
-        User.findOne({username: data.user}).exec(function (err, foundUser) {
-            if (!err && foundUser) {
-                var permission = new UserPermission({
-                    user: foundUser,
-                    contentType: data.content.type,
-                    contentId: data.content.id,
-                    permission: data.permission
-                });
-
-                permission.save(function (err, saved) {
-                    if (err) {
-                        logger.error(err);
-                        if (callback) callback(err);
-                    }
-                    else {
-                        foundUser.permissions.push(saved);
-                        foundUser.save(function (err, savedUser) {
-                            if (callback) callback(err);
-                        });
-                    }
-                });
-            }
-            else {
-                if (callback) callback(err);
-            }
-        });
-
-    },
-
+//    assignContentToSingleUser: function (data, callback) {
+//        logger.info('Assigning ' + data.permission + ' to user ' + data.user + ' for content ' + data.content.id + '.')
+//        User.findOne({username: data.user}).exec(function (err, foundUser) {
+//            if (!err && foundUser) {
+//                var permission = new UserPermission({
+//                    user: foundUser,
+//                    contentType: data.content.type,
+//                    contentId: data.content.id,
+//                    permission: data.permission
+//                });
+//
+//                permission.save(function (err, saved) {
+//                    if (err) {
+//                        logger.error(err);
+//                        if (callback) callback(err);
+//                    }
+//                    else {
+//                        foundUser.permissions.push(saved);
+//                        foundUser.save(function (err, savedUser) {
+//                            if (callback) callback(err);
+//                        });
+//                    }
+//                });
+//            }
+//            else {
+//                if (callback) callback(err);
+//            }
+//        });
+//
+//    },
+//
     assignContentToUsers: function (data, callback) {
         // data.content.id
         // data.content.type
@@ -1291,7 +1193,7 @@ var SocketHandler = {
             }
             else {
                 // Get all the user ids.
-                console.log('Setting Permissions for ' + data.content.type + '#' + data.content.id);
+//                console.log('Setting Permissions for ' + data.content.type + '#' + data.content.id);
                 var userIds = _.pluck(data.users, 'id');
 
                 User.find({'_id':{$in: userIds}}).populate('permissions').exec(function(err, users) {
@@ -1302,17 +1204,15 @@ var SocketHandler = {
                     else {
                         var usersToSave = {};
                         var permissionsToSave = [];
-//                        var permissionsToDelete = [];
                         users.forEach(function(user) {
-                            console.log('BEFORE');
-                            printPermissions(user);
+//                            console.log('BEFORE');
+//                            Utils.printPermissions(user);
                             if (user.permissions) {
                                 var foundPermissionIndex = -1;
                                 for (var i = 0; i < user.permissions.length; i++) {
                                     var permission = user.permissions[i];
                                     if (permission.contentId == data.content.id) {
                                         foundPermissionIndex = i;
-                                        permissionsToDelete.push(permission);
                                     }
                                 }
 
@@ -1321,8 +1221,8 @@ var SocketHandler = {
                                 }
                             }
 
-                            console.log('AFTER Remove Old');
-                            printPermissions(user);
+//                            console.log('AFTER Remove Old');
+//                            Utils.printPermissions(user);
 
                             usersToSave[user.id] = user;
                         });
@@ -1338,26 +1238,22 @@ var SocketHandler = {
                                     permission: user.permission
                                 });
 
-                                console.log('BEFORE Add');
-                                printPermissions(dbUser);
+//                                console.log('BEFORE Add');
+//                                Utils.printPermissions(dbUser);
                                 dbUser.permissions.push(permission);
-                                console.log('AFTER Add');
-                                printPermissions(dbUser);
+//                                console.log('AFTER Add');
+//                                Utils.printPermissions(dbUser);
                                 permissionsToSave.push(permission);
                             }
                         });
 
                         var allItemsToSave = permissionsToSave.concat(_.values(usersToSave));
 
-//                        Utils.removeAll(permissionsToDelete, function() {
-                            Utils.saveAll(allItemsToSave, function(){
-                                callback();
-                            }, function(err) {
-                                callback(err);
-                            });
-//                        }, function (err) {
-//                            callback(err);
-//                        });
+                        Utils.saveAll(allItemsToSave, function(){
+                            callback();
+                        }, function(err) {
+                            callback(err);
+                        });
                     }
                 });
             }
@@ -1508,107 +1404,10 @@ var SocketHandler = {
 
     getCourseCommentPages: function (data) {
         // data.contentId
-        var _this = this;
         ContentComment.find(data).populate('user').exec(function (err, found) {
            io.sockets.emit('updateCommentIndex', found); 
         });
     }
-};
-
-var printPermissions = function(user) {
-
-    if (!user.permissions) {
-        console.log('NO Permissions for ' + user.username);
-    }
-    else {
-        var out = ['Permissions for ' + user.username];
-
-        user.permissions.forEach(function(permission) {
-            out.push(' - ' + permission.contentId + ': ' + permission.permission);
-        });
-
-        console.log(out.join('\n'));
-    }
-};
-
-// This will take care of all the spawned instances of Node, if the main node crashes
-var Utils = {
-    killSubNodes: function (err) {
-        if (err) {
-            console.log(err);
-            console.log(err.stack);
-        }
-
-        if (subNodes && subNodes.length > 0) {
-            console.log('Killing ' + subNodes.length + ' child node.js instance(s).');
-            subNodes.forEach(function (worker) {
-                process.kill(worker);
-            });
-        }
-
-        process.exit(0);
-    },
-
-    generalError: function(err) {
-        if (err) {
-            console.log(err);
-            console.log(err.stack);
-        }
-    },
-
-    sessionIdFromSocket: function(socket) {
-        return connect.utils.parseSignedCookies(cookie.parse(decodeURIComponent(socket.handshake.headers.cookie)), 'cognizen')['connect.sid'];
-    },
-
-    timestamp: function() {
-        var now = new Date();
-        var parts = [
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            now.getHours(),
-            now.getMinutes(),
-            now.getSeconds(),
-            now.getMilliseconds()
-        ];
-        return parts.join('');
-    },
-
-    saveAll: function(mongooseObjects, success, error) {
-        var count = 0;
-        mongooseObjects.forEach(function(doc){
-            doc.save(function(err){
-                if (err) {
-                    error(err);
-                }
-                else {
-                    count++;
-                    if( count == mongooseObjects.length ){
-                        success();
-                    }
-                }
-            });
-        });
-    },
-
-    removeAll: function(mongooseObjects, success, error) {
-        var count = 0;
-        mongooseObjects.forEach(function(doc){
-            doc.remove(function(err){
-                if (err) {
-                    error(err);
-                }
-                else {
-                    count++;
-                    if( count == mongooseObjects.length ){
-                        success();
-                    }
-                }
-            });
-        });
-    },
-
-    socketUsers: []
 };
 
 // Initializing Code
@@ -1699,7 +1498,7 @@ var Utils = {
             });
 
             socket.on('getProjects', function (data) {
-                Content.allContentForUserNew(socket, data);
+                Content.allContentForUser(socket, data);
             });
 
             socket.on('getPermissions', function (data) {
@@ -1797,7 +1596,6 @@ var Utils = {
             socket.on('userPermissionForContent', function (data) {
                 SocketHandler.init(socket).userPermissionForContent(data);
             });
-
         });
     });
 })();
