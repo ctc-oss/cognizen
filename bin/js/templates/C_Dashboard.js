@@ -690,7 +690,7 @@ function C_Dashboard(_type) {
         };
 
         console.log(JSON.stringify(data));
-//        socket.emit('renameContent', data);
+        socket.emit('renameContent', data);
 
 	    if(_myLevel == "program"){
 		     console.log("--------------------------------------------------");
