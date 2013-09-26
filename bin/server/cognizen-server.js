@@ -956,7 +956,8 @@ var SocketHandler = {
                 fileLink = baseWritePath + "/xml/content.xml";
                 data = fs.readFileSync(fileLink).toString();
                 etree = et.parse(data);
-                etree.find('./courseInfo/preferences/courseTitle').set('value', content.parentName);
+                var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
+                etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                 etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                 xml = etree.write({'xml_decleration': false});
                 fs.outputFile(fileLink, xml, function (err) {
