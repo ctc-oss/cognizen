@@ -274,18 +274,18 @@ function C_Dashboard(_type) {
                     $(this).append("<div id='myPref' class='programPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " program.'></div>");
                     $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
                     $(this).append("<div id='myAdd' class='programAdd' title='add a project to " + $(this).parent().find("span").first().text() + "'></div>");
-                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='add a user to " + $(this).parent().find("span").first().text() + "'></div>");
+                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
                 } else if (myLevel == "course") {
                     $(this).addClass("courseHover");
                     $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
                     $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
                     $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
-                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='add a user to " + $(this).parent().find("span").first().text() + "'></div>");
+                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
                 } else {
                     $(this).addClass("projectHover");
                     $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
                     $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
-                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='add a user to " + $(this).parent().find("span").first().text() + "'></div>");
+                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
                 }
 
                 $(this).height(25);
