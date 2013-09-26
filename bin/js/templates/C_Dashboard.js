@@ -556,11 +556,11 @@ function C_Dashboard(_type) {
         if (currentParent == "root") { // TODO Should this be currentLevel?
             socket.emit("registerProgram", content);
         } else if (currentLevel == "project") {
-            var selected = $("#myType input[type='radio']:checked");
+            /*var selected = $("#myType input[type='radio']:checked");
             if (selected.length > 0) {
                 myType = selected.val();
-            }
-
+            }*/
+			myType = "course"; //////// When we want to turn applications back on - comment this and uncomment the block above.
             content.program = {
                 id: currentParent.attr('id')
             };
@@ -709,7 +709,9 @@ function C_Dashboard(_type) {
         if (myParent == "root") {
             msg = '<div id="dialog-registerContent" title="Add New Program"><p class="validateTips">Add the new program details below.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
         } else if (myLevel == "project") {
-            msg = '<div id="dialog-registerContent" title="Add New Project"><p class="validateTips">You are adding a new project to the ' + myParent.find("span").first().text() + ' program. Fill in the details below for your new project.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><br/>select a project type:<br/><div id="myType" class="radioSelector"><input type="radio" name="myType" value="course" checked>course<br><input type="radio" name="myType" value="application">application</div></div>';
+            //msg = '<div id="dialog-registerContent" title="Add New Project"><p class="validateTips">You are adding a new project to the ' + myParent.find("span").first().text() + ' program. Fill in the details below for your new project.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><br/>select a project type:<br/><div id="myType" class="radioSelector"><input type="radio" name="myType" value="course" checked>course<br><input type="radio" name="myType" value="application">application</div></div>';
+            //WHEN WE WANT TO TURN APPLICATIONS BACK ON COMMENT OUT THE LINE BELOW AND UNCOMMENT THE LINE ABOVE.
+            msg = '<div id="dialog-registerContent" title="Add New Project"><p class="validateTips">You are adding a new course to the ' + myParent.find("span").first().text() + ' program. Fill in the name for your new course.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
         } else if (myLevel == "lesson") {
             msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new lesson to the ' + myParent.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new lesson.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
         }
