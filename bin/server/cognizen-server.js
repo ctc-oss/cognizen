@@ -694,6 +694,11 @@ var SocketHandler = {
                         usersToSend.push(userToSend);
                     }
                 });
+
+                // Sort the users by firstName+lastName
+                usersToSend = _.sortBy(usersToSend, function(user) {
+                    return (user.firstName+user.lastName).toLowerCase();
+                });
                 _this._socket.emit('contentPermissions', usersToSend);
             });
         });
