@@ -1516,7 +1516,6 @@ function createNewPageByType(_myType){
 			}
 			
 			break;
-			
 	}
 	newPageAdded = true;
 	sendUpdateWithRefresh();
