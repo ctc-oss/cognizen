@@ -135,13 +135,17 @@ var Content = {
     },
 
     userPermittedContent: function (user, allContent) {
-//        var allContentArray = [];
-//        return {directories: allContentArray};
         var allContentArray = _.values(allContent);
-//        if (!user.admin) {
-//            return {directories: allContentArray};
-//        }
-//
+        if (user.admin) {
+            var allDashboardItems = [];
+            allContentArray.forEach(function(item) {
+                var dashboardItem = item.toDashboardItem();
+                dashboardItem.permission = 'admin';
+                allDashboardItems.push(dashboardItem);
+            });
+            return {directories: allDashboardItems};
+        }
+
         var parentsToAdd = [];
         var accessibleContent = {};
         allContentArray.forEach(function (content) {
@@ -1275,10 +1279,7 @@ var SocketHandler = {
 
     },
 
-
-
     assignContentToUsers: function (data, callback) {
-
         // data.content.id
         // data.content.type
         // data.users = [{id, permission}]
