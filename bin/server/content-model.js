@@ -132,7 +132,8 @@ ApplicationSchema.statics.createUnique = function (app, callback) {
     findProgram(app.program, function (program) {
         if (program) {
             app.program = program;
-            app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
+            app.generatePath();
+//            app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(app, function(allow) {
                 if (allow) {
@@ -168,6 +169,10 @@ ApplicationSchema.methods.getParent = function() {
     return this.program;
 };
 
+ApplicationSchema.methods.generatePath = function() {
+    this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
+};
+
 ApplicationSchema.methods.toDashboardItem = function() {
     return {
         id: this.id,
@@ -197,6 +202,10 @@ CourseSchema.methods.getParent = function() {
     return this.program;
 };
 
+CourseSchema.methods.generatePath = function() {
+    this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
+};
+
 CourseSchema.methods.toDashboardItem = function() {
     return {
         id: this.id,
@@ -216,7 +225,8 @@ CourseSchema.statics.createUnique = function (course, callback) {
     findProgram(course.program, function (program) {
         if (program) {
             course.program = program;
-            course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
+            course.generatePath();
+//            course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(course, function(allow) {
                 if (allow) {
@@ -254,7 +264,7 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
             lesson.course = course;
             //I updated this to just pull the lesson path - if it is blowing something else up, I'm sorry - I think this is safe though and it add the program path that was needed.
             //lesson.path = ['../programs', lesson.course.program.name, '/', lesson.course.name, '/', lesson.name].join('');
-            lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
+            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
                 if (saved) {
                     course.lessons.push(data);
@@ -280,6 +290,10 @@ LessonSchema.methods.getProgram = function() {
 
 LessonSchema.methods.getParent = function() {
     return this.course;
+};
+
+LessonSchema.methods.generatePath = function() {
+    this.path = [this.course.path, '/', encodeURIComponent(this.name)].join('');
 };
 
 LessonSchema.methods.toDashboardItem = function() {

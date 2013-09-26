@@ -50,6 +50,12 @@ var FileUtils = {
         ncp(src, dest, {clobber: true, filter: whitelist}, function(err) {
             callback(err);
         });
+    },
+
+    renameDir: function(src, dest, callback) {
+        fs.rename(src, dest, function(err) {
+            callback(err);
+        });
     }
 
 //    copy: function (src, dest) {

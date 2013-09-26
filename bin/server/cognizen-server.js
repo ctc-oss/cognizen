@@ -17,7 +17,6 @@ var nodemailer = require("nodemailer");
 var fs = require('fs-extra');
 var winston = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
-var subNodes = [];
 
 // Load Underscore.string for string manipulation
 var _ = require("underscore");
@@ -417,7 +416,7 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'git add . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+            var command = 'git add -A . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
             if (init) {
                 command = 'git init && ' + command;
             }
@@ -1296,7 +1295,7 @@ var SocketHandler = {
                             var spawn = require('child_process').spawn;
                             var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
 
-                            subNodes.push(subNode);
+                            Utils.subNodes.push(subNode);
 
                             subNode.stdout.on('data', function (stdoutdata) {
                                 logger.info('stdout: ' + stdoutdata);
@@ -1327,6 +1326,54 @@ var SocketHandler = {
                         logger.error(error);
                         _this._socket.emit('contentServerDidNotStart', {message: error});
                     })
+                }
+            });
+        }
+    },
+
+    renameContent: function(data) {
+        //data.content.type
+        //data.content.id
+        //data.content.name
+        //data.user.username
+        //data.user.id
+        var _this = this;
+
+        if (data.content.type === 'program') {
+            // Don't allow this, too volatile to change the git repo at this point.
+            return;
+        }
+
+        console.log('Rename ' + data.content.type + '#' + data.content.id + '...');
+        // First, find user and content.
+        var contentType = Content.objectType(data.content.type);
+
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    var oldDiskPath = Content.diskPath(found.path);
+                    found.name = data.content.name;
+                    found.generatePath();
+                    var newDiskPath = Content.diskPath(found.path);
+                    console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
+                    found.save(function (err) {
+                        // Now we have to rename the folder on the disk.
+                        FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+                            if (err) {
+                                logger.error(err);
+                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+                            }
+                            else {
+                                // Need to git commit the program, then let the user know it is done.
+                                Git.commitProgramContent(found.getProgram(), data.user, function(){
+                                    io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                }, function(err){
+                                    logger.error(err);
+                                    _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+                                });
+                            }
+                        });
+                    });
                 }
             });
         }
@@ -1601,6 +1648,10 @@ var SocketHandler = {
 
             socket.on('userPermissionForContent', function (data) {
                 SocketHandler.init(socket).userPermissionForContent(data);
+            });
+
+            socket.on('renameContent', function (data) {
+                SocketHandler.init(socket).renameContent(data);
             });
         });
     });

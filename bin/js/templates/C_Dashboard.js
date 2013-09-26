@@ -676,7 +676,22 @@ function C_Dashboard(_type) {
     }
     
     function submitPrefUpdate(_myParent, _myLevel){
-	    
+
+        var data = {
+            content: {
+                id: currentParent.attr('id'),
+                type: currentLevel,
+                name: btoa(Math.random()).substr(7,5) // TODO: Need to prompt for this, in the meantime, this is a random string
+            },
+            user: {
+                id: user._id,
+                username: user.username
+            }
+        };
+
+        console.log(JSON.stringify(data));
+//        socket.emit('renameContent', data);
+
 	    if(_myLevel == "program"){
 		     console.log("--------------------------------------------------");
 			 console.log("_myParent = " + _myParent.find("span").first().text());
