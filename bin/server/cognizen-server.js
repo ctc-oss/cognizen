@@ -244,6 +244,18 @@ var Content = {
 //        return found;
 //    },
 
+    updateContentXml: function(content, updater, callback) {
+        var baseWritePath = path.normalize(Content.diskPath(content.path));
+        var fileLink = baseWritePath + "/xml/content.xml";
+        var data = fs.readFileSync(fileLink).toString();
+        var etree = et.parse(data);
+        updater(etree);
+        var xml = etree.write({'xml_decleration': false});
+        fs.outputFile(fileLink, xml, function (err) {
+            callback(err);
+        })
+    },
+
     allContentForUser: function(socket, user, callback) {
         var _this = this;
         if (!user || !user.username) {
@@ -923,6 +935,7 @@ var SocketHandler = {
     },
 
     _copyContentFiles: function (content, callback) {
+        var _this = this;
         var baseWritePath = path.normalize(Content.diskPath(content.path));
         var tokenz = content.path.split("/");
         var programName = tokenz[0];
@@ -944,31 +957,38 @@ var SocketHandler = {
                 //   - parse it
                 //   - set values
                 //   - write it to the doc
-                var xml = et.XML;
-                var ElementTree = et.ElementTree;
-                var element = et.Element;
-                var subElement = et.SubElement;
-                var data, etree;
-                var courseName;
-                var lessonName;
-
-                fileLink = baseWritePath + "/xml/content.xml";
-                data = fs.readFileSync(fileLink).toString();
-                etree = et.parse(data);
-                var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
-                etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
-                etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
-                xml = etree.write({'xml_decleration': false});
-                fs.outputFile(fileLink, xml, function (err) {
-                    //Refresh the index if successfully updating the content.xml
-                    if (err == null) {
-                        console.log("UPDATED THE COURSE AND LESSON TITLE IN THE XML ----------------------------------------------------------------------------");
-                    } else {
-                        console.log("Houston, we have a problem - the content.xml update failed ---------------------------------------------------------------");
-                    }
-
-                })
-                callback(err);
+                Content.updateContentXml(content, function(etree) {
+                    var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
+                    etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+                    etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+                }, function(err) {
+                    callback(err);
+                });
+//                var xml = et.XML;
+//                var ElementTree = et.ElementTree;
+//                var element = et.Element;
+//                var subElement = et.SubElement;
+//                var data, etree;
+//                var courseName;
+//                var lessonName;
+//
+//                fileLink = baseWritePath + "/xml/content.xml";
+//                data = fs.readFileSync(fileLink).toString();
+//                etree = et.parse(data);
+//                var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
+//                etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+//                etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+//                xml = etree.write({'xml_decleration': false});
+//                fs.outputFile(fileLink, xml, function (err) {
+//                    //Refresh the index if successfully updating the content.xml
+//                    if (err == null) {
+//                        console.log("UPDATED THE COURSE AND LESSON TITLE IN THE XML ----------------------------------------------------------------------------");
+//                    } else {
+//                        console.log("Houston, we have a problem - the content.xml update failed ---------------------------------------------------------------");
+//                    }
+//
+//                })
+//                callback(err);
             });
         });
     },

@@ -132,8 +132,8 @@ ApplicationSchema.statics.createUnique = function (app, callback) {
     findProgram(app.program, function (program) {
         if (program) {
             app.program = program;
-            app.generatePath();
-//            app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
+//            app.generatePath();
+            app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(app, function(allow) {
                 if (allow) {
@@ -225,8 +225,8 @@ CourseSchema.statics.createUnique = function (course, callback) {
     findProgram(course.program, function (program) {
         if (program) {
             course.program = program;
-            course.generatePath();
-//            course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
+//            course.generatePath();
+            course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(course, function(allow) {
                 if (allow) {
@@ -263,8 +263,8 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
             var courseProgram = course.program;
             lesson.course = course;
             //I updated this to just pull the lesson path - if it is blowing something else up, I'm sorry - I think this is safe though and it add the program path that was needed.
-            //lesson.path = ['../programs', lesson.course.program.name, '/', lesson.course.name, '/', lesson.name].join('');
-            lesson.generatePath();
+            lesson.path = lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
+//            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
                 if (saved) {
                     course.lessons.push(data);
@@ -293,7 +293,7 @@ LessonSchema.methods.getParent = function() {
 };
 
 LessonSchema.methods.generatePath = function() {
-    this.path = [this.course.path, '/', encodeURIComponent(this.name)].join('');
+    this.path = ['../programs', this.course.program.name, '/', this.course.name, '/', this.name].join('');
 };
 
 LessonSchema.methods.toDashboardItem = function() {
