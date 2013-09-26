@@ -126,6 +126,8 @@ function C_Dashboard(_type) {
         $stage.html('');
 
         $stage.append("<div id='projListHeader'>my projects:</div>");
+        
+        $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
 
         /*****************************************************************************
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS

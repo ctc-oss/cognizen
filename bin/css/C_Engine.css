@@ -1,6 +1,6 @@
 ﻿body{
 	position: static;
-	background-color:#FFFFFF;
+	background-color:#FEFEFE;
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
@@ -12,7 +12,7 @@
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 #myCanvas{
-	background-color: #FFFFFF;
+	background-color: #FEFEFE;
 	width:1024px;
 	height: 768px;
 	left: 50%;
@@ -23,7 +23,6 @@
 	overflow: hidden;
 	background-image: url(images/background.png);
 }
-
 
 #stage {
 	overflow: auto;
@@ -79,7 +78,7 @@
 
 #logForm{
 	position: absolute;
-	top: 295px;
+	top: 315px;
 	right: 120px;
 	width: 420px;
 	font-weight: lighter;
@@ -203,7 +202,7 @@ input.regText{
 
 #forgotSubmit{
 	position: absolute;
-	top: 440px;
+	top: 460px;
 	right: 205px;
 	width: 230px;
 }
@@ -240,6 +239,16 @@ TREE MENU STYLES
 	position: absolute;
 	top: 162px;
 	right: 415px;
+	color: #3383bb;
+	font-weight: normal;
+	font-size: 20pt;
+	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
+}
+
+#logout{
+	position: absolute;
+	top: 162px;
+	right: 120px;
 	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 20pt;
