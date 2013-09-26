@@ -263,7 +263,7 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
             var courseProgram = course.program;
             lesson.course = course;
             //I updated this to just pull the lesson path - if it is blowing something else up, I'm sorry - I think this is safe though and it add the program path that was needed.
-            lesson.path = lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
+            lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
 //            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
                 if (saved) {
@@ -293,7 +293,7 @@ LessonSchema.methods.getParent = function() {
 };
 
 LessonSchema.methods.generatePath = function() {
-    this.path = ['../programs', this.course.program.name, '/', this.course.name, '/', this.name].join('');
+    this.path = [this.course.path, '/', encodeURIComponent(this.name)].join('');
 };
 
 LessonSchema.methods.toDashboardItem = function() {
