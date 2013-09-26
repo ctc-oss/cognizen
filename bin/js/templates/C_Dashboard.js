@@ -637,13 +637,13 @@ function C_Dashboard(_type) {
 	    currentLevel = myLevel;
 	    
 	    var msg;
-	   
 	    if (myLevel == "program") {
          	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs"><p class="validateTips">Customize your program preferences below:</p><p>Functionalities to be added shortly.</p></div>';
 	    } else if (myLevel == "course") {
-             msg = '<div id="dialog-updatePrefs" title="Update Course Prefs"><p class="validateTips">Customize your course preferences below:</p><p>Functionalities to be added shortly.</p></div>';
+             msg = '<div id="dialog-updatePrefs" title="Update Course Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
 	    } else if (myLevel == "lesson") {
-            msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
+            //msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
+             msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
         }
         
          //Append the string to the stage
@@ -676,12 +676,12 @@ function C_Dashboard(_type) {
     }
     
     function submitPrefUpdate(_myParent, _myLevel){
-
+		
         var data = {
             content: {
                 id: currentParent.attr('id'),
                 type: currentLevel,
-                name: btoa(Math.random()).substr(7,5) // TODO: Need to prompt for this, in the meantime, this is a random string
+                name: $("#myName").val() // TODO: Need to prompt for this, in the meantime, this is a random string
             },
             user: {
                 id: user._id,
