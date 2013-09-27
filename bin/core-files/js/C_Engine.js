@@ -238,7 +238,7 @@ function initializeSockets(){
 		});
 
 	    cognizenSocket.on('commentAdded', function (data) {
-	        	cognizenSocket.emit('getContentComments', {
+	        cognizenSocket.emit('getContentComments', {
 				contentId: urlParams['id'],
 				pageId: $(data).find("page").eq(currentPage).attr("id")
 			});
@@ -269,6 +269,7 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on('retrievedContentComments', function (data) {
+	         console.log(data);
 	         if(pageComments && pageComments.length > 0){
 		         pageComments.length = 0;
 	         }
@@ -276,7 +277,7 @@ function initializeSockets(){
 
 	        if(commentsOpen == true){
 		         refreshPageComments();
-			    $("#commentInputText").empty();
+			     $("#commentInputText").empty();
 	        }
 	        
 	        if(mode == "edit" || mode == "review"){
@@ -284,7 +285,7 @@ function initializeSockets(){
 	        		$("#comment").removeClass('commentOpen');
 					$("#comment").removeClass('commentClosed');
 	        		var last = pageComments.length - 1;
-		   		var status = pageComments[last].status;
+					var status = pageComments[last].status;
 		   		
 		        	if(status == 'new' || status == 'inprogress'){
 		        		$("#comment").addClass('commentOpen');
@@ -296,7 +297,6 @@ function initializeSockets(){
 		      	$("#comment").removeClass('commentClosed');
 		      }  
 	        }
-
 	    });
 	    
 	    cognizenSocket.on("updateCommentIndex", function(data){
@@ -386,20 +386,22 @@ function refreshPageComments(){
 	var even = true;
 
 	for(var i = 0; i < pageComments.length; i++){
-		var myFirstName = pageComments[i].user.firstName;
-		var myLastName = pageComments[i].user.lastName;
-		var myTime = pageComments[i].created;
-		var myComment = pageComments[i].comment;
+		if(pageComments[i].pageId == $(data).find("page").eq(currentPage).attr("id")){
+			var myFirstName = pageComments[i].user.firstName;
+			var myLastName = pageComments[i].user.lastName;
+			var myTime = pageComments[i].created;
+			var myComment = pageComments[i].comment;
 		
-		if(even == true){
-			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
-		}else{
-			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
-		}
-		if(even == true){
-			even = false;
-		}else{
-			even = true;
+			if(even == true){
+				$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
+			}else{
+				$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
+			}
+			if(even == true){
+				even = false;
+			}else{
+				even = true;
+			}
 		}
 	}
 	
@@ -540,7 +542,7 @@ function buildInterface(){
 			}
 
 
-
+			enableCommentKeyEvents()
 			//Style it to jQuery UI dialog
 			$("#commentDialog").dialog({
 				autoOpen: true,
@@ -559,6 +561,7 @@ function buildInterface(){
 						}else{
 							myStatus = 'inprogress';
 						}
+						//console.log("pageID"
 						cognizenSocket.emit('addComment', {
 							user: {id: urlParams['u']},
 							content: {type: urlParams['type'], id: urlParams['id']},
@@ -570,6 +573,7 @@ function buildInterface(){
 				},
 				close: function(){
 					$("#commentDialog").remove();
+					disableCommentKeyEvents();
 				}
 			});
 
@@ -682,7 +686,31 @@ function buildInterface(){
 	loadPage();
 }
 
+function enableCommentKeyEvents() {
+ 	$("#commentInputText").bind("keyup", keyUpSubmitComment);
+}
 
+function disableCommentKeyEvents() {
+	$("#commentInputText").unbind("keyup", keyUpSubmitComment);
+}
+
+function keyUpSubmitComment(event) {
+	if (event.which == 13 || event.keyCode == 13) {
+    	var myStatus;
+		if($("#commentStatus").prop("checked") == true){
+			myStatus = 'closed';
+		}else{
+			myStatus = 'inprogress';
+		}
+		cognizenSocket.emit('addComment', {
+			user: {id: urlParams['u']},
+			content: {type: urlParams['type'], id: urlParams['id']},
+			page: {id: $(data).find("page").eq(currentPage).attr("id")},
+			text: $("#commentInputText").getCode(),
+			status: myStatus
+		});
+    }
+}
 /****************************************************
 ********************************** STEP 4 - LOAD PAGE
 *****************************************************
