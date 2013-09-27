@@ -200,7 +200,8 @@ ul.no-indent {
 	cursor: pointer;
 }
 
-.btn_preferences{
+/*.btn_preferences{*/
+.btn_comment{
 	position: absolute;
 	bottom: 7px;
 	left: 216px;
@@ -211,7 +212,7 @@ ul.no-indent {
 	cursor: pointer;
 }
 
-.btn_comment{
+/*.btn_comment{
 	position: absolute;
 	bottom: 7px;
 	left: 260px;
@@ -220,7 +221,7 @@ ul.no-indent {
 	background: url(images/comment.png) no-repeat;
 	cursor: hand; 
 	cursor: pointer;
-}
+}*/
 
 #toggleMode{
 	position: absolute;

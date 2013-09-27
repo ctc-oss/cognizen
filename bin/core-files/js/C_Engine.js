@@ -497,8 +497,8 @@ function buildInterface(){
 
 		$("#publish").tooltip().click(clickPublish);
 
-		$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
-		$("#preferences").tooltip().click();
+		/*$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
+		$("#preferences").tooltip().click();*/
 
 
 		$("#myCanvas").append("<div id='comment' class='btn_comment' title='Add a Page Comment'></div>");
