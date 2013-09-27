@@ -1349,40 +1349,61 @@ var SocketHandler = {
                     console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
 
                     var itemsToSave = [found];
-
-                    found.getChildren(function(err, children) {
-                        if (err) {
-                            logger.error(err);
-                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
-                        }
-                        else {
-                            // Make sure children paths are re-generated as well.
-                            children.forEach(function(child){
-                                child.setParent(found);
-                                child.generatePath();
-                                itemsToSave.push(child);
-                            });
-
-                            Utils.saveAll(itemsToSave, function() {
-                                // Now we have to rename the folder on the disk.
-                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
-                                    if (err) {
-                                        logger.error(err);
-                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
-                                    }
-                                    else {
-                                        // Need to git commit the program, then let the user know it is done.
-                                        Git.commitProgramContent(found.getProgram(), data.user, function(){
-                                            io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                        }, function(err){
-                                            logger.error(err);
-                                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
-                                        });
-                                    }
-                                });
-                            });
-                        }
-                    });
+					
+					if(data.content.type == 'course'){
+	                    found.getChildren(function(err, children) {
+	                        if (err) {
+	                            logger.error(err);
+	                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. FIRST ONE'});
+	                        }
+	                        else {
+	                            // Make sure children paths are re-generated as well.
+	                            children.forEach(function(child){
+	                                child.setParent(found);
+	                                child.generatePath();
+	                                itemsToSave.push(child);
+	                            });
+	
+	                            Utils.saveAll(itemsToSave, function() {
+	                                // Now we have to rename the folder on the disk.
+	                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+	                                    if (err) {
+	                                        logger.error(err);
+	                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
+	                                    }
+	                                    else {
+	                                        // Need to git commit the program, then let the user know it is done.
+	                                        Git.commitProgramContent(found.getProgram(), data.user, function(){
+	                                            io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+	                                        }, function(err){
+	                                            logger.error(err);
+	                                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
+	                                        });
+	                                    }
+	                                });
+	                            });
+	                        }
+	                    });
+					}else{
+						Utils.saveAll(itemsToSave, function() {
+	                    	// Now we have to rename the folder on the disk.
+	                        FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+	                        	if (err) {
+	                            	logger.error(err);
+	                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
+	                            }
+	                            else {
+	                            	// Need to git commit the program, then let the user know it is done.
+	                                Git.commitProgramContent(found.getProgram(), data.user, function(){
+	                                	io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+	                                }, function(err){
+	                                	logger.error(err);
+	                                    _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
+									});
+								}
+							});
+						});
+					}
                 }
             });
         }
