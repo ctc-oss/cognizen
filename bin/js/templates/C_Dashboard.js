@@ -533,7 +533,7 @@ function C_Dashboard(_type) {
         $("#myName").unbind("keyup", keyUpSubmitRegisterNewContent);
     }
 
-    function keyUpSubmitRegisterNewContent() {
+    function keyUpSubmitRegisterNewContent(event) {
         if (event.which == 13 || event.keyCode == 13) {
             submitRegisterNewContent(currentParent, currentLevel);
         }
@@ -597,19 +597,19 @@ function C_Dashboard(_type) {
         $("#dialog-removeContent").remove();
     }
 
-    function keyUpSubmitRegisterUser() {
+    function keyUpSubmitRegisterUser(event) {
         if (event.which == 13 || event.keyCode == 13) {
             submitRegisterUser();
         }
     }
 
-    function keyUpRegisterProgram() {
+    function keyUpRegisterProgram(event) {
         if (event.which == 13 || event.keyCode == 13) {
             registerContent("root", "root");
         }
     };
 
-    function keyUpRegisterUser() {
+    function keyUpRegisterUser(event) {
         if (event.which == 13 || event.keyCode == 13) {
             registerUser();
         }
@@ -685,7 +685,7 @@ function C_Dashboard(_type) {
         $("#myName").unbind("keyup", keyUpSubmitRenameContent);
     }
 
-    function keyUpSubmitRenameContent() {
+    function keyUpSubmitRenameContent(event) {
         if (event.which == 13 || event.keyCode == 13) {
             submitPrefUpdate(currentParent, currentLevel);
         }

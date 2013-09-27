@@ -119,7 +119,7 @@ function C_Login(_type) {
     	*********************************************************************************/
 		
 	    //Add the login form.		
-		$("#stage").append("<form id='logForm'><fieldset id='loginFieldSet'><label class='loginField' for='username'>email: </label><input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'><br><br><label class='loginField' for='pass'>password: </label><input type='password' id='pass' class='loginText text ui-widget-content ui-corner-all'><br><br><div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div></fieldset></form>");
+		$("#stage").append("<form id='logForm'><fieldset id='loginFieldSet'><label class='loginField' for='username'>email: </label><input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'/><br><br><label class='loginField' for='pass'>password: </label><input type='password' id='pass' class='loginText text ui-widget-content ui-corner-all'/><br><br><div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div></fieldset></form>");
 				
 		$("#loginSubmit").button();
 		//Add rounded corners for IE because it SUX
@@ -226,38 +226,39 @@ function C_Login(_type) {
 	    	$("#regPasswordVer").unbind("keyup", keyUpSubmitRegister);
     }
     
-    function keyUpParseLogin(){
+    function keyUpParseLogin(event){
 	    if(event.which == 13 || event.keyCode == 13){
 	    		parseLogin();		
 	    }
     }
     
-    function keyUpDoForgot(){
+    function keyUpDoForgot(event){
 	    if(event.which == 13 || event.keyCode == 13){
 	    		doForgotPassword();		
 	    }
     }
     
-    function keyUpDoRegister(){
+    function keyUpDoRegister(event){
 	    if(event.which == 13 || event.keyCode == 13){
 	    		doRegister();		
 	    }
     }
     
-    function keyUpSubmitForgotPass(){
+    function keyUpSubmitForgotPass(event){
+	    console.log("key up");
 	    if(event.which == 13 || event.keyCode == 13){
 	    		submitForgotPass();
 	    }
     }
     
-    function submitForgotPass(){
+    function submitForgotPass(event){
 	    socket.emit("processForgotPass", { user: $("#forgotEmail").val()});
 		$("#forgotEmail").remove();
 		$("#dialog-forgot").dialog( "close" );
 		$("#dialog-forgot").remove();
     }
     
-    function keyUpSubmitRegister(){
+    function keyUpSubmitRegister(event){
 	    if(event.which == 13 || event.keyCode == 13){
 	    		submitRegister();
 	    }
@@ -267,16 +268,16 @@ function C_Login(_type) {
 	    	if (checkRegister() == true) {
 	    		socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val(), pass: $("#regPassword").val()});
 	    		$("#firstName").remove();
-			$("#lastName").remove();
-               $("#regEmail").remove();
-               $("#regPassword").remove();
-               $("#regPasswordVer").remove();
+				$("#lastName").remove();
+				$("#regEmail").remove();
+				$("#regPassword").remove();
+				$("#regPasswordVer").remove();
 	    		$("#dialog-registerUser").dialog("close");
-               $("#dialog-registerUser").remove();
+				$("#dialog-registerUser").remove();
          }
     }
     
-    function keyUpSubmitResetPass(){
+    function keyUpSubmitResetPass(event){
 	     if(event.which == 13 || event.keyCode == 13){
 	     	submitResetPass();
 	     }
@@ -284,7 +285,7 @@ function C_Login(_type) {
     
     function submitResetPass(){
 	    if(checkResetPass() == true){
-		     socket.emit("resetPass", { user: resUser, pass: $("#resPass").val(), token: resToken});
+		    socket.emit("resetPass", { user: resUser, pass: $("#resPass").val(), token: resToken});
 			$("#dialog-resetPass").dialog( "close" );
 			$("#resPass").remove();
 			$("#resPassVer").remove();
