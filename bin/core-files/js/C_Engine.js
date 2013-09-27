@@ -1565,25 +1565,41 @@ function guid() {
 
 function removePage(){
 	//Create the Dialog
-	$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
-	//Style it to jQuery UI dialog
-	$("#dialog-removePage").dialog({
-		modal: true,
-		width: 550,
-		close: function(event, ui){
-			$("dialog-removePage").remove();
-		},
-		buttons: {
-			Yes: function(){
-				$(data).find("page").eq(currentPage).remove();
-				sendUpdateWithRefresh();
-				$( this ).dialog( "close" );
+	if($(data).find("page").length > 1){
+		$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
+		//Style it to jQuery UI dialog
+		$("#dialog-removePage").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("dialog-removePage").remove();
 			},
-			No: function(){
-				$( this ).dialog( "close" );
+			buttons: {
+				Yes: function(){
+					$(data).find("page").eq(currentPage).remove();
+					sendUpdateWithRefresh();
+					$( this ).dialog( "close" );
+				},
+				No: function(){
+					$( this ).dialog( "close" );
+				}
 			}
-		}
-	});
+		});
+	}else{
+		$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>You must have at least one page in your project. If you would like to remove this page you must first add another.</p></div>");
+		$("#dialog-removePage").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("dialog-removePage").remove();
+			},
+			buttons: {
+				Close: function(){
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
 }
 
 //addDocs pane
