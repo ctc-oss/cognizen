@@ -296,7 +296,7 @@ function C_Dashboard(_type) {
                     } else if (myLevel == "course") {
                         doPrefs($(this).parent().parent(), "course");
                     }else{
-	                   doPrefs($(this).parent().parent(), "lesson");
+	                   	doPrefs($(this).parent().parent(), "lesson");
                     }
                 }).hover(
                     function () {
@@ -369,12 +369,12 @@ function C_Dashboard(_type) {
                         hoverSubNav = false;
                     }
                 ).tooltip({
-                        show: {
-                            delay: 1500,
-                            effect: "fadeIn",
-                            duration: 200
-                        }
-                    });
+                	show: {
+                    	delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+				});
             },
             function () {
 			 	$("#myPref").remove();
@@ -538,7 +538,7 @@ function C_Dashboard(_type) {
             submitRegisterNewContent(currentParent, currentLevel);
         }
     }
-
+    
     function submitRegisterNewContent() {
         var myType = "course";
         var nameString = $("#myName").val();
@@ -641,9 +641,11 @@ function C_Dashboard(_type) {
          	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs"><p class="validateTips">Customize your program preferences below:</p><p>Functionalities to be added shortly.</p></div>';
 	    } else if (myLevel == "course") {
              msg = '<div id="dialog-updatePrefs" title="Update Course Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
+             enableRenameContentKeyEvents()
 	    } else if (myLevel == "lesson") {
             //msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
              msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
+             enableRenameContentKeyEvents()
         }
         
          //Append the string to the stage
@@ -654,11 +656,11 @@ function C_Dashboard(_type) {
             width: 550,
             close: function (event, ui) {
                 enableMainKeyEvents();
-                disableRegisterContentKeyEvents();
+                disableRenameContentKeyEvents();
             },
             open: function (event, ui) {
                 disableMainKeyEvents();
-                enableRegisterContentKeyEvents()
+                enableRenameContentKeyEvents()
             },
             buttons: {
                 Cancel: function () {
@@ -675,8 +677,23 @@ function C_Dashboard(_type) {
         
     }
     
+    function enableRenameContentKeyEvents() {
+        $("#myName").bind("keyup", keyUpSubmitRenameContent);
+    }
+
+    function disableRenameContentKeyEvents() {
+        $("#myName").unbind("keyup", keyUpSubmitRenameContent);
+    }
+
+    function keyUpSubmitRenameContent() {
+        if (event.which == 13 || event.keyCode == 13) {
+            submitPrefUpdate(currentParent, currentLevel);
+        }
+    }
+
+    
     function submitPrefUpdate(_myParent, _myLevel){
-		
+		disableRenameContentKeyEvents()
         var data = {
             content: {
                 id: currentParent.attr('id'),
@@ -689,28 +706,11 @@ function C_Dashboard(_type) {
             }
         };
 
-        console.log(JSON.stringify(data));
         socket.emit('renameContent', data);
 
-	    if(_myLevel == "program"){
-		     console.log("--------------------------------------------------");
-			 console.log("_myParent = " + _myParent.find("span").first().text());
-			 console.log("_myLevel = " + _myLevel);
-	    }else if (_myLevel == "course"){
-		     console.log("--------------------------------------------------");
-		     console.log("find program level = " + _myParent.parent().parent().find("span").first().text());
-			 console.log("_myParent = " + _myParent.find("span").first().text());
-			 console.log("_myLevel = " + _myLevel);
-	    }else{
-		     console.log("--------------------------------------------------");
-		     console.log("find program level = " + _myParent.parent().parent().parent().parent().find("span").first().text());
-		     console.log("find course level = " + _myParent.parent().parent().find("span").first().text());
-			 console.log("_myParent = " + _myParent.find("span").first().text());
-			 console.log("_myLevel = " + _myLevel);
-			 //if program level and course level are the same, then it is an application.
-	    }
 	    $("#dialog-updatePrefs").remove();
     }
+    
     /************************************************************************************END PREFS*/
     /************************************************************************************
      REGISTER NEW CONTENT
