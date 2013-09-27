@@ -110,7 +110,7 @@ ProgramSchema.methods.getProgram = function() {
 };
 
 ProgramSchema.methods.getChildren = function(callback) {
-    callback([]);
+    callback(null, []);
 };
 
 ProgramSchema.methods.getParent = function() {
@@ -181,7 +181,7 @@ ApplicationSchema.methods.setParent = function(parent) {
 };
 
 ApplicationSchema.methods.getChildren = function(callback) {
-    callback([]);
+    callback(null, []);
 };
 
 ApplicationSchema.methods.generatePath = function() {
@@ -316,12 +316,11 @@ LessonSchema.methods.getParent = function() {
 };
 
 LessonSchema.methods.setParent = function(parent) {
-//    this.course = undefined;
     this.course = parent;
 };
 
 LessonSchema.methods.getChildren = function(callback) {
-    callback([]);
+    callback(null, []);
 };
 
 LessonSchema.methods.generatePath = function() {
