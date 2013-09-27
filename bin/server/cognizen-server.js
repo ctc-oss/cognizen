@@ -248,13 +248,29 @@ var Content = {
     updateContentXml: function(content, updater, callback) {
         var baseWritePath = path.normalize(Content.diskPath(content.path));
         var fileLink = baseWritePath + "/xml/content.xml";
-        var data = fs.readFileSync(fileLink).toString();
-        var etree = et.parse(data);
-        updater(etree);
-        var xml = etree.write({'xml_decleration': false});
-        fs.outputFile(fileLink, xml, function (err) {
-            callback(err);
-        })
+        fs.exists(fileLink, function(exists) {
+            if (exists) {
+                var data = fs.readFileSync(fileLink).toString();
+                var etree = et.parse(data);
+                updater(content, etree);
+                var xml = etree.write({'xml_decleration': false});
+                fs.outputFile(fileLink, xml, function (err) {
+                    if (callback) callback(err);
+                })
+            }
+        });
+    },
+
+    updateAllXml: function(mongooseObjects, updater, success) {
+        var _this = this;
+        var count = 0;
+        mongooseObjects.forEach(function(item){
+            _this.updateContentXml(item, updater);
+            count++;
+            if( count == mongooseObjects.length ){
+                success();
+            }
+        });
     },
 
     allContentForUser: function(socket, user, callback) {
@@ -953,12 +969,12 @@ var SocketHandler = {
                 return (path.endsWith('core-files') || path.contains("js") || path.contains("scorm") || path.contains("server") || path.contains("xml") || path.contains("packages"));
             }, function (err) {
                 //Set the lesson and course names in the xml.
-                //Once xml is copied to new lesson location - 
+                //Once xml is copied to new lesson location -
                 //   - import it
                 //   - parse it
                 //   - set values
                 //   - write it to the doc
-                Content.updateContentXml(content, function(etree) {
+                Content.updateContentXml(content, function(content, etree) {
                     var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
                     etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                     etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
@@ -1281,6 +1297,7 @@ var SocketHandler = {
                         else {
                             var programPath = path.normalize('../programs/' + found.path + '/server');
                             var parentDir = require('path').resolve(process.cwd(), programPath);
+                            console.log('Spawning Content Server from ' + parentDir);
 //                            ContentSocket.start(serverDetails.port, found.id, parentDir, function(){});
 
                             var spawn = require('child_process').spawn;
@@ -1307,7 +1324,7 @@ var SocketHandler = {
                             });
 
                             subNode.stderr.on('data', function (data) {
-                                logger.error('stderr: ' + err);
+                                logger.error('stderr: ' + data);
                                 _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
                                 serverDetails.running = false;
                             });
@@ -1349,61 +1366,46 @@ var SocketHandler = {
                     console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
 
                     var itemsToSave = [found];
-					
-					if(data.content.type == 'course'){
-	                    found.getChildren(function(err, children) {
-	                        if (err) {
-	                            logger.error(err);
-	                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. FIRST ONE'});
-	                        }
-	                        else {
-	                            // Make sure children paths are re-generated as well.
-	                            children.forEach(function(child){
-	                                child.setParent(found);
-	                                child.generatePath();
-	                                itemsToSave.push(child);
-	                            });
-	
-	                            Utils.saveAll(itemsToSave, function() {
-	                                // Now we have to rename the folder on the disk.
-	                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
-	                                    if (err) {
-	                                        logger.error(err);
-	                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
-	                                    }
-	                                    else {
-	                                        // Need to git commit the program, then let the user know it is done.
-	                                        Git.commitProgramContent(found.getProgram(), data.user, function(){
-	                                            io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-	                                        }, function(err){
-	                                            logger.error(err);
-	                                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
-	                                        });
-	                                    }
-	                                });
-	                            });
-	                        }
-	                    });
-					}else{
-						Utils.saveAll(itemsToSave, function() {
-	                    	// Now we have to rename the folder on the disk.
-	                        FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
-	                        	if (err) {
-	                            	logger.error(err);
-	                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
-	                            }
-	                            else {
-	                            	// Need to git commit the program, then let the user know it is done.
-	                                Git.commitProgramContent(found.getProgram(), data.user, function(){
-	                                	io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-	                                }, function(err){
-	                                	logger.error(err);
-	                                    _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
-									});
-								}
-							});
-						});
-					}
+
+                    found.getChildren(function(err, children) {
+                        if (err) {
+                            logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. FIRST ONE'});
+                        }
+                        else {
+                            // Make sure children paths are re-generated as well.
+                            children.forEach(function(child){
+                                child.setParent(found);
+                                child.generatePath();
+                                itemsToSave.push(child);
+                            });
+
+                            Utils.saveAll(itemsToSave, function() {
+                                // Now we have to rename the folder on the disk.
+                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+                                    if (err) {
+                                        logger.error(err);
+                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
+                                    }
+                                    else {
+                                        Content.updateAllXml(itemsToSave, function(content, etree) {
+                                            var parent = content.getParent();
+                                            etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
+                                            etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+                                        }, function() {
+                                            // Need to git commit the program, then let the user know it is done.
+                                            Git.commitProgramContent(found.getProgram(), data.user, function(){
+                                                io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                            }, function(err){
+                                                logger.error(err);
+                                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
+                                            });
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                    });
                 }
             });
         }
@@ -1488,7 +1490,7 @@ var SocketHandler = {
     getCourseCommentPages: function (data) {
         // data.contentId
         ContentComment.find(data).populate('user').exec(function (err, found) {
-           io.sockets.emit('updateCommentIndex', found); 
+            io.sockets.emit('updateCommentIndex', found);
         });
     }
 };
