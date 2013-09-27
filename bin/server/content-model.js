@@ -109,8 +109,16 @@ ProgramSchema.methods.getProgram = function() {
     return this;
 };
 
+ProgramSchema.methods.getChildren = function(callback) {
+    callback([]);
+};
+
 ProgramSchema.methods.getParent = function() {
     return null;
+};
+
+ProgramSchema.methods.setParent = function(parent) {
+    // NOOP
 };
 
 ProgramSchema.methods.toDashboardItem = function() {
@@ -132,7 +140,6 @@ ApplicationSchema.statics.createUnique = function (app, callback) {
     findProgram(app.program, function (program) {
         if (program) {
             app.program = program;
-//            app.generatePath();
             app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(app, function(allow) {
@@ -169,6 +176,14 @@ ApplicationSchema.methods.getParent = function() {
     return this.program;
 };
 
+ApplicationSchema.methods.setParent = function(parent) {
+    this.program = parent;
+};
+
+ApplicationSchema.methods.getChildren = function(callback) {
+    callback([]);
+};
+
 ApplicationSchema.methods.generatePath = function() {
     this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
 };
@@ -202,6 +217,16 @@ CourseSchema.methods.getParent = function() {
     return this.program;
 };
 
+CourseSchema.methods.setParent = function(parent) {
+    this.program = parent;
+};
+
+CourseSchema.methods.getChildren = function(callback) {
+    Lesson.find({course: this}).populate('course').exec(function(err, lessons) {
+        callback(err, lessons);
+    });
+};
+
 CourseSchema.methods.generatePath = function() {
     this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
 };
@@ -218,14 +243,13 @@ CourseSchema.methods.toDashboardItem = function() {
 };
 
 CourseSchema.statics.findAndPopulate = function(id, callback) {
-    Course.findById(id).populate('program').exec(callback);
+    Course.findById(id).populate('program lessons').exec(callback);
 };
 
 CourseSchema.statics.createUnique = function (course, callback) {
     findProgram(course.program, function (program) {
         if (program) {
             course.program = program;
-//            course.generatePath();
             course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(course, function(allow) {
@@ -262,7 +286,6 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
         if (course) {
             var courseProgram = course.program;
             lesson.course = course;
-            //I updated this to just pull the lesson path - if it is blowing something else up, I'm sorry - I think this is safe though and it add the program path that was needed.
             lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
 //            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
@@ -290,6 +313,15 @@ LessonSchema.methods.getProgram = function() {
 
 LessonSchema.methods.getParent = function() {
     return this.course;
+};
+
+LessonSchema.methods.setParent = function(parent) {
+//    this.course = undefined;
+    this.course = parent;
+};
+
+LessonSchema.methods.getChildren = function(callback) {
+    callback([]);
 };
 
 LessonSchema.methods.generatePath = function() {
@@ -345,7 +377,6 @@ var Lesson = mongoose.model('Lesson', LessonSchema);
 var ContentComment = mongoose.model('ContentComment', ContentCommentSchema);
 
 module.exports = {
-//    Content: Content,
     Program: Program,
     Application: Application,
     Course: Course,

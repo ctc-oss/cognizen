@@ -26,6 +26,7 @@ _.str.include('Underscore.string', 'string'); // => true
 
 var FileUtils = require('./file-utils');
 var Utils = require('./cognizen-utils');
+//var ContentSocket = require('./content-socket');
 
 var mongoose = require('mongoose');
 var User = require('./user-model').User;
@@ -1175,37 +1176,6 @@ var SocketHandler = {
         this.assignContentToUsers(userPermission, callback);
     },
 
-//    assignContentToSingleUser: function (data, callback) {
-//        logger.info('Assigning ' + data.permission + ' to user ' + data.user + ' for content ' + data.content.id + '.')
-//        User.findOne({username: data.user}).exec(function (err, foundUser) {
-//            if (!err && foundUser) {
-//                var permission = new UserPermission({
-//                    user: foundUser,
-//                    contentType: data.content.type,
-//                    contentId: data.content.id,
-//                    permission: data.permission
-//                });
-//
-//                permission.save(function (err, saved) {
-//                    if (err) {
-//                        logger.error(err);
-//                        if (callback) callback(err);
-//                    }
-//                    else {
-//                        foundUser.permissions.push(saved);
-//                        foundUser.save(function (err, savedUser) {
-//                            if (callback) callback(err);
-//                        });
-//                    }
-//                });
-//            }
-//            else {
-//                if (callback) callback(err);
-//            }
-//        });
-//
-//    },
-//
     assignContentToUsers: function (data, callback) {
         // data.content.id
         // data.content.type
@@ -1311,6 +1281,7 @@ var SocketHandler = {
                         else {
                             var programPath = path.normalize('../programs/' + found.path + '/server');
                             var parentDir = require('path').resolve(process.cwd(), programPath);
+//                            ContentSocket.start(serverDetails.port, found.id, parentDir, function(){});
 
                             var spawn = require('child_process').spawn;
                             var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
@@ -1329,22 +1300,22 @@ var SocketHandler = {
                                     serverDetails.running = true;
                                 }
                                 else if (!serverDetails.running && message.indexOf("error") > -1) {
-                                    _this._socket.emit('contentServerDidNotStart', {message: message});
+                                    logger.error(message);
+                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
                                     serverDetails.running = false;
                                 }
                             });
 
                             subNode.stderr.on('data', function (data) {
-                                logger.info('stderr: ' + data);
-                                _this._socket.emit('contentServerDidNotStart', {message: data});
+                                logger.error('stderr: ' + err);
+                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
                                 serverDetails.running = false;
                             });
                         }
 
                     }, function(err) {
-                        var error = JSON.stringify(err);
-                        logger.error(error);
-                        _this._socket.emit('contentServerDidNotStart', {message: error});
+                        logger.error(JSON.stringify(err));
+                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
                     })
                 }
             });
@@ -1376,23 +1347,41 @@ var SocketHandler = {
                     found.generatePath();
                     var newDiskPath = Content.diskPath(found.path);
                     console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
-                    found.save(function (err) {
-                        // Now we have to rename the folder on the disk.
-                        FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
-                            if (err) {
-                                logger.error(err);
-                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
-                            }
-                            else {
-                                // Need to git commit the program, then let the user know it is done.
-                                Git.commitProgramContent(found.getProgram(), data.user, function(){
-                                    io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                }, function(err){
-                                    logger.error(err);
-                                    _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+
+                    var itemsToSave = [found];
+
+                    found.getChildren(function(err, children) {
+                        if (err) {
+                            logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+                        }
+                        else {
+                            // Make sure children paths are re-generated as well.
+                            children.forEach(function(child){
+                                child.setParent(found);
+                                child.generatePath();
+                                itemsToSave.push(child);
+                            });
+
+                            Utils.saveAll(itemsToSave, function() {
+                                // Now we have to rename the folder on the disk.
+                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+                                    if (err) {
+                                        logger.error(err);
+                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+                                    }
+                                    else {
+                                        // Need to git commit the program, then let the user know it is done.
+                                        Git.commitProgramContent(found.getProgram(), data.user, function(){
+                                            io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                        }, function(err){
+                                            logger.error(err);
+                                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content.'});
+                                        });
+                                    }
                                 });
-                            }
-                        });
+                            });
+                        }
                     });
                 }
             });

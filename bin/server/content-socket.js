@@ -6,7 +6,9 @@ var io;
 
 var ContentSocket = {
 
-    start: function(port, path, callback) {
+    start: function(port, path, contentPath, callback) {
+        var xmlContentFile = contentPath + '/xml/content.xml';
+
         var app = require('http').createServer(function (req, res) {
                 res.writeHead(404);
                 return res.end('No content available');
@@ -41,8 +43,8 @@ var ContentSocket = {
             //Set listener to update the content.xml file
             socket.on('updateXMLWithRefresh', function (data) {
                 console.log("updateXMLWithRefresh called with data of " + data);
-                var file = '../xml/content.xml';
-                fs.outputFile(file, data.my, function(err) {
+//                var file = contentPath + '../xml/content.xml';
+                fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){
                         console.log("successfully updated content.xml - sending refresh ----------------------------------------------------------------------------");
@@ -57,9 +59,9 @@ var ContentSocket = {
 
             //Update the page content
             socket.on('updateXML', function (data) {
-                var file = '../xml/content.xml';
+//                var file = '../xml/content.xml';
 
-                fs.outputFile(file, data.my, function(err) {
+                fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){
                         socket.emit("pushUpdateXMLWithRefreshComplete");
@@ -83,13 +85,13 @@ var ContentSocket = {
                     }
                     , function (err, res) {
                         var manifest = new Array();
-                        var file = '../xml/content.xml';
+//                        var file = '../xml/content.xml';
                         var XML = et.XML;
                         var ElementTree = et.ElementTree;
                         var element = et.Element;
                         var subElement = et.SubElement;
                         var data, etree;
-                        data = fs.readFileSync(file).toString();
+                        data = fs.readFileSync(xmlContentFile).toString();
                         etree = et.parse(data);
 
                         var courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
@@ -182,7 +184,7 @@ var ContentSocket = {
 
                         var manifestFile = manifest.join('');
 
-                        var file = '../scorm/'+scormVersion+'/imsmanifest.xml';
+                        var file = contentPath+'/scorm/'+scormVersion+'/imsmanifest.xml';
 
                         fs.writeFile(file, manifestFile, function(err) {
                             if(err) {
