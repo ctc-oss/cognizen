@@ -1481,7 +1481,6 @@ var SocketHandler = {
     getContentComments: function (data) {
         // data.contentId
         // data.pageId
-        console.log(JSON.stringify(data));
         var _this = this;
         ContentComment.find(data).populate('user').exec(function (err, found) {
             _this._socket.emit('retrievedContentComments', found);

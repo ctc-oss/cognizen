@@ -426,8 +426,6 @@ function C_Dashboard(_type) {
      ************************************************************************************/
     function assignUser(data) {
     	
-    	console.log(data);
-    	
     	var userData = data;
     	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
     	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';

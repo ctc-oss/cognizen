@@ -92,7 +92,7 @@ if (typeof console === "undefined" || typeof console.log === "undefined") {
     console = {};
     if (alertFallback) {
         console.log = function(msg) {
-            alert(msg);
+            //alert(msg);
         };
     } else {
         console.log = function() {};
@@ -269,7 +269,6 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on('retrievedContentComments', function (data) {
-	         console.log(data);
 	         if(pageComments && pageComments.length > 0){
 		         pageComments.length = 0;
 	         }

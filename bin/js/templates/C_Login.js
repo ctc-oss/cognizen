@@ -245,7 +245,6 @@ function C_Login(_type) {
     }
     
     function keyUpSubmitForgotPass(event){
-	    console.log("key up");
 	    if(event.which == 13 || event.keyCode == 13){
 	    		submitForgotPass();
 	    }
