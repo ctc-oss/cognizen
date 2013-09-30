@@ -633,32 +633,35 @@ var SocketHandler = {
                         if (contentType) {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
-
                                     var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
-
+									
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-                                        fs.createReadStream(event.file.pathName).pipe(fs.createWriteStream(contentPath));
+                                        var stream = fs.createReadStream(event.file.pathName)//.pipe(fs.createWriteStream(contentPath));
+                                        stream.pipe(fs.createWriteStream(contentPath));
+                                        var had_error = false;
+                                        stream.on('error', function(err){
+											had_error = true;
+										});
+                                        
+                                        stream.on('close', function(){
+	                                    	if (!had_error) fs.unlink(event.file.pathName);
+                                        })
                                         //Git commit
                                     } else {
                                         //Convert files
                                         var convertedPath;
                                         convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
-
-
+										
                                         var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
-                                            //.usingPreset('cognizen')
                                             .toFormat('mp4')
                                             .withVideoBitrate('1200k')
                                             .withVideoCodec('libx264')
                                             .withAudioBitrate('160k')
                                             .withAudioCodec('libfaac')
                                             .withAudioChannels(2)
-                                            //.addOptions(['-flags', '-strict experimental', '-preset slow', '-maxrate 20000000', '-bufsize 20000000', '-flags2', '+mixed_refs', '-qdiff 4', '-level 13'])
-                                            //.addOptions(['-flags', '+loop', '-cmp', '+chroma', '-partitions','+parti4x4+partp8x8+partb8x8', '-flags2',
-                                            //'+mixed_refs', '-me_method umh', '-subq 5', '-bufsize 2M', '-rc_eq \'blurCplx^(1-qComp)\'',
-                                            //'-qcomp 0.6', '-qmin 10', '-qmax 51', '-qdiff 4', '-level 13' ]);
+											
                                             .onCodecData(function (codecinfo) {
                                                 console.log(codecinfo);
                                                 _this._socket.emit('mediaInfo', codecinfo);
@@ -678,7 +681,6 @@ var SocketHandler = {
                     }
                 }
             }
-
         });
     },
 
