@@ -671,7 +671,9 @@ var SocketHandler = {
                                             })
                                             .saveToFile(convertedPath, function (stdout, stderr) {
                                                 fs.unlink(event.file.pathName, function () {
-                                                	_this._socket.emit('mediaConversionComplete', convertedPath);
+                                                	//exec("ffmpeg -i " + convertedPath + " -ss 00:10 -r 1 -an -vframes 1 -f mjpeg " + convertedPath  + ".jpg", function(err){
+														_this._socket.emit('mediaConversionComplete', convertedPath);
+													//});
                                                 })	
                                             });
                                     }
