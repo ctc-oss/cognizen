@@ -634,7 +634,7 @@ var SocketHandler = {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
                                     var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
-									
+									var capPath = path.normalize(Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
@@ -669,11 +669,13 @@ var SocketHandler = {
                                             .onProgress(function (progress) {
                                                 _this._socket.emit('mediaConversionProgress', progress);
                                             })
+                                            /*.takeScreenshots({count: 1, timemarks: ['5']}, capPath, function(err, filenames) {
+												console.log("fileNames = " + filenames);
+												console.log('screenshots were saved');
+											})*/
                                             .saveToFile(convertedPath, function (stdout, stderr) {
                                                 fs.unlink(event.file.pathName, function () {
-                                                	//exec("ffmpeg -i " + convertedPath + " -ss 00:10 -r 1 -an -vframes 1 -f mjpeg " + convertedPath  + ".jpg", function(err){
-														_this._socket.emit('mediaConversionComplete', convertedPath);
-													//});
+													_this._socket.emit('mediaConversionComplete', convertedPath);
                                                 })	
                                             });
                                     }
