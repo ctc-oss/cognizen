@@ -667,9 +667,9 @@ var SocketHandler = {
                                                 _this._socket.emit('mediaConversionProgress', progress);
                                             })
                                             .saveToFile(convertedPath, function (stdout, stderr) {
-                                                console.log('FFMPEG err: ' + stderr);
-                                                console.log('FFMPEG out: ' + stdout);
-                                                _this._socket.emit('mediaConversionComplete', convertedPath);
+                                                fs.unlink(event.file.pathName, function () {
+                                                	_this._socket.emit('mediaConversionComplete', convertedPath);
+                                                })	
                                             });
                                     }
                                 }
