@@ -1328,21 +1328,21 @@ var SocketHandler = {
                                 }
                                 else if (!serverDetails.running && message.indexOf("error") > -1) {
                                     logger.error(message);
-                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
+                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
                                     serverDetails.running = false;
                                 }
                             });
 
                             subNode.stderr.on('data', function (data) {
                                 logger.error('stderr: ' + data);
-                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
+                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(2)'});
                                 serverDetails.running = false;
                             });
                         }
 
                     }, function(err) {
                         logger.error(JSON.stringify(err));
-                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.'});
+                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
                     })
                 }
             });
