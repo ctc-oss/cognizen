@@ -445,7 +445,7 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'git add -A . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+            var command = 'rm -f .git/index.lock && git add -A . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
             if (init) {
                 command = 'git init && ' + command;
             }
