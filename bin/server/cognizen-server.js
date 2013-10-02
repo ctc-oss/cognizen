@@ -450,9 +450,8 @@ var Git = {
                 command = 'git init && ' + command;
             }
             exec(command, {cwd: path}, function (err, stdout, stderr) {
-                logger.error('ERR: ' + err);
-                logger.error('STDOUT: ' + stdout);
-                logger.error('STDERR: ' + stderr);
+                if (stdout) logger.error('STDOUT: ' + stdout);
+                if (stderr) logger.error('STDERR: ' + stderr);
 
                 var nothingToCommit = stdout && stdout.toLowerCase().indexOf('nothing to commit') > -1;
                 var stderrError = stderr && stderr.toLowerCase().indexOf('error:') > -1;
@@ -461,6 +460,7 @@ var Git = {
                     success();
                 }
                 else if (err) {
+                    logger.error('ERR: ' + err);
                     error(err);
                 }
                 else if (stderrError) {
@@ -484,11 +484,11 @@ var Git = {
             var exec = require('child_process').exec;
             var command = 'git fetch --all && git reset --hard origin/master';
             exec(command, {cwd: path}, function (err, stdout, stderr) {
-                logger.error('Git-ERR: ' + err);
-                logger.error('Git-STDOUT: ' + stdout);
-                logger.error('Git-STDERR: ' + stderr);
+                if (stdout) logger.info('Git-STDOUT: ' + stdout);
+                if (stderr) logger.error('Git-STDERR: ' + stderr);
 
                 if (err) {
+                    logger.error('Git-ERR: ' + err);
                     error(err);
                 }
                 else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
