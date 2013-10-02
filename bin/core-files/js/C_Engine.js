@@ -92,7 +92,7 @@ if (typeof console === "undefined" || typeof console.log === "undefined") {
     console = {};
     if (alertFallback) {
         console.log = function(msg) {
-            //alert(msg);
+            alert(msg);
         };
     } else {
         console.log = function() {};
@@ -238,7 +238,7 @@ function initializeSockets(){
 		});
 
 	    cognizenSocket.on('commentAdded', function (data) {
-	        cognizenSocket.emit('getContentComments', {
+	        	cognizenSocket.emit('getContentComments', {
 				contentId: urlParams['id'],
 				pageId: $(data).find("page").eq(currentPage).attr("id")
 			});
@@ -276,7 +276,7 @@ function initializeSockets(){
 
 	        if(commentsOpen == true){
 		         refreshPageComments();
-			     $("#commentInputText").empty();
+			    $("#commentInputText").empty();
 	        }
 	        
 	        if(mode == "edit" || mode == "review"){
@@ -284,7 +284,7 @@ function initializeSockets(){
 	        		$("#comment").removeClass('commentOpen');
 					$("#comment").removeClass('commentClosed');
 	        		var last = pageComments.length - 1;
-					var status = pageComments[last].status;
+		   		var status = pageComments[last].status;
 		   		
 		        	if(status == 'new' || status == 'inprogress'){
 		        		$("#comment").addClass('commentOpen');
@@ -296,6 +296,7 @@ function initializeSockets(){
 		      	$("#comment").removeClass('commentClosed');
 		      }  
 	        }
+
 	    });
 	    
 	    cognizenSocket.on("updateCommentIndex", function(data){
@@ -385,22 +386,20 @@ function refreshPageComments(){
 	var even = true;
 
 	for(var i = 0; i < pageComments.length; i++){
-		if(pageComments[i].pageId == $(data).find("page").eq(currentPage).attr("id")){
-			var myFirstName = pageComments[i].user.firstName;
-			var myLastName = pageComments[i].user.lastName;
-			var myTime = pageComments[i].created;
-			var myComment = pageComments[i].comment;
+		var myFirstName = pageComments[i].user.firstName;
+		var myLastName = pageComments[i].user.lastName;
+		var myTime = pageComments[i].created;
+		var myComment = pageComments[i].comment;
 		
-			if(even == true){
-				$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
-			}else{
-				$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
-			}
-			if(even == true){
-				even = false;
-			}else{
-				even = true;
-			}
+		if(even == true){
+			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderEven'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemEven'>"+ myComment +"</div></div>");
+		}else{
+			$("#pageComments").append("<div class='commentHolder'><div class='commentHeaderOdd'>" + myFirstName + " " + myLastName + " posted at " + myTime + "</div><div class='commentItemOdd'>"+ myComment +"</div></div>");
+		}
+		if(even == true){
+			even = false;
+		}else{
+			even = true;
 		}
 	}
 	
@@ -497,8 +496,8 @@ function buildInterface(){
 
 		$("#publish").tooltip().click(clickPublish);
 
-		/*$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
-		$("#preferences").tooltip().click();*/
+		$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
+		$("#preferences").tooltip().click();
 
 
 		$("#myCanvas").append("<div id='comment' class='btn_comment' title='Add a Page Comment'></div>");
@@ -541,7 +540,7 @@ function buildInterface(){
 			}
 
 
-			enableCommentKeyEvents()
+
 			//Style it to jQuery UI dialog
 			$("#commentDialog").dialog({
 				autoOpen: true,
@@ -560,7 +559,6 @@ function buildInterface(){
 						}else{
 							myStatus = 'inprogress';
 						}
-						//console.log("pageID"
 						cognizenSocket.emit('addComment', {
 							user: {id: urlParams['u']},
 							content: {type: urlParams['type'], id: urlParams['id']},
@@ -572,7 +570,6 @@ function buildInterface(){
 				},
 				close: function(){
 					$("#commentDialog").remove();
-					disableCommentKeyEvents();
 				}
 			});
 
@@ -685,31 +682,7 @@ function buildInterface(){
 	loadPage();
 }
 
-function enableCommentKeyEvents() {
- 	$("#commentInputText").bind("keyup", keyUpSubmitComment);
-}
 
-function disableCommentKeyEvents() {
-	$("#commentInputText").unbind("keyup", keyUpSubmitComment);
-}
-
-function keyUpSubmitComment(event) {
-	if (event.which == 13 || event.keyCode == 13) {
-    	var myStatus;
-		if($("#commentStatus").prop("checked") == true){
-			myStatus = 'closed';
-		}else{
-			myStatus = 'inprogress';
-		}
-		cognizenSocket.emit('addComment', {
-			user: {id: urlParams['u']},
-			content: {type: urlParams['type'], id: urlParams['id']},
-			page: {id: $(data).find("page").eq(currentPage).attr("id")},
-			text: $("#commentInputText").getCode(),
-			status: myStatus
-		});
-    }
-}
 /****************************************************
 ********************************** STEP 4 - LOAD PAGE
 *****************************************************
@@ -1565,41 +1538,25 @@ function guid() {
 
 function removePage(){
 	//Create the Dialog
-	if($(data).find("page").length > 1){
-		$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
-		//Style it to jQuery UI dialog
-		$("#dialog-removePage").dialog({
-			modal: true,
-			width: 550,
-			close: function(event, ui){
-				$("dialog-removePage").remove();
+	$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
+	//Style it to jQuery UI dialog
+	$("#dialog-removePage").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("dialog-removePage").remove();
+		},
+		buttons: {
+			Yes: function(){
+				$(data).find("page").eq(currentPage).remove();
+				sendUpdateWithRefresh();
+				$( this ).dialog( "close" );
 			},
-			buttons: {
-				Yes: function(){
-					$(data).find("page").eq(currentPage).remove();
-					sendUpdateWithRefresh();
-					$( this ).dialog( "close" );
-				},
-				No: function(){
-					$( this ).dialog( "close" );
-				}
+			No: function(){
+				$( this ).dialog( "close" );
 			}
-		});
-	}else{
-		$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>You must have at least one page in your project. If you would like to remove this page you must first add another.</p></div>");
-		$("#dialog-removePage").dialog({
-			modal: true,
-			width: 550,
-			close: function(event, ui){
-				$("dialog-removePage").remove();
-			},
-			buttons: {
-				Close: function(){
-					$( this ).dialog( "close" );
-				}
-			}
-		});
-	}
+		}
+	});
 }
 
 //addDocs pane
