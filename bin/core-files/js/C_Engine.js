@@ -1148,7 +1148,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultTop.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultTop.png");
 			$(data).find("page").eq(currentPage + 1).attr("popup", "");
 			$(data).find("page").eq(currentPage + 1).attr("popcaps", "");
 			$(data).find("page").eq(currentPage + 1).attr("enlarge", "");
@@ -1163,7 +1163,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultTop.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultTop.png");
 			$(data).find("page").eq(currentPage + 1).attr("popup", "");
 			$(data).find("page").eq(currentPage + 1).attr("popcaps", "");
 			$(data).find("page").eq(currentPage + 1).attr("enlarge", "");
@@ -1178,7 +1178,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultLeft.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage + 1).attr("popup", "");
 			$(data).find("page").eq(currentPage + 1).attr("popcaps", "");
 			$(data).find("page").eq(currentPage + 1).attr("enlarge", "");
@@ -1193,7 +1193,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultLeft.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage + 1).attr("popup", "");
 			$(data).find("page").eq(currentPage + 1).attr("popcaps", "");
 			$(data).find("page").eq(currentPage + 1).attr("enlarge", "");
@@ -1208,7 +1208,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultTop.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultTop.png");
 			$(data).find("page").eq(currentPage + 1).attr("popup", "");
 			$(data).find("page").eq(currentPage + 1).attr("popcaps", "");
 			$(data).find("page").eq(currentPage + 1).attr("enlarge", "");
@@ -1261,7 +1261,7 @@ function createNewPageByType(_myType){
 			var captionCDATA = newPageCaption.createCDATASection("<p></p>");
 			$(data).find("page").eq(currentPage + 1).find("caption").append(captionCDATA);
 
-			$(data).find("page").eq(currentPage + 1).attr("img", "media/defaultLeft.png");
+			$(data).find("page").eq(currentPage + 1).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage + 1).attr("alt", "image description");
 			break;
 		case "revealRight":

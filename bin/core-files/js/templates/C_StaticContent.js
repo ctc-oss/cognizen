@@ -16,7 +16,7 @@ function C_StaticContent(_type) {
     this.myPageTitle;//Title of this page.
     this.myContent;//Body
     this.myCaption;//Caption text if needed.
-    this.myAudio = "null";
+   // this.myAudio = "null";
     this.autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
     this.autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
     var hasCaption = false;
@@ -24,7 +24,9 @@ function C_StaticContent(_type) {
     var mySidebar;
     var mediaWidth = 0;
     var mediaHeight = 0;
-
+	
+	var myAudio = "null";
+	
     var stageW = $("#stage").width();
     var stageH = $("#stage").height();
 
@@ -32,6 +34,7 @@ function C_StaticContent(_type) {
     var mediaType;
     var hasPop = false;
     
+    var mediaLink = null;
     var media_arr = [];
     var caption_arr = [];
     var captionEditText_arr = [];
@@ -128,11 +131,12 @@ function C_StaticContent(_type) {
 
         $("#content").append(myContent);
         
-
-        $(".nano").nanoScroller({
-        	flashDelay: 3000,
-			flash: true
-        });
+        if(type != "bottom"){
+        	$(".nano").nanoScroller({
+        		flashDelay: 3000,
+				flash: true
+			});
+		}
 
         /*Attach Media*/
         if(type == "textOnly"){
@@ -201,7 +205,7 @@ function C_StaticContent(_type) {
         var mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
 
         if($(data).find("page").eq(currentPage).attr('img') != "" && $(data).find("page").eq(currentPage).attr('img') != " "){
-            myImage = mediaLink;
+            myImage = "media/" + mediaLink;
         }else{
             //We will have default.png's for different layouts - just a series of if, else if below here.
             myImage = "media/default.png";
@@ -481,7 +485,7 @@ function C_StaticContent(_type) {
         var titleY = $("#pageTitle").position().top;
         var titleH = $("#pageTitle").height();
 
-        var audioString = "<audio id='audioPlayer' src='"+myAudio+ "' type='audio/mp3' controls='controls'>";
+        var audioString = "<audio id='audioPlayer' src='media/"+myAudio+ "' type='audio/mp3' controls='controls'>";
 
         //Check for subs - defaults to false.
         if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
@@ -551,9 +555,15 @@ function C_StaticContent(_type) {
         if(type == "bottom"){
 	       var conYPos = $("#caption").position().top + $("#caption").height()+10;
 	       var conHeight = stageH - conYPos;
+	       console.log("conHeight = " + conHeight);
             $("#contentHolder").height(conHeight);
             $("#content").height(conHeight - 4);
             $("#contentHolder").css({'top': conYPos});
+            
+            $(".nano").nanoScroller({
+        		flashDelay: 3000,
+				flash: true
+			});
         }
         
         checkMode();
@@ -602,7 +612,7 @@ function C_StaticContent(_type) {
 			//Add and style contentEdit button
 			if(type == "sidebar"){
                 $('#stage').append("<div id='sideEdit' class='btn_edit_text' title='Edit Sidebar Content'></div>");
-			 	$("#sideEdit").css({'position':'absolute', 'top':$("#sidebar").position().top - 18, 'left': $("#sidebar").position().left + $("#sidebar").width() - 18});
+			 	$("#sideEdit").css({'position':'absolute', 'top':$("#sidebarHolder").position().top - 18, 'left': $("#sidebarHolder").position().left + $("#sidebarHolder").width() - 18});
 
 			 	$("#sideEdit").click(function(){
                     	$("#stage").append("<div id='sidebarEditDialog' title='Input Sidebar Content'><div id='sidebarEditText' type='text' style='width:" + $('#sidebar').width() + "; height:85%' >" + $("#sidebar").html() + "</div>");
@@ -628,7 +638,7 @@ function C_StaticContent(_type) {
 			********************************************************/
 			//Add and style contentEdit button
 			if(type != "graphicOnly"){
-                	$('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
+                $('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
 			 	$("#conEdit").css({'position':'absolute', 'top':$("#contentHolder").position().top - 18, 'left': $("#contentHolder").position().left + $("#content").width() - 18});
 
 			 	$("#conEdit").click(function(){
@@ -673,7 +683,7 @@ function C_StaticContent(_type) {
                 //Establish it's functionality
 				$("#imgEdit").click(function(){
 					
-                	$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:100%;'/><br/><div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div><label id='label'>large version: </label><input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/><input id='lrgImgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:70%;'/><br/><br/></div>");
+                	$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:100%;'/><br/><div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div><label id='label'>large version: </label><input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/><input id='lrgImgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/><br/><br/></div>");
                     	
                     if(largeImg == ""){
 						$("#isEnlargeable").removeAttr('checked');
@@ -726,7 +736,7 @@ function C_StaticContent(_type) {
 								var galleryItemID = "galleryItem" + media_arr.length;
 								captionEditText_arr.push("#" + captionTextID);
 								
-								$("#imgDialog").append("<div id='"+galleryItemID+"'> <HR><div id='"+removeID+"' value='"+i+"' class='removeMedia'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='" + imgID + "' type='text' value='media/defaultTop.png' defaultValue='media/defaultTop.png' style='width:100%;'/><br/><div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div></div>");
+								$("#imgDialog").append("<div id='"+galleryItemID+"'> <HR><div id='"+removeID+"' value='"+i+"' class='removeMedia'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='" + imgID + "' type='text' value='defaultTop.png' defaultValue='defaultTop.png' style='width:100%;'/><br/><div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div></div>");
 								$("#" + removeID).click(function(){
 									var arrIndex = $(this).attr('value');
 									//captionEditText_arr, media_arr, caption_arr, destroyEditor
@@ -739,18 +749,18 @@ function C_StaticContent(_type) {
 								});
 								//If no entries - just add the next one.
 								if(media_arr.length == 0){
-									$(data).find("page").eq(currentPage).attr('popup', "media/defaultTop.png");
+									$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
 									$(data).find("page").eq(currentPage).attr('popcaps', " ");
 								}else{
 									var popString = $(data).find("page").eq(currentPage).attr('popup');
-									popString += ",media/defaultTop.png";
+									popString += ",defaultTop.png";
 									$(data).find("page").eq(currentPage).attr('popup', popString);
 									var commentString = $(data).find("page").eq(currentPage).attr('popcaps');
 									commentString += "!!! ";
 									$(data).find("page").eq(currentPage).attr('popcaps', commentString);
 								}
 								
-								media_arr.push("media/defaultTop.png");
+								media_arr.push("defaultTop.png");
 								caption_arr.push(" ");
 								
 								$("#" + captionTextID).redactor({
@@ -790,9 +800,26 @@ function C_StaticContent(_type) {
 							
 						var myFile = event.file.name;
 						var myExt = getExtension(myFile);
-						if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg"){	
+						if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3"){	
 							if(event.success == true){
-								saveImageEdit('media/' + myFile, true);
+								if(myExt == "mp3" || myExt == "MP3"){
+									var audioText;
+									audioText = myFile;
+
+									$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
+
+									//Style it to jQuery UI dialog
+									$("#audioEditDialog").dialog({
+										autoOpen: true,
+										modal: true,
+										width: 500,
+										height: 200,
+										buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+										close: saveAudioEdit
+									});
+								}else{
+									saveImageEdit(myFile, true);
+								}
 							}else{
 								$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
 								//Theres an error
@@ -809,8 +836,7 @@ function C_StaticContent(_type) {
 						}else{
 							$("#mediaLoaderText").empty();
 							$("#mediaLoaderText").append("The file format that you upladed can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-							//$("#mediaLoaderText").append("<div id='conversionProgress'>Your conversion is 0% complete.</div> ");
-							$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Loading...</div></div>");
+							$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 							$("#conversionProgress").progressbar({
 								value: 0,
 								change: function() {
@@ -863,7 +889,7 @@ function C_StaticContent(_type) {
 				//Create the Content Edit Dialog
 				var audioText;
 				if(myAudio == "null"){
-                    	audioText = "media/yourFile.mp3";
+                    	audioText = "yourFile.mp3";
 				}else{
                     	audioText = myAudio;
 				}
@@ -872,7 +898,7 @@ function C_StaticContent(_type) {
 
 				//Style it to jQuery UI dialog
 				$("#audioEditDialog").dialog({
-                    	autoOpen: true,
+                    autoOpen: true,
 					modal: true,
 					width: 500,
 					height: 200,
@@ -899,7 +925,7 @@ function C_StaticContent(_type) {
 		var splitPath = data.split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
-		saveImageEdit('media/' + mediaPath, true);
+		saveImageEdit(mediaPath, true);
 		$("#mediaLoader").remove();
 	}
 
@@ -1105,13 +1131,13 @@ function C_StaticContent(_type) {
      **Save Audio Edit
      **********************************************************************/
 	function saveAudioEdit(){
-        var audioPath = $("#audioPath").val();
+        var audioPath =  $("#audioPath").val();
 	   	var parts = audioPath.split('.'), i, l;
 	   	var last = parts.length;
 
 	   	var fileType = (parts[last - 1]);
 	   	if(fileType == "mp3"){
-            if(audioPath == "media/yourFile.mp3"){
+            if(audioPath == "yourFile.mp3"){
                 $(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
                 $(data).find("page").eq(currentPage).attr("audio", audioPath);

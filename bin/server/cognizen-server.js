@@ -636,9 +636,9 @@ var SocketHandler = {
                                     var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
 									var capPath = path.normalize(Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
-                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg"];
+                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-                                        var stream = fs.createReadStream(event.file.pathName)//.pipe(fs.createWriteStream(contentPath));
+                                        var stream = fs.createReadStream(event.file.pathName);
                                         stream.pipe(fs.createWriteStream(contentPath));
                                         var had_error = false;
                                         stream.on('error', function(err){
