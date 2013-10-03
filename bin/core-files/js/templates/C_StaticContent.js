@@ -571,7 +571,7 @@ function C_StaticContent(_type) {
      	
      	if(mode == "edit"){
             	
-            	/*******************************************************
+            /*******************************************************
 			* Edit Title
 			********************************************************/
                 //Add and style titleEdit button
@@ -579,11 +579,11 @@ function C_StaticContent(_type) {
 			 $("#titleEdit").css({'position':'absolute', 'top':$("#pageTitle").position().top - 18, 'left': $("#pageTitle").position().left + $("#pageTitle").width() - 18});
 			 //Add title Edit functionality
 			 $("#titleEdit").click(function(){
-                	//Create the Dialog
+                //Create the Dialog
 			 	$("#stage").append("<div id='titleDialog' title='Input Page Title'><div id='titleEditText' type='text'>" + myPageTitle + "</div></div>");
 			 	//Style it to jQuery UI dialog
 			 	$("#titleDialog").dialog({
-                    	autoOpen: true,
+                    autoOpen: true,
 					modal: true,
 					width: 550,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
@@ -591,7 +591,7 @@ function C_StaticContent(_type) {
 				});
 
 				$("#titleEditText").redactor({
-                    	focus: true,
+                    focus: true,
 					buttons: ['bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 				});
 			}).tooltip();
@@ -601,7 +601,7 @@ function C_StaticContent(_type) {
 			********************************************************/
 			//Add and style contentEdit button
 			if(type == "sidebar"){
-                	$('#stage').append("<div id='sideEdit' class='btn_edit_text' title='Edit Sidebar Content'></div>");
+                $('#stage').append("<div id='sideEdit' class='btn_edit_text' title='Edit Sidebar Content'></div>");
 			 	$("#sideEdit").css({'position':'absolute', 'top':$("#sidebar").position().top - 18, 'left': $("#sidebar").position().left + $("#sidebar").width() - 18});
 
 			 	$("#sideEdit").click(function(){
@@ -823,23 +823,9 @@ function C_StaticContent(_type) {
 								
 							$("#conversionProgress > div").css({ 'background': '#3383bb'});
 																
-							cognizenSocket.on('mediaConversionProgress', function(data){
-								$("#conversionProgress").progressbar("value", Math.floor(data.percent))
-							});
-								
-							cognizenSocket.on('mediaInfo', function(data){
-								var splitDim = data.video_details[2].split("x");
-								mediaWidth = splitDim[0];
-								mediaHeight = splitDim[1];
-							});
-								
-							cognizenSocket.on('mediaConversionComplete', function(data){
-								var splitPath = data.split("/");
-								var last = splitPath.length;
-								var mediaPath = splitPath[last-1];
-								saveImageEdit('media/' + mediaPath, true);
-								$("#mediaLoader").remove();
-							});
+							cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+							cognizenSocket.on('mediaInfo', mediaInfo);
+							cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 						}
 					});
 						
@@ -898,6 +884,25 @@ function C_StaticContent(_type) {
 		$(this).scrubContent();
 	}
 	
+	function mediaConversionProgress(data){
+		//console.log('mediaProgress');
+	    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
+	}
+	
+	function mediaInfo(data){
+		var splitDim = data.video_details[2].split("x");
+		mediaWidth = splitDim[0];
+		mediaHeight = splitDim[1];
+	}
+	
+	function mediaConversionComplete(data){
+		var splitPath = data.split("/");
+		var last = splitPath.length;
+		var mediaPath = splitPath[last-1];
+		saveImageEdit('media/' + mediaPath, true);
+		$("#mediaLoader").remove();
+	}
+
 
 	/**********************************************************************
      **Save Title Edit - save updated page title text to content.xml
@@ -1060,7 +1065,7 @@ function C_StaticContent(_type) {
 							$(data).find("page").eq(currentPage).attr("autonext", "false");
 						}
 						$(data).find("page").eq(currentPage).attr("controlType", "bar");
-						
+						$("#videoDialog").remove();
 						sendUpdateWithRefresh();
 						fadeComplete();
 					}
@@ -1187,6 +1192,10 @@ function C_StaticContent(_type) {
 			  	siofu.destroy();
 			  	$("#loader").unbind();
 			}
+			
+			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
+			cognizenSocket.removeListener('mediaInfo', mediaInfo);
+			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
 		}
 
 		if(type != "textOnly" && type !=  "sidebar"){
