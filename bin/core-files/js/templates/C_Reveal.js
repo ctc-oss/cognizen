@@ -76,7 +76,7 @@ function C_Reveal(_type) {
 		
 		//Check if the page has an associated audio file.
 		if($(data).find("page").eq(currentPage).attr('audio') != undefined){
-			if($(data).find("page").eq(currentPage).attr('audio').length != 0){
+			if($(data).find("page").eq(currentPage).attr('audio').length != 0 && $(data).find("page").eq(currentPage).attr('audio') != "null"){
 				hasAudio = true;
 				myAudio = $(data).find("page").eq(currentPage).attr('audio');
 			}
@@ -277,9 +277,10 @@ function C_Reveal(_type) {
 		}						
 		
 		//check the xml for audio / if so, kick off audio code.
-		if(hasAudio == true){
-			loadAudio()
-		}
+        if(hasAudio == true){
+            $('#stage').append('<div id="audioCon"></div>');
+            loadAudio();
+        }
 	}
 	
 	/**********************************************************************
@@ -293,8 +294,8 @@ function C_Reveal(_type) {
 		var titleY = $("#pageTitle").position().top;
 		var titleH = $("#pageTitle").height();
 		
-		$("#audioCon").append("<audio id='audioPlayer' src='"+myAudio+ "' type='audio/mp3' controls='controls'></audio>");
-		$('#audioPlayer').css({'width':stageW, 'height': 20});
+		$("#audioCon").append("<audio id='audioPlayer' src='media/"+myAudio+ "' type='audio/mp3' controls='controls'></audio>");
+		$('#audioPlayer').css({'width':$("#stage").width(), 'height': 20});
 	    	
 	    	
 		$('#audioPlayer').mediaelementplayer({
@@ -321,6 +322,103 @@ function C_Reveal(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 		if(mode == "edit"){
+			/*******************************************************
+			* Edit Audio
+			********************************************************/
+			
+            if(dragFile == true){
+            	var contentId = urlParams['type'] + '_' + urlParams['id'];
+	     		siofu.addEventListener("complete", function(event){
+					siofu.removeEventListener("complete");
+					siofu.removeEventListener("load");
+					//if successful upload, else....
+								
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt == "mp3" || myExt == "MP3"){	
+						if(event.success == true){
+							if(myExt == "mp3" || myExt == "MP3"){
+								var audioText;
+								audioText = myFile;
+	
+								$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
+	
+								//Style it to jQuery UI dialog
+								$("#audioEditDialog").dialog({
+									autoOpen: true,
+									modal: true,
+									width: 500,
+									height: 200,
+									buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+									close: saveAudioEdit
+								});
+							}
+						}
+					}	
+				});
+				
+				siofu.addEventListener("start", function(event){
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt == "mp3"){
+						try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						$("#mediaLoader").css({'position':'absolute', 'top': $("#audioDrop").position().top, 'left': $("#audioDrop").position().left, 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width()});
+					}
+				});
+	     		
+	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
+	     		if(hasAudio == true){
+	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
+	     		}else{
+		     		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
+	     		}
+	     		
+	     		$("#audioDrop").attr('data-content', contentId);
+		 		$("#audioDrop").find('*').attr('data-content', contentId);
+		 		
+		 		$("#audioDrop").click(function(){
+					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+					siofu.prompt($("#audioDrop").attr('data-content'));
+				}).tooltip();
+				
+				siofu.listenOnDrop(document.getElementById("audioDrop"));
+	     	} 
+	     	
+	     	$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
+			//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
+			if(hasAudio == true){
+	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
+			}else{
+          		$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
+          		
+			}
+			
+			
+			//Add Audio Edit
+			$("#audioEdit").click(function(){
+				//Create the Content Edit Dialog
+				var audioText;
+				if(myAudio == "null"){
+                    	audioText = "yourFile.mp3";
+				}else{
+                    	audioText = myAudio;
+				}
+
+				$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
+
+				//Style it to jQuery UI dialog
+				$("#audioEditDialog").dialog({
+                    autoOpen: true,
+					modal: true,
+					width: 500,
+					height: 200,
+					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+					close: saveAudioEdit
+				});
+			}).tooltip();
+
+			
 			/**
 			* Edit Title
 			*/
@@ -564,6 +662,30 @@ function C_Reveal(_type) {
 		$(data).find("page").eq(currentPage).find("caption").append(newCDATA);
 		sendUpdateWithRefresh();
 	};
+	
+	
+	/**********************************************************************
+     **Save Audio Edit
+     **********************************************************************/
+	function saveAudioEdit(){
+        var audioPath =  $("#audioPath").val();
+	   	var parts = audioPath.split('.'), i, l;
+	   	var last = parts.length;
+
+	   	var fileType = (parts[last - 1]);
+	   	if(fileType == "mp3"){
+            if(audioPath == "yourFile.mp3"){
+                $(data).find("page").eq(currentPage).attr("audio", "null");
+			}else{
+                $(data).find("page").eq(currentPage).attr("audio", audioPath);
+			}
+			$("#audioEditDialog").remove();
+			sendUpdateWithRefresh();
+			fadeComplete();
+		}else{
+          	$("#audioEditDialog").append("<div id='addError' style='color:#FF0000'><br/><br/>* Only .mp3 audio files are supported at this time.</div>");
+		}
+	};
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
 	
 	/*****************************************************************************************************************************************************************************************************************
@@ -650,8 +772,8 @@ function C_Reveal(_type) {
 	    $('#content').remove();
 	   
 	    if(hasAudio == true){
-	    	$('#audioCon').remove();
 	    	$('#player').remove();
+	    	$('#audioCon').remove();
 	    }
 	    
 	    if(mode == "edit"){
@@ -662,7 +784,17 @@ function C_Reveal(_type) {
 		    $("#titleDialog").remove();
 		    $("#imgDialog").remove();
 		    $("#swfDialog").remove();
+		    $("#mediaLoader").remove();
 	    }
+	    
+	    $("#audioDialog").remove();
+		
+		$("#audioEdit").remove();
+		if(mode == "edit" && dragFile == true){
+			siofu.destroy();
+			$("#audioDrop").unbind();
+			$("#audioDrop").remove();
+		}
 	    
 	    if(type != "textOnly"){
 	    	if(mediaType == 'swf'){

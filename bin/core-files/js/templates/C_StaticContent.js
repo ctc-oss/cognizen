@@ -957,6 +957,7 @@ function C_StaticContent(_type) {
 			********************************************************/
 			
             if(dragFile == true){
+	     		var contentId = urlParams['type'] + '_' + urlParams['id'];
 	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
 	     		if(hasAudio == true){
 	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
@@ -1298,6 +1299,7 @@ function C_StaticContent(_type) {
         $('#pageTitle').remove();
 	   	$('#contentHolder').remove();
 	   	$('#reveal').remove();
+	   	
 	   	if(hasAudio == true){
             $('#audioCon').remove();
 		  	$('#player').remove();
