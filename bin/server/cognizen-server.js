@@ -413,6 +413,7 @@ var Git = {
             if (init) {
                 command = 'git init && ' + command;
             }
+            logger.info('Committing to repo from ' + path);
             exec(command, {cwd: path}, function (err, stdout, stderr) {
                 if (stdout) logger.error('STDOUT: ' + stdout);
                 if (stderr) logger.error('STDERR: ' + stderr);
@@ -447,6 +448,7 @@ var Git = {
         else {
             var exec = require('child_process').exec;
             var command = 'rm -f .git/index.lock && git fetch --all && git reset --hard origin/master';
+            logger.info('Fetching git updates at ' + path);
             exec(command, {cwd: path}, function (err, stdout, stderr) {
                 if (stdout) logger.info('Git-STDOUT: ' + stdout);
                 if (stderr) logger.error('Git-STDERR: ' + stderr);

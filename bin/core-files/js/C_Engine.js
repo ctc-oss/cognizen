@@ -79,6 +79,7 @@ var windowWidth = $('body').width();
 var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
 windowHeight = $(window).height();
 
+var secure = window.location.protocol == 'https';
 var xhr = true;
 var urlParams;
 var pageComments;
@@ -214,8 +215,8 @@ function initializeSockets(){
 	if(mode == "edit"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
-	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
-	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: true});
+	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secure}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: secure});
 	    
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -329,8 +330,8 @@ function initializeSockets(){
 
 	    siofu = new SocketIOFileUpload(cognizenSocket);
 
-	   	socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
-                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, secure: true});
+	   	socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secure}) :
+                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, secure: secure});
 		
 		//Simple listener checking connectivity
 		socket.on('onConnect', function (data) {
