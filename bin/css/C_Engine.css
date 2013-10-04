@@ -339,10 +339,10 @@ TREE MENU STYLES
 }
 
 .treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-.programPref {position: relative; top: -24px; left: 320px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
-.programRemove {position: relative; top: -48px; left: 350px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.programAdd {position: relative; top: -72px; left: 380px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
-.programUserAdd {position: relative; top: -96px; left: 410px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+/*.programPref {position: relative; top: -24px; left: 320px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}*/
+.programRemove {position: relative; top: -24px; left: 350px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.programAdd {position: relative; top: -48px; left: 380px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
+.programUserAdd {position: relative; top: -72px; left: 410px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
 
 .treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
 .coursePref {position: relative; top: -24px; left: 308px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
