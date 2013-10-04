@@ -620,7 +620,7 @@ var SocketHandler = {
                                         var convertedPath;
                                         convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
 										
-                                        var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+                                        var proc = new ffmpeg({ source: event.file.pathName, timeout: 700, priority: 2 })
                                             .toFormat('mp4')
                                             .withVideoBitrate('1200k')
                                             .withVideoCodec('libx264')
