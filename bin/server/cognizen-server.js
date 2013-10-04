@@ -643,7 +643,10 @@ var SocketHandler = {
                                                 if (stdout) logger.error('FFMPEG STDOUT: ' + stdout);
                                                 if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
 
+                                                console.log('Unlinking ' + event.file.pathName);
+
                                                 fs.unlink(event.file.pathName, function (err) {
+                                                    console.log('Unlinking Complete');
                                                     if (err) logger.error('File Delete: ' + err);
 													_this._socket.emit('mediaConversionComplete', convertedPath);
                                                 })	
