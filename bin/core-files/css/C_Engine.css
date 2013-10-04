@@ -200,6 +200,19 @@ ul.no-indent {
 	cursor: pointer;
 }
 
+.audioDropSpot{
+	width: 100px;
+	height: 18px;
+	background-color: #9DA6AB;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	color: #EEEEEE;
+	text-align: center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px; 
+	cursor: hand; 
+	cursor: pointer;
+}
 /*.btn_preferences{*/
 .btn_comment{
 	position: absolute;
@@ -211,17 +224,6 @@ ul.no-indent {
 	cursor: hand; 
 	cursor: pointer;
 }
-
-/*.btn_comment{
-	position: absolute;
-	bottom: 7px;
-	left: 260px;
-	width: 30px;
-	height: 30px;
-	background: url(images/comment.png) no-repeat;
-	cursor: hand; 
-	cursor: pointer;
-}*/
 
 #toggleMode{
 	position: absolute;

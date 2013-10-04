@@ -39,6 +39,7 @@ function C_StaticContent(_type) {
     var caption_arr = [];
     var captionEditText_arr = [];
 	var largeImg = "";
+	var audioUploader;
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -380,14 +381,14 @@ function C_StaticContent(_type) {
 					var tempItem;
 					var tempCaption;
 					if(largeImg != ""){
-						tempItem = largeImg;
+						tempItem = "media/" + largeImg;
 						tempCaption = myCaption;
 					}else{
-						tempItem = media_arr[0];
+						tempItem = "media/" + media_arr[0];
 						tempCaption = caption_arr[0];
 					}
 				
-					var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='fancybox-thumb' class='fancybox-thumb'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
+					var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
 					
 					if(media_arr.length > 0){
 						mediaPopString += "<span style='display:none;'>";
@@ -398,7 +399,7 @@ function C_StaticContent(_type) {
 							startPoint = 0;
 						}
 						for(var i = startPoint; i < media_arr.length; i++){
-							mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+							mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
 						}
 						mediaPopString += "</span>";
 					}
@@ -800,7 +801,7 @@ function C_StaticContent(_type) {
 							
 						var myFile = event.file.name;
 						var myExt = getExtension(myFile);
-						if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3"){	
+						if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf"){	
 							if(event.success == true){
 								if(myExt == "mp3" || myExt == "MP3"){
 									var audioText;
@@ -862,12 +863,11 @@ function C_StaticContent(_type) {
 					siofu.addEventListener("start", function(event){
 						try { $("#loader").tooltip("destroy"); } catch (e) {}
 						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
-						console.log("Loader dimensions = " + $("#loader").width() + " by " + $("#loader").height());
 						$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
 						$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
 						$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
 					});
-					siofuInitialized['loader'] = true;
+					
 					$("#loader").tooltip();
 				}
 			}
@@ -875,15 +875,37 @@ function C_StaticContent(_type) {
 			/*******************************************************
 			* Edit Audio
 			********************************************************/
+			
+            /*if(dragFile == true){
+	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
+	     		if(hasAudio == true){
+	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
+	     		}else{
+		     		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
+	     		}
+	     		
+	     		$("#audioDrop").attr('data-content', contentId);
+		 		$("#audioDrop").find('*').attr('data-content', contentId);
+			
+			
+		 		$("#audioDrop").click(function(){
+					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+					siofu.prompt($("#audioDrop").attr('data-content'));
+				}).tooltip();
+				
+				siofu.listenOnDrop(document.getElementById("audioDrop"));
+	     	} */
+			
 			$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
-            
 			//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
 			if(hasAudio == true){
-	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0}); 
+	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
 			}else{
           		$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
+          		
 			}
-
+			
+			
 			//Add Audio Edit
 			$("#audioEdit").click(function(){
 				//Create the Content Edit Dialog
@@ -1045,6 +1067,7 @@ function C_StaticContent(_type) {
 			$(data).find("page").eq(currentPage).attr("popup", "");
 			$(data).find("page").eq(currentPage).attr("popcaps", "");
 		}
+		
 		var imgPath = _path;
 		   	
 	   	if(imgPath != startPath){
@@ -1052,6 +1075,7 @@ function C_StaticContent(_type) {
 		  	var last = parts.length;
 
 		  	mediaType = getExtension(imgPath);
+		  
 		  	if(mediaType == "mp4"){
                 $(data).find("page").eq(currentPage).attr("img", imgPath);
 			 	$("#loader").append("<div id='videoDialog' title='Input Video Stats'><div>Video Width: <input id='videoWidth' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:100%;'/></div><div>Video Height: <input id='videoHeight' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:100%;'/></div><input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input><input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input><input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/><label id='label'>poster</label></input><input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input></div>");
@@ -1099,6 +1123,7 @@ function C_StaticContent(_type) {
 				
 			}else if(mediaType == "swf"){
                	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
+			 	console.log("wtf I'm in the swf section");
 			 	$(data).find("page").eq(currentPage).attr("img", imgPath);
 			 	$("#loader").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
 			 	$("#swfDialog").dialog({
@@ -1108,6 +1133,8 @@ function C_StaticContent(_type) {
 					close: function(){
 						$(data).find("page").eq(currentPage).attr("w", $("#swfWidth").val());
 						$(data).find("page").eq(currentPage).attr("h", $("#swfHeight").val());
+						sendUpdateWithRefresh();
+						fadeComplete();
 					}
 				});
 			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG"){
@@ -1120,7 +1147,7 @@ function C_StaticContent(_type) {
 			//fadeComplete();
 		}
 		
-		if(mediaType != "mp4"){
+		if(mediaType != "mp4"  && mediaType != "swf"){
 			sendUpdateWithRefresh();
 			fadeComplete();
 		}
@@ -1218,12 +1245,14 @@ function C_StaticContent(_type) {
 			  	siofu.destroy();
 			  	$("#loader").unbind();
 			}
-			
+			$("#audioDrop").unbind();
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
 			cognizenSocket.removeListener('mediaInfo', mediaInfo);
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
 		}
-
+		
+		$("#audioDrop").remove();
+		
 		if(type != "textOnly" && type !=  "sidebar"){
         	if(mediaType == 'swf'){
                 $('#loader').flash().remove();
@@ -1237,6 +1266,8 @@ function C_StaticContent(_type) {
 			 $('#caption').remove();
 			 $('#loader').remove();
 		}
+		
+		
 		loadPage();
     }
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
