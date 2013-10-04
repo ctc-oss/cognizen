@@ -210,41 +210,6 @@ var Content = {
         return {directories: accessibleContentArray};
     },
 
-//    userPermission: function (user, content) {
-//        console.log('Checking ' + content.path + ' ...');
-//        var found = null;
-//        if (user.permissions) {
-//            user.permissions.forEach(function (permission) {
-//                if (permission.contentId == content.id) {
-//                    found = permission.permission;
-//                }
-//            });
-//
-//            if (!found) { // Check the parent permission, and assign it.
-//                var program = content.getProgram();
-//                user.permissions.forEach(function (permission) {
-//                    if (permission.contentId == program.id) {
-//                        found = permission.permission;
-//                    }
-//                });
-//
-////                if (content.parent) {
-////                    var parent = content.parent;
-////                    while (parent && !found) {
-////                        user.permissions.forEach(function (permission) {
-////                            if (permission.contentId == parent.id) {
-////                                found = permission.permission;
-////                            }
-////                        });
-////                        parent = content.parent
-////                    }
-////                }
-//            }
-//        }
-//
-//        return found;
-//    },
-
     updateContentXml: function(content, updater, callback) {
         var baseWritePath = path.normalize(Content.diskPath(content.path));
         var fileLink = baseWritePath + "/xml/content.xml";
@@ -318,7 +283,6 @@ var Content = {
                                     callback(data);
                                 }
                                 else{
-                                    console.log(JSON.stringify(data));
                                     socket.emit('receiveProjectsFromDB', data);
                                 }
                             });
@@ -508,7 +472,7 @@ var Git = {
         var _this = this;
 
         var feedback = this._git.createRepo({
-            name: program.path,
+            name: program.getRepoName(),
             anonRead: false,
             users: [
                 {user: _this._editUser, permissions: ['R', 'W']}
@@ -532,10 +496,10 @@ var Git = {
         var programClonedPath = Content.diskPath(program.path);
         fs.exists(programClonedPath, function (exists) {
             if (!exists) {
-                var originPath = path.normalize('../server/repos/' + program.path + '.git');
+                var originPath = path.normalize('../server/repos/' + program.getRepoName() + '.git');
                 var clonePath = Content.diskPath('');
                 var exec = require('child_process').exec;
-                var command = 'git clone ' + originPath;
+                var command = 'git clone ' + originPath + ' "' + program.name + '"';
                 exec(command, {cwd: clonePath}, function (err, stdout, stderr) {
                     if (err) {
                         error(err);
@@ -569,10 +533,10 @@ var Git = {
                         ],
                         onSuccessful: {
                             fetch: function() {
-                                return console.log('Successful fetch on ' + program.path + ' repo');
+                                return logger.info('Successful fetch on ' + program.path + ' repo');
                             },
                             push: function() {
-                                console.log('Successful push on ' + program.path + ' repo');
+                                logger.info('Successful push on ' + program.path + ' repo');
                                 _this._gitUpdateLocal(program, null, function(err) {
                                     logger.error(err);
                                 });
@@ -663,7 +627,7 @@ var SocketHandler = {
                                             .withAudioChannels(2)
 											
                                             .onCodecData(function (codecinfo) {
-                                                console.log(codecinfo);
+                                                logger.info(codecinfo);
                                                 _this._socket.emit('mediaInfo', codecinfo);
                                             })
                                             .onProgress(function (progress) {
@@ -962,7 +926,6 @@ var SocketHandler = {
     },
 
     _copyContentFiles: function (content, callback) {
-        var _this = this;
         var baseWritePath = path.normalize(Content.diskPath(content.path));
         var tokenz = content.path.split("/");
         var programName = tokenz[0];
@@ -991,31 +954,6 @@ var SocketHandler = {
                 }, function(err) {
                     callback(err);
                 });
-//                var xml = et.XML;
-//                var ElementTree = et.ElementTree;
-//                var element = et.Element;
-//                var subElement = et.SubElement;
-//                var data, etree;
-//                var courseName;
-//                var lessonName;
-//
-//                fileLink = baseWritePath + "/xml/content.xml";
-//                data = fs.readFileSync(fileLink).toString();
-//                etree = et.parse(data);
-//                var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
-//                etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
-//                etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
-//                xml = etree.write({'xml_decleration': false});
-//                fs.outputFile(fileLink, xml, function (err) {
-//                    //Refresh the index if successfully updating the content.xml
-//                    if (err == null) {
-//                        console.log("UPDATED THE COURSE AND LESSON TITLE IN THE XML ----------------------------------------------------------------------------");
-//                    } else {
-//                        console.log("Houston, we have a problem - the content.xml update failed ---------------------------------------------------------------");
-//                    }
-//
-//                })
-//                callback(err);
             });
         });
     },
@@ -1038,12 +976,12 @@ var SocketHandler = {
                             });
                         }, function (message) {
                             _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
-                            logger.info("Error when creating Git Repo: " + message);
+                            logger.error("Error when creating Git Repo (1): " + message);
                         });
                     });
                 }, function (message) {
                     _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
-                    logger.info("Error when creating Git Repo: " + message);
+                    logger.error("Error when creating Git Repo (2): " + message);
                 });
             } else {
                 _this._socket.emit('generalError', {title: 'Program Exists', message: 'There is already a program named ' + data.name + '. Please choose a different program name or contact the ' + data.name + ' program admin to grant you access to the program.'});
@@ -1242,9 +1180,6 @@ var SocketHandler = {
                                 }
                             }
 
-//                            console.log('AFTER Remove Old');
-//                            Utils.printPermissions(user);
-
                             usersToSave[user.id] = user;
                         });
 
@@ -1259,11 +1194,7 @@ var SocketHandler = {
                                     permission: user.permission
                                 });
 
-//                                console.log('BEFORE Add');
-//                                Utils.printPermissions(dbUser);
                                 dbUser.permissions.push(permission);
-//                                console.log('AFTER Add');
-//                                Utils.printPermissions(dbUser);
                                 permissionsToSave.push(permission);
                             }
                         });
@@ -1307,7 +1238,7 @@ var SocketHandler = {
                         else {
                             var programPath = path.normalize('../programs/' + found.path + '/server');
                             var parentDir = require('path').resolve(process.cwd(), programPath);
-                            console.log('Spawning Content Server from ' + parentDir);
+                            logger.info('Spawning Content Server from ' + parentDir);
 //                            ContentSocket.start(serverDetails.port, found.id, parentDir, function(){});
 
                             var spawn = require('child_process').spawn;
@@ -1321,7 +1252,7 @@ var SocketHandler = {
                                 if (message.indexOf('C_Server started successfully') > -1) {
                                     _this._socket.emit('contentServerStarted', {
                                         id: found.id,
-                                        path: found.path,
+                                        path: encodeURIComponent(found.path),
                                         type: data.content.type
                                     });
                                     serverDetails.running = true;
@@ -1362,7 +1293,7 @@ var SocketHandler = {
             return;
         }
 
-        console.log('Rename ' + data.content.type + '#' + data.content.id + '...');
+//        console.log('Rename ' + data.content.type + '#' + data.content.id + '...');
         // First, find user and content.
         var contentType = Content.objectType(data.content.type);
 
@@ -1373,7 +1304,7 @@ var SocketHandler = {
                     found.name = data.content.name;
                     found.generatePath();
                     var newDiskPath = Content.diskPath(found.path);
-                    console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
+//                    console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
 
                     var itemsToSave = [found];
 

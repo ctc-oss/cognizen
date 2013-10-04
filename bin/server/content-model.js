@@ -101,7 +101,7 @@ var ProgramSchema = ContentSchema.extend({
 });
 
 ProgramSchema.statics.createUnique = function (program, callback) {
-    program.path = encodeURIComponent(program.name);
+    program.path = program.name;
     createUnique(Program, program, callback);
 };
 
@@ -131,6 +131,10 @@ ProgramSchema.methods.toDashboardItem = function() {
     };;
 };
 
+ProgramSchema.methods.getRepoName = function() {
+    return this.path.replace(' ', '_');
+}
+
 var ProjectSchema = ContentSchema.extend({
     program: {type: Schema.Types.ObjectId, ref: 'Program'}
 });
@@ -140,7 +144,7 @@ ApplicationSchema.statics.createUnique = function (app, callback) {
     findProgram(app.program, function (program) {
         if (program) {
             app.program = program;
-            app.path = [app.program.path, '/', encodeURIComponent(app.name)].join('');
+            app.path = [app.program.path, '/', app.name].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(app, function(allow) {
                 if (allow) {
@@ -185,7 +189,7 @@ ApplicationSchema.methods.getChildren = function(callback) {
 };
 
 ApplicationSchema.methods.generatePath = function() {
-    this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
+    this.path = [this.program.path, '/', this.name].join('');
 };
 
 ApplicationSchema.methods.toDashboardItem = function() {
@@ -228,7 +232,7 @@ CourseSchema.methods.getChildren = function(callback) {
 };
 
 CourseSchema.methods.generatePath = function() {
-    this.path = [this.program.path, '/', encodeURIComponent(this.name)].join('');
+    this.path = [this.program.path, '/', this.name].join('');
 };
 
 CourseSchema.methods.toDashboardItem = function() {
@@ -250,7 +254,7 @@ CourseSchema.statics.createUnique = function (course, callback) {
     findProgram(course.program, function (program) {
         if (program) {
             course.program = program;
-            course.path = [course.program.path, '/', encodeURIComponent(course.name)].join('');
+            course.path = [course.program.path, '/', course.name].join('');
             // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(course, function(allow) {
                 if (allow) {
@@ -286,7 +290,7 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
         if (course) {
             var courseProgram = course.program;
             lesson.course = course;
-            lesson.path = [lesson.course.path, '/', encodeURIComponent(lesson.name)].join('');
+            lesson.path = [lesson.course.path, '/', lesson.name].join('');
 //            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
                 if (saved) {
@@ -324,7 +328,7 @@ LessonSchema.methods.getChildren = function(callback) {
 };
 
 LessonSchema.methods.generatePath = function() {
-    this.path = [this.course.path, '/', encodeURIComponent(this.name)].join('');
+    this.path = [this.course.path, '/', this.name].join('');
 };
 
 LessonSchema.methods.toDashboardItem = function() {
