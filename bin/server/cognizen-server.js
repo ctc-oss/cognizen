@@ -446,7 +446,7 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'git fetch --all && git reset --hard origin/master';
+            var command = 'rm -f .git/index.lock && git fetch --all && git reset --hard origin/master';
             exec(command, {cwd: path}, function (err, stdout, stderr) {
                 if (stdout) logger.info('Git-STDOUT: ' + stdout);
                 if (stderr) logger.error('Git-STDERR: ' + stderr);

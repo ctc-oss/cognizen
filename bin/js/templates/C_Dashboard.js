@@ -745,15 +745,29 @@ function C_Dashboard(_type) {
                 disableMainKeyEvents();
                 enableRegisterContentKeyEvents()
             },
-            buttons: {
-                Cancel: function () {
+            buttons: [{
+                id:"registerContent-cancel",
+                text: "Cancel",
+                click: function() {
                     $(this).dialog("close");
                     $("#myName").remove();
                     $("#myType").remove();
                     $("#dialog-registerContent").remove();
-                },
-                Submit: submitRegisterNewContent
-            }
+                }
+            },{
+                id:"registerContent-submit",
+                text: "Submit",
+                click: submitRegisterNewContent
+            }]
+//            buttons: {
+//                Cancel: function () {
+//                    $(this).dialog("close");
+//                    $("#myName").remove();
+//                    $("#myType").remove();
+//                    $("#dialog-registerContent").remove();
+//                },
+//                Submit: submitRegisterNewContent
+//            }
         });
     }
     
