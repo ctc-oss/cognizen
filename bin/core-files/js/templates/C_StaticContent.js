@@ -1024,11 +1024,13 @@ function C_StaticContent(_type) {
 	}
 	
 	function mediaConversionComplete(data){
+		console.log("mediaConversionComplete - start");
 		var splitPath = data.split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
 		saveImageEdit(mediaPath, true);
 		$("#mediaLoader").remove();
+		console.log("mediaConversionComplete - end");
 	}
 
 

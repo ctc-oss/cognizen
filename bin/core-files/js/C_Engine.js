@@ -497,6 +497,9 @@ function buildInterface(){
 		$("#preferences").tooltip().click();
 
 
+	}
+	
+	if(mode == "edit" || mode == "review"){
 		$("#myCanvas").append("<div id='comment' class='btn_comment' title='Add a Page Comment'></div>");
 		$("#comment").tooltip().click(function(){
 			var pageNumber = currentPage + 1;
@@ -610,6 +613,7 @@ function buildInterface(){
 			}
 			currentTemplate.fadeComplete();
 		});
+
 	}
 
 	//Place panels - index, glossary, resources, references, others...
