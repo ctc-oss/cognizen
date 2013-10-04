@@ -647,7 +647,7 @@ var SocketHandler = {
 
                                                 fs.unlink(event.file.pathName, function (err) {
                                                     console.log('Unlinking Complete');
-                                                    if (err) logger.error('File Delete: ' + err);
+//                                                    if (err) logger.error('File Delete: ' + err);
 													_this._socket.emit('mediaConversionComplete', convertedPath);
                                                 })	
                                             });
