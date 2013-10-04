@@ -794,7 +794,7 @@ function C_StaticContent(_type) {
 	
 					siofu.listenOnDrop(document.getElementById("loader"));
 						
-					siofu.addEventListener("complete", function(event){
+					/*siofu.addEventListener("complete", function(event){
 						siofu.removeEventListener("complete");
 						siofu.removeEventListener("load");
 						//if successful upload, else....
@@ -854,29 +854,101 @@ function C_StaticContent(_type) {
 							cognizenSocket.on('mediaInfo', mediaInfo);
 							cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 						}
-					});
+					});*/
 						
-					siofu.addEventListener("progress", function(event){
+					/*siofu.addEventListener("progress", function(event){
 						console.log("making progress");
-					});
+					});*/
 						
-					siofu.addEventListener("start", function(event){
+					/*siofu.addEventListener("start", function(event){
 						try { $("#loader").tooltip("destroy"); } catch (e) {}
 						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
 						$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
 						$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
 						$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
-					});
+					});*/
 					
 					$("#loader").tooltip();
 				}
 			}
+			
+			siofu.addEventListener("complete", function(event){
+				siofu.removeEventListener("complete");
+				siofu.removeEventListener("load");
+				//if successful upload, else....
+							
+				var myFile = event.file.name;
+				var myExt = getExtension(myFile);
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf"){	
+					if(event.success == true){
+						if(myExt == "mp3" || myExt == "MP3"){
+							var audioText;
+							audioText = myFile;
+
+							$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
+
+							//Style it to jQuery UI dialog
+							$("#audioEditDialog").dialog({
+								autoOpen: true,
+								modal: true,
+								width: 500,
+								height: 200,
+								buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+								close: saveAudioEdit
+							});
+						}else{
+							saveImageEdit(myFile, true);
+						}
+					}else{
+						$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+						//Theres an error
+						//Style it to jQuery UI dialog
+						$("#uploadErrorDialog").dialog({
+					    	autoOpen: true,
+							modal: true,
+							width: 400,
+							height: 200,
+							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+						});
+					}
+					$("#mediaLoader").remove();
+				}else{
+					$("#mediaLoaderText").empty();
+					$("#mediaLoaderText").append("The file format that you upladed can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+					$("#conversionProgress").progressbar({
+						value: 0,
+						change: function() {
+							$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+						},
+						complete: function() {
+							$(".progress-label").text("Complete!");
+						}
+					});
+								
+					$("#conversionProgress > div").css({ 'background': '#3383bb'});
+																
+					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+					cognizenSocket.on('mediaInfo', mediaInfo);
+					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+				}
+			});
+			
+			siofu.addEventListener("start", function(event){
+				console.log(event);
+				try { $("#loader").tooltip("destroy"); } catch (e) {}
+				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+				$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+				$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
+				$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
+				$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
+			});
 
 			/*******************************************************
 			* Edit Audio
 			********************************************************/
 			
-            /*if(dragFile == true){
+            if(dragFile == true){
 	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
 	     		if(hasAudio == true){
 	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
@@ -886,7 +958,7 @@ function C_StaticContent(_type) {
 	     		
 	     		$("#audioDrop").attr('data-content', contentId);
 		 		$("#audioDrop").find('*').attr('data-content', contentId);
-			
+		 		
 			
 		 		$("#audioDrop").click(function(){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
@@ -894,7 +966,17 @@ function C_StaticContent(_type) {
 				}).tooltip();
 				
 				siofu.listenOnDrop(document.getElementById("audioDrop"));
-	     	} */
+				
+				/*var audioDropStartHeight = $("#audioDrop").height();
+		 		var audioDropStartPos = $("#audioDrop").position();
+		 		console.log("audioDropStartPos = " + audioDropStartPos);
+		 		console.log("audioDropStartHeight = " + audioDropStartHeight);
+		 		$("#audioDrop").hover(function(){
+			 		TweenMax.to($('#audioDrop'), transitionLength, {css:{height:audioDropStartHeight * 2, bottom:audioDropStartPos + audioDropStartHeight}, ease:transitionType});
+		 		}, function(){
+			 		TweenMax.to($('#audioDrop'), transitionLength, {css:{height:audioDropStartHeight, bottom: audioDropStartPos}, ease:transitionType});
+		 		});*/
+	     	} 
 			
 			$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
 			//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
