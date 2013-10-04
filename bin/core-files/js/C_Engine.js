@@ -418,10 +418,6 @@ function refreshPageComments(){
 function buildInterface(){
 	scorm = pipwerks.SCORM;
 
-
-
-    
-
 	$('body').empty();
 	$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div></div></div>");
 

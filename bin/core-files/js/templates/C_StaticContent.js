@@ -155,10 +155,12 @@ function C_StaticContent(_type) {
             }else{
                 checkMode();
             }
+            
             $(".nano").nanoScroller({
                    flashDelay: 3000,
                    flash: true
-            });            
+            });   
+                    
         }else{
             $('#stage').append('<div id="loader" class="loading" title="click to browse or drag media to this location" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
             var tempID = "#loader";
@@ -935,13 +937,19 @@ function C_StaticContent(_type) {
 			});
 			
 			siofu.addEventListener("start", function(event){
-				console.log(event);
-				try { $("#loader").tooltip("destroy"); } catch (e) {}
-				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-				$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
-				$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
-				$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
-				$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
+				var myFile = event.file.name;
+				var myExt = getExtension(myFile);
+				if(myExt == "mp3"){
+					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+					$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					$("#mediaLoader").css({'position':'absolute', 'top': $("#audioDrop").position().top, 'left': $("#audioDrop").position().left, 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width()});
+				}else{
+					$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
+					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
+					$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
+					try { $("#loader").tooltip("destroy"); } catch (e) {}
+				}
 			});
 
 			/*******************************************************
@@ -959,23 +967,12 @@ function C_StaticContent(_type) {
 	     		$("#audioDrop").attr('data-content', contentId);
 		 		$("#audioDrop").find('*').attr('data-content', contentId);
 		 		
-			
 		 		$("#audioDrop").click(function(){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
 					siofu.prompt($("#audioDrop").attr('data-content'));
 				}).tooltip();
 				
 				siofu.listenOnDrop(document.getElementById("audioDrop"));
-				
-				/*var audioDropStartHeight = $("#audioDrop").height();
-		 		var audioDropStartPos = $("#audioDrop").position();
-		 		console.log("audioDropStartPos = " + audioDropStartPos);
-		 		console.log("audioDropStartHeight = " + audioDropStartHeight);
-		 		$("#audioDrop").hover(function(){
-			 		TweenMax.to($('#audioDrop'), transitionLength, {css:{height:audioDropStartHeight * 2, bottom:audioDropStartPos + audioDropStartHeight}, ease:transitionType});
-		 		}, function(){
-			 		TweenMax.to($('#audioDrop'), transitionLength, {css:{height:audioDropStartHeight, bottom: audioDropStartPos}, ease:transitionType});
-		 		});*/
 	     	} 
 			
 			$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
@@ -1308,6 +1305,7 @@ function C_StaticContent(_type) {
 
 		if(type == "sidebar"){
             $("#sidebar").remove();
+            $("#sidebarHolder").remove();
 		}
 
 		$("#titleEdit").remove();
@@ -1324,16 +1322,15 @@ function C_StaticContent(_type) {
 		
 		if(mode == "edit" && dragFile == true){
 		  	if(type != "textOnly" && type !=  "sidebar"){
-			  	siofu.destroy();
 			  	$("#loader").unbind();
 			}
+			siofu.destroy();
 			$("#audioDrop").unbind();
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
 			cognizenSocket.removeListener('mediaInfo', mediaInfo);
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
+			$("#audioDrop").remove();
 		}
-		
-		$("#audioDrop").remove();
 		
 		if(type != "textOnly" && type !=  "sidebar"){
         	if(mediaType == 'swf'){
