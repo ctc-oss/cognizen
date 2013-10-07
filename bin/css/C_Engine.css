@@ -239,7 +239,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 162px;
 	right: 415px;
-	color: #3383bb;
+	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 20pt;
 	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
@@ -249,7 +249,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 172px;
 	right: 120px;
-	color: #3383bb;
+	color: #9DA6AB;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -262,11 +262,11 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #3383bb;
+	color: #9DA6AB;
 }
 
 #logout a:hover{
-	color: #9DA6AB;
+	color: #3383bb;
 }
 
 #adminAddProgram{

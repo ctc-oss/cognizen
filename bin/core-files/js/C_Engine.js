@@ -188,6 +188,7 @@ function initScripts(_data){
 				"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
+				"js/libs/jquery.nestable.js",
 				//Import Cognizen layout templates
 				"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
 				"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
@@ -215,8 +216,8 @@ function initializeSockets(){
 	if(mode == "edit"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
-	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secure}) :
-	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: secure});
+	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: true});
 	    
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -330,8 +331,8 @@ function initializeSockets(){
 
 	    siofu = new SocketIOFileUpload(cognizenSocket);
 
-	   	socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secure}) :
-                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, secure: secure});
+		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: true}) :
+                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, secure: true});
 		
 		//Simple listener checking connectivity
 		socket.on('onConnect', function (data) {
@@ -870,6 +871,32 @@ function updateMenuItems(){
 	}
 }
 
+
+var updateOutput = function(e){
+	var list   = e.length ? e : $(e.target),
+        output = list.data('output');
+    if (window.JSON) {
+    	console.log((window.JSON.stringify(list.nestable('serialize'))));//, null, 2));
+    } else {
+    	output.val('JSON browser support required for this demo.');
+    }
+};
+
+function checkForGroup(_id){
+	var virgin = true;
+	for(var i = 0; i < indexGroupID_arr.length; i++){
+		if(indexGroupID_arr[i] == _id){
+			virgin = false;
+		}
+	}
+	if(virgin == true){
+		indexGroupID_arr.push(_id);
+	}
+	return virgin;
+}
+
+var indexGroupID_arr
+
 function addIndex(){
 	totalPages = $(data).find('page').length;
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
@@ -892,7 +919,152 @@ function addIndex(){
 
 	//loop through the xml and add items to index.
 	var thisID;
-	$('#indexContent').append('<ul>');
+	var groupMode;
+	indexGroupID_arr = [];
+	
+	var indexString = '<div class="dd" id="C_Index"><ol class="dd-list">';
+	var groupCount = 0;
+	for(var i = 0; i < totalPages; i++){
+		thisID = "indexMenuItem" + i;
+		if($(data).find("page").eq(i).attr("type") == "group"){
+			groupMode = true;
+			var groupID = $(data).find("page").eq(i).attr("id");
+			var isVirgin = checkForGroup(groupID);
+			if(isVirgin){
+				indexString += '<li class="dd-item dd3-item" data-id="'+ i + '">';
+				if(mode == "edit"){
+					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+				}
+				indexString += '<div id="'+thisID+'" class="dd3-content">'+$(data).find("page").eq(i).attr("title") +'</div><ol class="dd-list">';
+			}
+		}else{
+			if($(data).find("page").eq(i).parent().attr("type") != "group"){
+				if(groupMode == true){
+					groupMode = false;
+					indexString += '</ol></li>';
+				}
+			}
+			indexString += '<li class="dd-item dd3-item" data-id="'+i+'">';
+			//If edit mode attach drag spot - otherwise don't....
+			if(mode == "edit"){
+				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			}
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').text() +'</div></li>';
+			
+			indexItem_arr.push("#" + thisID);
+		}
+	}
+	
+	indexString += "</ol></div>";
+	
+	$("#indexContent").append(indexString);
+	
+	var oldNodePos;
+	var newNodePos;
+	var oldParent;
+	var newParent;
+	
+	$('#C_Index').nestable({maxDepth: 2})
+		.on('change', function(){
+			//console.log("onChange");
+		})
+		.on('start', function(e, _item){
+			oldNodePos = _item.attr('data-id');
+		})
+		.on('stop', function(e, _item){
+			updateOutput($('#C_Index').data('output', $('#nestable-output')));
+			newNodePos = _item.index();
+			
+			//Convert list to JSON list
+			var tmp = $('#C_Index').data('output', $('#nestable-output'));
+			var tmpList   = tmp.length ? tmp : $(tmp.target);
+			var list = tmpList.nestable('serialize');
+			var listJSON = window.JSON.stringify(list);
+			var listLength = list.length;
+			
+			if(listJSON == startListJSON){
+				console.log('nothing changed');
+			}else{
+				console.log('there was a change');
+			}
+			
+			/*for(var i = 0; i < listLength; i++){
+				if(list[i].children != undefined){
+					var subLength = list[i].children.length;
+					for(var j = 0; j < subLength; j++){
+						console.log("this child has " + subLength + " children with an id = " + list[i].children[j].id);
+					}
+				}
+			}*/
+			
+			//If the node moved - update...
+			if(oldNodePos != newNodePos){
+				if(newNodePos < oldNodePos){
+					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+				}else{
+					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+				}
+				sendUpdateWithRefresh();
+			}
+		})
+		.on('stopNewRoot', function(e, _item){
+			console.log("stopNewRoot says " + _item);
+		})
+		.on('init', function(e){
+			console.log("init");
+		});
+		
+	var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
+	var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
+	var startList = tmpStartList.nestable('serialize');
+	var startListJSON = window.JSON.stringify(startList);
+	//Start with all closed...
+	if(mode == "edit"){	
+		$('#C_Index').nestable('collapseAll');
+	}
+	
+	//Set the button functions
+	for (var i = 0; i < indexItem_arr.length; i++){
+		$(indexItem_arr[i]).click(function(){
+			indexState = true;
+			toggleIndex();
+			loadPageFromID($(this).attr("myID"));
+		});
+	}
+	
+	
+	/*$("#indexContent").append('<div class="dd" id="nestable3">
+		<ol class="dd-list">
+			<li class="dd-item dd3-item" data-id="13">
+				<div class="dd-handle dd3-handle">Drag</div>
+				<div class="dd3-content">Item 13</div>
+			</li>
+			<li class="dd-item dd3-item" data-id="14">
+				<div class="dd-handle dd3-handle">Drag</div>
+				<div class="dd3-content">Item 14</div>
+			</li>
+			<li class="dd-item dd3-item" data-id="15">
+				<div class="dd-handle dd3-handle">Drag</div>
+				<div class="dd3-content">Item 15</div>
+					<ol class="dd-list">
+						<li class="dd-item dd3-item" data-id="16">
+							<div class="dd-handle dd3-handle">Drag</div>
+							<div class="dd3-content">Item 16</div>
+						</li>
+						<li class="dd-item dd3-item" data-id="17">
+							<div class="dd-handle dd3-handle">Drag</div>
+							<div class="dd3-content">Item 17</div>
+						</li>
+						<li class="dd-item dd3-item" data-id="18">
+							<div class="dd-handle dd3-handle">Drag</div>
+							<div class="dd3-content">Item 18</div>
+						</li>
+					</ol>
+				</li>
+			</ol>
+		</div>');*/
+	
+	/*$('#indexContent').append('<ul>');
 
 	for(var i = 0; i < totalPages; i++){
 		thisID = "indexMenuItem"+i;
@@ -960,7 +1132,7 @@ function addIndex(){
 		$(tempString).addClass('indexMenuVisited');
 		$(tempString).addClass('ui-state-disabled');
 		$(tempString).addClass('pageComplete');
-	}
+	}*/
 
 	if(pushedUpdate == true){
 		currentTemplate.fadeComplete();
