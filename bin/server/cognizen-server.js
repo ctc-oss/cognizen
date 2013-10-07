@@ -26,7 +26,7 @@ _.str.include('Underscore.string', 'string'); // => true
 
 var FileUtils = require('./file-utils');
 var Utils = require('./cognizen-utils');
-//var ContentSocket = require('./content-socket');
+var ContentSocket = require('./content-socket');
 
 var mongoose = require('mongoose');
 var User = require('./user-model').User;
@@ -1234,6 +1234,7 @@ var SocketHandler = {
                         var serverDetails = Content.serverDetails(found);
 
                         if (serverDetails.running) {
+                            logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
                             _this._socket.emit('contentServerStarted', {
                                 id: found.id,
                                 path: found.path,
@@ -1243,18 +1244,14 @@ var SocketHandler = {
                         else {
                             var programPath = path.normalize('../programs/' + found.path + '/server');
                             var parentDir = require('path').resolve(process.cwd(), programPath);
-                            logger.info('Spawning Content Server from ' + parentDir);
-//                            ContentSocket.start(serverDetails.port, found.id, parentDir, function(){});
-
-                            var spawn = require('child_process').spawn;
-                            var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
-
-                            Utils.subNodes.push(subNode);
-
-                            subNode.stdout.on('data', function (stdoutdata) {
-                                logger.info('stdout: ' + stdoutdata);
-                                var message = stdoutdata.toString();
-                                if (message.indexOf('C_Server started successfully') > -1) {
+                            logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
+                            ContentSocket.start(serverDetails.port, found.id, parentDir, logger, function(error){
+                                if (error) {
+                                    logger.error(error);
+                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
+                                    serverDetails.running = false;
+                                }
+                                else {
                                     _this._socket.emit('contentServerStarted', {
                                         id: found.id,
                                         path: encodeURIComponent(found.path),
@@ -1262,18 +1259,36 @@ var SocketHandler = {
                                     });
                                     serverDetails.running = true;
                                 }
-                                else if (!serverDetails.running && message.indexOf("error") > -1) {
-                                    logger.error(message);
-                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
-                                    serverDetails.running = false;
-                                }
                             });
 
-                            subNode.stderr.on('data', function (data) {
-                                logger.error('stderr: ' + data);
-                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(2)'});
-                                serverDetails.running = false;
-                            });
+//                            var spawn = require('child_process').spawn;
+//                            var subNode = spawn(process.execPath, ['C_Server.js', serverDetails.port, found.id], {cwd: parentDir});
+//
+//                            Utils.subNodes.push(subNode);
+//
+//                            subNode.stdout.on('data', function (stdoutdata) {
+//                                logger.info('stdout: ' + stdoutdata);
+//                                var message = stdoutdata.toString();
+//                                if (message.indexOf('C_Server started successfully') > -1) {
+//                                    _this._socket.emit('contentServerStarted', {
+//                                        id: found.id,
+//                                        path: encodeURIComponent(found.path),
+//                                        type: data.content.type
+//                                    });
+//                                    serverDetails.running = true;
+//                                }
+//                                else if (!serverDetails.running && message.indexOf("error") > -1) {
+//                                    logger.error(message);
+//                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
+//                                    serverDetails.running = false;
+//                                }
+//                            });
+//
+//                            subNode.stderr.on('data', function (data) {
+//                                logger.error('stderr: ' + data);
+//                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(2)'});
+//                                serverDetails.running = false;
+//                            });
                         }
 
                     }, function(err) {

@@ -1,3 +1,4 @@
+var http = require('http');
 var fs = require('fs-extra');
 var et = require('elementtree');
 var readdirp = require('readdirp');
@@ -6,10 +7,10 @@ var io;
 
 var ContentSocket = {
 
-    start: function(port, path, contentPath, callback) {
-        var xmlContentFile = contentPath + '/xml/content.xml';
+    start: function(port, path, contentPath, logger, callback) {
+        var xmlContentFile = contentPath + '/../xml/content.xml';
 
-        var app = require('http').createServer(function (req, res) {
+        var app = http.createServer(function (req, res) {
                 res.writeHead(404);
                 return res.end('No content available');
             });
@@ -17,22 +18,22 @@ var ContentSocket = {
         if (port) {
             app.listen(port);
             io = require('socket.io').listen(app);
-            io.set('polling duration', 600);
-            console.log('C_Server started successfully');
+            logger.info('C_Server started successfully');
         }
         else {
-            console.error('Port must be provided as an argument');
+            logger.error('Port must be provided as an argument');
             callback('Port must be provided as an argument');
             return;
         }
 
         if (path) {
             io.set('resource', '/' + path);
-            io.set('polling duration', 600);
-            console.log('Socket.io resource set to /' + path);
+            io.set('log level', 1);
+//            io.set('polling duration', 600);
+            logger.info('Socket.io resource set to /' + path);
         }
         else {
-            console.error('Path must be provided as an argument');
+            logger.error('Path must be provided as an argument');
             callback('Path must be provided as an argument');
             return;
         }
@@ -42,16 +43,17 @@ var ContentSocket = {
 
             //Set listener to update the content.xml file
             socket.on('updateXMLWithRefresh', function (data) {
-                console.log("updateXMLWithRefresh called with data of " + data);
+                logger.debug('Updating XML (with refresh) at ' + xmlContentFile);
+                logger.debug("updateXMLWithRefresh called with data of " + data.my);
 //                var file = contentPath + '../xml/content.xml';
                 fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){
-                        console.log("successfully updated content.xml - sending refresh ----------------------------------------------------------------------------");
+                        logger.debug("successfully updated content.xml - sending refresh ----------------------------------------------------------------------------");
                         socket.emit('updateXMLWithRefreshComplete');
                         socket.broadcast.emit('pushUpdateXMLWithRefreshComplete'); //Updates other connected clients
                     }else{
-                        console.log("Houston, we have a problem - the content.xml update failed ---------------------------------------------------------------");
+                        logger.error("content.xml update failed: " + err);
                     }
 
                 })
@@ -60,16 +62,17 @@ var ContentSocket = {
             //Update the page content
             socket.on('updateXML', function (data) {
 //                var file = '../xml/content.xml';
+                logger.debug('Updating XML at ' + xmlContentFile);
 
                 fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
-                    if(err == null){
+                    if (err == null){
                         socket.emit("pushUpdateXMLWithRefreshComplete");
                         socket.broadcast.emit('pushUpdateXMLWithRefreshComplete'); //Updates other connected clients -- Did this break it?
-                    }else{
-                        console.log("Houston, we have a problem - the content.xml update failed - attempting to update content for node");
                     }
-
+                    else{
+                        logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update content for node");
+                    }
                 })
             });
 
@@ -188,7 +191,7 @@ var ContentSocket = {
 
                         fs.writeFile(file, manifestFile, function(err) {
                             if(err) {
-                                console.log("Write file error" + err);
+                                logger.error("Write file error" + err);
                             }
                             else {
 
@@ -242,10 +245,9 @@ var ContentSocket = {
                                     }
                                     //tells the engine that it is done writing the zip file
                                     fn(packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
-                                    console.log("packageFolder = " + packageFolder);
+                                    logger.debug("packageFolder = " + packageFolder);
 
                                 });
-
                             }
                         });
                     }
