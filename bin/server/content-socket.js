@@ -9,8 +9,7 @@ var io;
 var ContentSocket = {
 
     start: function(port, path, contentPath, logger, callback) {
-        var baseContentPath = contentPath + '/../';
-        var xmlContentFile = baseContentPath + 'xml/content.xml';
+        var xmlContentFile = contentPath + '/xml/content.xml';
 
         var app = http.createServer(function (req, res) {
                 res.writeHead(404);
@@ -79,7 +78,7 @@ var ContentSocket = {
             socket.on('publishSCORM', function (data, callback) {
                 var scormVersion = data.my;
                 readdirp(
-                    { root: baseContentPath,
+                    { root: contentPath,
                         directoryFilter: [ '!server', '!scorm', '!.git'],
                         fileFilter: [ '!.*' ] }
                     , function(fileInfo) {
@@ -195,8 +194,8 @@ var ContentSocket = {
 
                         var manifestFile = manifest.join('');
 
-                        var basePath = contentPath.replace(/server/, '');
-                        var scormBasePath = basePath + 'scorm/' + scormVersion + '/';
+//                        var basePath = contentPath.replace(/server/, '');
+                        var scormBasePath = contentPath + '/scorm/' + scormVersion + '/';
                         var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
                         fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -210,7 +209,7 @@ var ContentSocket = {
 //                                    scormFileVersion = '1_2';
 //                                }
 
-                                var packageFolder = basePath + 'packages/';
+                                var packageFolder = contentPath + '/packages/';
                                 var outputFile = packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
                                 var output = fs.createWriteStream(outputFile);
                                 var archive = archiver('zip');
@@ -223,7 +222,7 @@ var ContentSocket = {
                                 //builds the bin directory
                                 res.files.forEach(function(file) {
                                     var localFile = file.path.replace(/\\/g,"/");
-                                    var inputFile = basePath + localFile;
+                                    var inputFile = contentPath + '/' + localFile;
                                     archive.append(fs.createReadStream(inputFile), { name: 'bin/'+localFile });
                                 });
 

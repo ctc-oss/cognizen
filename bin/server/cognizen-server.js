@@ -1266,7 +1266,7 @@ var SocketHandler = {
                             });
                         }
                         else {
-                            var programPath = path.normalize('../programs/' + found.path + '/server');
+                            var programPath = path.normalize('../programs/' + found.path + '/');
                             var parentDir = require('path').resolve(process.cwd(), programPath);
                             logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
                             ContentSocket.start(serverDetails.port, found.id, parentDir, logger, function(error){
