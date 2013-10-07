@@ -79,7 +79,6 @@ var windowWidth = $('body').width();
 var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
 windowHeight = $(window).height();
 
-var secure = window.location.protocol == 'https:';
 var xhr = true;
 var urlParams;
 var pageComments;
@@ -89,7 +88,7 @@ var dragFile = false;
 // IE Fix for lack of console.log -- IE breaks down for console calls otherwise.
 var alertFallback = true;
 
-var secureSocket = window.location.protocol == 'https';
+var secureSocket = window.location.protocol == 'https:';
 
 if (typeof console === "undefined" || typeof console.log === "undefined") {
     console = {};
