@@ -79,7 +79,7 @@ var ContentSocket = {
                 })
             });
 
-            socket.on('publishSCORM', function (data, fn) {
+            socket.on('publishSCORM', function (data, callback) {
                 var scormVersion = data.my;
                 readdirp(
                     { root: baseContentPath,
@@ -90,19 +90,19 @@ var ContentSocket = {
                         //gResults.push("         <file href=\"bin/"+fileInfo.path+"\"/>\n");
                     }
                     , function (err, res) {
-                        var manifest = new Array();
+                        var manifest = [];
 //                        var file = '../xml/content.xml';
-                        var XML = et.XML;
-                        var ElementTree = et.ElementTree;
-                        var element = et.Element;
-                        var subElement = et.SubElement;
+//                        var XML = et.XML;
+//                        var ElementTree = et.ElementTree;
+//                        var element = et.Element;
+//                        var subElement = et.SubElement;
                         var data, etree;
                         data = fs.readFileSync(xmlContentFile).toString();
                         etree = et.parse(data);
 
                         var courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 
-                        var gResults = new Array();
+//                        var gResults = new Array();
 
                         manifest.push('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n');
 
@@ -174,19 +174,27 @@ var ContentSocket = {
                             manifest.push("      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"bin/index.html\">\n");
                         }
                         //resources go here - resourcesgenerator
-                        for (var i=0;i<res.files.length;i++)
-                        {
-                            //determines the file name
-                            var fileName = res.files[i].path.split("\\");
+                        res.files.forEach(function(file) {
+                            var fileName = file.path.split("\\");
                             //does not include files that don't have an "." ext, directories
                             if(fileName[fileName.length-1].indexOf('.') !== -1){
-                                manifest.push("         <file href=\"bin/"+res.files[i].path.replace(/\\/g,"/")+"\"/>\n");
+                                manifest.push("         <file href=\"bin/"+file.path.replace(/\\/g,"/")+"\"/>\n");
                             }
-                        }
-                        manifest.push('      </resource>\n');
-                        manifest.push('   </resources>');
+                        });
 
-                        manifest.push('\n</manifest>');
+//                        for (var i=0;i<res.files.length;i++)
+//                        {
+//                            //determines the file name
+//                            var fileName = res.files[i].path.split("\\");
+//                            //does not include files that don't have an "." ext, directories
+//                            if(fileName[fileName.length-1].indexOf('.') !== -1){
+//                                manifest.push("         <file href=\"bin/"+res.files[i].path.replace(/\\/g,"/")+"\"/>\n");
+//                            }
+//                        }
+                        manifest.push('      </resource>\n');
+                        manifest.push('   </resources>\n');
+
+                        manifest.push('</manifest>');
 
                         var manifestFile = manifest.join('');
 
@@ -200,10 +208,10 @@ var ContentSocket = {
                             }
                             else {
 
-                                var scormFileVersion = scormVersion;
-                                if(scormVersion === '1.2'){
-                                    scormFileVersion = '1_2';
-                                }
+                                var scormFileVersion = scormVersion.replace(/\./, '_');
+//                                if(scormVersion === '1.2'){
+//                                    scormFileVersion = '1_2';
+//                                }
 
                                 var packageFolder = basePath + 'packages/';
                                 var outputFile = packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
@@ -216,32 +224,35 @@ var ContentSocket = {
 
                                 archive.pipe(output);
                                 //builds the bin directory
-                                for(var i=0;i<res.files.length;i++){
-                                    var lFile = res.files[i].path.replace(/\\/g,"/")
-                                    var file1 = basePath + lFile;
-                                    archive
-                                        .append(fs.createReadStream(file1), { name: 'bin/'+lFile });
-                                    //.append(fs.createReadStream(file2), { name: 'file2.txt' });
+                                res.files.forEach(function(file) {
+                                    var localFile = file.path.replace(/\\/g,"/");
+                                    var inputFile = basePath + localFile;
+                                    archive.append(fs.createReadStream(inputFile), { name: 'bin/'+localFile });
+                                });
 
-                                }
+//                                for(var i=0;i<res.files.length;i++){
+//                                    var lFile = res.files[i].path.replace(/\\/g,"/")
+//                                    var file1 = basePath + lFile;
+//                                    archive.append(fs.createReadStream(file1), { name: 'bin/'+lFile });
+//                                }
 
                                 //add SCORM files
-                                readdirp(
-                                    { root: scormBasePath,
+                                readdirp({
+                                        root: scormBasePath,
                                         directoryFilter: ['*'],
-                                        fileFilter: [ '!.DS_Store' ] }
-                                    , function(fileInfo) {
-                                    }
-                                    , function (err, res) {
-                                        for(var i=0;i<res.files.length;i++){
-                                            var lFile = res.files[i].path.replace(/\\/g,"/")
+                                        fileFilter: [ '!.DS_Store' ]
+                                    },
+                                    function(fileInfo) {},
+                                    function (err, res) {
+                                        res.files.forEach(function(file) {
+                                            var localFile = file.path.replace(/\\/g,"/")
                                             //console.log(lFile);
-                                            var file1 = scormBasePath + lFile;
-                                            archive
-                                                .append(fs.createReadStream(file1), { name: lFile });
-                                        }
+                                            var inputFile = scormBasePath + localFile;
+                                            archive.append(fs.createReadStream(inputFile), { name: localFile });
+                                        });
+//                                        for(var i=0;i<res.files.length;i++){
+//                                        }
                                     }
-
                                 );
 
                                 archive.finalize(function(err, written) {
@@ -249,7 +260,7 @@ var ContentSocket = {
                                         throw err;
                                     }
                                     //tells the engine that it is done writing the zip file
-                                    fn(packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
+                                    callback(packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
                                     logger.debug("packageFolder = " + packageFolder);
 
                                 });

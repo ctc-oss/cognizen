@@ -862,17 +862,20 @@ var SocketHandler = {
             if (user) {
 
                 var myPath = data.path;
-                while (myPath.charAt(0) === '/')
+                while (myPath.charAt(0) === '/') {
                     myPath = myPath.substr(1);
+                }
+
+                var url = config.url + encodeURIComponent(data.path);
 
                 Mail.send({
                     user: user.username,
                     subject: "Dowload Link for ",
                     txtMsg: user.firstName + ", your content package can be downloaded by navigiating to the below address.  Since you don't have html enabled in your mail client, you may have to copy and paste it into a web browser's url bar and hit the 'Return' key on your keyboard.  " + config.url + data.path,
-                    msg: user.firstName + ",<br/><br/><p>Your content package can be downloaded by clicking on the link below.</p><p><a href=" + config.url + data.path + ">" + config.url + data.path + "</a></p>"
+                    msg: user.firstName + ",<br/><br/><p>Your content package can be downloaded by clicking on the link below.</p><p><a href=" + url + ">" + url + "</a></p>"
                 });
                 _this._socket.emit("packageLinkAlert", {
-                    path: config.url + data.path
+                    path: url
                 });
             }
         });
