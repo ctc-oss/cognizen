@@ -2,13 +2,16 @@ var http = require('http');
 var fs = require('fs-extra');
 var et = require('elementtree');
 var readdirp = require('readdirp');
+var archiver = require('archiver');
 
 var io;
 
 var ContentSocket = {
 
     start: function(port, path, contentPath, logger, callback) {
-        var xmlContentFile = contentPath + '/../xml/content.xml';
+        var baseContentPath = contentPath + '/../';
+        var xmlContentFile = baseContentPath + 'xml/content.xml';
+
 
         var app = http.createServer(function (req, res) {
                 res.writeHead(404);
@@ -79,7 +82,7 @@ var ContentSocket = {
             socket.on('publishSCORM', function (data, fn) {
                 var scormVersion = data.my;
                 readdirp(
-                    { root: "../",
+                    { root: baseContentPath,
                         directoryFilter: [ '!server', '!scorm', '!.git'],
                         fileFilter: [ '!.*' ] }
                     , function(fileInfo) {
@@ -187,22 +190,24 @@ var ContentSocket = {
 
                         var manifestFile = manifest.join('');
 
-                        var file = contentPath+'/scorm/'+scormVersion+'/imsmanifest.xml';
+                        var basePath = contentPath.replace(/server/, '');
+                        var scormBasePath = basePath + 'scorm/' + scormVersion + '/';
+                        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
-                        fs.writeFile(file, manifestFile, function(err) {
+                        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
                             if(err) {
                                 logger.error("Write file error" + err);
                             }
                             else {
 
-                                var archiver = require('archiver');
                                 var scormFileVersion = scormVersion;
                                 if(scormVersion === '1.2'){
                                     scormFileVersion = '1_2';
                                 }
 
-                                var packageFolder = __dirname.replace("server","packages/");
-                                var output = fs.createWriteStream(packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
+                                var packageFolder = basePath + 'packages/';
+                                var outputFile = packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+                                var output = fs.createWriteStream(outputFile);
                                 var archive = archiver('zip');
 
                                 archive.on('error', function(err) {
@@ -213,7 +218,7 @@ var ContentSocket = {
                                 //builds the bin directory
                                 for(var i=0;i<res.files.length;i++){
                                     var lFile = res.files[i].path.replace(/\\/g,"/")
-                                    var file1 = __dirname + '/../' + lFile;
+                                    var file1 = basePath + lFile;
                                     archive
                                         .append(fs.createReadStream(file1), { name: 'bin/'+lFile });
                                     //.append(fs.createReadStream(file2), { name: 'file2.txt' });
@@ -222,7 +227,7 @@ var ContentSocket = {
 
                                 //add SCORM files
                                 readdirp(
-                                    { root: "../scorm/"+scormVersion,
+                                    { root: scormBasePath,
                                         directoryFilter: ['*'],
                                         fileFilter: [ '!.DS_Store' ] }
                                     , function(fileInfo) {
@@ -231,7 +236,7 @@ var ContentSocket = {
                                         for(var i=0;i<res.files.length;i++){
                                             var lFile = res.files[i].path.replace(/\\/g,"/")
                                             //console.log(lFile);
-                                            var file1 = __dirname + '/../scorm/'+scormVersion+ '/' + lFile;
+                                            var file1 = scormBasePath + lFile;
                                             archive
                                                 .append(fs.createReadStream(file1), { name: lFile });
                                         }

@@ -8,7 +8,7 @@ Setup Instructions
 2. This should globally install all of the node packages necessary to run the cognizen-server.js
 3. To link those node modules to our project here, run the following command
 
-        npm link socket.io http-proxy git-server nodemailer elementtree underscore underscore.string fs-extra winston mongoose mongoose-schema-extend bcrypt-nodejs socketio-file-upload ncp fluent-ffmpeg express cookie connect optimist readdirp
+        npm link socket.io http-proxy git-server nodemailer elementtree underscore underscore.string fs-extra winston mongoose mongoose-schema-extend bcrypt-nodejs socketio-file-upload ncp fluent-ffmpeg express cookie connect optimist readdirp archiver
 
 4. This will create links to all the node packages in the node_modules folder
 5. Make a copy of the config.json.template file, and call it config.json.  This will be your local configuration options.

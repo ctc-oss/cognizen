@@ -25,6 +25,7 @@
         "cookie": "0.1.x",
         "connect": "2.8.x",
 	    "optimist": "0.6.x",
-        "readdirp": "0.3.x"
+        "readdirp": "0.3.x",
+        "archiver": "0.4.x"
     }
 }

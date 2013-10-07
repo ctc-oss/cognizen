@@ -1956,8 +1956,8 @@ function clickPublish(){
 			$(data).find('scormVersion').attr('value', selectedScorm);
 		}
 
-		$(data).find('mode').attr("value", 'production');
-		sendUpdate();
+//		$(data).find('mode').attr("value", 'production');
+//		sendUpdate();
 
 		var myScormVersion = $(data).find('scormVersion').attr('value');
 		socket.emit('publishSCORM',{ my : myScormVersion}, function(fdata) {
