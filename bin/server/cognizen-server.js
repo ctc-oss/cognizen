@@ -409,11 +409,24 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'rm -f .git/index.lock && git add -A . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+
+            var commands = [];
             if (init) {
-                command = 'git init && ' + command;
+                commands.push('git init');
             }
-            logger.info('Committing to repo from ' + path);
+
+            commands.push(Utils.rmCommand() + ' .git/index.lock');
+            commands.push('git add -A .');
+            commands.push('git commit -q -a -m "' + commitMessage + '"');
+            commands.push('git push -f origin master');
+
+            var command = commands.join(Utils.chainCommands());
+
+            logger.info('Git Commit: ' + command);
+//            var command = 'rm -f .git/index.lock && git add -A . && git commit -q -a -m "' + commitMessage + '" && git push -f origin master';
+//            if (init) {
+//                command = 'git init && ' + command;
+//            }
             exec(command, {cwd: path}, function (err, stdout, stderr) {
                 if (stdout) logger.error('STDOUT: ' + stdout);
                 if (stderr) logger.error('STDERR: ' + stderr);
@@ -447,8 +460,16 @@ var Git = {
         }
         else {
             var exec = require('child_process').exec;
-            var command = 'rm -f .git/index.lock && git fetch --all && git reset --hard origin/master';
-            logger.info('Fetching git updates at ' + path);
+
+            var commands = [];
+            commands.push(Utils.rmCommand() + ' .git/index.lock');
+            commands.push('git fetch --all');
+            commands.push('git reset --hard origin/master');
+
+            var command = commands.join(Utils.chainCommands());
+            logger.info('Git Update: ' + command);
+
+//            var command = 'rm -f .git/index.lock && git fetch --all && git reset --hard origin/master';
             exec(command, {cwd: path}, function (err, stdout, stderr) {
                 if (stdout) logger.info('Git-STDOUT: ' + stdout);
                 if (stderr) logger.error('Git-STDERR: ' + stderr);
@@ -620,7 +641,7 @@ var SocketHandler = {
                                         var convertedPath;
                                         convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
 										
-                                        var proc = new ffmpeg({ source: event.file.pathName, timeout: 700, priority: 2 })
+                                        var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
                                             .toFormat('mp4')
                                             .withVideoBitrate('1200k')
                                             .withVideoCodec('libx264')
@@ -643,11 +664,8 @@ var SocketHandler = {
                                                 if (stdout) logger.error('FFMPEG STDOUT: ' + stdout);
                                                 if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
 
-                                                console.log('Unlinking ' + event.file.pathName);
-
                                                 fs.unlink(event.file.pathName, function (err) {
-                                                    console.log('Unlinking Complete');
-//                                                    if (err) logger.error('File Delete: ' + err);
+                                                    if (err) logger.error('File Delete: ' + err);
 													_this._socket.emit('mediaConversionComplete', convertedPath);
                                                 })	
                                             });

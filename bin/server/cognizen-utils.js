@@ -1,7 +1,21 @@
-// This will take care of all the spawned instances of Node, if the main node crashes
+var os = require('os');
+
 var Utils = {
     subNodes: [],
 
+    rmCommand: function() {
+        return Utils.isWindows() ? 'DEL /Q' : 'rm -f';
+    },
+
+    chainCommands: function() {
+        return Utils.isWindows() ? ' & ' : ' && ';
+    },
+
+    isWindows: function() {
+        return !!os.platform().match(/^win/);
+    },
+
+    // This will take care of all the spawned instances of Node, if the main node crashes
     killSubNodes: function (err) {
         if (err) {
             console.log(err);
