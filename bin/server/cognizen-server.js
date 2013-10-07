@@ -668,7 +668,7 @@ var SocketHandler = {
                                                 if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
 
                                                 fs.unlink(event.file.pathName, function (err) {
-                                                    if (err) logger.error('File Delete: ' + err);
+                                                    //if (err) logger.error('File Delete: ' + err);
 													_this._socket.emit('mediaConversionComplete', convertedPath);
                                                 })	
                                             });
