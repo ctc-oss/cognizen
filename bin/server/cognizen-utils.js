@@ -15,6 +15,12 @@ var Utils = {
         return !!os.platform().match(/^win/);
     },
 
+    replaceInvalidFilenameChars: function(filename, replacement) {
+        if (!replacement) replacement = '';
+
+        return filename.replace(/[\\/:"*?<>|]+/g, replacement);
+    },
+
     // This will take care of all the spawned instances of Node, if the main node crashes
     killSubNodes: function (err) {
         if (err) {
