@@ -400,6 +400,9 @@ var Git = {
         password: 'cct123'
     },
     _git: {},
+    indexLockFile: function() {
+        return Utils.isWindows() ? '.git\\index.lock' : '.git/index.lock';
+    },
     _gitCommit: function (program, user, init, commitMessage, success, error) {
         var path = Content.diskPath(program.path);
 
@@ -415,7 +418,7 @@ var Git = {
                 commands.push('git init');
             }
 
-            commands.push(Utils.rmCommand() + ' .git/index.lock');
+            commands.push(Utils.rmCommand() + ' ' + this.indexLockFile());
             commands.push('git add -A .');
             commands.push('git commit -q -a -m "' + commitMessage + '"');
             commands.push('git push -f origin master');
@@ -462,7 +465,7 @@ var Git = {
             var exec = require('child_process').exec;
 
             var commands = [];
-            commands.push(Utils.rmCommand() + ' .git/index.lock');
+            commands.push(Utils.rmCommand() + ' ' + this.indexLockFile());
             commands.push('git fetch --all');
             commands.push('git reset --hard origin/master');
 

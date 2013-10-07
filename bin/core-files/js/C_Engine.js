@@ -79,7 +79,7 @@ var windowWidth = $('body').width();
 var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
 windowHeight = $(window).height();
 
-var secure = window.location.protocol == 'https';
+var secure = window.location.protocol == 'https:';
 var xhr = true;
 var urlParams;
 var pageComments;
