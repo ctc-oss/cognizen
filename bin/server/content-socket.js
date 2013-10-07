@@ -12,7 +12,6 @@ var ContentSocket = {
         var baseContentPath = contentPath + '/../';
         var xmlContentFile = baseContentPath + 'xml/content.xml';
 
-
         var app = http.createServer(function (req, res) {
                 res.writeHead(404);
                 return res.end('No content available');
@@ -48,7 +47,6 @@ var ContentSocket = {
             socket.on('updateXMLWithRefresh', function (data) {
                 logger.debug('Updating XML (with refresh) at ' + xmlContentFile);
                 logger.debug("updateXMLWithRefresh called with data of " + data.my);
-//                var file = contentPath + '../xml/content.xml';
                 fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){
@@ -64,7 +62,6 @@ var ContentSocket = {
 
             //Update the page content
             socket.on('updateXML', function (data) {
-//                var file = '../xml/content.xml';
                 logger.debug('Updating XML at ' + xmlContentFile);
 
                 fs.outputFile(xmlContentFile, data.my, function(err) {
