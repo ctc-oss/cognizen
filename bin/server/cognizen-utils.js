@@ -21,6 +21,10 @@ var Utils = {
         return filename.replace(/[\\/:"*?<>|]+/g, replacement);
     },
 
+    defaultValue: function(value, fallback) {
+        return (!value ? fallback : value);
+    },
+
     // This will take care of all the spawned instances of Node, if the main node crashes
     killSubNodes: function (err) {
         if (err) {
