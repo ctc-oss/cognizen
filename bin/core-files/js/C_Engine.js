@@ -947,7 +947,7 @@ function addIndex(){
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 				}
-				indexString += '<div id="'+thisID+'" class="dd3-content">'+$(data).find("page").eq(i).find("title").first().text() +'</div><ol class="dd-list">';
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'</div><ol class="dd-list">';
 			}
 		}else{
 			if($(data).find("page").eq(i).parent().attr("type") != "group"){
@@ -961,10 +961,9 @@ function addIndex(){
 			if(mode == "edit"){
 				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 			}
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').text() +'</div></li>';
-			
-			indexItem_arr.push("#" + thisID);
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'</div></li>';
 		}
+		indexItem_arr.push("#" + thisID);
 	}
 	
 	indexString += "</ol></div>";
@@ -1015,10 +1014,12 @@ function addIndex(){
 			var moveUp = false;
 			var isSub = false;
 			var createNewGroup = false;
+			var addToGroup = false;
 			
 			if(listJSON != startListJSON){
 				var iterator = 0;
 				for(var i = 0; i < list.length; i++){
+					//IS A ROOT NODE
 					if(oldNodePos == list[i].id){
 						newNodePos = iterator;
 						//Check if started as a child if so - if iterator is == to it being last in parent node them move up level for xml.
@@ -1033,6 +1034,7 @@ function addIndex(){
 					iterator++;
 					if(list[i].children){
 						for(var j = 0; j < list[i].children.length; j++){
+							//IS A CHILD NODE
 							if(oldNodePos == list[i].children[j].id){
 								isChild = true;
 								childParent = i;
@@ -1045,6 +1047,8 @@ function addIndex(){
 											isSub = true;
 											newNodePos++;
 										}else if($(data).find("page").eq(childParent).attr("type") == "group"){
+											addToGroup = true;
+										}else if($(data).find("page").eq(childParent).attr("type") != "group"){
 											createNewGroup = true;
 										}
 									}
@@ -1054,9 +1058,34 @@ function addIndex(){
 						}
 					}
 				}
-				if(createNewGroup){
+				if(addToGroup){
 					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent));
+					//$(data).find("page").eq(childParent).attr("type", "group");
+				}else if (createNewGroup){
+					//Create a Unique ID for the page
+					var myID = guid();
+					//Place a page element
+					$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="group" type="group"></page>'));
+
+					//Place the page title element
+					$(data).find("page").eq(childParent).append($("<title>"));
+					var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
+					var titleCDATA = newPageTitle.createCDATASection("New Group Title");
+					$(data).find("page").eq(childParent).find("title").append(titleCDATA);
+					$(data).find("page").eq(childParent).append($("<content>"));
+					var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+					var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+					$(data).find("page").eq(childParent).find("content").append(contentCDATA);
 					$(data).find("page").eq(childParent).attr("type", "group");
+					if(isLinear == true){
+						var page_obj = new Object();
+						page_obj.id = myID;
+						page_obj.complete = false;
+						tracking_arr.push(page_obj);
+					}
+					$(data).find("page").eq(childParent).appendTo($(data).find("page").eq(childParent - 1));
+					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent - 2));
+					
 				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 				}else{
@@ -1929,6 +1958,7 @@ function findNodeByID(){
 }
 
 function loadPageFromID(_id){
+	console.log(_id);
 	for(var i = 0; i < totalPages; i++){
 		if($(data).find("page").eq(i).attr("id") == _id){
 			currentPage = i;
