@@ -49,15 +49,9 @@ function C_LessonTitle(_type) {
         $("#pageTitle").append(myPageTitle);
 
         //Add classes for page layouts - updatable in css
-        $('#stage').append('<div id="contentHolder" class="nano"><div id="content" class="overthrow contentTitlePage"></div></div>');
+        $('#stage').append('<div id="content" class="lessonTitleCon"></div>');
 
         $("#content").append(myContent);
-        
-        
-        /*$(".nano").nanoScroller({
-        	flashDelay: 3000,
-			flash: true
-		});*/
 
         if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
@@ -102,7 +96,7 @@ function C_LessonTitle(_type) {
 
 			
             $('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
-			$("#conEdit").css({'position':'absolute', 'top':$("#contentHolder").position().top - 18, 'left': $("#contentHolder").position().left + $("#content").width() - 18});
+			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 18, 'left': $("#content").position().left + $("#content").width() - 18});
 
 			$("#conEdit").click(function(){
 
@@ -111,18 +105,18 @@ function C_LessonTitle(_type) {
 
 				var myHeight;
 
-				if($("#contentHolder").height() < 300){
+				if($("#content").height() < 300){
 					myHeight = 350;
-				}else if($("#contentHolder").height() > (stageH - 80)){
+				}else if($("#content").height() > (stageH - 80)){
 					myHeight = stageH - 80;
 				}else{
-					myHeight = $("#contentHolder").height();
+					myHeight = $("#content").height();
 				}
 				//Style it to jQuery UI dialog
 				$("#contentEditDialog").dialog({
 					autoOpen: true,
 					modal: true,
-					width: $("#contentHolder").width() + 100,
+					width: $("#content").width() + 100,
 					height: myHeight + 150,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 					close: saveContentEdit
@@ -213,7 +207,7 @@ function C_LessonTitle(_type) {
 
 	function fadeComplete() {	
         $('#pageTitle').remove();
-	   	$('#contentHolder').remove();
+	   	$('#content').remove();
 		$("#titleEdit").remove();
 		$("#titleDialog").remove();
 		$("#conEdit").remove();

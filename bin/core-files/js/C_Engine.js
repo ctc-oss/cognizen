@@ -961,7 +961,7 @@ function addIndex(){
 			if(mode == "edit"){
 				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 			}
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'</div></li>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 		}
 		indexItem_arr.push("#" + thisID);
 	}
@@ -1039,11 +1039,10 @@ function addIndex(){
 								isChild = true;
 								childParent = i;
 								newNodePos = iterator;
-								console.log(isChild);
 								//if pulling from root to lower level check some things....
-								if(!startChild)
+								if(!startChild){
 									//If dragging from item before folder to the first spot in folder fix....
-									if(iterator == childParent + 1){
+									if(iterator == childParent + 1 && isChild){
 										if(list[i].children.length > 1){
 											isSub = true;
 											newNodePos++;
@@ -1056,6 +1055,7 @@ function addIndex(){
 										}
 									}
 								break;
+								}
 							}
 							iterator++;
 						}
@@ -1125,9 +1125,12 @@ function addIndex(){
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
 		$(indexItem_arr[i]).click(function(){
-			indexState = true;
-			toggleIndex();
 			loadPageFromID($(this).attr("myID"));
+			console.log("clicked");
+			console.log("indexState = " + indexState);
+			if(indexState){
+				toggleIndex();
+			}
 		});
 	}
 
@@ -1794,21 +1797,27 @@ function addGlossary(){
 ** Next/Back Button Funcitonality
 *************************************************************/
 function clickBack(){
+	if(indexState == true){
+		toggleIndex();
+	}
 	currentPage--;
 	currentTemplate.destroySelf();
-	if(masterIndex == true){
+	/*if(masterIndex == true){
 		var tempString = '#indexMenuItem' + currentPage;
 		$(tempString).click();
-	}
+	}*/
 }
 
 function clickNext(){
+	if(indexState == true){
+		toggleIndex();
+	}
 	currentPage++;
 	currentTemplate.destroySelf();
-	if(masterIndex == true){
+	/*if(masterIndex == true){
 		var tempString = '#indexMenuItem' + currentPage;
 		$(tempString).click();
-	}
+	}*/
 }
 
 //Turns the next/back button off for first/last page.
@@ -1970,7 +1979,6 @@ function findNodeByID(){
 }
 
 function loadPageFromID(_id){
-	console.log(_id);
 	for(var i = 0; i < totalPages; i++){
 		if($(data).find("page").eq(i).attr("id") == _id){
 			currentPage = i;
@@ -2008,8 +2016,8 @@ function updateIndex(){
 		    	addIndex();
 		},
 		error: function(){
-	    		alert("unable to load content.xml in updateIndex")
-	    	}
+	    	alert("unable to load content.xml in updateIndex")
+	    }
 	});
 }
 
