@@ -146,8 +146,8 @@ function C_LessonTitle(_type) {
 	   	$("#pageTitle").html($("#titleEditText").html());
 	   	myPageTitle = titleUpdate;
 	   	$("#titleEditText").destroyEditor();
-	   	$(data).find("page").eq(currentPage).find("title").empty();
-	   	$(data).find("page").eq(currentPage).find("title").append(newCDATA);
+	   	$(data).find("page").eq(currentPage).find("title").first().empty();
+	   	$(data).find("page").eq(currentPage).find("title").first().append(newCDATA);
 	   	$("#titleDialog").remove();
 	   	sendUpdateWithRefresh();
 	};
@@ -166,8 +166,8 @@ function C_LessonTitle(_type) {
         myContent = contentUpdate;
         $("#contentEditText").destroyEditor();
         //Update the local xml - first clearning the content node and then updating it with out newCDATA
-        $(data).find("page").eq(currentPage).find("content").empty();
-        $(data).find("page").eq(currentPage).find("content").append(newCDATA);
+        $(data).find("page").eq(currentPage).find("content").first().empty();
+        $(data).find("page").eq(currentPage).find("content").first().append(newCDATA);
         $("#contentEditDialog").remove();
         sendUpdate();
     };

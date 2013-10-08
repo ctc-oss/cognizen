@@ -64,5 +64,25 @@
 			<title><![CDATA[Objectives]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
 		</page>
+		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181981" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+			<title><![CDATA[Page 2]]></title>
+			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+		</page>
+		<page layout="group" type="group" id="447dd3a6-87f9-1185-4b5a-bc8e75181922">
+			<title>Group 1</title>
+			<content>My Content</content>
+			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181982" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+				<title><![CDATA[page 3]]></title>
+				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			</page>
+			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181983" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+				<title><![CDATA[page 4]]></title>
+				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			</page>
+			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181984" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+				<title><![CDATA[page 5]]></title>
+				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			</page>
+		</page>
 	</pages>
 </content>

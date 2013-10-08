@@ -974,9 +974,9 @@ function addIndex(){
 	var newNodePos;
 	var oldParent;
 	var newParent;
-	var startChild = false;
-	var startParent;
-	var startChildrenLength; 
+	var startChild = false; //If dragged object started as a child or root
+	var startParent; //If dragged object started as a child - what was it's parent.
+	var startChildrenLength; //Used to calculate top
 	
 	$('#C_Index').nestable({maxDepth: 2})
 		.on('change', function(){
@@ -1039,6 +1039,7 @@ function addIndex(){
 								isChild = true;
 								childParent = i;
 								newNodePos = iterator;
+								console.log(isChild);
 								//if pulling from root to lower level check some things....
 								if(!startChild)
 									//If dragging from item before folder to the first spot in folder fix....
@@ -1048,8 +1049,10 @@ function addIndex(){
 											newNodePos++;
 										}else if($(data).find("page").eq(childParent).attr("type") == "group"){
 											addToGroup = true;
-										}else if($(data).find("page").eq(childParent).attr("type") != "group"){
+											console.log("add to group")
+										}else{
 											createNewGroup = true;
+											console.log("create new group");
 										}
 									}
 								break;
@@ -1062,11 +1065,13 @@ function addIndex(){
 					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent));
 					//$(data).find("page").eq(childParent).attr("type", "group");
 				}else if (createNewGroup){
+					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+					var secondID = $(data).find("page").eq(newNodePos).attr("id");
 					//Create a Unique ID for the page
 					var myID = guid();
 					//Place a page element
 					$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="group" type="group"></page>'));
-
+					
 					//Place the page title element
 					$(data).find("page").eq(childParent).append($("<title>"));
 					var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
@@ -1077,14 +1082,27 @@ function addIndex(){
 					var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 					$(data).find("page").eq(childParent).find("content").append(contentCDATA);
 					$(data).find("page").eq(childParent).attr("type", "group");
+					
 					if(isLinear == true){
 						var page_obj = new Object();
 						page_obj.id = myID;
 						page_obj.complete = false;
 						tracking_arr.push(page_obj);
 					}
-					$(data).find("page").eq(childParent).appendTo($(data).find("page").eq(childParent - 1));
-					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent - 2));
+					
+					for(var i = 0; i < $(data).find("page").length; i++){
+						if($(data).find("page").eq(i).attr("id") == myID){
+							var newGroupSpot = i;
+							var newSub = i+1;
+						}
+					}
+					$(data).find("page").eq(newSub).appendTo($(data).find("page").eq(newGroupSpot));
+					for(var i = 0; i < $(data).find("page").length; i++){
+						if(secondID == $(data).find("page").eq(i).attr("id")){
+							var tmpID = i;
+						}
+					}
+					$(data).find("page").eq(tmpID).appendTo($(data).find("page").eq(newGroupSpot));
 					
 				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
@@ -1093,12 +1111,6 @@ function addIndex(){
 				}
 				sendUpdateWithRefresh();
 			}
-		})
-		.on('stopNewRoot', function(e, _item){
-			console.log("stopNewRoot says " + _item);
-		})
-		.on('init', function(e){
-			console.log("init");
 		});
 		
 	var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
