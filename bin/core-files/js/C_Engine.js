@@ -76,7 +76,7 @@ var scorm;//Set after script is initialized. = pipwerks.SCORM;//var for SCORM AP
 
 var mobileWidth = 1023; //value should match the value set in C_Engine.css (@media all and (max-width: 600px) )
 var windowWidth = $('body').width();
-var pageType_arr = ["group", "textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
 windowHeight = $(window).height();
 
 var xhr = true;
