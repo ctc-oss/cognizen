@@ -68,7 +68,9 @@
 			<title><![CDATA[Page 2]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
 		</page>
-		<page title="Group1" type="group" id="447dd3a6-87f9-1185-4b5a-bc8e75181922">
+		<page type="group" id="447dd3a6-87f9-1185-4b5a-bc8e75181922">
+			<title>Group 1</title>
+			<content>My Content</content>
 			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181982" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
 				<title><![CDATA[page 3]]></title>
 				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>

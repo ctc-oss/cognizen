@@ -61,13 +61,13 @@ function C_StaticContent(_type) {
         autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
 
         //Page title value from content.xml
-        myPageTitle = $(data).find("page").eq(currentPage).find('title').text();
+        myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
 
         //Position the page text
-        myContent = $(data).find("page").eq(currentPage).find("content").text();
+        myContent = $(data).find("page").eq(currentPage).find("content").first().text();
 
         if(type == "sidebar"){
-            mySidebar = $(data).find("page").eq(currentPage).find("sidebar").text();
+            mySidebar = $(data).find("page").eq(currentPage).find("sidebar").first().text();
         }
         
         if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
@@ -82,7 +82,7 @@ function C_StaticContent(_type) {
 
         if(type != "textOnly" && type != "sidebar"){
             mediaLink = $(data).find("page").eq(currentPage).attr('img');
-            myCaption = $(data).find("page").eq(currentPage).find('caption').text();
+            myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
         }
 
 
@@ -882,7 +882,7 @@ function C_StaticContent(_type) {
 			* Edit Audio
 			********************************************************/
 			
-            if(dragFile == true){
+            if(dragFile == true && mode == 'edit'){
 	     		var contentId = urlParams['type'] + '_' + urlParams['id'];
 	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
 	     		if(hasAudio == true){
@@ -1262,8 +1262,9 @@ function C_StaticContent(_type) {
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
 			cognizenSocket.removeListener('mediaInfo', mediaInfo);
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
-			$("#audioDrop").remove();
+			
 		}
+		$("#audioDrop").remove();
 		
 		if(type != "textOnly" && type !=  "sidebar"){
         	if(mediaType == 'swf'){

@@ -76,7 +76,7 @@ var scorm;//Set after script is initialized. = pipwerks.SCORM;//var for SCORM AP
 
 var mobileWidth = 1023; //value should match the value set in C_Engine.css (@media all and (max-width: 600px) )
 var windowWidth = $('body').width();
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
+var pageType_arr = ["group", "textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "matching"/*",multipleSelect", "multipleChoiceImageTop", "multipleChoiceImageLeft", "multipleChoiceImageRight", "multipleSelectImageTop",  "matchingDrag", "unity", "tabsLeft", "unityOnly", "tabbedContentMedia"*/];
 windowHeight = $(window).height();
 
 var xhr = true;
@@ -191,6 +191,7 @@ function initScripts(_data){
 				"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
 				"js/libs/jquery.nestable.js",
 				//Import Cognizen layout templates
+				"js/templates/C_LessonTitle.js", 
 				"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
 				"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
 				"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
@@ -600,7 +601,8 @@ function buildInterface(){
 				$("#preferences").hide();
 				$("#comment").hide();
 				$("#addPage").hide();
-				$("#removePage").hide();				
+				$("#removePage").hide();
+				$("#audioDrop").hide();				
 				mode = "prod";
 			}else{
 				$("#toggleMode").removeClass("toggleOff");
@@ -611,6 +613,7 @@ function buildInterface(){
 				$("#comment").show();
 				$("#addPage").show();
 				$("#removePage").show();
+				$("#audioDrop").show();
 				mode = "edit";
 			}
 			currentTemplate.fadeComplete();
@@ -740,6 +743,10 @@ this.loadPage = function(){
 
 	switch (currentTemplateType) {
 		//Satic Layouts
+		case "group":
+			currentTemplate = new C_LessonTitle(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "textOnly":
 			currentTemplate = new C_StaticContent(currentTemplateType);
 			currentTemplate.initialize();
@@ -924,19 +931,23 @@ function addIndex(){
 	indexGroupID_arr = [];
 	
 	var indexString = '<div class="dd" id="C_Index"><ol class="dd-list">';
-	var groupCount = 0;
 	for(var i = 0; i < totalPages; i++){
 		thisID = "indexMenuItem" + i;
+		var pageID = $(data).find("page").eq(i).attr("id");
 		if($(data).find("page").eq(i).attr("type") == "group"){
+			//Resolves issue of group butting into group...
+			if(groupMode == true){
+				indexString += '</ol></li>';
+			}
 			groupMode = true;
-			var groupID = $(data).find("page").eq(i).attr("id");
-			var isVirgin = checkForGroup(groupID);
+			
+			var isVirgin = checkForGroup(thisID);
 			if(isVirgin){
-				indexString += '<li class="dd-item dd3-item" data-id="'+ i + '">';
+				indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 				}
-				indexString += '<div id="'+thisID+'" class="dd3-content">'+$(data).find("page").eq(i).attr("title") +'</div><ol class="dd-list">';
+				indexString += '<div id="'+thisID+'" class="dd3-content">'+$(data).find("page").eq(i).find("title").first().text() +'</div><ol class="dd-list">';
 			}
 		}else{
 			if($(data).find("page").eq(i).parent().attr("type") != "group"){
@@ -945,7 +956,7 @@ function addIndex(){
 					indexString += '</ol></li>';
 				}
 			}
-			indexString += '<li class="dd-item dd3-item" data-id="'+i+'">';
+			indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+i+'">';
 			//If edit mode attach drag spot - otherwise don't....
 			if(mode == "edit"){
 				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
@@ -964,6 +975,9 @@ function addIndex(){
 	var newNodePos;
 	var oldParent;
 	var newParent;
+	var startChild = false;
+	var startParent;
+	var startChildrenLength; 
 	
 	$('#C_Index').nestable({maxDepth: 2})
 		.on('change', function(){
@@ -971,36 +985,79 @@ function addIndex(){
 		})
 		.on('start', function(e, _item){
 			oldNodePos = _item.attr('data-id');
+			for(var i = 0; i < startList.length; i++){
+				if(oldNodePos == startList[i].id){
+					startChild = false;
+					break;
+				}
+				if(startList[i].children){
+					for(var j = 0; j < startList[i].children.length; j++){
+						if(oldNodePos == startList[i].children[j].id){
+							startChild = true;
+							startParent = i;
+							startChildrenLength = startList[i].children.length;
+							break;
+						}
+					}
+				}
+			}
 		})
 		.on('stop', function(e, _item){
 			updateOutput($('#C_Index').data('output', $('#nestable-output')));
-			newNodePos = _item.index();
-			
+			newNodeID = _item.attr('id');
 			//Convert list to JSON list
 			var tmp = $('#C_Index').data('output', $('#nestable-output'));
 			var tmpList   = tmp.length ? tmp : $(tmp.target);
 			var list = tmpList.nestable('serialize');
 			var listJSON = window.JSON.stringify(list);
-			var listLength = list.length;
+			var isChild = false;
+			var childParent;
+			var moveUp = false;
+			var isSub = false;
+			var createNewGroup = false;
 			
-			if(listJSON == startListJSON){
-				console.log('nothing changed');
-			}else{
-				console.log('there was a change');
-			}
-			
-			/*for(var i = 0; i < listLength; i++){
-				if(list[i].children != undefined){
-					var subLength = list[i].children.length;
-					for(var j = 0; j < subLength; j++){
-						console.log("this child has " + subLength + " children with an id = " + list[i].children[j].id);
+			if(listJSON != startListJSON){
+				var iterator = 0;
+				for(var i = 0; i < list.length; i++){
+					if(oldNodePos == list[i].id){
+						newNodePos = iterator;
+						//Check if started as a child if so - if iterator is == to it being last in parent node them move up level for xml.
+						if(startChild){
+							if(iterator == startChildrenLength + startParent){
+								newNodePos = startParent;
+								moveUp = true;
+							}
+						}
+						break;
+					}
+					iterator++;
+					if(list[i].children){
+						for(var j = 0; j < list[i].children.length; j++){
+							if(oldNodePos == list[i].children[j].id){
+								isChild = true;
+								childParent = i;
+								newNodePos = iterator;
+								//if pulling from root to lower level check some things....
+								if(!startChild)
+									//If dragging from item before folder to the first spot in folder fix....
+									if(iterator == childParent + 1){
+										if(list[i].children.length > 1){
+											isSub = true;
+											newNodePos++;
+										}else if($(data).find("page").eq(childParent).attr("type") == "group"){
+											createNewGroup = true;
+										}
+									}
+								break;
+							}
+							iterator++;
+						}
 					}
 				}
-			}*/
-			
-			//If the node moved - update...
-			if(oldNodePos != newNodePos){
-				if(newNodePos < oldNodePos){
+				if(createNewGroup){
+					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent));
+					$(data).find("page").eq(childParent).attr("type", "group");
+				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 				}else{
 					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
@@ -1020,7 +1077,7 @@ function addIndex(){
 	var startList = tmpStartList.nestable('serialize');
 	var startListJSON = window.JSON.stringify(startList);
 	//Start with all closed...
-	if(mode == "edit"){	
+	if(mode != "edit"){	
 		$('#C_Index').nestable('collapseAll');
 	}
 	
@@ -1209,6 +1266,13 @@ function createNewPageByType(_myType){
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	switch (_myType) {
 		//Satic Layouts
+		case "group":
+			$(data).find("page").eq(currentPage + 1).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(data).find("page").eq(currentPage + 1).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage + 1).attr("type", "group");
+			break;
 		case "textOnly":
 			$(data).find("page").eq(currentPage + 1).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
