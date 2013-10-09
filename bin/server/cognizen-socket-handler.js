@@ -123,7 +123,7 @@ var SocketHandler = {
 //                                                    console.log('Unlinking Complete');
                                                     _this._socket.emit('mediaConversionComplete', convertedPath);
 //                                                    if (err) logger.error('File Delete: ' + err);
-//                                                });
+                                                });
                                             });
                                     }
                                 }
