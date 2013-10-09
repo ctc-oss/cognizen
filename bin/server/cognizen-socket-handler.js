@@ -85,7 +85,7 @@ var SocketHandler = {
                                         });
 
                                         stream.on('close', function(){
-                                            if (!had_error) fs.unlink(event.file.pathName);
+                                            fs.unlink(event.file.pathName);
                                         })
                                         //Git commit
                                     } else {
