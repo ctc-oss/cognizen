@@ -113,15 +113,15 @@ var SocketHandler = {
                                              console.log('screenshots were saved');
                                              })*/
                                             .saveToFile(convertedPath, function (stdout, stderr) {
-                                                _this._socket.emit('mediaConversionComplete', convertedPath);
-//                                                if (stdout) logger.error('FFMPEG STDOUT: ' + stdout);
-//                                                if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
-//
-//                                                console.log('Unlinking ' + event.file.pathName);
-//
-//                                                fs.unlink(event.file.pathName, function (err) {
+//                                                _this._socket.emit('mediaConversionComplete', convertedPath);
+                                               if (stdout) logger.error('FFMPEG STDOUT: ' + stdout);
+                                               if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
+
+                                                console.log('Unlinking ' + event.file.pathName);
+
+                                                fs.unlink(event.file.pathName, function (err) {
 //                                                    console.log('Unlinking Complete');
-//                                                    _this._socket.emit('mediaConversionComplete', convertedPath);
+                                                    _this._socket.emit('mediaConversionComplete', convertedPath);
 //                                                    if (err) logger.error('File Delete: ' + err);
 //                                                });
                                             });
