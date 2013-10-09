@@ -18,9 +18,9 @@ var ffmpeg = require('fluent-ffmpeg');
 
 // Load Underscore.string for string manipulation
 var _ = require("underscore");
-//_.str = require('underscore.string');
-//_.mixin(_.str.exports());
-//_.str.include('Underscore.string', 'string'); // => true
+_.str = require('underscore.string');
+_.mixin(_.str.exports());
+_.str.include('Underscore.string', 'string'); // => true
 
 var mongoose = require('mongoose');
 var User = require('./user-model').User;
