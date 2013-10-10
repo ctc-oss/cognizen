@@ -742,8 +742,12 @@ var SocketHandler = {
                         }
 
                     }, function(err) {
-                        _this.logger.error(JSON.stringify(err));
-                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
+                        var errorMessage = JSON.stringify(err);
+                        _this.logger.error(errorMessage);
+                        // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
+                        if (errorMessage.indexOf('index.lock') == -1) {
+                            _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
+                        }
                     })
                 }
             });
@@ -780,8 +784,8 @@ var SocketHandler = {
 
                     found.getChildren(function(err, children) {
                         if (err) {
-                            _this.logger.error(err);
-                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. FIRST ONE'});
+                            _this.logger.error('found.getChildren(): ' + err);
+                            _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (1)'});
                         }
                         else {
                             // Make sure children paths are re-generated as well.
@@ -795,8 +799,8 @@ var SocketHandler = {
                                 // Now we have to rename the folder on the disk.
                                 FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
                                     if (err) {
-                                        _this.logger.error(err);
-                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. RESETTING DISK PATH'});
+                                        _this.logger.error('FileUtils.renameDir(): ' + err);
+                                        _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (2)'});
                                     }
                                     else {
                                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
@@ -808,8 +812,8 @@ var SocketHandler = {
                                             _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
                                                 _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                                             }, function(err){
-                                                _this.logger.error(err);
-                                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. LAST ONE'});
+                                                _this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
                                             });
                                         });
                                     }
