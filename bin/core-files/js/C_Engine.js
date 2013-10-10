@@ -1034,14 +1034,17 @@ function addIndex(){
 					iterator++;
 					if(list[i].children){
 						for(var j = 0; j < list[i].children.length; j++){
+							//console.log("oldNodePos = " + oldNodePos + "and this guy's id == " + list[i].children[j].id);
 							//IS A CHILD NODE
 							if(oldNodePos == list[i].children[j].id){
+								//console.log('that is a match');
 								isChild = true;
 								childParent = i;
 								newNodePos = iterator;
 								//if pulling from root to lower level check some things....
 								if(!startChild){
 									//If dragging from item before folder to the first spot in folder fix....
+									//console.log("i ain't no child");
 									if(iterator == childParent + 1 && isChild){
 										if(list[i].children.length > 1){
 											isSub = true;
