@@ -47,7 +47,7 @@ var SocketHandler = {
 
     setupFileUploadHandler: function () {
         var uploader = new SocketIOFileUploadServer();
-        console.log(this.config.uploadTempDir);
+        console.log("TempDir IS = " + this.config.uploadTempDir + "---------------------------------------------------------");
         uploader.dir = this.config.uploadTempDir;
         uploader.listen(this._socket);
 
