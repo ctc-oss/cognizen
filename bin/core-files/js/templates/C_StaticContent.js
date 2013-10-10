@@ -421,7 +421,11 @@ function C_StaticContent(_type) {
 						maxHeight	: 1024,
 						maxWidth	: 768,
 						helpers : {
-							title : tempCaption
+							title : tempCaption,
+							thumbs: {
+								width  : 50,
+                  				height : 50
+				  			}
 						}
 					});
 				
