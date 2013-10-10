@@ -190,8 +190,8 @@ var SocketHandler = {
     },
 
     attemptLogin: function (data) {
-        _this.logger.info(“Fried Chicken”);
         var _this = this;
+        _this.logger.info(“Fried Chicken”);
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
