@@ -68,12 +68,12 @@ var SocketHandler = {
                     if (target && target.length == 2) {
                         var type = target[0];
                         var id = target[1];
-                        var contentType = Content.objectType(type);
+                        var contentType = _this.Content.objectType(type);
                         if (contentType) {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
-                                    var contentPath = path.normalize(Content.diskPath(found.path) + '/media/' + event.file.name);
-                                    var capPath = path.normalize(Content.diskPath(found.path) + '/media/');
+                                    var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + event.file.name);
+                                    var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
@@ -102,7 +102,7 @@ var SocketHandler = {
                                             .withAudioChannels(2)
 
                                             .onCodecData(function (codecinfo) {
-                                                _thislogger.info(codecinfo);
+                                                _this.logger.info(codecinfo);
                                                 _this._socket.emit('mediaInfo', codecinfo);
                                             })
                                             .onProgress(function (progress) {
@@ -114,8 +114,8 @@ var SocketHandler = {
                                              })*/
                                             .saveToFile(convertedPath, function (stdout, stderr) {
 //                                                _this._socket.emit('mediaConversionComplete', convertedPath);
-                                               if (stdout) logger.error('FFMPEG STDOUT: ' + stdout);
-                                               if (stderr) logger.error('FFMPEG STDERR: ' + stderr);
+                                               if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+                                               if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
 
                                                 console.log('Unlinking ' + event.file.pathName);
 
@@ -140,6 +140,10 @@ var SocketHandler = {
         var sessionId = this.SocketSessions.sessionIdFromSocket(this._socket);
         status.user = this.SocketSessions.socketUsers[sessionId];
         this._socket.emit('loadDashboardPage', status);
+    },
+    
+    objectType: function (typeName) {
+        return eval(_.str.capitalize(typeName.toLowerCase()));
     },
 
     getPermissions: function (data) {
