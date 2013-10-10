@@ -279,7 +279,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 	font-family:"Helvetica", "Arial";
 }
 
-.lessonTitle{
+.lesson{
 	position: absolute;
 	width: 944px;
 	top: 80px;
@@ -292,7 +292,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 	font-family:"Helvetica", "Arial";
 }
 
-.lessonTitleCon{
+.lessonCon{
 	position: absolute;
 	width: 944px;
 	top: 120px;

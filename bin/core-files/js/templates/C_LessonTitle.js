@@ -45,11 +45,11 @@ function C_LessonTitle(_type) {
     function buildTemplate() {
 	   
         //Add the divs for the page title adn the content divs.
-        $('#stage').append('<div id="pageTitle" class="lessonTitle"></div>');
+        $('#stage').append('<div id="pageTitle" class="lesson"></div>');
         $("#pageTitle").append(myPageTitle);
 
         //Add classes for page layouts - updatable in css
-        $('#stage').append('<div id="content" class="lessonTitleCon"></div>');
+        $('#stage').append('<div id="content" class="lessonCon"></div>');
 
         $("#content").append(myContent);
 
