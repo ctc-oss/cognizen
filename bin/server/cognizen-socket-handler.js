@@ -47,7 +47,9 @@ var SocketHandler = {
 
     setupFileUploadHandler: function () {
         var uploader = new SocketIOFileUploadServer();
+        console.log("before");
         console.log("TempDir IS = " + this.config.uploadTempDir + "---------------------------------------------------------");
+        console.log("after");
         uploader.dir = this.config.uploadTempDir;
         uploader.listen(this._socket);
 
@@ -59,6 +61,7 @@ var SocketHandler = {
         // Do something when a file is saved:
         uploader.on("complete", function (event) {
             ////////////////////////////////////////////////////////////////// I added this if to keep the app from crashing when getting undefined for event.file.target as it is now.  Phil
+            console.log("TempDir IS = " + this.config.uploadTempDir + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             if (event.file.target != undefined) {
                 var target = event.file.target.split("_");
 
