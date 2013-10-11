@@ -1151,7 +1151,7 @@ function C_StaticContent(_type) {
 						fadeComplete();
 					}
 				});
-			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG"){
+			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF"){
                 $(data).find("page").eq(currentPage).attr("img", imgPath);
 			}else{
 			 
@@ -1161,7 +1161,7 @@ function C_StaticContent(_type) {
 			//fadeComplete();
 		}
 		
-		if(mediaType != "mp4"  && mediaType != "swf"){
+		if(mediaType != "mp4"  || mediaType != "swf"){
 			sendUpdateWithRefresh();
 			fadeComplete();
 		}
