@@ -811,7 +811,9 @@ function C_StaticContent(_type) {
 							
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf"){	
+			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
+                //if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf"){	
 					if(event.success == true){
 						if(myExt == "mp3" || myExt == "MP3"){
 							var audioText;
@@ -1149,7 +1151,7 @@ function C_StaticContent(_type) {
 						fadeComplete();
 					}
 				});
-			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG"){
+			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG"){
                 $(data).find("page").eq(currentPage).attr("img", imgPath);
 			}else{
 			 
