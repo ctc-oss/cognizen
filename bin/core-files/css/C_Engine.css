@@ -538,7 +538,6 @@ ul.no-indent {
 
 /* FOR REVEAL CONTENT */
 #content .revealRight{
-	overflow: auto;
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
@@ -548,7 +547,6 @@ ul.no-indent {
 }
 
 #content .revealLeft{
-	overflow: auto;
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 

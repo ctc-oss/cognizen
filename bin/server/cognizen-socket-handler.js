@@ -47,6 +47,9 @@ var SocketHandler = {
 
     setupFileUploadHandler: function () {
         var uploader = new SocketIOFileUploadServer();
+        console.log("before");
+        console.log("TempDir IS = " + this.config.uploadTempDir + "---------------------------------------------------------");
+        console.log("after");
         uploader.dir = this.config.uploadTempDir;
         uploader.listen(this._socket);
 
@@ -191,6 +194,7 @@ var SocketHandler = {
 
     attemptLogin: function (data) {
         var _this = this;
+        console.log('Fried Chicken');
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
