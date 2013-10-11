@@ -161,11 +161,12 @@ function C_Reveal(_type) {
 					$(this).unbind('mouseenter mouseleave click');
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:$("#stage").width() - ($("#content").position().left * 2)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
-							$("#" + currentSelected + "Text").css({'position':'absolute', 
+							
+							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + currentShowText + "</div>");
+							$("#" + currentSelected + "Text").css({'position':'relative', 
 															'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25, 
 															'left': $("#" + currentSelected + "Img").width() + ($("#" + currentSelected + "Img").position().left * 2) + 10, 
-															'top' : $("#" + currentSelected).position().top + 5,
+															'top' :  -145,
 															'height' : $("#" + currentSelected).height() - 10,
 															'opacity':0
 															});
