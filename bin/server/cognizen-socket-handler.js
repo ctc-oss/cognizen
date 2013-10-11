@@ -47,9 +47,6 @@ var SocketHandler = {
 
     setupFileUploadHandler: function () {
         var uploader = new SocketIOFileUploadServer();
-        console.log("before");
-        console.log("TempDir IS = " + this.config.uploadTempDir + "---------------------------------------------------------");
-        console.log("after");
         uploader.dir = this.config.uploadTempDir;
         uploader.listen(this._socket);
 
@@ -120,7 +117,7 @@ var SocketHandler = {
                                                if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
                                                if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
 
-                                                console.log('Unlinking ' + event.file.pathName);
+                                               
 
                                                 fs.unlink(event.file.pathName, function (err) {
 //                                                    console.log('Unlinking Complete');
@@ -194,7 +191,7 @@ var SocketHandler = {
 
     attemptLogin: function (data) {
         var _this = this;
-        console.log('Fried Chicken');
+       
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
