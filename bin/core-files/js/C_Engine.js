@@ -488,9 +488,11 @@ function buildInterface(){
 
 	if(mode == "edit"){
 		$('#myCanvas').append(	"        <form id='scormform' title='Scorm Version'>"+
-							"			<input type='radio' name='scormVersion' value='2004' checked='checked'>2004<br>"+
-							"			<input type='radio' name='scormVersion' value='1.2'>1.2"+
-							"		</form>"+
+							"           <select id='scormVersion'>"+
+							"			<option>2004_4th</option>"+
+							"			<option>2004_3rd</option>"+
+							"			<option>1.2</option>"+
+							"		</select></form>"+
 							"		<div id='publish' class='btn_publish' title='Publish Project'></div>");
 		$("#scormform").tooltip();
 
@@ -672,7 +674,7 @@ function buildInterface(){
 					}
 				}
 			}
-			else if(scorm.VERSION == "2004"){
+			else if(scorm.VERSION.substring(0,4) == "2004"){
 				if(scorm.get("cmi.entry") == "resume"){
 					var location = scorm.get("cmi.location");
 					if(location != ""){
@@ -732,7 +734,7 @@ this.loadPage = function(){
 			scorm.set("cmi.core.lesson_location", currentPageID);
 			scorm.set("cmi.core.exit", "suspend");
 		}
-		else if(scorm.VERSION == "2004"){
+		else if(scorm.VERSION.substring(0,4) == "2004"){
 			scorm.set("cmi.location", currentPageID);
 			scorm.set("cmi.exit", "suspend");
 		}
@@ -2063,7 +2065,7 @@ function clickPublish(){
 
 	if(mode == "edit"){
 		$('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-		var selectedScorm = $('input[name=scormVersion]:checked', '#scormform').val();
+		var selectedScorm = $('#scormVersion').find(':selected').text();
 		var myScormVersion = $(data).find('scormVersion').attr('value');
 		if (selectedScorm != myScormVersion){
 			$(data).find('scormVersion').attr('value', selectedScorm);
@@ -2133,7 +2135,7 @@ function completeCourse(){
 	if(scorm.VERSION == "1.2"){
 		scorm.set("cmi.core.exit", "");
 	}
-	else if(scorm.VERSION == "2004"){
+	else if(scorm.VERSION.substring(0,4) == "2004"){
 		scorm.set("cmi.exit", "normal");
 	}
 	scorm.quit();

@@ -1,26 +1,33 @@
-<?xml version="1.0" standalone="no" ?>
-<manifest identifier="com.scorm.golfsamples.runtime.basicruntime.12" version="1"
-         xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
-         xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
-                             http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
-                             http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_v1p3" xmlns:adlnav="http://www.adlnet.org/xsd/adlnav_v1p3" xmlns:imsss="http://www.imsglobal.org/xsd/imsss" xmlns:adlseq="http://www.adlnet.org/xsd/adlseq_v1p3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" identifier="CCTTestCourse" version="1.3" 
+      xsi:schemaLocation="http://www.adlnet.org/xsd/adlcp_v1p3 xsds/adlcp_v1p3.xsd
+                               http://www.adlnet.org/xsd/adlnav_v1p3 xsds/adlnav_v1p3.xsd
+                               http://www.imsglobal.org/xsd/imsss xsds/imsss_v1p0.xsd
+                               http://www.imsglobal.org/xsd/imscp_v1p1 xsds/imscp_v1p1.xsd
+                               http://www/imsglobal.org/xsd/adlseq_v1p3 xsds/adlseq_v1p3.xsd">
   <metadata>
     <schema>ADL SCORM</schema>
-    <schemaversion>1.2</schemaversion>
+    <schemaversion>2004 3rd Edition</schemaversion>
   </metadata>
-	<organizations default="TrafficSafetyTraining">
-		<organization identifier="TrafficSafetyTraining">
-			<title>CCT 1.2</title>
-            <item identifier="Home" identifierref="RES-common-files">
-                <title>CCT 1.2</title>
-			</item>
-		</organization>
-	</organizations>
-	<resources>
-     <resource identifier="RES-common-files" type="webcontent" adlcp:scormType="sco" href="bin/index.html">
+  <organizations default="CCTTest">
+    <organization identifier="CCTTest" structure="hierarchical">
+      <title>CCT Test</title>
+      <item identifier="Home" identifierref="RES-common-files">
+        <title>CCT Test</title>
+        <adlnav:presentation>
+          <adlnav:navigationInterface>
+            <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>
+            <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>
+          </adlnav:navigationInterface>
+        </adlnav:presentation>
+        <imsss:sequencing>
+          <imsss:deliveryControls completionSetByContent="true" objectiveSetByContent="true" />
+        </imsss:sequencing>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES-common-files" type="webcontent" adlcp:scormType="sco" href="bin/index.html">
       <file href="bin/css/C_Engine.css" />
       <file href="bin/css/C_EngineIE8.css" />
       <file href="bin/css/C_EngineLTEIE7.css" />
@@ -670,7 +677,8 @@
       <file href="bin/media/Undersecretary.srt" />
       <file href="bin/media/Undersecretary.webm" />
       <file href="bin/media/UndersecretaryPoster.png" />
-      <file href="bin/xml/content.xml" />    
-      </resource>   
-      </resources>
+      <file href="bin/xml/content.xml" />
+    </resource>
+  </resources>
 </manifest>
+

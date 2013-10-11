@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="Temp" version="1.3" xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_v1p3" xmlns:adlnav="http://www.adlnet.org/xsd/adlnav_v1p3" xmlns:imsss="http://www.imsglobal.org/xsd/imsss" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd
+                           http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd	
+                           http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd
+                           http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd">
+
+   <metadata>
+      <schema>ADL SCORM</schema>
+      <schemaversion>2004 4th Edition</schemaversion>
+   </metadata>
+
+   <organizations default="TOC1">
+      <organization identifier="TOC1">
+         <title>test course</title>
+         <item identifier="act1" identifierref="SCO1">
+            <title>Module1</title>
+         </item>
+         <item identifier="act2" identifierref="SCO2">
+            <title>Module2</title>
+         </item>         
+         <item identifier="act3" identifierref="SCO3">
+            <title>Module3</title>
+         </item>          
+      </organization>
+   </organizations>
+   <resources>
+      <resource identifier="SCO1" adlcp:scormType="sco" type="webcontent" href="bin/Module1/index.html">
+         <file href="bin/Module1/index.html" />
+      </resource>
+      <resource identifier="SCO2" adlcp:scormType="sco" type="webcontent" href="bin/Module2/index.html">
+         <file href="bin/Module2/index.html" />
+      </resource>
+      <resource identifier="SCO3" adlcp:scormType="sco" type="webcontent" href="bin/Module3/index.html">
+         <file href="bin/Module3/index.html" />
+      </resource>            
+   </resources>
+</manifest>

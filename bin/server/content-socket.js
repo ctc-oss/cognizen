@@ -102,7 +102,7 @@ var ContentSocket = {
 
                         manifest.push('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n');
 
-                        if (scormVersion === '2004'){
+                        if (scormVersion === '2004_3rd'){
                             manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n');
                             manifest.push("   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
                                 "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -128,8 +128,8 @@ var ContentSocket = {
                                 "                   <adlnav:navigationInterface>\n"+
                                 "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
                                 "                       <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
-                                "                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
-                                "                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
+                                //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
+                                //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
                                 "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
                                 "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
                                 //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
@@ -145,6 +145,50 @@ var ContentSocket = {
                             manifest.push("    </organizations>\n");
                             manifest.push("   <resources>\n");
                             manifest.push("      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/index.html\">\n");
+                        }
+                        else if(scormVersion == "2004_4th"){
+                            manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n');
+                            manifest.push("   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
+                                "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
+                                "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
+                                "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
+                                "   xmlns:adlseq=\"http://www.adlnet.org/xsd/adlseq_v1p3\"\n"+
+                                "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
+                                "   xsi:schemaLocation=\"http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
+                                "                        http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
+                                "                        http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n"+
+                                "                        http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+                                "                        http://www/imsglobal.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\">\n"+
+                                "   <metadata>\n"+
+                                "       <schema>ADL SCORM</schema>\n"+
+                                "       <schemaversion>2004 4th Edition</schemaversion>\n"+
+                                "   </metadata>\n");
+                            manifest.push("   <organizations default=\""+courseName.replace(/\s+/g, '') +"\">\n"+
+                                "       <organization identifier=\""+courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+                                "           <title>"+courseName+"</title>\n"+
+                                "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
+                                "               <title>"+courseName+"</title>\n"+
+                                "               <adlnav:presentation>\n"+
+                                "                   <adlnav:navigationInterface>\n"+
+                                "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
+                                "                       <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
+                                //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
+                                //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
+                                "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
+                                "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
+                                //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
+                                "                   </adlnav:navigationInterface>\n"+
+                                "               </adlnav:presentation>\n"+
+                                "               <imsss:sequencing>\n");
+                            //any objectives stuff goes here - objectivesGenerator
+                            manifest.push("\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n");
+                            manifest.push("               </imsss:sequencing>\n");
+                            manifest.push("           </item>\n");
+                            //sequencing rules for the course go here
+                            manifest.push("       </organization>\n");
+                            manifest.push("    </organizations>\n");
+                            manifest.push("   <resources>\n");
+                            manifest.push("      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/index.html\">\n");                            
                         }
                         else{
                             manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n');
