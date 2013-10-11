@@ -134,10 +134,10 @@ function C_LessonTitle(_type) {
      **Save Title Edit - save updated page title text to content.xml
      **********************************************************************/
 	function saveTitleEdit(){
-        var titleUpdate = $("#titleEditText").getCode();
+        var titleUpdate = $("#titleEditText").getCode().replace('<p>', '').replace('</p>', '');;
 	   	var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
 	   	var newCDATA=docu.createCDATASection(titleUpdate);
-	   	$("#pageTitle").html($("#titleEditText").html());
+	   	$("#pageTitle").html(titleUpdate);
 	   	myPageTitle = titleUpdate;
 	   	$("#titleEditText").destroyEditor();
 	   	$(data).find("page").eq(currentPage).find("title").first().empty();

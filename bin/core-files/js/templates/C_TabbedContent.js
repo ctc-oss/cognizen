@@ -669,11 +669,11 @@ function C_TabbedContent(_type) {
 	**Save Title Edit
 	**********************************************************************/
 	function saveTitleEdit(){
-		var titleUpdate = $("#titleEditText").getCode();
+		var titleUpdate = $("#titleEditText").getCode().replace('<p>', '').replace('</p>', '');;
 		//console.log(titleUpdate);
 		var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
 		var newCDATA=docu.createCDATASection(titleUpdate);
-		$("#pageTitle").html($("#titleEditText").html());
+		$("#pageTitle").html(titleUpdate);
 		myPageTitle = titleUpdate;
 		$("#titleEditText").destroyEditor();
 		$(data).find("page").eq(currentPage).find("title").empty();
