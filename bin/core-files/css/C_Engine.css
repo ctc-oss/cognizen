@@ -102,7 +102,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_publish{
 	position:absolute;
 	bottom :8px; 
-	left: 170px;
+	left: 190px;
 	width: 30px;
 	height: 30px;
 	background: url(images/publish.png) no-repeat;
@@ -127,7 +127,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_comment{
 	position: absolute;
 	bottom: 7px;
-	left: 216px;
+	left: 236px;
 	width: 30px;
 	height: 30px;
 	background: url(images/comment.png) no-repeat;
@@ -259,7 +259,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 
 #scormform{
 	position:absolute;
-	bottom:5px; 
+	bottom:10px; 
 	left: 105px;
 	color:	#3383BB;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
