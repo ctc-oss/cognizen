@@ -1022,6 +1022,7 @@ function addIndex(){
 					//IS A ROOT NODE
 					if(oldNodePos == list[i].id){
 						newNodePos = iterator;
+						console.log("I'm at root");
 						//Check if started as a child if so - if iterator is == to it being last in parent node them move up level for xml.
 						if(startChild){
 							if(iterator == startChildrenLength + startParent){
@@ -1034,31 +1035,28 @@ function addIndex(){
 					iterator++;
 					if(list[i].children){
 						for(var j = 0; j < list[i].children.length; j++){
-							//console.log("oldNodePos = " + oldNodePos + "and this guy's id == " + list[i].children[j].id);
 							//IS A CHILD NODE
+							//[{"id":0},{"id":1,"children":[{"id":2},{"id":3}]},{"id":4},{"id":6},{"id":7},{"id":8},{"id":9},{"id":10}] (C_Engine.js, line 887)
+							//[{"id":0},{"id":1,"children":[{"id":2},{"id":3}]},{"id":4,"children":[{"id":5}]},{"id":6},{"id":7},{"id":8},{"id":9},{"id":10}] (C_Engine.js, line 887)
 							if(oldNodePos == list[i].children[j].id){
-								//console.log('that is a match');
 								isChild = true;
-								childParent = i;
+								childParent = list[i].id;
+								console.log("I was == " + oldNodePos + " and now I am == " + iterator + " and am a child of == " + childParent);
 								newNodePos = iterator;
 								//if pulling from root to lower level check some things....
-								if(!startChild){
+								//if(!startChild){
 									//If dragging from item before folder to the first spot in folder fix....
-									//console.log("i ain't no child");
-									if(iterator == childParent + 1 && isChild){
-										if(list[i].children.length > 1){
-											isSub = true;
-											newNodePos++;
-										}else if($(data).find("page").eq(childParent).attr("type") == "group"){
-											addToGroup = true;
-											console.log("add to group")
-										}else{
-											createNewGroup = true;
-											console.log("create new group");
-										}
+									console.log("iterator == " + iterator + " and childParent == " + childParent);
+									//if(iterator == childParent + 1 && isChild){
+										//if(list[i].children.length > 1){
+									if($(data).find("page").eq(childParent).attr("type") == "group"){
+										addToGroup = true;
+										
+									}else{
+										createNewGroup = true;
 									}
 								break;
-								}
+								//}
 							}
 							iterator++;
 						}
@@ -1066,9 +1064,8 @@ function addIndex(){
 				}
 				if(addToGroup){
 					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent));
-					//$(data).find("page").eq(childParent).attr("type", "group");
 				}else if (createNewGroup){
-					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 					var secondID = $(data).find("page").eq(newNodePos).attr("id");
 					//Create a Unique ID for the page
 					var myID = guid();
@@ -1100,6 +1097,7 @@ function addIndex(){
 						}
 					}
 					$(data).find("page").eq(newSub).appendTo($(data).find("page").eq(newGroupSpot));
+					
 					for(var i = 0; i < $(data).find("page").length; i++){
 						if(secondID == $(data).find("page").eq(i).attr("id")){
 							var tmpID = i;
@@ -1145,6 +1143,8 @@ function addIndex(){
 	if(mode == "edit" || mode == "review"){
 		updateIndexCommentFlags();
 	}
+	
+	updateOutput($('#C_Index').data('output', $('#nestable-output')));
 
 }
 //Index end.
