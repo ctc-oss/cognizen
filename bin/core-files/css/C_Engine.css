@@ -1323,7 +1323,7 @@ MATCHING LAYOUTS
  * Nestable Draggable Handles
  */
 
-.dd3-content { display: block; height: 30px; margin: 5px 0; padding: 5px 10px 5px 40px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+.dd3-content { display: block; height: auto; margin: 5px 0; padding: 4px 10px 4px 40px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
