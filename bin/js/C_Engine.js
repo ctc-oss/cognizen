@@ -181,19 +181,6 @@ this.loadPage = function(){
 	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
 	currentPageID = $(data).find("page").eq(currentPage).attr("id");
     socket.emit('checkLoginStatus');
-
-//	switch (currentTemplateType) {
-//		//C_Login
-//		case "login":
-//			currentTemplate = new C_Login(currentTemplateType);
-//			currentTemplate.initialize();
-//			break;
-//		//Interactive Layouts
-//		case "dashboard":
-//			currentTemplate = new C_Dashboard(currentTemplateType);
-//			currentTemplate.initialize();
-//			break;
-//	}
 }
 
 /*************************************************************

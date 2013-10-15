@@ -1273,6 +1273,8 @@ MATCHING LAYOUTS
 	left: 200px;
 }
 
+
+
 /*NESTABLE*/
 .dd { position: relative; display: block; margin: 0; padding: 0; max-width: 600px; list-style: none; font-size: 13px; line-height: 20px; }
 
@@ -1335,6 +1337,9 @@ MATCHING LAYOUTS
     cursor: pointer;
     cursor: hand;
 }
+
+.pageRemove {position: absolute; top: 5px; right: 0px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+
 .dd3-content:hover { color: #2ea8e5; background: #fff; }
 
 .dd-dragel > .dd3-item > .dd3-content { margin: 0; }
@@ -2800,7 +2805,7 @@ a.fancybox-expand {
 		}
 
 		#addPage{
-			width: 150px;
+			width: 100%;
 		}
 
 		#removePage{

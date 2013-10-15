@@ -196,9 +196,7 @@ function C_Dashboard(_type) {
                 addRollovers($content, "project");
             }
 
-        }
-        ;
-
+        };
 
         $('#projList').treeview({
             collapsed: true,

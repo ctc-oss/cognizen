@@ -54,6 +54,7 @@ var stageY;
 var stageH;
 var stageW;
 
+var hoverSubNav = false;
 var sectionLength = 0;
 var scored = false;
 var passScore = 0;
@@ -94,7 +95,7 @@ if (typeof console === "undefined" || typeof console.log === "undefined") {
     console = {};
     if (alertFallback) {
         console.log = function(msg) {
-            alert(msg);
+            //alert(msg);
         };
     } else {
         console.log = function() {};
@@ -908,23 +909,24 @@ function checkForGroup(_id){
 var indexGroupID_arr
 
 function addIndex(){
+	indexItem_arr = [];
 	totalPages = $(data).find('page').length;
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
 
 	if(mode == "edit"){
 		$("#indexContent").addClass('indexContentEdit');
-		$("#indexPane").append("<div id='addPage'>Add</div><div id='removePage'>Remove</div>");
+		$("#indexPane").append("<div id='addPage'>Add</div>");//<div id='removePage'>Remove</div>");
 		$("#addPage").button({
 			icons:{
 				primary: 'ui-icon-circle-plus'
 			}
 		}).click(addPage);
 
-		$("#removePage").button({
+		/*$("#removePage").button({
 			icons:{
 				primary: 'ui-icon-circle-minus'
 			}
-		}).click(removePage);
+		}).click(removePage);*/
 	}
 
 	//loop through the xml and add items to index.
@@ -1004,7 +1006,7 @@ function addIndex(){
 			}
 		})
 		.on('stop', function(e, _item){
-			updateOutput($('#C_Index').data('output', $('#nestable-output')));
+			//updateOutput($('#C_Index').data('output', $('#nestable-output')));
 			newNodeID = _item.attr('id');
 			//Convert list to JSON list
 			var tmp = $('#C_Index').data('output', $('#nestable-output'));
@@ -1024,7 +1026,6 @@ function addIndex(){
 					//IS A ROOT NODE
 					if(oldNodePos == list[i].id){
 						newNodePos = iterator;
-						console.log("I'm at root");
 						//Check if started as a child if so - if iterator is == to it being last in parent node them move up level for xml.
 						if(startChild){
 							if(iterator == startChildrenLength + startParent){
@@ -1038,27 +1039,17 @@ function addIndex(){
 					if(list[i].children){
 						for(var j = 0; j < list[i].children.length; j++){
 							//IS A CHILD NODE
-							//[{"id":0},{"id":1,"children":[{"id":2},{"id":3}]},{"id":4},{"id":6},{"id":7},{"id":8},{"id":9},{"id":10}] (C_Engine.js, line 887)
-							//[{"id":0},{"id":1,"children":[{"id":2},{"id":3}]},{"id":4,"children":[{"id":5}]},{"id":6},{"id":7},{"id":8},{"id":9},{"id":10}] (C_Engine.js, line 887)
+
 							if(oldNodePos == list[i].children[j].id){
 								isChild = true;
 								childParent = list[i].id;
-								console.log("I was == " + oldNodePos + " and now I am == " + iterator + " and am a child of == " + childParent);
 								newNodePos = iterator;
-								//if pulling from root to lower level check some things....
-								//if(!startChild){
-									//If dragging from item before folder to the first spot in folder fix....
-									console.log("iterator == " + iterator + " and childParent == " + childParent);
-									//if(iterator == childParent + 1 && isChild){
-										//if(list[i].children.length > 1){
-									if($(data).find("page").eq(childParent).attr("type") == "group"){
-										addToGroup = true;
-										
-									}else{
-										createNewGroup = true;
-									}
+								if($(data).find("page").eq(childParent).attr("type") == "group"){
+									addToGroup = true;	
+								}else{
+									createNewGroup = true;
+								}
 								break;
-								//}
 							}
 							iterator++;
 						}
@@ -1127,12 +1118,13 @@ function addIndex(){
 	
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
+		addRollovers($(indexItem_arr[i]));
 		$(indexItem_arr[i]).click(function(){
-			loadPageFromID($(this).attr("myID"));
-			console.log("clicked");
-			console.log("indexState = " + indexState);
-			if(indexState){
-				toggleIndex();
+			if(hoverSubNav == false){
+				loadPageFromID($(this).attr("myID"));
+				if(indexState){
+					toggleIndex();
+				}
 			}
 		});
 	}
@@ -1146,10 +1138,64 @@ function addIndex(){
 		updateIndexCommentFlags();
 	}
 	
-	updateOutput($('#C_Index').data('output', $('#nestable-output')));
+	//updateOutput($('#C_Index').data('output', $('#nestable-output')));
 
 }
 //Index end.
+
+function removePage(myNode){
+	if(myNode == undefined){
+		myNode = currentPage;
+	}
+	//Create the Dialog
+	$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
+	//Style it to jQuery UI dialog
+	$("#dialog-removePage").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("dialog-removePage").remove();
+		},
+		buttons: {
+			Yes: function(){
+				$(data).find("page").eq(myNode).remove();
+				sendUpdateWithRefresh();
+				$( this ).dialog( "close" );
+			},
+			No: function(){
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+}
+
+
+function addRollovers(myItem){
+	//ADD Program Level Buttons
+    myItem.hover(
+    	function () {
+            $(this).append("<div id='myRemove' class='pageRemove' title='Remove this page from your content.'></div>");
+            $("#myRemove").click(function(){
+            	removePage(findNodeByID(myItem.attr("myid")));
+	        }).hover(
+            	function () {
+                	hoverSubNav = true;
+                },
+				function () {
+                	hoverSubNav = false;
+                }
+            ).tooltip({
+            	show: {
+                	delay: 1500,
+                    effect: "fadeIn",
+                    duration: 200
+                }
+           });
+        },
+        function () {
+			$("#myRemove").remove();
+	});   
+}
 
 /****************************************************
 ********************************** CONTENT EDIT FUNCTIONALITY
@@ -1721,28 +1767,7 @@ function guid() {
 }
 /**********************************************************END RANDOM GUID GENERATION*/
 
-function removePage(){
-	//Create the Dialog
-	$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
-	//Style it to jQuery UI dialog
-	$("#dialog-removePage").dialog({
-		modal: true,
-		width: 550,
-		close: function(event, ui){
-			$("dialog-removePage").remove();
-		},
-		buttons: {
-			Yes: function(){
-				$(data).find("page").eq(currentPage).remove();
-				sendUpdateWithRefresh();
-				$( this ).dialog( "close" );
-			},
-			No: function(){
-				$( this ).dialog( "close" );
-			}
-		}
-	});
-}
+
 
 //addDocs pane
 function addDocs(){
@@ -1974,9 +1999,12 @@ function gimmeGlosPos(){
 /*************************************************************
 ** Utility Funcitonality
 *************************************************************/
-function findNodeByID(){
+function findNodeByID(myID){
+	if(myID == undefined){
+		myID = currentPageID;
+	}
 	for(var i = 0; i < totalPages; i++){
-		if(currentPageID == $(data).find("page").eq(i).attr("id")){
+		if(myID == $(data).find("page").eq(i).attr("id")){
 			return i;
 			break;
 		}
