@@ -1166,6 +1166,7 @@ function removePage(myNode){
 							currentPage--;
 						}
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
+						currentTemplate.fadeComplete();
 					}
 					sendUpdateWithRefresh();
 				}else{
