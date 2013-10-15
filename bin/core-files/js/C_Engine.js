@@ -1165,6 +1165,7 @@ function removePage(myNode){
 						}else{
 							currentPage--;
 						}
+						//Load either previous or next page if you are removing the currentPage...
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
 						currentTemplate.fadeComplete();
 					}

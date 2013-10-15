@@ -64,7 +64,7 @@
 			<title><![CDATA[Objectives]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
 		</page>
-		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181981" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+		<!--page id="447dd3a6-87f9-1185-4b5a-bc8e75181981" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
 			<title><![CDATA[Page 1]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
 		</page>
@@ -99,6 +99,6 @@
 		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181989" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
 			<title><![CDATA[Page 9]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
-		</page>
+		</page-->
 	</pages>
 </content>
