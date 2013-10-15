@@ -604,7 +604,6 @@ function buildInterface(){
 				$("#preferences").hide();
 				$("#comment").hide();
 				$("#addPage").hide();
-				$("#removePage").hide();
 				$("#audioDrop").hide();				
 				mode = "prod";
 			}else{
@@ -615,7 +614,6 @@ function buildInterface(){
 				$("#preferences").show();
 				$("#comment").show();
 				$("#addPage").show();
-				$("#removePage").show();
 				$("#audioDrop").show();
 				mode = "edit";
 			}
@@ -912,10 +910,10 @@ function addIndex(){
 	indexItem_arr = [];
 	totalPages = $(data).find('page').length;
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
-
+	
 	if(mode == "edit"){
 		$("#indexContent").addClass('indexContentEdit');
-		$("#indexPane").append("<div id='addPage'>Add</div>");//<div id='removePage'>Remove</div>");
+		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");//<div id='removePage'>Remove</div>");
 		$("#addPage").button({
 			icons:{
 				primary: 'ui-icon-circle-plus'
@@ -1138,6 +1136,7 @@ function addIndex(){
 		updateIndexCommentFlags();
 	}
 	
+	updatePageCount();
 	//updateOutput($('#C_Index').data('output', $('#nestable-output')));
 
 }
@@ -1158,8 +1157,32 @@ function removePage(myNode){
 		},
 		buttons: {
 			Yes: function(){
-				$(data).find("page").eq(myNode).remove();
-				sendUpdateWithRefresh();
+				if(totalPages > 1){
+					$(data).find("page").eq(myNode).remove();
+					if(currentPage == myNode){
+						if(currentPage == 0){
+							currentPage++;
+						}else{
+							currentPage--;
+						}
+						currentPageID = $(data).find("page").eq(currentPage).attr("id");
+					}
+					sendUpdateWithRefresh();
+				}else{
+					$("#stage").append("<div id='dialog-removePageError' title='Error Removing Page'><p>Your content must have at least one page.</p><p>If you would like to remove this page you must first create another and then remove it.</p></div>");
+					$("#dialog-removePage").dialog({
+						modal: true,
+						width: 550,
+						close: function(event, ui){
+							$("dialog-removePageError").remove();
+						},
+						buttons: {
+							cancel: function(){
+								$(this).dialog("close");
+							}
+						}
+					});
+				}
 				$( this ).dialog( "close" );
 			},
 			No: function(){

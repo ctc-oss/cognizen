@@ -297,7 +297,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 	width: 944px;
 	top: 120px;
 	left: 50px;
-	text-align: center;
+	text-align: left;
 	overflow : auto;
 	font-size : 100%;
 	font-weight: normal;
@@ -1258,21 +1258,9 @@ MATCHING LAYOUTS
 #addPage{
 	position: absolute;
 	top: 605px;
-	width: 200px;
-	left: 0px;
-	width: 200px;
+	width: 400px;
 	left: 0px;
 }
-
-#removePage{
-	position: absolute;
-	top: 605px;
-	width: 200px;
-	left: 0px;
-	width: 200px;
-	left: 200px;
-}
-
 
 
 /*NESTABLE*/
@@ -1338,7 +1326,7 @@ MATCHING LAYOUTS
     cursor: hand;
 }
 
-.pageRemove {position: absolute; top: 5px; right: 0px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+.pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
 
 .dd3-content:hover { color: #2ea8e5; background: #fff; }
 
