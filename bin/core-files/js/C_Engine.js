@@ -1837,21 +1837,6 @@ function addGlossary(){
 			$("#glossaryContent").text($(this).data("definition"));
 		});
 	}
-	
-	/*$('#glossaryContent').append('<ul id="myList">');
-	for(var i = 0; i < totalGlossary; i++){
-		thisTerm = $(data).find("glossaryItem").eq(i).find("term").text();
-		$('#myList').append('<li class="glossaryItem"><a href="#'+ thisTerm +'">' + thisTerm + '</a></li>');
-	};
-
-	$('#glossaryContent').append('</ul>');
-
-	for(var j = 0; j < totalGlossary; j++){
-		$('#glossaryContent').append('<div id="'+ $(data).find("glossaryItem").eq(j).find("term").text() +'">' + $(data).find("glossaryItem").eq(j).find("content").text() + '</div>');
-	};
-
-	$('#glossaryContent').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
-	$('#glossaryContent li').removeClass("ui-corner-top").addClass("ui-corner-left");*/
 
 	$('#glossaryTab').click(toggleGlossary).tooltip();
 }
