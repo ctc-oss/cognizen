@@ -66,9 +66,9 @@ function C_Matching(_type) {
 		
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbackType');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackDisplay');
-		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctResponse').text();
-		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectResponse').text();
-		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptResponse').text();
+		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctresponse').text();
+		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectresponse').text();
+		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		
 		$('#stage').append('<div id="pageTitle"></div>');
@@ -129,10 +129,10 @@ function C_Matching(_type) {
 			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
 			//Add text input field if regular matching
 			if (type == "matching"){
-				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />"+ "  ";
+				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />"+ "  <div class='matchingText'>";
 			}
 			
-			matchString += $(this).text() + "</div>"; 
+			matchString += $(this).text() + "</div></div>"; 
 			
 			$("#matchingOptions").append(matchString);
 			$("#"+myOption).data("myMatch", $(this).attr("correct"));
@@ -176,7 +176,7 @@ function C_Matching(_type) {
 			if(type == "matching" || myImg == undefined){
 				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + $(this).text() + "</div>");
 			}else if(type == "matchingDrag"){
-				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img src='"  + myImg + "' height='200' width='200'></img></div>");
+				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img width='"+$(this).attr("w") +"' height='"+ $(this).attr("h") +"' src='"  + myImg + "'></img></div>");
 				$('#' + myAnswer).droppable({
 					activeClass: "ui-state-hover",
 					hoverClass: "ui-state-active",
@@ -345,6 +345,7 @@ function C_Matching(_type) {
 				$( "#dialog-attemptResponse" ).dialog({
 					modal: true,
 					width: 550,
+					dialogClass: "no-close",
 					close: function(event, ui){
 						$("#dialog-attemptResponse").remove();
 					},
@@ -364,6 +365,7 @@ function C_Matching(_type) {
 				$( "#dialog-attemptResponse" ).dialog({
 					modal: true,
 					width: 550,
+					dialogClass: "no-close",
 					close: function(event, ui){
 						if(type == "matchingDrag"){
 							drops = 0;
