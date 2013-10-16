@@ -326,6 +326,7 @@ function C_MultipleChoice(_myType) {
 				$( "#dialog-attemptResponse" ).dialog({
 					modal: true,
 					width: standardWidth,
+					dialogClass: "no-close",
 					buttons: {
 					Proceed: function(){
 						$( this ).dialog( "close" );
@@ -340,6 +341,7 @@ function C_MultipleChoice(_myType) {
 				$( "#dialog-attemptResponse" ).dialog({
 					modal: true,
 					width: standardWidth,
+					dialogClass: "no-close",
 					buttons: {
 					OK: function(){
 						$( this ).dialog( "close" );
