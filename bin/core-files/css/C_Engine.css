@@ -304,6 +304,14 @@ body .redactor_toolbar li a.redactor_btn_close{
 	color:	#000000;
 	font-family:"Helvetica", "Arial";
 }
+
+/* uncomment to hide close (X) button on KC feedback dialogs */
+/*
+.no-close .ui-dialog-titlebar-close {
+display: none;
+}
+*/
+
 /**************************************************************************************
 CONTENT TEXT LAYOUTS*/
 /**************************************************************************************/
