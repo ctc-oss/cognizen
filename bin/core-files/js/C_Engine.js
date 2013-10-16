@@ -1809,28 +1809,36 @@ function addDocs(){
 	$('#docTab').click(toggleDoc);	
 }
 
+var glossaryTerm_arr;
 //addGlossary
 //If glossary == true  add the glossary.
 function addGlossary(){
 	totalGlossary = $(data).find('glossaryItem').length;
-
-	var icon = 'ui-icon-circle-triangle-n';
+	glossaryTerm_arr = [];
+	//var icon = 'ui-icon-circle-triangle-n';
 	if(windowWidth <= mobileWidth){
 		$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
-		icon = 'ui-icon-circle-triangle-s';
 	}
 	else{
-		$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'>Glossary</button><div id='glossaryContent' class='glossaryContent'></div></div>");
-		icon = 'ui-icon-circle-triangle-n'
+		$('#panes').append("<div id='glossaryPane' class='pane'><div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/><div id='glossaryTerms' class='glossaryTerms'></div><div id='glossaryContent' class='glossaryContent'></div></div>");
 	}
-	$("#glossaryTab").button({
-		icons:{
-			primary: icon
-		}
-	});
-
+	
 	var thisTerm;
-	$('#glossaryContent').append('<ul id="myList">');
+	var termID;
+	
+	for(var i = 0; i < totalGlossary; i++){
+		thisTerm = "term" + i;
+		termID = "#"+thisTerm;
+		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+$(data).find('glossaryItem').eq(i).find('term').text()+"</div>");
+		$(termID).data("definition", $(data).find('glossaryItem').eq(i).find('content').text());
+		$(termID).click(function(){
+			console.log("clicke");
+			console.log("definition = " + $(this).data("definition"));
+			$("#glossaryContent").text($(this).data("definition"));
+		});
+	}
+	
+	/*$('#glossaryContent').append('<ul id="myList">');
 	for(var i = 0; i < totalGlossary; i++){
 		thisTerm = $(data).find("glossaryItem").eq(i).find("term").text();
 		$('#myList').append('<li class="glossaryItem"><a href="#'+ thisTerm +'">' + thisTerm + '</a></li>');
@@ -1843,9 +1851,9 @@ function addGlossary(){
 	};
 
 	$('#glossaryContent').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
-	$('#glossaryContent li').removeClass("ui-corner-top").addClass("ui-corner-left");
+	$('#glossaryContent li').removeClass("ui-corner-top").addClass("ui-corner-left");*/
 
-	$('#glossaryTab').click(toggleGlossary);
+	$('#glossaryTab').click(toggleGlossary).tooltip();
 }
 
 /*************************************************************
@@ -1989,31 +1997,31 @@ function toggleGlossary(){
 
 		gimmeGlosPos();
 		if(windowWidth <= mobileWidth){
-			icon = 'ui-icon-circle-triangle-n';
+			//icon = 'ui-icon-circle-triangle-n';
 			//TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:windowWidth-410}, ease:transitionType});
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:0}, ease:transitionType});
 		}
 		else{
-			icon = 'ui-icon-circle-triangle-s';
+			//icon = 'ui-icon-circle-triangle-s';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		}
 	}
 	else{
 		glossaryState = false;
 		if(windowWidth <= mobileWidth){
-			icon = 'ui-icon-circle-triangle-s';
+			//icon = 'ui-icon-circle-triangle-s';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:glossaryClosePosMobile}, ease:transitionType});
 		}
 		else{
-			icon = 'ui-icon-circle-triangle-n';
+			//icon = 'ui-icon-circle-triangle-n';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType});
 		}
 	}
-	$("#glossaryTab").button({
+	/*$("#glossaryTab").button({
 		icons:{
 			primary: icon
 		}
-	});
+	});*/
 }
 
 function gimmeGlosPos(){

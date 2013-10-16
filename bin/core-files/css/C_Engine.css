@@ -1351,50 +1351,80 @@ MATCHING LAYOUTS
 #glossaryPane{
 	position:absolute;
 	top:71px;
-	left:-809px;
+	left:-403px;
 }
 
 #glossaryTab{
-	position:absolute;
-	top:215px;
-	left:752px;
-   /* IE8+ - must be on one line, unfortunately */ 
-   -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-1.8369701987210297e-16, M12=-1, M21=1, M22=-1.8369701987210297e-16, SizingMethod='auto expand')";
-   
-   /* IE6 and 7 */ 
-   filter: progid:DXImageTransform.Microsoft.Matrix(
-            M11=-1.8369701987210297e-16,
-            M12=-1,
-            M21=1,
-            M22=-1.8369701987210297e-16,
-            SizingMethod='auto expand');
+	position: absolute;
+	top: 125px;
+	left: 403px;
+	width: 35px;
+	height: 40px;
+	background: #eeeeee url(images/paneTabGlossary.png) no-repeat center center;
+}
 
-   margin-left: 46px; 
-   margin-top: -65px;
-
-   /* rotation and positioning for modern browsers */
-   -moz-transform:    rotate(90deg) translateX(50px) translateY(40px);
-   -o-transform:      rotate(90deg) translateX(50px) translateY(40px);
-   -webkit-transform: rotate(90deg) translateX(50px) translateY(40px);
-   /*-ms-transform: 	  rotate(90deg) translateX(50px) translateY(40px);*/
-   transform:         rotate(90deg) translateX(50px) translateY(40px);
-
+#glossaryTerms{
+	position: absolute;
+	overflow: auto;
+	left: 0px;
+	top: 0px;
+	width: 200px;
+	height: 635px;
+	background-color: #EEEEEE;
 }
 
 #glossaryContent{
-	overflow: scroll;
-	left:0px;
+	position: absolute;
+	overflow: auto;
+	left:200px;
 	top:0px;
-	width: 800px;
+	width: 200px;
 	height: 635px;
+	background-color: #EEEEEE;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	color: #9DA6AB;
+	-moz-border-bottom-right-radius : 8px;
+	-webkit-border-bottom-right-radius : 8px;
+	border-bottom-right-radius : 8px;
+	-moz-border-top-right-radius : 8px;
+	-webkit-border-top-right-radius : 8px;
+	border-top-right-radius	   : 8px;
+	border-left-style: solid;
+	border-left-color: #9DA6AB;
+}
+
+.glossaryItem{
+	position: relative; 
+	display: block; 
+	max-width: 200px; 
+	list-style: none; 
+	font-size: 13px; 
+	line-height: 20px;
+	height: auto; 
+	margin: 5px 0; 
+	padding: 4px 10px 4px 10px; 
+	color: #333; 
+	text-decoration: none; 
+	font-weight: bold; 
+	border: 1px solid #ccc;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+    cursor: pointer;
+    cursor: hand;
 }
 /* Glossary Menu */
-.ui-tabs-vertical { width: 800px; }
+/*.ui-tabs-vertical { width: 800px; }
 .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
 .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
 .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
-.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 600px;}
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 600px;}*/
 
 /************************************** NANO SCROLLBAR STYLE **************************************/
 .nano {
