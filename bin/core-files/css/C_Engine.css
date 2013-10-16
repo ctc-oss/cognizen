@@ -986,6 +986,7 @@ MATCHING LAYOUTS
 	font-weight: normal;
 	color:	#000000;
 	font-family:"Helvetica", "Arial";
+	display: table;
 }
 
 .matchingAnswer{
@@ -1006,6 +1007,12 @@ MATCHING LAYOUTS
 	font-size: 100%;
 	font-weight: bold;
 	font-family:"Helvetica", "Arial";
+	display: table-cell;
+}
+
+.matchingText{
+	display: table-cell;
+	padding-left: 10px;
 }
 
 #mcSubmit{
