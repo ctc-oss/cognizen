@@ -1118,15 +1118,15 @@ function addIndex(){
 	for (var i = 0; i < indexItem_arr.length; i++){
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
-			$(indexItem_arr[i]).click(function(){
-				if(hoverSubNav == false){
-					loadPageFromID($(this).attr("myID"));
-					if(indexState){
-						toggleIndex();
-					}
-				}
-			});
 		}
+		$(indexItem_arr[i]).click(function(){
+			if(hoverSubNav == false){
+				loadPageFromID($(this).attr("myID"));
+				if(indexState){
+					toggleIndex();
+				}
+			}
+		});
 	}
 
 	if(pushedUpdate == true){
