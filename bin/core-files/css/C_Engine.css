@@ -1434,6 +1434,17 @@ MATCHING LAYOUTS
     cursor: hand;
 }
 
+.glossaryItemHover{
+	color: #2ea8e5; background: #fff;
+}
+
+#addGlossaryItem{
+	position: relative;
+	bottom: 0px;
+	right: 1px;
+	width: 198px;
+}
+
 /************************************** NANO SCROLLBAR STYLE **************************************/
 .nano {
   position : relative;

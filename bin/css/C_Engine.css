@@ -237,8 +237,8 @@ TREE MENU STYLES
 **********************************************************************************************/
 #projListHeader{
 	position: absolute;
-	top: 162px;
-	right: 415px;
+	top: 122px;
+	right: 475px;
 	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 20pt;
@@ -247,8 +247,8 @@ TREE MENU STYLES
 
 #logout{
 	position: absolute;
-	top: 172px;
-	right: 120px;
+	top: 132px;
+	right: 70px;
 	color: #86D4F1;
 	text-decoration: none;
 	font-weight: normal;
@@ -271,32 +271,32 @@ TREE MENU STYLES
 
 #adminAddProgram{
 	position: absolute;
-	top: 580px;
-	right: 415px;
+	top: 660px;
+	right: 465px;
 }
 
 #adminAddUser{
 	position: absolute;
-	top: 580px;
-	right: 105px;
+	top: 660px;
+	right: 65px;
 }
 
 #preloadholder{
 	position: absolute;
-	top: 194px;
-	right: 105px;
-	width: 450px;
-	height: 380px;
+	top: 154px;
+	right: 65px;
+	width: 550px;
+	height: 500px;
 	z-index: 10000;
 }
 
 #projList{
 	position: absolute;
 	overflow: auto;
-	top: 194px;
-	right: 105px;
-	width: 450px;
-	height: 380px;
+	top: 154px;
+	right: 65px;
+	width: 550px;
+	height: 500px;
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 6px;
@@ -340,20 +340,20 @@ TREE MENU STYLES
 
 .treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
 /*.programPref {position: relative; top: -24px; left: 320px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}*/
-.programRemove {position: relative; top: -24px; left: 350px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.programAdd {position: relative; top: -48px; left: 380px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
-.programUserAdd {position: relative; top: -72px; left: 410px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.programRemove {position: relative; top: -24px; left: 440px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.programAdd {position: relative; top: -48px; left: 470px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
+.programUserAdd {position: relative; top: -72px; left: 500px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
 
 .treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-.coursePref {position: relative; top: -24px; left: 308px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
-.courseRemove {position: relative; top: -48px; left: 338px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.courseAdd {position: relative; top: -72px; left: 368px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
-.courseUserAdd {position: relative; top: -96px; left: 398px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.coursePref {position: relative; top: -24px; left: 398px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
+.courseRemove {position: relative; top: -48px; left: 428px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.courseAdd {position: relative; top: -72px; left: 458px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
+.courseUserAdd {position: relative; top: -96px; left: 488px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-.projectPref {position: relative; top: -24px; left: 326px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
-.projectRemove {position: relative; top: -48px; left: 356px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.projectUserAdd {position: relative; top: -72px; left: 386px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.projectPref {position: relative; top: -24px; left: 416px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
+.projectRemove {position: relative; top: -48px; left: 446px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
+.projectUserAdd {position: relative; top: -72px; left: 476px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
 
 .ui-tooltip{font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
 

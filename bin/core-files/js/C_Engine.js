@@ -1718,13 +1718,13 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(currentPage + 1).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option1CDATA = option1.createCDATASection("A. Option1");
+			var option1CDATA = option1.createCDATASection("Option1");
 			$(data).find("page").eq(currentPage + 1).find("option").eq(0).append(option1CDATA);
 			$(data).find("page").eq(currentPage + 1).find("option").eq(0).attr("correct", "A");
 			
 			$(data).find("page").eq(currentPage + 1).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option2CDATA = option2.createCDATASection("B. Option2");
+			var option2CDATA = option2.createCDATASection("Option2");
 			$(data).find("page").eq(currentPage + 1).find("option").eq(1).append(option2CDATA);
 			$(data).find("page").eq(currentPage + 1).find("option").eq(1).attr("correct", "B");
 			
@@ -1736,7 +1736,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(currentPage + 1).append($("<answer>"));
 			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
-			var answer2CDATA = answer2.createCDATASection("answer2");
+			var answer2CDATA = answer2.createCDATASection("Answer 2");
 			$(data).find("page").eq(currentPage + 1).find("answer").eq(1).append(answer2CDATA);
 			$(data).find("page").eq(currentPage + 1).find("answer").eq(1).attr("correct", "B");
 			
@@ -1811,13 +1811,11 @@ function addDocs(){
 	$('#docTab').click(toggleDoc);	
 }
 
-var glossaryTerm_arr;
 //addGlossary
 //If glossary == true  add the glossary.
 function addGlossary(){
 	totalGlossary = $(data).find('glossaryItem').length;
-	glossaryTerm_arr = [];
-	//var icon = 'ui-icon-circle-triangle-n';
+
 	if(windowWidth <= mobileWidth){
 		$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
 	}
@@ -1834,13 +1832,28 @@ function addGlossary(){
 		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+$(data).find('glossaryItem').eq(i).find('term').text()+"</div>");
 		$(termID).data("definition", $(data).find('glossaryItem').eq(i).find('content').text());
 		$(termID).click(function(){
-			console.log("clicke");
-			console.log("definition = " + $(this).data("definition"));
-			$("#glossaryContent").text($(this).data("definition"));
+			$("#glossaryContent").html("<b>Term: </b>" + $(this).text() + "<br/><br/><b>Definition: </b>" + $(this).data("definition"));
+		}).hover(function(){
+			$(this).addClass("glossaryItemHover");
+			if(mode == "edit"){
+				//Add Edit Item button
+			}
+		},
+		function(){
+			$(this).removeClass("glossaryItemHover");
+			if(mode == "edit"){
+				//Remove Edit Item button
+			}
 		});
 	}
 
 	$('#glossaryTab').click(toggleGlossary).tooltip();
+	
+	if(mode == "edit"){
+		//Add glossary item button
+		$("#glossaryPane").append("<div id='addGlossaryItem'>Add Glossary Term</div>");
+		$("#addGlossaryItem").button();
+	}
 }
 
 /*************************************************************
