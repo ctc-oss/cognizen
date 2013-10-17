@@ -52,7 +52,7 @@ var SocketHandler = {
 
         var _this = this;
         uploader.on('error', function(event) {
-            _this.logger.error('Error trying to upload file: ' + event.file + '\n' + event.error);
+            _this.logger.error('Error trying to upload file: ' + event.file + '\n' + JSON.stringify(event.error));
         });
 
         // Do something when a file is saved:

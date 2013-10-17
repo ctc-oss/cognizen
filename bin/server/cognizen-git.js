@@ -173,24 +173,27 @@ var Git = {
 
             if (programs) {
                 programs.forEach(function (program) {
-                    programNames.push({
-                        name: program.path,
-                        anonRead: true,
-                        users: [
-                            {user: _this._editUser, permissions: ['R', 'W']}
-                        ],
-                        onSuccessful: {
-                            fetch: function() {
-                                return _this.logger.info('Successful fetch on ' + program.path + ' repo');
-                            },
-                            push: function() {
-                                _this.logger.info('Successful push on ' + program.path + ' repo');
-                                _this._gitUpdateLocal(program, null, function(err) {
-                                    _this.logger.error(err);
-                                });
+                    if (!program.deleted) {
+                        console.log('Starting GIT Server with program ' + program.name);
+                        programNames.push({
+                            name: program.path,
+                            anonRead: true,
+                            users: [
+                                {user: _this._editUser, permissions: ['R', 'W']}
+                            ],
+                            onSuccessful: {
+                                fetch: function() {
+                                    return _this.logger.info('Successful fetch on ' + program.path + ' repo');
+                                },
+                                push: function() {
+                                    _this.logger.info('Successful push on ' + program.path + ' repo');
+                                    _this._gitUpdateLocal(program, null, function(err) {
+                                        _this.logger.error(err);
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 });
             }
 

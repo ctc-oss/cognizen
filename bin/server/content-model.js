@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
-    extend = require('mongoose-schema-extend');
-var Schema = mongoose.Schema;
-var Utils = require('./cognizen-utils');
+    extend = require('mongoose-schema-extend'),
+    Schema = mongoose.Schema,
+    Utils = require('./cognizen-utils');
 
 var findByPath = function(mongooseType, item, callback) {
     mongooseType.findOne({path: item.path}, function (err, found) {

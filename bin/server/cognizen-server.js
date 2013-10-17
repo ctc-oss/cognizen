@@ -128,8 +128,10 @@ var Content = {
                     var parent = content.getParent();
                     while (parent) { // This should get all parents to the top.
                         parent = allContent[parent.id];
-                        parentsToAdd.push(parent);
-                        parent = parent.getParent();
+                        if (parent) {
+                            parentsToAdd.push(parent);
+                            parent = parent.getParent();
+                        }
                     }
                 }
             });
