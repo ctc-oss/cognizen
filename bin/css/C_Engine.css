@@ -272,7 +272,7 @@ TREE MENU STYLES
 #adminAddProgram{
 	position: absolute;
 	top: 660px;
-	right: 465px;
+	right: 470px;
 }
 
 #adminAddUser{
@@ -370,8 +370,8 @@ TREE MENU STYLES
 .filetree span.fileHover{}
 .treeview .placeholder {
 	background: url(images/ajax-loader.gif) 0px 0px no-repeat;
-	height: 24px;
-	width: 24px;
+	height: 18px;
+	width: 18px;
 	display: block;
 }
 
