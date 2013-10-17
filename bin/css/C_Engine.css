@@ -309,19 +309,19 @@ TREE MENU STYLES
 	list-style: none;
 	color: #9DA6AB;
 	font-weight: normal;
-	font-size: 14pt;
+	font-size: 12pt;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 }
 
 .treeview ul {
 	background-color: white;
-	margin-top: 4px;
+	margin-top: 0px;
 }
 
 .treeview .hitarea {
-	height: 30px;
-	width: 16px;
-	margin-left: -10px;
+	height: 18px;
+	width: 12px;
+	margin-left: -12px;
 	float: left;
 	cursor: pointer;
 }
@@ -335,25 +335,24 @@ TREE MENU STYLES
 	font-weight: normal;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	margin: 0px;
-	padding: 50px 0pt 0px 0px;
+	padding: 14px 0pt 0px 0px;
 }
 
 .treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-/*.programPref {position: relative; top: -24px; left: 320px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}*/
-.programRemove {position: relative; top: -24px; left: 440px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.programAdd {position: relative; top: -48px; left: 470px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
-.programUserAdd {position: relative; top: -72px; left: 500px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.programRemove {position: relative; top: -15px; left: 472px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
+.programAdd {position: relative; top: -33px; left: 492px; width: 18px; height: 18px; background: url(images/plus.png) no-repeat;}
+.programUserAdd {position: relative; top: -51px; left: 512px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-.coursePref {position: relative; top: -24px; left: 398px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
-.courseRemove {position: relative; top: -48px; left: 428px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.courseAdd {position: relative; top: -72px; left: 458px; width: 24px; height: 24px; background: url(images/plus.png) no-repeat;}
-.courseUserAdd {position: relative; top: -96px; left: 488px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.coursePref {position: relative; top: -15px; left: 442px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
+.courseRemove {position: relative; top: -33px; left: 462px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
+.courseAdd {position: relative; top: -51px; left: 482px; width: 18px; height: 18px; background: url(images/plus.png) no-repeat;}
+.courseUserAdd {position: relative; top: -69px; left: 502px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
-.projectPref {position: relative; top: -24px; left: 416px; width: 24px; height: 24px; background: url(images/prefs.png) no-repeat;}
-.projectRemove {position: relative; top: -48px; left: 446px; width: 24px; height: 24px; background: url(images/minus.png) no-repeat;}
-.projectUserAdd {position: relative; top: -72px; left: 476px; width: 24px; height: 24px; background: url(images/user.png) no-repeat;}
+.projectPref {position: relative; top: -15px; left: 452px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
+.projectRemove {position: relative; top: -33px; left: 472px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
+.projectUserAdd {position: relative; top: -51px; left: 492px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .ui-tooltip{font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
 
@@ -362,10 +361,10 @@ TREE MENU STYLES
 	background-color: #eee;
 }
 
-.filetree li { padding: 3px 0px 0px 10px; }
+.filetree li { padding: 2px 0px 0px 10px; }
 .filetree span.folder, .filetree span.file { padding: 1px 0px 1px 5px; display: block; }
-.filetree li.collapsable { background: url(images/open.png) no-repeat; background-position:0px 13px;}
-.filetree li.expandable  { background: url(images/closed.png) no-repeat; background-position:0px 13px;}
+.filetree li.collapsable { background: url(images/open.png) no-repeat; background-position:0px 10px;}
+.filetree li.expandable  { background: url(images/closed.png) no-repeat; background-position:0px 10px;}
 .filetree span.file { background: url(images/file.gif) 0px 0px no-repeat; }
 
 .filetree span.fileHover{}
