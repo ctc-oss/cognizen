@@ -355,6 +355,10 @@ function initializeSockets(){
 		});
 		
 		socket.on('updateGlossaryComplete', function(){
+			cognizenSocket.emit('contentSaved', {
+                content: {type: urlParams['type'], id: urlParams['id']},
+                user: {id: urlParams['u']}
+            });
 			updateGlossary();
 		});
 

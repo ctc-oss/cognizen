@@ -32,22 +32,22 @@
 			<reloadPage value="true"/>
 		</preferences>
 		<glossary>
-			<glossaryItem> 
+			<glossaryitem> 
 				<term><![CDATA[ACK]]></term>
 				<content><![CDATA[Acknowledgement]]></content>
-			</glossaryItem>
-			<glossaryItem> 
+			</glossaryitem>
+			<glossaryitem> 
 				<term><![CDATA[AIS]]></term>
 				<content><![CDATA[Automated Information System]]></content>
-			</glossaryItem>
-			<glossaryItem> 
+			</glossaryitem>
+			<glossaryitem> 
 				<term><![CDATA[API]]></term>
 				<content><![CDATA[Application Programming Interface]]></content>
-			</glossaryItem>
-			<glossaryItem> 
+			</glossaryitem>
+			<glossaryitem> 
 				<term><![CDATA[ASCII]]></term>
 				<content><![CDATA[American Standard Code for Information Interchange]]></content>
-			</glossaryItem>
+			</glossaryitem>
         </glossary>
         <!--docs>
         	<docItem>
