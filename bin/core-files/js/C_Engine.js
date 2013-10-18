@@ -253,8 +253,7 @@ function initializeSockets(){
 	    
 	    cognizenSocket.on("packageLinkAlert", function(data){
 		    var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+data.path+' target="_blank">GET PACKAGE</a></p></div>';
-
-		
+			
 			//Add to stage.
 			$("#stage").append(msg);
 		
@@ -353,6 +352,10 @@ function initializeSockets(){
                 user: {id: urlParams['u']}
             });
             updateIndex();
+		});
+		
+		socket.on('updateGlossaryComplete', function(){
+			updateGlossary();
 		});
 
         socket.on('pushUpdateXMLWithRefreshComplete', function(){
@@ -637,6 +640,23 @@ function buildInterface(){
 	//Set up Glossary pane.
 	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
+		if(windowWidth <= mobileWidth){
+			$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
+		}
+		else{
+			$('#panes').append("<div id='glossaryPane' class='pane'><div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/><div id='glossaryTerms' class='glossaryTerms'></div><div id='glossaryContent' class='glossaryContent'><div id='glossaryDef'></div></div></div>");
+		}
+		
+		$('#glossaryTab').click(toggleGlossary).tooltip();
+	
+		if(mode == "edit"){
+			//Add glossary item button
+			$("#glossaryContent").append("<div id='addGlossaryItem'>Add New Term</div>");
+			$("#addGlossaryItem").button().click(function(){
+				addGlossaryTerm();
+			});
+		}
+		
 		addGlossary();
 	}
 	
@@ -919,12 +939,6 @@ function addIndex(){
 				primary: 'ui-icon-circle-plus'
 			}
 		}).click(addPage);
-
-		/*$("#removePage").button({
-			icons:{
-				primary: 'ui-icon-circle-minus'
-			}
-		}).click(removePage);*/
 	}
 
 	//loop through the xml and add items to index.
@@ -1811,49 +1825,212 @@ function addDocs(){
 	$('#docTab').click(toggleDoc);	
 }
 
+
+function updateGlossary(){
+	console.log("updating glossary");
+	$.ajax({
+	    	type: "GET",
+	    	url: "xml/content.xml",
+	    	dataType: "xml",
+	    	async: false,
+	    	success: function(_data){
+	    		data = _data;
+	    		$("#glossaryTerms").empty();
+	    		
+	    		$("#glossaryDef").html("");
+	    		
+	    		addGlossary();
+		},
+		error: function(){
+	    	alert("unable to load content.xml in updateIndex")
+	    }
+	});
+}
+
+
+var glossaryItem_arr;
 //addGlossary
 //If glossary == true  add the glossary.
 function addGlossary(){
-	totalGlossary = $(data).find('glossaryItem').length;
-
-	if(windowWidth <= mobileWidth){
-		$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
-	}
-	else{
-		$('#panes').append("<div id='glossaryPane' class='pane'><div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/><div id='glossaryTerms' class='glossaryTerms'></div><div id='glossaryContent' class='glossaryContent'></div></div>");
-	}
-	
+	console.log("addGlossary");
+	totalGlossary = $(data).find('glossaryitem').length;
+	glossaryItem_arr = [];
 	var thisTerm;
 	var termID;
 	
 	for(var i = 0; i < totalGlossary; i++){
 		thisTerm = "term" + i;
 		termID = "#"+thisTerm;
-		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+$(data).find('glossaryItem').eq(i).find('term').text()+"</div>");
-		$(termID).data("definition", $(data).find('glossaryItem').eq(i).find('content').text());
+		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+$(data).find('glossaryitem').eq(i).find('term').text()+"</div>");
+		$(termID).data("definition", $(data).find('glossaryitem').eq(i).find('content').text());
+		$(termID).data("myID", i);
 		$(termID).click(function(){
-			$("#glossaryContent").html("<b>Term: </b>" + $(this).text() + "<br/><br/><b>Definition: </b>" + $(this).data("definition"));
+			if(hoverSubNav == false){
+				$("#glossaryDef").html("<b>Term: </b>" + $(this).text() + "<br/><br/><b>Definition: </b>" + $(this).data("definition"));
+			}
 		}).hover(function(){
 			$(this).addClass("glossaryItemHover");
-			if(mode == "edit"){
-				//Add Edit Item button
-			}
 		},
 		function(){
 			$(this).removeClass("glossaryItemHover");
-			if(mode == "edit"){
-				//Remove Edit Item button
+		});
+		glossaryItem_arr.push("#" + thisTerm);
+	}
+	
+	for(var i = 0; i < glossaryItem_arr.length; i++){
+		if(mode == "edit"){
+			addEditGlossaryRollovers($(glossaryItem_arr[i]));
+		}
+	}
+}
+
+
+function addEditGlossaryRollovers(myItem){
+	//ADD Program Level Buttons
+    myItem.hover(
+    	function () {
+            $(this).append("<div id='myGlossaryTermRemove' class='glossaryTermRemove' title='Remove this term from your glossary.'>");//</div><div id='myGlossaryTermEdit' class='glossaryTermEdit' title='Edit this glossary term.'></div>");
+            $("#myGlossaryTermRemove").click(function(){
+            	removeGlossaryTerm($(this).parent().data("myID"));
+	        }).hover(
+            	function () {
+                	hoverSubNav = true;
+                },
+				function () {
+                	hoverSubNav = false;
+                }
+            ).tooltip({
+            	show: {
+                	delay: 1500,
+                    effect: "fadeIn",
+                    duration: 200
+                }
+           });
+        },
+        function () {
+			$("#myGlossaryTermRemove").remove();
+			$("#myGlossaryTermEdit").remove();
+	});   
+}
+
+function removeGlossaryTerm(myNode){
+	$(data).find("glossaryitem").eq(myNode).remove();
+	sendUpdateWithRefresh("glossary");
+}
+
+/************************************************************************************
+ADD NEW GLOSSARY Term - creates the input form for a new glossary term
+************************************************************************************/
+function addGlossaryTerm(){
+	//Create the base message.
+	var msg = '<div id="dialog-addGlossaryTerm" title="Add New Term"><p class="validateTips">Complete the form to create your new glossary term.</p><input id="newTerm" type="text" value="New Term" defaultValue="New Term" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">Input defintion here.</div></div>';
+	
+	//Add to stage.
+	$("#stage").append(msg);
+	
+	$("#definitionEditText").redactor({
+		focus: true,
+		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+	});
+
+	//Make it a dialog
+	$("#dialog-addGlossaryTerm").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+				$("#dialog-addGlossaryTerm").remove();
+			},
+		buttons: {
+			Cancel: function () {
+                    $(this).dialog("close");
+			},
+			Add: function(){
+				var myDef = $("#definitionEditText").getCode();
+				$("#defintionEditText").destroyEditor();
+				insertNewGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				$(this).dialog("close");
+			}
+		}
+	});
+}
+
+function insertNewGlossaryTerm(_term, _definition){
+	var noError = true;
+	var isLast = true;
+	var term = _term.toLowerCase();
+	var insertPoint = 0;
+	
+	for(var i = 0; i < totalGlossary; i++){
+		var testTerm = $(data).find('glossaryitem').eq(i).find('term').text().toLowerCase();
+		insertPoint = i;
+		if(term < testTerm){
+			isLast = false;
+			break;
+		}else if(term == testTerm){
+			noError = false;
+			break;
+		}
+	}
+	
+	//IF doesn't exist already - create
+	if(noError == true){
+		if(isLast == true){
+			$(data).find("glossaryitem").eq(insertPoint).after($('<glossaryitem></glossaryitem>'));
+			//Place the page title element
+			$(data).find("glossaryitem").eq(insertPoint + 1).append($("<term>"));
+			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
+			var termCDATA = newGlossaryTerm.createCDATASection(_term);
+			$(data).find("glossaryitem").eq(insertPoint + 1).find("term").append(termCDATA);
+		
+			$(data).find("glossaryitem").eq(insertPoint + 1).append($("<content>"));
+			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
+			var defCDATA = newGlossaryDef.createCDATASection(_definition);
+			$(data).find("glossaryitem").eq(insertPoint + 1).find("content").append(defCDATA);
+		}else{
+			$(data).find("glossaryitem").eq(insertPoint).before($('<glossaryitem></glossaryitem>'));
+			//Place the page title element
+			$(data).find("glossaryitem").eq(insertPoint).append($("<term>"));
+			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
+			var termCDATA = newGlossaryTerm.createCDATASection(_term);
+			$(data).find("glossaryitem").eq(insertPoint).find("term").append(termCDATA);
+		
+			$(data).find("glossaryitem").eq(insertPoint).append($("<content>"));
+			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
+			var defCDATA = newGlossaryDef.createCDATASection(_definition);
+			$(data).find("glossaryitem").eq(insertPoint).find("content").append(defCDATA);
+		}
+		
+		//When done - update content.xml on the server.
+		sendUpdateWithRefresh("glossary");
+	}else{
+		//Error about existing....
+		var msg = '<div id="dialog-addGlossaryTermError" title="Term Already Exists"><p class="validateTips">This term is already entered in this glossary.</p><p>To edit this term, roll over it in the glossary list and select the edit button.</p></div>';
+	
+		//Add to stage.
+		$("#stage").append(msg);
+	
+		//Make it a dialog
+		$("#dialog-addGlossaryTermError").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("#dialog-addGlossaryTermError").remove();
+			},
+			buttons: {
+				Cancel: function () {
+                    $(this).dialog("close");
+				}
 			}
 		});
 	}
+}
 
-	$('#glossaryTab').click(toggleGlossary).tooltip();
+function editGlossaryTerm(){
 	
-	if(mode == "edit"){
-		//Add glossary item button
-		$("#glossaryPane").append("<div id='addGlossaryItem'>Add Glossary Term</div>");
-		$("#addGlossaryItem").button();
-	}
+}
+
+function updateGlossaryTerm(){
+	 sendUpdateWithRefresh("glossary");
 }
 
 /*************************************************************
@@ -1865,10 +2042,6 @@ function clickBack(){
 	}
 	currentPage--;
 	currentTemplate.destroySelf();
-	/*if(masterIndex == true){
-		var tempString = '#indexMenuItem' + currentPage;
-		$(tempString).click();
-	}*/
 }
 
 function clickNext(){
@@ -1877,10 +2050,6 @@ function clickNext(){
 	}
 	currentPage++;
 	currentTemplate.destroySelf();
-	/*if(masterIndex == true){
-		var tempString = '#indexMenuItem' + currentPage;
-		$(tempString).click();
-	}*/
 }
 
 //Turns the next/back button off for first/last page.
@@ -1997,31 +2166,21 @@ function toggleGlossary(){
 
 		gimmeGlosPos();
 		if(windowWidth <= mobileWidth){
-			//icon = 'ui-icon-circle-triangle-n';
-			//TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:windowWidth-410}, ease:transitionType});
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:0}, ease:transitionType});
 		}
 		else{
-			//icon = 'ui-icon-circle-triangle-s';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		}
 	}
 	else{
 		glossaryState = false;
 		if(windowWidth <= mobileWidth){
-			//icon = 'ui-icon-circle-triangle-s';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:glossaryClosePosMobile}, ease:transitionType});
 		}
 		else{
-			//icon = 'ui-icon-circle-triangle-n';
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType});
 		}
 	}
-	/*$("#glossaryTab").button({
-		icons:{
-			primary: icon
-		}
-	});*/
 }
 
 function gimmeGlosPos(){
@@ -2087,11 +2246,13 @@ function updateIndex(){
 	});
 }
 
+
+
 /**
 * sendUpdateWithRefresh
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
-function sendUpdateWithRefresh(){
+function sendUpdateWithRefresh(_type){
 	
 	//Serialize the xml and send it to nodejs using socket.
 	var myData = $(data);
@@ -2105,7 +2266,12 @@ function sendUpdateWithRefresh(){
 		var oSerializer = new XMLSerializer();
 		xmlString = oSerializer.serializeToString(myData[0]);
 	}
-	socket.emit('updateXMLWithRefresh', { my: xmlString });
+	
+	if(_type == undefined){
+		socket.emit('updateXMLWithRefresh', { my: xmlString });
+	}else if(_type == 'glossary'){
+		socket.emit('updateXMLGlossary', { my: xmlString });
+	}
 }
 
 

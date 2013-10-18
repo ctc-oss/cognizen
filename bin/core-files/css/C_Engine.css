@@ -1342,6 +1342,8 @@ MATCHING LAYOUTS
 }
 
 .pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+.glossaryTermRemove{position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+.glossaryTermEdit{position: absolute; top: 2.5px; right: 27px; width: 24px; height: 24px; background: #fff url(images/plus.png) no-repeat;}
 
 .dd3-content:hover { color: #2ea8e5; background: #fff; }
 
@@ -1366,13 +1368,13 @@ MATCHING LAYOUTS
 #glossaryPane{
 	position:absolute;
 	top:71px;
-	left:-403px;
+	left:-703px;
 }
 
 #glossaryTab{
 	position: absolute;
 	top: 125px;
-	left: 403px;
+	left: 703px;
 	width: 35px;
 	height: 40px;
 	background: #eeeeee url(images/paneTabGlossary.png) no-repeat center center;
@@ -1383,7 +1385,7 @@ MATCHING LAYOUTS
 	overflow: auto;
 	left: 0px;
 	top: 0px;
-	width: 200px;
+	width: 350px;
 	height: 635px;
 	background-color: #EEEEEE;
 }
@@ -1391,9 +1393,9 @@ MATCHING LAYOUTS
 #glossaryContent{
 	position: absolute;
 	overflow: auto;
-	left:200px;
+	left:350px;
 	top:0px;
-	width: 200px;
+	width: 350px;
 	height: 635px;
 	background-color: #EEEEEE;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
@@ -1411,7 +1413,7 @@ MATCHING LAYOUTS
 .glossaryItem{
 	position: relative; 
 	display: block; 
-	max-width: 200px; 
+	max-width: 350px; 
 	list-style: none; 
 	font-size: 13px; 
 	line-height: 20px;
@@ -1439,10 +1441,10 @@ MATCHING LAYOUTS
 }
 
 #addGlossaryItem{
-	position: relative;
+	position: absolute;
 	bottom: 0px;
 	right: 1px;
-	width: 198px;
+	width: 350px;
 }
 
 /************************************** NANO SCROLLBAR STYLE **************************************/

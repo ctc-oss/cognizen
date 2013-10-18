@@ -58,6 +58,19 @@ var ContentSocket = {
 
                 })
             });
+            
+            //Set Listener for updates to the glossary.
+            socket.on('updateXMLGlossary', function(data){
+	            fs.outputFile(xmlContentFile, data.my, function(err) {
+                    //Refresh the index if successfully updating the content.xml
+                    if(err == null){
+                        socket.emit('updateGlossaryComplete');
+                        socket.broadcast.emit('updateGlossaryComplete'); //Updates other connected clients
+                    }else{
+                        logger.error("content.xml update failed: " + err);
+                    }
+                })
+            });
 
             //Update the page content
             socket.on('updateXML', function (data) {
@@ -70,7 +83,7 @@ var ContentSocket = {
                         socket.broadcast.emit('pushUpdateXMLWithRefreshComplete'); //Updates other connected clients -- Did this break it?
                     }
                     else{
-                        logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update content for node");
+                        logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update glossary for node");
                     }
                 })
             });
