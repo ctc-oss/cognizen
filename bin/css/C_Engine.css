@@ -237,11 +237,11 @@ TREE MENU STYLES
 **********************************************************************************************/
 #projListHeader{
 	position: absolute;
-	top: 122px;
-	right: 475px;
+	top: 102px;
+	right: 460px;
 	color: #9DA6AB;
 	font-weight: normal;
-	font-size: 20pt;
+	font-size: 34pt;
 	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
 }
 
@@ -299,7 +299,7 @@ TREE MENU STYLES
 	height: 500px;
 	border-style:solid;
 	border-color: #EEEEEE;
-	border-radius: 6px;
+	border-radius: 3px;
 	border-width: thin;
 }
 
@@ -309,8 +309,8 @@ TREE MENU STYLES
 	list-style: none;
 	color: #9DA6AB;
 	font-weight: normal;
-	font-size: 12pt;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-size: 14pt;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
 }
 
 .treeview ul {
@@ -333,12 +333,12 @@ TREE MENU STYLES
 
 .treeview li {
 	font-weight: normal;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
 	margin: 0px;
-	padding: 14px 0pt 0px 0px;
+	padding: 16px 0pt 0px 0px;
 }
 
-.treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 8px; border-radius: 8px;}
+.treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px;}
 .programRemove {position: relative; top: -15px; left: 472px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
 .programAdd {position: relative; top: -33px; left: 492px; width: 18px; height: 18px; background: url(images/plus.png) no-repeat;}
 .programUserAdd {position: relative; top: -51px; left: 512px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
