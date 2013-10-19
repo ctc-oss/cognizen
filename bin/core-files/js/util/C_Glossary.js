@@ -19,6 +19,7 @@ var glossaryClosePos = 0;
 var glossaryClosePosMobile = 0;
 var totalGlossary = 0;
 
+
 //Set up Glossary pane.
 function checkGlossary(){
 	if($(data).find('glossary').attr('value') == "true"){
