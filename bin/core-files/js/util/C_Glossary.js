@@ -20,7 +20,11 @@ var glossaryClosePosMobile = 0;
 var totalGlossary = 0;
 
 
-//Set up Glossary pane.
+/************************************************************************************************
+Function: 		checkGlossary
+Param: 			none
+Description:	Check's to see if this app has glossary turned on - if yes then build it.
+************************************************************************************************/
 function checkGlossary(){
 	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
@@ -40,11 +44,15 @@ function checkGlossary(){
 				addGlossaryTerm();
 			});
 		}
-		
 		addGlossary();
 	}
 }
 
+/************************************************************************************************
+Function: 		updateGlossary
+Param: 			none
+Description:	Callback from the Socket to update the xml when the glossary has been updated.
+************************************************************************************************/
 function updateGlossary(){
 	console.log("updating glossary");
 	$.ajax({
@@ -55,7 +63,6 @@ function updateGlossary(){
 	    	success: function(_data){
 	    		data = _data;
 	    		$("#glossaryTerms").empty();
-	    		
 	    		$("#glossaryDef").html("");
 	    		
 	    		addGlossary();
@@ -66,6 +73,12 @@ function updateGlossary(){
 	});
 }
 
+
+/************************************************************************************************
+Function: 		addGlossary
+Param: 			none
+Description:	Called when the glossary is built and when the glossary updates complete.
+************************************************************************************************/
 function addGlossary(){
 	console.log("addGlossary");
 	totalGlossary = $(data).find('glossaryitem').length;
@@ -92,21 +105,42 @@ function addGlossary(){
 		glossaryItem_arr.push("#" + thisTerm);
 	}
 	
-	for(var i = 0; i < glossaryItem_arr.length; i++){
-		if(mode == "edit"){
+	if(mode == "edit"){
+		for(var i = 0; i < glossaryItem_arr.length; i++){
 			addEditGlossaryRollovers($(glossaryItem_arr[i]));
 		}
 	}
 }
 
-
+/************************************************************************************************
+Function: 		addEditGlossaryRollovers
+Param: 			myItem = The term to attach the rollover functionality to.
+Description:	Called when a user rolls over an existing glossary item.
+************************************************************************************************/
 function addEditGlossaryRollovers(myItem){
 	//ADD Program Level Buttons
     myItem.hover(
     	function () {
-            $(this).append("<div id='myGlossaryTermRemove' class='glossaryTermRemove' title='Remove this term from your glossary.'>");//</div><div id='myGlossaryTermEdit' class='glossaryTermEdit' title='Edit this glossary term.'></div>");
+            $(this).append("<div id='myGlossaryTermRemove' class='glossaryTermRemove' title='Remove this term from your glossary.'></div><div id='myGlossaryTermEdit' class='glossaryTermEdit' title='Edit this glossary term.'></div>");
             $("#myGlossaryTermRemove").click(function(){
             	removeGlossaryTerm($(this).parent().data("myID"));
+	        }).hover(
+            	function () {
+                	hoverSubNav = true;
+                },
+				function () {
+                	hoverSubNav = false;
+                }
+            ).tooltip({
+            	show: {
+                	delay: 1500,
+                    effect: "fadeIn",
+                    duration: 200
+                }
+           });
+           
+           $("#myGlossaryTermEdit").click(function(){
+            	editGlossaryTerm($(this).parent().data("myID"));
 	        }).hover(
             	function () {
                 	hoverSubNav = true;
@@ -125,17 +159,86 @@ function addEditGlossaryRollovers(myItem){
         function () {
 			$("#myGlossaryTermRemove").remove();
 			$("#myGlossaryTermEdit").remove();
-	});   
+		});   
 }
 
+/************************************************************************************************
+Function: 		removeGlossaryTerm
+Param: 			myNode = node in xml to manipulate
+Description:	Called when a user removes an existing glossary item.
+************************************************************************************************/
 function removeGlossaryTerm(myNode){
-	$(data).find("glossaryitem").eq(myNode).remove();
-	sendUpdateWithRefresh("glossary");
+	var msg = '<div id="dialog-removeGlossaryTermConfirm" title="Remove Glossary Term"><p class="validateTips">Are you sure that you want to remove this item from your glossary?</p><p>This cannot be undone.</p></div>';
+	
+	//Add to stage.
+	$("#stage").append(msg);
+	
+	//Make it a dialog
+	$("#dialog-removeGlossaryTermConfirm").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("#dialog-removeGlossaryTermConfirm").remove();
+		},
+		buttons: {
+			Cancel: function () {
+				$(this).dialog("close");
+			},
+			Yes: function(){
+				$(data).find("glossaryitem").eq(myNode).remove();
+				sendUpdateWithRefresh("glossary");
+				$(this).dialog("close");
+			} 
+		}
+	});
 }
 
-/************************************************************************************
-ADD NEW GLOSSARY Term - creates the input form for a new glossary term
-************************************************************************************/
+/************************************************************************************************
+Function: 		editGlossaryTerm
+Param: 			myNode = node in xml to manipulate
+Description:	Called when a user edits an existing glossary item.
+************************************************************************************************/
+function editGlossaryTerm(myNode){
+	var myTerm = $(data).find("glossaryitem").eq(myNode).find("term").text();
+	var myDef = $(data).find("glossaryitem").eq(myNode).find("content").text();
+	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">'+myDef+'</div></div>';
+	
+	//Add to stage.
+	$("#stage").append(msg);
+	
+	$("#definitionEditText").redactor({
+		focus: true,
+		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+	});
+
+	//Make it a dialog
+	$("#dialog-editGlossaryTerm").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+				$("#dialog-editGlossaryTerm").remove();
+			},
+		buttons: {
+			Cancel: function () {
+                    $(this).dialog("close");
+			},
+			Add: function(){
+				var updateDef = $("#definitionEditText").getCode();
+				$("#defintionEditText").destroyEditor();
+				$(data).find("glossaryitem").eq(myNode).remove();
+				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				$(this).dialog("close");
+			}
+		}
+	});
+
+}
+
+/************************************************************************************************
+Function: 		addGlossaryTerm
+Param: 			none
+Description:	Called when a user creates a new glossary item.
+************************************************************************************************/
 function addGlossaryTerm(){
 	//Create the base message.
 	var msg = '<div id="dialog-addGlossaryTerm" title="Add New Term"><p class="validateTips">Complete the form to create your new glossary term.</p><input id="newTerm" type="text" value="New Term" defaultValue="New Term" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">Input defintion here.</div></div>';
@@ -162,14 +265,21 @@ function addGlossaryTerm(){
 			Add: function(){
 				var myDef = $("#definitionEditText").getCode();
 				$("#defintionEditText").destroyEditor();
-				insertNewGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
 				$(this).dialog("close");
 			}
 		}
 	});
 }
 
-function insertNewGlossaryTerm(_term, _definition){
+
+/************************************************************************************************
+Function: 		insertGlossaryTerm
+Param: 			_term = the term to update.
+				_defintion = explanation of the term.
+Description:	Called when a user edits or creates a glossary item.
+************************************************************************************************/
+function insertGlossaryTerm(_term, _definition){
 	var noError = true;
 	var isLast = true;
 	var term = _term.toLowerCase();
@@ -240,18 +350,21 @@ function insertNewGlossaryTerm(_term, _definition){
 	}
 }
 
-function editGlossaryTerm(){
-	
-}
-
+/************************************************************************************************
+Function: 		updateGlossaryTerm
+Param: 			none
+Description:	Updates xmls and refreshes other users.
+************************************************************************************************/
 function updateGlossaryTerm(){
 	 sendUpdateWithRefresh("glossary");
 }
 
 
-/*************************************************************
-** Glossary Button Funcitonality
-*************************************************************/
+/************************************************************************************************
+Function: 		toggleGlossary
+Param: 			none
+Description:	Opens and closes the glossary pane.
+************************************************************************************************/
 function toggleGlossary(){
 	$("#glossaryPane").css({'z-index':1});
 	$("#indexPane").css({'z-index':0});
@@ -279,6 +392,11 @@ function toggleGlossary(){
 	}
 }
 
+/************************************************************************************************
+Function: 		gimmeGlossaryPos
+Param: 			none
+Description:	Discerns the open and close point for glossary animation.
+************************************************************************************************/
 function gimmeGlosPos(){
 	glossaryClosePos = ($("#glossaryPane").position().left);
 	glossaryClosePosMobile = ($("#glossaryPane").position().top);
