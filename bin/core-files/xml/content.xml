@@ -33,20 +33,8 @@
 		</preferences>
 		<glossary>
 			<glossaryitem> 
-				<term><![CDATA[ACK]]></term>
-				<content><![CDATA[Acknowledgement]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[AIS]]></term>
-				<content><![CDATA[Automated Information System]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[API]]></term>
-				<content><![CDATA[Application Programming Interface]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[ASCII]]></term>
-				<content><![CDATA[American Standard Code for Information Interchange]]></content>
+				<term><![CDATA[First Term]]></term>
+				<content><![CDATA[Term Definition]]></content>
 			</glossaryitem>
         </glossary>
         <!--docs>
