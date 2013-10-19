@@ -249,7 +249,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #86D4F1;
+	color: #009DDF
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -262,7 +262,7 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #86D4F1;
+	color: #009DDF
 }
 
 #logout a:hover{
