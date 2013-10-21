@@ -467,8 +467,6 @@ function C_Matching(_type) {
 			
 			$("#questionEdit").click(function(){
 				
-				
-				
                	//Create the Content Edit Dialog
 				$("#stage").append("<div id='questionEditDialog' title='Create Multiple Choice Question'><label id='label'>no. of attempts: </label><input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/><br/><div id='questionLabel'>Input your question:</div><div id='questionEditText' type='text'  >" + myContent + "</div><br/><br/><div id='feedbackLabel'>Input your feedback:</div><div id='feedbackEditText' type='text'  >" + feedback + "</div><br/><br/><b>Options:</b><br/><div id='myOptionList'></div><br/><b>Answers:</b><br/><div id='myAnswerList'></div>");
 				

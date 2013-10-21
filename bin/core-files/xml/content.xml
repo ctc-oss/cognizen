@@ -27,7 +27,7 @@
 			<home value="0"/>
 			<menu value="13"/>
 			<courseRetake value="false"/>
-			<feedback value="true"/>
+			<feedback value="false"/>
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
 		</preferences>
