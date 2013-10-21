@@ -62,10 +62,15 @@ function updateGlossary(){
 	    	async: false,
 	    	success: function(_data){
 	    		data = _data;
-	    		$("#glossaryTerms").empty();
-	    		$("#glossaryDef").html("");
-	    		
-	    		addGlossary();
+	    		$("#glossaryPane").empty();
+	    		//$("#glossaryPane").remove();
+	    		//$("#glossaryTerms").empty();
+	    		//$("#glossaryDef").html("");
+	    		//if(glossary == false){
+		    		checkGlossary();
+	    		//}else{
+	    		//	addGlossary();
+	    		//}
 		},
 		error: function(){
 	    	alert("unable to load content.xml in updateIndex")
@@ -80,7 +85,6 @@ Param: 			none
 Description:	Called when the glossary is built and when the glossary updates complete.
 ************************************************************************************************/
 function addGlossary(){
-	console.log("addGlossary");
 	totalGlossary = $(data).find('glossaryitem').length;
 	glossaryItem_arr = [];
 	var thisTerm;

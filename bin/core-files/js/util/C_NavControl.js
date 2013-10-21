@@ -79,19 +79,123 @@ function checkNav(){
 }
 
 function addEditNav(){
-	$('#myCanvas').append(	"        <form id='scormform' title='Scorm Version'>"+
-							"           <select id='scormVersion'>"+
-							"			<option>2004_4th</option>"+
-							"			<option>2004_3rd</option>"+
-							"			<option>1.2</option>"+
-							"		</select></form>"+
-							"		<div id='publish' class='btn_publish' title='Publish Project'></div>");
-	$("#scormform").tooltip();
+	/*
 
-	$("#publish").tooltip().click(clickPublish);
+	$("#publish").tooltip().click(clickPublish);*/
 
 	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
-	$("#preferences").tooltip().click();
+	$("#preferences").tooltip().click(launchPrefs);
+}
+
+
+function launchPrefs(){
+	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
+	//Add the scorm form
+	msg += "<p>";
+	msg += "<form id='scormform' title='Set SCORM Version'>";
+	msg += "<label id='label'>SCORM Version: </label>";
+	msg += "<select id='scormVersion'>";
+	msg += "<option>2004_4th</option>";
+	msg += "<option>2004_3th</option>";
+	msg += "<option>1.2</option>";
+	msg += "<option>none</option>";
+	msg += "</select></form>";
+	msg += "</p>";
+	//Add the glossary checkbox.
+	msg += "<div class='preferences_option' id='hasGlossaryDialog' title='Add/Remove Glossary'>";
+	msg += "<label id='label'>Glossary: </label>";
+	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
+	msg += "</div>";
+	//Add the resources/docs checkbox.   -------TODO
+	msg += "</div>";
+	
+	$("#stage").append(msg);
+	
+	//Make it a dialog
+	$("#dialog-lessonPrefs").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+				$("#dialog-lessonPrefs").remove();
+			},
+		buttons: {
+			Close: function () {
+            	$(this).dialog("close");
+            },
+            Save: function(){
+	            savePreferences();
+            },
+            Publish: function(){
+	            clickPublish();
+	            //savePreferences(true);
+	            $(this).dialog("close");
+            }
+		}
+	});
+	
+	$("#scormform").tooltip();
+	
+	/*var buttons = $('#dialog-lessonPrefs').dialog('option', 'buttons');
+	console.log("to here");
+	for(var i = 0; i < buttons.length; i++){
+		console.log("buttons{i} = " + buttons[i]);
+	}*/
+	
+	if(glossary == true){
+		$("#hasGlossary").attr('checked', true);
+	}else{
+		$("#hasGlossary").attr('checked', false);
+	}
+	
+	$("#hasGlossaryDialog").tooltip();
+}
+
+function savePreferences(){
+	//check if glossary changed.
+	var selected = $("#hasGlossary").is(':checked');
+	var updateNeeded = false;
+	
+	if(glossary != selected){
+		$(data).find('glossary').attr('value', selected);
+		updateNeeded = true;
+	}
+	
+	var selectedScorm = $('#scormVersion').find(':selected').text();
+	var myScormVersion = $(data).find('scormVersion').attr('value');
+	if(scormVersion != myScormVersion){
+		$(data).find('scormVersion').attr('value', selectedScorm);
+		updateNeeded = true;
+	}
+	
+	if(updateNeeded == true){
+		sendUpdateWithRefresh();
+		//Forces a full page refresh - probably a more elegant way - PD - TODO
+		location.reload();
+	}
+	
+	$("#dialog-lessonPrefs").dialog("close");
+}
+
+function clickPublish(){
+	$('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
+	var selectedScorm = $('#scormVersion').find(':selected').text();
+	var myScormVersion = $(data).find('scormVersion').attr('value');
+	if (selectedScorm != myScormVersion){
+		$(data).find('scormVersion').attr('value', selectedScorm);
+	}
+
+	$(data).find('mode').attr("value", 'production');
+	sendUpdate();
+
+	var myScormVersion = $(data).find('scormVersion').attr('value');
+	socket.emit('publishSCORM',{ my : myScormVersion}, function(fdata) {
+	//this function gets called once the server is done writing to the zip file
+		$(data).find('mode').attr("value", 'edit');
+		sendUpdate();
+		$('#publishLoader').remove();
+
+		parsePackageLocation(fdata);
+	});
 }
 
 function checkToggleMode(){
@@ -355,10 +459,7 @@ this.loadPage = function(){
 			scorm.set("cmi.location", currentPageID);
 			scorm.set("cmi.exit", "suspend");
 		}
-
-
 	}
-
 
 	switch (currentTemplateType) {
 		//Satic Layouts
@@ -469,33 +570,5 @@ this.loadPage = function(){
 			currentTemplate = new C_Unity3D(currentTemplateType);
 			currentTemplate.initialize();
 			break;
-	}
-}
-
-
-function clickPublish(){
-	if(mode == "edit"){
-		$('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-		var selectedScorm = $('#scormVersion').find(':selected').text();
-		var myScormVersion = $(data).find('scormVersion').attr('value');
-		if (selectedScorm != myScormVersion){
-			$(data).find('scormVersion').attr('value', selectedScorm);
-		}
-
-		$(data).find('mode').attr("value", 'production');
-		sendUpdate();
-
-		var myScormVersion = $(data).find('scormVersion').attr('value');
-		socket.emit('publishSCORM',{ my : myScormVersion}, function(fdata) {
-			///////////////////////////////////////////////////////////////////////////  This function is not getting called for me.  Phil - July 3
-			//this function gets called once the server is done writing to the zip file
-			$(data).find('mode').attr("value", 'edit');
-			sendUpdate();
-			$('#publishLoader').remove();
-
-			parsePackageLocation(fdata);
-		} );
-
-
 	}
 }

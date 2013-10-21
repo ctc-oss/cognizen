@@ -127,10 +127,21 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_comment{
 	position: absolute;
 	bottom: 7px;
-	left: 236px;
+	left: 105px;
 	width: 30px;
 	height: 30px;
 	background: url(images/comment.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
+}
+
+.btn_preferences{
+	position:absolute;
+	bottom :8px; 
+	left: 140px;
+	width: 30px;
+	height: 30px;
+	background: url(images/prefs.png) no-repeat;
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -139,7 +150,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 	position: absolute;
 	bottom: 12px;
 	left: 5px;
-	width: 121px;
+	width: 100px;
 	height: 28px;
 	cursor: hand;
 	cursor: pointer;
@@ -257,7 +268,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 
-#scormform{
+/*#scormform{
 	position:absolute;
 	bottom:10px; 
 	left: 105px;
@@ -265,7 +276,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	cursor: hand; 
 	cursor: pointer;
-}
+}*/
 
 #pageTitle{
 	position: absolute;

@@ -19,7 +19,7 @@
 
 			<scorm value="true"/>
 			<!-- 1.2, 2004, Tin Can -->
-			<scormVersion value="2004"/>			
+			<scormVersion value="2004_3"/>			
 			<breadcrumb value="true" x="12" y="80" home="true" id="0"/>
 			<masterIndex value="true"/>
 			<glossary value="false"/>
