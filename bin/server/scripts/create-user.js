@@ -1,11 +1,10 @@
-var config = require('./config.json');
+var config = require('./../config.json');
 
-var mongoose = require('mongoose');//mongoose connector
-var User = require('./user-model').User;
+var mongoose = require('mongoose');
+var User = require('./../user-model').User;
 
 var Users = {
     register: function (data, callback) {
-        var _this = this;
         require('crypto').randomBytes(48, function (ex, buf) {
             var myToken = buf.toString('base64').replace(/\//g, '_').replace(/\+/g, '-');
 
@@ -36,7 +35,6 @@ var Users = {
     }
 };
 
-// Initializing Code
 (function () {
     if (process.argv.length < 6) {
         console.log('Usage: node create-user.js [First Name] [Last Name] [Email (Username)] [Password]');
