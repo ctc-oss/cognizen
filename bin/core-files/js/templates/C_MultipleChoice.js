@@ -178,6 +178,16 @@ function C_MultipleChoice(_myType) {
 			option_arr.push($('#' + myOption));
 			
 		});
+
+		if($(data).find("page").eq(currentPage).attr('img')!= undefined){
+			myImage = $(data).find("page").eq(currentPage).attr('img');
+			if(myImage != null){
+				myImage = "media/" + myImage;
+				$("#answerOptions").addClass("answerOptionsWImage");
+				loadVisualMedia();
+			}
+		};
+
 		$("#answerOptions").append("</div>");
 		
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
@@ -187,6 +197,165 @@ function C_MultipleChoice(_myType) {
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:Power2.easeIn, onComplete:checkMode});
 		}
 	}
+
+
+/*****************************************************************************************************************************************************************************************************************
+     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     MEDIA FUNCTIONALITY
+     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     *****************************************************************************************************************************************************************************************************************/
+    /**********************************************************************
+     **Load Visual Content from Link  -  creates tags and media player instance -
+     ** Currently handles - .png, .swf, .jpg, .gif, .mp4, .html
+     **********************************************************************/
+	 var mediaType;
+	 var imageWidth;
+	 var imageHeight;
+	 var imgX;
+	 var imgY;
+	 
+    function loadVisualMedia(){
+    	$("#stage").append("<div id='loader' class='mcLoader'></div>");
+        
+        var questionH = $("#question").height();
+        var questionW = $("#question").width();
+        var questionX = $("#question").position().left;
+        var questionY = $("#question").position().top;
+        var titleY = $("#pageTitle").position().top;
+        var titleH = $("#pageTitle").height();
+       
+        var mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
+
+        var parts = myImage.split('.'), i, l;
+        var last = parts.length;
+
+        mediaType = (parts[last - 1]);
+
+        if(mediaType == "swf"){
+            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+            resizeForMobile();
+            $("#loader").removeClass('loading');
+            $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
+
+            ////////////////////////////////////////////////HTML for edge or js apps.
+        }else if (mediaType == "html"){
+            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+            resizeForMobile();
+
+            $("#loader").append('<object id="edgeContent" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
+            $("#loader").removeClass('loading');
+                       ////////////////////////////////////////////////HTML for edge or js apps.
+        }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){
+
+            autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
+            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+            autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
+            resizeForMobile();
+
+            var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
+
+            if(mediaLinkType == "youtube"){
+                vidHTMLString += " preload='none'";
+            }
+
+            var hasPoster;
+            var posterLink;
+            var hasSubs;
+            var subsLink;
+
+            if($(data).find("page").eq(currentPage).attr('poster') != undefined && $(data).find("page").eq(currentPage).attr('poster') != "null" && $(data).find("page").eq(currentPage).attr('poster').length != 0){
+                hasPoster = true;
+                posterLink = $(data).find("page").eq(currentPage).attr('poster');
+            }else{
+                hasPoster = false;
+            }
+
+            //Check Poster
+            if(hasPoster == true){
+                vidHTMLString += "poster='"+posterLink+"'>";
+            }else{
+                vidHTMLString += ">";
+            }
+
+            vidHTMLString += "<source type='video/";
+
+            //Check type and add appropriate.
+            if(mediaLinkType == "youtube"){
+                vidHTMLString += "youtube' ";
+            }else{
+                vidHTMLString += "mp4' ";
+            }
+
+            //Add the video source and close the source node.
+            vidHTMLString += "src='" + myImage + "'/>";
+
+            //Check for subs - defaults to false.
+            if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
+                hasSubs = true;
+                subLink = $(data).find("page").eq(currentPage).attr('subs');
+            }else{
+                hasSubs = false;
+            }
+
+            //Check subs - if subs at track node.
+            if(hasSubs == true){
+                vidHTMLString += "<track kind='subtitles' src='" + subLink + "' srclang='en'/>"
+            }
+
+            vidHTMLString += "</video>";
+
+
+            //Add the HTML to it's div.
+            $("#loader").append(vidHTMLString);
+
+
+            $('video').mediaelementplayer({
+                success: function(player, node) {
+                    //If autoNext then move to next page upon completion.
+                    if(autoNext == "true"){
+                        player.addEventListener('ended', function(e) {
+                            hasEnded();
+                        }, false);
+                    }
+
+                    //If autoplay - cick off the vid
+                    if(autoPlay == "true"){
+                        $('.mejs-overlay-button').trigger('click');
+                    }
+                }
+            });
+        }else{
+            var img = new Image();
+            $(img).load(function(){
+                $("#loader").removeClass('loading').append(img);
+                imageWidth = $(img).width();
+                imageHeight = $(img).height();
+
+                if(transition == true){
+                    TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType/*, onComplete:setCaption*/});
+                }else{
+                    //setCaption();
+                }
+            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
+        }
+
+        //Other media types include their size so we don't need to wait for them to load to place the caption - images (png, gif, jpg) don't so we have to do caption inside of the load event.
+        if(mediaType == "mp4" || mediaType == "html"  || mediaType == "swf" || mediaLinkType == "youtube"){
+
+            if(transition == true){
+                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType/*, onComplete:setCaption*/});
+            }else{
+                //setCaption();
+            }
+        }
+
+        $("#loader").removeClass('loading');
+    }
+    /////////////END of loadVisualMedia
+
 	
 	function checkQuestionComplete(){
 		for(var i = 0; i < questionResponse_arr.length; i++){
@@ -566,6 +735,7 @@ function C_MultipleChoice(_myType) {
 	    $('#pageTitle').remove();
 	    $('#question').remove();
 	    $('#answerOptions').remove();
+		$('#loader').remove();
 	    $("#mcSubmit").remove();
 	    if(mode == "edit"){
 		    $("#titleEdit").remove();

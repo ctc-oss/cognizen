@@ -889,6 +889,17 @@ MULTIPLE CHOICE LAYOUTS
 	position: absolute;
 }*/
 
+/* reduce the text width if media is being displayed */
+.answerOptionsWImage{
+	width: 480px !important;
+}
+
+/* position optional media  */
+.mcLoader{
+   	top: 85px;
+   	left: 580px;
+}
+
 .multipleChoiceImageLabel{
 	position: absolute;
 	overflow : auto;
