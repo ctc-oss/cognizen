@@ -31,7 +31,7 @@
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
 		</preferences>
-		<glossary value="true">
+		<glossary value="false">
 			<glossaryitem> 
 				<term><![CDATA[First Term]]></term>
 				<content><![CDATA[Term Definition]]></content>
