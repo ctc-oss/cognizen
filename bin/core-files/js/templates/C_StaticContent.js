@@ -1137,9 +1137,8 @@ function C_StaticContent(_type) {
 				
 			}else if(mediaType == "swf"){
                	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
-			 	console.log("wtf I'm in the swf section");
 			 	$(data).find("page").eq(currentPage).attr("img", imgPath);
-			 	$("#loader").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
+			 	$("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
 			 	$("#swfDialog").dialog({
                    	autoOpen: true,
 					modal: true,
@@ -1161,7 +1160,7 @@ function C_StaticContent(_type) {
 			//fadeComplete();
 		}
 		
-		if(mediaType != "mp4"  || mediaType != "swf"){
+		if(mediaType != "mp4"  && mediaType != "swf"){
 			sendUpdateWithRefresh();
 			fadeComplete();
 		}
