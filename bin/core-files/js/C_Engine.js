@@ -177,6 +177,10 @@ function sendUpdateWithRefresh(_type){
 		socket.emit('updateXMLWithRefresh', { my: xmlString });
 	}else if(_type == 'glossary'){
 		socket.emit('updateXMLGlossary', { my: xmlString });
+	}else if(_type == 'updatePrefs'){
+		socket.emit('updateXMLPrefs', { my: xmlString });
+	}else if (_type == 'updatePrefsWithPublish'){
+		socket.emit('updateXMLPrefsWithPublish', { my: xmlString });
 	}
 }
 

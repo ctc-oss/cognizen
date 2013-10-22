@@ -45,6 +45,8 @@ function checkGlossary(){
 			});
 		}
 		addGlossary();
+	}else{
+		$("#glossaryPane").remove();
 	}
 }
 
@@ -54,7 +56,6 @@ Param: 			none
 Description:	Callback from the Socket to update the xml when the glossary has been updated.
 ************************************************************************************************/
 function updateGlossary(){
-	console.log("updating glossary");
 	$.ajax({
 	    	type: "GET",
 	    	url: "xml/content.xml",
@@ -62,15 +63,10 @@ function updateGlossary(){
 	    	async: false,
 	    	success: function(_data){
 	    		data = _data;
-	    		$("#glossaryPane").empty();
 	    		//$("#glossaryPane").remove();
-	    		//$("#glossaryTerms").empty();
-	    		//$("#glossaryDef").html("");
-	    		//if(glossary == false){
-		    		checkGlossary();
-	    		//}else{
-	    		//	addGlossary();
-	    		//}
+	    		$("#glossaryTerms").empty();
+	    		$("#glossaryDef").html("");
+		    	addGlossary();
 		},
 		error: function(){
 	    	alert("unable to load content.xml in updateIndex")
@@ -198,47 +194,6 @@ function removeGlossaryTerm(myNode){
 }
 
 /************************************************************************************************
-Function: 		editGlossaryTerm
-Param: 			myNode = node in xml to manipulate
-Description:	Called when a user edits an existing glossary item.
-************************************************************************************************/
-function editGlossaryTerm(myNode){
-	var myTerm = $(data).find("glossaryitem").eq(myNode).find("term").text();
-	var myDef = $(data).find("glossaryitem").eq(myNode).find("content").text();
-	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">'+myDef+'</div></div>';
-	
-	//Add to stage.
-	$("#stage").append(msg);
-	
-	$("#definitionEditText").redactor({
-		focus: true,
-		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-	});
-
-	//Make it a dialog
-	$("#dialog-editGlossaryTerm").dialog({
-		modal: true,
-		width: 550,
-		close: function(event, ui){
-				$("#dialog-editGlossaryTerm").remove();
-			},
-		buttons: {
-			Cancel: function () {
-                    $(this).dialog("close");
-			},
-			Add: function(){
-				var updateDef = $("#definitionEditText").getCode();
-				$("#defintionEditText").destroyEditor();
-				$(data).find("glossaryitem").eq(myNode).remove();
-				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
-				$(this).dialog("close");
-			}
-		}
-	});
-
-}
-
-/************************************************************************************************
 Function: 		addGlossaryTerm
 Param: 			none
 Description:	Called when a user creates a new glossary item.
@@ -276,6 +231,48 @@ function addGlossaryTerm(){
 	});
 }
 
+/************************************************************************************************
+Function: 		editGlossaryTerm
+Param: 			myNode = node in xml to manipulate
+Description:	Called when a user edits an existing glossary item.
+************************************************************************************************/
+function editGlossaryTerm(myNode){
+	var myTerm = $(data).find("glossaryitem").eq(myNode).find("term").text();
+	var myDef = $(data).find("glossaryitem").eq(myNode).find("content").text();
+	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">'+myDef+'</div></div>';
+	
+	//Add to stage.
+	$("#stage").append(msg);
+	
+	$("#definitionEditText").redactor({
+		focus: true,
+		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+	});
+
+	//Make it a dialog
+	$("#dialog-editGlossaryTerm").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+				$("#dialog-editGlossaryTerm").remove();
+			},
+		buttons: {
+			Cancel: function () {
+                    $(this).dialog("close");
+			},
+			Add: function(){
+				var updateDef = $("#definitionEditText").getCode();
+				$("#defintionEditText").destroyEditor();
+				console.log("before = " + $(data).find("glossaryitem").eq(myNode).find("term").text());
+				$(data).find("glossaryitem").eq(myNode).remove();
+				console.log("after = " + $(data).find("glossaryitem").eq(myNode).find("term").text());
+				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				$(this).dialog("close");
+			}
+		}
+	});
+
+}
 
 /************************************************************************************************
 Function: 		insertGlossaryTerm
@@ -288,22 +285,40 @@ function insertGlossaryTerm(_term, _definition){
 	var isLast = true;
 	var term = _term.toLowerCase();
 	var insertPoint = 0;
-	
-	for(var i = 0; i < totalGlossary; i++){
-		var testTerm = $(data).find('glossaryitem').eq(i).find('term').text().toLowerCase();
-		insertPoint = i;
-		if(term < testTerm){
-			isLast = false;
-			break;
-		}else if(term == testTerm){
-			noError = false;
-			break;
+	var isOnly = false;
+	var totalGlossary = $(data).find('glossaryitem').length;
+	console.log("totalGlossary = " + totalGlossary);
+	if(totalGlossary != 0){
+		for(var i = 0; i < totalGlossary; i++){
+			var testTerm = $(data).find('glossaryitem').eq(i).find('term').text().toLowerCase();
+			insertPoint = i;
+			if(term < testTerm){
+				isLast = false;
+				break;
+			}else if(term == testTerm){
+				noError = false;
+				break;
+			}
 		}
-	}
+	}else{
+		isOnly = true;
+	}	
 	
 	//IF doesn't exist already - create
 	if(noError == true){
-		if(isLast == true){
+		if(isOnly == true){
+			$(data).find("glossary").append($('<glossaryitem>'));
+			//Place the page title element
+			$(data).find("glossaryitem").eq(0).append($("<term>"));
+			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
+			var termCDATA = newGlossaryTerm.createCDATASection(_term);
+			$(data).find("glossaryitem").eq(0).find("term").append(termCDATA);
+		
+			$(data).find("glossaryitem").eq(0).append($("<content>"));
+			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
+			var defCDATA = newGlossaryDef.createCDATASection(_definition);
+			$(data).find("glossaryitem").eq(0).find("content").append(defCDATA);
+		}else if(isLast == true){
 			$(data).find("glossaryitem").eq(insertPoint).after($('<glossaryitem></glossaryitem>'));
 			//Place the page title element
 			$(data).find("glossaryitem").eq(insertPoint + 1).append($("<term>"));

@@ -19,10 +19,9 @@
 
 			<scorm value="true"/>
 			<!-- 1.2, 2004, Tin Can -->
-			<scormVersion value="2004_3"/>			
+			<scormVersion value="2004_3rd"/>			
 			<breadcrumb value="true" x="12" y="80" home="true" id="0"/>
 			<masterIndex value="true"/>
-			<glossary value="false"/>
 			<docs value="false"/>
 			<!-- Enables the page numbering -->
 			<home value="0"/>
@@ -32,7 +31,7 @@
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
 		</preferences>
-		<glossary>
+		<glossary value="true">
 			<glossaryitem> 
 				<term><![CDATA[First Term]]></term>
 				<content><![CDATA[Term Definition]]></content>

@@ -165,6 +165,22 @@ function initializeSockets(){
             });
 			updateGlossary();
 		});
+		
+		socket.on('updatePrefsComplete', function(){
+			cognizenSocket.emit('contentSaved', {
+				content: {type: urlParams['type'], id: urlParams['id']},
+                user: {id: urlParams['u']}
+			});
+			updatePrefs();
+		});
+		
+		socket.on('updatePrefsWithPublishComplete', function(){
+			cognizenSocket.emit('contentSaved', {
+				content: {type: urlParams['type'], id: urlParams['id']},
+                user: {id: urlParams['u']}
+			});
+			updatePrefs(true);
+		});
 
         socket.on('pushUpdateXMLWithRefreshComplete', function(){
             pushedUpdate = true;

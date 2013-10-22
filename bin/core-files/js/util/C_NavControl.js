@@ -96,7 +96,7 @@ function launchPrefs(){
 	msg += "<label id='label'>SCORM Version: </label>";
 	msg += "<select id='scormVersion'>";
 	msg += "<option>2004_4th</option>";
-	msg += "<option>2004_3th</option>";
+	msg += "<option>2004_3rd</option>";
 	msg += "<option>1.2</option>";
 	msg += "<option>none</option>";
 	msg += "</select></form>";
@@ -126,8 +126,8 @@ function launchPrefs(){
 	            savePreferences();
             },
             Publish: function(){
-	            clickPublish();
-	            //savePreferences(true);
+	            //clickPublish();
+	            savePreferences(true);
 	            $(this).dialog("close");
             }
 		}
@@ -141,16 +141,19 @@ function launchPrefs(){
 		$("#hasGlossary").attr('checked', false);
 	}
 	
+	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
+	
 	$("#hasGlossaryDialog").tooltip();
 }
 
-function savePreferences(){
+
+function savePreferences(_pub){
 	//check if glossary changed.
-	var selected = $("#hasGlossary").is(':checked');
+	var glossarySelected = $("#hasGlossary").is(':checked');
 	var updateNeeded = false;
 	
-	if(glossary != selected){
-		$(data).find('glossary').attr('value', selected);
+	if(glossary != glossarySelected){
+		$(data).find('glossary').attr('value', glossarySelected);
 		updateNeeded = true;
 	}
 	
@@ -160,14 +163,47 @@ function savePreferences(){
 		$(data).find('scormVersion').attr('value', selectedScorm);
 		updateNeeded = true;
 	}
-	
-	if(updateNeeded == true){
-		sendUpdateWithRefresh();
-		//Forces a full page refresh - probably a more elegant way - PD - TODO
-		location.reload();
+	 
+	if(updateNeeded == true && _pub != true){
+		sendUpdateWithRefresh("updatePrefs");
+		$("#dialog-lessonPrefs").dialog("close");
+	}else if(updateNeeded == true && _pub == true){
+		sendUpdateWithRefresh("updatePrefsWithPublish");
+	}else if(updateNeeded == false && _pub == true){
+		clickPublish();
+	}else{
+		$("#dialog-lessonPrefs").dialog("close");
 	}
-	
-	$("#dialog-lessonPrefs").dialog("close");
+}
+
+function updatePrefs(_pub){
+	$.ajax({
+	    type: "GET",
+	    url: "xml/content.xml",
+	    dataType: "xml",
+	    async: false,
+	    success: function(_data){
+	    	data = _data;
+			var tmpGloss = false;
+			if($(data).find('glossary').attr('value') == "true"){
+				tmpGloss = true;
+			}
+			if(glossary != tmpGloss){
+				glossary = tmpGloss;
+				if(tmpGloss = true){
+					checkGlossary();
+				}else{
+					$("#glossaryPane").remove();
+				}
+			}
+			if(_pub == true){
+				clickPublish();
+			}
+		},
+		error: function(){
+	   		alert("unable to load content.xml in updateIndex")
+	   	}
+	});
 }
 
 function clickPublish(){
@@ -190,6 +226,7 @@ function clickPublish(){
 
 		parsePackageLocation(fdata);
 	});
+	$("#dialog-lessonPrefs").dialog("close");
 }
 
 function checkToggleMode(){

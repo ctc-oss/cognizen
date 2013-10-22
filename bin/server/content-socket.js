@@ -71,6 +71,32 @@ var ContentSocket = {
                     }
                 })
             });
+            
+            //Set Listener for updates to the prefs.
+            socket.on('updateXMLPrefs', function(data){
+	            fs.outputFile(xmlContentFile, data.my, function(err) {
+                    //Refresh the index if successfully updating the content.xml
+                    if(err == null){
+                        socket.emit('updatePrefsComplete');
+                        socket.broadcast.emit('updatePrefsComplete'); //Updates other connected clients
+                    }else{
+                        logger.error("content.xml update failed: " + err);
+                    }
+                })
+            });
+            
+             //Set Listener for updates to the prefs during publish.
+            socket.on('updateXMLPrefsWithPublish', function(data){
+	            fs.outputFile(xmlContentFile, data.my, function(err) {
+                    //Refresh the index if successfully updating the content.xml
+                    if(err == null){
+                        socket.emit('updatePrefsWithPublishComplete');
+                        socket.broadcast.emit('updatePrefsComplete'); //Updates other connected clients
+                    }else{
+                        logger.error("content.xml update failed: " + err);
+                    }
+                })
+            });
 
             //Update the page content
             socket.on('updateXML', function (data) {
