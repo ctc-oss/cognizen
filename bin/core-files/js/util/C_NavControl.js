@@ -135,12 +135,6 @@ function launchPrefs(){
 	
 	$("#scormform").tooltip();
 	
-	/*var buttons = $('#dialog-lessonPrefs').dialog('option', 'buttons');
-	console.log("to here");
-	for(var i = 0; i < buttons.length; i++){
-		console.log("buttons{i} = " + buttons[i]);
-	}*/
-	
 	if(glossary == true){
 		$("#hasGlossary").attr('checked', true);
 	}else{
