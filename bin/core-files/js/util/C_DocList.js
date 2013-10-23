@@ -31,17 +31,18 @@ function checkDocs(){
 
 //addDocs pane
 function addDocs(){
-	$('#panes').append("<div id='docPane' class='pane'><button id='docTab' class='paneTab'></button><div id='docContent' class='docContent'></div></div>");
+	$('#panes').append("<div id='docPane' class='pane'><div id='docTab' class='paneTab' title='click here to view documents'></div><div id='docContent' class='docContent'></div></div>");
 	for (var i = 0; i < totalDocs; i++){
 		var linkID = "docPaneItem" + i;
 		var thisLink = $(data).find('docItem').eq(i).find('doc').attr('link');
 		var thisDoc = $(data).find('docItem').eq(i).find('doc').text();
 		var thisDescription = $(data).find('docItem').eq(i).find('description').text();
-		$("#docContent").append("<div class='docPaneItem'><a href='"+thisLink+"' id='"+linkID+"' target='_blank'>"+thisDoc+"</a><div class='docPaneItemDescription'>"+thisDescription+"</div></div>");
-		$('#'+linkID).button();
+		$("#docContent").append("<div class='docPaneItem'><a href='"+thisLink+"' id='"+linkID+"' title='click here launch document' target='_blank'>"+thisDoc+"</a><div class='docPaneItemDescription'>"+thisDescription+"</div></div>");
+		$('#'+linkID).button().tooltip();
 	}
 	
-	$('#docTab').click(toggleDoc);	
+	$('#docTab').click(toggleDoc).tooltip();	
+	
 }
 
 
