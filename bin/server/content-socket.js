@@ -286,11 +286,7 @@ var ContentSocket = {
                                 logger.error("Write file error" + err);
                             }
                             else {
-
                                 var scormFileVersion = scormVersion.replace(/\./, '_');
-//                                if(scormVersion === '1.2'){
-//                                    scormFileVersion = '1_2';
-//                                }
 
                                 var packageFolder = contentPath + '/packages/';
                                 var outputFile = packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
