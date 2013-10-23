@@ -557,6 +557,7 @@ ul.no-indent {
 
 /* FOR REVEAL CONTENT */
 #content .revealRight{
+	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
@@ -566,6 +567,7 @@ ul.no-indent {
 }
 
 #content .revealLeft{
+	overflow: auto;
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
@@ -697,7 +699,6 @@ MEDIA LAYOUTS
 **************************************************************************************/
 #loader {
 	position: absolute;
-	border: 1px solid #fff;
 	overflow: hidden;
 }
 
@@ -1298,7 +1299,6 @@ MATCHING LAYOUTS
 	width: 400px;
 	left: 0px;
 }
-
 
 /*NESTABLE*/
 .dd { position: relative; display: block; margin: 0; padding: 0; max-width: 600px; list-style: none; font-size: 13px; line-height: 20px; }
