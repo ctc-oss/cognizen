@@ -46,6 +46,7 @@ var ContentSocket = {
             socket.on('updateXMLWithRefresh', function (data) {
                 logger.debug('Updating XML (with refresh) at ' + xmlContentFile);
                 logger.debug("updateXMLWithRefresh called with data of " + data.my);
+               
                 fs.outputFile(xmlContentFile, data.my, function(err) {
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){

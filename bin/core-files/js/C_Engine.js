@@ -99,6 +99,7 @@ function initScripts(_data){
 				"js/libs/jquery.corner.js",
 				"js/libs/modernizr.js",
 				"js/libs/siofu/client.js",
+				"js/libs/pretty-data.js",
 				//Give mouse super powers.
 				"js/libs/jquery.mousewheel-3.0.6.pack.js",
 				//Lightbox for media popups and galleries.
@@ -174,6 +175,9 @@ function sendUpdateWithRefresh(_type){
 		var oSerializer = new XMLSerializer();
 		xmlString = oSerializer.serializeToString(myData[0]);
 	}
+	
+	var pd = new pp();
+	var xmlString  = pd.xml(xmlString);
 	
 	if(_type == undefined){
 		socket.emit('updateXMLWithRefresh', { my: xmlString });
