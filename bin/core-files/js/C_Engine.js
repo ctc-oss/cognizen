@@ -204,6 +204,9 @@ function sendUpdate(){
 		var oSerializer = new XMLSerializer();
 		xmlString = oSerializer.serializeToString(myData[0]);
 	}
+	
+	var pd = new pp();
+	var xmlString  = pd.xml(xmlString);
 	socket.emit('updateXML', { my: xmlString });
 }
 
