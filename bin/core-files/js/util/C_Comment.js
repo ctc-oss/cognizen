@@ -95,7 +95,7 @@ function checkComment(){
 		 
 		 //Set Scrollbar for comments if one is needed...
 		 $(".nano").nanoScroller({
-               	flashDelay: 4000,
+            flashDelay: 4000,
 		 	flash: true,
 		 	sliderMaxHeight: 350,
 		 	scroll: 'bottom'
@@ -107,7 +107,7 @@ function refreshPageComments(){
 	$("#pageComments").empty();
 	
 	var even = true;
-
+	
 	for(var i = 0; i < pageComments.length; i++){
 		var myFirstName = pageComments[i].user.firstName;
 		var myLastName = pageComments[i].user.lastName;

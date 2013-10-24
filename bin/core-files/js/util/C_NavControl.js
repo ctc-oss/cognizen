@@ -459,10 +459,11 @@ this.loadPage = function(){
 	}
 	
 	if(mode == "edit" || mode == "review"){
+		//clear the page comments from last page
 		if(pageComments && pageComments.length > 0){
 			pageComments.length = 0;
-	     }
-		
+	    }
+		//get the page comments
 		cognizenSocket.emit('getContentComments', {
 			contentId: urlParams['id'],
 			pageId: $(data).find("page").eq(currentPage).attr("id")

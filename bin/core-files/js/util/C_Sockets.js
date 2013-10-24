@@ -37,7 +37,6 @@ function initializeSockets(){
 			}else if(data.permission == "reviewer"){
 				mode = "review";
 			}
-			 
 			buildInterface();  
 	    });
 	    
@@ -46,8 +45,13 @@ function initializeSockets(){
     		alert('There is an error connecting to the production server. You can only view content.');
 		});
 
-	    cognizenSocket.on('commentAdded', function (data) {
-	        	cognizenSocket.emit('getContentComments', {
+	    cognizenSocket.on('commentAdded', function (_data) {
+	        //clear the page comments from last page
+			if(pageComments && pageComments.length > 0){
+				pageComments.length = 0;
+		    }
+	        
+	        cognizenSocket.emit('getContentComments', {
 				contentId: urlParams['id'],
 				pageId: $(data).find("page").eq(currentPage).attr("id")
 			});
@@ -77,14 +81,15 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on('retrievedContentComments', function (data) {
-	         if(pageComments && pageComments.length > 0){
-		         pageComments.length = 0;
-	         }
-	         pageComments = data;
-
+	    	if(pageComments && pageComments.length > 0){
+		    	pageComments.length = 0;
+	        }
+			
+	        pageComments = data;
+	        
 	        if(commentsOpen == true){
-		         refreshPageComments();
-			    $("#commentInputText").empty();
+		        refreshPageComments();
+				$("#commentInputText").empty();
 	        }
 	        
 	        if(mode == "edit" || mode == "review"){
@@ -93,7 +98,6 @@ function initializeSockets(){
 					$("#comment").removeClass('commentClosed');
 	        		var last = pageComments.length - 1;
 		   		var status = pageComments[last].status;
-		   		
 		        	if(status == 'new' || status == 'inprogress'){
 		        		$("#comment").addClass('commentOpen');
 		        	}else{
@@ -104,7 +108,6 @@ function initializeSockets(){
 		      	$("#comment").removeClass('commentClosed');
 		      }  
 	        }
-
 	    });
 	    
 	    cognizenSocket.on("updateCommentIndex", function(data){
@@ -122,11 +125,7 @@ function initializeSockets(){
 							  }
 						  }
 					  }
-				  }
-				  cognizenSocket.emit('getContentComments', {
-					contentId: urlParams['id'],
-					pageId: $(data).find("page").eq(currentPage).attr("id")
-				  });  
+				  } 
 			   }
 			}
 	    });
