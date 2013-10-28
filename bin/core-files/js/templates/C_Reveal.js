@@ -613,7 +613,6 @@ function C_Reveal(_type) {
 		$(data).find("page").eq(currentPage).find("content").empty();
 		$(data).find("page").eq(currentPage).find("content").append(newCDATA);
 		
-		console.log("revealEdit_arr.length = " + revealEdit_arr.length);
 		for(var i = 0; i < revealEdit_arr.length; i++){
 			var revealImg = $("#"+revealEdit_arr[i]+"ImageText").val();
 			var imgW = $("#"+revealEdit_arr[i]+"Width").val();
@@ -637,7 +636,6 @@ function C_Reveal(_type) {
 		}
 		
 		for(var i = revealEdit_arr.length; i < editStartLength; i++){
-			console.log("in the loop");
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
 		}
 

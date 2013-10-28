@@ -40,6 +40,8 @@ function C_StaticContent(_type) {
     var captionEditText_arr = [];
 	var largeImg = "";
 	var audioUploader;
+	
+	var galleryEdit_arr = [];
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -709,10 +711,18 @@ function C_StaticContent(_type) {
 						var removeID = "removeMedia" + i;
 						var galleryItemID = "galleryItem" + i;
 						
-						$("#imgDialog").append("<div id='"+galleryItemID+"'><HR><div id='"+removeID+"' value='"+i+"' class='removeMedia' title='Remove this image'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='imgPath" + i + "' type='text' value="+ media_arr[i] + " defaultValue="+ media_arr[i] + " style='width:80%;'/><br/><div>Edit Caption:</div><div id='"+thisCaption+"' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + caption_arr[i] + "</div></div>");
+						var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+i+"'>";
+						msg += "<div id='"+removeID+"' value='"+i+"' class='removeMedia' title='Remove this image'/>";
+						msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
+						msg += "<label id='label'>Media: </label><input id='imgPath" + i + "' type='text' value="+ media_arr[i] + " defaultValue="+ media_arr[i] + " style='width:80%;'/><br/>";
+						msg += "<div>Edit Caption:</div><div id='"+thisCaption+"' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + caption_arr[i] + "</div>";
+						msg += "</div>"
+						$("#imgDialog").append(msg);
+						
 						$("#" + removeID).click(function(){
 							var arrIndex = $(this).attr('value');
 							//captionEditText_arr, media_arr, caption_arr, destroyEditor
+							galleryEdit_arr.splice(arrIndex, 1);
 							media_arr.splice(arrIndex,1);
 							caption_arr.splice(arrIndex, 1);
 							$(captionEditText_arr[arrIndex]).destroyEditor();
@@ -726,6 +736,8 @@ function C_StaticContent(_type) {
 							focus: true,
 							buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
 						});
+						
+						galleryEdit_arr.push(galleryItemID);
 					}
 
 					$("#imgDialog").dialog({
@@ -743,7 +755,14 @@ function C_StaticContent(_type) {
 								var galleryItemID = "galleryItem" + media_arr.length;
 								captionEditText_arr.push("#" + captionTextID);
 								
-								$("#imgDialog").append("<div id='"+galleryItemID+"'> <HR><div id='"+removeID+"' value='"+i+"' class='removeMedia' title='Remove this image'></div><label id='label'>Gallery Item: </label><HR WIDTH='75%'><label id='label'>Media: </label><input id='" + imgID + "' type='text' value='defaultTop.png' defaultValue='defaultTop.png' style='width:100%;'/><br/><div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div></div>");
+								var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+media_arr.length+"'>";
+								msg += "<div id='"+removeID+"' value='"+media_arr.length+"' class='removeMedia' title='Remove this image'/>";
+								msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
+								msg += "<label id='label'>Media: </label><input id='imgPath" + media_arr.length + "' type='text' value='defaultTop.png' defaultValue='defaultTop.png' style='width:80%;'/><br/>";
+								msg += "<div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div>";
+								msg += "</div>"
+								$("#imgDialog").append(msg);
+								
 								$("#" + removeID).click(function(){
 									var arrIndex = $(this).attr('value');
 									//captionEditText_arr, media_arr, caption_arr, destroyEditor
@@ -774,6 +793,8 @@ function C_StaticContent(_type) {
 									focus: true,
 									buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
 								});
+								
+								galleryEdit_arr.push(galleryItemID);
 							},
 							Save: function(){
 								$( this ).dialog( "close" );
@@ -1067,7 +1088,10 @@ function C_StaticContent(_type) {
 					mediaString +=",";
 					captionString += "!!!"
 				}
-				mediaString += $("#imgPath"+i).val();
+				console.log(galleryEdit_arr[i]);
+				console.log('$("#"+galleryEdit_arr[i]).attr("value") = ' + $("#"+galleryEdit_arr[i]).attr("value"));
+				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
+				console.log("mediaString = " + mediaString);
 				captionString += $(captionEditText_arr[i]).getCode();
 				virgin = false;
 			}	
@@ -1084,7 +1108,7 @@ function C_StaticContent(_type) {
 		
 		var imgPath = _path;
 		   	
-	   	if(imgPath != startPath){
+	   	
             var parts = imgPath.split('.'), i, l;
 		  	var last = parts.length;
 
@@ -1098,49 +1122,48 @@ function C_StaticContent(_type) {
                     autoOpen: true,
 					modal: true,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: function(){
-						var strippedPath = "";
-						$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
-						$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
-						for(var i = 0; i < last-1; i++){
-							strippedPath += parts[i];
-						}
-						if($("#subs").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
-						}else{
-							$(data).find("page").eq(currentPage).attr("subs", "null");
-						}
+						close: function(){
+							var strippedPath = "";
+							$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
+							$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
+							for(var i = 0; i < last-1; i++){
+								strippedPath += parts[i];
+							}
+							if($("#subs").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
+							}else{
+								$(data).find("page").eq(currentPage).attr("subs", "null");
+							}
 
-						if($("#poster").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
-						}else{
-							$(data).find("page").eq(currentPage).attr("poster", "null");
-						}
+							if($("#poster").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
+							}else{
+								$(data).find("page").eq(currentPage).attr("poster", "null");
+							}
 
-						if($("#autoplay").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("autoplay", "true");
-						}else{
-							$(data).find("page").eq(currentPage).attr("autoplay", "false");
+							if($("#autoplay").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("autoplay", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("autoplay", "false");
+							}
+						
+							if($("#autonext").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("autonext", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("autonext", "false");
+							}
+							$(data).find("page").eq(currentPage).attr("controlType", "bar");
+							$("#videoDialog").remove();
+							sendUpdateWithRefresh();
+							fadeComplete();
 						}
-
-						if($("#autonext").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("autonext", "true");
-						}else{
-							$(data).find("page").eq(currentPage).attr("autonext", "false");
-						}
-						$(data).find("page").eq(currentPage).attr("controlType", "bar");
-						$("#videoDialog").remove();
-						sendUpdateWithRefresh();
-						fadeComplete();
-					}
-				});
-				
+				});	
 			}else if(mediaType == "swf"){
-               	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
+             	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
 			 	$(data).find("page").eq(currentPage).attr("img", imgPath);
 			 	$("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
 			 	$("#swfDialog").dialog({
-                   	autoOpen: true,
+                	autoOpen: true,
 					modal: true,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 					close: function(){
@@ -1149,17 +1172,14 @@ function C_StaticContent(_type) {
 						sendUpdateWithRefresh();
 						fadeComplete();
 					}
-				});
-			}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF"){
-                $(data).find("page").eq(currentPage).attr("img", imgPath);
-			}else{
-			 
-			}
-		}else if(capChange == true){
-			//sendUpdateWithRefresh();
-			//fadeComplete();
+			});
+		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF"){
+            $(data).find("page").eq(currentPage).attr("img", imgPath);
+		}else{
+				 
 		}
-		
+			
+		console.log("mediaType = " + mediaType);
 		if(mediaType != "mp4"  && mediaType != "swf"){
 			sendUpdateWithRefresh();
 			fadeComplete();
