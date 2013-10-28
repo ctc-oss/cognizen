@@ -8,7 +8,7 @@ var io;
 
 var ContentSocket = {
 
-    start: function(port, path, contentPath, logger, callback) {
+    start: function(port, path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
 
         var app = http.createServer(function (req, res) {
@@ -116,6 +116,7 @@ var ContentSocket = {
             });
 
             socket.on('publishSCORM', function (data, callback) {
+                console.log('TODO: Copy files from scormPath at ' + scormPath);
                 var scormVersion = data.my;
                 readdirp(
                     { root: contentPath,

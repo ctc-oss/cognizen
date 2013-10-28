@@ -426,8 +426,7 @@ var SocketHandler = {
             if (err) callback(err);
 
             FileUtils.copyDir(root, baseWritePath, function (path) {
-
-                return (path.endsWith('core-files') || path.contains("js") || path.contains("scorm") || path.contains("server") || path.contains("xml") || path.contains("packages"));
+                return (path.endsWith('core-files') || path.contains("js") || path.contains("server") || path.contains("xml") || path.contains("packages"));
             }, function (err) {
                 //Set the lesson and course names in the xml.
                 //Once xml is copied to new lesson location -
@@ -836,10 +835,12 @@ var SocketHandler = {
                             });
                         }
                         else {
+                            var scormPath = path.normalize('../core-files/scorm/');
+                            var scormDir = path.resolve(process.cwd(), scormPath);
                             var programPath = path.normalize('../programs/' + found.path + '/');
-                            var parentDir = require('path').resolve(process.cwd(), programPath);
+                            var parentDir = path.resolve(process.cwd(), programPath);
                             _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
-                            ContentSocket.start(serverDetails.port, found.id, parentDir, _this.logger, function(error){
+                            ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
                                 if (error) {
                                     _this.logger.error(error);
                                     _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
