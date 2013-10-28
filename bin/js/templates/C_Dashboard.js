@@ -536,7 +536,6 @@ function C_Dashboard(_type) {
     }
     
     function submitRegisterNewContent() {
-        console.log("submitRegisterNewContent");
         var myType = "course";
         var nameString = $("#myName").val();
 
@@ -551,7 +550,6 @@ function C_Dashboard(_type) {
         };
 
         if (currentParent == "root") { // TODO Should this be currentLevel?
-            console.log("emmitting registerProgram");
             socket.emit("registerProgram", content);
         } else if (currentLevel == "project") {
             /*var selected = $("#myType input[type='radio']:checked");
@@ -573,7 +571,6 @@ function C_Dashboard(_type) {
                 id: currentParent.attr('id')
             };
             content.parentName = parentString;
-            console.log("emmitting registerProgram");
             socket.emit("registerLesson", content);
         }
 

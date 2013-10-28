@@ -455,7 +455,7 @@ function C_Reveal(_type) {
 			
 			$("#conEdit").click(function(){			
 				//Create the Content Edit Dialog
-				$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><label id='hover'>Hover: </label><input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' />" + $(data).find("page").eq(currentPage).find("content").text() + "</div><br/>");
+				$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><label id='hover'>Hover: </label><input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%'>" + myContent + "</div></div><br/>");
 					
 				//Cycle through the tabs from the xml
 				for(var i = 0; i < revealCount; i++){
@@ -475,11 +475,25 @@ function C_Reveal(_type) {
 					
 					revealImgHeight = revealImgHeight.replace('px','');
 					revealImgWidth = revealImgWidth.replace('px','');
-					
-					$("#contentEditDialog").append("<div id='"+revealID+"Image'>Reveal " + revealLabel + " Image:</div> <input id='"+revealID+"ImageText'  type='text' value='media/"+mediaString+"' defaultValue='media/"+mediaString+"' style='width:100%;'/></div><br/>");
-					$("#contentEditDialog").append("<div id='"+revealID+"Dimensions'>Width:</div> <label>Width: </lable><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "'/><label> Height: </label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "'/></div><br/>");
-					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();					
-					$("#contentEditDialog").append("<div id='"+revealID+"Content'>Reveal " + revealLabel + " Content:</div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div><br/>");
+					var msg = "<br/><div id='"+revealID+"'>";
+					msg += "<div><div id='"+revealLabel+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/><b>Reveal "+revealLabel+":</b></div>";
+					msg += "<div id='"+revealID+"Image'>Reveal " + revealLabel + " Image:</div> <input id='"+revealID+"ImageText'  type='text' value='media/"+mediaString+"' defaultValue='media/"+mediaString+"' style='width:100%;'/></div><br/>";
+					msg += "<div id='"+revealID+"Dimensions'>Width:</div> <label>Width: </lable><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "'/><label> Height: </label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "'/></div><br/>";
+					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();	
+					msg += "<div id='"+revealID+"Content'>Reveal " + revealLabel + " Content:</div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div><br/>";
+					msg += "</div>"
+					$("#contentEditDialog").append(msg);
+					$("#" +revealLabel+"Remove").click(function(){
+						console.log($(this).attr('value'));
+						//var arrIndex = $(this).attr('value');
+						//captionEditText_arr, media_arr, caption_arr, destroyEditor
+						//revealEdit_arr.splice(arrIndex,1);
+						//$("#reveal"+arrIndex+"ContentText").destroyEditor();
+						//$("#"+revealEdit_arr[arrIndex]).remove();
+						//captionEditText_arr.splice(arrIndex, 1);
+						//var myItem = "#galleryItem" + arrIndex;
+						//$(myItem).remove();		
+					}).tooltip();
 					
 					$("#"+revealID+"ContentText").redactor({
 						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
@@ -496,11 +510,11 @@ function C_Reveal(_type) {
 					height: 575,
 					buttons: {
 						Add: function(){
-							
 							var revealID = "reveal" + revealCount;
 							var revealLabel = revealCount + 1;
 							
 							var myRevealContent = "New Reveal Content";
+							$("#contentEditDialog").append("<br/><div><div id='"+revealLabel+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/><b>Reveal "+revealLabel+":</b></div>");
 							$("#contentEditDialog").append("<div id='"+revealID+"Image'>Reveal " + revealLabel + " Image:</div> <input id='"+revealID+"ImageText'  type='text' value='media/defaultReveal.png' defaultValue='media/defaultReveal.png' style='width:100%;'/></div><br/>");
 							if(type == "revealRight" || type == "revealLeft"){
 								backgroundWidth = 160;
@@ -510,6 +524,17 @@ function C_Reveal(_type) {
 							$("#contentEditDialog").append("<div id='"+revealID+"Dimensions'>Width:</div> <label>Width: </lable><input id='"+revealID+"Width'  type='text' value='150' defaultValue='150'/><label> Height: </label><input id='"+revealID+"Height'  type='text' value='150' defaultValue='150'/></div><br/>");
 										
 							$("#contentEditDialog").append("<div id='"+revealID+"Content'>Reveal " + revealLabel + " Content:</div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div><br/>");
+							
+							$("#" +revealLabel+"Remove").click(function(){
+								//var arrIndex = $(this).attr('value');
+								//captionEditText_arr, media_arr, caption_arr, destroyEditor
+								//media_arr.splice(arrIndex,1);
+								//caption_arr.splice(arrIndex, 1);
+								//$(captionEditText_arr[arrIndex]).destroyEditor();
+								//captionEditText_arr.splice(arrIndex, 1);
+								//var myItem = "#galleryItem" + arrIndex;
+								//$(myItem).remove();		
+							}).tooltip();
 							
 							$("#"+revealID+"ContentText").redactor({
 								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']

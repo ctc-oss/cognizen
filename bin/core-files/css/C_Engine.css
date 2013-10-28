@@ -738,6 +738,8 @@ MEDIA LAYOUTS
 	width: 24px;
 	height: 24px;
 	right: 0px;
+	cursor: hand; 
+	cursor: pointer;
 }
 
 .mediaPop{
@@ -745,7 +747,8 @@ MEDIA LAYOUTS
 	background: url(images/img-enlarge.gif) no-repeat;
 	width: 86px;
 	height: 22px;
-	
+	cursor: hand; 
+	cursor: pointer;
 }
 
 #loader.graphic{
