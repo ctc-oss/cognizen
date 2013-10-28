@@ -1,4 +1,3 @@
-var config = require('./../config.json');
 var mongoose = require('mongoose');
 var UserPermission = require('./../user-model').UserPermission;
 var Program = require('./../content-model').Program;
@@ -8,12 +7,9 @@ var Lesson = require('./../content-model').Lesson;
 var ContentComment = require('./../content-model').ContentComment;
 
 (function () {
-    mongoose.connect(config.dbUrl, {
-        user: config.dbUsername,
-        pass: config.dbPassword
-    },function (err) {
+    mongoose.connect('mongodb://localhost/cognizen', function (err) {
         if (err) throw err;
-        console.log('Successfully connected to ' + config.dbUrl + ' with username ' + config.dbUsername);
+        console.log('Successfully connected to local mongodb');
     });
 
     Lesson.collection.drop(function(err) {

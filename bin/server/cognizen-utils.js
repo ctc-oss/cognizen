@@ -25,23 +25,6 @@ var Utils = {
         return (!value ? fallback : value);
     },
 
-    // This will take care of all the spawned instances of Node, if the main node crashes
-    killSubNodes: function (err) {
-        if (err) {
-            console.log(err);
-            console.log(err.stack);
-        }
-
-        if (this.subNodes && this.subNodes.length > 0) {
-            console.log('Killing ' + this.subNodes.length + ' child node.js instance(s).');
-            this.subNodes.forEach(function (worker) {
-                process.kill(worker);
-            });
-        }
-
-        process.exit(0);
-    },
-
     generalError: function(err) {
         if (err) {
             console.log(err);
@@ -80,17 +63,17 @@ var Utils = {
         });
     },
 
-    removeAll: function(mongooseObjects, success, error) {
+    removeAll: function(mongooseObjects, callback) {
         var count = 0;
         mongooseObjects.forEach(function(doc){
             doc.remove(function(err){
                 if (err) {
-                    error(err);
+                    callback(err);
                 }
                 else {
                     count++;
                     if( count == mongooseObjects.length ){
-                        success();
+                        callback(null);
                     }
                 }
             });

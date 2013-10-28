@@ -426,8 +426,7 @@ var SocketHandler = {
             if (err) callback(err);
 
             FileUtils.copyDir(root, baseWritePath, function (path) {
-
-                return (path.endsWith('core-files') || path.contains("js") || path.contains("scorm") || path.contains("server") || path.contains("xml") || path.contains("packages"));
+                return (path.endsWith('core-files') || path.contains("js") || path.contains("server") || path.contains("xml") || path.contains("packages"));
             }, function (err) {
                 //Set the lesson and course names in the xml.
                 //Once xml is copied to new lesson location -
@@ -567,24 +566,138 @@ var SocketHandler = {
 
     removeContent: function(data) {
         var _this = this;
+        console.log(JSON.stringify(data));
+        if (!data.user) {
+            data.user = 'unknown';
+        }
         // Look up the content by type, and mark the deleted flag.
         // Then, drill down through all its children and children's children, and mark them as well.
         // For now, retain the files on the disk.
         var contentType = _this.Content.objectType(data.type);
 
-        var contentToMarkDeleted = [];
-
         if (contentType) {
-            contentType.findById(data.id, function (err, found) {
-                contentToMarkDeleted.push(found);
-
-                _this._markContentDeleted(contentToMarkDeleted, function(err){ // After we have gathered all the items, delete them all.
-                    _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
-                }, function(){
-                    _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                });
+            contentType.findAndPopulate(data.id, function (err, found) {
+                if (found instanceof Program) {
+                    _this._deleteProgram(found, function(err){
+                        if (err) _this.logger.error(err);
+                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                    }, function(){
+                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                    });
+                }
+                else {
+                    _this._deleteContent(found, data.user, function(err){
+                        if (err) _this.logger.error(err);
+                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                    }, function(){
+                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                    });
+                }
             });
         }
+    },
+
+    _fullDeletedSuffix: function() {
+        return this.Content.DELETED_SUFFIX + Utils.timestamp();
+    },
+
+    _deleteProgram: function(program, error, success) {
+        var _this = this;
+        var oldPath = 'repos/' + program.name + '.git';
+        var newPath = 'repos/' + program.name + _this._fullDeletedSuffix() + '.git';
+        // Get all program children and delete them.
+        program.getChildren(function(err, children) {
+            if (err) {
+                error(err);
+            }
+            else {
+                children.push(program);
+                // Delete the program and its children from the database.
+                children.forEach(function(item) {
+                    console.log('Deleting ' + item.name);
+                });
+                Utils.removeAll(children, function(err) {
+                    if (err) {
+                        error(err);
+                    }
+                    else {
+                        // Delete the program from the disk, recursively
+                        fs.remove(_this.Content.diskPath(program.path), function(err) {
+                            if (err) {
+                                error(err);
+                            }
+                            else {
+                                // Rename the repo using the DELETE naming.
+                                console.log('From ' + oldPath + ' to ' + newPath);
+                                fs.rename(oldPath, newPath, function(err) {
+                                    if (err) {
+                                        error(err);
+                                    }
+                                    else {
+                                        success();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    _deleteContent: function(content, user, error, success) {
+        var _this = this;
+        var program = content.getProgram();
+        var programDiskPath = _this.Content.diskPath(program.path);
+        var trashFolder = programDiskPath + '/_trash_/';
+
+        // Create the trash folder if it doesn't exist.
+        fs.mkdirs(trashFolder, function(err) {
+            if (err) {
+                error(err);
+            }
+            else {
+                // Get all program children and delete them.
+                content.getChildren(function(err, children) {
+                    if (err) {
+                        error(err);
+                    }
+                    else {
+                        children.push(content);
+                        // Delete the program and its children from the database.
+                        children.forEach(function(item) {
+                            console.log('Deleting ' + item.name);
+                        });
+                        Utils.removeAll(children, function(err) {
+                            if (err) {
+                                error(err);
+                            }
+                            else {
+                                // Move this content folder to the trash folder
+                                var oldPath = _this.Content.diskPath(content.path);
+                                var newPath = trashFolder + content.name + _this._fullDeletedSuffix();
+
+                                console.log('From ' + oldPath + ' to ' + newPath);
+                                fs.rename(oldPath, newPath, function(err) {
+                                    if (err) {
+                                        error(err);
+                                    }
+                                    else {
+                                        // Commit the program so that the files are in the trash now.
+                                        _this.Git.commitProgramContent(program, user, function(){
+                                            success();
+                                        }, function(err){
+                                            error(err);
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
     },
 
     _markContentDeleted: function(content, error, success) {
@@ -598,8 +711,8 @@ var SocketHandler = {
             var originalPath = item.path;
             var timestamp = Utils.timestamp();
             item.deleted = true;
-            item.name += _this.Content.DELETED_SUFFIX + timestamp;
-            item.path += _this.Content.DELETED_SUFFIX + timestamp;
+            item.name += _this._fullDeletedSuffix();
+            item.path += _this._fullDeletedSuffix();
             item.save(function(err) {
                 if (err) {
                     error(err);
@@ -722,10 +835,12 @@ var SocketHandler = {
                             });
                         }
                         else {
+                            var scormPath = path.normalize('../core-files/scorm/');
+                            var scormDir = path.resolve(process.cwd(), scormPath);
                             var programPath = path.normalize('../programs/' + found.path + '/');
-                            var parentDir = require('path').resolve(process.cwd(), programPath);
+                            var parentDir = path.resolve(process.cwd(), programPath);
                             _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
-                            ContentSocket.start(serverDetails.port, found.id, parentDir, _this.logger, function(error){
+                            ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
                                 if (error) {
                                     _this.logger.error(error);
                                     _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
