@@ -88,6 +88,7 @@ var Git = {
 
             var commands = [];
             commands.push(Utils.rmCommand() + ' ' + this.indexLockFile());
+            commands.push('git add .');
             commands.push('git fetch --all');
             commands.push('git reset --hard origin/master');
 
@@ -187,9 +188,9 @@ var Git = {
                                 },
                                 push: function() {
                                     _this.logger.info('Successful push on ' + program.path + ' repo');
-                                    _this._gitUpdateLocal(program, null, function(err) {
-                                        _this.logger.error(err);
-                                    });
+//                                    _this._gitUpdateLocal(program, null, function(err) {
+//                                        _this.logger.error(err);
+//                                    });
                                 }
                             }
                         });

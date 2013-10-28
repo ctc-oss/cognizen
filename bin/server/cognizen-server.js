@@ -356,9 +356,10 @@ var Content = {
 
 // Initializing Code
 (function () {
-    process.on('exit', Utils.killSubNodes);
-    process.on("SIGINT", Utils.killSubNodes);
+    process.on('exit', Utils.generalError);
+    process.on("SIGINT", Utils.generalError);
     process.on("uncaughtException", Utils.generalError);
+
     mongoose.connect(config.dbUrl, {
         user: config.dbUsername,
         pass: config.dbPassword
