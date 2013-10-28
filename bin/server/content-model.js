@@ -94,8 +94,7 @@ var allowCreationOfProgramContent = function(item, callback) {
 
 var ContentSchema = new Schema({
     name: {type: String, required: true},
-    path: {type: String, required: true},
-    deleted: {type: Boolean, default: false}
+    path: {type: String, required: true}
 });
 
 var ProgramSchema = ContentSchema.extend({
@@ -106,6 +105,10 @@ var ProgramSchema = ContentSchema.extend({
         {type: Schema.Types.ObjectId, ref: 'Course'}
     ]
 });
+
+ProgramSchema.statics.findAndPopulate = function(id, callback) {
+    Program.findById(id).exec(callback);
+};
 
 ProgramSchema.statics.createUnique = function (program, callback) {
     program.path = program.name;

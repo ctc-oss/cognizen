@@ -567,15 +567,17 @@ var SocketHandler = {
 
     removeContent: function(data) {
         var _this = this;
+        console.log(JSON.stringify(data));
+        if (!data.user) {
+            data.user = 'unknown';
+        }
         // Look up the content by type, and mark the deleted flag.
         // Then, drill down through all its children and children's children, and mark them as well.
         // For now, retain the files on the disk.
         var contentType = _this.Content.objectType(data.type);
 
-        var contentToMarkDeleted = [];
-
         if (contentType) {
-            contentType.findById(data.id, function (err, found) {
+            contentType.findAndPopulate(data.id, function (err, found) {
                 if (found instanceof Program) {
                     _this._deleteProgram(found, function(err){
                         if (err) _this.logger.error(err);
@@ -585,9 +587,7 @@ var SocketHandler = {
                     });
                 }
                 else {
-                    contentToMarkDeleted.push(found);
-
-                    _this._markContentDeleted(contentToMarkDeleted, function(err){ // After we have gathered all the items, delete them all.
+                    _this._deleteContent(found, data.user, function(err){
                         if (err) _this.logger.error(err);
                         _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
                     }, function(){
@@ -644,6 +644,61 @@ var SocketHandler = {
                 });
             }
         });
+    },
+
+    _deleteContent: function(content, user, error, success) {
+        var _this = this;
+        var program = content.getProgram();
+        var programDiskPath = _this.Content.diskPath(program.path);
+        var trashFolder = programDiskPath + '/_trash_/';
+
+        // Create the trash folder if it doesn't exist.
+        fs.mkdirs(trashFolder, function(err) {
+            if (err) {
+                error(err);
+            }
+            else {
+                // Get all program children and delete them.
+                content.getChildren(function(err, children) {
+                    if (err) {
+                        error(err);
+                    }
+                    else {
+                        children.push(content);
+                        // Delete the program and its children from the database.
+                        children.forEach(function(item) {
+                            console.log('Deleting ' + item.name);
+                        });
+                        Utils.removeAll(children, function(err) {
+                            if (err) {
+                                error(err);
+                            }
+                            else {
+                                // Move this content folder to the trash folder
+                                var oldPath = _this.Content.diskPath(content.path);
+                                var newPath = trashFolder + content.name + _this._fullDeletedSuffix();
+
+                                console.log('From ' + oldPath + ' to ' + newPath);
+                                fs.rename(oldPath, newPath, function(err) {
+                                    if (err) {
+                                        error(err);
+                                    }
+                                    else {
+                                        // Commit the program so that the files are in the trash now.
+                                        _this.Git.commitProgramContent(program, user, function(){
+                                            success();
+                                        }, function(err){
+                                            error(err);
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
     },
 
     _markContentDeleted: function(content, error, success) {
