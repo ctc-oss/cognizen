@@ -732,6 +732,17 @@ MEDIA LAYOUTS
 	/*x-coordinate is set in the code because it is variable and css doesn't wait for the image to load*/
 }
 
+.templateAddItem{
+	border-style:solid;
+	border-color: #9da6ab;
+	border-radius: 6px;
+	border-width: thin;
+	padding: 3px;
+	-moz-border-radius    : 3px;
+	-webkit-border-radius : 3px;  
+	border-radius         : 3px;
+}
+
 .removeMedia{
 	position: absolute;
 	background: url(images/close.png) no-repeat;
