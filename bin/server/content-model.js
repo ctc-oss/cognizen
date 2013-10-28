@@ -3,6 +3,12 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Utils = require('./cognizen-utils');
 
+Array.prototype.extend = function (other_array) {
+    if (other_array instanceof Array) {
+        other_array.forEach(function(v) {this.push(v)}, this);
+    }
+}
+
 var findByPath = function(mongooseType, item, callback) {
     mongooseType.findOne({path: item.path}, function (err, found) {
         if (found == null) {
@@ -111,7 +117,27 @@ ProgramSchema.methods.getProgram = function() {
 };
 
 ProgramSchema.methods.getChildren = function(callback) {
-    callback(null, []);
+    Course.find({program: this}).populate('program').exec(function(err, courses) {
+        var allChildren = [];
+        allChildren.extend(courses);
+
+        var count = 0;
+        courses.forEach(function(course){
+            course.getChildren(function(err, lessons) {
+                if (err) {
+                    callback(err, []);
+                }
+                else {
+                    count++;
+                    allChildren.extend(lessons);
+                    if(count == courses.length){
+                        callback(null, allChildren);
+                    }
+                }
+
+            })
+        });
+    });
 };
 
 ProgramSchema.methods.getParent = function() {

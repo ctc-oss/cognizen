@@ -576,15 +576,74 @@ var SocketHandler = {
 
         if (contentType) {
             contentType.findById(data.id, function (err, found) {
-                contentToMarkDeleted.push(found);
+                if (found instanceof Program) {
+                    _this._deleteProgram(found, function(err){
+                        if (err) _this.logger.error(err);
+                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                    }, function(){
+                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                    });
+                }
+                else {
+                    contentToMarkDeleted.push(found);
 
-                _this._markContentDeleted(contentToMarkDeleted, function(err){ // After we have gathered all the items, delete them all.
-                    _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
-                }, function(){
-                    _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                });
+                    _this._markContentDeleted(contentToMarkDeleted, function(err){ // After we have gathered all the items, delete them all.
+                        if (err) _this.logger.error(err);
+                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                    }, function(){
+                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                    });
+                }
             });
         }
+    },
+
+    _fullDeletedSuffix: function() {
+        return this.Content.DELETED_SUFFIX + Utils.timestamp();
+    },
+
+    _deleteProgram: function(program, error, success) {
+        var _this = this;
+        var oldPath = 'repos/' + program.name + '.git';
+        var newPath = 'repos/' + program.name + _this._fullDeletedSuffix() + '.git';
+        // Get all program children and delete them.
+        program.getChildren(function(err, children) {
+            if (err) {
+                error(err);
+            }
+            else {
+                children.push(program);
+                // Delete the program and its children from the database.
+                children.forEach(function(item) {
+                    console.log('Deleting ' + item.name);
+                });
+                Utils.removeAll(children, function(err) {
+                    if (err) {
+                        error(err);
+                    }
+                    else {
+                        // Delete the program from the disk, recursively
+                        fs.remove(_this.Content.diskPath(program.path), function(err) {
+                            if (err) {
+                                error(err);
+                            }
+                            else {
+                                // Rename the repo using the DELETE naming.
+                                console.log('From ' + oldPath + ' to ' + newPath);
+                                fs.rename(oldPath, newPath, function(err) {
+                                    if (err) {
+                                        error(err);
+                                    }
+                                    else {
+                                        success();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     },
 
     _markContentDeleted: function(content, error, success) {
@@ -598,8 +657,8 @@ var SocketHandler = {
             var originalPath = item.path;
             var timestamp = Utils.timestamp();
             item.deleted = true;
-            item.name += _this.Content.DELETED_SUFFIX + timestamp;
-            item.path += _this.Content.DELETED_SUFFIX + timestamp;
+            item.name += _this._fullDeletedSuffix();
+            item.path += _this._fullDeletedSuffix();
             item.save(function(err) {
                 if (err) {
                     error(err);

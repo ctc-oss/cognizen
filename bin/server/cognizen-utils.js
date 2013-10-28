@@ -63,17 +63,17 @@ var Utils = {
         });
     },
 
-    removeAll: function(mongooseObjects, success, error) {
+    removeAll: function(mongooseObjects, callback) {
         var count = 0;
         mongooseObjects.forEach(function(doc){
             doc.remove(function(err){
                 if (err) {
-                    error(err);
+                    callback(err);
                 }
                 else {
                     count++;
                     if( count == mongooseObjects.length ){
-                        success();
+                        callback(null);
                     }
                 }
             });
