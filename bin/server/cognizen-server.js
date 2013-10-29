@@ -356,8 +356,8 @@ var Content = {
 
 // Initializing Code
 (function () {
-    process.on('exit', Utils.generalError);
-    process.on("SIGINT", Utils.generalError);
+    process.on('exit', Utils.shutdown);
+    process.on("SIGINT", Utils.shutdown);
     process.on("uncaughtException", Utils.generalError);
 
     mongoose.connect(config.dbUrl, {

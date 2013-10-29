@@ -32,6 +32,15 @@ var Utils = {
         }
     },
 
+    shutdown: function(err) {
+        if (err) {
+            console.log(err);
+            console.log(err.stack);
+        }
+
+        process.exit(0);
+    },
+
     timestamp: function() {
         var now = new Date();
         var parts = [
