@@ -35,9 +35,12 @@ function C_StaticContent(_type) {
     var hasPop = false;
     
     var mediaLink = null;
+    var altText;
     var media_arr = [];
     var caption_arr = [];
+    var alt_arr = [];
     var captionEditText_arr = [];
+    var altEditText_arr = [];
 	var largeImg = "";
 	var audioUploader;
 	
@@ -79,12 +82,14 @@ function C_StaticContent(_type) {
         if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
             hasPop = true;
             media_arr = $(data).find("page").eq(currentPage).attr('popup').split(",");
-            caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");	
+            caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");
+            alt_arr = $(data).find("page").eq(currentPage).attr('popalt').split("!!!");	
         }
 
         if(type != "textOnly" && type != "sidebar"){
             mediaLink = $(data).find("page").eq(currentPage).attr('img');
             myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
+            altText = $(data).find("page").eq(currentPage).attr('alt');
         }
 
 
@@ -164,7 +169,11 @@ function C_StaticContent(_type) {
             });   
                     
         }else{
-            $('#stage').append('<div id="loader" class="loading" title="click to browse or drag media to this location" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+        	if(mode == 'edit'){
+            	$('#stage').append('<div id="loader" class="loading" title="click to browse or drag media to this location" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+            }else{
+	            $('#stage').append('<div id="loader" class="loading" title="'+$(data).find("page").eq(currentPage).attr('alt') + '" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+            }
             var tempID = "#loader";
             loadVisualMedia();
         }
@@ -564,7 +573,6 @@ function C_StaticContent(_type) {
         if(type == "bottom"){
 	       var conYPos = $("#caption").position().top + $("#caption").height()+10;
 	       var conHeight = stageH - conYPos;
-	       console.log("conHeight = " + conHeight);
             $("#contentHolder").height(conHeight);
             $("#content").height(conHeight - 4);
             $("#contentHolder").css({'top': conYPos});
@@ -652,7 +660,7 @@ function C_StaticContent(_type) {
 
 			 	$("#conEdit").click(function(){
 
-                    	//Create the Content Edit Dialog
+                    //Create the Content Edit Dialog
 					$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' >" + myContent + "</div>");
 
 					var myHeight;
@@ -693,13 +701,14 @@ function C_StaticContent(_type) {
 				$("#imgEdit").click(function(){
 					
 					var msg = "<div id='imgDialog' title='Input Media Path'>";
-					msg += "<input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:80%;'/>";
+					msg += "<input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:85%;'/>";
 					msg += "<br/>";
 					msg += "<div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div>";
 					msg += "<label id='label'>large version: </label>";
 					msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
 					msg += "<input id='lrgImgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
-                	msg += "";
+                	msg += "<label id='label'>ALT text: </label>";
+                	msg += "<input id='altTextEdit' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:90%'/>";
                 	msg += "<br/><br/></div>";
                 	$("#stage").append(msg);
                     	
@@ -717,6 +726,7 @@ function C_StaticContent(_type) {
 					
 					for(var i = 0; i < media_arr.length; i++){	
 						var thisCaption = "captionEditText" + i;
+						var thisAltText = "altEditText" + i;
 						var removeID = "removeMedia" + i;
 						var galleryItemID = "galleryItem" + i;
 						
@@ -725,6 +735,8 @@ function C_StaticContent(_type) {
 						msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
 						msg += "<label id='label'>Media: </label><input id='imgPath" + i + "' type='text' value="+ media_arr[i] + " defaultValue="+ media_arr[i] + " style='width:80%;'/><br/>";
 						msg += "<div>Edit Caption:</div><div id='"+thisCaption+"' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + caption_arr[i] + "</div>";
+						msg += "<label id='label'>ALT text: </label>";
+						msg += "<input id='"+thisAltText+"' type='text' value='"+alt_arr[i]+"' defaultValue='"+alt_arr[i]+"' style='width:90%;'/>";
 						msg += "</div>"
 						$("#imgDialog").append(msg);
 						
@@ -734,13 +746,17 @@ function C_StaticContent(_type) {
 							galleryEdit_arr.splice(arrIndex, 1);
 							media_arr.splice(arrIndex,1);
 							caption_arr.splice(arrIndex, 1);
+							alt_arr.splice(arrIndex, 1);
 							$(captionEditText_arr[arrIndex]).destroyEditor();
 							captionEditText_arr.splice(arrIndex, 1);
+							altEditText_arr.splice(arrIndex, 1);
 							var myItem = "#galleryItem" + arrIndex;
 							$(myItem).remove();		
 						}).tooltip();
 						
 						captionEditText_arr.push("#" + thisCaption);
+						altEditText_arr.push("#" + thisAltText);
+						
 						$("#" + thisCaption).redactor({
 							focus: true,
 							buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
@@ -760,6 +776,7 @@ function C_StaticContent(_type) {
 							Add: function(){
 								var imgID = "imgPath" + media_arr.length;
 								var captionTextID = "captionEditText" + caption_arr.length;
+								var altTextID = "altEditText" + alt_arr.length;
 								var removeID = "removeMedia" + media_arr.length;
 								var galleryItemID = "galleryItem" + media_arr.length;
 								captionEditText_arr.push("#" + captionTextID);
@@ -769,6 +786,8 @@ function C_StaticContent(_type) {
 								msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
 								msg += "<label id='label'>Media: </label><input id='imgPath" + media_arr.length + "' type='text' value='defaultTop.png' defaultValue='defaultTop.png' style='width:80%;'/><br/>";
 								msg += "<div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div>";
+								msg += "<label id='label'>ALT text: </label>";
+								msg += "<input id='"+altTextID+"' type='text' value='' defaultValue='' style='width:90%'/>";
 								msg += "</div>"
 								$("#imgDialog").append(msg);
 								
@@ -777,8 +796,10 @@ function C_StaticContent(_type) {
 									//captionEditText_arr, media_arr, caption_arr, destroyEditor
 									media_arr.splice(arrIndex,1);
 									caption_arr.splice(arrIndex, 1);
+									alt_arr.splice(arrIndex, 1);
 									$(captionEditText_arr[arrIndex]).destroyEditor();
 									captionEditText_arr.splice(arrIndex, 1);
+									altEditText_arr.splice(arrIndex, 1);
 									var myItem = "#galleryItem" + arrIndex;
 									$(myItem).remove();
 								});
@@ -786,6 +807,7 @@ function C_StaticContent(_type) {
 								if(media_arr.length == 0){
 									$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
 									$(data).find("page").eq(currentPage).attr('popcaps', " ");
+									$(data).find("page").eq(currentPage).attr('popalt', " ");
 								}else{
 									var popString = $(data).find("page").eq(currentPage).attr('popup');
 									popString += ",defaultTop.png";
@@ -793,10 +815,14 @@ function C_StaticContent(_type) {
 									var commentString = $(data).find("page").eq(currentPage).attr('popcaps');
 									commentString += "!!! ";
 									$(data).find("page").eq(currentPage).attr('popcaps', commentString);
+									var altString = $(data).find("page").eq(currentPage).attr('popalt');
+									altString += "!!! ";
+									$(data).find("page").eq(currentPage).attr('popalt', altString);
 								}
 								
 								media_arr.push("defaultTop.png");
 								caption_arr.push(" ");
+								alt_arr.push(" "); 
 								
 								$("#" + captionTextID).redactor({
 									focus: true,
@@ -975,7 +1001,6 @@ function C_StaticContent(_type) {
 	}
 	
 	function mediaConversionProgress(data){
-		//console.log('mediaProgress');
 	    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
 	}
 	
@@ -986,13 +1011,11 @@ function C_StaticContent(_type) {
 	}
 	
 	function mediaConversionComplete(data){
-		console.log("mediaConversionComplete - start");
 		var splitPath = data.split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
 		saveImageEdit(mediaPath, true);
 		$("#mediaLoader").remove();
-		console.log("mediaConversionComplete - end");
 	}
 
 
@@ -1079,6 +1102,8 @@ function C_StaticContent(_type) {
 			var startPath = "superBad";
 		}
 		
+		$(data).find("page").eq(currentPage).attr("alt", $("#altTextEdit").val());
+		
 		//Check if there is an enlarged image to link
 		if($("#isEnlargeable").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("enlarge", $("#lrgImgPath").val());
@@ -1090,29 +1115,33 @@ function C_StaticContent(_type) {
 		if(media_arr.length > 0 && fromDrop == false){
 			var mediaString = "";
 			var captionString = "";
+			var altString = "";
 			var virgin = true;
 			
 			for(var i = 0; i < media_arr.length; i++){
 				if(virgin == false){
 					mediaString +=",";
-					captionString += "!!!"
+					captionString += "!!!";
+					altString += "!!!";
 				}
-				console.log(galleryEdit_arr[i]);
-				console.log('$("#"+galleryEdit_arr[i]).attr("value") = ' + $("#"+galleryEdit_arr[i]).attr("value"));
+				
 				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
-				console.log("mediaString = " + mediaString);
 				captionString += $(captionEditText_arr[i]).getCode();
+				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val();
 				virgin = false;
 			}	
 			$(data).find("page").eq(currentPage).attr("popup", mediaString);
-			$(data).find("page").eq(currentPage).attr("popcaps", captionString);	 	
+			$(data).find("page").eq(currentPage).attr("popcaps", captionString);
+			$(data).find("page").eq(currentPage).attr("popalt", altString);	 	
 			for(var j=0; j<captionEditText_arr.length; j++){
 				$(captionEditText_arr[j]).destroyEditor();			   	
 			}
 			captionEditText_arr.length = 0;
+			altEditText_arr.length = 0;
 		}else if(media_arr.length == 0){
 			$(data).find("page").eq(currentPage).attr("popup", "");
 			$(data).find("page").eq(currentPage).attr("popcaps", "");
+			$(data).find("page").eq(currentPage).attr("popalt", "");
 		}
 		
 		var imgPath = _path;
@@ -1187,8 +1216,7 @@ function C_StaticContent(_type) {
 		}else{
 				 
 		}
-			
-		console.log("mediaType = " + mediaType);
+		
 		if(mediaType != "mp4"  && mediaType != "swf"){
 			sendUpdateWithRefresh();
 			fadeComplete();
