@@ -579,18 +579,24 @@ var SocketHandler = {
             contentType.findAndPopulate(data.id, function (err, found) {
                 if (found instanceof Program) {
                     _this._deleteProgram(found, function(err){
-                        if (err) _this.logger.error(err);
-                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
-                    }, function(){
-                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                        if (err) {
+                            _this.logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                        }
+                        else {
+                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                        }
                     });
                 }
                 else {
                     _this._deleteContent(found, data.user, function(err){
-                        if (err) _this.logger.error(err);
-                        _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
-                    }, function(){
-                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                        if (err) {
+                            _this.logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
+                        }
+                        else {
+                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                        }
                     });
                 }
             });
@@ -601,14 +607,14 @@ var SocketHandler = {
         return this.Content.DELETED_SUFFIX + Utils.timestamp();
     },
 
-    _deleteProgram: function(program, error, success) {
+    _deleteProgram: function(program, callback) {
         var _this = this;
         var oldPath = 'repos/' + program.name + '.git';
         var newPath = 'repos/' + program.name + _this._fullDeletedSuffix() + '.git';
         // Get all program children and delete them.
         program.getChildren(function(err, children) {
             if (err) {
-                error(err);
+                callback(err);
             }
             else {
                 children.push(program);
@@ -618,23 +624,23 @@ var SocketHandler = {
                 });
                 Utils.removeAll(children, function(err) {
                     if (err) {
-                        error(err);
+                        callback(err);
                     }
                     else {
                         // Delete the program from the disk, recursively
                         fs.remove(_this.Content.diskPath(program.path), function(err) {
                             if (err) {
-                                error(err);
+                                callback(err);
                             }
                             else {
                                 // Rename the repo using the DELETE naming.
                                 console.log('From ' + oldPath + ' to ' + newPath);
                                 fs.rename(oldPath, newPath, function(err) {
                                     if (err) {
-                                        error(err);
+                                        callback(err);
                                     }
                                     else {
-                                        success();
+                                        callback();
                                     }
                                 });
                             }
@@ -645,7 +651,7 @@ var SocketHandler = {
         });
     },
 
-    _deleteContent: function(content, user, error, success) {
+    _deleteContent: function(content, user, callback) {
         var _this = this;
         var program = content.getProgram();
         var programDiskPath = _this.Content.diskPath(program.path);
@@ -654,13 +660,13 @@ var SocketHandler = {
         // Create the trash folder if it doesn't exist.
         fs.mkdirs(trashFolder, function(err) {
             if (err) {
-                error(err);
+                callback(err);
             }
             else {
                 // Get all program children and delete them.
                 content.getChildren(function(err, children) {
                     if (err) {
-                        error(err);
+                        callback(err);
                     }
                     else {
                         children.push(content);
@@ -670,7 +676,7 @@ var SocketHandler = {
                         });
                         Utils.removeAll(children, function(err) {
                             if (err) {
-                                error(err);
+                                callback(err);
                             }
                             else {
                                 // Move this content folder to the trash folder
@@ -680,14 +686,14 @@ var SocketHandler = {
                                 console.log('From ' + oldPath + ' to ' + newPath);
                                 fs.rename(oldPath, newPath, function(err) {
                                     if (err) {
-                                        error(err);
+                                        callback(err);
                                     }
                                     else {
                                         // Commit the program so that the files are in the trash now.
                                         _this.Git.commitProgramContent(program, user, function(){
-                                            success();
+                                            callback();
                                         }, function(err){
-                                            error(err);
+                                            callback(err);
                                         });
                                     }
                                 });
@@ -700,35 +706,34 @@ var SocketHandler = {
 
     },
 
-    _markContentDeleted: function(content, error, success) {
-        var _this = this;
-        if (!(content instanceof Array)) {
-            content = [content];
-        }
-
-        if (content.length > 0) {
-            var item = content.pop();
-            var originalPath = item.path;
-            var timestamp = Utils.timestamp();
-            item.deleted = true;
-            item.name += _this._fullDeletedSuffix();
-            item.path += _this._fullDeletedSuffix();
-            item.save(function(err) {
-                if (err) {
-                    error(err);
-                }
-                else {
-                    var oldPath = _this.Content.diskPath(originalPath);
-                    var newPath = _this.Content.diskPath(item.path);
-                    fs.renameSync(oldPath, newPath);
-                    _this._markContentDeleted(content, error, success);
-                }
-            });
-        }
-        else {
-            success();
-        }
-    },
+//    _markContentDeleted: function(content, error, success) {
+//        var _this = this;
+//        if (!(content instanceof Array)) {
+//            content = [content];
+//        }
+//
+//        if (content.length > 0) {
+//            var item = content.pop();
+//            var originalPath = item.path;
+//            item.deleted = true;
+//            item.name += _this._fullDeletedSuffix();
+//            item.path += _this._fullDeletedSuffix();
+//            item.save(function(err) {
+//                if (err) {
+//                    error(err);
+//                }
+//                else {
+//                    var oldPath = _this.Content.diskPath(originalPath);
+//                    var newPath = _this.Content.diskPath(item.path);
+//                    fs.renameSync(oldPath, newPath);
+//                    _this._markContentDeleted(content, error, success);
+//                }
+//            });
+//        }
+//        else {
+//            success();
+//        }
+//    },
 
     _assignContentPermissionAfterCreation: function (data, contentType, permission, callback) {
         var userPermission = {
