@@ -692,7 +692,16 @@ function C_StaticContent(_type) {
                 //Establish it's functionality
 				$("#imgEdit").click(function(){
 					
-                	$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:100%;'/><br/><div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div><label id='label'>large version: </label><input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/><input id='lrgImgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/><br/><br/></div>");
+					var msg = "<div id='imgDialog' title='Input Media Path'>";
+					msg += "<input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:80%;'/>";
+					msg += "<br/>";
+					msg += "<div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div>";
+					msg += "<label id='label'>large version: </label>";
+					msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
+					msg += "<input id='lrgImgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+                	msg += "";
+                	msg += "<br/><br/></div>";
+                	$("#stage").append(msg);
                     	
                     if(largeImg == ""){
 						$("#isEnlargeable").removeAttr('checked');
