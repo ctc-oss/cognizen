@@ -164,12 +164,8 @@ var SCORM = {
 
                 var manifestFile = manifest.join('');
 
-                var scormBasePath = _this.scormPath + '\\' + scormVersion + '\\';
+                var scormBasePath = _this.scormPath + '/' + scormVersion + '/';
                 var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
-
-                // fs.createFile(imsManifestFilePath, function(err){
-                // 	_this.logger.info(err);
-                // });
 
                 fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
                     if(err) {
@@ -214,7 +210,6 @@ var SCORM = {
                         );
 
                         //add imsmanifest.xml file
-                        _this.logger.info("add imsmanifest : " + imsManifestFilePath);
                         archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
                         archive.finalize(function(err, written) {
@@ -229,7 +224,7 @@ var SCORM = {
                     }
                     fs.remove(imsManifestFilePath, function(err){
 						if(err) return _this.logger.error(err);
-						_this.logger.info('imsmanifest.xml file removed.')
+						_this.logger.info('imsmanifest.xml file removed.');
 					});
                 });
 
