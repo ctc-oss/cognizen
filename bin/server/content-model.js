@@ -125,21 +125,26 @@ ProgramSchema.methods.getChildren = function(callback) {
         allChildren.extend(courses);
 
         var count = 0;
-        courses.forEach(function(course){
-            course.getChildren(function(err, lessons) {
-                if (err) {
-                    callback(err, []);
-                }
-                else {
-                    count++;
-                    allChildren.extend(lessons);
-                    if(count == courses.length){
-                        callback(null, allChildren);
+        if (!courses.length) {
+            callback(null, allChildren);
+        }
+        else {
+            courses.forEach(function(course){
+                course.getChildren(function(err, lessons) {
+                    if (err) {
+                        callback(err, []);
                     }
-                }
+                    else {
+                        count++;
+                        allChildren.extend(lessons);
+                        if(count == courses.length){
+                            callback(null, allChildren);
+                        }
+                    }
 
-            })
-        });
+                })
+            });
+        }
     });
 };
 

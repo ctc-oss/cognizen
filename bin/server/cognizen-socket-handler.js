@@ -619,9 +619,9 @@ var SocketHandler = {
             else {
                 children.push(program);
                 // Delete the program and its children from the database.
-                children.forEach(function(item) {
-                    console.log('Deleting ' + item.name);
-                });
+//                children.forEach(function(item) {
+//                    console.log('Deleting ' + item.name);
+//                });
                 Utils.removeAll(children, function(err) {
                     if (err) {
                         callback(err);
