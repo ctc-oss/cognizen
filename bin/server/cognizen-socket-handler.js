@@ -481,24 +481,32 @@ var SocketHandler = {
         var _this = this;
         Course.createUnique(data, function (saved, callbackData) {
             if (saved) {
-                fs.createFile(path.normalize(_this.Content.diskPath(callbackData.path) + '/.gitkeep'), function (err) { // Need to create an empty file so git will keep the course folder
+                _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
                     if (err) {
-                        _this.logger.error(err);
                         _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
-                    } else {
-                        _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                            _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
-                                if (err) {
+                        _this.logger.error(err);
+                    }
+                    else {
+                        fs.createFile(path.normalize(_this.Content.diskPath(callbackData.path) + '/.gitkeep'), function (err) { // Need to create an empty file so git will keep the course folder
+                            if (err) {
+                                _this.logger.error(err);
+                                _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                            } else {
+                                _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+                                    _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
+                                        if (err) {
+                                            _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                                            _this.logger.error(err);
+                                        }
+                                        else {
+                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                        }
+                                    });
+                                }, function (message) {
                                     _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
-                                    _this.logger.error(err);
-                                }
-                                else {
-                                    _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                }
-                            });
-                        }, function (message) {
-                            _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
-                            _this.logger.info("Error committing program content: " + message)
+                                    _this.logger.info("Error committing program content: " + message)
+                                });
+                            }
                         });
                     }
                 });
