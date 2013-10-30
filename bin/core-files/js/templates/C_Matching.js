@@ -462,20 +462,26 @@ function C_Matching(_type) {
 
 			$("#questionEditText").redactor({
 				focus: true,
-				buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+				buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 			});
 			
 			$("#questionEdit").click(function(){
 				
                	//Create the Content Edit Dialog
-				$("#stage").append("<div id='questionEditDialog' title='Create Multiple Choice Question'><label id='label'>no. of attempts: </label><input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/><br/><div id='questionLabel'>Input your question:</div><div id='questionEditText' type='text'  >" + myContent + "</div><br/><br/><div id='feedbackLabel'>Input your feedback:</div><div id='feedbackEditText' type='text'  >" + feedback + "</div><br/><br/><b>Options:</b><br/><div id='myOptionList'></div><br/><b>Answers:</b><br/><div id='myAnswerList'></div>");
+               	var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
+               	msg += "<label id='label'>no. of attempts: </label><input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/><br/>";
+				msg += "<div id='questionLabel'>Input your question:</div><div id='questionEditText' type='text'  >" + myContent + "</div><br/><br/>";
+				msg += "<div id='feedbackLabel'>Input your feedback:</div><div id='feedbackEditText' type='text'  >" + feedback + "</div><br/><br/>";
+				msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
+				msg += "<b>Answers:</b><br/><div id='myAnswerList'></div>";
+				$("#stage").append(msg);
 				
 				$("#questionEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 				});
 				
 				$("#feedbackEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 				});
 				optionCount = option_arr.length;
 				//find every option in the xml - place them on the screen.
@@ -484,14 +490,27 @@ function C_Matching(_type) {
 					var optionLabel = i + 1;
 					var myMatch = $(data).find("page").eq(currentPage).find("option").eq(i).attr("correct");
 					
-					$("#myOptionList").append("<label id='label'>Option " + optionLabel + " Match: </label><input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>");
-					
+					var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
+					msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this option'/>";
+					msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
+					msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
 					var optionContent = $(data).find("page").eq(currentPage).find("option").eq(i).text();				
-					$("#myOptionList").append("<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div> <div id='"+optionID+"Text'>" + optionContent + "</div>");
+					msg +="<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div>";
+					msg += "<div id='"+optionID+"Text'>" + optionContent + "</div>";
+					msg += "</div>"
+					$("#myOptionList").append(msg);
 					
 					$("#"+optionID+"Text").redactor({
 						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 					});
+					
+					$("#"+optionLabel+"Remove").click(function(){
+						var arrIndex = $(this).attr('value');
+						$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
+						optionEdit_arr.splice(arrIndex, 1);
+						$("#option"+arrIndex+"Text").destroyEditor();
+						$("#option"+arrIndex+"Container").remove();
+					}).tooltip();
 											
 					optionEdit_arr.push(optionID);
 				};
@@ -503,13 +522,27 @@ function C_Matching(_type) {
 					var answerLabel = j + 1;
 					var myLabel = $(data).find("page").eq(currentPage).find("answer").eq(j).attr("correct");
 					
-					$("#myAnswerList").append("<label id='label'>Answer "+ answerLabel +" Label: </label><input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>");
+					var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
+					msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+j+"' title='Click to remove this answer'/>";
+					msg += "<label id='label'>Answer "+ answerLabel +" Label: </label>";
+					msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
 					var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(j).text();
-					$("#myAnswerList").append("<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div> <div id='"+answerID+"Text'>" + answerContent + "</div><br/><br/>");
+					msg += "<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div>";
+					msg += "<div id='"+answerID+"Text'>" + answerContent + "</div><br/><br/>";
+					msg += "</div>";
+					$("#myAnswerList").append(msg);
 					
 					$("#"+answerID+"Text").redactor({
 						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 					});
+					
+					$("#"+answerID+"Remove").click(function(){
+						var arrIndex = $(this).attr('value');
+						$(data).find("pages").eq(currentPage).find("answer").eq(arrIndex).remove();
+						answerEdit_arr.splice(arrIndex, 1);
+						$("#answer"+arrIndex+"Text").destroyEditor();
+						$("#answer" + arrIndex + "Container").remove();
+					}).tooltip();
 					
 					answerEdit_arr.push(answerID);
 				}
@@ -521,20 +554,44 @@ function C_Matching(_type) {
 					width: 800,
 					height: 650,
 					buttons: {
+						Cancel: function(){
+							$("#questionEditText").destroyEditor();
+							$("#feedbackEditText").destroyEditor();
+							for(var i = 0; i < optionEdit_arr.length; i++){
+								$("#"+optionEdit_arr[i]+"Text").destroyEditor();
+							}
+							for(var i = 0; i < answerEdit_arr.length; i++){
+								$("#"+answerEdit_arr[i]+"Text").destroyEditor();
+							}
+							$("#questionEditDialog").remove();
+						},
 						AddOption: function(){
 							
 							var optionID = "option" + optionCount;
 							var optionLabel = optionCount + 1;
 							
+							var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
+							msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+optionCount+"' title='Click to remove this option'/>";
+							msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
+							msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
+							var optionContent = "Input Option";				
+							msg +="<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div>";
+							msg += "<div id='"+optionID+"Text'>" + optionContent + "</div>";
+							msg += "</div>"
+							$("#myOptionList").append(msg);
+						
 							
-							$("#myOptionList").append("<label id='label'>Option " + optionLabel + " Match: </label><input type='text' name='myMatch' id='"+optionID+"Match' value='X' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>");
-							
-							var optionContent = "Input Option";
-											
-							$("#myOptionList").append("<div id='"+optionID+"Input'>Option " + optionLabel + ":</div> <div id='"+optionID+"Text'>" + optionContent + "</div>");
 							$("#"+optionID+"Text").redactor({
 								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
 							});
+							
+							$("#" +optionLabel+"Remove").click(function(){
+								var arrIndex = $(this).attr('value');
+								$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
+								optionEdit_arr.splice(arrIndex, 1);
+								$("#option"+arrIndex+"Text").destroyEditor();
+								$("#option"+arrIndex+"Container").remove();
+							}).tooltip();
 							
 							$(data).find("page").eq(currentPage).append($("<option>"));
 							var option= new DOMParser().parseFromString('<option></option>',  "text/xml");
@@ -542,7 +599,6 @@ function C_Matching(_type) {
 							$(data).find("page").eq(currentPage).find("option").eq(optionCount).append(optionCDATA);
 							$(data).find("page").eq(currentPage).find("option").eq(optionCount).attr("correct", "X");
 							
-								
 							optionCount++;
 							optionEdit_arr.push(optionID);	
 						},
@@ -552,14 +608,27 @@ function C_Matching(_type) {
 							var answerLabel = answerCount + 1;
 							var myLabel = "X";
 							
-							$("#myAnswerList").append("<label id='label'>Answer "+ answerLabel +" Label: </label><input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>");
-							
-							var myAnswerContent = "Input Answer";
-							$("#myAnswerList").append("<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div> <div id='"+answerID+"Text'>" + answerContent + "</div><br/><br/>");
+							var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
+							msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this answer'/>";
+							msg += "<label id='label'>Answer "+ answerLabel +" Label: </label>";
+							msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
+							var answerContent = "Input Answer";
+							msg += "<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div>";
+							msg += "<div id='"+answerID+"Text'>" + answerContent + "</div><br/><br/>";
+							msg += "</div>";
+							$("#myAnswerList").append(msg);
 							
 							$("#"+answerID+"Text").redactor({
 								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 							});
+							
+							$("#" +answerID+"Remove").click(function(){
+								var arrIndex = $(this).attr('value');
+								$(data).find("pages").eq(currentPage).find("answer").eq(arrIndex).remove();
+								answerEdit_arr.splice(arrIndex, 1);
+								$("#answer"+arrIndex+"Text").destroyEditor();
+								$("#answer" + arrIndex+"Container").remove();
+							}).tooltip();
 							
 							$(data).find("page").eq(currentPage).append($("<answer>"));
 							var answer= new DOMParser().parseFromString('<answer></answer>',  "text/xml");
@@ -571,7 +640,6 @@ function C_Matching(_type) {
 						},
 						Save: function(){
 							saveQuestionEdit();
-							$( this ).dialog( "close" );
 						}
 					}
 				});
@@ -629,9 +697,13 @@ function C_Matching(_type) {
 			$("#"+optionEdit_arr[i]+"Text").destroyEditor();
 		}
 		
+		for(var i = optionEdit_arr.length; i < optionCount; i++){
+			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
+		}
+		
 		for(var i = 0; i < answerEdit_arr.length; i++){
 			var answerText = $("#"+answerEdit_arr[i]+"Text").getCode();
-			var answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();;
+			var answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
 			var newAnswer = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
 			var answerCDATA = newAnswer.createCDATASection(answerText);
 			$(data).find("page").eq(currentPage).find("answer").eq(i).empty();
@@ -641,9 +713,11 @@ function C_Matching(_type) {
 			$("#"+answerEdit_arr[i]+"Text").destroyEditor();
 		}
 		
-
+		for(var i = answerEdit_arr.length; i < answerCount; i++){
+			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
+		}
 		$("#questionEditDialog").remove();
-		sendUpdate();
+		sendUpdateWithRefresh();
 		fadeComplete();
 	}	
 	
@@ -651,6 +725,10 @@ function C_Matching(_type) {
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
+    
+    this.fadeComplete = function(){
+        	fadeComplete();
+	}
     
     function fadeComplete(){
 	    $('#pageTitle').remove();

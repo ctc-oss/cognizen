@@ -794,6 +794,7 @@ function C_StaticContent(_type) {
 								$("#" + removeID).click(function(){
 									var arrIndex = $(this).attr('value');
 									//captionEditText_arr, media_arr, caption_arr, destroyEditor
+									galleryEdit_arr.splice(arrIndex, 1);
 									media_arr.splice(arrIndex,1);
 									caption_arr.splice(arrIndex, 1);
 									alt_arr.splice(arrIndex, 1);
@@ -812,9 +813,9 @@ function C_StaticContent(_type) {
 									var popString = $(data).find("page").eq(currentPage).attr('popup');
 									popString += ",defaultTop.png";
 									$(data).find("page").eq(currentPage).attr('popup', popString);
-									var commentString = $(data).find("page").eq(currentPage).attr('popcaps');
-									commentString += "!!! ";
-									$(data).find("page").eq(currentPage).attr('popcaps', commentString);
+									var captionString = $(data).find("page").eq(currentPage).attr('popcaps');
+									captionString += "!!! ";
+									$(data).find("page").eq(currentPage).attr('popcaps', captionString);
 									var altString = $(data).find("page").eq(currentPage).attr('popalt');
 									altString += "!!! ";
 									$(data).find("page").eq(currentPage).attr('popalt', altString);
@@ -1145,56 +1146,54 @@ function C_StaticContent(_type) {
 		}
 		
 		var imgPath = _path;
-		   	
-	   	
-            var parts = imgPath.split('.'), i, l;
-		  	var last = parts.length;
+        var parts = imgPath.split('.'), i, l;
+		var last = parts.length;
 
-		  	mediaType = getExtension(imgPath);
+		mediaType = getExtension(imgPath);
 		  
-		  	if(mediaType == "mp4"){
-                $(data).find("page").eq(currentPage).attr("img", imgPath);
-			 	$("#loader").append("<div id='videoDialog' title='Input Video Stats'><div>Video Width: <input id='videoWidth' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:100%;'/></div><div>Video Height: <input id='videoHeight' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:100%;'/></div><input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input><input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input><input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/><label id='label'>poster</label></input><input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input></div>");
+		if(mediaType == "mp4"){
+			$(data).find("page").eq(currentPage).attr("img", imgPath);
+			$("#loader").append("<div id='videoDialog' title='Input Video Stats'><div>Video Width: <input id='videoWidth' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:100%;'/></div><div>Video Height: <input id='videoHeight' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:100%;'/></div><input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input><input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input><input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/><label id='label'>poster</label></input><input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input></div>");
 			 	
-			 	$("#videoDialog").dialog({
-                    autoOpen: true,
-					modal: true,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-						close: function(){
-							var strippedPath = "";
-							$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
-							$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
-							for(var i = 0; i < last-1; i++){
-								strippedPath += parts[i];
-							}
-							if($("#subs").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
-							}else{
-								$(data).find("page").eq(currentPage).attr("subs", "null");
-							}
-
-							if($("#poster").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
-							}else{
-								$(data).find("page").eq(currentPage).attr("poster", "null");
-							}
-
-							if($("#autoplay").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr("autoplay", "true");
-							}else{
-								$(data).find("page").eq(currentPage).attr("autoplay", "false");
-							}
-						
-							if($("#autonext").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr("autonext", "true");
-							}else{
-								$(data).find("page").eq(currentPage).attr("autonext", "false");
-							}
-							$(data).find("page").eq(currentPage).attr("controlType", "bar");
-							$("#videoDialog").remove();
-							sendUpdateWithRefresh();
-							fadeComplete();
+			$("#videoDialog").dialog({
+            	autoOpen: true,
+				modal: true,
+				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+					close: function(){
+						var strippedPath = "";
+						$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
+						$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
+						for(var i = 0; i < last-1; i++){
+							strippedPath += parts[i];
 						}
+						if($("#subs").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
+						}else{
+							$(data).find("page").eq(currentPage).attr("subs", "null");
+						}
+
+						if($("#poster").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
+						}else{
+							$(data).find("page").eq(currentPage).attr("poster", "null");
+						}
+						
+						if($("#autoplay").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("autoplay", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("autoplay", "false");
+						}
+						
+						if($("#autonext").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("autonext", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("autonext", "false");
+						}
+						$(data).find("page").eq(currentPage).attr("controlType", "bar");
+						$("#videoDialog").remove();
+						sendUpdateWithRefresh();
+						fadeComplete();
+					}
 				});	
 			}else if(mediaType == "swf"){
              	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....

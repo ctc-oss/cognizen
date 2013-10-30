@@ -477,8 +477,8 @@ function C_Reveal(_type) {
 					
 					revealImgHeight = revealImgHeight.replace('px','');
 					revealImgWidth = revealImgWidth.replace('px','');
-					var msg = "<br/><div id='"+revealID+"' class='templateAddItem'>";
-					msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/>";
+					var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+i+"'>";
+					msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/>";
 					msg += "<b>Reveal "+revealLabel+":</b>";
 					msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='media/"+mediaString+"' defaultValue='media/"+mediaString+"' style='width:80%;'/><br/>";
 					msg += "<div id='"+revealID+"Dimensions'>";
@@ -489,16 +489,18 @@ function C_Reveal(_type) {
 					msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div><br/>";
 					msg += "</div>"
 					$("#contentEditDialog").append(msg);
-					$("#" +revealLabel+"Remove").click(function(){
+					$("#" +revealID+"Remove").click(function(){
+						console.log("clicked");
 						var arrIndex = $(this).attr('value');
+						var arrIndex = $(this).attr('value');
+						$("#reveal"+arrIndex+"ContentText").destroyEditor();
+						$("#reveal" + arrIndex+"Container").remove();
 						$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
 						revealEdit_arr.splice(arrIndex, 1);
-						$("#reveal"+arrIndex+"ContentText").destroyEditor();
-						$("#reveal" + arrIndex).remove();
 					}).tooltip();
 					
 					$("#"+revealID+"ContentText").redactor({
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 					});
 						
 					revealEdit_arr.push(revealID);
@@ -509,15 +511,15 @@ function C_Reveal(_type) {
 					autoOpen: true,
 					modal: true,
 					width: 875,
-					height: 575,
+					//height: 575,
 					buttons: {
 						Add: function(){
 							editStartLength++;
 							var revealID = "reveal" + revealCount;
 							var revealLabel = revealCount + 1;
 							
-							var msg = "<br/><div id='"+revealID+"' class='templateAddItem'>";
-							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealLabel+"' title='Click to remove this reveal'/>";
+							var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
+							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
 							msg += "<b>Reveal "+revealLabel+":</b>";
 							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='media/"+mediaString+"' defaultValue='media/"+mediaString+"' style='width:80%;'/><br/>";
 							msg += "<div id='"+revealID+"Dimensions'>";
@@ -535,15 +537,20 @@ function C_Reveal(_type) {
 							$("#contentEditDialog").append(msg);
 							
 							$("#" +revealLabel+"Remove").click(function(){
+								console.log("clicked new");
+								console.log("clicked");
 								var arrIndex = $(this).attr('value');
-								$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
-								revealEdit_arr.splice(arrIndex, 1);
+								console.log("$(this).attr('value') = " + $(this).attr('value'));
+								console.log("revealEdit_arr[arrIndex] = " + revealEdit_arr[arrIndex]);
+								var arrIndex = $(this).attr('value');
 								$("#reveal"+arrIndex+"ContentText").destroyEditor();
-								$("#reveal" + arrIndex).remove();	
+								$("#reveal" + arrIndex+"Container").remove();
+								$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
+								revealEdit_arr.splice(arrIndex, 1);	
 							}).tooltip();
 							
 							$("#"+revealID+"ContentText").redactor({
-								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 							});
 							
 							var boxWidth = $("#"+revealID+"Width").width() + 10;
@@ -568,7 +575,7 @@ function C_Reveal(_type) {
 					
 				$("#contentEditText").redactor({
 					focus: true,
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 				});
 			}).tooltip();
 		}
