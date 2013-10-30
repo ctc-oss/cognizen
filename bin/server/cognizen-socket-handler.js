@@ -609,8 +609,8 @@ var SocketHandler = {
 
     _deleteProgram: function(program, callback) {
         var _this = this;
-        var oldPath = 'repos/' + program.name + '.git';
-        var newPath = 'repos/' + program.name + _this._fullDeletedSuffix() + '.git';
+        var oldPath = 'repos/' + program.getRepoName() + '.git';
+        var newPath = 'repos/' + program.getRepoName() + _this._fullDeletedSuffix() + '.git';
         // Get all program children and delete them.
         program.getChildren(function(err, children) {
             if (err) {
