@@ -510,52 +510,60 @@ var SocketHandler = {
         });
     },
 
-    registerApplication: function (data) {
-        var _this = this;
-        Application.createUnique(data, function (saved, callbackData) {
-            if (saved) {
-                _this._copyContentFiles(callbackData, function (err) {
-                    Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                        _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
-                            if (err) {
-                                _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
-                                _this.logger.error(err);
-                            }
-                            else {
-                                _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                            }
-                        });
-                    }, function (message) {
-                        _this.logger.info("Error committing program content: " + message)
-                        _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
-                    });
-                });
-            } else {
-                _this._socket.emit('generalError', {title: 'Application or Course Exists', message: 'There is already an application or course in this program that is named ' + data.name + '. Please choose a different application name or contact the program admin to grant you access to the application.'});
-                logger.info('Application or course already exists with name ' + data.name);
-            }
-        });
-    },
+//    registerApplication: function (data) {
+//        var _this = this;
+//        Application.createUnique(data, function (saved, callbackData) {
+//            if (saved) {
+//                _this._copyContentFiles(callbackData, function (err) {
+//                    Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+//                        _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
+//                            if (err) {
+//                                _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
+//                                _this.logger.error(err);
+//                            }
+//                            else {
+//                                _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+//                            }
+//                        });
+//                    }, function (message) {
+//                        _this.logger.info("Error committing program content: " + message)
+//                        _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
+//                    });
+//                });
+//            } else {
+//                _this._socket.emit('generalError', {title: 'Application or Course Exists', message: 'There is already an application or course in this program that is named ' + data.name + '. Please choose a different application name or contact the program admin to grant you access to the application.'});
+//                logger.info('Application or course already exists with name ' + data.name);
+//            }
+//        });
+//    },
 
     registerLesson: function (data) {
         var _this = this;
         Lesson.createUnique(data, function (saved, callbackData) {
             if (saved) {
-                _this._copyContentFiles(callbackData, function () {
-                    _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                        _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', function (err) {
-                            if (err) {
-                                _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
-                                _this.logger.error(err);
-                            }
-                            else {
-                                _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                            }
-                        });
-                    }, function (message) {
-                        _this.logger.info("Error committing program content: " + message)
+                _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
+                    if (err) {
                         _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
-                    });
+                        _this.logger.error(err);
+                    }
+                    else {
+                        _this._copyContentFiles(callbackData, function () {
+                            _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+                                _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', function (err) {
+                                    if (err) {
+                                        _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                        _this.logger.error(err);
+                                    }
+                                    else {
+                                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    }
+                                });
+                            }, function (message) {
+                                _this.logger.info("Error committing program content: " + message)
+                                _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                            });
+                        });
+                    }
                 });
             } else {
                 _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
@@ -828,48 +836,50 @@ var SocketHandler = {
                 if (found) {
                     var program = found.getProgram();
 
-                    _this.Git.updateLocalContent(program, function(){
-                        var serverDetails = _this.Content.serverDetails(found);
-
-                        if (serverDetails.running) {
-                            _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
-                            _this._socket.emit('contentServerStarted', {
-                                id: found.id,
-                                path: found.path,
-                                type: data.content.type
-                            });
+                    _this.Git.updateLocalContent(program, function(err){
+                        if (err) {
+                            var errorMessage = JSON.stringify(err);
+                            _this.logger.error(errorMessage);
+                            // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
+                            if (errorMessage.indexOf('index.lock') == -1) {
+                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
+                            }
                         }
                         else {
-                            var scormPath = path.normalize('../core-files/scorm/');
-                            var scormDir = path.resolve(process.cwd(), scormPath);
-                            var programPath = path.normalize('../programs/' + found.path + '/');
-                            var parentDir = path.resolve(process.cwd(), programPath);
-                            _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
-                            ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
-                                if (error) {
-                                    _this.logger.error(error);
-                                    _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
-                                    serverDetails.running = false;
-                                }
-                                else {
-                                    _this._socket.emit('contentServerStarted', {
-                                        id: found.id,
-                                        path: encodeURIComponent(found.path),
-                                        type: data.content.type
-                                    });
-                                    serverDetails.running = true;
-                                }
-                            });
-                        }
+                            var serverDetails = _this.Content.serverDetails(found);
 
-                    }, function(err) {
-                        var errorMessage = JSON.stringify(err);
-                        _this.logger.error(errorMessage);
-                        // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
-                        if (errorMessage.indexOf('index.lock') == -1) {
-                            _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
+                            if (serverDetails.running) {
+                                _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
+                                _this._socket.emit('contentServerStarted', {
+                                    id: found.id,
+                                    path: found.path,
+                                    type: data.content.type
+                                });
+                            }
+                            else {
+                                var scormPath = path.normalize('../core-files/scorm/');
+                                var scormDir = path.resolve(process.cwd(), scormPath);
+                                var programPath = path.normalize('../programs/' + found.path + '/');
+                                var parentDir = path.resolve(process.cwd(), programPath);
+                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
+                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
+                                    if (error) {
+                                        _this.logger.error(error);
+                                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
+                                        serverDetails.running = false;
+                                    }
+                                    else {
+                                        _this._socket.emit('contentServerStarted', {
+                                            id: found.id,
+                                            path: encodeURIComponent(found.path),
+                                            type: data.content.type
+                                        });
+                                        serverDetails.running = true;
+                                    }
+                                });
+                            }
                         }
-                    })
+                    });
                 }
             });
         }
