@@ -3,9 +3,9 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Utils = require('./cognizen-utils');
 
-Array.prototype.extend = function (other_array) {
-    if (other_array instanceof Array) {
-        other_array.forEach(function(v) {this.push(v)}, this);
+Array.prototype.extend = function (otherArray) {
+    if (otherArray instanceof Array) {
+        otherArray.forEach(function(v) {this.push(v)}, this);
     }
 }
 
@@ -111,6 +111,7 @@ ProgramSchema.statics.findAndPopulate = function(id, callback) {
 };
 
 ProgramSchema.statics.createUnique = function (program, callback) {
+    program.name = Utils.replaceInvalidFilenameChars(program.name); // Make sure there are no invalid characters in the program name, since it will be the git repo name.
     program.path = program.name;
     createUnique(Program, program, callback);
 };
@@ -125,21 +126,26 @@ ProgramSchema.methods.getChildren = function(callback) {
         allChildren.extend(courses);
 
         var count = 0;
-        courses.forEach(function(course){
-            course.getChildren(function(err, lessons) {
-                if (err) {
-                    callback(err, []);
-                }
-                else {
-                    count++;
-                    allChildren.extend(lessons);
-                    if(count == courses.length){
-                        callback(null, allChildren);
+        if (!courses.length) {
+            callback(null, allChildren);
+        }
+        else {
+            courses.forEach(function(course){
+                course.getChildren(function(err, lessons) {
+                    if (err) {
+                        callback(err, []);
                     }
-                }
+                    else {
+                        count++;
+                        allChildren.extend(lessons);
+                        if(count == courses.length){
+                            callback(null, allChildren);
+                        }
+                    }
 
-            })
-        });
+                })
+            });
+        }
     });
 };
 

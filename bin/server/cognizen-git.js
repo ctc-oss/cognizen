@@ -1,8 +1,8 @@
-var GitServer = require('git-server');
-var Utils = require('./cognizen-utils');
-var fs = require('fs-extra');
-var path = require('path');
-var Program = require('./content-model').Program;
+var GitServer = require('git-server'),
+    Utils = require('./cognizen-utils'),
+    fs = require('fs-extra'),
+    path = require('path'),
+    Program = require('./content-model').Program;
 
 var Git = {
     logger: {},
@@ -75,13 +75,13 @@ var Git = {
         }
     },
 
-    _gitUpdateLocal: function(program, success, error) {
+    _gitUpdateLocal: function(program, callback) {
         var _this = this;
         var path = _this.Content.diskPath(program.path);
 
         // Make sure path is a git repo.
         if (!fs.existsSync(path + '/.git')) {
-            error("The program's folder is not a git repository");
+            callback("The program's folder is not a git repository");
         }
         else {
             var exec = require('child_process').exec;
@@ -101,14 +101,14 @@ var Git = {
 
                 if (err) {
                     _this.logger.error('Git-ERR: ' + err);
-                    error(err);
+                    callback(err);
                 }
                 else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
-                    error(stderr);
+                    callback(stderr);
                 }
                 else {
                     _this.logger.info('Local Git Content is up to date.');
-                    if (success) success();
+                    callback();
                 }
             });
         }
@@ -210,8 +210,8 @@ var Git = {
         this._gitCommit(program, user, false, 'Program update from Cognizen by ' + user.username, success, error);
     },
 
-    updateLocalContent: function(program, success, error) {
-        this._gitUpdateLocal(program, success, error);
+    updateLocalContent: function(program, callback) {
+        this._gitUpdateLocal(program, callback);
     }
 };
 
