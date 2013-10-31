@@ -436,7 +436,7 @@ function C_TabbedContent(_type) {
 	**********************************************************************/
 	function loadAudio(){
 		
-		var audioString = "<audio id='audioPlayer' src='"+myAudio+ "' type='audio/mp3' controls='controls'>";
+		var audioString = "<audio id='audioPlayer' src='media/"+myAudio+ "' type='audio/mp3' controls='controls'>";
 		
 		//Check for subs - defaults to false.
 		if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
@@ -473,7 +473,54 @@ function C_TabbedContent(_type) {
 	}
 	////////////END of loadAudio
 	
+	function addTab(_addID, _isNew){
+		var tabID = "tab" + _addID;
+		var contentLabel = _addID + 1;
+		
+		if(_isNew == true){
+			$(data).find("page").eq(currentPage).append($("<tab id='"+ _addID + "' title='tab"+ contentLabel + "'>"));
+			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			var tabCDATA1 = newTabContent1.createCDATASection("<p>New Tab Content</p>");
+			$(data).find("page").eq(currentPage).find("tab").eq(_addID).append(tabCDATA1);
+		}
+		
+		var myTabLabel = $(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title");
+		var myTabContent = $(data).find("page").eq(currentPage).find("tab").eq(_addID).text();
+					
+		var msg = "<div id='"+tabID+"Container' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='"+tabID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
+		msg += "<label>Tab " + contentLabel + " Title: </label>";
+		msg += "<input id='"+tabID+"TitleText' type='text' value="+ myTabLabel + " defaultValue="+ myTabLabel + " style='width:30%;'/>";
+					
+		msg += "<div>Tab " + contentLabel + " Content:</div> ";
+		msg += "<div id='"+tabID+"ContentText'  style='width:80%;'>" + myTabContent + "</div>";	
+		msg += "</div>";
+		
+		$("#contentEditDialog").append(msg);
+		
+		$("#" +tabID+"Remove").click(function(){
+			removeTab($(this).attr("value"));
+		}).tooltip();
+				 
+		$("#"+tabID+"ContentText").redactor({
+			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|','fontcolor', 'backcolor']
+		});
+						
+		tabEdit_arr.push(tabID);
+	}
 	
+	function removeTab(_id){
+		for(var i = 0; i < tabEdit_arr.length; i++){
+			if(_id == $("#"+tabEdit_arr[i]+"Container").attr("value")){
+				var arrIndex = i;
+				break;
+			}
+		}
+		$(data).find("pages").eq(currentPage).find("tab").eq(arrIndex).remove();
+		tabEdit_arr.splice(arrIndex, 1);
+		$("#tab"+_id+"ContentText").destroyEditor();
+		$("#tab" + _id +"Container").remove();
+	}
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
@@ -511,149 +558,180 @@ function C_TabbedContent(_type) {
 			*/
 			//Add and style contentEdit button
 			$('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
-				$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 20, 'left': $("#content").position().left + $("#content").width() - 20});
+			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 20, 'left': $("#content").position().left + $("#content").width() - 20});
 				
-				$("#conEdit").click(function(){
-									
-					//Create the Content Edit Dialog
-					$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' >" + $(data).find("page").eq(currentPage).find("content").text() + "</div><br/>");
+			$("#conEdit").click(function(){					
+				//Create the Content Edit Dialog
+				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
+				msg += "<div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' >" + $(data).find("page").eq(currentPage).find("content").text() + "</div>";
+				msg += "</div>";
+				$("#stage").append(msg);	
+				
+				//Cycle through the tabs from the xml
+				for(var i = 0; i < tabCount; i++){
+					addTab(i, false);
+				}
+				
 					
-					//Cycle through the tabs from the xml
-					for(var i = 0; i < tabCount; i++){
-						var tabID = "tab" + i;
-						var contentLabel = i + 1;
-						var myTabLabel = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
-						var myTabContent = $(data).find("page").eq(currentPage).find("tab").eq(i).text();
-						$("#contentEditDialog").append("<div id='"+tabID+"Label'>Tab " + contentLabel + " Title: <input id='"+tabID+"TitleText' type='text' value="+ myTabLabel + " defaultValue="+ myTabLabel + " style='width:100%;'/></div>");
-						
-						$("#contentEditDialog").append("<div id='"+tabID+"Content'>Tab " + contentLabel + " Content:</div> <div id='"+tabID+"ContentText'  style='width:100%;'>" + myTabContent + "</div><br/>");
-						
-						$("#"+tabID+"ContentText").redactor({
-							buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
-						});
-						
-						tabEdit_arr.push(tabID);
-					}
-					
-					//Style it to jQuery UI dialog
-					$("#contentEditDialog").dialog({ 	
-						autoOpen: true,
-						modal: true,
-						width: 875,
-						height: 575,
-						buttons: {
-							Add: function(){
-								
-								var tabID = "tab" + tabCount;
-								var contentLabel = tabCount + 1;
-								
-								var myTabContent = "New Tab Content";
-								$("#contentEditDialog").append("<div id='"+tabID+"Label'>Tab " + contentLabel + " Title: <input id='"+tabID+"TitleText' type='text' value=tab"+ contentLabel + " defaultValue=tab"+ contentLabel + " style='width:100%;'/></div>");
-								
-								$("#contentEditDialog").append("<div id='"+tabID+"Content'>Tab " + contentLabel + " Content:</div> <div id='"+tabID+"ContentText'  style='width:100%;'>" + myTabContent + "</div><br/>");
-								
-								$("#"+tabID+"ContentText").redactor({
-									buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
-								});
-								
-								$(data).find("page").eq(currentPage).append($("<tab id='"+ tabCount + "' title='tab"+tabCount+"'>"));
-								var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-								var tabCDATA1 = newTabContent1.createCDATASection("<p>New Tab Content</p>");
-								$(data).find("page").eq(currentPage).find("tab").eq(tabCount).append(tabCDATA1);
-								
-								tabCount++;
-								tabEdit_arr.push(tabID);
-								
-								
-								
-							},
-							Save: function(){
-								$( this ).dialog( "close" );
-							}
-							
+				//Style it to jQuery UI dialog
+				$("#contentEditDialog").dialog({ 	
+					autoOpen: true,
+					modal: true,
+					width: 875,
+					height: 650,
+					show: 'fold',
+					//hide: 'fold',
+					buttons: {
+						Add: function(){	
+							addTab(tabEdit_arr.length, true);	
 						},
-						close: saveContentEdit
-					});
+						Save: function(){
+							$( this ).dialog( "close" );
+						}	
+					},
+					close: saveContentEdit
+				});
 					
-					$("#contentEditText").redactor({
-						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
-					});
-				}).tooltip();
+				$("#contentEditText").redactor({
+					focus: true,
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+				});
+			}).tooltip();
 			
 			
-				/**
-				* Edit Image
-				*/
-				if(type != "tabsOnly"){
-					$('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image'></div>");
-					$("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top - 20, 'left': $("#loader").position().left + $("#loader").width() -20});
+			/**
+			* Edit Image
+			*/
+			if(type != "tabsOnly"){
+				$('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image'></div>");
+				$("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top - 20, 'left': $("#loader").position().left + $("#loader").width() -20});
 						
+				$("#imgEdit").click(function(){
+					//Establish it's functionality
 					$("#imgEdit").click(function(){
-						//Establish it's functionality
-						$("#imgEdit").click(function(){
-							$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:100%;'/></div>");
-									
-							$("#imgDialog").dialog({ 	
-								autoOpen: true,
-								modal: true,
-								width: 550,
-								buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-								close: saveImageEdit
-							});
-						});					
-					}).tooltip();
-					
-					/*Caption Edit*/
-					$('#stage').append("<div id='captionEdit' class='btn_edit_text' title='Edit Caption'></div>");
-					$("#captionEdit").css({'position':'absolute', 'top':$("#caption").position().top, 'left': $("#caption").position().left + $("#caption").width()});
-					
-					//Add Caption Edit
-					$("#captionEdit").click(function(){
-						//Create the Content Edit Dialog
-						$("#stage").append("<div id='captionEditDialog' title='Input Media Caption'><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div>");
-						
-						
-						//Style it to jQuery UI dialog
-						$("#captionEditDialog").dialog({ 	
+						$("#stage").append("<div id='imgDialog' title='Input Media Path'><input id='imgPath' type='text' value="+ myImage + " defaultValue="+ myImage + " style='width:100%;'/></div>");
+								
+						$("#imgDialog").dialog({ 	
 							autoOpen: true,
 							modal: true,
-							width: $("#caption").width() + 100,
-							height: 300,
+							width: 550,
 							buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-							close: saveCaptionEdit
+							close: saveImageEdit
 						});
+					});					
+				}).tooltip();
+					
+				/*Caption Edit*/
+				$('#stage').append("<div id='captionEdit' class='btn_edit_text' title='Edit Caption'></div>");
+				$("#captionEdit").css({'position':'absolute', 'top':$("#caption").position().top, 'left': $("#caption").position().left + $("#caption").width()});
+					
+				//Add Caption Edit
+				$("#captionEdit").click(function(){
+					//Create the Content Edit Dialog
+					$("#stage").append("<div id='captionEditDialog' title='Input Media Caption'><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div>");
+										
+					//Style it to jQuery UI dialog
+					$("#captionEditDialog").dialog({ 	
+						autoOpen: true,
+						modal: true,
+						width: $("#caption").width() + 100,
+						height: 300,
+						buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+						close: saveCaptionEdit
+					});
 						
-						$("#captionEditText").redactor({
-							focus: true,
-							buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-						});
-					}).tooltip();
-				}
-			/*Audio Edit*/
-			$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
-			
-			if(hasAudio == false || myAudio == "null"){
-				$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
-			}else{
-				$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
+					$("#captionEditText").redactor({
+						focus: true,
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+					});
+				}).tooltip();
 			}
+			
+			/*Audio Edit*/
+			if(dragFile == true){
+            	var contentId = urlParams['type'] + '_' + urlParams['id'];
+	     		siofu.addEventListener("complete", function(event){
+					siofu.removeEventListener("complete");
+					siofu.removeEventListener("load");
+					//if successful upload, else....
+								
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt == "mp3" || myExt == "MP3"){	
+						if(event.success == true){
+							if(myExt == "mp3" || myExt == "MP3"){
+								var audioText;
+								audioText = myFile;
+	
+								$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
+	
+								//Style it to jQuery UI dialog
+								$("#audioEditDialog").dialog({
+									autoOpen: true,
+									modal: true,
+									width: 500,
+									height: 200,
+									buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+									close: saveAudioEdit
+								});
+							}
+						}
+					}	
+				});
 				
+				siofu.addEventListener("start", function(event){
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt == "mp3"){
+						try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						$("#mediaLoader").css({'position':'absolute', 'top': $("#audioDrop").position().top, 'left': $("#audioDrop").position().left, 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width()});
+					}
+				});
+	     		
+	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
+	     		if(hasAudio == true){
+	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
+	     		}else{
+		     		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
+	     		}
+	     		
+	     		$("#audioDrop").attr('data-content', contentId);
+		 		$("#audioDrop").find('*').attr('data-content', contentId);
+		 		
+		 		$("#audioDrop").click(function(){
+					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+					siofu.prompt($("#audioDrop").attr('data-content'));
+				}).tooltip();
+				
+				siofu.listenOnDrop(document.getElementById("audioDrop"));
+	     	} 
+	     	
+	     	$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
+			//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
+			if(hasAudio == true){
+	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
+			}else{
+          		$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
+          		
+			}
+			
+			
 			//Add Audio Edit
 			$("#audioEdit").click(function(){
 				//Create the Content Edit Dialog
 				var audioText;
 				if(myAudio == "null"){
-					audioText = "media/yourFile.mp3";
+                    	audioText = "yourFile.mp3";
 				}else{
-					audioText = myAudio;
+                    	audioText = myAudio;
 				}
-				
+
 				$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
-				
+
 				//Style it to jQuery UI dialog
-				$("#audioEditDialog").dialog({ 	
-					autoOpen: true,
+				$("#audioEditDialog").dialog({
+                    autoOpen: true,
 					modal: true,
 					width: 500,
 					height: 200,
@@ -691,13 +769,11 @@ function C_TabbedContent(_type) {
 	function saveContentEdit(){
 		//Grab the updated text from redactor.
 		var contentUpdate = $("#contentEditText").getCode();
+		contentUpdate.replace('<p>','').replace('</p>','');
 		//We create an xml doc - add the contentUpdate into a CDATA Section
 		var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
 		var newCDATA=docu.createCDATASection(contentUpdate);
 		//Now, destroy redactor.
-		//$("#content").html(contentUpdate);
-		
-		//myContent = contentUpdate;
 		$("#contentEditText").destroyEditor();
 		//Update the local xml - first clearning the content node and then updating it with out newCDATA
 		$(data).find("page").eq(currentPage).find("content").empty();
@@ -714,9 +790,12 @@ function C_TabbedContent(_type) {
 			$("#"+tabEdit_arr[i]+"ContentText").destroyEditor();
 		}
 		
-		
-		
-		//$("#content").html(contentUpdate);
+		var extra = $(data).find("page").eq(currentPage).find("tab").length;
+		var active = tabEdit_arr.length;
+		var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
+			$(data).find("page").eq(currentPage).find("tab").eq(i).remove();
+		}
 		
 		$("#contentEditDialog").remove();
 		sendUpdate();
@@ -834,7 +913,7 @@ function C_TabbedContent(_type) {
 		
 		var fileType = (parts[last - 1]);
 		if(fileType == "mp3"){
-			if(audioPath == "media/yourFile.mp3"){
+			if(audioPath == "yourFile.mp3"){
 				$(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
 				$(data).find("page").eq(currentPage).attr("audio", audioPath);
@@ -928,6 +1007,19 @@ function C_TabbedContent(_type) {
 		    $("#audioEditDialog").remove();
 		    $("#swfDialog").remove();
 	    }
+	    
+	    if(mode == "edit" && dragFile == true){
+		  	if(type != "textOnly" && type !=  "sidebar"){
+			  	$("#loader").unbind();
+			}
+			siofu.destroy();
+			$("#audioDrop").unbind();
+			//cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
+			//cognizenSocket.removeListener('mediaInfo', mediaInfo);
+			//cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
+			
+		}
+		$("#audioDrop").remove();
 	    
 	    if(type != "textOnly"){
 	    	if(mediaType == 'swf'){

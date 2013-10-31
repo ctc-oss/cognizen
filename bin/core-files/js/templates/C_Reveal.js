@@ -455,6 +455,7 @@ function C_Reveal(_type) {
 			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 20, 'left': $("#content").position().left + $("#content").width() - 20});
 			
 			$("#conEdit").click(function(){			
+				revealEdit_arr.length = 0;
 				//Create the Content Edit Dialog
 				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
 				msg += "<label id='hover'>Hover: </label>";
@@ -483,13 +484,15 @@ function C_Reveal(_type) {
 					revealImgHeight = revealImgHeight.replace('px','');
 					revealImgWidth = revealImgWidth.replace('px','');
 					
-					var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+i+"'>";
+					var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+i+"'>";
 					msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/>";
 					msg += "<b>Reveal "+revealLabel+":</b>";
-					msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-					msg += "<label> <b>Width: </b></label><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
-					msg += "<label> <b>Height: </b></label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
-					//msg += "<br/>";
+					msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label>";
+					msg += "<input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+					msg += "<label> <b>Width: </b></label>";
+					msg += "<input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
+					msg += "<label> <b>Height: </b></label>";
+					msg += "<input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
 					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();	
 					msg += "<div><b>Content:</b></div>";
 					msg += "<div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
@@ -497,7 +500,6 @@ function C_Reveal(_type) {
 					$("#contentEditDialog").append(msg);
 					
 					$("#" +revealID+"Remove").click(function(){
-						console.log("item to remove = reveal" + $(this).attr("value"));
 						removeReveal($(this).attr("value"));
 					}).tooltip();
 					
@@ -524,8 +526,8 @@ function C_Reveal(_type) {
 							var revealID = "reveal" + revealCount;
 							var revealLabel = revealCount + 1;
 							
-							var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
-							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
+							var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
+							msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
 							msg += "<b>Reveal "+revealLabel+":</b>";
 							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
 							if(type == "revealRight" || type == "revealLeft"){
@@ -541,7 +543,6 @@ function C_Reveal(_type) {
 							$("#contentEditDialog").append(msg);
 							
 							$("#" +revealLabel+"Remove").on('click', function(){
-								console.log("item to remove = reveal" + $(this).attr("value"));
 								removeReveal($(this).attr("value"));
 							}).tooltip();
 							
@@ -584,9 +585,6 @@ function C_Reveal(_type) {
 		}
 		$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
 		revealEdit_arr.splice(arrIndex, 1);
-		for(var i = 0; i < revealEdit_arr.length; i++){
-			console.log(revealEdit_arr[i]);
-		}
 		$("#reveal"+_id+"ContentText").destroyEditor();
 		$("#reveal" + _id +"Container").remove();
 	}
@@ -628,7 +626,6 @@ function C_Reveal(_type) {
 		//Update the local xml - first clearning the content node and then updating it with out newCDATA
 		$(data).find("page").eq(currentPage).find("content").empty();
 		$(data).find("page").eq(currentPage).find("content").append(newCDATA);
-		
 		for(var i = 0; i < revealEdit_arr.length; i++){
 			var revealImg = $("#"+revealEdit_arr[i]+"ImageText").val();
 			var imgW = $("#"+revealEdit_arr[i]+"Width").val();
@@ -651,11 +648,10 @@ function C_Reveal(_type) {
 			$("#"+revealEdit_arr[i]+"ContentText").destroyEditor();
 		}
 		
-		console.log("---------------------------------------------------------");
-		console.log("revealEdit_arr.length = " + revealEdit_arr.length);
-		console.log("editStartLength       = " + editStartLength);
-		for(var i = revealEdit_arr.length - 1; i < editStartLength; i++){
-			console.log("remove" + i);
+		var extra = $(data).find("page").eq(currentPage).find("reveal").length;
+		var active = revealEdit_arr.length;
+		var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
 		}
 
