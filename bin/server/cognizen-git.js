@@ -1,8 +1,8 @@
-var GitServer = require('git-server');
-var Utils = require('./cognizen-utils');
-var fs = require('fs-extra');
-var path = require('path');
-var Program = require('./content-model').Program;
+var GitServer = require('git-server'),
+    Utils = require('./cognizen-utils'),
+    fs = require('fs-extra'),
+    path = require('path'),
+    Program = require('./content-model').Program;
 
 var Git = {
     logger: {},
