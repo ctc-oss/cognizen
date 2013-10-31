@@ -510,7 +510,7 @@ function C_Reveal(_type) {
 					
 				//Style it to jQuery UI dialog
 				$("#contentEditDialog").dialog({ 	
-					autoOpen: true,
+					//autoOpen: true,
 					modal: true,
 					width: 875,
 					height: 750,
@@ -521,7 +521,7 @@ function C_Reveal(_type) {
 							var revealLabel = revealCount + 1;
 							
 							var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
-							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
+							msg += "<div><div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/></div>";
 							msg += "<b>Reveal "+revealLabel+":</b>";
 							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
 							//msg += "<div id='"+revealID+"Dimensions'>";
@@ -538,7 +538,7 @@ function C_Reveal(_type) {
 							msg += "</div>"
 							$("#contentEditDialog").append(msg);
 							
-							$("#" +revealLabel+"Remove").click(function(){
+							$("#" +revealLabel+"Remove").on('click', function(){
 								console.log("item to remove = reveal" + $(this).attr("value"));
 								removeReveal($(this).attr("value"));
 							}).tooltip();
