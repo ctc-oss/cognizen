@@ -1,17 +1,17 @@
-var Utils = require('./cognizen-utils');
-var User = require('./user-model').User;
-var UserPermission = require('./user-model').UserPermission;
-var Program = require('./content-model').Program;
-var Application = require('./content-model').Application;
-var Course = require('./content-model').Course;
-var Lesson = require('./content-model').Lesson;
-var ContentComment = require('./content-model').ContentComment;
-var fs = require('fs-extra');
-var path = require('path');
-var ffmpeg = require('fluent-ffmpeg');
-var FileUtils = require('./file-utils');
-var SocketIOFileUploadServer = require('socketio-file-upload');
-var ContentSocket = require('./content-socket');
+var Utils = require('./cognizen-utils'),
+    User = require('./user-model').User,
+    UserPermission = require('./user-model').UserPermission,
+    Program = require('./content-model').Program,
+    Application = require('./content-model').Application,
+    Course = require('./content-model').Course,
+    Lesson = require('./content-model').Lesson,
+    ContentComment = require('./content-model').ContentComment,
+    fs = require('fs-extra'),
+    path = require('path'),
+    ffmpeg = require('fluent-ffmpeg'),
+    FileUtils = require('./file-utils'),
+    SocketIOFileUploadServer = require('socketio-file-upload'),
+    ContentSocket = require('./content-socket');
 
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -447,6 +447,8 @@ var SocketHandler = {
 
     registerProgram: function (data) {
         var _this = this;
+        var originalName = data.name;
+        var nameHadInvalidChars = Utils.hasInvalidFilenameChars(data.name);
         Program.createUnique(data, function (saved, callbackData) {
             if (saved) {
                 _this.Git.initializeProgramRepo(callbackData, function () {
@@ -459,6 +461,9 @@ var SocketHandler = {
                                 }
                                 else {
                                     _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    if (nameHadInvalidChars) {
+                                        _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
+                                    }
                                 }
                             });
                         }, function (message) {
