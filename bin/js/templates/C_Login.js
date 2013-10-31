@@ -338,6 +338,7 @@ function C_Login(_type) {
     //reset password
     function doResetPassword(_myUser, _myToken){
 	    $("#stage").append('<div id="dialog-resetPass" title="Reset password for: ' + _myUser + '"><p class="validateTips">Enter a new password and verify it.</p><label for="resPass" class="regField">password: </label><input type="password" name="resPass" id="resPass" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="resPassVer" class="regField">verify password: </label><input type="password" name="resPassVer" id="resPassVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>');
+		$("#resPass").focus();
 		$( "#dialog-resetPass" ).dialog({
 			modal: true,
 			width: 550,
@@ -359,6 +360,7 @@ function C_Login(_type) {
 				Submit: submitResetPass
 			}
 		});
+				
     }
     
     //Set 508 accessibility
