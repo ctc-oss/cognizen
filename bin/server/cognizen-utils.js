@@ -2,7 +2,7 @@ var os = require('os');
 
 var Utils = {
     subNodes: [],
-    invalidFilenameChars: '\\/:"*?<>|()',
+    invalidFilenameChars: '\\/:"*?<>|(){}&`.\',
 
     rmCommand: function() {
         return Utils.isWindows() ? 'DEL /Q' : 'rm -f';
@@ -19,7 +19,7 @@ var Utils = {
     replaceInvalidFilenameChars: function(filename, replacement) {
         if (!replacement) replacement = '';
 
-        return filename.replace(/[\\/:"*?<>|()]+/g, replacement);
+        return filename.replace(/[\\/:"*?<>|(){}&.`\]+/g, replacement);
     },
 
     hasInvalidFilenameChars: function(filename) {
