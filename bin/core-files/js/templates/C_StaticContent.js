@@ -236,8 +236,7 @@ function C_StaticContent(_type) {
             resizeForMobile();
             $("#loader").removeClass('loading');
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
-
-
+			
             if(type == "top"){
                 imgY = contentY + contentH + 20;
                 imgX = (stageW - imageWidth) / 2;

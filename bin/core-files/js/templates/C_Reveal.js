@@ -520,6 +520,7 @@ function C_Reveal(_type) {
 					buttons: {
 						Add: function(){
 							editStartLength++;
+							var revealCount = revealEdit_arr.length;
 							var revealID = "reveal" + revealCount;
 							var revealLabel = revealCount + 1;
 							
@@ -527,7 +528,6 @@ function C_Reveal(_type) {
 							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
 							msg += "<b>Reveal "+revealLabel+":</b>";
 							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-							//msg += "<div id='"+revealID+"Dimensions'>";
 							if(type == "revealRight" || type == "revealLeft"){
 								backgroundWidth = 160;
 							}else{
@@ -535,7 +535,6 @@ function C_Reveal(_type) {
 							}
 							msg += "<label> <b>Width: </b></label><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
 							msg += "<label> <b>Height: </b></label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
-							//msg += "<br/>";
 							var myRevealContent = "New Reveal Content";
 							msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
 							msg += "</div>"
@@ -559,15 +558,12 @@ function C_Reveal(_type) {
 							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('style', 'width:'+backgroundWidth+'px; height:160px;');
 							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('imgStyle', 'position:relative; top:5px; left:5px; width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Image Picture"');
 								
-							revealCount++;
 							revealEdit_arr.push(revealID);	
 						},
 						Save: function(){
 							saveContentEdit();
 						}
-						
-					}//,
-					//close: 
+					}
 				});
 					
 				$("#contentEditText").redactor({
@@ -588,6 +584,9 @@ function C_Reveal(_type) {
 		}
 		$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
 		revealEdit_arr.splice(arrIndex, 1);
+		for(var i = 0; i < revealEdit_arr.length; i++){
+			console.log(revealEdit_arr[i]);
+		}
 		$("#reveal"+_id+"ContentText").destroyEditor();
 		$("#reveal" + _id +"Container").remove();
 	}
@@ -652,7 +651,11 @@ function C_Reveal(_type) {
 			$("#"+revealEdit_arr[i]+"ContentText").destroyEditor();
 		}
 		
-		for(var i = revealEdit_arr.length; i < editStartLength; i++){
+		console.log("---------------------------------------------------------");
+		console.log("revealEdit_arr.length = " + revealEdit_arr.length);
+		console.log("editStartLength       = " + editStartLength);
+		for(var i = revealEdit_arr.length - 1; i < editStartLength; i++){
+			console.log("remove" + i);
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
 		}
 
