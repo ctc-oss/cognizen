@@ -514,6 +514,9 @@ function C_Reveal(_type) {
 					modal: true,
 					width: 875,
 					height: 750,
+					resizable: false,
+					show: 'fold',
+					hide: 'fold',
 					buttons: {
 						Add: function(){
 							editStartLength++;
@@ -521,7 +524,7 @@ function C_Reveal(_type) {
 							var revealLabel = revealCount + 1;
 							
 							var msg = "<br/><div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
-							msg += "<div><div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/></div>";
+							msg += "<div id='"+revealLabel+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
 							msg += "<b>Reveal "+revealLabel+":</b>";
 							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
 							//msg += "<div id='"+revealID+"Dimensions'>";
@@ -853,8 +856,6 @@ function C_Reveal(_type) {
 	    	
 	    	$('#loader').remove();
 	    }
-	    
 	    loadPage();
     }
-
 }

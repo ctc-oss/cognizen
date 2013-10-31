@@ -587,8 +587,84 @@ function C_StaticContent(_type) {
     }
 
     ///////////////////////////////////////////////////////////////////////////END MEDIA FUNCTIONALITY
-
-
+	
+	function removeGalleryItem(_removeID){
+		//Find correct location in arrays - to remove - other items by ID are removed by that...
+		//Needed because if you remove more than one the below arr index would be out of step....
+		for(var i = 0; i < galleryEdit_arr.length; i++){
+			if(_removeID == $("#"+galleryEdit_arr[i]).attr("value")){
+				var arrIndex = i;
+				break;
+			}
+		}
+									
+		galleryEdit_arr.splice(arrIndex, 1);
+		media_arr.splice(arrIndex,1);
+		caption_arr.splice(arrIndex, 1);
+		alt_arr.splice(arrIndex, 1);
+		$(captionEditText_arr[_removeID]).destroyEditor();
+		captionEditText_arr.splice(arrIndex, 1);
+		altEditText_arr.splice(arrIndex, 1);
+		var myItem = "#galleryItem" + _removeID;
+		$(myItem).remove();
+	}
+	
+	function addGalleryItem(_addID, _isNew){
+		if(_isNew == true){						
+			//If no entries - just add the next one.
+			if(media_arr.length == 0){
+				$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
+				$(data).find("page").eq(currentPage).attr('popcaps', " ");
+				$(data).find("page").eq(currentPage).attr('popalt', " ");
+			}else{
+				var popString = $(data).find("page").eq(currentPage).attr('popup');
+				popString += ",defaultTop.png";
+				$(data).find("page").eq(currentPage).attr('popup', popString);
+				var captionString = $(data).find("page").eq(currentPage).attr('popcaps');
+				captionString += "!!! ";
+				$(data).find("page").eq(currentPage).attr('popcaps', captionString);
+				var altString = $(data).find("page").eq(currentPage).attr('popalt');
+				altString += "!!! ";
+				$(data).find("page").eq(currentPage).attr('popalt', altString);
+			}
+			
+			media_arr.push("defaultTop.png");
+			caption_arr.push(" ");
+			alt_arr.push(" "); 
+		}
+		
+		var imgID = "imgPath" + _addID;
+		var captionTextID = "captionEditText" + _addID;
+		var altTextID = "altEditText" + _addID;
+		var removeID = "removeMedia" + _addID;
+		var galleryItemID = "galleryItem" + _addID;
+		captionEditText_arr.push("#" + captionTextID);
+								
+		var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='"+removeID+"' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
+		msg += "<label id='label'><b>Gallery Item: </b><br/></label>";
+		msg += "<label id='label'>Media: </label><input id='imgPath" + _addID + "' type='text' value='"+media_arr[_addID]+"' defaultValue='"+media_arr[_addID]+"' style='width:80%;'/><br/>";
+		msg += "<div>Caption:</div><div id='"+captionTextID+"' type='text' style='width:200px; height:30px' >"+caption_arr[_addID]+"</div>";
+		msg += "<label id='label'>ALT text: </label>";
+		msg += "<input id='"+altTextID+"' type='text' value='"+alt_arr[_addID]+"' defaultValue='"+alt_arr[_addID]+"' style='width:70%'/>";
+		msg += "</div>"
+		$("#imgDialog").append(msg);
+								
+		$("#" + removeID).click(function(){
+			removeGalleryItem($(this).attr("value"));	
+		}).tooltip();
+								
+		$("#" + captionTextID).redactor({
+			focus: true,
+			buttons: ['html', '|', 'bold', 'italic', 'underline', '|', 'fontcolor', 'backcolor']
+		});
+								
+		galleryEdit_arr.push(galleryItemID);
+		
+		for(var i = 0; i < galleryEdit_arr.length; i++){
+			console.log(galleryEdit_arr[i]);
+		}
+	}
     /*****************************************************************************************************************************************************************************************************************
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      PAGE EDIT FUNCTIONALITY
@@ -645,7 +721,7 @@ function C_StaticContent(_type) {
 
 					$("#sidebarEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 					});
 				}).tooltip();
 			}
@@ -684,7 +760,7 @@ function C_StaticContent(_type) {
 
 					$("#contentEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 					});
 				}).tooltip();
 			}
@@ -703,12 +779,12 @@ function C_StaticContent(_type) {
 					var msg = "<div id='imgDialog' title='Input Media Path'>";
 					msg += "<input id='imgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:85%;'/>";
 					msg += "<br/>";
-					msg += "<div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + myCaption + "</div>";
+					msg += "<div>Edit Caption:</div><div id='captionEditText' type='text' style='width:" + $('#caption').width() + "; height:40px' >" + myCaption + "</div>";
 					msg += "<label id='label'>large version: </label>";
 					msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
 					msg += "<input id='lrgImgPath' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
                 	msg += "<label id='label'>ALT text: </label>";
-                	msg += "<input id='altTextEdit' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:90%'/>";
+                	msg += "<input id='altTextEdit' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
                 	msg += "<br/><br/></div>";
                 	$("#stage").append(msg);
                     	
@@ -725,115 +801,28 @@ function C_StaticContent(_type) {
 					
 					
 					for(var i = 0; i < media_arr.length; i++){	
-						var thisCaption = "captionEditText" + i;
-						var thisAltText = "altEditText" + i;
-						var removeID = "removeMedia" + i;
-						var galleryItemID = "galleryItem" + i;
-						
-						var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+i+"'>";
-						msg += "<div id='"+removeID+"' value='"+i+"' class='removeMedia' title='Remove this image'/>";
-						msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
-						msg += "<label id='label'>Media: </label><input id='imgPath" + i + "' type='text' value="+ media_arr[i] + " defaultValue="+ media_arr[i] + " style='width:80%;'/><br/>";
-						msg += "<div>Edit Caption:</div><div id='"+thisCaption+"' type='text' style='width:" + $('#caption').width() + "; height:85%' >" + caption_arr[i] + "</div>";
-						msg += "<label id='label'>ALT text: </label>";
-						msg += "<input id='"+thisAltText+"' type='text' value='"+alt_arr[i]+"' defaultValue='"+alt_arr[i]+"' style='width:90%;'/>";
-						msg += "</div>"
-						$("#imgDialog").append(msg);
-						
-						$("#" + removeID).click(function(){
-							var arrIndex = $(this).attr('value');
-							//captionEditText_arr, media_arr, caption_arr, destroyEditor
-							galleryEdit_arr.splice(arrIndex, 1);
-							media_arr.splice(arrIndex,1);
-							caption_arr.splice(arrIndex, 1);
-							alt_arr.splice(arrIndex, 1);
-							$(captionEditText_arr[arrIndex]).destroyEditor();
-							captionEditText_arr.splice(arrIndex, 1);
-							altEditText_arr.splice(arrIndex, 1);
-							var myItem = "#galleryItem" + arrIndex;
-							$(myItem).remove();		
-						}).tooltip();
-						
-						captionEditText_arr.push("#" + thisCaption);
-						altEditText_arr.push("#" + thisAltText);
-						
-						$("#" + thisCaption).redactor({
-							focus: true,
-							buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-						});
-						
-						galleryEdit_arr.push(galleryItemID);
+						addGalleryItem(i, false);
 					}
 
 					$("#imgDialog").dialog({
                         autoOpen: true,
 					   	modal: true,
 					   	width: 550,
+					   	height: 680,
+					   	resizable: false,
+					   	show: 'fold',
 					   	buttons: {
 							Cancel: function(){
+								$("#captionEditText").destroyEditor();
+								for(var j=0; j<captionEditText_arr.length; j++){
+									$(captionEditText_arr[j]).destroyEditor();			   	
+								}
 								$( this ).dialog( "close" );
 							},
 							Add: function(){
-								var imgID = "imgPath" + media_arr.length;
-								var captionTextID = "captionEditText" + caption_arr.length;
-								var altTextID = "altEditText" + alt_arr.length;
-								var removeID = "removeMedia" + media_arr.length;
-								var galleryItemID = "galleryItem" + media_arr.length;
-								captionEditText_arr.push("#" + captionTextID);
-								
-								var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+media_arr.length+"'>";
-								msg += "<div id='"+removeID+"' value='"+media_arr.length+"' class='removeMedia' title='Remove this image'/>";
-								msg += "<label id='label'><b>Gallery Item: </b></label><HR WIDTH='75%'>";
-								msg += "<label id='label'>Media: </label><input id='imgPath" + media_arr.length + "' type='text' value='defaultTop.png' defaultValue='defaultTop.png' style='width:80%;'/><br/>";
-								msg += "<div>Edit Caption:</div><div id='"+captionTextID+"' type='text' style='width:" + $('#caption').width() + "; height:50px' ></div>";
-								msg += "<label id='label'>ALT text: </label>";
-								msg += "<input id='"+altTextID+"' type='text' value='' defaultValue='' style='width:90%'/>";
-								msg += "</div>"
-								$("#imgDialog").append(msg);
-								
-								$("#" + removeID).click(function(){
-									var arrIndex = $(this).attr('value');
-									//captionEditText_arr, media_arr, caption_arr, destroyEditor
-									galleryEdit_arr.splice(arrIndex, 1);
-									media_arr.splice(arrIndex,1);
-									caption_arr.splice(arrIndex, 1);
-									alt_arr.splice(arrIndex, 1);
-									$(captionEditText_arr[arrIndex]).destroyEditor();
-									captionEditText_arr.splice(arrIndex, 1);
-									altEditText_arr.splice(arrIndex, 1);
-									var myItem = "#galleryItem" + arrIndex;
-									$(myItem).remove();
-								});
-								//If no entries - just add the next one.
-								if(media_arr.length == 0){
-									$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
-									$(data).find("page").eq(currentPage).attr('popcaps', " ");
-									$(data).find("page").eq(currentPage).attr('popalt', " ");
-								}else{
-									var popString = $(data).find("page").eq(currentPage).attr('popup');
-									popString += ",defaultTop.png";
-									$(data).find("page").eq(currentPage).attr('popup', popString);
-									var captionString = $(data).find("page").eq(currentPage).attr('popcaps');
-									captionString += "!!! ";
-									$(data).find("page").eq(currentPage).attr('popcaps', captionString);
-									var altString = $(data).find("page").eq(currentPage).attr('popalt');
-									altString += "!!! ";
-									$(data).find("page").eq(currentPage).attr('popalt', altString);
-								}
-								
-								media_arr.push("defaultTop.png");
-								caption_arr.push(" ");
-								alt_arr.push(" "); 
-								
-								$("#" + captionTextID).redactor({
-									focus: true,
-									buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-								});
-								
-								galleryEdit_arr.push(galleryItemID);
+								addGalleryItem(media_arr.length, true);
 							},
 							Save: function(){
-								$( this ).dialog( "close" );
 								saveImageEdit($("#imgPath").val());
 							}
 						}
