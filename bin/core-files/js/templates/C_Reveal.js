@@ -499,9 +499,6 @@ function C_Reveal(_type) {
 					msg += "</div>";
 					$("#contentEditDialog").append(msg);
 					
-					//$("#contentEditDialog").dialog({autofocus:true});
-					//$("#contentEditDialog").dialog({autofocus:false});
-					
 					$("#" +revealID+"Remove").click(function(){
 						removeReveal($(this).attr("value"));
 					}).tooltip();
@@ -515,21 +512,13 @@ function C_Reveal(_type) {
 					
 				//Style it to jQuery UI dialog
 				$("#contentEditDialog").dialog({ 	
-					autoOpen: true,
+					//autoOpen: true,
 					modal: true,
 					width: 875,
 					height: 750,
 					resizable: false,
 					show: 'fold',
 					hide: 'fold',
-					autoFocus: false,
-					close: function(){
-						$("#contentEditText").destroyEditor();
-						for(var j=0; j<revealEdit_arr.length; j++){
-							$("#" + revealEdit_arr[j]+ "Content").destroyEditor();			   	
-						}
-						$("#contentEditDialog").remove();
-					},
 					buttons: {
 						Add: function(){
 							editStartLength++;
@@ -552,6 +541,7 @@ function C_Reveal(_type) {
 							msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
 							msg += "</div>"
 							$("#contentEditDialog").append(msg);
+							
 							$("#" +revealLabel+"Remove").on('click', function(){
 								removeReveal($(this).attr("value"));
 							}).tooltip();
@@ -568,9 +558,6 @@ function C_Reveal(_type) {
 							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).append(revealCDATA1);
 							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('style', 'width:'+backgroundWidth+'px; height:160px;');
 							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('imgStyle', 'position:relative; top:5px; left:5px; width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Image Picture"');
-							
-							//$("#contentEditDialog").dialog({autofocus:true});
-							//$("#contentEditDialog").dialog({autofocus:false});
 								
 							revealEdit_arr.push(revealID);	
 						},
@@ -600,16 +587,6 @@ function C_Reveal(_type) {
 		revealEdit_arr.splice(arrIndex, 1);
 		$("#reveal"+_id+"ContentText").destroyEditor();
 		$("#reveal" + _id +"Container").remove();
-		$("#contentEditDialog").dialog({ 	
-			//autoOpen: true,
-			modal: true,
-			width: 875,
-			height: 750,
-			resizable: false,
-			//show: 'fold',
-			//hide: 'fold',
-			autofocus: false
-		});
 	}
 	
 	/**********************************************************************
