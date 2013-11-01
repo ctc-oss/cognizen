@@ -634,14 +634,48 @@ function C_Dashboard(_type) {
 	    
 	    var msg;
 	    if (myLevel == "program") {
-         	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs"><p class="validateTips">Customize your program preferences below:</p><p>Functionalities to be added shortly.</p></div>';
+         	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
+               msg += '<p class="validateTips">Customize your program preferences below:</p>';
+               msg += '<p>Functionalities to be added shortly.</p>';
+               msg += '</div>';
 	    } else if (myLevel == "course") {
-             msg = '<div id="dialog-updatePrefs" title="Update Course Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
-             enableRenameContentKeyEvents()
+            msg = '<div id="dialog-updatePrefs" title="Update Course Prefs">';
+            msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
+            msg += '<p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</p>';
+            msg += "<br/><p>";
+            msg += "<form id='scormform' title='Set SCORM Version'>";
+            msg += "<label id='label'>SCORM Version: </label>";
+            msg += "<select id='scormVersion'>";
+            msg += "<option>2004_4th</option>";
+            msg += "<option>2004_3rd</option>";
+            msg += "<option>none</option>";
+            msg += "</select></form>";
+            msg += "</p>";              
+            msg += '</div>';
+            enableRenameContentKeyEvents()
 	    } else if (myLevel == "lesson") {
             //msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
-             msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p><p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" /></p></div>';
-             enableRenameContentKeyEvents()
+            msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs">';
+            msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
+            msg += '<p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</p>';
+            msg += "<br/><p>";
+            msg += "<form id='scormform' title='Set SCORM Version'>";
+            msg += "<label id='label'>SCORM Version: </label>";
+            msg += "<select id='scormVersion'>";
+            msg += "<option>2004_4th</option>";
+            msg += "<option>2004_3rd</option>";
+            msg += "<option>1.2</option>";
+            msg += "<option>none</option>";
+            msg += "</select></form>";
+            msg += "</p>";         
+            msg += '</div>';
+            enableRenameContentKeyEvents()
         }
         
          //Append the string to the stage
@@ -667,10 +701,51 @@ function C_Dashboard(_type) {
                 },
                 Submit: function(){
                 	submitPrefUpdate(myParent, myLevel);
+                },
+                Publish: function(){
+                    var selectedScorm = $('#scormVersion').find(':selected').text();
+                    clickPublish(myLevel, selectedScorm);
+                    $(this).dialog("close");
+                    $("#myName").remove();
+                    $("#myType").remove();
+                    $("#dialog-updatePrefs").remove();                    
                 }
             }
         });
+
+        $("#scormform").tooltip();
+        //$("#scormVersion").val($(data).find('scormVersion').attr('value'));        
         
+    }
+
+    function clickPublish(level, selectedScorm){
+        var msg;
+        msg = '<div id="dialog-clickPublish" title="Publish a SCORM ' + selectedScorm + ' '+ level +'.">';
+        msg += '<p class="validateTips">Under construction. </p>';
+        msg += '<p>Functionalities to be added shortly.</p>';
+        msg += '</div>';
+
+         //Append the string to the stage
+        $("#stage").append(msg);     
+
+        $("#dialog-clickPublish").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                enableMainKeyEvents();
+                disableRenameContentKeyEvents();
+            },
+            open: function (event, ui) {
+                disableMainKeyEvents();
+                enableRenameContentKeyEvents()
+            },
+            buttons: {
+                Close: function () {
+                    $(this).dialog("close");
+                    $("#dialog-clickPublish").remove();
+                }
+            }
+        });   
     }
     
     function enableRenameContentKeyEvents() {
