@@ -510,7 +510,7 @@ function C_Matching(_type) {
 						optionEdit_arr.splice(arrIndex, 1);
 						$("#option"+arrIndex+"Text").destroyEditor();
 						$("#option"+arrIndex+"Container").remove();
-					}).tooltip();
+					});//.tooltip();
 											
 					optionEdit_arr.push(optionID);
 				};
@@ -542,7 +542,7 @@ function C_Matching(_type) {
 						answerEdit_arr.splice(arrIndex, 1);
 						$("#answer"+arrIndex+"Text").destroyEditor();
 						$("#answer" + arrIndex + "Container").remove();
-					}).tooltip();
+					});//.tooltip();
 					
 					answerEdit_arr.push(answerID);
 				}
@@ -591,7 +591,7 @@ function C_Matching(_type) {
 								optionEdit_arr.splice(arrIndex, 1);
 								$("#option"+arrIndex+"Text").destroyEditor();
 								$("#option"+arrIndex+"Container").remove();
-							}).tooltip();
+							});//.tooltip();
 							
 							$(data).find("page").eq(currentPage).append($("<option>"));
 							var option= new DOMParser().parseFromString('<option></option>',  "text/xml");
@@ -628,7 +628,7 @@ function C_Matching(_type) {
 								answerEdit_arr.splice(arrIndex, 1);
 								$("#answer"+arrIndex+"Text").destroyEditor();
 								$("#answer" + arrIndex+"Container").remove();
-							}).tooltip();
+							});//.tooltip();
 							
 							$(data).find("page").eq(currentPage).append($("<answer>"));
 							var answer= new DOMParser().parseFromString('<answer></answer>',  "text/xml");

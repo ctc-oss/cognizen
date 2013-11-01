@@ -500,7 +500,7 @@ function C_TabbedContent(_type) {
 		
 		$("#" +tabID+"Remove").click(function(){
 			removeTab($(this).attr("value"));
-		}).tooltip();
+		});//.tooltip();
 				 
 		$("#"+tabID+"ContentText").redactor({
 			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|','fontcolor', 'backcolor']

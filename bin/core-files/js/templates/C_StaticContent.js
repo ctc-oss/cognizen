@@ -651,7 +651,7 @@ function C_StaticContent(_type) {
 								
 		$("#" + removeID).click(function(){
 			removeGalleryItem($(this).attr("value"));	
-		}).tooltip();
+		});//.tooltip();
 								
 		$("#" + captionTextID).redactor({
 			focus: true,
@@ -805,7 +805,6 @@ function C_StaticContent(_type) {
 					   	width: 550,
 					   	height: 680,
 					   	resizable: false,
-					   	show: 'fold',
 					   	buttons: {
 							Cancel: function(){
 								$("#captionEditText").destroyEditor();

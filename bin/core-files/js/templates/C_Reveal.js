@@ -501,7 +501,7 @@ function C_Reveal(_type) {
 					
 					$("#" +revealID+"Remove").click(function(){
 						removeReveal($(this).attr("value"));
-					}).tooltip();
+					});//.tooltip();
 					
 					$("#"+revealID+"ContentText").redactor({
 						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
@@ -517,8 +517,8 @@ function C_Reveal(_type) {
 					width: 875,
 					height: 750,
 					resizable: false,
-					show: 'fold',
-					hide: 'fold',
+					//show: 'fold',
+					//hide: 'fold',
 					close: function(){
 						$("#contentEditText").destroyEditor();
 						for(var i = 0; i < revealEdit_arr.length; i++){
@@ -548,9 +548,9 @@ function C_Reveal(_type) {
 							msg += "</div>"
 							$("#contentEditDialog").append(msg);
 							
-							$("#" +revealLabel+"Remove").on('click', function(){
+							$("#" +revealID+"Remove").on('click', function(){
 								removeReveal($(this).attr("value"));
-							}).tooltip();
+							});
 							
 							$("#"+revealID+"ContentText").redactor({
 								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
