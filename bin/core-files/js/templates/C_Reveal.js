@@ -519,6 +519,12 @@ function C_Reveal(_type) {
 					resizable: false,
 					show: 'fold',
 					hide: 'fold',
+					close: function(){
+						$("#contentEditText").destroyEditor();
+						for(var i = 0; i < revealEdit_arr.length; i++){
+							$("#"+revealEdit_arr[i]+"ContentText").destroyEditor();
+						}
+					},
 					buttons: {
 						Add: function(){
 							editStartLength++;
