@@ -537,7 +537,7 @@ function C_MultipleChoice(_myType) {
 			 	$("#stage").append("<div id='titleDialog' title='Input Page Title'><div id='titleEditText' type='text'>" + myPageTitle + "</div></div>");
 			 	//Style it to jQuery UI dialog
 			 	$("#titleDialog").dialog({
-                    	autoOpen: true,
+                    autoOpen: true,
 					modal: true,
 					width: 550,
 					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
@@ -545,7 +545,7 @@ function C_MultipleChoice(_myType) {
 				});
 
 				$("#titleEditText").redactor({
-                    	focus: true,
+                    focus: true,
 					buttons: ['bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 				});
 			}).tooltip();
@@ -562,45 +562,33 @@ function C_MultipleChoice(_myType) {
 
 			$("#questionEditText").redactor({
 				focus: true,
-				buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+				buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 			});
 			
 			$("#questionEdit").click(function(){
-				
-				
-				
-               	//Create the Content Edit Dialog
-				$("#stage").append("<div id='questionEditDialog' title='Create Multiple Choice Question'><label id='label'>no. of attempts: </label><input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/><br/><div id='questionLabel'>Input your question:</div><div id='questionEditText' type='text'  >" + myContent + "</div><br/><br/><div id='feedbackLabel'>Input your feedback:</div><div id='feedbackEditText' type='text'  >" + feedback + "</div><br/><br/>");
+				//Create the Content Edit Dialog
+				var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
+				msg += "<label id='label'><b>no. of attempts: </b></label>";
+				msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
+				msg += "<div id='questionLabel'><b>Input your question:</b></div>";
+				msg += "<div id='questionEditText' type='text'  >" + myContent + "</div><br/>";
+				msg += "<div id='feedbackLabel'><b>Input your feedback:</b></div>";
+				msg += "<div id='feedbackEditText' type='text'  >" + feedback + "</div><br/>";
+				msg += "</div>";
+				$("#stage").append(msg);
 				
 				$("#questionEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 				});
 				
 				$("#feedbackEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
 				});
-				
+				console.log("made it to here 1");
 				//find every option in the xml - place them on the screen.
 				for (var i = 0; i < optionCount; i++){
-					var optionID = "option" + i;
-					var optionLabel = i + 1;
-					
-					var optionContent = $(data).find("page").eq(currentPage).find("option").eq(i).text();				
-					$("#questionEditDialog").append("<div id='"+optionID+"Input'>Option " + optionLabel + ":</div> <div id='"+optionID+"Text'>" + optionContent + "</div>");
-					
-					if($(data).find("page").eq(currentPage).find("option").eq(i).attr("correct") == "true"){
-						$("#questionEditDialog").append("<label id='label'>correct option: </label><input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true'/><br/><br/>");
-					}else{
-						$("#questionEditDialog").append("<label id='label'>correct option: </label><input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true'/><br/><br/>");
-					}
-					
-					$("#"+optionID+"Text").redactor({
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
-					});
-											
-					optionEdit_arr.push(optionID);
+					addOption(i, false);
 				};
-				
 				
 				//Style it to jQuery UI dialog
 				$("#questionEditDialog").dialog({
@@ -610,24 +598,7 @@ function C_MultipleChoice(_myType) {
 					height: 650,
 					buttons: {
 						Add: function(){
-							
-							var optionID = "option" + optionCount;
-							var optionLabel = optionCount + 1;
-							
-							var myOptionContent = "Input Option";
-							$("#questionEditDialog").append("<div id='"+optionID+"Front'>Option " + optionLabel + " Text:</div> <div id='"+optionID+"Text'>" + myOptionContent + "</div><label id='label'>correct option:</label><input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true'/><br/>");
-							
-							$("#"+optionID+"Text").redactor({
-								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
-							});
-							
-							$(data).find("page").eq(currentPage).append($("<option>"));
-							var option= new DOMParser().parseFromString('<option></option>',  "text/xml");
-							var optionCDATA = option.createCDATASection("Input Option");
-							$(data).find("page").eq(currentPage).find("option").eq(optionCount).append(optionCDATA);
-								
-							optionCount++;
-							optionEdit_arr.push(optionID);	
+							addOption(optionEdit_arr.length, true);	
 						},
 						Save: function(){
 							$( this ).dialog( "close" );
@@ -637,6 +608,59 @@ function C_MultipleChoice(_myType) {
 				});
 			}).tooltip();
 		}
+	}
+	
+	function removeOption(_id){
+		for(var i = 0; i < optionEdit_arr.length; i++){
+			if(_id == $("#"+optionEdit_arr[i]+"Container").attr("value")){
+				var arrIndex = i;
+				break;
+			}
+		}
+		$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
+		optionEdit_arr.splice(arrIndex, 1);
+		$("#option"+_id+"Text").destroyEditor();
+		$("#option" + _id +"Container").remove();
+		
+		
+	}
+	
+	function addOption(_addID, _isNew){
+		var optionID = "option" + _addID;
+		var optionLabel = _addID + 1;
+		
+		if(_isNew == true){
+			$(data).find("page").eq(currentPage).append($("<option>"));
+			var option= new DOMParser().parseFromString('<option></option>',  "text/xml");
+			var optionCDATA = option.createCDATASection("Input Option");
+			$(data).find("page").eq(currentPage).find("option").eq(_addID).append(optionCDATA);
+			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr('correct', false);
+		}
+					
+		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();				
+		var msg = "<div id='"+optionID+"Container' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='"+optionID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer option'/>";
+		msg += "<div id='"+optionID+"Input'><b>Option " + optionLabel + ":</b></div>";
+		msg += "<div id='"+optionID+"Text'>" + optionContent + "</div>";
+		msg += "<label id='label'><b>correct:</b></label>";
+		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){	
+			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true'/>";
+		}else{
+			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true'/>";
+		}
+		msg += "</div>";
+				
+		$("#questionEditDialog").append(msg);
+		
+		$("#" +optionID+"Remove").on('click', function(){
+			removeOption($(this).attr("value"));
+		});
+					
+		$("#"+optionID+"Text").redactor({
+			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+		});
+																	
+		optionEdit_arr.push(optionID);
 	}
 	
 	/**********************************************************************
@@ -697,9 +721,16 @@ function C_MultipleChoice(_myType) {
 		}else{
 			$(data).find("page").eq(currentPage).attr("layout", "multipleChoice");
 		}
-
+		
+		var extra = $(data).find("page").eq(currentPage).find("option").length;
+		var active = optionEdit_arr.length;
+		var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
+			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
+		}
+		
 		$("#questionEditDialog").remove();
-		sendUpdate();
+		sendUpdateWithRefresh();
 		fadeComplete();
 	}
 	
