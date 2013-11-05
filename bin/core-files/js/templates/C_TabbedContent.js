@@ -127,7 +127,7 @@ function C_TabbedContent(_type) {
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
 			var currentTabContent = $(data).find("page").eq(currentPage).find("tab").eq(i).text();
-			tabString += '<div id="'+ tabID +'"><p>' + currentTabContent + '</p></div>';	
+			tabString += '<div id="'+ tabID +'" class="cognizenTabContent"><p>' + currentTabContent + '</p></div>';	
 		}
 		
 		tabString += '</div>';
@@ -145,9 +145,22 @@ function C_TabbedContent(_type) {
 		}else if(type == "graphicOnly"){
 			$("#content").addClass("graphic");
 		}
-
-		var tabs = $('#content').tabs();//.scrollabletab();
-
+		
+		var tabs = $("#content").tabs({
+			'create' : function() {	
+				var contentTop = $("#content").position().top;
+				var tabTop = $(".ui-tabs-nav").position().top;
+				var tabHeight = $(".ui-tabs-nav").height();
+				var audioHeight = 0;
+				if(hasAudio == true){
+					audioHeight = 30;
+				}
+				var myTabSpace = stageH - (contentTop + tabTop + tabHeight + audioHeight + 45);
+				$(".cognizenTabContent").css('max-height', myTabSpace+'px');
+				$(".cognizenTabContent").css('overflow', 'auto');
+			}
+		});	
+		
 		/*Attach Media*/
 		if(type == "tabsOnly"){
 			if(transition == true){
