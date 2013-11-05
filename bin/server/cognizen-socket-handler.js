@@ -90,8 +90,9 @@ var SocketHandler = {
                                         //Git commit
                                     } else {
                                         //Convert files
-                                        var convertedPath;
-                                        convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                                        var convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp4';
+                                        var convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp4';
+                                        var convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
 
                                         var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
                                             .toFormat('mp4')
@@ -112,19 +113,25 @@ var SocketHandler = {
                                              console.log("fileNames = " + filenames);
                                              console.log('screenshots were saved');
                                              })*/
-                                            .saveToFile(convertedPath, function (stdout, stderr) {
-//                                                _this._socket.emit('mediaConversionComplete', convertedPath);
+                                            .saveToFile(convertedPathName, function (stdout, stderr) {
                                                if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
                                                if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
-
-                                               
-
-                                                fs.unlink(event.file.pathName, function (err) {
-//                                                    console.log('Unlinking Complete');
-                                                    _this._socket.emit('mediaConversionComplete', convertedPath);
-//                                                    if (err) logger.error('File Delete: ' + err);
+											   
+											   var stream = fs.createReadStream(convertedPathName);
+                                               stream.pipe(fs.createWriteStream(convertedPath));
+											   
+											   var had_error = false;
+											   stream.on('error', function(err){
+												   had_error = true;
+											   });
+											   
+											   stream.on('close', function(){
+	                                               if (!had_error) fs.unlink(event.file.pathName);
+	                                               fs.unlink(convertedPathName, function (err) {
+                                                      _this._socket.emit('mediaConversionComplete', convertedPath);
                                                 });
-                                            });
+											})
+										});
                                     }
                                 }
                             });
