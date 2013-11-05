@@ -684,7 +684,7 @@ SIDEBAR LAYOUTS
 	right: 20px;
 	top: 85px;
 	width: 400px;		
-	height: 500px;
+	max-height: 500px;
 	border-width: 0px;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
