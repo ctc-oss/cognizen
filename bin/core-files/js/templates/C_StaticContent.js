@@ -132,13 +132,12 @@ function C_StaticContent(_type) {
             $("#contentHolder").addClass("left");
         }else if(type == "top"  || type == "bottom"){
             $("#contentHolder").addClass("top");
-            var conSpot = $("#contentHolder").position().top;
+            $("#content").addClass("top");
+            var conSpot = $("#scrollableContent").position().top;
             $("#contentHolder").height(stageH - (audioShim + conSpot));
             $("#content").width($("#contentHolder").width());
-            $("#scrollableContent").height(stageH - audioShim);
-        }/*else if(type == "bottom"){
-			$("#contentHolder").addClass("bottom");
-        }*/else if(type == "right"){
+            $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioShim));
+        }else if(type == "right"){
             $("#contentHolder").addClass("right");
         }else if(type == "textOnly"){
             $("#contentHolder").addClass("text");
@@ -148,13 +147,6 @@ function C_StaticContent(_type) {
 
         $("#content").append(myContent);
         
-        if(type != "bottom" && type != "top"){
-        	$(".nano").nanoScroller({
-        		flashDelay: 3000,
-				flash: true
-			});
-		}
-
         /*Attach Media*/
         if(type == "textOnly"){
             if(transition == true){
@@ -170,13 +162,7 @@ function C_StaticContent(_type) {
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
             }else{
                 checkMode();
-            }
-            
-            $(".nano").nanoScroller({
-                   flashDelay: 3000,
-                   flash: true
-            });   
-                    
+            }        
         }else{
         	//HAS MEDIA
         	if(type != "top" && type != "bottom"){
@@ -184,7 +170,6 @@ function C_StaticContent(_type) {
         	}else if(type == "top"){
 	        	$('<div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>').insertAfter($("#content"));
         	}else{
-        		console.log("is bottom");
 	        	$('<div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>').insertBefore($("#content"));
         	}
         	
@@ -361,6 +346,7 @@ function C_StaticContent(_type) {
                     }
                 }
             });
+            
             if(type == "top" || type == "bottom"){
                 imgX = ((stageW - imageWidth) / 2) - $("#contentHolder").position().left;
                 $("#loader").css({'left': imgX});
@@ -566,17 +552,10 @@ function C_StaticContent(_type) {
 	      $('#caption').css({'position':'absolute', 'top':$("#loader").position().top + $('#loader').height() + 20, 'left': $("#loader").position().left + 40, 'width':$("#loader").width() - 80});  
         }
         
-        //Set content height and position for bottom text after everything else has been set...
-        if(type == "bottom" || type == "top"){
-            $(".nano").nanoScroller({
-        		flashDelay: 3000,
-				flash: true
-			});
-        }
-        
         if(type == "bottom"){
 	        $("#content").css("top", $("#caption").position().top + $("#caption").height() + 20 +"px");
         }
+        
         if(transition == true){
         	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
         }else{
@@ -666,6 +645,11 @@ function C_StaticContent(_type) {
      *****************************************************************************************************************************************************************************************************************/
      function checkMode(){
      	
+     	$(".nano").nanoScroller({
+        	flashDelay: 3000,
+			flash: true
+		});
+        
      	if(mode == "edit"){
             	
             /*******************************************************

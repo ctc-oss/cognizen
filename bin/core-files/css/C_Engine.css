@@ -280,7 +280,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 
 #pageTitle{
 	position: absolute;
-	width: 944px;
+	width: 924px;
 	top: 20px;
 	left: 50px;
 	overflow : auto;
@@ -292,7 +292,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 
 .lesson{
 	position: absolute;
-	width: 944px;
+	width: 924px;
 	top: 80px;
 	left: 50px;
 	text-align: center;
@@ -305,7 +305,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 
 .lessonCon{
 	position: absolute;
-	width: 944px;
+	width: 924px;
 	top: 120px;
 	left: 50px;
 	text-align: left;
@@ -350,8 +350,8 @@ CONTENT TEXT LAYOUTS*/
 }
 
 #content.top{
-	top: 85px;
-	left: 50px;
+	/*top: 85px;
+	left: 50px;*/
 	width: 924px;
 }
 
@@ -369,15 +369,15 @@ CONTENT TEXT LAYOUTS*/
 	height: 573px;
 }
 
-#content.bottom{
+/*#content.bottom{
 	right: 50px;
 	width: 924px;
-}
+}*/
 
 #contentHolder.top{
 	position: absolute;
 	height: auto;
-	top: 85px;
+	/*top: 85px;*/
 	left: 50px;
 	width: 924px;
 }
@@ -398,10 +398,17 @@ CONTENT TEXT LAYOUTS*/
 	height: 573px;
 }
 
-#contentHolder.bottom{
+/*#contentHolder.bottom{
 	position: absolute;
 	right: 50px;
 	width: 924px;
+}*/
+
+#scrollableContent{
+	position: absolute;
+	top: 85px;
+	left: 0px;
+	width: 1024px;
 }
 
 #contentHolder.text{
@@ -774,9 +781,9 @@ MEDIA LAYOUTS
 	position: absolute;
 	background: url(images/loadingIcon.gif) center center no-repeat;
 	background-color: #eeeeee;
-	filter:alpha(opacity=70);
-	opacity:0.7;
-	-moz-opacity:0.7;
+	filter:alpha(opacity=85);
+	opacity:0.85;
+	-moz-opacity:0.85;
 	text-align:center;
 	vertical-align:middle;
 	border-style:solid;
@@ -805,9 +812,9 @@ MEDIA LAYOUTS
 .mediaLoader{
 	background: url(images/loadingIcon.gif) center center no-repeat;
 	background-color: #eeeeee;
-	filter:alpha(opacity=70);
-	opacity:0.7;
-	-moz-opacity:0.7;
+	filter:alpha(opacity=85);
+	opacity:0.85;
+	-moz-opacity:0.85;
 	text-align:center;
 	vertical-align:middle;
 	border-style:solid;
