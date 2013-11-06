@@ -346,13 +346,13 @@ CONTENT TEXT LAYOUTS*/
 	border-width: 0px;
 	top:85px;
 	left:50px;
-	width: 944px;
+	width: 924px;
 }
 
 #content.top{
 	top: 85px;
 	left: 50px;
-	width: 944px;
+	width: 924px;
 }
 
 #content.left{
@@ -371,7 +371,7 @@ CONTENT TEXT LAYOUTS*/
 
 #content.bottom{
 	right: 50px;
-	width: 944px;
+	width: 924px;
 }
 
 #contentHolder.top{
@@ -379,7 +379,7 @@ CONTENT TEXT LAYOUTS*/
 	height: auto;
 	top: 85px;
 	left: 50px;
-	width: 944px;
+	width: 924px;
 }
 
 #contentHolder.left{
@@ -401,7 +401,7 @@ CONTENT TEXT LAYOUTS*/
 #contentHolder.bottom{
 	position: absolute;
 	right: 50px;
-	width: 944px;
+	width: 924px;
 }
 
 #contentHolder.text{
@@ -702,10 +702,10 @@ MEDIA LAYOUTS
 	overflow: hidden;
 }
 
-#loader.top{
-	top: 85px;
+/*#loader.top{
+	top: 85px;*/
 	/*x-coordinate is set in the code because it is variable and css doesn't wait for the image to load*/
-}
+/*}*/
 
 #loader.left{
 	left: 50px;

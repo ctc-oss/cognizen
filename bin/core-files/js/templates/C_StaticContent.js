@@ -24,7 +24,8 @@ function C_StaticContent(_type) {
     var mySidebar;
     var mediaWidth = 0;
     var mediaHeight = 0;
-	
+	var audioShim = 0;
+     
 	var myAudio = "null";
 	
     var stageW = $("#stage").width();
@@ -75,17 +76,20 @@ function C_StaticContent(_type) {
             mySidebar = $(data).find("page").eq(currentPage).find("sidebar").first().text();
         }
         
+        //Has a large image popup...
         if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
 	        largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
         }
         
+        //Check for popups...
         if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
             hasPop = true;
             media_arr = $(data).find("page").eq(currentPage).attr('popup').split(",");
             caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");
             alt_arr = $(data).find("page").eq(currentPage).attr('popalt').split("!!!");	
         }
-
+		
+		//Has Media
         if(type != "textOnly" && type != "sidebar"){
             mediaLink = $(data).find("page").eq(currentPage).attr('img');
             myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
@@ -97,6 +101,7 @@ function C_StaticContent(_type) {
         if($(data).find("page").eq(currentPage).attr('audio') != undefined && $(data).find("page").eq(currentPage).attr('audio') != "null"){
             if($(data).find("page").eq(currentPage).attr('audio').length != 0){
                 hasAudio = true;
+                audioShim = 30;
                 myAudio = $(data).find("page").eq(currentPage).attr('audio');
             }
         }else{
@@ -114,22 +119,26 @@ function C_StaticContent(_type) {
         $("#pageTitle").append(myPageTitle);
 
         //Add classes for page layouts - updatable in css
-        $('#stage').append('<div id="contentHolder" class="nano"><div id="content" class="overthrow content"></div></div>');
-
+        if(type == "bottom" || type == "top"){
+	        $("#stage").append('<div id="scrollableContent" class="nano"><div id="contentHolder" class="overthrow content"><div id="content"></div></div></div>');
+	        $("#scrollableContent").css("overflow", "visible");
+        }else{
+        	$('#stage').append('<div id="contentHolder" class="nano"><div id="content" class="overthrow content"></div></div>');
+		}
+		
         if(type == "left"){
             $("#contentHolder").addClass("left");
         }else if(type == "sidebar"){
             $("#contentHolder").addClass("left");
-        }else if(type == "top"){
+        }else if(type == "top"  || type == "bottom"){
             $("#contentHolder").addClass("top");
-            $("#stage").append("<div id='testTop' class='testTop'></div>");
-            $("#testTop").append(myContent);
-            var conHeight = $("#testTop").height();
-            $("#testTop").remove();
-            $("#contentHolder").height(conHeight);
-        }else if(type == "bottom"){
+            var conSpot = $("#contentHolder").position().top;
+            $("#contentHolder").height(stageH - (audioShim + conSpot));
+            $("#content").width($("#contentHolder").width());
+            $("#scrollableContent").height(stageH - audioShim);
+        }/*else if(type == "bottom"){
 			$("#contentHolder").addClass("bottom");
-        }else if(type == "right"){
+        }*/else if(type == "right"){
             $("#contentHolder").addClass("right");
         }else if(type == "textOnly"){
             $("#contentHolder").addClass("text");
@@ -139,7 +148,7 @@ function C_StaticContent(_type) {
 
         $("#content").append(myContent);
         
-        if(type != "bottom"){
+        if(type != "bottom" && type != "top"){
         	$(".nano").nanoScroller({
         		flashDelay: 3000,
 				flash: true
@@ -169,10 +178,20 @@ function C_StaticContent(_type) {
             });   
                     
         }else{
+        	//HAS MEDIA
+        	if(type != "top" && type != "bottom"){
+        		$('#stage').append('<div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+        	}else if(type == "top"){
+	        	$('<div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>').insertAfter($("#content"));
+        	}else{
+        		console.log("is bottom");
+	        	$('<div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>').insertBefore($("#content"));
+        	}
+        	
         	if(mode == 'edit'){
-            	$('#stage').append('<div id="loader" class="loading" title="click to browse or drag media to this location" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+            	$("#loader").attr("title", "click to browse or drag media to this location");
             }else{
-	            $('#stage').append('<div id="loader" class="loading" title="'+$(data).find("page").eq(currentPage).attr('alt') + '" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div>');
+	            $("#loader").attr("title", $(data).find("page").eq(currentPage).attr('alt'));
             }
             var tempID = "#loader";
             loadVisualMedia();
@@ -207,9 +226,9 @@ function C_StaticContent(_type) {
         if(type == "left"){
             $("#loader").addClass("right");
         }else if(type == "top"){
-            $("#loader").addClass("bottom");
+            //$("#loader").addClass("bottom");
         }else if(type == "bottom"){
-            $("#loader").addClass("top");
+            //$("#loader").addClass("top");
         }else if(type == "right"){
             $("#loader").addClass("left");
         }else if(type == "graphicOnly"){
@@ -237,14 +256,10 @@ function C_StaticContent(_type) {
             $("#loader").removeClass('loading');
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
 			
-            if(type == "top"){
-                imgY = contentY + contentH + 20;
-                imgX = (stageW - imageWidth) / 2;
-                $("#loader").css({'top': imgY, 'left': imgX});
-            }else if (type == "bottom"){
-                imgX = (stageW - imageWidth) / 2;
+            if(type == "top" || type == "bottom"){
+                imgX = ((stageW - imageWidth) / 2) - $("#contentHolder").position().left;
                 $("#loader").css({'left': imgX});
-            }else if (type == "graphicOnly"){
+			}else if (type == "graphicOnly"){
                 var startY = titleY + titleH + 20;
                 var space = (stageH - startY);
                 imgY =  startY + (space / 2);
@@ -258,14 +273,10 @@ function C_StaticContent(_type) {
 
             $("#loader").append('<object id="edgeContent" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
             $("#loader").removeClass('loading');
-            if(type == "top"){
-                imgY = contentY + contentH + 20;
-                imgX = (stageW - imageWidth) / 2;
-                $("#loader").css({'top': imgY, 'left': imgX});
-            }else if (type == "bottom"){
-                imgX = (stageW - imageWidth) / 2;
+            if(type == "top" || type == "bottom"){
+                imgX = ((stageW - imageWidth) / 2) - $("#contentHolder").position().left;
                 $("#loader").css({'left': imgX});
-            }else if (type == "graphicOnly"){
+			}else if (type == "graphicOnly"){
                 var startY = titleY + titleH + 20;
                 var space = (stageH - startY);
                 imgX = (stageW - imageWidth) / 2;
@@ -350,14 +361,10 @@ function C_StaticContent(_type) {
                     }
                 }
             });
-            if(type == "top"){
-                imgY = contentY + contentH + 20;
-                imgX = (stageW - imageWidth) / 2;
-                $("#loader").css({'top': imgY, 'left': imgX});
-            }else if (type == "bottom"){
-                imgX = (stageW - imageWidth) / 2;
+            if(type == "top" || type == "bottom"){
+                imgX = ((stageW - imageWidth) / 2) - $("#contentHolder").position().left;
                 $("#loader").css({'left': imgX});
-            }else if (type == "graphicOnly"){
+			}else if (type == "graphicOnly"){
                 var startY = titleY + titleH;
                 var space = (stageH - startY);
                 imgY =  (startY + (stageH - imageHeight))/2;
@@ -370,14 +377,10 @@ function C_StaticContent(_type) {
                 $("#loader").removeClass('loading').append(img);
                 imageWidth = $(img).width();
                 imageHeight = $(img).height();
-                if(type == "top"){
-                    imgY = contentY + contentH + 20;
-                    imgX = (stageW - imageWidth) / 2;
-                    $("#loader").css({'top': imgY, 'left': imgX});
-                }else if (type == "bottom"){
-                    imgX = (stageW - imageWidth) / 2;
-                    $("#loader").css({'left': imgX});
-                }else if (type == "graphicOnly"){
+                if(type == "top" || type == "bottom"){
+                	imgX = ((stageW - imageWidth) / 2) - $("#contentHolder").position().left;
+                	$("#loader").css({'left': imgX});
+				} else if (type == "graphicOnly"){
                     var startY = titleY + titleH;
                     var space = (stageH - startY);
                     imgY = (space / 2);
@@ -455,21 +458,13 @@ function C_StaticContent(_type) {
 				}
 				///////////////////////////////////////////////////////////////////////////////END MEDIA POP UP
 
-                if(transition == true){
-                    TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:setCaption});
-                }else{
-                    setCaption();
-                }
+                setCaption();
             }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
         }
 
         //Other media types include their size so we don't need to wait for them to load to place the caption - images (png, gif, jpg) don't so we have to do caption inside of the load event.
         if(mediaType == "mp4" || mediaType == "html"  || mediaType == "swf" || mediaLinkType == "youtube"){
-            if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:setCaption});
-            }else{
-                setCaption();
-            }
+            setCaption();
         }
 
         $("#loader").removeClass('loading');
@@ -553,36 +548,40 @@ function C_StaticContent(_type) {
     }
 
     function setCaption(){
-        
         var myCaption = $(data).find("page").eq(currentPage).find('caption').text();
-        $('#stage').append('<div id="caption"></div>');
+        if(type != "top" && type != "bottom"){
+        	$('#stage').append('<div id="caption"></div>');
+        }else{
+	        $('<div id="caption"></div>').insertAfter("#loader");
+        }
+        
+        if(type == "top"){
+	        $("#loader").css("top", $("#content").position().top + $("#content").height() + "px");
+        }
+        
         $('#caption').append(myCaption);
         if(hasPop != true && largeImg == ""){
         	 $('#caption').css({'position':'absolute', 'top':$("#loader").position().top + $('#loader').height() + 5, 'left': $("#loader").position().left + 40, 'width':$("#loader").width() - 80});
         }else{
 	      $('#caption').css({'position':'absolute', 'top':$("#loader").position().top + $('#loader').height() + 20, 'left': $("#loader").position().left + 40, 'width':$("#loader").width() - 80});  
         }
-
-        if(transition == true){
-            $('#caption').css({'opacity': 0});
-            TweenMax.to($('#caption'), transitionLength, {css:{opacity:1}, ease:transitionType});
-        }
         
         //Set content height and position for bottom text after everything else has been set...
-        if(type == "bottom"){
-	       var conYPos = $("#caption").position().top + $("#caption").height()+10;
-	       var conHeight = stageH - conYPos;
-            $("#contentHolder").height(conHeight);
-            $("#content").height(conHeight - 4);
-            $("#contentHolder").css({'top': conYPos});
-            
+        if(type == "bottom" || type == "top"){
             $(".nano").nanoScroller({
         		flashDelay: 3000,
 				flash: true
 			});
         }
         
-        checkMode();
+        if(type == "bottom"){
+	        $("#content").css("top", $("#caption").position().top + $("#caption").height() + 20 +"px");
+        }
+        if(transition == true){
+        	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
+        }else{
+        	checkMode();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////END MEDIA FUNCTIONALITY
@@ -726,8 +725,18 @@ function C_StaticContent(_type) {
 			********************************************************/
 			//Add and style contentEdit button
 			if(type != "graphicOnly"){
-                $('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
-			 	$("#conEdit").css({'position':'absolute', 'top':$("#contentHolder").position().top - 18, 'left': $("#contentHolder").position().left + $("#content").width() - 18});
+                
+			 	if(type != "bottom" && type != "top"){
+			 		$('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
+				 	$("#conEdit").css({'position':'absolute', 'top':$("#contentHolder").position().top - 18, 'left': $("#contentHolder").position().left + $("#content").width() - 18});
+			 	}else{
+			 		$("#contentHolder").append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
+			 		if(type == "bottom"){
+			 			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 18, 'left': $("#content").position().left + $("#content").width() - 18});
+			 		}else{
+				 		$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top, 'left': $("#content").position().left + $("#content").width() - 18});
+			 		}	
+			 	}
 
 			 	$("#conEdit").click(function(){
 
@@ -765,8 +774,13 @@ function C_StaticContent(_type) {
 			********************************************************/
 			if(type != "textOnly" && type !=  "sidebar"){
 				//place image edit button
-                $('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image and Caption'></div>");
-			 	$("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top - 18, 'left': $("#loader").position().left + $("#loader").width() - 18});
+                if(type != "top" && type != "bottom"){
+                	$('#stage').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image and Caption'></div>");
+                	$("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top - 18, 'left': $("#loader").position().left + $("#loader").width() - 18});
+                }else{
+	                $('#contentHolder').append("<div id='imgEdit' class='btn_edit_media' title='Edit Image and Caption'></div>");
+	                $("#imgEdit").css({'position':'absolute', 'top':$("#loader").position().top, 'left': $("#loader").position().left + $("#loader").width()});
+                }
 
                 //Establish it's functionality
 				$("#imgEdit").click(function(){
@@ -913,10 +927,18 @@ function C_StaticContent(_type) {
 				var myExt = getExtension(myFile);
 				if(myExt == "mp3"){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-					$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					if (type != "top" && type != "bottom"){
+						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					}else{
+						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					}
 					$("#mediaLoader").css({'position':'absolute', 'top': $("#audioDrop").position().top, 'left': $("#audioDrop").position().left, 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width()});
 				}else{
-					$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					if (type != "top" && type != "bottom"){
+						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					}else{
+						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
+					}
 					$("#mediaLoader").css({'position':'absolute', 'top': $("#loader").position().top, 'left': $("#loader").position().left, 'height': $("#loader").height(), 'width': $("#loader").width()});
 					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
 					$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
@@ -954,7 +976,6 @@ function C_StaticContent(_type) {
 	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
 			}else{
           		$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
-          		
 			}
 			
 			
@@ -1293,6 +1314,7 @@ function C_StaticContent(_type) {
 		$("#imgDialog").remove();
 		$("#audioDialog").remove();
 		$("#swfDialog").remove();
+		$("#scrollableContent").remove();
 		
 		try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 		try { $("#loader").tooltip("destroy"); } catch (e) {}
