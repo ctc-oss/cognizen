@@ -25,26 +25,16 @@ function C_Reveal(_type) {
 	
 	var mediaLink;
 	
-	var stageW;
-	var stageH;
-	var stageX;
-	var stageY;
+	var stageW = $("#stage").width();
+    var stageH = $("#stage").height();
+    var audioShim = 0;
 	
-	var titleX;
 	var titleY;
-	var titleW;
 	
-	var contX;
-	var contY;
-	var contW;
-	var contH;
-	
-	var imgY;
-	var imgX;
 	var imgW;
 	var imgH;
-    
-	var contentY;
+	
+    var contentY;
 	var contentH;
 	
 	var rev_arr = [];
@@ -60,8 +50,6 @@ function C_Reveal(_type) {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
-		 
 		
 		/*****************************************
 		**Set template variables.
@@ -93,10 +81,15 @@ function C_Reveal(_type) {
 		$('#stage').append('<div id="pageTitle"></div>');
 		$("#pageTitle").append(myPageTitle);
 		
-		$('#stage').append('<div id="content" class="top">' + $(data).find("page").eq(currentPage).find("content").text() + '</div>');
+		$("#stage").append('<div id="scrollableContent" class="nano"><div id="contentHolder" class="overthrow content"><div id="content">' + $(data).find("page").eq(currentPage).find("content").text() + '</div></div></div>');
+		$("#scrollableContent").css("overflow", "visible");
+		$("#contentHolder").addClass("top");
+        $("#content").addClass("top");
+        var conSpot = $("#scrollableContent").position().top;
+        $("#contentHolder").height(stageH - (audioShim + conSpot));
+        $("#content").width($("#contentHolder").width());
+        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioShim));
 		var myTop = $("#content").height();
-		$("#content").height($("#stage").height() - $("#content").position().top);
-		
 		
 		var interact = $(data).find("page").eq(currentPage).attr("interact");
 		var horPos = 0;
@@ -134,7 +127,11 @@ function C_Reveal(_type) {
 			$("#"+revID).data("myWidth", $("#"+revID).width());
 			$("#"+revID).data("myHeight", $("#"+revID).height());
 			$("#"+revID).data("myLeft", $("#"+revID).position().left);
-			$("#"+revID).data("myTop", $("#"+revID).position().top);
+			if(type != "revealTop"){
+				$("#"+revID).data("myTop", $("#"+revID).position().top);
+			}else{
+				$("#"+revID).data("myTop", $("#"+revID).position().bottom);
+			}
 			
 			////////////////////////////////////////  PLACE THE INTERACTIONS  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 			if(interact == "click"){
@@ -144,7 +141,7 @@ function C_Reveal(_type) {
 					}else if(type == "revealBottom"){
 						TweenMax.to($(this), transitionLength, {css:{height:$(this).height() + 20}, ease:transitionType});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).height() + 20, top: $(this).position().top - 20}, ease:transitionType});
+						TweenMax.to($(this), transitionLength, {css:{height:$(this).height() + 20, top: $(this).position().bottom + 20}, ease:transitionType});
 					}else if (type == "revealLeft"){
 						TweenMax.to($(this), transitionLength, {css:{width:$(this).width() + 20, left: $(this).position().left - 20}, ease:transitionType});
 					}
@@ -154,14 +151,14 @@ function C_Reveal(_type) {
 					}else if(type == "revealBottom"){
 						TweenMax.to($(this), transitionLength, {css:{height:$(this).data("myHeight")}, ease:transitionType});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).data("myHeight"), top: $(this).data("myTop")}, ease:transitionType});
+						TweenMax.to($(this), transitionLength, {css:{height:$(this).data("myHeight"), bottom: $(this).data("myTop")}, ease:transitionType});
 					}else if (type == "revealLeft"){
 						TweenMax.to($(this), transitionLength, {css:{width:$(this).data("myWidth"), left: $(this).data("myLeft")}, ease:transitionType});
 					}
 				}).click(function(){
 					$(this).unbind('mouseenter mouseleave click');
 					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:$("#stage").width() - ($("#content").position().left * 2)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{width:$("#contentHolder").width() - ($("#content").position().left * 2)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + currentShowText + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'relative', 
@@ -174,7 +171,7 @@ function C_Reveal(_type) {
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#stage").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - ($("#" + currentSelected + "Img").position().top * 2) - 25, 
@@ -186,7 +183,7 @@ function C_Reveal(_type) {
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#stage").height() - ($("#content").position().top + myTop + 20), top: $("#content").position().top - myTop - 20}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)/*, bottom: $("#content").position().top - myTop - 20*/}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - 25, 
@@ -198,7 +195,7 @@ function C_Reveal(_type) {
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:$("#stage").width() - ($("#content").position().left * 2 + 10), left: 0}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{width:$("#contentHolder").width() - ($("#content").position().left * 2 + 10), left: 0}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - 25, 
@@ -215,19 +212,20 @@ function C_Reveal(_type) {
 				$("#"+revID).hover(function(){
 					$(this).unbind('mouseenter mouseleave');
 					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:$("#stage").width() - ($("#content").position().left * 2)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
-							$("#" + currentSelected + "Text").css({'position':'absolute', 
+						TweenMax.to($(this), transitionLength, {css:{width:$("#contentHolder").width() - ($("#content").position().left * 2)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+							
+							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + currentShowText + "</div>");
+							$("#" + currentSelected + "Text").css({'position':'relative', 
 															'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25, 
 															'left': $("#" + currentSelected + "Img").width() + ($("#" + currentSelected + "Img").position().left * 2) + 10, 
-															'top' : $("#" + currentSelected).position().top + 5,
+															'top' :  -145,
 															'height' : $("#" + currentSelected).height() - 10,
 															'opacity':0
 															});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#stage").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - ($("#" + currentSelected + "Img").position().top * 2) - 25, 
@@ -239,7 +237,7 @@ function C_Reveal(_type) {
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#stage").height() - ($("#content").position().top + myTop + 20), top: $("#content").position().top - myTop - 20}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)/*, bottom: $("#content").position().top - myTop - 20*/}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - 25, 
@@ -251,7 +249,7 @@ function C_Reveal(_type) {
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:$("#stage").width() - ($("#content").position().left * 2 + 10), left:0}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
+						TweenMax.to($(this), transitionLength, {css:{width:$("#contentHolder").width() - ($("#content").position().left * 2 + 10), left: 0}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='"+currentSelected+"Text' class='revealText'>" + $("#" + currentSelected).data("myText") + "</div>");
 							$("#" + currentSelected + "Text").css({'position':'absolute', 
 															'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - 25, 
@@ -270,7 +268,11 @@ function C_Reveal(_type) {
 			rev_arr.push(revID);
 		}
 		
-		
+		if(type == "revealRight" || type == "revealLeft"){
+			$("#content").height(verPos);
+		}else{
+			$("#content").height(myTop + ($("#contentHolder").height() - ($("#content").position().top + myTop)));
+		}
 				
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
@@ -323,11 +325,14 @@ function C_Reveal(_type) {
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
+		$(".nano").nanoScroller({
+        	flashDelay: 1000,
+			flash: true
+		});
 		if(mode == "edit"){
 			/*******************************************************
 			* Edit Audio
 			********************************************************/
-			
             if(dragFile == true){
             	var contentId = urlParams['type'] + '_' + urlParams['id'];
 	     		siofu.addEventListener("complete", function(event){
@@ -402,9 +407,9 @@ function C_Reveal(_type) {
 				//Create the Content Edit Dialog
 				var audioText;
 				if(myAudio == "null"){
-                    	audioText = "yourFile.mp3";
+                    audioText = "yourFile.mp3";
 				}else{
-                    	audioText = myAudio;
+                    audioText = myAudio;
 				}
 
 				$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
@@ -451,8 +456,8 @@ function C_Reveal(_type) {
 			* Edit Content
 			*/
 			//Add and style contentEdit button
-			$('#stage').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
-			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top - 20, 'left': $("#content").position().left + $("#content").width() - 20});
+			$('#contentHolder').append("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
+			$("#conEdit").css({'position':'absolute', 'top':$("#content").position().top, 'left': $("#content").position().left + $("#content").width() - 18});
 			
 			$("#conEdit").click(function(){			
 				revealEdit_arr.length = 0;
@@ -638,11 +643,16 @@ function C_Reveal(_type) {
 			var imgH = $("#"+revealEdit_arr[i]+"Height").val();
 			if(type == "revealRight" || type == "revealLeft"){
 				var boxW = parseInt(imgW) + 10;
+				var imgAttr = 'position:relative; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
 			}else{
 				var boxW = 280;
+				if(type == "revealBottom"){
+					var imgAttr = 'position:relative; margin-left:auto; margin-right:auto; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
+				}else{
+					var imgAttr = 'position:absolute; margin-left:auto; margin-right:auto; bottom:5px; right:65px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
+				}
 			}
 			var boxH = parseInt(imgH) + 10;
-			var imgAttr = 'position:relative; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
 			var revealText = $("#"+revealEdit_arr[i]+"ContentText").getCode();
 			var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			var revealCDATA = newRevealContent.createCDATASection(revealText);
@@ -829,6 +839,8 @@ function C_Reveal(_type) {
 	    	$('#player').remove();
 	    	$('#audioCon').remove();
 	    }
+	    
+	    $("#scrollableContent").remove();
 	    
 	    if(mode == "edit"){
 		    $("#titleEdit").remove();

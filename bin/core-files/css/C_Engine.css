@@ -355,6 +355,13 @@ CONTENT TEXT LAYOUTS*/
 	width: 924px;
 }
 
+#content.tabTop{
+	position: absolute;
+	top: 85px;
+	left: 50px;
+	width: 924px;
+}
+
 #content.left{
 	top: 85px;
 	left: 50px;
@@ -574,7 +581,7 @@ ul.no-indent {
 }
 
 #content .revealLeft{
-	overflow: auto;
+	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 

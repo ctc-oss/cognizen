@@ -34,14 +34,7 @@ function C_TabbedContent(_type) {
 	
 	var mediaLink;
 	
-	var titleX;
 	var titleY;
-	var titleW;
-	
-	var contX;
-	var contY;
-	var contW;
-	var contH;
 	
 	var imgY;
 	var imgX;
@@ -113,8 +106,6 @@ function C_TabbedContent(_type) {
 		$('#stage').append('<div id="pageTitle"></div>');
 		$("#pageTitle").append(myPageTitle);
 		
-		//$('#stage').append('<div id="content" class="nano"><div id="content" class="overthrow content"></div></div>');
-		
 		var tabString = '<div id="content">' + myContent + '<br/><br/><ul>';
 		
 		for(var i = 0; i < tabCount; i++){
@@ -137,13 +128,7 @@ function C_TabbedContent(_type) {
 		if(type == "tabsLeft"){
 			$("#content").addClass("left");
 		}else if(type == "tabsOnly"){
-			$("#content").addClass("top");
-		}else if(type == "right"){
-			$("#content").addClass("right");
-		}else if(type == "textOnly"){
-			$("#content").addClass("text");
-		}else if(type == "graphicOnly"){
-			$("#content").addClass("graphic");
+			$("#content").addClass("tabTop");
 		}
 		
 		var tabs = $("#content").tabs({
@@ -178,17 +163,10 @@ function C_TabbedContent(_type) {
 			loadVisualMedia();	
 		}
 				
-		
 		if(hasAudio == true){
 			$('#stage').append('<div id="audioCon"></div>');
 			loadAudio();
 		}
-
-		// if(windowWidth <= mobileWidth){
-		// 	$("#content").addClass("nano");
-		// 	$(".nano").nanoScroller();
-		// }
-
 	}
 	
 	

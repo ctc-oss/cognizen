@@ -34,6 +34,7 @@ function C_Flashcard(_type) {
 	
 	var stageW = $("#stage").width();
     var stageH = $("#stage").height();
+    var audioShim = 0;
 	
 	var titleX;
 	var titleY;
@@ -48,8 +49,6 @@ function C_Flashcard(_type) {
 	var imgX;
 	var imgW;
 	var imgH;
-	
-	var audioShim = 0;
     
 	var contentY;
 	var contentH;
@@ -70,8 +69,6 @@ function C_Flashcard(_type) {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
-		 
 		
 		/*****************************************
 		**Set template variables.
@@ -118,7 +115,6 @@ function C_Flashcard(_type) {
 		
 		$("#stage").append('<div id="scrollableContent" class="nano"><div id="contentHolder" class="overthrow content"><div id="content"></div><div id="flashcardHolder"></div></div></div>');
 		$("#scrollableContent").css("overflow", "visible");
-		$("#contentHolder").addClass("top");
 		$("#contentHolder").addClass("top");
         $("#content").addClass("top");
         var conSpot = $("#scrollableContent").position().top;
