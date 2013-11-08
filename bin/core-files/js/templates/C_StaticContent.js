@@ -407,7 +407,11 @@ function C_StaticContent(_type) {
 				
 					mediaPopString += "</div>";
 				
-					$("#stage").append(mediaPopString);				 
+					if(type != "top" && type != "bottom"){
+						$("#stage").append(mediaPopString);
+					}else{
+						$("#contentHolder").append(mediaPopString);
+					}				 
 				 
 					$("[rel='mediaPop']").fancybox({
 						caption : {
@@ -435,7 +439,7 @@ function C_StaticContent(_type) {
 						});
 					}
 				
-					$(".mediaPop").css({'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
+					//$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
 					$("#myImgList").tooltip();
 					$("#mediaPop").click(function(){
 						try { $("#myImgList").tooltip("destroy"); } catch (e) {}
@@ -644,11 +648,13 @@ function C_StaticContent(_type) {
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      *****************************************************************************************************************************************************************************************************************/
      function checkMode(){
+     	$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
      	
      	$(".nano").nanoScroller({
         	flashDelay: 3000,
 			flash: true
 		});
+		
         
      	if(mode == "edit"){
             	
