@@ -648,12 +648,16 @@ function C_StaticContent(_type) {
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      *****************************************************************************************************************************************************************************************************************/
      function checkMode(){
-     	$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
+     	if(type != "textOnly" && type != "sidebar"){
+     		$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
+     	}
      	
-     	$(".nano").nanoScroller({
-        	flashDelay: 3000,
-			flash: true
-		});
+     	if(type != "graphicOnly"){
+     		$(".nano").nanoScroller({
+        		flashDelay: 3000,
+				flash: true
+			});
+		}
 		
         
      	if(mode == "edit"){
