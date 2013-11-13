@@ -641,9 +641,12 @@ function C_Reveal(_type) {
 			var revealImg = $("#"+revealEdit_arr[i]+"ImageText").val();
 			var imgW = $("#"+revealEdit_arr[i]+"Width").val();
 			var imgH = $("#"+revealEdit_arr[i]+"Height").val();
-			if(type == "revealRight" || type == "revealLeft"){
+			if(type == "revealRight"){
 				var boxW = parseInt(imgW) + 10;
 				var imgAttr = 'position:relative; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
+			}else if(type == "revealLeft"){
+				var boxW = parseInt(imgW) + 10;
+				var imgAttr = 'position:absolute; top:5px; right:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ revealImg +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
 			}else{
 				var boxW = 280;
 				if(type == "revealBottom"){
