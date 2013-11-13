@@ -481,7 +481,7 @@ function C_TabbedContent(_type) {
 		var msg = "<div id='"+tabID+"Container' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='"+tabID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
 		msg += "<label>Tab " + contentLabel + " Title: </label>";
-		msg += "<input id='"+tabID+"TitleText' type='text' value="+ myTabLabel + " defaultValue="+ myTabLabel + " style='width:30%;'/>";
+		msg += "<input id='"+tabID+"TitleText' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
 					
 		msg += "<div>Tab " + contentLabel + " Content:</div> ";
 		msg += "<div id='"+tabID+"ContentText'  style='width:80%;'>" + myTabContent + "</div>";	
@@ -570,8 +570,6 @@ function C_TabbedContent(_type) {
 					modal: true,
 					width: 875,
 					height: 650,
-					show: 'fold',
-					//hide: 'fold',
 					buttons: {
 						Add: function(){	
 							addTab(tabEdit_arr.length, true);	
