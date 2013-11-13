@@ -184,13 +184,15 @@ function addIndex(){
 			var listJSON = window.JSON.stringify(list);
 			var isChild = false;
 			var childParent;
-			var moveUp = false;
+			var moveUp = false;//Slightly confusing variable name - this tracks whether the item is the last of the group or the first after, when i has been dragged out of a sub-menu....
 			var isSub = false;
 			var createNewGroup = false;
 			var addToGroup = false;
 			
+			//FIRST: See if anything actually changed - if yes then find what - if no - skip.
 			if(listJSON != startListJSON){
 				var iterator = 0;
+				
 				for(var i = 0; i < list.length; i++){
 					//IS A ROOT NODE
 					if(oldNodePos == list[i].id){
@@ -224,8 +226,32 @@ function addIndex(){
 						}
 					}
 				}
+				
+				console.log("listJSON:       " + listJSON);
+				console.log("newNodePos:     " + newNodePos);
+				console.log("oldNodePos:     " + oldNodePos);
+				console.log("startChild:     " + startChild);
+				console.log("childParent:    " + childParent);
+				console.log("moveUp:         " + moveUp);
+				console.log("addToGroup:     " + addToGroup);
+				console.log("createNewGroup: " + createNewGroup);
+				console.log("isSub:          " + isSub);
+				
+				/*************************************************************************************
+				******* UPDATE THE XML FOR THE NEW POSITION
+				*************************************************************************************/
+				//Move it to a group
 				if(addToGroup){
-					$(data).find("page").eq(oldNodePos).appendTo($(data).find("page").eq(childParent));
+					//TODO: Position properly within the group.
+					console.log("In the addToGroup with:");
+					console.log("           -oldNodePos: " + oldNodePos);
+					console.log("           -childParent: " + childParent);
+					if(oldNodePos > newNodePos){
+						$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+					}else{
+						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+					}
+				//create a new group if needed.
 				}else if (createNewGroup){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 					var secondID = $(data).find("page").eq(newNodePos).attr("id");
@@ -266,9 +292,18 @@ function addIndex(){
 						}
 					}
 					$(data).find("page").eq(tmpID).appendTo($(data).find("page").eq(newGroupSpot));
-					
+				//Move the page to a lower postion
 				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+				//Move the page to a higher postion.
+				}else if(newNodePos > oldNodePos && moveUp == false){
+					//IF A GROUP AND MOVING DOWN THE MENU - ADD THE LENGTH OF THE GROUP TO THE NEW POSITION.
+					if($(data).find("page").eq(oldNodePos).children("page").length > 0){
+						var groupLength = $(data).find("page").eq(oldNodePos).children("page").length;
+						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos + groupLength));
+					}else{
+						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+					}
 				}else{
 					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
 				}

@@ -119,7 +119,7 @@ function C_Flashcard(_type) {
         $("#content").addClass("top");
         var conSpot = $("#scrollableContent").position().top;
         $("#contentHolder").height(stageH - (audioShim + conSpot));
-        $("#content").width($("#contentHolder").width());
+        //$("#content").width($("#contentHolder").width());
         $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioShim));
 		 
 		$("#content").append(myContent);

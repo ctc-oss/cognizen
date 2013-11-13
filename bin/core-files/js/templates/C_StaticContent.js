@@ -135,7 +135,7 @@ function C_StaticContent(_type) {
             $("#content").addClass("top");
             var conSpot = $("#scrollableContent").position().top;
             $("#contentHolder").height(stageH - (audioShim + conSpot));
-            $("#content").width($("#contentHolder").width());
+            //$("#content").width($("#contentHolder").width());
             $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioShim));
         }else if(type == "right"){
             $("#contentHolder").addClass("right");
