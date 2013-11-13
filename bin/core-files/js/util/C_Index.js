@@ -242,14 +242,29 @@ function addIndex(){
 				*************************************************************************************/
 				//Move it to a group
 				if(addToGroup){
-					//TODO: Position properly within the group.
 					console.log("In the addToGroup with:");
 					console.log("           -oldNodePos: " + oldNodePos);
 					console.log("           -childParent: " + childParent);
-					if(oldNodePos > newNodePos){
-						$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+					console.log("           -groupLength: " + $(data).find("page").eq(childParent).children("page").length);
+					var total = $(data).find("page").eq(childParent).children("page").length + childParent;
+					console.log("			-total: " + total);
+					if(oldNodePos >= newNodePos){
+						var groupLength = Number($(data).find("page").eq(childParent).children("page").length);
+						if(newNodePos == total + 1){
+							console.log("is last");
+							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos - 1));
+						}else{
+							console.log("not");
+							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+						}
 					}else{
-						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+						if(newNodePos == childParent){
+							console.log("first child");
+							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos + 1));
+						}else{
+							console.log("not first child");
+							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+						}
 					}
 				//create a new group if needed.
 				}else if (createNewGroup){
@@ -302,7 +317,11 @@ function addIndex(){
 						var groupLength = $(data).find("page").eq(oldNodePos).children("page").length;
 						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos + groupLength));
 					}else{
-						$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+						if(childParent != undefined){
+							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+						}else{
+							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos + 1));
+						}
 					}
 				}else{
 					$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
