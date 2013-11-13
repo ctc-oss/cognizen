@@ -20,7 +20,7 @@ var siofu;
 var siofuInitialized = {};
  
 function initializeSockets(){
-	if(mode == "edit"){
+	if(mode == "edit" || mode == "review"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
 	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secureSocket}) :

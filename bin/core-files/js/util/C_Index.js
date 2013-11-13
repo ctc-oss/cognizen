@@ -227,7 +227,7 @@ function addIndex(){
 					}
 				}
 				
-				console.log("listJSON:       " + listJSON);
+				/*console.log("listJSON:       " + listJSON);
 				console.log("newNodePos:     " + newNodePos);
 				console.log("oldNodePos:     " + oldNodePos);
 				console.log("startChild:     " + startChild);
@@ -235,34 +235,30 @@ function addIndex(){
 				console.log("moveUp:         " + moveUp);
 				console.log("addToGroup:     " + addToGroup);
 				console.log("createNewGroup: " + createNewGroup);
-				console.log("isSub:          " + isSub);
+				console.log("isSub:          " + isSub);*/
 				
 				/*************************************************************************************
 				******* UPDATE THE XML FOR THE NEW POSITION
 				*************************************************************************************/
 				//Move it to a group
 				if(addToGroup){
-					console.log("In the addToGroup with:");
+					var total = $(data).find("page").eq(childParent).children("page").length + childParent;
+					/*console.log("In the addToGroup with:");
 					console.log("           -oldNodePos: " + oldNodePos);
 					console.log("           -childParent: " + childParent);
 					console.log("           -groupLength: " + $(data).find("page").eq(childParent).children("page").length);
-					var total = $(data).find("page").eq(childParent).children("page").length + childParent;
-					console.log("			-total: " + total);
+					console.log("			-total: " + total);*/
 					if(oldNodePos >= newNodePos){
 						var groupLength = Number($(data).find("page").eq(childParent).children("page").length);
 						if(newNodePos == total + 1){
-							console.log("is last");
 							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos - 1));
 						}else{
-							console.log("not");
 							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
 						}
 					}else{
 						if(newNodePos == childParent){
-							console.log("first child");
 							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos + 1));
 						}else{
-							console.log("not first child");
 							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
 						}
 					}
@@ -364,8 +360,6 @@ function addIndex(){
 	}
 	
 	updatePageCount();
-	//updateOutput($('#C_Index').data('output', $('#nestable-output')));
-
 }
 //Index end.
 
@@ -461,13 +455,10 @@ function toggleIndex(){
 		indexState = true;
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
-
-
 	}
 	else{
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType});
-
 	}
 }
 
@@ -494,7 +485,10 @@ function updateIndex(){
 		    	//Update the current page value to avoid editing the wrong page!
 		    	if(newPageAdded == true){
 			    	newPageAdded = false;
-			    	clickNext();
+			    	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
+					var newPage = currentPage + currentChildrenLength + 1;
+			    	currentPage = newPage;
+			    	currentTemplate.fadeComplete();
 		    	}else{
 		    		currentPage = findNodeByID();
 		    	}
