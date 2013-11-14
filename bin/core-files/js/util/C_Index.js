@@ -393,7 +393,7 @@ function removePage(myNode){
 					sendUpdateWithRefresh();
 				}else{
 					$("#stage").append("<div id='dialog-removePageError' title='Error Removing Page'><p>Your content must have at least one page.</p><p>If you would like to remove this page you must first create another and then remove it.</p></div>");
-					$("#dialog-removePage").dialog({
+					$("#dialog-removePageError").dialog({
 						modal: true,
 						width: 550,
 						close: function(event, ui){
