@@ -35,6 +35,7 @@ function C_TabbedContent(_type) {
 	var mediaLink;
 	
 	var titleY;
+	var audioShim = 0;
 	
 	var imgY;
 	var imgX;
@@ -62,9 +63,13 @@ function C_TabbedContent(_type) {
 		/*****************************************
 		**Set template variables.
 		*****************************************/
+		if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
+			autoNext = true;
+		}
 		
-		autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
-		autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
+		if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
+			autoPlay = true;
+		}
 		
 		//Dynamically populate positions from the content.xml
 		//Position the page title
@@ -338,14 +343,14 @@ function C_TabbedContent(_type) {
 			$('video').mediaelementplayer({
 				success: function(player, node) {
 					//If autoNext then move to next page upon completion.
-					if(autoNext == "true"){
+					if(autoNext == true){
 						player.addEventListener('ended', function(e) {
 							hasEnded();
 						}, false);
 					}
 						  
 					//If autoplay - cick off the vid  
-					if(autoPlay == "true"){
+					if(autoPlay == true){
 						$('.mejs-overlay-button').trigger('click');
 					}
 				}
@@ -423,46 +428,49 @@ function C_TabbedContent(_type) {
 	
 	
 	/**********************************************************************
-	**Load Audio Content from Link  -  creates audio player instance at bottom of stage.
-	**********************************************************************/
-	function loadAudio(){
-		
-		var audioString = "<audio id='audioPlayer' src='media/"+myAudio+ "' type='audio/mp3' controls='controls'>";
-		
-		//Check for subs - defaults to false.
-		if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
-			hasSubs = true;
-			subLink = $(data).find("page").eq(currentPage).attr('subs');
-		}else{
-			hasSubs = false;
-		}
-			
-		//Check subs - if subs at track node.
-		if(hasSubs == true){
-			audioString += "<track kind='subtitles' src='" + subLink + "' srclang='en'/>"
-		}
-		
-		audioString += "</audio>";
-		
-		$("#audioCon").append(audioString);
-		
-		$('#audioPlayer').css({'width':stageW, 'height': 20});
+     **Load Audio Content from Link  -  creates audio player instance at bottom of stage.
+     **********************************************************************/
+    function loadAudio(){
+        var audioString = "<audio id='audioPlayer' src='media/"+myAudio+ "' type='audio/mp3' controls='controls'>";
 
-		$('#audioPlayer').mediaelementplayer({
-	     	success: function(player, node) {
-	        
-		     	if(autoNext == "true"){
-					player.addEventListener('ended', function(e) {
-			     		hasEnded();
-					}, false);
-				}
-				if(autoPlay == "true"){
-		        		player.play();
-			   	}
-			}
-		});
-	}
-	////////////END of loadAudio
+        //Check for subs - defaults to false.
+        if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
+            hasSubs = true;
+            subLink = "media/" + $(data).find("page").eq(currentPage).attr('subs');
+        }else{
+            hasSubs = false;
+        }
+
+        //Check subs - if subs at track node.
+        if(hasSubs == true){
+            audioString += "<track kind='subtitles' src='" + subLink + "' srclang='en'/>"
+        }
+		
+        audioString += "</audio>";
+
+        $("#audioCon").append(audioString);
+
+        $('#audioPlayer').css({'width':stageW, 'height': 20});
+
+        $('#audioPlayer').mediaelementplayer({
+            success: function(player, node) {
+                if(autoNext == true){
+                    player.addEventListener('ended', function(e) {
+                        hasEnded();
+                    }, false);
+                }
+                if(autoPlay == true){
+                    player.play();
+                }
+            }
+        });
+    }
+    ////////////END of loadAudio
+	
+	//Function called on video/audio complete if autoNext == true
+    function hasEnded(){
+        $('#next').click();
+    }
 	
 	function addTab(_addID, _isNew){
 		var tabID = "tab" + _addID;
@@ -637,13 +645,16 @@ function C_TabbedContent(_type) {
 			}
 			
 			/*Audio Edit*/
-			if(dragFile == true){
-            	var contentId = urlParams['type'] + '_' + urlParams['id'];
-	     		siofu.addEventListener("complete", function(event){
+			/*******************************************************
+			* Edit Audio
+			********************************************************/
+	        if(dragFile == true){
+	        	var contentId = urlParams['type'] + '_' + urlParams['id'];
+		     	siofu.addEventListener("complete", function(event){
 					siofu.removeEventListener("complete");
 					siofu.removeEventListener("load");
 					//if successful upload, else....
-								
+									
 					var myFile = event.file.name;
 					var myExt = getExtension(myFile);
 					if(myExt == "mp3" || myExt == "MP3"){	
@@ -651,23 +662,39 @@ function C_TabbedContent(_type) {
 							if(myExt == "mp3" || myExt == "MP3"){
 								var audioText;
 								audioText = myFile;
-	
-								$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
-	
+								
+								var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
+								msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
+								msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
+								msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
+								msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
+								msg += "</div>";
+								
+								$("#stage").append(msg);
+								
 								//Style it to jQuery UI dialog
 								$("#audioEditDialog").dialog({
 									autoOpen: true,
 									modal: true,
 									width: 500,
 									height: 200,
-									buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-									close: saveAudioEdit
+									buttons:{
+										Cancel: function(){
+											$(this).dialog("close");
+										},
+										Save: function(){
+											saveAudioEdit();
+										}
+									},
+									close: function(){
+										$(this).remove();
+									}
 								});
 							}
 						}
 					}	
 				});
-				
+					
 				siofu.addEventListener("start", function(event){
 					var myFile = event.file.name;
 					var myExt = getExtension(myFile);
@@ -677,55 +704,83 @@ function C_TabbedContent(_type) {
 						$("#mediaLoader").css({'position':'absolute', 'top': $("#audioDrop").position().top, 'left': $("#audioDrop").position().left, 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width()});
 					}
 				});
-	     		
-	     		$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
-	     		if(hasAudio == true){
-	     			$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
-	     		}else{
-		     		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
-	     		}
-	     		
-	     		$("#audioDrop").attr('data-content', contentId);
-		 		$("#audioDrop").find('*').attr('data-content', contentId);
-		 		
-		 		$("#audioDrop").click(function(){
+		     		
+		     	$('#stage').append("<div id='audioDrop' class='audioDropSpot' title='click to browse or drag mp3 to this location'>AudioDrop</div>");
+		     	
+		     	if(hasAudio == true){
+		     		$("#audioDrop").css({'position':'absolute', 'bottom':30, 'right': 20});
+		     	}else{
+			   		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
+		     	}
+		     	
+		     	$("#audioDrop").attr('data-content', contentId);
+			 	$("#audioDrop").find('*').attr('data-content', contentId);
+			 	
+			 	$("#audioDrop").click(function(){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
 					siofu.prompt($("#audioDrop").attr('data-content'));
 				}).tooltip();
-				
+					
 				siofu.listenOnDrop(document.getElementById("audioDrop"));
-	     	} 
-	     	
-	     	$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
-			//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
+		     } 
+		     	
+		     $('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
+			 //Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
 			if(hasAudio == true){
-	     		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
+		   		$("#audioEdit").css({'position':'absolute', 'bottom':30, 'right': 0});
 			}else{
-          		$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});
-          		
+	          	$("#audioEdit").css({'position':'absolute', 'bottom':0, 'right': 0});	
 			}
-			
-			
+				
+				
 			//Add Audio Edit
 			$("#audioEdit").click(function(){
 				//Create the Content Edit Dialog
 				var audioText;
 				if(myAudio == "null"){
-                    	audioText = "yourFile.mp3";
+	            	audioText = "yourFile.mp3";
 				}else{
-                    	audioText = myAudio;
+	            	audioText = myAudio;
 				}
-
-				$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
-
+				
+				var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
+				msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
+				msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
+				msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
+				msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
+				msg += "</div>";
+								
+				$("#stage").append(msg);
+				
+				if(hasSubs == true){
+					$("#subs").attr("checked", "checked");
+				}
+								
+				if(autoPlay == true){
+					$("#autoplay").prop("checked", "checked");
+				}
+								
+				if(autoNext == true){
+					$("#autonext").prop("checked", "checked");
+				}
+								
 				//Style it to jQuery UI dialog
 				$("#audioEditDialog").dialog({
-                    autoOpen: true,
+					autoOpen: true,
 					modal: true,
 					width: 500,
 					height: 200,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: saveAudioEdit
+					buttons:{
+						Cancel: function(){
+							$(this).dialog("close");
+						},
+						Save: function(){
+							saveAudioEdit();
+						}
+					},
+					close: function(){
+						$(this).remove();
+					}
 				});
 			}).tooltip();
 		}
@@ -895,23 +950,51 @@ function C_TabbedContent(_type) {
 	/**********************************************************************
 	**Save Audio Edit
 	**********************************************************************/
+	/**saveAudioEdit
+	* Sends the updated content to node.
+	*/
 	function saveAudioEdit(){
-		var audioPath = $("#audioPath").val();
-		var parts = audioPath.split('.'), i, l;
-		var last = parts.length;
-		
-		var fileType = (parts[last - 1]);
-		if(fileType == "mp3"){
-			if(audioPath == "yourFile.mp3"){
-				$(data).find("page").eq(currentPage).attr("audio", "null");
+        var audioPath =  $("#audioPath").val();
+	   	var parts = audioPath.split('.'), i, l;
+	   	var last = parts.length;
+
+	   	var fileType = (parts[last - 1]);
+	   	if(fileType == "mp3"){
+            if(audioPath == "yourFile.mp3"){
+                $(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
-				$(data).find("page").eq(currentPage).attr("audio", audioPath);
+                $(data).find("page").eq(currentPage).attr("audio", audioPath);
 			}
-			$("#audioEditDialog").remove();
+			
+			var strippedPath = "";
+			
+			for(var i = 0; i < last-1; i++){
+				strippedPath += parts[i];
+			}
+			
+			if($("#subs").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
+			}else{
+				$(data).find("page").eq(currentPage).attr("subs", "null");
+			}
+			
+			if($("#autoplay").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("autoplay", "true");
+			}else{
+				$(data).find("page").eq(currentPage).attr("autoplay", "false");
+			}
+						
+			if($("#autonext").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("autonext", "true");
+			}else{
+				$(data).find("page").eq(currentPage).attr("autonext", "false");
+			}
+			
+			$("#audioEditDialog").dialog("close");
 			sendUpdateWithRefresh();
 			fadeComplete();
 		}else{
-			$("#audioEditDialog").append("<div id='addError' style='color:#FF0000'><br/><br/>* Only .mp3 audio files are supported at this time.</div>");
+          	$("#audioEditDialog").append("<div id='addError' style='color:#FF0000'><br/><br/>* Only .mp3 audio files are supported at this time.</div>");
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
@@ -935,15 +1018,6 @@ function C_TabbedContent(_type) {
 		$("#loader").attr("tabindex", tabindex);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-	
-	
-	
-	//Function called on video complete if autoNext == true
-	function hasEnded(){
-		$('#next').click();
-	}
-	
-	
     
     this.destroySelf = function() {
 	   if(transition == true){
@@ -1003,10 +1077,7 @@ function C_TabbedContent(_type) {
 			}
 			siofu.destroy();
 			$("#audioDrop").unbind();
-			//cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
-			//cognizenSocket.removeListener('mediaInfo', mediaInfo);
-			//cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
-			
+			$("#mediaLoader").remove();
 		}
 		$("#audioDrop").remove();
 	    

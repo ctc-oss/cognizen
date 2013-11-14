@@ -45,6 +45,11 @@ function C_StaticContent(_type) {
 	var largeImg = "";
 	var audioUploader;
 	
+	var hasPoster;
+    var posterLink;
+    var hasSubs;
+    var subsLink;
+	
 	var galleryEdit_arr = [];
 
     /*****************************************************************************************************************************************************************************************************************
@@ -61,10 +66,13 @@ function C_StaticContent(_type) {
         /*****************************************
         **Set template variables.
         *****************************************/
-
-        //Sets whether the playable media autoplay or and auto transition to next page.
-        autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
-        autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
+		if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
+			autoNext = true;
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
+			autoPlay = true;
+		}
 
         //Page title value from content.xml
         myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
@@ -268,8 +276,6 @@ function C_StaticContent(_type) {
                 $("#loader").css({'top': startY, 'left': imgX})
             }
         }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){////////////////////////////////////////////////VIDEO
-
-            autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
             imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
             imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
             autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
@@ -280,11 +286,6 @@ function C_StaticContent(_type) {
             if(mediaLinkType == "youtube"){
                 vidHTMLString += " preload='none'";
             }
-
-            var hasPoster;
-            var posterLink;
-            var hasSubs;
-            var subsLink;
 
             if($(data).find("page").eq(currentPage).attr('poster') != undefined && $(data).find("page").eq(currentPage).attr('poster') != "null" && $(data).find("page").eq(currentPage).attr('poster').length != 0){
                 hasPoster = true;
@@ -334,14 +335,14 @@ function C_StaticContent(_type) {
             $('video').mediaelementplayer({
                 success: function(player, node) {
                     //If autoNext then move to next page upon completion.
-                    if(autoNext == "true"){
+                    if(autoNext == true){
                         player.addEventListener('ended', function(e) {
                             hasEnded();
                         }, false);
                     }
 
                     //If autoplay - cick off the vid
-                    if(autoPlay == "true"){
+                    if(autoPlay == true){
                         $('.mejs-overlay-button').trigger('click');
                     }
                 }
@@ -517,12 +518,12 @@ function C_StaticContent(_type) {
         $('#audioPlayer').mediaelementplayer({
             success: function(player, node) {
 
-                if(autoNext == "true"){
+                if(autoNext == true){
                     player.addEventListener('ended', function(e) {
                         hasEnded();
                     }, false);
                 }
-                if(autoPlay == "true"){
+                if(autoPlay == true){
                     player.play();
                 }
             }
@@ -866,17 +867,33 @@ function C_StaticContent(_type) {
 						if(myExt == "mp3" || myExt == "MP3"){
 							var audioText;
 							audioText = myFile;
-
-							$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
-
+								
+							var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
+							msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
+							msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
+							msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
+							msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
+							msg += "</div>";
+								
+							$("#stage").append(msg);
+								
 							//Style it to jQuery UI dialog
 							$("#audioEditDialog").dialog({
 								autoOpen: true,
 								modal: true,
 								width: 500,
 								height: 200,
-								buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-								close: saveAudioEdit
+								buttons:{
+									Cancel: function(){
+										$(this).dialog("close");
+									},
+									Save: function(){
+										saveAudioEdit();
+									}
+								},
+								close: function(){
+									$(this).remove();
+								}
 							});
 						}else{
 							saveImageEdit(myFile, true);
@@ -978,21 +995,49 @@ function C_StaticContent(_type) {
 				//Create the Content Edit Dialog
 				var audioText;
 				if(myAudio == "null"){
-                    	audioText = "yourFile.mp3";
+	            	audioText = "yourFile.mp3";
 				}else{
-                    	audioText = myAudio;
+	            	audioText = myAudio;
 				}
-
-				$("#stage").append("<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/></div>");
-
+				
+				var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
+				msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
+				msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
+				msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
+				msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
+				msg += "</div>";
+								
+				$("#stage").append(msg);
+				
+				if(hasSubs == true){
+					$("#subs").attr("checked", "checked");
+				}
+								
+				if(autoPlay == true){
+					$("#autoplay").prop("checked", "checked");
+				}
+								
+				if(autoNext == true){
+					$("#autonext").prop("checked", "checked");
+				}
+				console.log("IN the unexpected");			
 				//Style it to jQuery UI dialog
 				$("#audioEditDialog").dialog({
-                    autoOpen: true,
+					autoOpen: true,
 					modal: true,
 					width: 500,
 					height: 200,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: saveAudioEdit
+					buttons:{
+						Cancel: function(){
+							$(this).dialog("close");
+						},
+						Save: function(){
+							saveAudioEdit();
+						}
+					},
+					close: function(){
+						$(this).remove();
+					}
 				});
 			}).tooltip();
 		}
@@ -1221,9 +1266,12 @@ function C_StaticContent(_type) {
 		$("#imgDialog").remove();
 	};
 
-	/**********************************************************************
-     **Save Audio Edit
-     **********************************************************************/
+	 /**********************************************************************
+	**Save Audio Edit
+	**********************************************************************/
+	/**saveAudioEdit
+	* Sends the updated content to node.
+	*/
 	function saveAudioEdit(){
         var audioPath =  $("#audioPath").val();
 	   	var parts = audioPath.split('.'), i, l;
@@ -1236,14 +1284,38 @@ function C_StaticContent(_type) {
 			}else{
                 $(data).find("page").eq(currentPage).attr("audio", audioPath);
 			}
-			$("#audioEditDialog").remove();
+			
+			var strippedPath = "";
+			
+			for(var i = 0; i < last-1; i++){
+				strippedPath += parts[i];
+			}
+			
+			if($("#subs").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
+			}else{
+				$(data).find("page").eq(currentPage).attr("subs", "null");
+			}
+			
+			if($("#autoplay").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("autoplay", "true");
+			}else{
+				$(data).find("page").eq(currentPage).attr("autoplay", "false");
+			}
+						
+			if($("#autonext").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("autonext", "true");
+			}else{
+				$(data).find("page").eq(currentPage).attr("autonext", "false");
+			}
+			
+			$("#audioEditDialog").dialog("close");
 			sendUpdateWithRefresh();
 			fadeComplete();
 		}else{
           	$("#audioEditDialog").append("<div id='addError' style='color:#FF0000'><br/><br/>* Only .mp3 audio files are supported at this time.</div>");
 		}
-	};
-    //////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
+	};    //////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
