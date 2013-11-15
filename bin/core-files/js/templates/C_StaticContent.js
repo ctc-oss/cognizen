@@ -678,8 +678,19 @@ function C_StaticContent(_type) {
                     autoOpen: true,
 					modal: true,
 					width: 550,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: saveTitleEdit
+					buttons: {
+						Cancel: function(){
+							$("#titleEditText").destroyEditor();
+							$( this ).dialog( "close" );
+						},
+						Save: function(){
+							saveTitleEdit();
+						}
+					}, 
+					//[ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+					close: function(){
+						$(this).remove();
+					}
 				});
 
 				$("#titleEditText").redactor({
@@ -704,8 +715,19 @@ function C_StaticContent(_type) {
 						modal: true,
 						width: 800,
 						height: 500,
-						buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-						close: saveSidebarEdit
+						buttons: {
+							Cancel: function(){
+								$("#sidebarEditText").destroyEditor();
+								$( this ).dialog( "close" );
+							},
+							Save: function(){
+								saveSidebarEdit();
+							}
+						}, 
+						//[ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+						close: function(){
+							$(this).remove();
+						}
 					});
 
 					$("#sidebarEditText").redactor({
@@ -737,24 +759,26 @@ function C_StaticContent(_type) {
 
                     //Create the Content Edit Dialog
 					$("#stage").append("<div id='contentEditDialog' title='Input Page Content'><div id='contentEditText' type='text' style='width:" + $('#content').width() + "; height:85%' >" + myContent + "</div>");
-
-					var myHeight;
-
-					if($("#contentHolder").height() < 300){
-						myHeight = 350;
-					}else if($("#contentHolder").height() > (stageH - 80)){
-						myHeight = stageH - 80;
-					}else{
-						myHeight = $("#contentHolder").height();
-					}
+					
 					//Style it to jQuery UI dialog
 					$("#contentEditDialog").dialog({
 						autoOpen: true,
 						modal: true,
-						width: $("#contentHolder").width() + 100,
-						height: myHeight + 150,
-						buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-						close: saveContentEdit
+						width: $("#content").width(),
+						height: 500,
+						buttons: {
+							Cancel: function(){
+								$("#contentEditText").destroyEditor();
+								$( this ).dialog( "close" );
+							},
+							Save: function(){
+								saveContentEdit();
+							}
+						}, 
+						//[ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+						close: function(){
+							$(this).remove();
+						}
 					});
 
 					$("#contentEditText").redactor({
@@ -800,7 +824,7 @@ function C_StaticContent(_type) {
                     	
                     $("#captionEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 					});
 					
 					
@@ -1075,7 +1099,7 @@ function C_StaticContent(_type) {
 	   	$("#titleEditText").destroyEditor();
 	   	$(data).find("page").eq(currentPage).find("title").empty();
 	   	$(data).find("page").eq(currentPage).find("title").append(newCDATA);
-	   	$("#titleDialog").remove();
+	   	$("#titleDialog").dialog("close");
 	   	sendUpdateWithRefresh();
 	};
 
@@ -1095,7 +1119,7 @@ function C_StaticContent(_type) {
         //Update the local xml - first clearning the content node and then updating it with out newCDATA
         $(data).find("page").eq(currentPage).find("content").empty();
         $(data).find("page").eq(currentPage).find("content").append(newCDATA);
-        $("#contentEditDialog").remove();
+        $("#contentEditDialog").dialog("close");
         sendUpdate();
     };
 
@@ -1115,7 +1139,7 @@ function C_StaticContent(_type) {
 	   	//Update the local xml - first clearning the content node and then updating it with out newCDATA
 	   	$(data).find("page").eq(currentPage).find("sidebar").empty();
 	   	$(data).find("page").eq(currentPage).find("sidebar").append(newCDATA);
-	   	$("#sidebarEditDialog").remove();
+	   	$("#sidebarEditDialog").dialog("close");
 	   	sendUpdate();
 	};
 

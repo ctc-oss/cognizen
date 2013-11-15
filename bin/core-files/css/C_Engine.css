@@ -267,17 +267,6 @@ body .redactor_toolbar li a.redactor_btn_close{
 	padding-bottom: 10px;
 }
 
-
-/*#scormform{
-	position:absolute;
-	bottom:10px; 
-	left: 105px;
-	color:	#3383BB;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
-	cursor: hand; 
-	cursor: pointer;
-}*/
-
 #pageTitle{
 	position: absolute;
 	width: 924px;
@@ -387,6 +376,7 @@ CONTENT TEXT LAYOUTS*/
 	/*top: 85px;*/
 	left: 0px;
 	width: 1024px;
+	outline: none;
 }
 
 #contentHolder.left{
@@ -405,17 +395,13 @@ CONTENT TEXT LAYOUTS*/
 	height: 573px;
 }
 
-/*#contentHolder.bottom{
-	position: absolute;
-	right: 50px;
-	width: 924px;
-}*/
-
 #scrollableContent{
 	position: absolute;
 	top: 85px;
 	left: 0px;
 	width: 1024px;
+	border-style: hidden;
+	outline: none;
 }
 
 #contentHolder.text{
