@@ -762,6 +762,10 @@ function C_MultipleChoice(_myType) {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
     
+    this.fadeComplete = function() {
+	    fadeComplete();
+    }
+    
     function fadeComplete(){
 	    $('#pageTitle').remove();
 	    $('#question').remove();

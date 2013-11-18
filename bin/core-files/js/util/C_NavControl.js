@@ -277,7 +277,7 @@ if($(data).find('scored').attr("value") == 'true'){
 //END OF SCORING SET UP.
 	
 //If the course is linear - must complete page by page - setup a page completion tracking array.
-if($(data).find('linear').attr("value") == 'true'){
+if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
 	isLinear = true;
 	tracking_arr = [];
 	for(var i = 0; i < totalPages; i++){

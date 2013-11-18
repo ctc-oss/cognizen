@@ -23,6 +23,7 @@ var tracking_arr;
 var pushedUpdate = false;//edit mode, live communication stuff...
 var newPageAdded = false;
 var indexItem_arr = [];
+var progressMode = "linear";
 
 //addIndex
 //If masterIndex == true  add the index.
@@ -30,11 +31,15 @@ function checkIndex(){
 	//Place panels - index, glossary, resources, references, others...
 	if($(data).find('masterIndex').attr('value') == "true"){
 		masterIndex = true;
-		
+		progressMode = $(data).find('progressMode').attr('value');
+		if(progressMode == "linear" || progressMode == "lockStep"){
+			isLinear = true;
+		}
 		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' title='click here to toggle content index'/></div>");
 		
 		//Set index tab action to open and close the index.
 		$('#indexTab').click(toggleIndex).tooltip();
+		
 		addIndex();
 	}
 }
@@ -46,9 +51,22 @@ function updateMenuItems(){
 		for(var i = 0; i < tracking_arr.length; i++){
 			var thisID = "indexMenuItem"+i;
 			if(tracking_arr[i].complete == true){
-				$("#" + thisID).removeClass('ui-state-disabled').addClass('indexMenuVisited');
+				if(progressMode == "lockStep"){
+					$("#" + thisID).removeClass('ui-state-disabled');
+				}
+				if(mode != "edit"){
+					console.log("in here");
+					$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
+					$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
+				}
+				
 			}else{
-				$("#" + thisID).addClass('ui-state-disabled');
+				//IF mode == production AND progressMode == "lockStep" lock users from jumping around course.
+				if(mode != "edit" && mode != "review"){
+					if(progressMode == "lockStep"){
+						$("#" + thisID).addClass('ui-state-disabled');
+					}
+				}
 			}
 		}
 	}else{
@@ -62,7 +80,7 @@ var updateOutput = function(e){
 	var list   = e.length ? e : $(e.target),
         output = list.data('output');
     if (window.JSON) {
-    	console.log((window.JSON.stringify(list.nestable('serialize'))));//, null, 2));
+    	console.log((window.JSON.stringify(list.nestable('serialize'))));
     } else {
     	output.val('JSON browser support required for this demo.');
     }
@@ -90,7 +108,7 @@ function addIndex(){
 	
 	if(mode == "edit"){
 		$("#indexContent").addClass('indexContentEdit');
-		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");//<div id='removePage'>Remove</div>");
+		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");
 		$("#addPage").button({
 			icons:{
 				primary: 'ui-icon-circle-plus'
@@ -119,8 +137,13 @@ function addIndex(){
 				indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div><ol class="dd-list">';
+				}else if(mode == "review"){
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"><div id="statusSpot" class="dd-status dd3-status"></div></div><ol class="dd-list">';
+				}else{
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd3-status"></div></div><ol class="dd-list">';
 				}
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'</div><ol class="dd-list">';
+				//indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'</div><ol class="dd-list">';
 			}
 		}else{
 			if($(data).find("page").eq(i).parent().attr("type") != "group"){
@@ -133,8 +156,13 @@ function addIndex(){
 			//If edit mode attach drag spot - otherwise don't....
 			if(mode == "edit"){
 				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+			}else if(mode == "review"){
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+			}else{
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></div></li>';
 			}
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+			//indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 		}
 		indexItem_arr.push("#" + thisID);
 	}
@@ -243,11 +271,7 @@ function addIndex(){
 				//Move it to a group
 				if(addToGroup){
 					var total = $(data).find("page").eq(childParent).children("page").length + childParent;
-					/*console.log("In the addToGroup with:");
-					console.log("           -oldNodePos: " + oldNodePos);
-					console.log("           -childParent: " + childParent);
-					console.log("           -groupLength: " + $(data).find("page").eq(childParent).children("page").length);
-					console.log("			-total: " + total);*/
+					
 					if(oldNodePos >= newNodePos){
 						var groupLength = Number($(data).find("page").eq(childParent).children("page").length);
 						if(newNodePos == total + 1){

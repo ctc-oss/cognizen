@@ -10,6 +10,7 @@
 			<transitionType value="Power2.easeIn"/>
 			<transitionLength value=".3"/>
 			<!--Linear set to false means that the menu is enabled and users can hop from page to page instead of just next last.-->
+			<progressMode value="linear"/>
 			<linear value="false"/>
 			<pageCount value="true"/>
 			<passFail value="false"/>

@@ -143,7 +143,6 @@ function C_StaticContent(_type) {
             $("#content").addClass("top");
             var conSpot = $("#scrollableContent").position().top;
             $("#contentHolder").height(stageH - (audioShim + conSpot));
-            //$("#content").width($("#contentHolder").width());
             $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioShim));
         }else if(type == "right"){
             $("#contentHolder").addClass("right");
@@ -732,7 +731,7 @@ function C_StaticContent(_type) {
 
 					$("#sidebarEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table']
 					});
 				}).tooltip();
 			}
@@ -775,7 +774,6 @@ function C_StaticContent(_type) {
 								saveContentEdit();
 							}
 						}, 
-						//[ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 						close: function(){
 							$(this).remove();
 						}
@@ -783,7 +781,8 @@ function C_StaticContent(_type) {
 
 					$("#contentEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table'],
+						convertDivs: false
 					});
 				}).tooltip();
 			}
