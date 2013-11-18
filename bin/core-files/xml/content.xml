@@ -153,5 +153,21 @@
 			<title><![CDATA[Objectives]]></title>
 			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
 		</page>
+		<!--page id="447dd3a6-87f9-1185-4b5a-bc8e75181981" layout="group" type="group">
+			<title><![CDATA[Lesson 1]]></title>
+			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181982" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+				<title><![CDATA[Page 1]]></title>
+				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			</page>
+			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181983" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+				<title><![CDATA[Page 2]]></title>
+				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			</page>
+		</page>
+		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181984" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+			<title><![CDATA[Page 3]]></title>
+			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+		</page-->
 	</pages>
 </content>

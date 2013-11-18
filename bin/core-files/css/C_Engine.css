@@ -1156,6 +1156,12 @@ MATCHING LAYOUTS
 	color:blue;
 }
 
+/* Styling for the text in the tooltip */
+.ui-tooltip{
+	font-size: 75%;
+	max-width: 500px;
+}
+
 /*Styling for the text that the tooltip is on - footnote tooltip*/
 #footnote{
 	color:red;
