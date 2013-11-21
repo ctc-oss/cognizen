@@ -11,7 +11,8 @@ var Utils = require('./cognizen-utils'),
     ffmpeg = require('fluent-ffmpeg'),
     FileUtils = require('./file-utils'),
     SocketIOFileUploadServer = require('socketio-file-upload'),
-    ContentSocket = require('./content-socket');
+    ContentSocket = require('./content-socket'),
+    scorm = require('./cognizen-scorm');
 
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -1061,6 +1062,21 @@ var SocketHandler = {
         ContentComment.find(data).populate('user').exec(function (err, found) {
             _this.io.sockets.emit('updateCommentIndex', found);
         });
+    },
+
+    publishLesson: function (data, callback){
+        var _this = this;
+        scorm.generateSCORM(data, function(err, filepath){
+            if(err){
+                _this.logger.error(err);
+                _this._socket.emit('generalError', {title: 'Generating SCORM', message: 'TODO: generating scorm error'});                
+            }
+            else{
+                _this.logger.info("publishLesson success.");
+                _this.logger.info(filepath);
+                callback(filepath);
+            }
+        });   
     }
 };
 

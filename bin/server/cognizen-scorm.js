@@ -19,7 +19,6 @@ var SCORM = {
 	generateSCORM: function(data, callback){
         var _this = this;
         var scormVersion = data.my;
-
         //handle if scormVersion = none...
 
         readdirp(
@@ -45,6 +44,7 @@ var SCORM = {
                 fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
                     if(err) {
                         logger.error("Write file error" + err);
+                        callback(err, null);
                     }
                     else {
                     	_this._zipScormPackage(callback, res, scormVersion, courseName, scormBasePath, imsManifestFilePath);
@@ -243,10 +243,13 @@ var SCORM = {
 
         archive.finalize(function(err, written) {
             if (err) {
-                throw err;
+                callback(err, null);
             }
+        
+        	//_this.logger.info("packageFolder " + packageFolder + " courseName " + courseName + " scormFileVersion " + scormFileVersion);
+
             //tells the engine that it is done writing the zip file
-            callback(packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
+            callback(null, packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
             _this.logger.debug("packageFolder = " + packageFolder);
 
         });		

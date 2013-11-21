@@ -213,7 +213,7 @@ function clickPublish(){
 	sendUpdate();
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
-	socket.emit('publishSCORM',{ my : myScormVersion}, function(fdata) {
+	cognizenSocket.emit('publishLesson',{ my : myScormVersion}, function(fdata) {
 	//this function gets called once the server is done writing to the zip file
 		$(data).find('mode').attr("value", 'edit');
 		sendUpdate();

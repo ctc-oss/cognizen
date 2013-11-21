@@ -118,8 +118,6 @@ var ContentSocket = {
                 })
             });
 
-            //Publish a SCORM package
-            socket.on('publishSCORM', function(data, callback) {scorm.generateSCORM(data, callback);});
         });
 
         callback();

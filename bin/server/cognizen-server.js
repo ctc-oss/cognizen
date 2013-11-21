@@ -548,6 +548,12 @@ var Content = {
             socket.on('renameContent', function (data) {
                 SocketHandler.socket(socket).renameContent(data);
             });
+
+            socket.on('publishLesson', function (data, callback) {
+                SocketHandler.socket(socket).publishLesson(data, function(err){
+                    callback(err);
+                });
+            });
         });
     });
 })();
