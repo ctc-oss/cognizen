@@ -12,13 +12,13 @@
  */
 function C_StaticContent(_type) {
 
-	this.myImage;//image to be loaded.
-    this.myPageTitle;//Title of this page.
-    this.myContent;//Body
-    this.myCaption;//Caption text if needed.
+	var myImage;//image to be loaded.
+    var myPageTitle;//Title of this page.
+    var myContent;//Body
+    var myCaption;//Caption text if needed.
    // this.myAudio = "null";
-    this.autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
-    this.autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
+    var autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+    var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
     var hasCaption = false;
     var hasAudio = false;
     var mySidebar;
