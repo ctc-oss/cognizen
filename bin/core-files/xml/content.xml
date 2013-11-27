@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><content>
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
 	<courseInfo>
 		<preferences>
 			<!-- mode options: "review", "edit", "production"-->
@@ -15,7 +16,7 @@
 			<pageCount value="true"/>
 			<passFail value="false"/>
 			<restartOnFail value="false"/>
-			<scored value="false"/>
+			<scored value="true"/>
 			<minScore value="75"/>
 
 			<scorm value="true"/>
@@ -150,24 +151,12 @@
 	</courseInfo>
 	<pages>
 		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181980" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
-			<title><![CDATA[Objectives]]></title>
-			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
+			<title>
+				<![CDATA[Objectives]]>
+			</title>
+			<content>
+				<![CDATA[<p><b>Lorem Ipsum</b> Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]>
+			</content>
 		</page>
-		<!--page id="447dd3a6-87f9-1185-4b5a-bc8e75181981" layout="group" type="group">
-			<title><![CDATA[Lesson 1]]></title>
-			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
-			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181982" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
-				<title><![CDATA[Page 1]]></title>
-				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
-			</page>
-			<page id="447dd3a6-87f9-1185-4b5a-bc8e75181983" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
-				<title><![CDATA[Page 2]]></title>
-				<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
-			</page>
-		</page>
-		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181984" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
-			<title><![CDATA[Page 3]]></title>
-			<content><![CDATA[<p>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</p>]]></content>
-		</page-->
 	</pages>
 </content>

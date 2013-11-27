@@ -52,6 +52,7 @@ $(document).ready(function(){
 ****************************************************/
 function initScripts(_data){
 	data = _data;
+	//console.log(data);
 	totalPages = $(data).find('page').length;
 	mode = $(data).find('mode').attr("value");
 	

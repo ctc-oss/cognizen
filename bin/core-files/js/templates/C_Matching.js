@@ -174,7 +174,7 @@ function C_Matching(_type) {
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 			
 			if(type == "matching" || myImg == undefined){
-				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + $(this).text() + "</div>");
+				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + $(this).find("content").text() + "</div>");
 			}else if(type == "matchingDrag"){
 				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img width='"+$(this).attr("w") +"' height='"+ $(this).attr("h") +"' src='"  + myImg + "'></img></div>");
 				$('#' + myAnswer).droppable({
@@ -291,10 +291,13 @@ function C_Matching(_type) {
 		//Show markings - green check - red x
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			for(var i=0; i<marking_arr.length; i++){
+				
 				if(marking_arr[i].isCorrect == false){
-					marking_arr[i].myDrop.append("<div id='myMark' class='markWrong'></div>");
+					marking_arr[i].myDrop.addClass('optionIncorrect');
+					//marking_arr[i].myDrop.append("<div id='myMark' class='optionIncorrect'></div>");
 				}else{
-					marking_arr[i].myDrop.append("<div id='myMark' class='markCorrect'></div>");
+					marking_arr[i].myDrop.addClass('optionCorrect');
+					//marking_arr[i].myDrop.append("<div id='myMark' class='optionCorrect'></div>");
 				}
 			}
 		}
@@ -510,7 +513,7 @@ function C_Matching(_type) {
 						optionEdit_arr.splice(arrIndex, 1);
 						$("#option"+arrIndex+"Text").destroyEditor();
 						$("#option"+arrIndex+"Container").remove();
-					});//.tooltip();
+					});
 											
 					optionEdit_arr.push(optionID);
 				};
@@ -526,7 +529,7 @@ function C_Matching(_type) {
 					msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+j+"' title='Click to remove this answer'/>";
 					msg += "<label id='label'>Answer "+ answerLabel +" Label: </label>";
 					msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
-					var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(j).text();
+					var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(j).find("content").text();
 					msg += "<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div>";
 					msg += "<div id='"+answerID+"Text'>" + answerContent + "</div><br/><br/>";
 					msg += "</div>";
@@ -542,7 +545,7 @@ function C_Matching(_type) {
 						answerEdit_arr.splice(arrIndex, 1);
 						$("#answer"+arrIndex+"Text").destroyEditor();
 						$("#answer" + arrIndex + "Container").remove();
-					});//.tooltip();
+					});
 					
 					answerEdit_arr.push(answerID);
 				}
@@ -628,12 +631,19 @@ function C_Matching(_type) {
 								answerEdit_arr.splice(arrIndex, 1);
 								$("#answer"+arrIndex+"Text").destroyEditor();
 								$("#answer" + arrIndex+"Container").remove();
-							});//.tooltip();
+							});
 							
 							$(data).find("page").eq(currentPage).append($("<answer>"));
-							var answer= new DOMParser().parseFromString('<answer></answer>',  "text/xml");
-							var answerCDATA = answer.createCDATASection("Input Answer");
-							$(data).find("page").eq(currentPage).find("answer").eq(answerCount).append(answerCDATA);
+							var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
+							$(data).find("page").eq(currentPage).find("answer").eq(answerEdit_arr.length).append($("<content>"));
+							var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+							$(data).find("page").eq(currentPage).find("answer").eq(answerEdit_arr.length).append($("<diffeed>"));
+							var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+							var answer1CDATA = content1.createCDATASection("Answer 1");
+							$(data).find("page").eq(currentPage).find("answer").eq(answerEdit_arr.length).find("content").append(answer1CDATA);
+							var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+							$(data).find("page").eq(currentPage).find("answer").eq(answerEdit_arr.length).find("diffeed").append(difFeed1CDATA);
+							$(data).find("page").eq(currentPage).find("answer").eq(answerEdit_arr.length).attr("correct", "X");
 								
 							answerCount++;
 							answerEdit_arr.push(answerID);	
@@ -706,8 +716,8 @@ function C_Matching(_type) {
 			var answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
 			var newAnswer = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
 			var answerCDATA = newAnswer.createCDATASection(answerText);
-			$(data).find("page").eq(currentPage).find("answer").eq(i).empty();
-			$(data).find("page").eq(currentPage).find("answer").eq(i).append(answerCDATA);
+			$(data).find("page").eq(currentPage).find("answer").eq(i).find("content").empty();
+			$(data).find("page").eq(currentPage).find("answer").eq(i).find("content").append(answerCDATA);
 			$(data).find("page").eq(currentPage).find("answer").eq(i).attr("correct", answerCorrect);
 			
 			$("#"+answerEdit_arr[i]+"Text").destroyEditor();

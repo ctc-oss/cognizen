@@ -483,13 +483,24 @@ p.sidebarHeader{
 }
 
 table{
+	border: 1px solid black;
 	border-collapse: collapse;
-	margin: 4px;
-}
+	margin-top: 4px;
+	margin-left: auto;
+	margin-right: auto;
+	}
 
 table.center{
 	margin-left: auto;
 	margin-right: auto;
+}
+
+thead td{
+	font-weight: bold;
+	background-color: #E0E0E0;
+	vertical-align: top;
+	padding: 4px;
+	text-align: center;
 }
 
 th{
@@ -497,6 +508,7 @@ th{
 	background-color: #E0E0E0;
 	vertical-align: top;
 	padding: 4px;
+	border: 1px solid black;
 }
 
 th.center{
@@ -519,6 +531,7 @@ td{
 	text-align: left;
 	padding: 4px;
 	background-color: #FFFFFF;
+	border: 1px solid black;
 }
 
 td.center{
@@ -972,6 +985,24 @@ MULTIPLE CHOICE LAYOUTS
 	padding: 4px;
 	cursor: hand; 
 	cursor: pointer;
+}
+
+.optionCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	padding: 4px;
+	padding-right: 35px
+}
+
+.optionIncorrect{
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	padding: 4px;
+	padding-right: 35px
 }
 
 .optionLabel{
@@ -1529,6 +1560,23 @@ MATCHING LAYOUTS
 	bottom: 0px;
 	right: 1px;
 	width: 350px;
+}
+
+/**************************************************************************************
+REDACTOR TABLE EDITOR STYLE OVERRIDES*/
+/**************************************************************************************/
+.redactor_editor table {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+.redactor_editor table td {
+	border: 1px solid #000 !important;
+	padding: 4px !important;
+}
+
+.redactor_editor table thead td {
+	border-bottom: 1px solid #000 !important;
 }
 
 /************************************** NANO SCROLLBAR STYLE **************************************/

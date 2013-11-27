@@ -265,6 +265,7 @@ if($(data).find('scored').attr("value") == 'true'){
 	if($(data).find('restartOnFail').attr("value") == 'true'){
 		restartOnFail = true;
 	}
+	
 	questionResponse_arr = [];
 	for(var i = 0; i < totalPages; i++){
 		if($(data).find("page").eq(i).attr('graded') == "true"){
@@ -377,6 +378,10 @@ function updateTracking(){
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
 function updateScoring(_userSelection, _correct){
+	console.log("-------update scoring--------");
+	console.log("_userSelection = " + _userSelection);
+	console.log("_correct = " + _correct);
+	
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
 			questionResponse_arr[i].complete = true;
