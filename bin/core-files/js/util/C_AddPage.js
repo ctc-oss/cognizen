@@ -367,14 +367,26 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option1CDATA = option1.createCDATASection("True");
-			$(data).find("page").eq(newPage).find("option").eq(0).append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("True");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
 			
 			$(data).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option2CDATA = option2.createCDATASection("False");
-			$(data).find("page").eq(newPage).find("option").eq(1).append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("False");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(data).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
@@ -402,13 +414,17 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("audio", "null");
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
 			
-			if(scored == true){
-				$(data).find("page").eq(newPage).attr("attempts", 1);
-				$(data).find("page").eq(newPage).attr("graded", true);
-			}else{
-				$(data).find("page").eq(newPage).attr("attempts", 2);
-				$(data).find("page").eq(newPage).attr("graded", false);
-			}
+			$(data).find("page").eq(newPage).attr("attempts", 2);
+			$(data).find("page").eq(newPage).attr("graded", true);
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
 			break;
 			
 		case "matching":
@@ -430,15 +446,27 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
 			
 			$(data).find("page").eq(newPage).append($("<answer>"));
-			var answer1 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
-			var answer1CDATA = answer1.createCDATASection("Answer 1");
-			$(data).find("page").eq(newPage).find("answer").eq(0).append(answer1CDATA);
+			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
+			$(data).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			$(data).find("page").eq(newPage).find("answer").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var answer1CDATA = content1.createCDATASection("Answer 1");
+			$(data).find("page").eq(newPage).find("answer").eq(0).find("content").append(answer1CDATA);
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("answer").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
 			
 			$(data).find("page").eq(newPage).append($("<answer>"));
 			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
-			var answer2CDATA = answer2.createCDATASection("Answer 2");
-			$(data).find("page").eq(newPage).find("answer").eq(1).append(answer2CDATA);
+			$(data).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			$(data).find("page").eq(newPage).find("answer").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var answer2CDATA = content2.createCDATASection("Answer 2");
+			$(data).find("page").eq(newPage).find("answer").eq(1).find("content").append(answer2CDATA);
+			var difFeed2CDATA = diffFeed2.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("answer").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(data).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
@@ -466,13 +494,17 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("feedbackDisplay", "pop");
 			$(data).find("page").eq(newPage).attr("audio", "null");
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
-			if(scored == true){
-				$(data).find("page").eq(newPage).attr("attempts", 1);
-				$(data).find("page").eq(newPage).attr("graded", true);
-			}else{
-				$(data).find("page").eq(newPage).attr("attempts", 2);
-				$(data).find("page").eq(newPage).attr("graded", false);
-			}
+			
+			$(data).find("page").eq(newPage).attr("attempts", 2);
+			$(data).find("page").eq(newPage).attr("graded", true);
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
 			
 			break;
 	}
