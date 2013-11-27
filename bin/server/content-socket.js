@@ -12,7 +12,7 @@ var ContentSocket = {
     start: function(port, path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
 
-        scorm.init(logger, scormPath, contentPath, xmlContentFile);
+        //scorm.init(logger, scormPath, contentPath, xmlContentFile);
 
         var app = http.createServer(function (req, res) {
                 res.writeHead(404);

@@ -1064,19 +1064,71 @@ var SocketHandler = {
         });
     },
 
-    publishLesson: function (data, callback){
+    publishContent: function (data, callback){
         var _this = this;
-        scorm.generateSCORM(data, function(err, filepath){
-            if(err){
-                _this.logger.error(err);
-                _this._socket.emit('generalError', {title: 'Generating SCORM', message: 'TODO: generating scorm error'});                
-            }
-            else{
-                _this.logger.info("publishLesson success.");
-                _this.logger.info(filepath);
-                callback(filepath);
-            }
-        });   
+        if (data.content.type === 'program') {
+            // Don't allow this, too volatile to change the git repo at this point.
+            return;
+        }
+
+        var contentType = _this.Content.objectType(data.content.type);
+
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    //var foundPath = _this.Content.diskPath(found.path); 
+                    var scormPath = path.normalize('../core-files/scorm/');
+                    var scormDir = path.resolve(process.cwd(), scormPath);
+                    var programPath = path.normalize('../programs/' + found.path + '/');
+                    var contentPath = path.resolve(process.cwd(), programPath);                    
+                    var xmlContentFile = contentPath + '/xml/content.xml';
+
+                    scorm.init(_this.logger, scormDir, contentPath, xmlContentFile );
+
+                    var itemsToSave = [found];
+                    //set mode to production and scormVersion in content.xml file
+                    _this.Content.updateAllXml(itemsToSave, function(content, etree) {
+                        var parent = content.getParent();
+                        etree.find('./courseInfo/preferences/mode').set('value','production');
+                        etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
+                    }, function() {
+                        // Need to git commit the program, then let the user know it is done.
+                        // _this.Git.commitProgramContent(found.getProgram(), data.user.id, function(){
+                        //     //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                        // }, function(err){
+                        //     _this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                        //     _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
+                        // });
+                    });
+    
+                    //calls the generateSCORM functino in congizen-scorm.js
+                    scorm.generateSCORM(data.scorm.version, function(err, filepath){
+                        //set mode back to edit in content.xml file, not matter what
+                        _this.Content.updateAllXml(itemsToSave, function(content, etree) {
+                            var parent = content.getParent();
+                            etree.find('./courseInfo/preferences/mode').set('value','edit');
+                        }, function() {
+                            // Need to git commit the program, then let the user know it is done.
+                            //_this.Git.commitProgramContent(found.getProgram(), data.user.id, function(){
+                            // }, function(err){
+                            //     _this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                            //     _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
+                            // });
+                        });                        
+                        if(err){
+                            _this.logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Generating SCORM', message: 'TODO: generating scorm error'});                
+                        }
+                        else{
+                            _this.logger.info("publishLesson success.");
+                            _this.logger.info(filepath);
+                            callback(filepath);
+                        }
+                    });                     
+                }
+            });
+        }             
+  
     }
 };
 

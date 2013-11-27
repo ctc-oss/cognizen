@@ -549,8 +549,8 @@ var Content = {
                 SocketHandler.socket(socket).renameContent(data);
             });
 
-            socket.on('publishLesson', function (data, callback) {
-                SocketHandler.socket(socket).publishLesson(data, function(err){
+            socket.on('publishContent', function (data, callback) {
+                SocketHandler.socket(socket).publishContent(data, function(err){
                     callback(err);
                 });
             });

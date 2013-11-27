@@ -209,13 +209,18 @@ function updatePrefs(_pub){
 function clickPublish(){
 	$('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
 
-	$(data).find('mode').attr("value", 'production');
-	sendUpdate();
+	// $(data).find('mode').attr("value", 'production');
+	// sendUpdate();
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
-	cognizenSocket.emit('publishLesson',{ my : myScormVersion}, function(fdata) {
+	var publishData = {
+		content: {type: urlParams['type'], id: urlParams['id']},
+		scorm: {version : myScormVersion}
+	};
+
+	cognizenSocket.emit('publishContent', publishData, function(fdata) {
 	//this function gets called once the server is done writing to the zip file
-		$(data).find('mode').attr("value", 'edit');
+		//$(data).find('mode').attr("value", 'edit');
 		sendUpdate();
 		$('#publishLoader').remove();
 

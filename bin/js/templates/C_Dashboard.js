@@ -704,11 +704,11 @@ function C_Dashboard(_type) {
                 },
                 Publish: function(){
                     var selectedScorm = $('#scormVersion').find(':selected').text();
-                    clickPublish(myLevel, selectedScorm);
+                    clickPublish(myParent, myLevel, selectedScorm);
                     $(this).dialog("close");
                     $("#myName").remove();
                     $("#myType").remove();
-                    $("#dialog-updatePrefs").remove();                    
+                                       
                 }
             }
         });
@@ -718,34 +718,70 @@ function C_Dashboard(_type) {
         
     }
 
-    function clickPublish(level, selectedScorm){
-        var msg;
-        msg = '<div id="dialog-clickPublish" title="Publish a SCORM ' + selectedScorm + ' '+ level +'.">';
-        msg += '<p class="validateTips">Under construction. </p>';
-        msg += '<p>Functionalities to be added shortly.</p>';
-        msg += '</div>';
+    function clickPublish(parent, level, selectedScorm){
 
-         //Append the string to the stage
-        $("#stage").append(msg);     
-
-        $("#dialog-clickPublish").dialog({
-            modal: true,
-            width: 550,
-            close: function (event, ui) {
-                enableMainKeyEvents();
-                disableRenameContentKeyEvents();
+        $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
+        disableRenameContentKeyEvents()
+        var data = {
+            content: {
+                id: currentParent.attr('id'),
+                type: currentLevel
             },
-            open: function (event, ui) {
-                disableMainKeyEvents();
-                enableRenameContentKeyEvents()
+            user: {
+                id: user._id,
+                username: user.username
             },
-            buttons: {
-                Close: function () {
-                    $(this).dialog("close");
-                    $("#dialog-clickPublish").remove();
-                }
+            scorm: {
+                version: selectedScorm,
             }
-        });   
+        };
+
+        socket.emit('publishContent', data, function(fdata){
+            fdata = fdata.replace(/\\/g, '/');
+            var splitPath = fdata.split("/");
+            debugger;
+
+            var notYet = true;
+            var dlPath = "";
+            for(var i = 0; i < splitPath.length; i++){
+                if(splitPath[i] == "programs"){
+                    notYet = false;
+                }
+                if(notYet == false){
+                    dlPath += "/";
+                    dlPath += splitPath[i];
+                }
+            }            
+            socket.emit('sendPackageMail', {
+                user: user._id,
+                path: dlPath
+            });
+            $("#dialog-updatePrefs").remove(); 
+
+            $('#publishLoader').remove();
+
+            var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+data.path+' target="_blank">GET PACKAGE</a></p></div>';
+            
+            //Add to stage.
+            $("#stage").append(msg);
+        
+            //Make it a dialog
+            $("#dialog-dlPackage").dialog({
+                modal: true,
+                width: 550,
+                close: function(event, ui){
+                        $("#dialog-dlPackage").remove();
+                    },
+                buttons: {
+                    Close: function () {
+                            $(this).dialog("close");
+                    }
+                }
+            });      
+            socket.emit('refreshDashboard');                  
+
+        });
+
     }
     
     function enableRenameContentKeyEvents() {

@@ -18,7 +18,7 @@ var SCORM = {
 
 	generateSCORM: function(data, callback){
         var _this = this;
-        var scormVersion = data.my;
+        var scormVersion = data;
         //handle if scormVersion = none...
 
         readdirp(
@@ -43,7 +43,7 @@ var SCORM = {
 
                 fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
                     if(err) {
-                        logger.error("Write file error" + err);
+                        _this.logger.error("Write file error" + err);
                         callback(err, null);
                     }
                     else {
