@@ -165,11 +165,25 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 .commentOpen{
-	background-color: red;
+	position: absolute;
+	bottom: 7px;
+	left: 105px;
+	width: 30px;
+	height: 30px;
+	background: url(images/commentRed.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
 }
 
 .commentClosed{
-	background-color: green;
+	position: absolute;
+	bottom: 7px;
+	left: 105px;
+	width: 30px;
+	height: 30px;
+	background: url(images/commentGreen.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
 }
 
 #commentDisplayHolder{
