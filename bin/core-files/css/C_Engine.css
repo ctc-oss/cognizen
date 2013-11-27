@@ -531,6 +531,7 @@ td{
 	text-align: left;
 	padding: 4px;
 	background-color: #FFFFFF;
+	border: 1px solid black;
 }
 
 td.center{
