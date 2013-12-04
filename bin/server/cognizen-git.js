@@ -27,6 +27,10 @@ var Git = {
         return Utils.isWindows() ? '.git\\index.lock' : '.git/index.lock';
     },
 
+    indexFile: function() {
+        return Utils.isWindows() ? '.git\\index' : '.git/index';
+    },
+
     _gitCommit: function (program, user, init, commitMessage, success, error) {
         var _this = this;
         var path = _this.Content.diskPath(program.path);
@@ -212,6 +216,43 @@ var Git = {
 
     updateLocalContent: function(program, callback) {
         this._gitUpdateLocal(program, callback);
+    },
+
+    fixSmallIndexIssue: function(program, callback) {
+        var _this = this;
+        var path = _this.Content.diskPath(program.path);
+
+        // Make sure path is a git repo.
+        if (!fs.existsSync(path + '/.git')) {
+            callback("The program's folder is not a git repository");
+        }
+        else {
+            var exec = require('child_process').exec;
+
+            var commands = [];
+            commands.push(Utils.rmCommand() + ' ' + this.indexFile());
+            commands.push('git add .');
+
+            var command = commands.join(Utils.chainCommands());
+            _this.logger.info('Git Fix Small Index File: ' + command);
+
+            exec(command, {cwd: path}, function (err, stdout, stderr) {
+                if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
+                if (stderr) _this.logger.error('Git-STDERR: ' + stderr);
+
+                if (err) {
+                    _this.logger.error('Git-ERR: ' + err);
+                    callback(err);
+                }
+                else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+                    callback(stderr);
+                }
+                else {
+                    _this.logger.info('Index file removed and content readded');
+                    callback();
+                }
+            });
+        }
     }
 };
 
