@@ -138,7 +138,7 @@ function C_Matching(_type) {
 			$("#"+myOption).data("myMatch", $(this).attr("correct"));
 						
 			//Position each option with css
-			$("#"+myOption).css({'position':'absolute', 'top':optionStatementY});
+			$("#"+myOption).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
 			
 			
 			//Add button click action to each option
@@ -223,7 +223,7 @@ function C_Matching(_type) {
 			}
 			
 			$("#"+myAnswer).data("matchID", $(this).attr("correct"));
-			$("#"+myAnswer).css({'position':'absolute', 'top':optionAnswerY});
+			$("#"+myAnswer).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
 			
 			optionAnswerY += $("#"+myAnswer).height() + 20;	
 			iterator++;

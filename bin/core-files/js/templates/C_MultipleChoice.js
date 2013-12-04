@@ -123,7 +123,7 @@ function C_MultipleChoice(_myType) {
 				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + myType + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
 			}
 			//Position each option with css
-			$("#"+myOption).css({'position':'absolute', 'top':optionY});
+			$("#"+myOption).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});//, 'top':optionY});
 			
 			$("#" + myOption + "Check").click(function(){
 				iconClicked = true;

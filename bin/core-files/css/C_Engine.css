@@ -924,7 +924,7 @@ MULTIPLE CHOICE LAYOUTS
 #answerOptions{
 	position: absolute;
 	left: 75px;
-	width: 919px;
+	max-width: 919px;
 }
 
 /*#answerOptionsImage{
@@ -978,7 +978,6 @@ MULTIPLE CHOICE LAYOUTS
 
 .multipleChoiceImageHover{
 	background-color: #9DA6AB;
-	
 }
 
 .optionHover{
@@ -986,7 +985,7 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #eeeeee;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	padding: 4px;
+	/*padding: 4px;*/
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -996,7 +995,7 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #999999;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	padding: 4px;
+	/*padding: 4px;*/
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -1058,8 +1057,6 @@ MATCHING LAYOUTS
 	right: 30px;
 	width: 300px;
 }
-
-
 
 .matchingStatement{
 	position: absolute;
