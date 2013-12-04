@@ -110,12 +110,7 @@ function initScripts(_data){
 }
 
 function startEngine(){
-	/*$.widget( "ui.dialog", $.ui.dialog, {
-		_allowInteraction: function( event ) {
-			return !!$( event.target ).closest( "#redactor_modal" ).length || this._super();
-		}
-	});*/
-	
+	//Enable popups from within the dialogs.
 	$.widget( "ui.dialog", $.ui.dialog, {
 		_allowInteraction: function( event ) {
 			return $( event.target ).closest( ".ui-draggable" ).length;
