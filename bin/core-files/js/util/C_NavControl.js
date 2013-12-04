@@ -378,9 +378,6 @@ function updateTracking(){
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
 function updateScoring(_userSelection, _correct){
-	console.log("-------update scoring--------");
-	console.log("_userSelection = " + _userSelection);
-	console.log("_correct = " + _correct);
 	
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
