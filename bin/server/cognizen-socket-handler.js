@@ -858,15 +858,32 @@ var SocketHandler = {
                     var program = found.getProgram();
 
                     _this.Git.updateLocalContent(program, function(err){
+                        var startServer = true;
+
+                        //test
+//                        if (!err) {err = {};}
+                        //test
+
                         if (err) {
+                            var exception = false;
                             var errorMessage = JSON.stringify(err);
                             _this.logger.error(errorMessage);
-                            // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
-                            if (errorMessage.indexOf('index.lock') == -1) {
+
+                            //test
+//                            errorMessage = 'indexed.lock and stuff';
+//                            err.code = 128;
+                            //test
+
+                            exception = exception || errorMessage.indexOf('index.lock') > -1; // the elusive 'index.lock' error
+                            exception = exception || err.code === 128; // index file smaller than expected, seems to always throw this error code
+                            
+                            if (!exception) {
+                                startServer = false;
                                 _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
                             }
                         }
-                        else {
+
+                        if (startServer) {
                             var serverDetails = _this.Content.serverDetails(found);
 
                             if (serverDetails.running) {
