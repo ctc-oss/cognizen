@@ -15,6 +15,9 @@ function C_Reveal(_type) {
 	var myPageTitle;//Title of this page.
 	var myContent;//Body
 	var myAudio;
+	
+	var autoPlay = false;
+	var autoNext = false;
     
 	var hasCaption = false;
 	var hasAudio = false;
@@ -578,7 +581,7 @@ function C_Reveal(_type) {
 					});//.tooltip();
 					
 					$("#"+revealID+"ContentText").redactor({
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 					});
 						
 					revealEdit_arr.push(revealID);
@@ -586,13 +589,10 @@ function C_Reveal(_type) {
 					
 				//Style it to jQuery UI dialog
 				$("#contentEditDialog").dialog({ 	
-					//autoOpen: true,
 					modal: true,
 					width: 875,
 					height: 750,
 					resizable: false,
-					//show: 'fold',
-					//hide: 'fold',
 					close: function(){
 						$("#contentEditText").destroyEditor();
 						for(var i = 0; i < revealEdit_arr.length; i++){
@@ -627,7 +627,7 @@ function C_Reveal(_type) {
 							});
 							
 							$("#"+revealID+"ContentText").redactor({
-								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+								buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 							});
 							
 							var boxWidth = $("#"+revealID+"Width").width() + 10;
@@ -649,7 +649,7 @@ function C_Reveal(_type) {
 					
 				$("#contentEditText").redactor({
 					focus: true,
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 				});
 			}).tooltip();
 		}

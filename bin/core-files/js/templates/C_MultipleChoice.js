@@ -77,8 +77,6 @@ function C_MultipleChoice(_myType) {
 		$('#stage').append('<div id="answerOptions"></div>');
 		$("#myCanvas").append("<div id='mcSubmit'></div>");
 		
-		
-		
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
 		
 		//Set Page Title		
@@ -521,14 +519,22 @@ function C_MultipleChoice(_myType) {
 					width: standardWidth,
 					dialogClass: "no-close",
 					buttons: {
-					Proceed: function(){
-						$( this ).dialog( "close" );
+						Close: function(){
+							$( this ).dialog( "close" );
+						},
+						Proceed: function(){
+							$( this ).dialog( "close" );
+							if(isLinear == true){
+								updateTracking();
+							}				
+							$("#next").click();
+						}
+					},
+					close: function(){
+						mandatoryInteraction = false;
+						checkNavButtons();
 						$("#dialog-attemptResponse").remove();
-						if(isLinear == true){
-							updateTracking();
-						}				
-						$("#next").click();
-					}}
+					}
 				});
 			}else{
 				$( "#dialog-attemptResponse" ).dialog({
@@ -536,10 +542,11 @@ function C_MultipleChoice(_myType) {
 					width: standardWidth,
 					dialogClass: "no-close",
 					buttons: {
-					OK: function(){
-						$( this ).dialog( "close" );
-						$("#dialog-attemptResponse").remove();
-					}}
+						OK: function(){
+							$( this ).dialog( "close" );
+							$("#dialog-attemptResponse").remove();
+						}
+					}
 				});
 			}
 		}else if(feedbackDisplay == "inline"){
@@ -628,11 +635,11 @@ function C_MultipleChoice(_myType) {
 			
 		$("#questionEditText").redactor({
 			focus: true,
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 			
 		$("#feedbackEditText").redactor({
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 		//find every option in the xml - place them on the screen.
 		for (var i = 0; i < optionCount; i++){
@@ -733,12 +740,12 @@ function C_MultipleChoice(_myType) {
 		});
 					
 		$("#"+optionID+"Text").redactor({
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 		
 		if(feedbackType == "differentiated"){
 			$("#"+optionID+"DifFeedText").redactor({
-				buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+				buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 			});
 		}
 																	

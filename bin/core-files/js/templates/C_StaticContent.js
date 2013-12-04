@@ -17,7 +17,7 @@ function C_StaticContent(_type) {
     var myContent;//Body
     var myCaption;//Caption text if needed.
    // this.myAudio = "null";
-    var autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+    var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
     var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
     var hasCaption = false;
     var hasAudio = false;
@@ -686,7 +686,6 @@ function C_StaticContent(_type) {
 							saveTitleEdit();
 						}
 					}, 
-					//[ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 					close: function(){
 						$(this).remove();
 					}
@@ -696,6 +695,7 @@ function C_StaticContent(_type) {
                     focus: true,
 					buttons: ['bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
 				});
+				
 			}).tooltip();
 
 			/*******************************************************
@@ -731,7 +731,7 @@ function C_StaticContent(_type) {
 
 					$("#sidebarEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table']
+						buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 					});
 				}).tooltip();
 			}
@@ -781,7 +781,7 @@ function C_StaticContent(_type) {
 
 					$("#contentEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table'],
+						buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image'],
 						convertDivs: false
 					});
 				}).tooltip();
@@ -823,9 +823,8 @@ function C_StaticContent(_type) {
                     	
                     $("#captionEditText").redactor({
 						focus: true,
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor', '|', 'link']
 					});
-					
 					
 					for(var i = 0; i < media_arr.length; i++){	
 						addGalleryItem(i, false);
@@ -1321,8 +1320,10 @@ function C_StaticContent(_type) {
 			}
 			
 			if($("#autoplay").prop("checked") == true){
+				console.log("I'm checked beatch");
 				$(data).find("page").eq(currentPage).attr("autoplay", "true");
 			}else{
+				console.log("no check to see here");
 				$(data).find("page").eq(currentPage).attr("autoplay", "false");
 			}
 						

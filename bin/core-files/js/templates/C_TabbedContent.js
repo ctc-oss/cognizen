@@ -18,9 +18,12 @@ function C_TabbedContent(_type) {
 	this.myContent;//Body
 	this.myCaption;//Caption text if needed.
 	this.myAudio;
-	this.autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+	this.autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
 	this.autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
 	var myContent
+    
+    var autoPlay = false;
+    var autoNext = false;
     
 	var hasCaption = false;
 	var hasAudio = false;
@@ -502,7 +505,7 @@ function C_TabbedContent(_type) {
 		});//.tooltip();
 				 
 		$("#"+tabID+"ContentText").redactor({
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|','fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 						
 		tabEdit_arr.push(tabID);
@@ -591,7 +594,7 @@ function C_TabbedContent(_type) {
 					
 				$("#contentEditText").redactor({
 					focus: true,
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 				});
 			}).tooltip();
 			

@@ -17,7 +17,7 @@ function C_LessonTitle(_type) {
     var stageW = $("#stage").width();
     var stageH = $("#stage").height();
     var myAudio;
-	var autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+	var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
 	var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
 	var hasAudio = false;
 	var audioShim = 0;

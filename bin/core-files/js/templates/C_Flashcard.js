@@ -17,7 +17,7 @@ function C_Flashcard(_type) {
 	var myContent;//Body
 	var myCaption;//Caption text if needed.
 	var myAudio;
-	var autoplay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+	var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
 	var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
     
 	var hasCaption = false;
@@ -283,8 +283,7 @@ function C_Flashcard(_type) {
 				
 				$("#contentEditText").redactor({
 					focus: true,
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
-				});
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']				});
 						
 				var myHeight;
 				
@@ -528,11 +527,11 @@ function C_Flashcard(_type) {
 		});
 							
 		$("#"+cardID+"FrontText").redactor({
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 				
 		$("#"+cardID+"BackText").redactor({
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 		});
 		
 		cardEdit_arr.push(cardID);

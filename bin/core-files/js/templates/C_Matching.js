@@ -350,6 +350,8 @@ function C_Matching(_type) {
 					width: 550,
 					dialogClass: "no-close",
 					close: function(event, ui){
+						mandatoryInteraction = false;
+						checkNavButtons();
 						$("#dialog-attemptResponse").remove();
 					},
 					buttons: {
@@ -359,7 +361,9 @@ function C_Matching(_type) {
 						},
 						Proceed: function(){
 							$( this ).dialog( "close" );
-							$("#dialog-attemptResponse").remove();
+							if(isLinear == true){
+								updateTracking();
+							}	
 							$("#next").click();
 						}
 					}
@@ -480,11 +484,11 @@ function C_Matching(_type) {
 				$("#stage").append(msg);
 				
 				$("#questionEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 				});
 				
 				$("#feedbackEditText").redactor({
-					buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor']
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 				});
 				optionCount = option_arr.length;
 				//find every option in the xml - place them on the screen.
@@ -504,7 +508,7 @@ function C_Matching(_type) {
 					$("#myOptionList").append(msg);
 					
 					$("#"+optionID+"Text").redactor({
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 					});
 					
 					$("#"+optionLabel+"Remove").click(function(){
@@ -536,7 +540,7 @@ function C_Matching(_type) {
 					$("#myAnswerList").append(msg);
 					
 					$("#"+answerID+"Text").redactor({
-						buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
+						buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 					});
 					
 					$("#"+answerID+"Remove").click(function(){
@@ -585,7 +589,7 @@ function C_Matching(_type) {
 						
 							
 							$("#"+optionID+"Text").redactor({
-								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', 'fontcolor', 'backcolor']
+								buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 							});
 							
 							$("#" +optionLabel+"Remove").click(function(){
@@ -622,7 +626,7 @@ function C_Matching(_type) {
 							$("#myAnswerList").append(msg);
 							
 							$("#"+answerID+"Text").redactor({
-								buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
+								buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
 							});
 							
 							$("#" +answerID+"Remove").click(function(){
