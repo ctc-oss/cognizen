@@ -1134,33 +1134,11 @@ var SocketHandler = {
                     });
 					
 					_this._copyJSFiles(contentPath, function () {
-						//calls the generateSCORM functino in congizen-scorm.js
-	                    scorm.generateSCORM(data.scorm.version, function(err, filepath){
-	                        //set mode back to edit in content.xml file, not matter what
-							_this.logger.info("in the scorm generate callback");
-	                        _this.Content.updateAllXml(itemsToSave, function(content, etree) {
-	                            var parent = content.getParent();
-	                            etree.find('./courseInfo/preferences/mode').set('value','edit');
-	                        }, function() {
-	                           
-	                        });                        
-	                        if(err){
-	                            _this.logger.error(err);
-	                            _this._socket.emit('generalError', {title: 'Generating SCORM', message: 'TODO: generating scorm error'});                
-	                        }
-	                        else{
-	                            _this.logger.info("publishLesson success.");
-	                            _this.logger.info(filepath);
-	                            console.log("---------- filepath = " + filepath);
-	                            callback(filepath);
-	                        }
-	                    }, function(){
-		                    _this.logger.info("error kicked");
-	                    });  
+
 					});
 					
                     //calls the generateSCORM functino in congizen-scorm.js
-                    /*scorm.generateSCORM(data.scorm.version, function(err, filepath){
+                    scorm.generateSCORM(data.scorm.version, function(err, filepath){
                         //set mode back to edit in content.xml file, not matter what
                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                             var parent = content.getParent();
@@ -1183,7 +1161,7 @@ var SocketHandler = {
                             console.log("---------- filepath = " + filepath);
                             callback(filepath);
                         }
-                    }); */                    
+                    });                   
                 }
             });
         }             
