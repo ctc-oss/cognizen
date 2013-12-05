@@ -239,6 +239,7 @@ var SCORM = {
         );
 
         //add imsmanifest.xml file
+        archive.append(fs.createReadStream("../core-files/pub-html"), { name: 'index.html'});
         archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
         archive.finalize(function(err, written) {

@@ -419,6 +419,22 @@ var SocketHandler = {
             callback(err);
         });
     },
+    
+    _copyJSFiles: function (content, callback) {
+        var _this = this;
+        var baseWritePath = path.normalize(_this.Content.diskPath(content));
+        
+        //var tokenz = content.path.split("/");
+        //var programName = tokenz[0];
+		_this.logger.info("baseWritePath = " + baseWritePath);
+        var root = path.normalize('../core-files/js');
+
+        //FileUtils.rmdir(baseWritePath);
+
+        FileUtils.copyDir(root, content, null, function (err) {
+            if (err) callback(err);
+        });
+    },
 
     _copyContentFiles: function (content, callback) {
         var _this = this;
@@ -434,7 +450,7 @@ var SocketHandler = {
             if (err) callback(err);
 
             FileUtils.copyDir(root, baseWritePath, function (path) {
-                return (path.endsWith('core-files') || path.contains("js") || path.contains("server") || path.contains("xml") || path.contains("packages"));
+                return (path.endsWith('core-files') || /*path.contains("js") ||*/ path.contains("server") || path.contains("xml") || path.contains("packages"));
             }, function (err) {
                 //Set the lesson and course names in the xml.
                 //Once xml is copied to new lesson location -
@@ -1099,7 +1115,7 @@ var SocketHandler = {
                     var programPath = path.normalize('../programs/' + found.path + '/');
                     var contentPath = path.resolve(process.cwd(), programPath);                    
                     var xmlContentFile = contentPath + '/xml/content.xml';
-
+					
                     scorm.init(_this.logger, scormDir, contentPath, xmlContentFile );
 
                     var itemsToSave = [found];
@@ -1117,7 +1133,11 @@ var SocketHandler = {
                         //     _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
                         // });
                     });
-    
+					
+					_this._copyJSFiles(contentPath, function () {
+					
+					});
+					
                     //calls the generateSCORM functino in congizen-scorm.js
                     scorm.generateSCORM(data.scorm.version, function(err, filepath){
                         //set mode back to edit in content.xml file, not matter what
@@ -1139,6 +1159,7 @@ var SocketHandler = {
                         else{
                             _this.logger.info("publishLesson success.");
                             _this.logger.info(filepath);
+                            console.log("---------- filepath = " + filepath);
                             callback(filepath);
                         }
                     });                     

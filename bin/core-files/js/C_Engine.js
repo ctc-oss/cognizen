@@ -27,7 +27,7 @@ windowHeight = $(window).height();
 var urlParams;
 
 var dragFile = false;
-
+var corePath = "../../../../core-files/";
 
 
 /****************************************************
@@ -55,7 +55,9 @@ function initScripts(_data){
 	//console.log(data);
 	totalPages = $(data).find('page').length;
 	mode = $(data).find('mode').attr("value");
-	
+	if(mode == "production" || mode == "Production" || mode == "prod"){
+		corePath = "";
+	}
     // This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
     require.config({
         waitSeconds: 0
@@ -63,49 +65,49 @@ function initScripts(_data){
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	//TODO: needs to be updated to build the required files based on the output e.g. SCORM
 	require([		//Funtionality/utilities
-				"js/libs/jqueryui/jquery-ui.min.js",
-				"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
-				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-				"js/libs/jquery.nanoscroller.min.js", //Add the hover mac like scrollbars
-				"js/libs/overthrow.min.js",
-				"js/libs/socket-client/socket.io.min.js", //required for edit mode.
-				"js/libs/redactor/redactor.js", //Inline content editing tool
-				"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
-				"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
-				"js/libs/greensock/TweenMax.min.js", //Our animation library.
-				"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
-				"js/libs/jquery.nestable.js",
+				corePath +"js/libs/jqueryui/jquery-ui.min.js",
+				corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
+				corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
+				corePath +"js/libs/jquery.nanoscroller.min.js", //Add the hover mac like scrollbars
+				corePath +"js/libs/overthrow.min.js",
+				corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
+				corePath +"js/libs/redactor/redactor.js", //Inline content editing tool
+				corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
+				corePath +"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
+				corePath +"js/libs/greensock/TweenMax.min.js", //Our animation library.
+				corePath +"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
+				corePath +"js/libs/jquery.nestable.js",
 				//Import Cognizen layout templates
-				"js/templates/C_LessonTitle.js", 
-				"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
-				"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
-				"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
-				"js/templates/C_Flashcard.js",
-				"js/templates/C_Unity3D.js", //Template for importing Unity 3D swf files - requires more than regular swf
+				corePath +"js/templates/C_LessonTitle.js", 
+				corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
+				corePath +"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
+				corePath +"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
+				corePath +"js/templates/C_Flashcard.js",
+				corePath +"js/templates/C_Unity3D.js", //Template for importing Unity 3D swf files - requires more than regular swf
 				//Import Cognizen Knowledge Check templates
-				"js/templates/C_MultipleChoice.js", //Multiple choice quizzing
-				"js/templates/C_MultipleChoiceImage.js",
-				"js/templates/C_Matching.js", //Matching quizzing
+				corePath +"js/templates/C_MultipleChoice.js", //Multiple choice quizzing
+				corePath +"js/templates/C_MultipleChoiceImage.js",
+				corePath +"js/templates/C_Matching.js", //Matching quizzing
 				//Import Cognizen Utilities
-				"js/util/C_Index.js",
-				"js/util/C_AddPage.js",
-				"js/util/C_Glossary.js",
-				"js/util/C_DocList.js",
-				"js/util/C_ScrubContent.js",
-				"js/util/C_NavControl.js",
-				"js/util/C_UtilFunctions.js",
-				"js/util/C_Sockets.js",
-				"js/util/C_SCORM.js",
-				"js/util/C_Comment.js",
-				"js/libs/jquery.corner.js",
-				"js/libs/modernizr.js",
-				"js/libs/siofu/client.js",
-				"js/libs/pretty-data.js",
+				corePath +"js/util/C_Index.js",
+				corePath +"js/util/C_AddPage.js",
+				corePath +"js/util/C_Glossary.js",
+				corePath +"js/util/C_DocList.js",
+				corePath +"js/util/C_ScrubContent.js",
+				corePath +"js/util/C_NavControl.js",
+				corePath +"js/util/C_UtilFunctions.js",
+				corePath +"js/util/C_Sockets.js",
+				corePath +"js/util/C_SCORM.js",
+				corePath +"js/util/C_Comment.js",
+				corePath +"js/libs/jquery.corner.js",
+				corePath +"js/libs/modernizr.js",
+				corePath +"js/libs/siofu/client.js",
+				corePath +"js/libs/pretty-data.js",
 				//Give mouse super powers.
-				"js/libs/jquery.mousewheel-3.0.6.pack.js",
+				corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
 				//Lightbox for media popups and galleries.
-				"js/libs/fancybox/jquery.fancybox.js",
-				"js/libs/fancybox/jquery.fancybox-thumbs.js"
+				corePath +"js/libs/fancybox/jquery.fancybox.js",
+				corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
 	], startEngine);
 }
 
