@@ -1159,6 +1159,7 @@ var SocketHandler = {
                             _this.logger.info("publishLesson success.");
                             _this.logger.info(filepath);
                             console.log("---------- filepath = " + filepath);
+                            FileUtils.rmdir(contentPath + "/js");
                             callback(filepath);
                         }
                     });                   

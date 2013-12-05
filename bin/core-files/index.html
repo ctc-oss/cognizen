@@ -16,15 +16,20 @@
    
 		<link href="css/jqueryui/cognizen-content/jquery-ui.min.css" rel="stylesheet"></link>
 		<!--CSS for the media player. -->
-		<link href="../../../../core-files/js/libs/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link> 
+		<link href="js/libs/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link> 
 		<!--CSS for the text editor controls. -->
-		<link href="../../../../core-files/js/libs/redactor/redactor.css" rel="stylesheet" type="text/css"></link> 
+		<link href="js/libs/redactor/redactor.css" rel="stylesheet" type="text/css"></link> 
 		<link href="css/C_Engine.css" rel="stylesheet" type="text/css"/>
 
 		<!------------------------------  LOAD SCRIPTS  ------------------------------>
-		<script type="text/javascript" src="../../../../core-files/js/libs/jquery-1.10.2.min.js"></script>	
+		<script type="text/javascript" src="js/libs/jquery.min.js"></script>	
 		<!-- Load everything else - what's loading can be found in C_Engine.js - Step 2. -->
-		<script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js"></script>	
+		<script data-main="js/C_Engine" src="js/libs/require.js"></script>
+		
+		<!--  This loads the proper scripts if this is running outside of the authoring environment --> 
+		<script>
+			window.jQuery || document.write('<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script><link href="../../../../core-files/js/libs/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css">\x3C/link><link href="../../../../core-files/js/libs/redactor/redactor.css" rel="stylesheet" type="text/css"></link> ');
+		</script>	
 	</head>
 	<body>
 	</body>
