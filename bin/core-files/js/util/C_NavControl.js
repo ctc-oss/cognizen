@@ -34,6 +34,11 @@ var hoverSubNav = false;
 var nextBack = false;
 var nextDisabled = true;
 var backDisabled = false;
+var helpButton = false;
+var helpURL = "";
+var printButton = false;
+var referenceButton = false;
+var referenceURL = "";
 
 function checkNav(){
 	//Style is tied to the selected jquery ui theme set in index.
@@ -50,6 +55,63 @@ function checkNav(){
 		pageCount = true;
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
+	}
+
+	//Check if we are using help button - if so, set it up.
+	//Positioning can be updated in css/C_Engine.css
+	helpButton = $(data).find('help').attr('value');
+	if(helpButton == "true"){
+		helpButton = true;
+		$('#myCanvas').append("<button id='help'>help</button>");
+		//Style the Help button and give it its listener
+		$("#help").button({
+			icons:{
+				primary: 'ui-icon-help'
+			}
+		});
+		//grab URL of help file and attach click action
+		helpURL = $(data).find('help').attr('url');
+		$("#help").click(function() {
+			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, width=807, height=600');
+		});
+	}
+
+	//Check if we are using print button - if so, set it up.
+	//Positioning can be updated in css/C_Engine.css
+	printButton = $(data).find('print').attr('value');
+	if(printButton == "true"){
+		printButton = true;
+		$('#myCanvas').append("<button id='print'>print</button>");
+		//Style the Print button and give it its listener
+		$("#print").button({
+			icons:{
+				primary: 'ui-icon-print'
+			}
+		});
+		//attach print action
+		$("#print").click(function() {
+			window.print();
+			return false;
+		});
+	}
+
+	//Check if we are using reference button - if so, set it up.
+	//Positioning can be updated in css/C_Engine.css
+	referenceButton = $(data).find('reference').attr('value');
+	if(referenceButton == "true"){
+		referenceButton = true;
+		$('#myCanvas').append("<button id='reference'>reference</button>");
+		//Style the Reference button and give it its listener
+		$("#reference").button({
+			icons:{
+				primary: 'ui-icon-document'
+			}
+		});
+		//grab URL of reference file and attach click action
+		referenceURL = $(data).find('reference').attr('url');
+		$("#reference").click(function() {
+			window.open(referenceURL, 'referenceWindow', 'menubar=0, status=0, toolbar=0, width=817, height=600');
+		});
 	}
 
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
