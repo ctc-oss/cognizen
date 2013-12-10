@@ -517,12 +517,23 @@ function C_StaticContent(_type) {
         $('#audioPlayer').mediaelementplayer({
             success: function(player, node) {
 
+				// set volume and mute from persistant variable
+				player.setVolume(audioVolume);
+				player.setMuted(audioMute);
+
+				// update variables when the volume or mute changes
+                player.addEventListener('volumechange', function(e) {
+                	audioVolume = player.volume;
+                	audioMute = player.muted;
+                }, false);
+                    
+
                 if(autoNext == true){
                     player.addEventListener('ended', function(e) {
                         hasEnded();
                     }, false);
                 }
-                if(autoPlay == true){
+                if(autoPlay && !audioMute && (audioVolume > 0)){
                     player.play();
                 }
             }

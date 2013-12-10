@@ -29,6 +29,8 @@ var urlParams;
 var dragFile = false;
 var corePath = "../../../../core-files/";
 
+var audioVolume = 0.8; //persistant audio volume between pages
+var audioMute = false; //persistant audio mute state between pages
 
 /****************************************************
 *********************************** STEP 1 - LOAD XML
