@@ -195,9 +195,17 @@ function C_MultipleChoice(_myType) {
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:Power2.easeIn, onComplete:checkMode});
 		}
 	}
+	
+	
+	//Called if the user closes the popup instead of proceed
+	function disableOptions(){
+		for(var i = 0; i < option_arr.length; i++){
+			option_arr[i].unbind();
+		}
+	}
 
 
-/*****************************************************************************************************************************************************************************************************************
+	/*****************************************************************************************************************************************************************************************************************
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      MEDIA FUNCTIONALITY
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -354,7 +362,7 @@ function C_MultipleChoice(_myType) {
     }
     /////////////END of loadVisualMedia
 
-	
+	//questionResponse_arr is in....
 	function checkQuestionComplete(){
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
@@ -367,29 +375,23 @@ function C_MultipleChoice(_myType) {
 	
 	function showUserAnswer(){
 		console.log("showUserAnswer");
-		console.log("questionResponse_arr: " + questionResponse_arr.length);
+		console.log(questionResponse_arr.length);
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
-				console.log("found for this page");
 				var temp_arr = questionResponse_arr[i].userAnswer;
-				console.log("temp_arr.length = " + temp_arr.length);
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
 					option_arr[temp_arr[k]].find("input").prop("checked", "checked");
-					console.log("made it in this far");
 					if(option_arr[temp_arr[k]].find('input').attr("value") == "false"){
-						console.log("should place an x");
 						tempCorrect = false;
 						option_arr[temp_arr[k]].addClass("optionIncorrect");
 					}else{
-						console.log("should place a y");
 						option_arr[temp_arr[k]].addClass("optionCorrect");
 					}
 				}
 				if(questionResponse_arr[i].correct == false){
 					for(var j = 0; j < option_arr.length; j++){
 						if(option_arr[j].find("input").attr("value") == "true"){
-							console.log("should place a check");
 							option_arr[j].addClass("optionCorrect");
 						}
 					}
@@ -492,18 +494,18 @@ function C_MultipleChoice(_myType) {
 		}
 		
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
+			var selected_arr = [];
+			for(var i = 0; i < option_arr.length; i++){
+				if(option_arr[i].find("input").prop("checked") == true){
+					selected_arr.push(i);
+				}	
+			}
 			if(scored == true){
-				var selected_arr = [];
-				for(var i = 0; i < option_arr.length; i++){
-					if(option_arr[i].find("input").prop("checked") == true){
-						selected_arr.push(i);
-					}	
-				}
 				updateScoring(selected_arr, tempCorrect);
 				mandatoryInteraction = false;
 				checkNavButtons();
-				showUserAnswer();
 			}
+			showUserAnswer();
 		}
 		
 		$("#stage").append(msg);
@@ -520,6 +522,7 @@ function C_MultipleChoice(_myType) {
 					dialogClass: "no-close",
 					buttons: {
 						Close: function(){
+							disableOptions();
 							$( this ).dialog( "close" );
 						},
 						Proceed: function(){

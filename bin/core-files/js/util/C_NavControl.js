@@ -330,7 +330,7 @@ if($(data).find('scored').attr("value") == 'true'){
 	
 	questionResponse_arr = [];
 	for(var i = 0; i < totalPages; i++){
-		if($(data).find("page").eq(i).attr('graded') == "true"){
+		if($(data).find("page").eq(i).attr('graded')){
 			var userSelection_arr = [];
 			var question_obj = new Object();
 			question_obj.complete = false;
