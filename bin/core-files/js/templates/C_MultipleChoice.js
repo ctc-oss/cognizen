@@ -374,8 +374,6 @@ function C_MultipleChoice(_myType) {
 	}
 	
 	function showUserAnswer(){
-		console.log("showUserAnswer");
-		console.log(questionResponse_arr.length);
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
 				var temp_arr = questionResponse_arr[i].userAnswer;
