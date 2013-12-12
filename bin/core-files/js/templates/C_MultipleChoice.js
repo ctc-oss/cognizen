@@ -450,7 +450,11 @@ function C_MultipleChoice(_myType) {
 					if(option_arr[i].find("input").prop("checked") == true){
 						feedbackMsg += "<p><b>You selected</b>: " + $(data).find("page").eq(currentPage).find("option").eq(i).find("content").text() + ", ";
 						if($(data).find("page").eq(currentPage).find("option").eq(i).attr("correct") == "true"){
-							feedbackMsg += "that was a correct response.</p>"
+							if(myType == "multipleSelect"){
+								feedbackMsg += "that was a correct response.</p>"
+							}else{
+								feedbackMsg += "that was the correct response.</p>"
+							}
 						}else{
 							feedbackMsg += "that was an incorrect response.</p>"
 						}

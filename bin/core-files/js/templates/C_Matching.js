@@ -323,7 +323,7 @@ function C_Matching(_type) {
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="That is Correct."></div>';
 			}else{
-				
+				msg = '<div id="dialog-attemptResponse" class="correct" title="That is not correct."></div>';
 			}
 		}else if(feedbackType == 'standardized'){
 			if(tempCorrect == true){
