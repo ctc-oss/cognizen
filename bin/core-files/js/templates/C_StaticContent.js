@@ -51,6 +51,11 @@ function C_StaticContent(_type) {
     var subsLink;
 	
 	var galleryEdit_arr = [];
+	
+	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3", "svg"];
+    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
+    var convertableVectorTypes = ["eps"];
+    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -894,40 +899,11 @@ function C_StaticContent(_type) {
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
 			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
-                //if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf"){	
+                //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
 					if(event.success == true){
 						if(myExt == "mp3" || myExt == "MP3"){
-							var audioText;
-							audioText = myFile;
-								
-							var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
-							msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
-							msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
-							msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
-							msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
-							msg += "</div>";
-								
-							$("#stage").append(msg);
-								
-							//Style it to jQuery UI dialog
-							$("#audioEditDialog").dialog({
-								autoOpen: true,
-								modal: true,
-								width: 500,
-								height: 200,
-								buttons:{
-									Cancel: function(){
-										$(this).dialog("close");
-									},
-									Save: function(){
-										saveAudioEdit();
-									}
-								},
-								close: function(){
-									$(this).remove();
-								}
-							});
+							launchAudioDialog(myFile, true)
 						}else{
 							saveImageEdit(myFile, true);
 						}
@@ -969,7 +945,7 @@ function C_StaticContent(_type) {
 			siofu.addEventListener("start", function(event){
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
-				if(myExt == "mp3"){
+				if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
 					if (type != "top" && type != "bottom"){
 						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
@@ -1032,46 +1008,7 @@ function C_StaticContent(_type) {
 				}else{
 	            	audioText = myAudio;
 				}
-				
-				var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
-				msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
-				msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
-				msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
-				msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
-				msg += "</div>";
-								
-				$("#stage").append(msg);
-				
-				if(hasSubs == true){
-					$("#subs").attr("checked", "checked");
-				}
-								
-				if(autoPlay == true){
-					$("#autoplay").prop("checked", "checked");
-				}
-								
-				if(autoNext == true){
-					$("#autonext").prop("checked", "checked");
-				}
-				console.log("IN the unexpected");			
-				//Style it to jQuery UI dialog
-				$("#audioEditDialog").dialog({
-					autoOpen: true,
-					modal: true,
-					width: 500,
-					height: 200,
-					buttons:{
-						Cancel: function(){
-							$(this).dialog("close");
-						},
-						Save: function(){
-							saveAudioEdit();
-						}
-					},
-					close: function(){
-						$(this).remove();
-					}
-				});
+				launchAudioDialog(audioText, false);
 			}).tooltip();
 		}
 		$(this).scrubContent();
@@ -1082,19 +1019,69 @@ function C_StaticContent(_type) {
 	}
 	
 	function mediaInfo(data){
-		var splitDim = data.video_details[2].split("x");
-		mediaWidth = splitDim[0];
-		mediaHeight = splitDim[1];
+		console.log(data);
+		if(data.video != ""){
+			var splitDim = data.video_details[2].split("x");
+			mediaWidth = splitDim[0];
+			mediaHeight = splitDim[1];
+		}
 	}
 	
 	function mediaConversionComplete(data){
 		var splitPath = data.split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
-		saveImageEdit(mediaPath, true);
+		var splitType = splitPath[last-1].split(".");
+		var type = splitType[splitType.length-1];
+		if(type == "mp4"){
+			saveImageEdit(mediaPath, true);
+		}else if(type == "mp3"){
+			launchAudioDialog(mediaPath, true);
+		}
 		$("#mediaLoader").remove();
 	}
-
+	
+	function launchAudioDialog(audioText, dragged){
+		var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
+		msg += "<div id='audioEditDialog' title='Input Audio Path'><input id='audioPath' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:100%;'/>";
+		msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input>";
+		msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input>";
+		msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input>";
+		msg += "</div>";
+								
+		$("#stage").append(msg);
+		if(dragged == false){		
+			if(hasSubs == true){
+				$("#subs").attr("checked", "checked");
+			}
+								
+			if(autoPlay == true){
+				$("#autoplay").prop("checked", "checked");
+			}
+								
+			if(autoNext == true){
+				$("#autonext").prop("checked", "checked");
+			}
+		}				
+		//Style it to jQuery UI dialog
+		$("#audioEditDialog").dialog({
+			autoOpen: true,
+			modal: true,
+			width: 500,
+			height: 200,
+			buttons:{
+				Cancel: function(){
+					$(this).dialog("close");
+				},
+				Save: function(){
+					saveAudioEdit();
+				}
+			},
+			close: function(){
+				$(this).remove();
+			}
+		});
+	}
 
 	/**********************************************************************
      **Save Title Edit - save updated page title text to content.xml
@@ -1286,7 +1273,7 @@ function C_StaticContent(_type) {
 						fadeComplete();
 					}
 			});
-		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF"){
+		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "svg" || mediaType == "SVG"){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
 		}else{
 				 
@@ -1299,7 +1286,7 @@ function C_StaticContent(_type) {
 		$("#imgDialog").remove();
 	};
 
-	 /**********************************************************************
+	/**********************************************************************
 	**Save Audio Edit
 	**********************************************************************/
 	/**saveAudioEdit
@@ -1311,7 +1298,7 @@ function C_StaticContent(_type) {
 	   	var last = parts.length;
 
 	   	var fileType = (parts[last - 1]);
-	   	if(fileType == "mp3"){
+	   	if(fileType.toLowerCase() == "mp3"){
             if(audioPath == "yourFile.mp3"){
                 $(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
@@ -1426,7 +1413,7 @@ function C_StaticContent(_type) {
 			}
 			siofu.destroy();
 			$("#audioDrop").unbind();
-			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionProgress);
+			cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress);
 			cognizenSocket.removeListener('mediaInfo', mediaInfo);
 			cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete);
 			

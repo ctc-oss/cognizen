@@ -76,7 +76,10 @@ var SocketHandler = {
                                     var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + event.file.name);
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
-                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
+                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3", "svg"];
+                                    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
+                                    var convertableVectorTypes = ["eps"];
+                                    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
                                         var stream = fs.createReadStream(event.file.pathName);
                                         stream.pipe(fs.createWriteStream(contentPath));
@@ -87,50 +90,74 @@ var SocketHandler = {
 
                                         stream.on('close', function(){
                                             if (!had_error) fs.unlink(event.file.pathName);
-                                        })
+                                        });
                                         //Git commit
-                                    } else {
+                                    } else if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || /*convertableVectorTypes.indexOf(mediaType.toLowerCase()) >= 0 ||*/ convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
                                         //Convert files
-                                        var convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp4';
-                                        var convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp4';
-                                        var convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                                        var convertedFileName;
+                                        var convertedPathName;
+                                        var convertedPath;
+                                        //VIDEO CONVERSION
+                                        if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                        	convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp4';
+											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp4';
+											convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                                        	var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+                                            	.toFormat('mp4')
+												.withVideoBitrate('1200k')
+												.withVideoCodec('libx264')
+												.withAudioBitrate('160k')
+												.withAudioCodec('libfaac')
+												.withAudioChannels(2)
 
-                                        var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
-                                            .toFormat('mp4')
-                                            .withVideoBitrate('1200k')
-                                            .withVideoCodec('libx264')
-                                            .withAudioBitrate('160k')
-                                            .withAudioCodec('libfaac')
-                                            .withAudioChannels(2)
-
-                                            .onCodecData(function (codecinfo) {
-                                                _this.logger.info(codecinfo);
-                                                _this._socket.emit('mediaInfo', codecinfo);
-                                            })
-                                            .onProgress(function (progress) {
-                                                _this._socket.emit('mediaConversionProgress', progress);
-                                            })
+												.onCodecData(function (codecinfo) {
+                                                	_this.logger.info(codecinfo);
+													_this._socket.emit('mediaInfo', codecinfo);
+												})
                                             /*.takeScreenshots({count: 1, timemarks: ['5']}, capPath, function(err, filenames) {
                                              console.log("fileNames = " + filenames);
                                              console.log('screenshots were saved');
                                              })*/
-                                            .saveToFile(convertedPathName, function (stdout, stderr) {
-                                               if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
-                                               if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
-											   
-											   var stream = fs.createReadStream(convertedPathName);
-                                               stream.pipe(fs.createWriteStream(convertedPath));
-											   
-											   var had_error = false;
-											   stream.on('error', function(err){
-												   had_error = true;
-											   });
-											   
-											   stream.on('close', function(){
-	                                               if (!had_error) fs.unlink(event.file.pathName);
-	                                               fs.unlink(convertedPathName, function (err) {
-                                                      _this._socket.emit('mediaConversionComplete', convertedPath);
-                                                });
+										}/*else if(convertableVectorTypes.indexOf(mediaType.toLowerCase()) >= 0){
+											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.svg';
+											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.svg';
+											convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.svg';
+											var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+                                            	.toFormat('svg')
+										}*/else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
+											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
+											convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
+											var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+                                            	.toFormat('mp3')
+												.withAudioCodec('libmp3lame')
+												.withAudioChannels(2)
+
+												.onCodecData(function (codecinfo) {
+                                                	_this.logger.info(codecinfo);
+													_this._socket.emit('mediaInfo', codecinfo);
+												})
+										}
+                                        proc.onProgress(function (progress) {
+                                        	_this._socket.emit('mediaConversionProgress', progress);
+										})
+											.saveToFile(convertedPathName, function (stdout, stderr) {
+	                                        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+	                                            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+												   
+												var stream = fs.createReadStream(convertedPathName);
+	                                            stream.pipe(fs.createWriteStream(convertedPath));
+												   
+												var had_error = false;
+												stream.on('error', function(err){
+													had_error = true;
+												});
+												   
+												stream.on('close', function(){
+		                                        if (!had_error) fs.unlink(event.file.pathName);
+		                                        fs.unlink(convertedPathName, function (err) {
+	                                            	_this._socket.emit('mediaConversionComplete', convertedPath);
+	                                            });
 											})
 										});
                                     }
