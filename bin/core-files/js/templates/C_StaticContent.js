@@ -300,7 +300,8 @@ function C_StaticContent(_type) {
 
             //Check Poster
             if(hasPoster == true){
-                vidHTMLString += "poster='"+posterLink+"'>";
+            	console.log("posterLink = " + posterLink);
+                vidHTMLString += "poster='media/"+posterLink+"'>";
             }else{
                 vidHTMLString += ">";
             }
@@ -327,7 +328,7 @@ function C_StaticContent(_type) {
 
             //Check subs - if subs at track node.
             if(hasSubs == true){
-                vidHTMLString += "<track kind='subtitles' src='" + subLink + "' srclang='en'/>"
+                vidHTMLString += "<track kind='subtitles' src='media/" + subLink + "' srclang='en'/>"
             }
 
             vidHTMLString += "</video>";
@@ -1234,7 +1235,9 @@ function C_StaticContent(_type) {
 						}else{
 							$(data).find("page").eq(currentPage).attr("subs", "null");
 						}
-
+						
+						console.log("strippedPath = " + strippedPath);
+						
 						if($("#poster").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
 						}else{
