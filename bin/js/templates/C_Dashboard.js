@@ -349,6 +349,8 @@ function C_Dashboard(_type) {
 
                 $("#myUserAdd").click(function () {
                 	assignParent = $(this).parent().parent();
+                	console.log(myItem.data('id'));
+                	console.log($(this).parent().parent().attr('id'));
                     getUserList($(this).parent().parent().attr('id'));
                 }).hover(
                     function () {
