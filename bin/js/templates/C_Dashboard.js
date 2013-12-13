@@ -186,6 +186,7 @@ function C_Dashboard(_type) {
             $content.data('type', content.type);
             $content.data('path', content.path);
             $content.data('permission', content.permission);
+	        console.log($content.data('permission');
 	        addRollovers($content);
         };
 
@@ -256,6 +257,7 @@ function C_Dashboard(_type) {
      *****************************************************************************/
     function addRollovers(myItem) {
         //ADD Program Level Buttons
+        console.log("add rollover is getting: " + myItem.data('permission'));
         myItem.find("span").first().hover(
             function () {
                 if (myItem.data('type') == "program") {
