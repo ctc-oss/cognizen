@@ -186,7 +186,7 @@ function C_Dashboard(_type) {
             $content.data('type', content.type);
             $content.data('path', content.path);
             $content.data('permission', content.permission);
-	        console.log($content.data('permission');
+	        console.log($content.data('permission'));
 	        addRollovers($content);
         };
 
