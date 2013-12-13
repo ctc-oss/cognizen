@@ -114,6 +114,26 @@ function checkNav(){
 		});
 	}
 
+	//Check if we are using home button - if so, set it up.
+	//Positioning can be updated in css/C_Engine.css
+	homeButton = $(data).find('homeButton').attr('value');
+	if(homeButton == "true"){
+		homeButton = true;
+		$('#myCanvas').append("<button id='homeButton'>home</button>");
+		//Style the Print button and give it its listener
+		$("#homeButton").button({
+			icons:{
+				primary: 'ui-icon-home'
+			}
+		});
+		//attach home action (go to first page)
+		$("#homeButton").click(function() {
+			currentPage = 0;
+			currentTemplate.destroySelf();
+		});
+	}
+
+
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
 	//if so, set them up.
 	transition = $(data).find('transition').attr('value');
