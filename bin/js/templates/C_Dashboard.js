@@ -42,7 +42,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
-            //console.log(data);
             $("#preloadholder").remove();
             proj = data;
             buildTemplate();
@@ -171,6 +170,7 @@ function C_Dashboard(_type) {
             $project.data('id', project.id);
             $project.data('type', project.type);
             $project.data('path', project.path);
+            $project.data('permission', project.permission);
             tree_arr.push(project)
         }
 
@@ -185,17 +185,8 @@ function C_Dashboard(_type) {
             $content.data('id', content.id);
             $content.data('type', content.type);
             $content.data('path', content.path);
-
-            if (content.type == 'program') {
-                $content.find("ul").first().listorder();
-                addRollovers($content, "root");
-            } else if (content.type == 'course') {
-                $content.find("ul").first().listorder();
-                addRollovers($content, "course");
-            } else {
-                addRollovers($content, "project");
-            }
-
+            $content.data('permission', content.permission);
+	        addRollovers($content);
         };
 
         $('#projList').treeview({
@@ -263,39 +254,37 @@ function C_Dashboard(_type) {
     /*****************************************************************************
      ADD ROLOVERS TO THE TREE MENU ITEMS
      *****************************************************************************/
-    function addRollovers(myItem, myLevel) {
+    function addRollovers(myItem) {
         //ADD Program Level Buttons
         myItem.find("span").first().hover(
             function () {
-                if (myLevel == "root") {
+                if (myItem.data('type') == "program") {
                     $(this).addClass("programHover");
-                    //$(this).append("<div id='myPref' class='programPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " program.'></div>");
-                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
-                    $(this).append("<div id='myAdd' class='programAdd' title='add a project to " + $(this).parent().find("span").first().text() + "'></div>");
-                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
-                } else if (myLevel == "course") {
+                    if(myItem.data('permission') == "admin"){
+	                    //$(this).append("<div id='myPref' class='programPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " program.'></div>");
+	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
+	                    $(this).append("<div id='myAdd' class='programAdd' title='add a project to " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+					}
+                } else if (myItem.data('type') == "course") {
                     $(this).addClass("courseHover");
-                    $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
-                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
-                    $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
-                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+                    if(myItem.data('permission') == "admin"){
+	                    $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+					}
                 } else {
                     $(this).addClass("projectHover");
-                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
-                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
-                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+                    if(myItem.data('permission') == "admin"){
+	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
+	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
+	                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+	                }
                 }
-
-                $(this).height(25);
 			 
 			 $("#myPref").click(function () {
-                    if (myLevel == "root") {
-                        doPrefs($(this).parent().parent(), "program");
-                    } else if (myLevel == "course") {
-                        doPrefs($(this).parent().parent(), "course");
-                    }else{
-	                   	doPrefs($(this).parent().parent(), "lesson");
-                    }
+                    doPrefs(myItem, myItem.data('type'));
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -312,9 +301,9 @@ function C_Dashboard(_type) {
                     });
 			 
                 $("#myAdd").click(function () {
-                    if (myLevel == "root") {
+                    if (myItem.data('type') == "program") {
                         registerContent($(this).parent().parent(), "project");
-                    } else if (myLevel == "course") {
+                    } else if (myItem.data('type') == "course") {
                         registerContent($(this).parent().parent(), "lesson");
                     }
                 }).hover(
@@ -334,13 +323,13 @@ function C_Dashboard(_type) {
                     
                 $("#myRemove").click(function(){
                     var type = myItem.data('type');
-	                if(myLevel == "root"){
+	                //if(type == "program"){
 		                removeContent($(this).parent().parent(), type);
-	                }else if (myLevel == "course"){
-		                removeContent($(this).parent().parent(), type);
-	                }else{
-		                removeContent($(this).parent().parent(), type);
-	                }
+	                //}else if (myLevel == "course"){
+		                //removeContent($(this).parent().parent(), type);
+	                //}else{
+		                //removeContent($(this).parent().parent(), type);
+	                //}
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -379,9 +368,9 @@ function C_Dashboard(_type) {
             	$("#myRemove").remove();
                 $("#myAdd").remove();
                 $("#myUserAdd").remove();
-                if (myLevel == "root") {
+                if (myItem.data('type') == "program") {
                     $(this).removeClass("programHover");
-                } else if (myLevel == "course") {
+                } else if (myItem.data('type') == "course") {
                     $(this).removeClass("courseHover");
                 } else {
                     $(this).removeClass("projectHover");
@@ -389,7 +378,7 @@ function C_Dashboard(_type) {
             }
         ).click(
             function () {
-                if (myLevel == "project") {
+                if (myItem.data('type') == "lesson") {
                     if (hoverSubNav == false) {
                         //Start the server for this project to enable editing, review and multiplayer mode
                         socket.emit("startContentServer", {
@@ -628,17 +617,17 @@ function C_Dashboard(_type) {
 	 /************************************************************************************
      REGISTER NEW CONTENT
      ************************************************************************************/
-    function doPrefs(myParent, myLevel){
+    function doPrefs(myParent){
 	    currentParent = myParent;
-	    currentLevel = myLevel;
+	    currentLevel = myParent.data('type');
 	    
 	    var msg;
-	    if (myLevel == "program") {
+	    if (currentLevel == "program") {
          	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
                msg += '<p class="validateTips">Customize your program preferences below:</p>';
                msg += '<p>Functionalities to be added shortly.</p>';
                msg += '</div>';
-	    } else if (myLevel == "course") {
+	    } else if (currentLevel == "course") {
             msg = '<div id="dialog-updatePrefs" title="Update Course Prefs">';
             msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
             msg += '<p>';
@@ -656,7 +645,7 @@ function C_Dashboard(_type) {
             msg += "</p>";              
             msg += '</div>';
             enableRenameContentKeyEvents()
-	    } else if (myLevel == "lesson") {
+	    } else if (currentLevel == "lesson") {
             //msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
             msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs">';
             msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
@@ -700,11 +689,11 @@ function C_Dashboard(_type) {
                     $("#dialog-updatePrefs").remove();
                 },
                 Submit: function(){
-                	submitPrefUpdate(myParent, myLevel);
+                	submitPrefUpdate(myParent, currentLevel);
                 },
                 Publish: function(){
                     var selectedScorm = $('#scormVersion').find(':selected').text();
-                    clickPublish(myParent, myLevel, selectedScorm);
+                    clickPublish(myParent, currentLevel, selectedScorm);
                     $(this).dialog("close");
                     $("#myName").remove();
                     $("#myType").remove();
