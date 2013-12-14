@@ -844,12 +844,14 @@ var SocketHandler = {
                                 var foundPermissionIndex = -1;
                                 for (var i = 0; i < user.permissions.length; i++) {
                                     var permission = user.permissions[i];
+									
                                     if (permission.contentId == data.content.id) {
                                         foundPermissionIndex = i;
                                     }
                                 }
 
                                 if (foundPermissionIndex >= 0) {
+                                    
                                     user.permissions.splice(foundPermissionIndex, 1);
                                 }
                             }
@@ -867,7 +869,7 @@ var SocketHandler = {
                                     contentId: data.content.id,
                                     permission: user.permission
                                 });
-
+                                
                                 dbUser.permissions.push(permission);
                                 permissionsToSave.push(permission);
                             }

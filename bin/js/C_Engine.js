@@ -131,6 +131,7 @@ function buildInterface(){
 
     socket.on('loadDashboardPage', function(status) {
         user = status.user;
+        console.log(user);
         if (user) {
             currentTemplate = new C_Dashboard(currentTemplateType);
         }

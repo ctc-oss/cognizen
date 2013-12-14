@@ -84,7 +84,7 @@ function C_Dashboard(_type) {
         socket.on('refreshDashboard', function() {
             socket.emit('getProjects', user);
         });
-
+		
         //Call the Server (C_Server.js) to get list of projects associated to the user.
         socket.emit('getProjects', user);
     }
@@ -132,7 +132,7 @@ function C_Dashboard(_type) {
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
         $stage.append("<ul id='projList' class='filetree'></ul>");
-
+		console.log(proj);
         var tree_arr = [];
         //Cycle through the proj object
         for (var i = 0; i < proj.directories.length; i++) {
@@ -170,7 +170,7 @@ function C_Dashboard(_type) {
             $project.data('id', project.id);
             $project.data('type', project.type);
             $project.data('path', project.path);
-            $project.data('permission', project.permission);
+			
             tree_arr.push(project)
         }
 
@@ -186,7 +186,6 @@ function C_Dashboard(_type) {
             $content.data('type', content.type);
             $content.data('path', content.path);
             $content.data('permission', content.permission);
-	        console.log($content.data('permission'));
 	        addRollovers($content);
         };
 
@@ -286,7 +285,7 @@ function C_Dashboard(_type) {
                 }
 			 
 			 $("#myPref").click(function () {
-                    doPrefs(myItem, myItem.data('type'));
+                    doPrefs(myItem);
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -324,14 +323,7 @@ function C_Dashboard(_type) {
                     });
                     
                 $("#myRemove").click(function(){
-                    var type = myItem.data('type');
-	                //if(type == "program"){
-		                removeContent($(this).parent().parent(), type);
-	                //}else if (myLevel == "course"){
-		                //removeContent($(this).parent().parent(), type);
-	                //}else{
-		                //removeContent($(this).parent().parent(), type);
-	                //}
+		            removeContent(myItem);
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -348,10 +340,8 @@ function C_Dashboard(_type) {
                     });
 
                 $("#myUserAdd").click(function () {
-                	assignParent = $(this).parent().parent();
-                	console.log(myItem.data('id'));
-                	console.log($(this).parent().parent().attr('id'));
-                    getUserList($(this).parent().parent().attr('id'));
+                	assignParent = myItem;
+                    getUserList(myItem.data('id'));
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -387,8 +377,8 @@ function C_Dashboard(_type) {
                         //Start the server for this project to enable editing, review and multiplayer mode
                         socket.emit("startContentServer", {
                             content: {
-                                id: $(this).parent().data('id'),
-                                type: $(this).parent().data('type')
+                                id: myItem.data('id'),
+                                type: myItem.data('type')
                             }
                         });
                     }
@@ -907,10 +897,10 @@ function C_Dashboard(_type) {
     /************************************************************************************
      REMOVE CONTENT
      ************************************************************************************/
-    function removeContent(myParent, myLevel){
+    function removeContent(myParent){
         currentParent = myParent;
-        currentLevel = myLevel;
-	    $("#stage").append('<div id="dialog-removeContent" title="Remove this '+myLevel+'"><p class="validateTips">Are you sure that you want to remove '+myParent.find("span").first().text()+'?</div>');
+        currentLevel = myParent.data('type');
+	    $("#stage").append('<div id="dialog-removeContent" title="Remove this '+currentLevel+'"><p class="validateTips">Are you sure that you want to remove '+myParent.find("span").first().text()+'?</div>');
 	    
 	    $("#dialog-removeContent").dialog({
             modal: true,
