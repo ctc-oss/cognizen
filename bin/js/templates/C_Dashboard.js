@@ -80,7 +80,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
-            console.log("*******");
             socket.emit('getProjects', user);
         });
 		
@@ -139,51 +138,56 @@ function C_Dashboard(_type) {
             var project = proj.directories[i];
             var $project = $("#" + project.id);
             var idIfiedPath = idIfyPath(proj.directories[i].id);
-            //Check if partent or child.
-            if (proj.directories[i].parentDir == "") {
-                //If no parent then it is top layer - add root class - used to check below for hover states.
-                $("#projList").append("<li id='" + idIfiedPath + "' class='closed root'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li>");
-            } else {
-                //If a child - has a parent - cycle through and add to parent item as an .
-                var string = proj.directories[i].parentDir;
-                //Name if a path - we need to split which creates an array.
-                var result = string.split('/');
-                //Take the last item of the array - that is the title of the folder to put in the tree.
-                var parentName = result.pop();
-                for (var j = 0; j < proj.directories.length; j++) {
-                    if (proj.directories[j].name == parentName) {
-                        var parent = proj.directories[j].id;
-                    }
-                }
-                //What folder do I belong to - create a faux ID to be able to refer to it.
-                var parentID = "#" + parent;
-                //Create a unique ID to add child list to.
-                var newULID = parent + "List";
-                //If a UL doesn't exist for the item create it and add this item - otherwise just add this item.
-                if (project.type != 'course' && $(parentID).has("ul").length) {
-                    $(parentID + ' ul').append("<li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li>");
-                } else {
-                    $(parentID).append("<ul id='" + newULID + "'><li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li></ul>");
-                }
-            }
-
-            //$project.data('id', project.id);
-            //$project.data('type', project.type);
-            //$project.data('path', project.path);
 			
 			if(!admin){
+				var noMatch = true;
 				for (var k = 0; k < user.permissions.length; k++) {
 	                var permission = user.permissions[k];
 	                
 	                if (project.id == permission.contentId){
+	                    noMatch = false;
 	                    project.permission = permission.permission;
 	                    break;
 	                }
 	            }
+	            if(noMatch){
+		            project.permission = null;
+	            }
 	        }else{
 		        project.permission = 'admin';
 	        }
-            tree_arr.push(project);
+	        
+            //MAKE SURE THE USER'S SUPPOSED TO SEE IT - IF SO - ADD IT
+            if(project.permission != null){
+            	//Check if partent or child.
+	            if (proj.directories[i].parentDir == "") {
+	                //If no parent then it is top layer - add root class - used to check below for hover states.
+	                $("#projList").append("<li id='" + idIfiedPath + "' class='closed root'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li>");
+	            } else {
+	                //If a child - has a parent - cycle through and add to parent item as an .
+	                var string = proj.directories[i].parentDir;
+	                //Name if a path - we need to split which creates an array.
+	                var result = string.split('/');
+	                //Take the last item of the array - that is the title of the folder to put in the tree.
+	                var parentName = result.pop();
+	                for (var j = 0; j < proj.directories.length; j++) {
+	                    if (proj.directories[j].name == parentName) {
+	                        var parent = proj.directories[j].id;
+	                    }
+	                }
+	                //What folder do I belong to - create a faux ID to be able to refer to it.
+	                var parentID = "#" + parent;
+	                //Create a unique ID to add child list to.
+	                var newULID = parent + "List";
+	                //If a UL doesn't exist for the item create it and add this item - otherwise just add this item.
+	                if (project.type != 'course' && $(parentID).has("ul").length) {
+	                    $(parentID + ' ul').append("<li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li>");
+	                } else {
+	                    $(parentID).append("<ul id='" + newULID + "'><li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li></ul>");
+	                }
+	            }
+	            tree_arr.push(project);
+	        }
         }
 
         $("#projList").append("</ul>");
@@ -213,7 +217,6 @@ function C_Dashboard(_type) {
          ROOT User only button -- ONLY ROOT can add a new Program - ROOT and Program Admin can add new users to the system.
          *****************************************************************************/
 
-        var admin = user.admin;
         var programAdmin = false;
         
         if (!admin) {
@@ -715,7 +718,7 @@ function C_Dashboard(_type) {
 
     function clickPublish(parent, level, selectedScorm){
 
-        console.log(level);
+        
         if(level === 'course'){
             var msg;
             msg = '<div id="dialog-clickPublish" title="Publish a SCORM ' + selectedScorm + ' '+ level +'.">';

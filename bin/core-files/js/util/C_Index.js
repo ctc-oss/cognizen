@@ -55,7 +55,6 @@ function updateMenuItems(){
 					$("#" + thisID).removeClass('ui-state-disabled');
 				}
 				if(mode != "edit"){
-					console.log("in here");
 					$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
 					$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
 				}

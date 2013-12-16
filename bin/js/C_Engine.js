@@ -143,7 +143,7 @@ function buildInterface(){
 	
 	$('body').append("<div id='myCanvas'><div id='bg'></div><div id='stage'></div></div>");
 	
-	 $("#bg").fitToBackgroundImage();
+	$("#bg").fitToBackgroundImage();
 	//Utilized in many of the templates for positioning and autoScrolling
 	//DO NOT REMOVE
 	stageX = $("#stage").position().left;
@@ -177,7 +177,6 @@ function buildInterface(){
 ***utilizes currentPage variable, which is an int representing a node in content .xml*/
 //Function to load page content
 this.loadPage = function(){
-	
 	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
 	currentPageID = $(data).find("page").eq(currentPage).attr("id");
     socket.emit('checkLoginStatus');
