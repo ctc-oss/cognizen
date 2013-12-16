@@ -32,12 +32,10 @@ function C_Dashboard(_type) {
          add socket listeners - for server connectivity.
          *****************************************************************************/
         socket.on('receiveUserList', function (data) {
-            //console.log(data);
             userRoster = data;
         });
         
         socket.on('contentPermissions', function(data){
-	        //console.log("contentPermissions recieved = " + data);
 	        assignUser(data);
         });
 
@@ -82,6 +80,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
+            console.log("*******");
             socket.emit('getProjects', user);
         });
 		
@@ -99,6 +98,7 @@ function C_Dashboard(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate() {
+        var admin = user.admin;
         // Ensure that items are sorted as program, application, course, lesson
         proj.directories = proj.directories.sort(function (a, b) {
             var order = function(value) {
@@ -132,7 +132,7 @@ function C_Dashboard(_type) {
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
         $stage.append("<ul id='projList' class='filetree'></ul>");
-		console.log(proj);
+		
         var tree_arr = [];
         //Cycle through the proj object
         for (var i = 0; i < proj.directories.length; i++) {
@@ -167,11 +167,23 @@ function C_Dashboard(_type) {
                 }
             }
 
-            $project.data('id', project.id);
-            $project.data('type', project.type);
-            $project.data('path', project.path);
+            //$project.data('id', project.id);
+            //$project.data('type', project.type);
+            //$project.data('path', project.path);
 			
-            tree_arr.push(project)
+			if(!admin){
+				for (var k = 0; k < user.permissions.length; k++) {
+	                var permission = user.permissions[k];
+	                
+	                if (project.id == permission.contentId){
+	                    project.permission = permission.permission;
+	                    break;
+	                }
+	            }
+	        }else{
+		        project.permission = 'admin';
+	        }
+            tree_arr.push(project);
         }
 
         $("#projList").append("</ul>");
@@ -186,6 +198,7 @@ function C_Dashboard(_type) {
             $content.data('type', content.type);
             $content.data('path', content.path);
             $content.data('permission', content.permission);
+            
 	        addRollovers($content);
         };
 
@@ -202,7 +215,7 @@ function C_Dashboard(_type) {
 
         var admin = user.admin;
         var programAdmin = false;
-
+        
         if (!admin) {
             // Check if user is a program admin
             for (var i = 0; i < user.permissions.length; i++) {
@@ -256,7 +269,6 @@ function C_Dashboard(_type) {
      *****************************************************************************/
     function addRollovers(myItem) {
         //ADD Program Level Buttons
-        console.log("add rollover is getting: " + myItem.data('permission'));
         myItem.find("span").first().hover(
             function () {
                 if (myItem.data('type') == "program") {
