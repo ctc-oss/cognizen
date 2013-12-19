@@ -259,7 +259,7 @@ function C_MultipleChoice(_myType) {
             imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
             imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
             autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
-            resizeForMobile();
+            //resizeForMobile();
 
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
 
