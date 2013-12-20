@@ -140,11 +140,7 @@ function C_Dashboard(_type) {
             var $project = $("#" + project.id);
             var idIfiedPath = idIfyPath(proj.directories[i].id);
 			
-			if(!admin){
-				project.permission = proj.directories[i].permission;
-	        }else{
-		        project.permission = 'admin';
-	        }
+			project.permission = proj.directories[i].permission;
 	        
             //MAKE SURE THE USER'S SUPPOSED TO SEE IT - IF SO - ADD IT
             if(project.permission != 'undefined'){
@@ -380,7 +376,6 @@ function C_Dashboard(_type) {
                     //If NOT over a sub nav - add/remove/prefs - and clicking - launch lesson...
                     if (hoverSubNav == false) {
                         //Start the server for this project to enable editing, review and multiplayer mode
-                        
                         socket.emit("startContentServer", {
                             content: {
                                 id: myItem.data('id'),

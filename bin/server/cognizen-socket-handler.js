@@ -406,34 +406,53 @@ var SocketHandler = {
 
     userPermissionForContent: function(data) {
         var _this = this;
+        var alreadySent = false;
         var emitter = 'contentPermissionFound';
         var foundPermission = 'viewer';
         var contentType = _this.Content.objectType(data.content.type);
-
-        if (contentType) {
-            contentType.findAndPopulate(data.content.id, function (err, found) {
-                if (found) {
-                    // Get the user associated
-                    User.findById(data.user.id).populate('permissions').exec(function (err, user) {
-                        if (user && user.permissions) {
-
-                            user.permissions.forEach(function(permission) {
-                                if (permission.contentId == data.content.id) {
-                                    foundPermission = permission.permission;
-                                }
-                            });
-                        }
-                        _this._socket.emit(emitter, {permission: foundPermission});
-                    });
-                }
-                else {
-                    _this._socket.emit(emitter, {permission: foundPermission});
-                }
-            });
-        }
-        else {
-            _this._socket.emit(emitter, {permission: foundPermission});
-        }
+		console.log("data.content = " + data.content);
+		for (var i = 0; i < activeEdit_arr.length; i++){
+			if(activeEdit_arr[i].lessonID == data.content.id){
+				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+				var user = _this.SocketSessions.socketUsers[sessionId];
+				if(activeEdit_arr[i].user == user.username){
+					foundPermission = activeEdit_arr[i].permission;	
+				}else{
+					foundPermission = "reviewer";
+				}
+				
+				alreadySent = true;
+				_this._socket.emit(emitter, {permission: foundPermission});
+				break;
+			}
+		}
+		
+		if(!alreadySent){
+	        if (contentType) {
+	            contentType.findAndPopulate(data.content.id, function (err, found) {
+	                if (found) {
+	                    // Get the user associated
+	                    User.findById(data.user.id).populate('permissions').exec(function (err, user) {
+	                        if (user && user.permissions) {
+	
+	                            user.permissions.forEach(function(permission) {
+	                                if (permission.contentId == data.content.id) {
+	                                    foundPermission = permission.permission;
+	                                }
+	                            });
+	                        }
+	                        _this._socket.emit(emitter, {permission: foundPermission});
+	                    });
+	                }
+	                else {
+	                    _this._socket.emit(emitter, {permission: foundPermission});
+	                }
+	            });
+	        }
+	        else {
+	            _this._socket.emit(emitter, {permission: foundPermission});
+	        }
+	    }
     },
 
     _copyProgramFiles: function (program, callback) {
