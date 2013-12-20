@@ -163,7 +163,8 @@ ProgramSchema.methods.toDashboardItem = function() {
         type: 'program',
         name: this.name,
         parentDir: '',
-        path: this.name
+        path: this.name,
+        permission: this.permission
     };;
 };
 
@@ -235,7 +236,8 @@ ApplicationSchema.methods.toDashboardItem = function() {
         name: this.name,
         parentDir: this.program.name,
         path: this.path,
-        parent: this.program.id
+        parent: this.program.id,
+        permission: this.permission
     };
 };
 
@@ -278,7 +280,8 @@ CourseSchema.methods.toDashboardItem = function() {
         name: this.name,
         parentDir: this.program.name,
         path: this.path,
-        parent: this.program.id
+        parent: this.program.id,
+        permission: this.permission
     };
 };
 
@@ -374,7 +377,8 @@ LessonSchema.methods.toDashboardItem = function() {
         name: this.name,
         parentDir: this.course.name,
         path: this.path,
-        parent: this.course.id
+        parent: this.course.id,
+        permission: this.permission
     };
 };
 
