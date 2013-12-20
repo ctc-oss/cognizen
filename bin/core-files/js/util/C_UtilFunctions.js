@@ -72,7 +72,6 @@ function isOldIE() {
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
-    console.log("oldIE = " + oldIE);
 }
 /*****************************************************************
 RANDOM GUID GENERATION

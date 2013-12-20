@@ -18,6 +18,7 @@ var socket;
 var cognizenSocket;
 var siofu;
 var siofuInitialized = {};
+var forcedReviewer = false;
  
 function initializeSockets(){
 	if(mode == "edit" || mode == "review"){
@@ -50,24 +51,7 @@ function initializeSockets(){
 				mode = "review";
 			}else{
 				mode = "review";
-				var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by another user.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
-			
-				//Add to stage.
-				$("#stage").append(msg);
-			
-				//Make it a dialog
-				$("#dialog-locked").dialog({
-					modal: true,
-					width: 550,
-					close: function(event, ui){
-							$("#dialog-locked").remove();
-						},
-					buttons: {
-						OK: function () {
-			                    $(this).dialog("close");
-						}
-					}
-				});
+				forcedReviewer = true;
 			}
 			buildInterface();  
 	    });
