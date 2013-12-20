@@ -166,7 +166,6 @@ var Content = {
         for (var id in accessibleContent) {
             if (accessibleContent.hasOwnProperty(id)) {
                 var dashboardItem = accessibleContent[id].toDashboardItem();
-                dashboardItem.permission = 'admin';
                 accessibleContentArray.push(dashboardItem);
             }
         }
