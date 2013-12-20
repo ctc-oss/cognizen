@@ -141,25 +141,13 @@ function C_Dashboard(_type) {
             var idIfiedPath = idIfyPath(proj.directories[i].id);
 			
 			if(!admin){
-				var noMatch = true;
-				for (var k = 0; k < user.permissions.length; k++) {
-	                var permission = user.permissions[k];
-	                
-	                if (project.id == permission.contentId){
-	                    noMatch = false;
-	                    project.permission = permission.permission;
-	                    break;
-	                }
-	            }
-	            if(noMatch){
-		            project.permission = null;
-	            }
+				project.permission = proj.directories[i].permission;
 	        }else{
 		        project.permission = 'admin';
 	        }
 	        
             //MAKE SURE THE USER'S SUPPOSED TO SEE IT - IF SO - ADD IT
-            if(project.permission != null){
+            if(project.permission != 'undefined'){
             	//Check if partent or child.
 	            if (proj.directories[i].parentDir == "") {
 	                //If no parent then it is top layer - add root class - used to check below for hover states.
