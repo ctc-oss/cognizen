@@ -121,8 +121,8 @@ function buildInterface(){
 	
 //	var url = cognizenServerUrl();
 	var xhr = true;
-	socket = (xhr) ? io.connect(null, {resource: "server", transports: ["websockets", "xhr-polling"]}) :
-                     io.connect(null, {resource: "server"});
+	socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
+                     io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
 
 	//Simple listener checking connectivity
 	socket.on('onConnect', function (data) {

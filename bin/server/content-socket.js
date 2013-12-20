@@ -44,7 +44,7 @@ var ContentSocket = {
 
         io.sockets.on('connection', function (socket) {
             socket.emit('onConnect', { hello: 'node connection established' });
-
+			
             //Set listener to update the content.xml file
             socket.on('updateXMLWithRefresh', function (data) {
                 logger.debug('Updating XML (with refresh) at ' + xmlContentFile);

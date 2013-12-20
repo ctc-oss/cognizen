@@ -437,10 +437,15 @@ var Content = {
         /*******************************************************************************************
          FIRE UP THE SOCKET SERVER AND SETUP LISTENERS
          *******************************************************************************************/
+        var count = 0;
         io.sockets.on('connection', function (socket) {
-
+			
             SocketHandler.socket(socket).setupFileUploadHandler();
-
+			
+			socket.on('disconnect', function () {
+				SocketHandler.socket(socket).disconnect(socket);
+			});
+			
             socket.on('checkLoginStatus', function() {
                 SocketHandler.socket(socket).checkLoginStatus();
             });

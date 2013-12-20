@@ -23,8 +23,8 @@ function initializeSockets(){
 	if(mode == "edit" || mode == "review"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
-	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secureSocket}) :
-	                             io.connect(null, {resource: 'server', 'force new connection': true, secure: secureSocket});
+	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket});
 	    
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -136,8 +136,8 @@ function initializeSockets(){
 
 	    siofu = new SocketIOFileUpload(cognizenSocket);
 
-		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, secure: secureSocket}) :
-                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, secure: secureSocket});
+		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket}) :
+                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket});
 		
 		//Simple listener checking connectivity
 		socket.on('onConnect', function (data) {

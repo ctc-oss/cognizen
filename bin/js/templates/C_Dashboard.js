@@ -98,6 +98,7 @@ function C_Dashboard(_type) {
      *****************************************************************************/
     function buildTemplate() {
         var admin = user.admin;
+
         // Ensure that items are sorted as program, application, course, lesson
         proj.directories = proj.directories.sort(function (a, b) {
             var order = function(value) {
@@ -388,12 +389,15 @@ function C_Dashboard(_type) {
         ).click(
             function () {
                 if (myItem.data('type') == "lesson") {
+                    //If NOT over a sub nav - add/remove/prefs - and clicking - launch lesson...
                     if (hoverSubNav == false) {
                         //Start the server for this project to enable editing, review and multiplayer mode
+                        
                         socket.emit("startContentServer", {
                             content: {
                                 id: myItem.data('id'),
-                                type: myItem.data('type')
+                                type: myItem.data('type'),
+                                permission: myItem.data('permission')
                             }
                         });
                     }
@@ -459,9 +463,10 @@ function C_Dashboard(_type) {
                     $(this).dialog("close");
                     $("#dialog-assignUser").remove();
                 },
+                
                 Assign: function () {
                     var user_arr = [];
-                    
+                    var rightsPropogation_arr = [];
                     for(var i = 0; i < data.length; i++){
                     	var myPermission = $('input:radio[name=rightsLevel'+ i + ']:checked').val();
 	                    if (myPermission == "null"){
@@ -469,6 +474,7 @@ function C_Dashboard(_type) {
 	                    }
                     	var tmpObj = {id: data[i].id, permission: myPermission};
 	                    user_arr.push(tmpObj)
+	                    //console.log(tmpObj);
                     }
                     
                     
@@ -632,10 +638,10 @@ function C_Dashboard(_type) {
 	    
 	    var msg;
 	    if (currentLevel == "program") {
-         	   msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
-               msg += '<p class="validateTips">Customize your program preferences below:</p>';
-               msg += '<p>Functionalities to be added shortly.</p>';
-               msg += '</div>';
+        	msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
+            msg += '<p class="validateTips">Customize your program preferences below:</p>';
+            msg += '<p>Functionalities to be added shortly.</p>';
+            msg += '</div>';
 	    } else if (currentLevel == "course") {
             msg = '<div id="dialog-updatePrefs" title="Update Course Prefs">';
             msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
@@ -655,7 +661,6 @@ function C_Dashboard(_type) {
             msg += '</div>';
             enableRenameContentKeyEvents()
 	    } else if (currentLevel == "lesson") {
-            //msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs"><p class="validateTips">Customize your lesson preferences below:</p><p><label id="label">isLinear: </label><input id="isLinear" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/><label id="label">isScored: </label><input id="isScored" type="checkbox" checked="checked" name="correct" class="radio" value="true"/><br/></p></div>';
             msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs">';
             msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
             msg += '<p>';
@@ -780,10 +785,12 @@ function C_Dashboard(_type) {
                         dlPath += splitPath[i];
                     }
                 }            
+                
                 socket.emit('sendPackageMail', {
                     user: user._id,
                     path: dlPath
                 });
+                
                 $("#dialog-updatePrefs").remove(); 
 
                 $('#publishLoader').remove();
@@ -810,7 +817,6 @@ function C_Dashboard(_type) {
 
             });
         }
-
     }
     
     function enableRenameContentKeyEvents() {
@@ -897,21 +903,12 @@ function C_Dashboard(_type) {
                 text: "Submit",
                 click: submitRegisterNewContent
             }]
-//            buttons: {
-//                Cancel: function () {
-//                    $(this).dialog("close");
-//                    $("#myName").remove();
-//                    $("#myType").remove();
-//                    $("#dialog-registerContent").remove();
-//                },
-//                Submit: submitRegisterNewContent
-//            }
         });
     }
     
     /************************************************************************************
-     REMOVE CONTENT
-     ************************************************************************************/
+    REMOVE CONTENT
+    ************************************************************************************/
     function removeContent(myParent){
         currentParent = myParent;
         currentLevel = myParent.data('type');
@@ -938,8 +935,8 @@ function C_Dashboard(_type) {
         }); 
     }
     /************************************************************************************
-     REGISTER NEW USERS
-     ************************************************************************************/
+    REGISTER NEW USERS
+    ************************************************************************************/
     //Launch Register USER Dialog
     function registerUser() {
         $("#stage").append('<div id="dialog-registerUser" title="Add New User"><p class="validateTips">Add the new users details below.</p><label for="firstName" class="regField">first name: </label><input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="lastName" class="regField">last name: </label><input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regEmail" class="regField">email: </label><input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regPassword" class="regField">password: </label><input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regPasswordVer" class="regField">verify password: </label><input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>');

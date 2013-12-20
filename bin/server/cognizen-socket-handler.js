@@ -20,6 +20,8 @@ _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
 
 
+var activeEdit_arr = [];
+
 var SocketHandler = {
     config: {},
     logger: {},
@@ -907,13 +909,14 @@ var SocketHandler = {
                             _this.logger.error(errorMessage);
                             // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
                             if (errorMessage.indexOf('index.lock') == -1) {
-                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(3)'});
+                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. GIT INDEX.LOCK issue.'});
                             }
                         }
 
                         else {
                             var serverDetails = _this.Content.serverDetails(found);
-
+							var permission = data.content.permission;
+							
                             if (serverDetails.running) {
                                 _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
                                 _this._socket.emit('contentServerStarted', {
@@ -927,6 +930,8 @@ var SocketHandler = {
                                 var scormDir = path.resolve(process.cwd(), scormPath);
                                 var programPath = path.normalize('../programs/' + found.path + '/');
                                 var parentDir = path.resolve(process.cwd(), programPath);
+                                
+                                
                                 _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
                                 ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
                                     if (error) {
@@ -935,8 +940,8 @@ var SocketHandler = {
                                         serverDetails.running = false;
                                     }
                                     else {
-                                        _this._socket.emit('contentServerStarted', {
-                                            id: found.id,
+                                       _this._socket.emit('contentServerStarted', {
+                                       		id: found.id,
                                             path: encodeURIComponent(found.path),
                                             type: data.content.type
                                         });
@@ -944,13 +949,61 @@ var SocketHandler = {
                                     }
                                 });
                             }
+                            
+                            //Setting up array to track whether a lesson is locked due to another editor already in....
+                            if(permission == "admin" || permission == "editor"){
+                            	var tmpObject = new Object();
+                            	tmpObject.lessonID = found.id;
+                            	tmpObject.permission = permission;
+								var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+								var user = _this.SocketSessions.socketUsers[sessionId];
+								tmpObject.sessionID = sessionId;
+								tmpObject.user = user.username;
+                            	activeEdit_arr.push(tmpObject);
+                            }
                         }
                     });
                 }
             });
         }
     },
-
+	
+	disconnect: function (socket) {
+	    var _this = this;
+	    var disconnectingLessonID = null;
+	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+		var user = _this.SocketSessions.socketUsers[sessionId];
+		if(user != undefined){
+	    	var wasEditor = false;
+			//Remove the current lock from lesson.
+			for(var i = 0; i < activeEdit_arr.length; i++){
+				if(sessionId == activeEdit_arr[i].sessionID){
+					disconnectingLessonID = activeEdit_arr[i].lessonID;
+					activeEdit_arr.splice(i, 1);
+					break;
+				}
+			}
+			
+			if(disconnectingLessonID != null){
+				var newEditor = null;
+				for (var i = 0; i < activeEdit_arr.length; i++){
+					if(disconnectingLessonID == activeEdit_arr[i].lessonID){
+						newEditor = activeEdit_arr[i].user;
+						break;
+					}
+				}
+				
+				if(newEditor != null){
+					//Pass the new editor, editor rights...
+					console.log("new editor = " + activeEdit_arr[i].user);
+				}else{
+					//Unlock the lesson in the dashboard...
+					console.log("remove the deal lock");
+				}
+			}
+	    }
+    },
+	
     renameContent: function(data) {
         //data.content.type
         //data.content.id
@@ -1065,7 +1118,7 @@ var SocketHandler = {
             });
         }
     },
-
+   
     closeComment: function (comment) {
         //comment.id
 
