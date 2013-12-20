@@ -111,7 +111,18 @@ function initScripts(_data){
 	});
 }
 
+var oldIE = false;
 
+function isOldIE() {
+    "use strict";
+
+    // Detecting IE
+   
+    if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
+        oldIE = true;
+    }
+    console.log("isOldIE = " + oldIE);
+}
 
 /****************************************************
 ******************************** STEP 3 - BUILD SHELL
@@ -120,10 +131,17 @@ function initScripts(_data){
 function buildInterface(){
 	
 //	var url = cognizenServerUrl();
-	var xhr = true;
-	socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
-                     io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
-
+	//var xhr = true;
+	//socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
+                     //io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
+	
+	if (isOldIE()){
+		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
+		console.log("saying is IE");
+	}else{
+		console.log("not IE");
+		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
+	}
 	//Simple listener checking connectivity
 	socket.on('onConnect', function (data) {
 	  	//console.log(data.bankPath);

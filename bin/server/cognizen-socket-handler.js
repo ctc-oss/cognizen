@@ -410,7 +410,7 @@ var SocketHandler = {
         var emitter = 'contentPermissionFound';
         var foundPermission = 'viewer';
         var contentType = _this.Content.objectType(data.content.type);
-		console.log("data.content = " + data.content);
+		
 		for (var i = 0; i < activeEdit_arr.length; i++){
 			if(activeEdit_arr[i].lessonID == data.content.id){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
@@ -418,7 +418,7 @@ var SocketHandler = {
 				if(activeEdit_arr[i].user == user.username){
 					foundPermission = activeEdit_arr[i].permission;	
 				}else{
-					foundPermission = "reviewer";
+					foundPermission = "forcedReviewer";
 				}
 				
 				alreadySent = true;

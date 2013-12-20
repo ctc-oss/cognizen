@@ -422,8 +422,9 @@ var Content = {
         'xhr-polling',
         'jsonp-polling'
     ]);
-    io.set('polling duration', 600);
+    //io.set('polling duration', 600);
     io.configure(function () {
+    	io.set('connect timeout', 1000);
         io.set('close timeout', 60 * 60 * 2);
     });//Set the timeout to two hours - fix for uploading large video files losing connection.
 
