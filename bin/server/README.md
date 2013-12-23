@@ -8,7 +8,7 @@ Setup Instructions
 2. This should globally install all of the node packages necessary to run the cognizen-server.js
 3. To link those node modules to our project here, run the following command
 
-        npm link socket.io http-proxy git-server nodemailer elementtree underscore underscore.string fs-extra winston mongoose mongoose-schema-extend bcrypt-nodejs socketio-file-upload ncp fluent-ffmpeg express cookie connect optimist readdirp archiver
+        npm link
 
 4. This will create links to all the node packages in the node_modules folder
 5. Make a copy of the config.json.template file, and call it config.json.  This will be your local configuration options.
@@ -18,3 +18,41 @@ Setup Instructions
         node cognizen-server.js
 
 8. This will start up the cognizen server, the static server, and the git server in one fell swoop
+
+
+Server Side File Descriptions
+-----------------------------
+
+All important files used to power the server are in the file format name of cognizen-[function].js.  Purposes are as follows:
+
+1. **cognizen-server.js** - Main entry point for the server
+    - Configures logging
+    - Configures all internal ports for the proxy, Git, and socket connections
+    - Configures SSL
+    - Connects to Mail configuration
+    - Holds some of the logic to determine user permissions on content
+    - Contains utility functions
+    - Maps socket calls to functions
+    - Starts up all of the servers, sockets, and proxies
+
+2. **cognizen-git.js** - Contains all the logic to start and maintain the Cognizen Git server for the program repositories
+    * Allows developers to easily interact with a program and its corresponding Git repository on the server
+    * Creates Git repositories for new programs
+    * Allows commits of Git repositories
+    * Has utility methods to deal with lock files, etc.
+
+3. **cognizen-mail.js** - Mail server connection and sending functionality
+    * Reads configuration of mail from config.json to connect to outgoing mail server
+    * Sends mail
+
+4. **cognizen-scorm.js** - Consolidated functionality to create SCORM packages from Cognizen content
+    * Can generate SCORM packages for single lessons or entire courses
+
+5. **cognizen-socket-handler.js** - Handler code for socket events
+    * Contains a function mapped to each socket emit to handle the request, and return a response
+    * Functions are mapped within cognizen-server.js, but all logic is contained in this file
+
+6. **cognizen-utils.js** - General utility file for Cognizen server
+    * File to place utility functions that are general to all cognizen server files
+    * Contains utility functions such as command line commands, string manipulation, operating system checks, date/time functions, and database functions
+
