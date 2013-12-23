@@ -23,13 +23,14 @@ _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
 
 var mongoose = require('mongoose');
-var User = require('./user-model').User;
-var UserPermission = require('./user-model').UserPermission;
-var Program = require('./content-model').Program;
-var Application = require('./content-model').Application;
-var Course = require('./content-model').Course;
-var Lesson = require('./content-model').Lesson;
-var ContentComment = require('./content-model').ContentComment;
+var UserModel = require('./user-model');
+var User = UserModel.User;
+var UserPermission = UserModel.UserPermission;
+var ContentModel = require('./content-model');
+var Program = ContentModel.Program;
+var Course = ContentModel.Course;
+var Lesson = ContentModel.Lesson;
+var ContentComment = ContentModel.ContentComment;
 var io;
 
 var logFolder = Utils.defaultValue(config.logFolder, './');
@@ -225,29 +226,23 @@ var Content = {
                         allContent[program.id] = program;
                     });
 
-                    Application.find().or(deleted).populate('program').exec(function(err, applications) {
-                        applications.forEach(function(app) {
-                            allContent[app.id] = app;
+                    Course.find().or(deleted).populate('program').exec(function(err, courses) {
+                        courses.forEach(function(course) {
+                            allContent[course.id] = course;
                         });
 
-                        Course.find().or(deleted).populate('program').exec(function(err, courses) {
-                            courses.forEach(function(course) {
-                                allContent[course.id] = course;
+                        Lesson.find().or(deleted).populate('course').exec(function(err, lessons) {
+                            lessons.forEach(function(lesson) {
+                                allContent[lesson.id] = lesson;
                             });
 
-                            Lesson.find().or(deleted).populate('course').exec(function(err, lessons) {
-                                lessons.forEach(function(lesson) {
-                                    allContent[lesson.id] = lesson;
-                                });
-
-                                var data = _this.userPermittedContent(loggedInUser, allContent);
-                                if (callback) {
-                                    callback(data);
-                                }
-                                else{
-                                    socket.emit('receiveProjectsFromDB', data);
-                                }
-                            });
+                            var data = _this.userPermittedContent(loggedInUser, allContent);
+                            if (callback) {
+                                callback(data);
+                            }
+                            else{
+                                socket.emit('receiveProjectsFromDB', data);
+                            }
                         });
                     });
                 });
@@ -488,10 +483,6 @@ var Content = {
 
             socket.on('registerCourse', function (data) {
                 SocketHandler.socket(socket).registerCourse(data);
-            });
-
-            socket.on('registerApplication', function (data) {
-                SocketHandler.socket(socket).registerApplication(data);
             });
 
             socket.on('registerLesson', function (data) {

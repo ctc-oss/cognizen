@@ -1,11 +1,12 @@
 var Utils = require('./cognizen-utils'),
-    User = require('./user-model').User,
-    UserPermission = require('./user-model').UserPermission,
-    Program = require('./content-model').Program,
-    Application = require('./content-model').Application,
-    Course = require('./content-model').Course,
-    Lesson = require('./content-model').Lesson,
-    ContentComment = require('./content-model').ContentComment,
+    UserModel = require('./user-model'),
+    User = UserModel.User,
+    UserPermission = UserModel.UserPermission,
+    ContentModel = require('./content-model'),
+    Program = ContentModel.Program,
+    Course = ContentModel.Course,
+    Lesson = ContentModel.Lesson,
+    ContentComment = ContentModel.ContentComment,
     fs = require('fs-extra'),
     path = require('path'),
     ffmpeg = require('fluent-ffmpeg'),
@@ -506,7 +507,7 @@ var SocketHandler = {
                 //   - set values
                 //   - write it to the doc
                 _this.Content.updateContentXml(content, function(content, etree) {
-                    var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name, like in applications.
+                    var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name.
                     etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                     etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                 }, function(err) {
@@ -588,38 +589,11 @@ var SocketHandler = {
                 });
             }
             else {
-                _this._socket.emit('generalError', {title: 'Course or Application Exists', message: 'There is already a course or application in this program that is named ' + data.name + '. Please choose a different course name or contact the program admin to grant you access to the course.'});
-                _this.logger.info('Course or application already exists with name ' + data.name);
+                _this._socket.emit('generalError', {title: 'Course Exists', message: 'There is already a course in this program that is named ' + data.name + '. Please choose a different course name or contact the program admin to grant you access to the course.'});
+                _this.logger.info('Course already exists with name ' + data.name);
             }
         });
     },
-
-//    registerApplication: function (data) {
-//        var _this = this;
-//        Application.createUnique(data, function (saved, callbackData) {
-//            if (saved) {
-//                _this._copyContentFiles(callbackData, function (err) {
-//                    Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-//                        _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
-//                            if (err) {
-//                                _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
-//                                _this.logger.error(err);
-//                            }
-//                            else {
-//                                _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-//                            }
-//                        });
-//                    }, function (message) {
-//                        _this.logger.info("Error committing program content: " + message)
-//                        _this._socket.emit('generalError', {title: 'Application Error', message: 'Error occurred when saving application content.'});
-//                    });
-//                });
-//            } else {
-//                _this._socket.emit('generalError', {title: 'Application or Course Exists', message: 'There is already an application or course in this program that is named ' + data.name + '. Please choose a different application name or contact the program admin to grant you access to the application.'});
-//                logger.info('Application or course already exists with name ' + data.name);
-//            }
-//        });
-//    },
 
     registerLesson: function (data) {
         var _this = this;
