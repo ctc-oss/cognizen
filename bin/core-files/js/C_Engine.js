@@ -199,7 +199,6 @@ function buildInterface(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(_type){
-	
 	//Serialize the xml and send it to nodejs using socket.
 	var myData = $(data);
 	var xmlString = undefined;
@@ -217,6 +216,7 @@ function sendUpdateWithRefresh(_type){
 	var xmlString  = pd.xml(xmlString);
 	
 	if(_type == undefined){
+		console.log("socket = " + socket);
 		socket.emit('updateXMLWithRefresh', { my: xmlString });
 	}else if(_type == 'glossary'){
 		socket.emit('updateXMLGlossary', { my: xmlString });
