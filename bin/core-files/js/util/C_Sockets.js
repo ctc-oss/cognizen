@@ -156,9 +156,9 @@ function initializeSockets(){
         //                 io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 
 		if (isOldIE()){
-			socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
+			socket = io.connect(null, {resource: urlParams['id'], transports: ["flashsocket", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 		}else{
-			socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
+			socket = io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 		}
 		
 		//Simple listener checking connectivity
