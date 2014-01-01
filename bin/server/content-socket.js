@@ -15,9 +15,9 @@ var ContentSocket = {
         //scorm.init(logger, scormPath, contentPath, xmlContentFile);
 
         var app = http.createServer(function (req, res) {
-                res.writeHead(404);
-                return res.end('No content available');
-            });
+        	res.writeHead(404);
+            return res.end('No content available');
+        });
 
         if (port) {
             app.listen(port);

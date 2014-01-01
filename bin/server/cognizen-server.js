@@ -435,11 +435,16 @@ var Content = {
         var count = 0;
         io.sockets.on('connection', function (socket) {
 			
+			SocketHandler.socket(socket).setUsername();
             SocketHandler.socket(socket).setupFileUploadHandler();
 			
 			socket.on('disconnect', function () {
 				SocketHandler.socket(socket).disconnect(socket);
 			});
+			
+			socket.on('passLock', function (data){
+	           SocketHandler.socket(socket).passLock(data); 
+            });
 			
             socket.on('checkLoginStatus', function() {
                 SocketHandler.socket(socket).checkLoginStatus();

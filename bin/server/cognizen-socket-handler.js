@@ -404,6 +404,13 @@ var SocketHandler = {
             });
         }
     },
+    
+    setUsername: function(){
+	    var _this = this;
+	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+		var user = _this.SocketSessions.socketUsers[sessionId];
+		_this._socket.emit('setUsername', {username: user});
+    },
 
     userPermissionForContent: function(data) {
         var _this = this;
@@ -411,19 +418,21 @@ var SocketHandler = {
         var emitter = 'contentPermissionFound';
         var foundPermission = 'viewer';
         var contentType = _this.Content.objectType(data.content.type);
-		
+		var activeEditor = null;
 		for (var i = 0; i < activeEdit_arr.length; i++){
-			if(activeEdit_arr[i].lessonID == data.content.id){
+			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
+				activeEditor = activeEdit_arr[i].user;
 				if(activeEdit_arr[i].user == user.username){
-					foundPermission = activeEdit_arr[i].permission;	
+					foundPermission = activeEdit_arr[i].permission;
+					
+					alreadySent = true;
+					_this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});	
 				}else{
 					foundPermission = "forcedReviewer";
 				}
 				
-				alreadySent = true;
-				_this._socket.emit(emitter, {permission: foundPermission});
 				break;
 			}
 		}
@@ -438,20 +447,26 @@ var SocketHandler = {
 	
 	                            user.permissions.forEach(function(permission) {
 	                                if (permission.contentId == data.content.id) {
-	                                    foundPermission = permission.permission;
+	                                    if(foundPermission == "forcedReviewer"){
+	                                    	if(permission.permission != "admin" && permission.permission != "editor"){
+	                                    		foundPermission = permission.permission;
+	                                    	}
+	                                    }else{
+		                                    foundPermission = permission.permission;
+	                                    }
 	                                }
 	                            });
 	                        }
-	                        _this._socket.emit(emitter, {permission: foundPermission});
+	                        _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
 	                    });
 	                }
 	                else {
-	                    _this._socket.emit(emitter, {permission: foundPermission});
+	                    _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
 	                }
 	            });
 	        }
 	        else {
-	            _this._socket.emit(emitter, {permission: foundPermission});
+	            _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
 	        }
 	    }
     },
@@ -948,6 +963,7 @@ var SocketHandler = {
                             	var tmpObject = new Object();
                             	tmpObject.lessonID = found.id;
                             	tmpObject.permission = permission;
+                            	tmpObject.rejectEdit = false;
 								var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 								var user = _this.SocketSessions.socketUsers[sessionId];
 								tmpObject.sessionID = sessionId;
@@ -981,20 +997,58 @@ var SocketHandler = {
 				var newEditor = null;
 				for (var i = 0; i < activeEdit_arr.length; i++){
 					if(disconnectingLessonID == activeEdit_arr[i].lessonID){
-						newEditor = activeEdit_arr[i].user;
-						break;
+						if(activeEdit_arr[i].rejectEdit == false){	
+							newEditor = activeEdit_arr[i].user;
+							break;
+						}
 					}
 				}
 				
 				if(newEditor != null){
 					//Pass the new editor, editor rights...
 					console.log("new editor = " + activeEdit_arr[i].user);
+					_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
 				}else{
 					//Unlock the lesson in the dashboard...
 					console.log("remove the deal lock");
 				}
 			}
 	    }
+    },
+    
+   
+    
+    passLock: function (data){
+	    var lessonID = null;
+	    var _this = this;
+	    for(var i = 0; i < activeEdit_arr.length; i++){
+		    if(activeEdit_arr[i].user == data.me){
+		    	//var temp = activeEdit_arr.splice(i, 1);
+		    	activeEdit_arr[i].rejectEdit = true;
+		    	lessonID = activeEdit_arr[i].lessonID;
+		    	//activeEdit_arr.splice(i, 1);
+		    	break;
+		    }
+	    }
+	    console.log("next part");
+	    var newEditor = null;
+	    for(var i = 0; i < activeEdit_arr.length; i++){
+		    if(lessonID == activeEdit_arr[i].lessonID){
+		    	if(activeEdit_arr[i].user != data.me && activeEdit_arr[i].rejectEdit == false){
+				    newEditor = activeEdit_arr[i].user;
+				    break;
+				}	
+		    }
+	    }
+	    
+	    if(newEditor != null){
+			//Pass the new editor, editor rights...
+			console.log("new editor = " + activeEdit_arr[i].user);
+			_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
+		}else{
+			//Unlock the lesson in the dashboard...
+			console.log("remove the deal lock");
+		}
     },
 	
     renameContent: function(data) {

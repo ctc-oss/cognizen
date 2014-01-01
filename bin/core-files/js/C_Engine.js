@@ -18,7 +18,7 @@ var stageX;
 var stageY;
 var stageH;
 var stageW;
-
+var username;
 var mode = "production";//mode can be set to production, edit and review.
 
 var mobileWidth = 1023; //value should match the value set in C_Engine.css (@media all and (max-width: 600px) )
@@ -120,13 +120,41 @@ function startEngine(){
 			return $( event.target ).closest( ".ui-draggable" ).length;
 		}
 	});
-	
 	initializeSockets();
 }
 
+function updateActiveEditor(_user){
+	if(username == _user){
+		var msg = '<div id="dialog-offerEdit" title="Editor Queue"><p class="validateTips">'+ activeEditor +' has left this session and you are the next in line to edit.</p><p>Would you like to edit this lesson?</p></div>';
+			
+		//Add to stage.
+		$("#stage").append(msg);
+				
+		//Make it a dialog
+		$("#dialog-offerEdit").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("#dialog-offerEdit").remove();
+			},
+			buttons: {
+				YES: function () {
+					mode = "edit";
+					forcedReviewer = false;
+					buildInterface();
+					$(this).dialog("close");
+				},
+				NO: function(){
+					cognizenSocket.emit('passLock', { me: username });
+					$(this).dialog("close");
+				}
+			}
+		});
+	}
+}
 
 function forcedReviewAlert(){
-	var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by another user.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
+	var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
 			
 	//Add to stage.
 	$("#stage").append(msg);
@@ -216,7 +244,6 @@ function sendUpdateWithRefresh(_type){
 	var xmlString  = pd.xml(xmlString);
 	
 	if(_type == undefined){
-		console.log("socket = " + socket);
 		socket.emit('updateXMLWithRefresh', { my: xmlString });
 	}else if(_type == 'glossary'){
 		socket.emit('updateXMLGlossary', { my: xmlString });

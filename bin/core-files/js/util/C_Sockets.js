@@ -19,6 +19,7 @@ var cognizenSocket;
 var siofu;
 var siofuInitialized = {};
 var forcedReviewer = false;
+var activeEditor;
  
 function initializeSockets(){
 	if(mode == "edit" || mode == "review"){
@@ -49,11 +50,18 @@ function initializeSockets(){
 				mode = "edit";
 			}else if(data.permission == "reviewer"){
 				mode = "review";
-			}else{
+			}else if(data.permission == "forcedReviewer"){
 				mode = "review";
 				forcedReviewer = true;
+				activeEditor = data.currentEditor;
+			}else if(data.permission == "viewer"){
+				mode = "production";
 			}
 			buildInterface();  
+	    });
+	    
+	    cognizenSocket.on('assignEditorByQueue', function(data){
+		    updateActiveEditor(data);
 	    });
 	    
 	    cognizenSocket.on('connect_failed', function(){
@@ -162,8 +170,8 @@ function initializeSockets(){
 		}
 		
 		//Simple listener checking connectivity
-		socket.on('onConnect', function (data) {
-            console.log('connected to cserver' + data);
+		cognizenSocket.on('setUsername', function (data) {
+           username = data.username.username;
 		});
 		
 		socket.on('siofu_progress', function (data) {
