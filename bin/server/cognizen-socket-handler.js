@@ -426,7 +426,7 @@ var SocketHandler = {
 				activeEditor = activeEdit_arr[i].user;
 				if(activeEdit_arr[i].user == user.username){
 					foundPermission = activeEdit_arr[i].permission;
-					
+					activeEdit_arr[i].isEditor = true;
 					alreadySent = true;
 					_this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});	
 				}else{
@@ -964,6 +964,7 @@ var SocketHandler = {
                             	tmpObject.lessonID = found.id;
                             	tmpObject.permission = permission;
                             	tmpObject.rejectEdit = false;
+                            	tmpObject.isEditor = false;
 								var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 								var user = _this.SocketSessions.socketUsers[sessionId];
 								tmpObject.sessionID = sessionId;
@@ -988,29 +989,35 @@ var SocketHandler = {
 			for(var i = 0; i < activeEdit_arr.length; i++){
 				if(sessionId == activeEdit_arr[i].sessionID){
 					disconnectingLessonID = activeEdit_arr[i].lessonID;
+					if(activeEdit_arr[i].isEditor){
+						wasEditor = true;
+					}
 					activeEdit_arr.splice(i, 1);
 					break;
 				}
 			}
 			
-			if(disconnectingLessonID != null){
-				var newEditor = null;
-				for (var i = 0; i < activeEdit_arr.length; i++){
-					if(disconnectingLessonID == activeEdit_arr[i].lessonID){
-						if(activeEdit_arr[i].rejectEdit == false){	
-							newEditor = activeEdit_arr[i].user;
-							break;
+			if(wasEditor){
+				if(disconnectingLessonID != null){
+					var newEditor = null;
+					for (var i = 0; i < activeEdit_arr.length; i++){
+						if(disconnectingLessonID == activeEdit_arr[i].lessonID){
+							if(activeEdit_arr[i].rejectEdit == false){	
+								activeEdit_arr[i].isEditor = true;
+								newEditor = activeEdit_arr[i].user;
+								break;
+							}
 						}
 					}
-				}
-				
-				if(newEditor != null){
-					//Pass the new editor, editor rights...
-					console.log("new editor = " + activeEdit_arr[i].user);
-					_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
-				}else{
-					//Unlock the lesson in the dashboard...
-					console.log("remove the deal lock");
+					
+					if(newEditor != null){
+						//Pass the new editor, editor rights...
+						console.log("new editor = " + newEditor);
+						_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
+					}else{
+						//Unlock the lesson in the dashboard...
+						console.log("remove the deal lock");
+					}
 				}
 			}
 	    }
@@ -1024,6 +1031,7 @@ var SocketHandler = {
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(activeEdit_arr[i].user == data.me){
 		    	//var temp = activeEdit_arr.splice(i, 1);
+		    	activeEdit_arr[i].isEditor = false;
 		    	activeEdit_arr[i].rejectEdit = true;
 		    	lessonID = activeEdit_arr[i].lessonID;
 		    	//activeEdit_arr.splice(i, 1);
@@ -1035,6 +1043,7 @@ var SocketHandler = {
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(lessonID == activeEdit_arr[i].lessonID){
 		    	if(activeEdit_arr[i].user != data.me && activeEdit_arr[i].rejectEdit == false){
+				    activeEdit_arr[i].isEditor = true;
 				    newEditor = activeEdit_arr[i].user;
 				    break;
 				}	
