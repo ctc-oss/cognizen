@@ -424,7 +424,7 @@ var SocketHandler = {
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
 				activeEditor = activeEdit_arr[i].user;
-				if(activeEdit_arr[i].user == user.username){
+				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false){
 					foundPermission = activeEdit_arr[i].permission;
 					activeEdit_arr[i].isEditor = true;
 					alreadySent = true;
@@ -1038,7 +1038,7 @@ var SocketHandler = {
 		    	break;
 		    }
 	    }
-	    console.log("next part");
+
 	    var newEditor = null;
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(lessonID == activeEdit_arr[i].lessonID){
@@ -1052,12 +1052,54 @@ var SocketHandler = {
 	    
 	    if(newEditor != null){
 			//Pass the new editor, editor rights...
-			console.log("new editor = " + activeEdit_arr[i].user);
+			//console.log("new editor = " + activeEdit_arr[i].user);
 			_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
 		}else{
 			//Unlock the lesson in the dashboard...
 			console.log("remove the deal lock");
 		}
+    },
+    
+    requestLock: function (data){
+		var _this = this;
+		for(var i = 0; i < activeEdit_arr.length; i++){
+			if(activeEdit_arr[i].isEditor == true){
+				var tmpData = new Object();
+				tmpData.requester = data.me;
+				tmpData.requestee = activeEdit_arr[i].user;
+				_this._socket.broadcast.emit('lockRequest', tmpData);
+			}
+		}    
+    },
+    
+    approveLockRequest: function (data){
+	    var _this = this;
+	    for(var i = 0; i < activeEdit_arr.length; i++){
+	    	if(activeEdit_arr[i].isEditor == true){
+	    		activeEdit_arr[i].isEditor = false;
+	    		activeEdit_arr[i].rejectEdit = false;
+	    		break;
+	    	}
+	    }
+	    
+	    for(var i = 0; i < activeEdit_arr.length; i++){
+		    if(activeEdit_arr[i].user == data.requester){
+			    activeEdit_arr[i].isEditor = true;
+			    //var tmpEl = activeEdit_arr.splice(i, 1);
+			    //activeEdit_arr.unshift(tmpEl);
+			    _this._socket.broadcast.emit('lockRequestAccepted', data);
+			    break;
+		    }
+	    }
+	    
+	    for (var i = 0; i < activeEdit_arr.length; i++){
+		    console.log(activeEdit_arr[i].user);
+	    }
+    },
+    
+    refuseLockRequest: function (data){
+	    var _this = this;
+	    _this._socket.broadcast.emit('lockRequestRefused', data.requestee);
     },
 	
     renameContent: function(data) {

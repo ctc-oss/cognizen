@@ -141,6 +141,7 @@ function updateActiveEditor(_user){
 				YES: function () {
 					mode = "edit";
 					forcedReviewer = false;
+					activeEditor = username;
 					buildInterface();
 					$(this).dialog("close");
 				},
@@ -152,6 +153,91 @@ function updateActiveEditor(_user){
 		});
 	}
 }
+
+function openLockRequest(_data){
+	if(username == _data.requestee){
+		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' is requesting permission to edit this lesson.</p><p>You currently hold the lock on edit controls.  Would you like to give '+ _data.requester +' the edit lock?  Your rights will be changed to reviewer mode.</p></div>';
+			
+		//Add to stage.
+		$("#stage").append(msg);
+				
+		//Make it a dialog
+		$("#dialog-incomingLockRequest").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("#dialog-incomingLockRequest").remove();
+			},
+			buttons: {
+				YES: function () {
+					mode = "review";
+					forcedReviewer = true;
+					activeEditor = _data.requester;
+					cognizenSocket.emit('approveLockRequest', { me: username, requester: _data.requester });
+					buildInterface();
+					$(this).dialog("close");
+				},
+				NO: function(){
+					cognizenSocket.emit('refuseLockRequest', { me: username, requester: _data.requester });
+					$(this).dialog("close");
+				}
+			}
+		});
+	}
+}
+
+function openLockRequestAccepted(_data){
+	console.log("requested Beatch!?!?");
+	if(username == _data.requester){
+		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requestee +' has passed you the lock to edit this lesson.</p><p>You currently hold the lock on edit controls. <b>Be certain to close this lesson window or relinquish lock if you are not actively working on the lesson!</b></p></div>';
+			
+		//Add to stage.
+		$("#stage").append(msg);
+				
+		//Make it a dialog
+		$("#dialog-incomingLockRequest").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("#dialog-incomingLockRequest").remove();
+			},
+			buttons: {
+				OK: function () {
+					mode = "edit";
+					forcedReviewer = false;
+					activeEditor = _data.requester;
+					buildInterface();
+					$(this).dialog("close");
+				}
+			}
+		});
+	}
+}
+
+function openLockRequestRefused(_data){
+	if(username == _data.requester){
+		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requestee +' has refused your request for edit controls.  Contact them at their e-mail to follow up and plan access.</p></div>';
+			
+		//Add to stage.
+		$("#stage").append(msg);
+				
+		//Make it a dialog
+		$("#dialog-incomingLockRequest").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("#dialog-incomingLockRequest").remove();
+			},
+			buttons: {
+				OK: function(){
+					$(this).dialog("close");
+				}
+			}
+		});
+	}
+}
+
+
 
 function forcedReviewAlert(){
 	var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
@@ -214,6 +300,7 @@ function buildInterface(){
 		checkToggleMode();
 	}
 	
+	checkLockMode();
 	checkIndex();
 	checkGlossary();
 	checkDocs();

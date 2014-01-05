@@ -146,6 +146,28 @@ body .redactor_toolbar li a.redactor_btn_close{
 	cursor: pointer;
 }
 
+.btn_passLock{
+	position:absolute;
+	bottom :8px; 
+	left: 175px;
+	width: 30px;
+	height: 30px;
+	background: url(images/lock.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
+}
+
+.btn_requestLock{
+	position:absolute;
+	bottom :8px; 
+	left: 140px;
+	width: 30px;
+	height: 30px;
+	background: url(images/lock.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
+}
+
 #toggleMode{
 	position: absolute;
 	bottom: 12px;
@@ -185,6 +207,8 @@ body .redactor_toolbar li a.redactor_btn_close{
 	cursor: hand; 
 	cursor: pointer;
 }
+
+
 
 #commentDisplayHolder{
 	width: 570px;

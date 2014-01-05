@@ -161,10 +161,6 @@ function checkNav(){
 }
 
 function addEditNav(){
-	/*
-
-	$("#publish").tooltip().click(clickPublish);*/
-
 	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
 	$("#preferences").tooltip().click(launchPrefs);
 }
@@ -309,6 +305,73 @@ function clickPublish(){
 		parsePackageLocation(fdata);
 	});
 	$("#dialog-lessonPrefs").dialog("close");
+}
+
+
+////checkLock Mode and enable pass functions....
+function checkLockMode(){
+	console.log("mode = " + mode);
+	if(mode == "edit" || mode == "admin"){
+		$("#myCanvas").append("<div id='passLock' class='btn_passLock' title='Relinquish Edit Control'></div>");
+	}else if(forcedReviewer == true){
+		$("#myCanvas").append("<div id='passLock' class='btn_requestLock' title='Request Edit Control'></div>");
+	}
+	$("#passLock").tooltip().click(function(){
+		//Relinquish Edit Control
+		if(!forcedReviewer){
+			var msg = '<div id="dialog-relinquishEdit" title="Relinquish Edit Control"><p class="validateTips">Do you want to relinquish edit control of the lesson?</p></div>';
+			
+			//Add to stage.
+			$("#stage").append(msg);
+				
+			//Make it a dialog
+			$("#dialog-relinquishEdit").dialog({
+				modal: true,
+				width: 550,
+				close: function(event, ui){
+					$("#dialog-relinquishEdit").remove();
+				},
+				buttons: {
+					YES: function () {
+						mode = "review";
+						forcedReviewer = true;
+						cognizenSocket.emit('passLock', { me: username });
+						buildInterface();
+						$(this).dialog("close");
+					},
+					NO: function(){
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+		//Request Edit Control
+		else{
+			var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this reuqest?</p></div>';
+			
+			//Add to stage.
+			$("#stage").append(msg);
+				
+			//Make it a dialog
+			$("#dialog-requestEdit").dialog({
+				modal: true,
+				width: 550,
+				close: function(event, ui){
+					$("#dialog-requestEdit").remove();
+				},
+				buttons: {
+					YES: function () {
+						console.log("username on yes = " + username);
+						cognizenSocket.emit('requestLock', {me: username});
+						$(this).dialog("close");
+					},
+					NO: function(){
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+	});
 }
 
 function checkToggleMode(){

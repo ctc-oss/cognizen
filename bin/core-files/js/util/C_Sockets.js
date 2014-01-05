@@ -64,6 +64,18 @@ function initializeSockets(){
 		    updateActiveEditor(data);
 	    });
 	    
+	    cognizenSocket.on('lockRequestAccepted', function (data){
+		   openLockRequestAccepted(data); 
+	    });
+	    
+	    cognizenSocket.on('lockRequestRefused', function (data){
+		   openLockRequestRefused(data); 
+	    });
+	    
+	    cognizenSocket.on('lockRequest', function (data){
+		   openLockRequest(data); 
+	    });
+	    
 	    cognizenSocket.on('connect_failed', function(){
 	    	buildInterface();
     		alert('There is an error connecting to the production server. You can only view content.');

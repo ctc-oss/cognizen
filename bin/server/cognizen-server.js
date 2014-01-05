@@ -445,6 +445,18 @@ var Content = {
 			socket.on('passLock', function (data){
 	           SocketHandler.socket(socket).passLock(data); 
             });
+            
+            socket.on('requestLock', function (data){
+	            SocketHandler.socket(socket).requestLock(data);
+            });
+            
+            socket.on('approveLockRequest', function (data){
+	            SocketHandler.socket(socket).approveLockRequest(data);
+            });
+            
+            socket.on('refuseLockRequest', function (data){
+	            SocketHandler.socket(socket).refuseLockRequest(data);
+            });
 			
             socket.on('checkLoginStatus', function() {
                 SocketHandler.socket(socket).checkLoginStatus();
