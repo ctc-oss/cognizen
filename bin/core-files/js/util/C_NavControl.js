@@ -310,7 +310,6 @@ function clickPublish(){
 
 ////checkLock Mode and enable pass functions....
 function checkLockMode(){
-	console.log("mode = " + mode);
 	if(mode == "edit" || mode == "admin"){
 		$("#myCanvas").append("<div id='passLock' class='btn_passLock' title='Relinquish Edit Control'></div>");
 	}else if(forcedReviewer == true){
@@ -318,6 +317,7 @@ function checkLockMode(){
 	}
 	$("#passLock").tooltip().click(function(){
 		//Relinquish Edit Control
+		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer);
 		if(!forcedReviewer){
 			var msg = '<div id="dialog-relinquishEdit" title="Relinquish Edit Control"><p class="validateTips">Do you want to relinquish edit control of the lesson?</p></div>';
 			
@@ -361,7 +361,7 @@ function checkLockMode(){
 				},
 				buttons: {
 					YES: function () {
-						console.log("username on yes = " + username);
+						//console.log("username on yes = " + username);
 						cognizenSocket.emit('requestLock', {me: username});
 						$(this).dialog("close");
 					},

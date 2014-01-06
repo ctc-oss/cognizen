@@ -187,7 +187,7 @@ function openLockRequest(_data){
 }
 
 function openLockRequestAccepted(_data){
-	console.log("requested Beatch!?!?");
+	//console.log("requested Beatch!?!?");
 	if(username == _data.requester){
 		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requestee +' has passed you the lock to edit this lesson.</p><p>You currently hold the lock on edit controls. <b>Be certain to close this lesson window or relinquish lock if you are not actively working on the lesson!</b></p></div>';
 			

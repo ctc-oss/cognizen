@@ -53,10 +53,10 @@ function initializeSockets(){
 			}else if(data.permission == "forcedReviewer"){
 				mode = "review";
 				forcedReviewer = true;
-				activeEditor = data.currentEditor;
 			}else if(data.permission == "viewer"){
 				mode = "production";
 			}
+			activeEditor = data.currentEditor;
 			buildInterface();  
 	    });
 	    

@@ -118,8 +118,8 @@ var SocketHandler = {
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
                                             /*.takeScreenshots({count: 1, timemarks: ['5']}, capPath, function(err, filenames) {
-                                             console.log("fileNames = " + filenames);
-                                             console.log('screenshots were saved');
+                                             _this.logger.info("fileNames = " + filenames);
+                                             _this.logger.info('screenshots were saved');
                                              })*/
 										}/*else if(convertableVectorTypes.indexOf(mediaType.toLowerCase()) >= 0){
 											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.svg';
@@ -647,7 +647,7 @@ var SocketHandler = {
 
     removeContent: function(data) {
         var _this = this;
-        console.log(JSON.stringify(data));
+        _this.logger.info(JSON.stringify(data));
         if (!data.user) {
             data.user = 'unknown';
         }
@@ -701,7 +701,7 @@ var SocketHandler = {
                 children.push(program);
                 // Delete the program and its children from the database.
 //                children.forEach(function(item) {
-//                    console.log('Deleting ' + item.name);
+//                    _this.logger.info('Deleting ' + item.name);
 //                });
                 Utils.removeAll(children, function(err) {
                     if (err) {
@@ -715,7 +715,7 @@ var SocketHandler = {
                             }
                             else {
                                 // Rename the repo using the DELETE naming.
-                                console.log('From ' + oldPath + ' to ' + newPath);
+                                _this.logger.info('From ' + oldPath + ' to ' + newPath);
                                 fs.rename(oldPath, newPath, function(err) {
                                     if (err) {
                                         callback(err);
@@ -753,7 +753,7 @@ var SocketHandler = {
                         children.push(content);
                         // Delete the program and its children from the database.
                         children.forEach(function(item) {
-                            console.log('Deleting ' + item.name);
+                            _this.logger.info('Deleting ' + item.name);
                         });
                         Utils.removeAll(children, function(err) {
                             if (err) {
@@ -764,7 +764,7 @@ var SocketHandler = {
                                 var oldPath = _this.Content.diskPath(content.path);
                                 var newPath = trashFolder + content.name + _this._fullDeletedSuffix();
 
-                                console.log('From ' + oldPath + ' to ' + newPath);
+                                _this.logger.info('From ' + oldPath + ' to ' + newPath);
                                 fs.rename(oldPath, newPath, function(err) {
                                     if (err) {
                                         callback(err);
@@ -957,7 +957,7 @@ var SocketHandler = {
                                     }
                                 });
                             }
-                            
+                            _this.logger.info("permission =========================== " + permission);
                             //Setting up array to track whether a lesson is locked due to another editor already in....
                             if(permission == "admin" || permission == "editor"){
                             	var tmpObject = new Object();
@@ -983,15 +983,18 @@ var SocketHandler = {
 	    var disconnectingLessonID = null;
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 		var user = _this.SocketSessions.socketUsers[sessionId];
+		_this.logger.info("in disconnect function.  sessionId = " + sessionId);
 		if(user != undefined){
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.
 			for(var i = 0; i < activeEdit_arr.length; i++){
+				_this.logger.info("activeEdit_arr[i].sessionID = " + activeEdit_arr[i].sessionID);
 				if(sessionId == activeEdit_arr[i].sessionID){
 					disconnectingLessonID = activeEdit_arr[i].lessonID;
 					if(activeEdit_arr[i].isEditor){
 						wasEditor = true;
 					}
+					_this.logger.info("wasEditor = " + wasEditor);
 					activeEdit_arr.splice(i, 1);
 					break;
 				}
@@ -1012,11 +1015,11 @@ var SocketHandler = {
 					
 					if(newEditor != null){
 						//Pass the new editor, editor rights...
-						console.log("new editor = " + newEditor);
+						_this.logger.info("new editor = " + newEditor);
 						_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
 					}else{
 						//Unlock the lesson in the dashboard...
-						console.log("remove the deal lock");
+						_this.logger.info("remove the deal lock");
 					}
 				}
 			}
@@ -1028,6 +1031,7 @@ var SocketHandler = {
     passLock: function (data){
 	    var lessonID = null;
 	    var _this = this;
+	    _this.logger.info(data);
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(activeEdit_arr[i].user == data.me){
 		    	//var temp = activeEdit_arr.splice(i, 1);
@@ -1052,11 +1056,11 @@ var SocketHandler = {
 	    
 	    if(newEditor != null){
 			//Pass the new editor, editor rights...
-			//console.log("new editor = " + activeEdit_arr[i].user);
+			//_this.logger.info("new editor = " + activeEdit_arr[i].user);
 			_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
 		}else{
 			//Unlock the lesson in the dashboard...
-			console.log("remove the deal lock");
+			_this.logger.info("remove the deal lock");
 		}
     },
     
@@ -1093,7 +1097,7 @@ var SocketHandler = {
 	    }
 	    
 	    for (var i = 0; i < activeEdit_arr.length; i++){
-		    console.log(activeEdit_arr[i].user);
+		    _this.logger.info(activeEdit_arr[i].user);
 	    }
     },
     
@@ -1115,7 +1119,7 @@ var SocketHandler = {
             return;
         }
 
-//        console.log('Rename ' + data.content.type + '#' + data.content.id + '...');
+//        _this.logger.info('Rename ' + data.content.type + '#' + data.content.id + '...');
         // First, find user and content.
         var contentType = _this.Content.objectType(data.content.type);
 
@@ -1126,7 +1130,7 @@ var SocketHandler = {
                     found.name = data.content.name;
                     found.generatePath();
                     var newDiskPath = _this.Content.diskPath(found.path);
-//                    console.log('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
+//                    _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
 
                     var itemsToSave = [found];
 
@@ -1279,19 +1283,19 @@ var SocketHandler = {
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
-                        console.log("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
+                        _this.logger.info("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
 
                         var itemsToSave = [found.lessons];
 
                         //init SCORM (itemsToSave may need to be passed into init)
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found );
 
-                        //console.log("%%%%%%%%%%%%itemsToSave%%%%%%%  " + itemsToSave);
+                        //_this.logger.info("%%%%%%%%%%%%itemsToSave%%%%%%%  " + itemsToSave);
                         //set mode to production and scormVersion in content.xml file
                         // for(var i=0; i<itemsToSave.length; i++){
                             _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
                             var parent = content.getParent();
-                            console.log(etree);
+                            _this.logger.info(etree);
                             etree.find('./courseInfo/preferences/mode').set('value','production');
                             etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
                             }, function() {});
@@ -1312,7 +1316,7 @@ var SocketHandler = {
                             // for(var i=0; i<itemsToSave.length; i++){
                                 _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
                                 var parent = content.getParent();
-                                console.log(etree);
+                                _this.logger.info(etree);
                                 etree.find('./courseInfo/preferences/mode').set('value','edit');
                                 }, function() {});
                             // }
@@ -1323,7 +1327,7 @@ var SocketHandler = {
                             else{
                                 _this.logger.info("publish Course success.");
                                 _this.logger.info(filepath);
-                                console.log("---------- filepath = " + filepath);
+                                _this.logger.info("---------- filepath = " + filepath);
                                 fs.remove(contentPath + "/js", function(err){
                                     if(err) return _this.logger.error(err);
                                     _this.logger.info('js directory removed from couse after publishing')
@@ -1342,14 +1346,14 @@ var SocketHandler = {
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
-                        console.log("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
+                        _this.logger.info("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null );
 
                         var itemsToSave = [found];
                         //set mode to production and scormVersion in content.xml file
                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                             var parent = content.getParent();
-                            console.log(etree);
+                            _this.logger.info(etree);
                             etree.find('./courseInfo/preferences/mode').set('value','production');
                             etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
                         }, function() {});
@@ -1361,7 +1365,7 @@ var SocketHandler = {
                             //set mode back to edit in content.xml file, not matter what
                             _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                 var parent = content.getParent();
-                                console.log(etree);
+                                _this.logger.info(etree);
                                 etree.find('./courseInfo/preferences/mode').set('value','edit');
                             }, function() {
                                 // Need to git commit the program, then let the user know it is done.
@@ -1378,7 +1382,7 @@ var SocketHandler = {
                             else{
                                 _this.logger.info("publishLesson success.");
                                 _this.logger.info(filepath);
-                                console.log("---------- filepath = " + filepath);
+                                _this.logger.info("---------- filepath = " + filepath);
 
                                 fs.remove(contentPath + "/js", function(err){
                                     if(err) return _this.logger.error(err);
