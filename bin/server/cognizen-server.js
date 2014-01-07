@@ -410,18 +410,20 @@ var Content = {
     // enable all transports (optional if you want flashsocket support, please note that some hosting
     // providers do not allow you to create servers that listen on a port different than 80 or their
     // default port)
-    io.set('transports', [
-        'websocket',
-        'flashsocket',
-        'htmlfile',
-        'xhr-polling',
-        'jsonp-polling'
-    ]);
+    
     //io.set('polling duration', 600);
     io.configure(function () {
     	io.set('connect timeout', 1000);
-        io.set('close timeout', 60 * 60 * 2);
-    });//Set the timeout to two hours - fix for uploading large video files losing connection.
+        io.set('heartbeat timeout', 5);
+        io.set('close timeout', 25);
+	    /*io.set('transports', [
+	        'websocket',
+	        'flashsocket',
+	        'htmlfile',
+	        'xhr-polling',
+	        'jsonp-polling'
+	    ]);*/
+    });
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);
     var SocketHandler = require('./cognizen-socket-handler').init(config, logger, SocketSessions, Mail, Content, Git, io);
@@ -434,6 +436,7 @@ var Content = {
          *******************************************************************************************/
         var count = 0;
         io.sockets.on('connection', function (socket) {
+			console.log("----------------------------------------- " + socket.transport);
 			
 			SocketHandler.socket(socket).setUsername();
             SocketHandler.socket(socket).setupFileUploadHandler();
