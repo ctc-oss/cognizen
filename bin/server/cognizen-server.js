@@ -418,10 +418,10 @@ var Content = {
         io.set('close timeout', 25);
 	    io.set('transports', [
 	        'websocket',
-	        'flashsocket',
-	        'htmlfile',
 	        'xhr-polling',
-	        'jsonp-polling'
+	        'jsonp-polling',
+	        'flashsocket',
+	        'htmlfile'
 	    ]);
     });
 
