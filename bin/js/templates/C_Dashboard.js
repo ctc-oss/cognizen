@@ -778,17 +778,26 @@ function C_Dashboard(_type) {
         socket.emit('publishContent', data, function(fdata){
             fdata = fdata.replace(/\\/g, '/');
             var splitPath = fdata.split("/");
-
+			var first = true;
             var notYet = true;
             var dlPath = "";
             for(var i = 0; i < splitPath.length; i++){
                 if(splitPath[i] == "programs"){
                     notYet = false;
                 }
-                if(notYet == false){
+                /*if(notYet == false){
                     dlPath += "/";
                     dlPath += splitPath[i];
-                }
+                }*/
+                
+                if(notYet == false){
+					if(first == false){
+						dlPath += "/";
+					}else{
+						first = false;
+					}
+					dlPath += splitPath[i];
+				}
             }            
             
             socket.emit('sendPackageMail', {
@@ -819,7 +828,6 @@ function C_Dashboard(_type) {
                 }
             });      
             socket.emit('refreshDashboard');                  
-
         });        
     }
     
