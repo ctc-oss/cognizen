@@ -416,13 +416,13 @@ var Content = {
     	io.set('connect timeout', 1000);
         io.set('heartbeat timeout', 5);
         io.set('close timeout', 25);
-	    /*io.set('transports', [
+	    io.set('transports', [
 	        'websocket',
 	        'flashsocket',
 	        'htmlfile',
 	        'xhr-polling',
 	        'jsonp-polling'
-	    ]);*/
+	    ]);
     });
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);
