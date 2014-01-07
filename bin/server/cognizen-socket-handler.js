@@ -983,7 +983,7 @@ var SocketHandler = {
 	    var disconnectingLessonID = null;
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 		var user = _this.SocketSessions.socketUsers[sessionId];
-		_this.logger.info("in disconnect function.  sessionId = " + sessionId);
+		//_this.logger.info("in disconnect function.  sessionId = " + sessionId);
 		if(user != undefined){
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.

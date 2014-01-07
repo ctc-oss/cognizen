@@ -436,7 +436,7 @@ var Content = {
          *******************************************************************************************/
         var count = 0;
         io.sockets.on('connection', function (socket) {
-			console.log("----------------------------------------- " + socket.transport);
+			//console.log("----------------------------------------- " + socket.transport);
 			
 			SocketHandler.socket(socket).setUsername();
             SocketHandler.socket(socket).setupFileUploadHandler();
