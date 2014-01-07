@@ -809,7 +809,7 @@ function C_Dashboard(_type) {
 
             $('#publishLoader').remove();
 
-            var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+data.path+' target="_blank">GET PACKAGE</a></p></div>';
+            var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+dlPath+' target="_blank">GET PACKAGE</a></p></div>';
             
             //Add to stage.
             $("#stage").append(msg);
