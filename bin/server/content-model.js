@@ -1,4 +1,4 @@
-var mongoose = require('mongoose'),
+ var mongoose = require('mongoose'),
     extend = require('mongoose-schema-extend'),
     Schema = mongoose.Schema,
     Utils = require('./cognizen-utils');
@@ -74,9 +74,21 @@ var findCourse = function (course, callback) {
 };
 
 var allowCreationOfProgramContent = function(item, callback) {
-    // Need to make sure that there are no courses with this name already.
+    // Need to make sure that there are no applications or courses with this name already.
     findByPath(Course, item, function(courseFound, course) {
-        callback(!courseFound);
+        if (courseFound) {
+            callback(false);
+        }
+        else {
+            findByPath(Application, item, function(applicationFound, application) {
+                if (applicationFound) {
+                    callback(false);
+                }
+                else {
+                    callback(true);
+                }
+            });
+        }
     });
 };
 
@@ -86,6 +98,9 @@ var ContentSchema = new Schema({
 });
 
 var ProgramSchema = ContentSchema.extend({
+    applications: [
+        {type: Schema.Types.ObjectId, ref: 'Application'}
+    ],
     courses: [
         {type: Schema.Types.ObjectId, ref: 'Course'}
     ]
@@ -148,8 +163,7 @@ ProgramSchema.methods.toDashboardItem = function() {
         type: 'program',
         name: this.name,
         parentDir: '',
-        path: this.name,
-        permission: this.permission
+        path: this.name
     };;
 };
 
@@ -160,6 +174,74 @@ ProgramSchema.methods.getRepoName = function() {
 var ProjectSchema = ContentSchema.extend({
     program: {type: Schema.Types.ObjectId, ref: 'Program'}
 });
+
+var ApplicationSchema = ProjectSchema.extend({});
+ApplicationSchema.statics.createUnique = function (app, callback) {
+    findProgram(app.program, function (program) {
+        if (program) {
+            app.program = program;
+            app.path = [app.program.path, '/', Utils.replaceInvalidFilenameChars(app.name)].join('');
+            // Make sure that we can create an application or course given the items path
+            allowCreationOfProgramContent(app, function(allow) {
+                if (allow) {
+                    createUnique(Application, app, function (saved, data) {
+                        if (saved) {
+                            program.applications.push(data);
+                            program.save(function (err) {
+                                data.fullProgram = program;
+                                callback(saved, data);
+                            });
+                        }
+                        else {
+                            callback(saved, data);
+                        }
+                    });
+                }
+                else {
+                    callback(false, app);
+                }
+            });
+        }
+        else {
+            console.log("Program with name '" + app.program.name + "' not found");
+        }
+    });
+};
+
+ApplicationSchema.methods.getProgram = function() {
+    return this.program;
+};
+
+ApplicationSchema.methods.getParent = function() {
+    return this.program;
+};
+
+ApplicationSchema.methods.setParent = function(parent) {
+    this.program = parent;
+};
+
+ApplicationSchema.methods.getChildren = function(callback) {
+    callback(null, []);
+};
+
+ApplicationSchema.methods.generatePath = function() {
+    this.path = [this.program.path, '/', Utils.replaceInvalidFilenameChars(this.name)].join('');
+};
+
+ApplicationSchema.methods.toDashboardItem = function() {
+    return {
+        id: this.id,
+        type: 'application',
+        name: this.name,
+        parentDir: this.program.name,
+        path: this.path,
+        parent: this.program.id
+    };
+};
+
+ApplicationSchema.statics.findAndPopulate = function(id, callback) {
+    Application.findById(id).populate('program').exec(callback);
+};
 
 var CourseSchema = ProjectSchema.extend({
     lessons: [
@@ -196,8 +278,7 @@ CourseSchema.methods.toDashboardItem = function() {
         name: this.name,
         parentDir: this.program.name,
         path: this.path,
-        parent: this.program.id,
-        permission: this.permission
+        parent: this.program.id
     };
 };
 
@@ -210,7 +291,7 @@ CourseSchema.statics.createUnique = function (course, callback) {
         if (program) {
             course.program = program;
             course.path = [course.program.path, '/', Utils.replaceInvalidFilenameChars(course.name)].join('');
-            // Make sure that we can create a course given the items path
+            // Make sure that we can create an application or course given the items path
             allowCreationOfProgramContent(course, function(allow) {
                 if (allow) {
                     createUnique(Course, course, function (saved, data) {
@@ -246,6 +327,7 @@ LessonSchema.statics.createUnique = function (lesson, callback) {
             var courseProgram = course.program;
             lesson.course = course;
             lesson.path = [lesson.course.path, '/', Utils.replaceInvalidFilenameChars(lesson.name)].join('');
+//            lesson.generatePath();
             createUnique(Lesson, lesson, function (saved, data) {
                 if (saved) {
                     course.lessons.push(data);
@@ -292,8 +374,7 @@ LessonSchema.methods.toDashboardItem = function() {
         name: this.name,
         parentDir: this.course.name,
         path: this.path,
-        parent: this.course.id,
-        permission: this.permission
+        parent: this.course.id
     };
 };
 
@@ -329,12 +410,14 @@ var ContentCommentSchema = new Schema({
 
 var Content = mongoose.model('Content', ContentSchema);
 var Program = mongoose.model('Program', ProgramSchema);
+var Application = mongoose.model('Application', ApplicationSchema);
 var Course = mongoose.model('Course', CourseSchema);
 var Lesson = mongoose.model('Lesson', LessonSchema);
 var ContentComment = mongoose.model('ContentComment', ContentCommentSchema);
 
 module.exports = {
     Program: Program,
+    Application: Application,
     Course: Course,
     Lesson: Lesson,
     ContentComment: ContentComment

@@ -8,17 +8,20 @@ var SCORM = {
     scormPath: '',
     contentPath: '',
     xmlContentPath: '',
-    init: function(logger, ScormPath, ContentPath, XmlContentPath) {
+    scormVersion: '',
+    courseName: '',
+    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
         this.contentPath = ContentPath;
         this.xmlContentFile = XmlContentPath;
+        this.found = Found;
+        this.scormVersion = ScormVersion;
         return this;
     },
 
-	generateSCORM: function(data, callback){
+	generateSCORMLesson: function(callback){
         var _this = this;
-        var scormVersion = data;
         //handle if scormVersion = none...
 
         readdirp(
@@ -35,10 +38,10 @@ var SCORM = {
 		        data = fs.readFileSync(_this.xmlContentFile).toString();
 		        etree = et.parse(data);
 			    
-			    var courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-                var manifestFile = _this._populateManifest(scormVersion, courseName, res).join('');
+			    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+                var manifestFile = _this._populateManifest(res);
 
-                var scormBasePath = _this.scormPath + '/' + scormVersion + '/';
+                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
                 var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
                 fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -47,7 +50,7 @@ var SCORM = {
                         callback(err, null);
                     }
                     else {
-                    	_this._zipScormPackage(callback, res, scormVersion, courseName, scormBasePath, imsManifestFilePath);
+                    	_this._zipScormPackage(callback, res, scormBasePath, imsManifestFilePath);
 
                     }
                     fs.remove(imsManifestFilePath, function(err){
@@ -59,18 +62,169 @@ var SCORM = {
 
             }
         );
-	//end of generateSCORM
+	//end of generateSCORMLesson
 	},
 
-	_populateManifest: function(scormVersion, courseName, res){
+	//probably need to pass lessons into (maybe during init)
+	generateSCORMCourse: function(callback){
+        var _this = this;
+
+        var manifestFile = '';
+        var resourceLines = [];
+        var lessonsArray = [];
+        var lessonsName = [];
+
+        for(var i=0; i<_this.found.lessons.length; i++){
+            var obj = _this.found.lessons[i];
+            var lessonPath = _this.contentPath + "/" + obj.name;
+            lessonsArray.push(lessonPath); 	                            
+        } 
+        var data, etree;
+        var lessonXmlContentFile = lessonsArray[0] + '/xml/content.xml';
+        data = fs.readFileSync(lessonXmlContentFile).toString();
+        etree = et.parse(data);
+
+	    _this.courseName = etree.find('.courseInfo/preferences/courseTitle').get('value');
+
+	    manifestFile = _this._startManifest();				    	
+
+        var scormFileVersion = _this.scormVersion.replace(/\./, '_');
+        var packageFolder = _this.contentPath + '/packages/';
+        var outputFile = packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        var output = fs.createWriteStream(outputFile);
+        var archive = archiver('zip');
+
+        archive.on('error', function(err) {
+            throw err;
+        });
+
+        archive.pipe(output);
+
+	    _this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+
+    //end of generateSCORMCourse    
+	},
+
+
+
+	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
 		var _this = this;
-        var manifest = [];
+		var _lessonPath = lArray[count];
+		console.log(_lessonPath);
+        readdirp(
+            { root: _lessonPath,
+                directoryFilter: [ '!server', '!scorm', '!.git', '!packages'],
+                fileFilter: [ '!.*' ] }
+            , function(fileInfo) {
+                //console.log("---------------------------------------------------------" + fileInfo.path);
+               	//resFinal.push(fileInfo.path);
+            }
+            , function (err, res) {
+		        var data, etree;
+		        var lessonXmlContentFile = _lessonPath + '/xml/content.xml';
+		        console.log(lessonXmlContentFile);
+		        data = fs.readFileSync(lessonXmlContentFile).toString();  
+		        etree = et.parse(data);          	
+                //add item & item sequencing (objectives)
+                lessonsName.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
+                manifestFile += _this._add2004Item(lessonsName[count]);
 
-	    manifest.push('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n');
+                //add resources
+                resourceLines.push(_this._addResources(res, lessonsName[count]+'/'));
+		        //builds the bin directory
+		        res.files.forEach(function(file) {
+		            var localFile = file.path.replace(/\\/g,"/");
+		            var inputFile = _lessonPath + '/' + localFile;
+		            archive.append(fs.createReadStream(inputFile), { name: 'bin/'+lessonsName[count]+'/'+localFile });
+		        });
 
-	    if (scormVersion === '2004_3rd'){
-	        manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n');
-	        manifest.push("   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
+                if(count+1 == lArray.length){
+			        if(manifestFile != ''){
+				        //sequencing rules for the course go here
+				        manifestFile += "       </organization>\n";
+				        manifestFile += "    </organizations>\n";
+						manifestFile += "    <resources>\n";
+						//have to add the resources here because the items all have to be added before the org can be closed
+						for(var i=0; i<resourceLines.length; i++){
+							manifestFile += "      <resource identifier=\"RES-"+lessonsName[i]+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+lessonsName[i]+"/index.html\">\n";
+							manifestFile += resourceLines[i];
+							manifestFile += '      </resource>\n';
+						}				    
+					    manifestFile += '   </resources>\n';
+				    	manifestFile += '</manifest>';	
+
+			        }
+			        else{
+			        	callback("no manifestFile", null);
+			        }                	
+
+			        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+			        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+
+			        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+			            if(err) {
+			                _this.logger.error("Write file error" + err);
+			                callback(err, null);
+			            }
+			            else {
+
+					        //add SCORM files
+					        readdirp({
+					                root: scormBasePath,
+					                directoryFilter: ['*'],
+					                fileFilter: [ '!.DS_Store' ]
+					            },
+					            function(fileInfo) {},
+					            function (err, res) {
+					                res.files.forEach(function(file) {
+					                    var localFile = file.path.replace(/\\/g,"/")
+					                    var inputFile = scormBasePath + localFile;
+					                    archive.append(fs.createReadStream(inputFile), { name: localFile });
+					                });
+
+					            }
+					        );
+
+					        //add imsmanifest.xml file
+					        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+
+					        archive.finalize(function(err, written) {
+					            if (err) {
+					                callback(err, null);
+					            }
+					            //tells the engine that it is done writing the zip file
+					            callback(null, outputFile);
+					            _this.logger.debug("packageFolder = " + outputFile);
+
+					        });				            	
+
+			            }
+			            fs.remove(imsManifestFilePath, function(err){
+							if(err) return _this.logger.error(err);
+							_this.logger.info('imsmanifest.xml file removed.');
+						});
+			        });
+
+                }
+                else{
+	    			_this._recurseLessons(callback, count+1, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+                }
+
+
+            }
+        ); 
+
+	},
+
+	_startManifest: function(){
+		var _this = this;
+        var manifest;
+
+	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
+
+	    if (_this.scormVersion === '2004_3rd'){
+	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
 	            "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
 	            "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
@@ -84,35 +238,15 @@ var SCORM = {
 	            "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
-	            "   </metadata>\n");
-	        manifest.push("   <organizations default=\""+courseName.replace(/\s+/g, '') +"\">\n"+
-	            "       <organization identifier=\""+courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
-	            "           <title>"+courseName+"</title>\n"+
-	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
-	            "               <title>"+courseName+"</title>\n"+
-	            "               <adlnav:presentation>\n"+
-	            "                   <adlnav:navigationInterface>\n"+
-	            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
-	            "                       <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
-	            //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
-	            //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
-	            "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
-	            "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
-	            //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
-	            "                   </adlnav:navigationInterface>\n"+
-	            "               </adlnav:presentation>\n"+
-	            "               <imsss:sequencing>\n");
-	        //any objectives stuff goes here - objectivesGenerator
-	        manifest.push("\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n");
-	        manifest.push("               </imsss:sequencing>\n");
-	        manifest.push("           </item>\n");
-	        //sequencing rules for the course go here
-	        manifest.push("       </organization>\n");
-	        manifest.push("    </organizations>\n");
+	            "   </metadata>\n";
+	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
+	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	            "           <title>"+_this.courseName+"</title>\n";
+
 	    }
-	    else if(scormVersion == "2004_4th"){
-	        manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n');
-	        manifest.push("   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
+	    else if(_this.scormVersion == "2004_4th"){
+	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
 	            "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
 	            "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
@@ -126,12 +260,83 @@ var SCORM = {
 	            "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
-	            "   </metadata>\n");
-	        manifest.push("   <organizations default=\""+courseName.replace(/\s+/g, '') +"\">\n"+
-	            "       <organization identifier=\""+courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
-	            "           <title>"+courseName+"</title>\n"+
+	            "   </metadata>\n";
+	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
+	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	            "           <title>"+_this.courseName+"</title>\n";
+	    }
+	    else{
+	    	// Courses currently can not be published to 1.2, probably remove else
+
+	    }	    
+
+	    return manifest;
+	},
+
+	_add2004Item: function(lessonName){
+        var item = "           <item identifier=\""+lessonName+"_id\" identifierref=\"RES-"+lessonName+"-files\">\n"+
+            "               <title>"+lessonName+"</title>\n"+
+            "               <adlnav:presentation>\n"+
+            "                   <adlnav:navigationInterface>\n"+
+            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
+            "                       <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
+            //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
+            //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
+            "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
+            "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
+            //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
+            "                   </adlnav:navigationInterface>\n"+
+            "               </adlnav:presentation>\n"+
+            "               <imsss:sequencing>\n";
+        //any objectives stuff goes here - objectivesGenerator
+        item += "\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
+        item += "               </imsss:sequencing>\n";
+        item += "           </item>\n";
+
+        return item;
+
+	},
+
+	_addResources: function(res, lesson){
+		var _this = this;
+		var resourceLine = '';
+	    var resources = _this._resourcesGenerator(res, lesson);
+
+	    for (var i = 0; i < resources.length; i++) {
+	    	resourceLine += resources[i];
+	    };
+
+	    return resourceLine;
+	},
+
+	_populateManifest: function(res){
+		var _this = this;
+        var manifest;
+
+	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
+
+	    if (_this.scormVersion === '2004_3rd'){
+	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
+	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
+	            "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
+	            "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
+	            "   xmlns:adlseq=\"http://www.adlnet.org/xsd/adlseq_v1p3\"\n"+
+	            "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
+	            "   xsi:schemaLocation=\"http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
+	            "                        http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
+	            "                        http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n"+
+	            "                        http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+	            "                        http://www/imsglobal.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\">\n"+
+	            "   <metadata>\n"+
+	            "       <schema>ADL SCORM</schema>\n"+
+	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
+	            "   </metadata>\n";
+	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
+	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	            "           <title>"+_this.courseName+"</title>\n"+
 	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
-	            "               <title>"+courseName+"</title>\n"+
+	            "               <title>"+_this.courseName+"</title>\n"+
 	            "               <adlnav:presentation>\n"+
 	            "                   <adlnav:navigationInterface>\n"+
 	            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
@@ -143,68 +348,110 @@ var SCORM = {
 	            //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
 	            "                   </adlnav:navigationInterface>\n"+
 	            "               </adlnav:presentation>\n"+
-	            "               <imsss:sequencing>\n");
+	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
-	        manifest.push("\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n");
-	        manifest.push("               </imsss:sequencing>\n");
-	        manifest.push("           </item>\n");
+	        manifest += "\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
+	        manifest += "               </imsss:sequencing>\n";
+	        manifest += "           </item>\n";
 	        //sequencing rules for the course go here
-	        manifest.push("       </organization>\n");
-	        manifest.push("    </organizations>\n");
+	        manifest += "       </organization>\n";
+	        manifest += "    </organizations>\n";
+	    }
+	    else if(_this.scormVersion == "2004_4th"){
+	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
+	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
+	            "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
+	            "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
+	            "   xmlns:adlseq=\"http://www.adlnet.org/xsd/adlseq_v1p3\"\n"+
+	            "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
+	            "   xsi:schemaLocation=\"http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
+	            "                        http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
+	            "                        http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n"+
+	            "                        http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+	            "                        http://www/imsglobal.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\">\n"+
+	            "   <metadata>\n"+
+	            "       <schema>ADL SCORM</schema>\n"+
+	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
+	            "   </metadata>\n";
+	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
+	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	            "           <title>"+_this.courseName+"</title>\n"+
+	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
+	            "               <title>"+_this.courseName+"</title>\n"+
+	            "               <adlnav:presentation>\n"+
+	            "                   <adlnav:navigationInterface>\n"+
+	            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
+	            "                       <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
+	            //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
+	            //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
+	            "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
+	            "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
+	            //                        "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
+	            "                   </adlnav:navigationInterface>\n"+
+	            "               </adlnav:presentation>\n"+
+	            "               <imsss:sequencing>\n";
+	        //any objectives stuff goes here - objectivesGenerator
+	        manifest += "\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
+	        manifest += "               </imsss:sequencing>\n";
+	        manifest += "           </item>\n";
+	        //sequencing rules for the course go here
+	        manifest += "       </organization>\n";
+	        manifest += "    </organizations>\n";
 	    }
 	    else{
-	        manifest.push('<manifest identifier=\"'+ courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n');
-	        manifest.push('    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"'+
+	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n';
+	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"'+
 	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"'+
 	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'+
 	            '    xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd'+
 	            '                         http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd'+
-	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">');
-	        manifest.push('<metadata>'+
+	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">';
+	        manifest +='<metadata>'+
 	            '   <schema>ADL SCORM</schema>'+
 	            '   <schemaversion>1.2</schemaversion>'+
-	            '</metadata>');
-	        manifest.push('<organizations default="'+courseName.replace(/\s+/g, '') +'">'+
-	            '   <organization identifier="'+courseName.replace(/\s+/g, '') +'">'+
-	            '		<title>'+courseName+'</title>'+
+	            '</metadata>';
+	        manifest +='<organizations default="'+_this.courseName.replace(/\s+/g, '') +'">'+
+	            '   <organization identifier="'+_this.courseName.replace(/\s+/g, '') +'">'+
+	            '		<title>'+_this.courseName+'</title>'+
 	            '		<item identifier="Home" identifierref="RES-common-files">'+
-	            '			<title>'+courseName+'</title>'+
+	            '			<title>'+_this.courseName+'</title>'+
 	            '		</item>'+
 	            '	</organization>'+
-	            '</organizations>');
+	            '</organizations>';
 	    }
 	    //resources go here - resourcesgenerator
-        manifest.push("   <resources>\n");
-        manifest.push("      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/index.html\">\n");	    
-	    var resources = _this._resourcesGenerator(res);
+        manifest += "   <resources>\n";
+        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/index.html\">\n";	    
+	    var resources = _this._resourcesGenerator(res, '');
 	    for (var i = 0; i < resources.length; i++) {
-	    	manifest.push(resources[i]);
+	    	manifest += resources[i];
 	    };
-	    manifest.push('      </resource>\n');
-	    manifest.push('   </resources>\n');
+	    manifest += '      </resource>\n';
+	    manifest += '   </resources>\n';
 
-	    manifest.push('</manifest>');	
+	    manifest += '</manifest>';	
 
 	    return manifest;	
 	},
 
-	_resourcesGenerator: function(res){
+	_resourcesGenerator: function(res, lesson){
 		var resources = [];
 	    res.files.forEach(function(file) {
 	        var fileName = file.path.split("\\");
 	        //does not include files that don't have an "." ext, directories
 	        if(fileName[fileName.length-1].indexOf('.') !== -1){
-	            resources.push("         <file href=\"bin/"+file.path.replace(/\\/g,"/")+"\"/>\n");
+	            resources.push("         <file href=\"bin/"+lesson+file.path.replace(/\\/g,"/")+"\"/>\n");
 	        }
 	    });
 	    return resources;		
 	},
 
-	_zipScormPackage: function(callback, res, scormVersion, courseName, scormBasePath, imsManifestFilePath) {
+	_zipScormPackage: function(callback, res, scormBasePath, imsManifestFilePath) {
 		var _this = this;
-        var scormFileVersion = scormVersion.replace(/\./, '_');
+        var scormFileVersion = _this.scormVersion.replace(/\./, '_');
         var packageFolder = _this.contentPath + '/packages/';
-        var outputFile = packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        var outputFile = packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
 
@@ -246,10 +493,8 @@ var SCORM = {
                 callback(err, null);
             }
         
-        	//_this.logger.info("packageFolder " + packageFolder + " courseName " + courseName + " scormFileVersion " + scormFileVersion);
-
             //tells the engine that it is done writing the zip file
-            callback(null, packageFolder + courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip');
+            callback(null, outputFile);
             _this.logger.debug("packageFolder = " + packageFolder);
 
         });		

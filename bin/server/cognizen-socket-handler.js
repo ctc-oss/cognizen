@@ -1283,61 +1283,56 @@ var SocketHandler = {
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
-                        _this.logger.info("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
+                        //creates the packages directory under the course dir
+                        fs.mkdirs(contentPath + "/packages", function(err){
+                            if(err) return _this.logger.error(err);
+                            _this.logger.info("created packages directory");
+                        });    
 
                         var itemsToSave = [found.lessons];
 
                         //init SCORM (itemsToSave may need to be passed into init)
-                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found );
+                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
 
-                        //_this.logger.info("%%%%%%%%%%%%itemsToSave%%%%%%%  " + itemsToSave);
                         //set mode to production and scormVersion in content.xml file
-                        // for(var i=0; i<itemsToSave.length; i++){
-                            _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
+                        _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
                             var parent = content.getParent();
-                            _this.logger.info(etree);
                             etree.find('./courseInfo/preferences/mode').set('value','production');
                             etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
-                            }, function() {});
+                        }, function() {});
 
-                        // }
 
-                        //may need this for later to loop through to find the lesson names
-                        // for(var i=0; i<found.lessons.length; i++){
-                        //     var obj = found.lessons[i];
-                        //     var lessonPath = contentPath + "/" + obj.name;
-                        //     _this._copyJSFiles(lessonPath, function() {});                            
-                        // }
+                        //copies the js directory into each of the lessons
+                        for(var i=0; i<found.lessons.length; i++){
+                            var obj = found.lessons[i];
+                            var lessonPath = contentPath + "/" + obj.name;
+                            _this._copyJSFiles(lessonPath, function() {});                            
+                        }
 
-                        _this._copyJSFiles(contentPath, function () {});
-
-                        scorm.generateSCORMCourse(data.scorm.version, function(err, filepath){
+                        scorm.generateSCORMCourse(function(err, filepath){
                             //set mode back to edit in content.xml file, not matter what
-                            // for(var i=0; i<itemsToSave.length; i++){
-                                _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
+                            _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
                                 var parent = content.getParent();
-                                _this.logger.info(etree);
                                 etree.find('./courseInfo/preferences/mode').set('value','edit');
-                                }, function() {});
-                            // }
+                            }, function() {});
                             if(err){
                                 _this.logger.error(err);
                                 _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});                
                             }
                             else{
                                 _this.logger.info("publish Course success.");
-                                _this.logger.info(filepath);
                                 _this.logger.info("---------- filepath = " + filepath);
-                                fs.remove(contentPath + "/js", function(err){
-                                    if(err) return _this.logger.error(err);
-                                    _this.logger.info('js directory removed from couse after publishing')
-                                });
-                               //FileUtils.rmdir(contentPath + "/js");                            
+                                for(var i=0; i<found.lessons.length; i++){
+                                    var obj = found.lessons[i];
+                                    var lessonPath = contentPath + "/" + obj.name;
+                                    fs.remove(lessonPath + "/js", function(err){
+                                        if(err) return _this.logger.error(err);
+                                    });                         
+                                }
                                 
                                 callback(filepath);
                             }                                                        
                         });
-                        callback("blah");
                     }
                     else{
                         var scormPath = path.normalize('../core-files/scorm/');
@@ -1346,14 +1341,12 @@ var SocketHandler = {
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
-                        _this.logger.info("[[[[[[[ ]]]]]]]]]]" + scormDir +"[ ]" + contentPath +"[ ]"+ xmlContentFile);
-                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null );
+                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
 
                         var itemsToSave = [found];
                         //set mode to production and scormVersion in content.xml file
                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                             var parent = content.getParent();
-                            _this.logger.info(etree);
                             etree.find('./courseInfo/preferences/mode').set('value','production');
                             etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
                         }, function() {});
@@ -1361,27 +1354,19 @@ var SocketHandler = {
                         _this._copyJSFiles(contentPath, function () {});
                         
                         //calls the generateSCORMLesson function in congizen-scorm.js
-                        scorm.generateSCORMLesson(data.scorm.version, function(err, filepath){
+                        scorm.generateSCORMLesson(function(err, filepath){
                             //set mode back to edit in content.xml file, not matter what
                             _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                 var parent = content.getParent();
-                                _this.logger.info(etree);
                                 etree.find('./courseInfo/preferences/mode').set('value','edit');
-                            }, function() {
-                                // Need to git commit the program, then let the user know it is done.
-                                //_this.Git.commitProgramContent(found.getProgram(), data.user.id, function(){
-                                // }, function(err){
-                                //     _this.logger.error('_this.Git.commitProgramContent(): ' + err);
-                                //     _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
-                                // });
-                            });                        
+                            }, function() {});
+
                             if(err){
                                 _this.logger.error(err);
                                 _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});                
                             }
                             else{
                                 _this.logger.info("publishLesson success.");
-                                _this.logger.info(filepath);
                                 _this.logger.info("---------- filepath = " + filepath);
 
                                 fs.remove(contentPath + "/js", function(err){
@@ -1389,8 +1374,6 @@ var SocketHandler = {
                                     _this.logger.info('js directory removed from lesson after publishing')
                                 });
 
-
-                                //FileUtils.rmdir(contentPath + "/js");
                                 callback(filepath);
                             }
                         });
