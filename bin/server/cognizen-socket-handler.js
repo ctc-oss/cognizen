@@ -423,6 +423,7 @@ var SocketHandler = {
 			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
+				_this.logger.info("user.username = " + user.username);
 				activeEditor = activeEdit_arr[i].user;
 				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false){
 					foundPermission = activeEdit_arr[i].permission;
