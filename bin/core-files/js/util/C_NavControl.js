@@ -310,6 +310,7 @@ function clickPublish(){
 
 ////checkLock Mode and enable pass functions....
 function checkLockMode(){
+	console.log("mode = " + mode);
 	if(mode == "edit" || mode == "admin"){
 		$("#myCanvas").append("<div id='passLock' class='btn_passLock' title='Relinquish Edit Control'></div>");
 	}else if(forcedReviewer == true){
@@ -347,7 +348,7 @@ function checkLockMode(){
 		}
 		//Request Edit Control
 		else{
-			var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this reuqest?</p></div>';
+			var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
 			
 			//Add to stage.
 			$("#stage").append(msg);
@@ -383,6 +384,7 @@ function checkToggleMode(){
 			$("#scormform").hide();
 			$("#publish").hide();
 			$("#preferences").hide();
+			$("#passLock").hide();
 			$("#comment").hide();
 			$("#addPage").hide();
 			$("#audioDrop").hide();				
@@ -393,6 +395,7 @@ function checkToggleMode(){
 			$("#scormform").show();
 			$("#publish").show();
 			$("#preferences").show();
+			$("#passLock").show();
 			$("#comment").show();
 			$("#addPage").show();
 			$("#audioDrop").show();

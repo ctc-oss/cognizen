@@ -415,7 +415,7 @@ var Content = {
     io.configure(function () {
     	io.set('connect timeout', 1000);
         io.set('heartbeat timeout', 5);
-        io.set('close timeout', 25);
+        //io.set('close timeout', 25);
 	    io.set('transports', [
 	        'websocket',
 	        'xhr-polling',
@@ -460,6 +460,10 @@ var Content = {
             socket.on('refuseLockRequest', function (data){
 	            SocketHandler.socket(socket).refuseLockRequest(data);
             });
+			
+			socket.on('editModeAccepted', function (data){
+				SocketHandler.socket(socket).editModeAccepted(data);
+			});
 			
             socket.on('checkLoginStatus', function() {
                 SocketHandler.socket(socket).checkLoginStatus();

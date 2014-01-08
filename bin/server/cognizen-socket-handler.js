@@ -423,7 +423,6 @@ var SocketHandler = {
 			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
-				_this.logger.info("user.username = " + user.username);
 				activeEditor = activeEdit_arr[i].user;
 				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false){
 					foundPermission = activeEdit_arr[i].permission;
@@ -959,6 +958,7 @@ var SocketHandler = {
                                 });
                             }
                             _this.logger.info("permission =========================== " + permission);
+                            _this.logger.info("socket.id  =========================== " + _this._socket.id);
                             //Setting up array to track whether a lesson is locked due to another editor already in....
                             if(permission == "admin" || permission == "editor"){
                             	var tmpObject = new Object();
@@ -966,6 +966,8 @@ var SocketHandler = {
                             	tmpObject.permission = permission;
                             	tmpObject.rejectEdit = false;
                             	tmpObject.isEditor = false;
+                            	tmpObject.socketID = _this._socket.id;
+                            	tmpObject.socket = _this._socket;
 								var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 								var user = _this.SocketSessions.socketUsers[sessionId];
 								tmpObject.sessionID = sessionId;
@@ -985,6 +987,7 @@ var SocketHandler = {
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 		var user = _this.SocketSessions.socketUsers[sessionId];
 		//_this.logger.info("in disconnect function.  sessionId = " + sessionId);
+		_this.logger.info("number of active users before disconnect = " + activeEdit_arr.length)
 		if(user != undefined){
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.
@@ -995,12 +998,19 @@ var SocketHandler = {
 					if(activeEdit_arr[i].isEditor){
 						wasEditor = true;
 					}
-					_this.logger.info("wasEditor = " + wasEditor);
+					//_this.logger.info("wasEditor = " + wasEditor);
+					_this.logger.info(activeEdit_arr[i].user + " is being removed from the activeEdit_arr and has closed lessonID == " + activeEdit_arr[i].lessonID);
 					activeEdit_arr.splice(i, 1);
 					break;
 				}
 			}
 			
+			_this.logger.info("number of active users after = " + activeEdit_arr.length + " These users still remain:");
+			for(var i = 0; i < activeEdit_arr.length; i++){
+				_this.logger.info(activeEdit_arr[i].user + " is still in the activeEdit_arr and assigned to lessonID = " + activeEdit_arr[i].lessonID);
+			}
+			
+			//If the disconnecting user was the editor, try to pass the lock to the next user.
 			if(wasEditor){
 				if(disconnectingLessonID != null){
 					var newEditor = null;
@@ -1032,14 +1042,16 @@ var SocketHandler = {
     passLock: function (data){
 	    var lessonID = null;
 	    var _this = this;
-	    _this.logger.info(data);
+		_this.logger.info("ME = " + data.me)
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(activeEdit_arr[i].user == data.me){
-		    	//var temp = activeEdit_arr.splice(i, 1);
 		    	activeEdit_arr[i].isEditor = false;
 		    	activeEdit_arr[i].rejectEdit = true;
+		    	_this.logger.info(activeEdit_arr[i].user + " is passing the lock.");
+		    	_this.logger.info("isEditor: " + activeEdit_arr[i].isEditor);
+		    	_this.logger.info("rejectEdit: " + activeEdit_arr[i].rejectEdit);
 		    	lessonID = activeEdit_arr[i].lessonID;
-		    	//activeEdit_arr.splice(i, 1);
+				
 		    	break;
 		    }
 	    }
@@ -1048,8 +1060,9 @@ var SocketHandler = {
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 		    if(lessonID == activeEdit_arr[i].lessonID){
 		    	if(activeEdit_arr[i].user != data.me && activeEdit_arr[i].rejectEdit == false){
-				    activeEdit_arr[i].isEditor = true;
+				    
 				    newEditor = activeEdit_arr[i].user;
+				    //_this.logger.info("new editor = " + activeEdit_arr[i].user);
 				    break;
 				}	
 		    }
@@ -1065,20 +1078,45 @@ var SocketHandler = {
 		}
     },
     
+    editModeAccepted: function (data){
+	    for(var i = 0; i < activeEdit_arr.length; i++){
+	    	if(data.me == activeEdit_arr[i].user){
+	    		activeEdit_arr[i].isEditor = true;
+	    	}
+	    }	
+    },
+    
     requestLock: function (data){
 		var _this = this;
-		for(var i = 0; i < activeEdit_arr.length; i++){
-			if(activeEdit_arr[i].isEditor == true){
-				var tmpData = new Object();
-				tmpData.requester = data.me;
-				tmpData.requestee = activeEdit_arr[i].user;
-				_this._socket.broadcast.emit('lockRequest', tmpData);
+		var currentLesson = null;
+		for (var i = 0; i < activeEdit_arr.length; i++){
+			if(activeEdit_arr[i].user == data.me){
+				currentLesson = activeEdit_arr[i].lessonID;
+				break;
 			}
-		}    
+		}
+		
+		if(currentLesson != null){
+			for(var i = 0; i < activeEdit_arr.length; i++){
+				if(activeEdit_arr[i].isEditor == true && activeEdit_arr[i].lessonID == currentLesson){
+					var tmpData = new Object();
+					tmpData.requester = data.me;
+					tmpData.requestee = activeEdit_arr[i].user;
+					_this._socket.broadcast.emit('lockRequest', tmpData);
+				}
+			}   
+		} 
     },
     
     approveLockRequest: function (data){
 	    var _this = this;
+	    var currentLesson = null;
+	    for (var i = 0; i < activeEdit_arr.length; i++){
+			if(activeEdit_arr[i].user == data.me){
+				currentLesson = activeEdit_arr[i].lessonID;
+				break;
+			}
+		}
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 	    	if(activeEdit_arr[i].isEditor == true){
 	    		activeEdit_arr[i].isEditor = false;
@@ -1087,24 +1125,22 @@ var SocketHandler = {
 	    	}
 	    }
 	    
-	    for(var i = 0; i < activeEdit_arr.length; i++){
-		    if(activeEdit_arr[i].user == data.requester){
-			    activeEdit_arr[i].isEditor = true;
-			    //var tmpEl = activeEdit_arr.splice(i, 1);
-			    //activeEdit_arr.unshift(tmpEl);
-			    _this._socket.broadcast.emit('lockRequestAccepted', data);
-			    break;
+	    if(currentLesson != null){
+		    for(var i = 0; i < activeEdit_arr.length; i++){
+			    if(activeEdit_arr[i].user == data.requester){
+				    activeEdit_arr[i].isEditor = true;
+				    //var tmpEl = activeEdit_arr.splice(i, 1);
+				    //activeEdit_arr.unshift(tmpEl);
+				    _this._socket.broadcast.emit('lockRequestAccepted', data);
+				    break;
+			    }
 		    }
-	    }
-	    
-	    for (var i = 0; i < activeEdit_arr.length; i++){
-		    _this.logger.info(activeEdit_arr[i].user);
-	    }
+		}
     },
     
     refuseLockRequest: function (data){
 	    var _this = this;
-	    _this._socket.broadcast.emit('lockRequestRefused', data.requestee);
+	    _this._socket.broadcast.emit('lockRequestRefused', data);
     },
 	
     renameContent: function(data) {
