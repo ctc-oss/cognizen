@@ -68,6 +68,10 @@ function initializeSockets(){
 		   openLockRequestAccepted(data); 
 	    });
 	    
+	    cognizenSocket.on('grabLock', function (data){
+		   grabLock(data); 
+	    });
+	    
 	    cognizenSocket.on('lockRequestRefused', function (data){
 		   openLockRequestRefused(data); 
 	    });

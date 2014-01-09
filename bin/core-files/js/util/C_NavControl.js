@@ -326,6 +326,7 @@ function checkLockMode(){
 				
 			//Make it a dialog
 			$("#dialog-relinquishEdit").dialog({
+				dialogClass: "no-close",
 				modal: true,
 				width: 550,
 				close: function(event, ui){
@@ -355,6 +356,7 @@ function checkLockMode(){
 				
 			//Make it a dialog
 			$("#dialog-requestEdit").dialog({
+				dialogClass: "no-close",
 				modal: true,
 				width: 550,
 				close: function(event, ui){

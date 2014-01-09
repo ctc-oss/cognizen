@@ -9,6 +9,7 @@ function updateActiveEditor(_user){
 				
 		//Make it a dialog
 		$("#dialog-offerEdit").dialog({
+			dialogClass: "no-close",
 			modal: true,
 			width: 550,
 			close: function(event, ui){
@@ -41,6 +42,7 @@ function openLockRequest(_data){
 				
 		//Make it a dialog
 		$("#dialog-incomingLockRequest").dialog({
+			dialogClass: "no-close",
 			modal: true,
 			width: 550,
 			close: function(event, ui){
@@ -66,17 +68,17 @@ function openLockRequest(_data){
 }
 
 function openLockRequestAccepted(_data){
-	//console.log("requested Beatch!?!?");
-	//console.log(_data);
+	console.log(_data);
 	activeEditor = _data.requester;
 	if(username == _data.requester){
-		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.me +' has passed you the lock to edit this lesson.</p><p>You currently hold the lock on edit controls. <b>Be certain to close this lesson window or relinquish lock if you are not actively working on the lesson!</b></p></div>';
+		var msg = '<div id="dialog-incomingLockRequest" title="Request Accepted"><p class="validateTips">'+ _data.requestee +' has passed you the lock to edit this lesson.</p><p>You currently hold the lock on edit controls. <b>Be certain to close this lesson window or relinquish lock if you are not actively working on the lesson!</b></p></div>';
 			
 		//Add to stage.
 		$("#stage").append(msg);
 				
 		//Make it a dialog
 		$("#dialog-incomingLockRequest").dialog({
+			dialogClass: "no-close",
 			modal: true,
 			width: 550,
 			close: function(event, ui){
@@ -97,13 +99,14 @@ function openLockRequestAccepted(_data){
 
 function openLockRequestRefused(_data){
 	if(username == _data.requester){
-		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.me +' has refused your request for edit controls.  Contact them at their e-mail to follow up and plan access.</p></div>';
+		var msg = '<div id="dialog-incomingLockRequest" title="Request Denied"><p class="validateTips">'+ _data.me +' has refused your request for edit controls.  Contact them at their e-mail to follow up and plan access.</p></div>';
 			
 		//Add to stage.
 		$("#stage").append(msg);
 				
 		//Make it a dialog
 		$("#dialog-incomingLockRequest").dialog({
+			dialogClass: "no-close",
 			modal: true,
 			width: 550,
 			close: function(event, ui){
@@ -128,6 +131,7 @@ function forcedReviewAlert(){
 			
 	//Make it a dialog
 	$("#dialog-locked").dialog({
+		dialogClass: "no-close",
 		modal: true,
 		width: 550,
 		close: function(event, ui){

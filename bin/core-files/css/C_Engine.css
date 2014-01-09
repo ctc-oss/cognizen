@@ -344,11 +344,11 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 /* uncomment to hide close (X) button on KC feedback dialogs */
-/*
+
 .no-close .ui-dialog-titlebar-close {
-display: none;
+	display: none;
 }
-*/
+
 
 /**************************************************************************************
 CONTENT TEXT LAYOUTS*/

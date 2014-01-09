@@ -1131,14 +1131,22 @@ var SocketHandler = {
 		}
 		
 		if(currentLesson != null){
+			var isSent = false;
 			for(var i = 0; i < activeEdit_arr.length; i++){
 				if(activeEdit_arr[i].isEditor == true && activeEdit_arr[i].lessonID == currentLesson){
 					var tmpData = new Object();
 					tmpData.requester = data.me;
 					tmpData.requestee = activeEdit_arr[i].user;
+					isSent = true;
 					_this._socket.broadcast.emit('lockRequest', tmpData);
 				}
-			}   
+			} 
+			
+			//If there is no active editor then take the lock...
+			if (!isSent){
+				console.log("requester = " + data.me);
+				_this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
+			}  
 		} 
     },
     
@@ -1151,6 +1159,7 @@ var SocketHandler = {
 				break;
 			}
 		}
+		
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 	    	if(activeEdit_arr[i].isEditor == true){
 	    		activeEdit_arr[i].isEditor = false;
@@ -1163,8 +1172,6 @@ var SocketHandler = {
 		    for(var i = 0; i < activeEdit_arr.length; i++){
 			    if(activeEdit_arr[i].user == data.requester && activeEdit_arr[i].isActive == true){
 				    activeEdit_arr[i].isEditor = true;
-				    //var tmpEl = activeEdit_arr.splice(i, 1);
-				    //activeEdit_arr.unshift(tmpEl);
 				    _this._socket.broadcast.emit('lockRequestAccepted', data);
 				    break;
 			    }
