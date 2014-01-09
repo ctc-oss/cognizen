@@ -1000,7 +1000,15 @@ var SocketHandler = {
 					}
 					//_this.logger.info("wasEditor = " + wasEditor);
 					_this.logger.info(activeEdit_arr[i].user + " is being removed from the activeEdit_arr and has closed lessonID == " + activeEdit_arr[i].lessonID);
-					activeEdit_arr.splice(i, 1);
+					
+					//This whole stupid chunk is in here in case the user isn't properly removed the first try.
+					var userToRemove = activeEdit_arr[i].user;
+					for(var j = 0; j < activeEdit_arr.length; j++){
+						if(userToRemove == activeEdit_arr[j].user){
+							activeEdit_arr.splice(j, 1);
+						}
+					}
+					////////////////////////////////////////////////////////////////////////////////////////////////
 					break;
 				}
 			}
