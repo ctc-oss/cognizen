@@ -932,6 +932,39 @@ var SocketHandler = {
                                     path: found.path,
                                     type: data.content.type
                                 });
+                                if(permission == "admin" || permission == "editor"){
+						        	var alreadyIn = false;
+						            var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+									var user = _this.SocketSessions.socketUsers[sessionId];
+						
+						            for(var i = 0; i < activeEdit_arr.length; i++){
+						            	if(activeEdit_arr[i].user == user.username){
+							            	_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
+							                alreadyIn = true;
+							                activeEdit_arr[i].lessonID = found.id;
+							                activeEdit_arr[i].permission = permission;
+							                activeEdit_arr[i].rejectEdit = false;
+							                activeEdit_arr[i].isEditor = false;
+							                activeEdit_arr[i].socketID = _this._socket.id;
+							                activeEdit_arr[i].socket = _this._socket;
+							                activeEdit_arr[i].sessionID = sessionId;
+							                activeEdit_arr[i].user = user.username;
+										}
+						           }
+						                            	
+						           if(!alreadyIn){
+							       		var tmpObject = new Object();
+							            tmpObject.lessonID = found.id;
+							            tmpObject.permission = permission;
+							            tmpObject.rejectEdit = false;
+							            tmpObject.isEditor = false;
+							            tmpObject.socketID = _this._socket.id;
+							            tmpObject.socket = _this._socket;
+										tmpObject.sessionID = sessionId;
+										tmpObject.user = user.username;
+							            activeEdit_arr.push(tmpObject);
+							      }
+						       }    
                             }
                             else {
                                 var scormPath = path.normalize('../core-files/scorm/');
@@ -953,33 +986,87 @@ var SocketHandler = {
                                             path: encodeURIComponent(found.path),
                                             type: data.content.type
                                         });
-                                        serverDetails.running = true;
+                                        if(permission == "admin" || permission == "editor"){
+								        	var alreadyIn = false;
+								            var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+											var user = _this.SocketSessions.socketUsers[sessionId];
+								
+								            for(var i = 0; i < activeEdit_arr.length; i++){
+								            	if(activeEdit_arr[i].user == user.username){
+									            	_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
+									                alreadyIn = true;
+									                activeEdit_arr[i].lessonID = found.id;
+									                activeEdit_arr[i].permission = permission;
+									                activeEdit_arr[i].rejectEdit = false;
+									                activeEdit_arr[i].isEditor = false;
+									                activeEdit_arr[i].socketID = _this._socket.id;
+									                activeEdit_arr[i].socket = _this._socket;
+									                activeEdit_arr[i].sessionID = sessionId;
+									                activeEdit_arr[i].user = user.username;
+												}
+								           }
+								                            	
+								           if(!alreadyIn){
+									       		var tmpObject = new Object();
+									            tmpObject.lessonID = found.id;
+									            tmpObject.permission = permission;
+									            tmpObject.rejectEdit = false;
+									            tmpObject.isEditor = false;
+									            tmpObject.socketID = _this._socket.id;
+									            tmpObject.socket = _this._socket;
+												tmpObject.sessionID = sessionId;
+												tmpObject.user = user.username;
+									            activeEdit_arr.push(tmpObject);
+									      }
+								       }    
+                                        
+                                       serverDetails.running = true;
                                     }
                                 });
                             }
                             _this.logger.info("permission =========================== " + permission);
                             _this.logger.info("socket.id  =========================== " + _this._socket.id);
                             //Setting up array to track whether a lesson is locked due to another editor already in....
-                            if(permission == "admin" || permission == "editor"){
-                            	var tmpObject = new Object();
-                            	tmpObject.lessonID = found.id;
-                            	tmpObject.permission = permission;
-                            	tmpObject.rejectEdit = false;
-                            	tmpObject.isEditor = false;
-                            	tmpObject.socketID = _this._socket.id;
-                            	tmpObject.socket = _this._socket;
-								var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+                            /*if(permission == "admin" || permission == "editor"){
+                            	var alreadyIn = false;
+                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 								var user = _this.SocketSessions.socketUsers[sessionId];
-								tmpObject.sessionID = sessionId;
-								tmpObject.user = user.username;
-                            	activeEdit_arr.push(tmpObject);
-                            }
+
+                            	for(var i = 0; i < activeEdit_arr.length; i++){
+                            		if(activeEdit_arr[i].user == user.username){
+	                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
+	                            		alreadyIn = true;
+	                            		activeEdit_arr[i].lessonID = found.id;
+	                            		activeEdit_arr[i].permission = permission;
+	                            		activeEdit_arr[i].rejectEdit = false;
+	                            		activeEdit_arr[i].isEditor = false;
+	                            		activeEdit_arr[i].socketID = _this._socket.id;
+	                            		activeEdit_arr[i].socket = _this._socket;
+	                            		activeEdit_arr[i].sessionID = sessionId;
+	                            		activeEdit_arr[i].user = user.username;
+                            		}
+                            	}
+                            	
+                            	if(!alreadyIn){
+	                            	var tmpObject = new Object();
+	                            	tmpObject.lessonID = found.id;
+	                            	tmpObject.permission = permission;
+	                            	tmpObject.rejectEdit = false;
+	                            	tmpObject.isEditor = false;
+	                            	tmpObject.socketID = _this._socket.id;
+	                            	tmpObject.socket = _this._socket;
+									tmpObject.sessionID = sessionId;
+									tmpObject.user = user.username;
+	                            	activeEdit_arr.push(tmpObject);
+	                            }
+                            }*/
                         }
                     });
                 }
             });
         }
     },
+    
 	
 	disconnect: function (socket) {
 	    var _this = this;
@@ -1000,15 +1087,7 @@ var SocketHandler = {
 					}
 					//_this.logger.info("wasEditor = " + wasEditor);
 					_this.logger.info(activeEdit_arr[i].user + " is being removed from the activeEdit_arr and has closed lessonID == " + activeEdit_arr[i].lessonID);
-					
-					//This whole stupid chunk is in here in case the user isn't properly removed the first try.
-					var userToRemove = activeEdit_arr[i].user;
-					for(var j = 0; j < activeEdit_arr.length; j++){
-						if(userToRemove == activeEdit_arr[j].user){
-							activeEdit_arr.splice(j, 1);
-						}
-					}
-					////////////////////////////////////////////////////////////////////////////////////////////////
+					activeEdit_arr.splice(i, 1);
 					break;
 				}
 			}

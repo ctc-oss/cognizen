@@ -347,7 +347,6 @@ var Content = {
         });
     }
 };
-
 // Initializing Code
 (function () {
     process.on('exit', Utils.shutdown);

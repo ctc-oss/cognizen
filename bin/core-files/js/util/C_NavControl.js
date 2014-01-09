@@ -310,7 +310,6 @@ function clickPublish(){
 
 ////checkLock Mode and enable pass functions....
 function checkLockMode(){
-	console.log("mode = " + mode);
 	if(mode == "edit" || mode == "admin"){
 		$("#myCanvas").append("<div id='passLock' class='btn_passLock' title='Relinquish Edit Control'></div>");
 	}else if(forcedReviewer == true){
