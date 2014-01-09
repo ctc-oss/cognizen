@@ -1144,8 +1144,16 @@ var SocketHandler = {
 			
 			//If there is no active editor then take the lock...
 			if (!isSent){
-				console.log("requester = " + data.me);
-				_this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
+				for(var i = 0; i < activeEdit_arr.length; i++){
+				    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
+					    console.log("this is = " + data.me);
+					    activeEdit_arr[i].rejectEdit = false;
+					    activeEdit_arr[i].isEditor = true;
+					    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
+					    break;
+				    }
+			    }
+				
 			}  
 		} 
     },
