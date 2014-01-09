@@ -438,6 +438,7 @@ var Content = {
 			//console.log("----------------------------------------- " + socket.transport);
 			
 			SocketHandler.socket(socket).setUsername();
+			//SocketHandler.socket(socket).cleanupUserArray();
             SocketHandler.socket(socket).setupFileUploadHandler();
 			
 			socket.on('disconnect', function () {

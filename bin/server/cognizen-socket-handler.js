@@ -410,6 +410,17 @@ var SocketHandler = {
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 		var user = _this.SocketSessions.socketUsers[sessionId];
 		_this._socket.emit('setUsername', {username: user});
+		//Complete the handshake to show that user is connected and clean the isActive == false....
+		
+		if(user){
+			_this.logger.info("user.username = " + user.username);
+			for(var i = 0; i < activeEdit_arr.length; i++){
+				if(activeEdit_arr[i].user == user.username){
+					activeEdit_arr[i].isActive = true;
+					_this.logger.info(user.username + " is now Active.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				}
+			}
+		}
     },
 
     userPermissionForContent: function(data) {
@@ -420,11 +431,11 @@ var SocketHandler = {
         var contentType = _this.Content.objectType(data.content.type);
 		var activeEditor = null;
 		for (var i = 0; i < activeEdit_arr.length; i++){
-			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false){
+			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false && activeEdit_arr[i].isActive == true){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
 				activeEditor = activeEdit_arr[i].user;
-				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false){
+				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false && activeEdit_arr[i].isActive == true){
 					foundPermission = activeEdit_arr[i].permission;
 					activeEdit_arr[i].isEditor = true;
 					alreadySent = true;
@@ -931,40 +942,7 @@ var SocketHandler = {
                                     id: found.id,
                                     path: found.path,
                                     type: data.content.type
-                                });
-                                if(permission == "admin" || permission == "editor"){
-						        	var alreadyIn = false;
-						            var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
-									var user = _this.SocketSessions.socketUsers[sessionId];
-						
-						            for(var i = 0; i < activeEdit_arr.length; i++){
-						            	if(activeEdit_arr[i].user == user.username){
-							            	_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
-							                alreadyIn = true;
-							                activeEdit_arr[i].lessonID = found.id;
-							                activeEdit_arr[i].permission = permission;
-							                activeEdit_arr[i].rejectEdit = false;
-							                activeEdit_arr[i].isEditor = false;
-							                activeEdit_arr[i].socketID = _this._socket.id;
-							                activeEdit_arr[i].socket = _this._socket;
-							                activeEdit_arr[i].sessionID = sessionId;
-							                activeEdit_arr[i].user = user.username;
-										}
-						           }
-						                            	
-						           if(!alreadyIn){
-							       		var tmpObject = new Object();
-							            tmpObject.lessonID = found.id;
-							            tmpObject.permission = permission;
-							            tmpObject.rejectEdit = false;
-							            tmpObject.isEditor = false;
-							            tmpObject.socketID = _this._socket.id;
-							            tmpObject.socket = _this._socket;
-										tmpObject.sessionID = sessionId;
-										tmpObject.user = user.username;
-							            activeEdit_arr.push(tmpObject);
-							      }
-						       }    
+                                });  
                             }
                             else {
                                 var scormPath = path.normalize('../core-files/scorm/');
@@ -986,53 +964,19 @@ var SocketHandler = {
                                             path: encodeURIComponent(found.path),
                                             type: data.content.type
                                         });
-                                        if(permission == "admin" || permission == "editor"){
-								        	var alreadyIn = false;
-								            var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
-											var user = _this.SocketSessions.socketUsers[sessionId];
-								
-								            for(var i = 0; i < activeEdit_arr.length; i++){
-								            	//This is a check for issue where users disconnection doesn't
-								            	if(activeEdit_arr[i].user == user.username){
-									            	_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
-									                alreadyIn = true;
-									                activeEdit_arr[i].lessonID = found.id;
-									                activeEdit_arr[i].permission = permission;
-									                activeEdit_arr[i].rejectEdit = false;
-									                activeEdit_arr[i].isEditor = false;
-									                activeEdit_arr[i].socketID = _this._socket.id;
-									                activeEdit_arr[i].socket = _this._socket;
-									                activeEdit_arr[i].sessionID = sessionId;
-									                activeEdit_arr[i].user = user.username;
-												}
-								           }
-								                            	
-								           if(!alreadyIn){
-									       		var tmpObject = new Object();
-									            tmpObject.lessonID = found.id;
-									            tmpObject.permission = permission;
-									            tmpObject.rejectEdit = false;
-									            tmpObject.isEditor = false;
-									            tmpObject.socketID = _this._socket.id;
-									            tmpObject.socket = _this._socket;
-												tmpObject.sessionID = sessionId;
-												tmpObject.user = user.username;
-									            activeEdit_arr.push(tmpObject);
-									      }
-								       }    
                                         
                                        serverDetails.running = true;
                                     }
                                 });
                             }
-                            _this.logger.info("permission =========================== " + permission);
-                            _this.logger.info("socket.id  =========================== " + _this._socket.id);
+                            
                             //Setting up array to track whether a lesson is locked due to another editor already in....
-                            /*if(permission == "admin" || permission == "editor"){
+                            if(permission == "admin" || permission == "editor"){
                             	var alreadyIn = false;
                             	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 								var user = _this.SocketSessions.socketUsers[sessionId];
-
+								
+								//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
                             	for(var i = 0; i < activeEdit_arr.length; i++){
                             		if(activeEdit_arr[i].user == user.username){
 	                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
@@ -1041,6 +985,7 @@ var SocketHandler = {
 	                            		activeEdit_arr[i].permission = permission;
 	                            		activeEdit_arr[i].rejectEdit = false;
 	                            		activeEdit_arr[i].isEditor = false;
+	                            		activeEdit_arr[i].isActive = false;
 	                            		activeEdit_arr[i].socketID = _this._socket.id;
 	                            		activeEdit_arr[i].socket = _this._socket;
 	                            		activeEdit_arr[i].sessionID = sessionId;
@@ -1054,13 +999,14 @@ var SocketHandler = {
 	                            	tmpObject.permission = permission;
 	                            	tmpObject.rejectEdit = false;
 	                            	tmpObject.isEditor = false;
+	                            	tmpObject.isActive = false;
 	                            	tmpObject.socketID = _this._socket.id;
 	                            	tmpObject.socket = _this._socket;
 									tmpObject.sessionID = sessionId;
 									tmpObject.user = user.username;
 	                            	activeEdit_arr.push(tmpObject);
 	                            }
-                            }*/
+                            }
                         }
                     });
                 }
@@ -1104,7 +1050,7 @@ var SocketHandler = {
 					var newEditor = null;
 					for (var i = 0; i < activeEdit_arr.length; i++){
 						if(disconnectingLessonID == activeEdit_arr[i].lessonID){
-							if(activeEdit_arr[i].rejectEdit == false){	
+							if(activeEdit_arr[i].rejectEdit == false  && activeEdit_arr[i].isActive == true){	
 								activeEdit_arr[i].isEditor = true;
 								newEditor = activeEdit_arr[i].user;
 								break;
@@ -1168,7 +1114,7 @@ var SocketHandler = {
     
     editModeAccepted: function (data){
 	    for(var i = 0; i < activeEdit_arr.length; i++){
-	    	if(data.me == activeEdit_arr[i].user){
+	    	if(data.me == activeEdit_arr[i].user  && activeEdit_arr[i].isActive == true){
 	    		activeEdit_arr[i].isEditor = true;
 	    	}
 	    }	
@@ -1215,7 +1161,7 @@ var SocketHandler = {
 	    
 	    if(currentLesson != null){
 		    for(var i = 0; i < activeEdit_arr.length; i++){
-			    if(activeEdit_arr[i].user == data.requester){
+			    if(activeEdit_arr[i].user == data.requester && activeEdit_arr[i].isActive == true){
 				    activeEdit_arr[i].isEditor = true;
 				    //var tmpEl = activeEdit_arr.splice(i, 1);
 				    //activeEdit_arr.unshift(tmpEl);

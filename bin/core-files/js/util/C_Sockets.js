@@ -26,19 +26,19 @@ function initializeSockets(){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
 	    //Add a check for IE < 10...
-	    //cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
-	    //                         io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 	    
 	    //var xhr = true;
 		//socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
                      //io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
 	
 		
-		if (isOldIE()){
-			cognizenSocket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
-		}else{
-			cognizenSocket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
-		}
+		//if (isOldIE()){
+			//cognizenSocket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
+		//}else{
+			//cognizenSocket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
+		//}
 	    
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -172,14 +172,14 @@ function initializeSockets(){
 
 	    siofu = new SocketIOFileUpload(cognizenSocket);
 
-		//socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
-        //                 io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
+                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 
-		if (isOldIE()){
-			socket = io.connect(null, {resource: urlParams['id'], transports: ["flashsocket", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
-		}else{
-			socket = io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
-		}
+		//if (isOldIE()){
+			//socket = io.connect(null, {resource: urlParams['id'], transports: ["flashsocket", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+		//}else{
+			//socket = io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+		//}
 		
 		//Simple listener checking connectivity
 		cognizenSocket.on('setUsername', function (data) {
