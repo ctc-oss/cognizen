@@ -992,7 +992,7 @@ var SocketHandler = {
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.
 			for(var i = 0; i < activeEdit_arr.length; i++){
-				_this.logger.info("activeEdit_arr[i].sessionID = " + activeEdit_arr[i].sessionID);
+				//_this.logger.info("activeEdit_arr[i].sessionID = " + activeEdit_arr[i].sessionID);
 				if(sessionId == activeEdit_arr[i].sessionID){
 					disconnectingLessonID = activeEdit_arr[i].lessonID;
 					if(activeEdit_arr[i].isEditor){
