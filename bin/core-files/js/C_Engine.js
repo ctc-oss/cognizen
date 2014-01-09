@@ -138,11 +138,11 @@ function buildInterface(){
 	stageW = $("#stage").height();
 	stageH = $("#stage").height();
 	
-	if(forcedReviewer == true && justRelinquished == false){
+	if(forcedReviewer == true && justRelinquishedLock == false){
 		forcedReviewAlert();
 	}
 	
-	justRelinquished  = false;
+	justRelinquishedLock  = false;
 	
 	//This call positions the background graphic - funciton is in C_DynamicBackgroundImage       /*************************Note: Will make this optional - allow them to use css background instead*/
 	//Image can be updated in css/C_Engine.css and resides in css/images/ folder.
