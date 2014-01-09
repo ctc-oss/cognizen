@@ -992,6 +992,7 @@ var SocketHandler = {
 											var user = _this.SocketSessions.socketUsers[sessionId];
 								
 								            for(var i = 0; i < activeEdit_arr.length; i++){
+								            	//This is a check for issue where users disconnection doesn't
 								            	if(activeEdit_arr[i].user == user.username){
 									            	_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
 									                alreadyIn = true;
