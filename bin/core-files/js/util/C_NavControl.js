@@ -335,6 +335,7 @@ function checkLockMode(){
 				buttons: {
 					YES: function () {
 						mode = "review";
+						justRelinquishedLock = true;
 						forcedReviewer = true;
 						cognizenSocket.emit('passLock', { me: username });
 						buildInterface();
