@@ -388,10 +388,10 @@ function C_Dashboard(_type) {
             }
         );
     }
-
+	
+	var moduleLessonWindow;
     /****************************************************************************************************************************END OF ROLLOVERS FOR TREE ITEMS*/
-
-        //////OPEN A PROJECT\\\\\\
+    //////OPEN A PROJECT\\\\\\
     function openProject(projectPath) {
         var myPath = projectPath.replace(/\s/g, "%20");
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
@@ -399,6 +399,36 @@ function C_Dashboard(_type) {
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=1024, height=768");
         //moduleLessonWindow = window.open(myPath, '_blank');//, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=1024, height=768");
         moduleLessonWindow.focus();
+    }
+    
+	//If closing the dashboard, close the lesson....
+    function myUnloadHandler(evt)
+    {
+        if (evt.persisted) {
+            // This is actually a pagehide event and the page is going into the Page Cache.
+            // Make sure that we don't do any destructive work, or work that shouldn't be duplicated.
+            console.log("persisted close");
+
+            return;
+        }
+
+        // This is either an unload event for older browsers,
+        // or a pagehide event for page tear-down in supported browsers.
+        // It's safe to do everything my old unload event handler did here.
+        console.log("close");
+        if(moduleLessonWindow){
+        	//var r = confirm("Closing the dashboard will also close all open lesson windows.")
+			//if (r){
+				//alert("closing")
+				moduleLessonWindow.close();
+			//}
+        }
+    }
+
+    if ("onpagehide" in window) {
+        window.addEventListener("pagehide", myUnloadHandler, false);
+    } else {
+        window.addEventListener("unload", myUnloadHandler, false);
     }
 
     function getUserList(_id) {
