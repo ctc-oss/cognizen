@@ -20,13 +20,16 @@ function updateActiveEditor(_user){
 					mode = "edit";
 					forcedReviewer = false;
 					activeEditor = _user;
+					$(this).dialog("close");
+					nextDisabled = true;
+					backDisabled = true;
 					buildInterface();
 					cognizenSocket.emit('editModeAccepted', {me: _user})
-					$(this).dialog("close");
+					
 				},
 				NO: function(){
-					cognizenSocket.emit('passLock', { me: _user });
 					$(this).dialog("close");
+					cognizenSocket.emit('passLock', { me: _user });
 				}
 			}
 		});
@@ -55,8 +58,10 @@ function openLockRequest(_data){
 					forcedReviewer = true;
 					activeEditor = _data.requester;
 					cognizenSocket.emit('approveLockRequest', { me: username, requester: _data.requester });
-					buildInterface();
 					$(this).dialog("close");
+					nextDisabled = true;
+					backDisabled = true;
+					buildInterface();
 				},
 				NO: function(){
 					cognizenSocket.emit('refuseLockRequest', { me: username, requester: _data.requester });
@@ -68,7 +73,6 @@ function openLockRequest(_data){
 }
 
 function openLockRequestAccepted(_data){
-	console.log(_data);
 	activeEditor = _data.requester;
 	if(username == _data.requester){
 		var msg = '<div id="dialog-incomingLockRequest" title="Request Accepted"><p class="validateTips">You now have the lock to edit this lesson.</p><p>You currently hold the lock on edit controls so <b>be certain to close this lesson window or relinquish lock if you are not actively working on the lesson!</b></p></div>';
@@ -89,8 +93,10 @@ function openLockRequestAccepted(_data){
 					mode = "edit";
 					forcedReviewer = false;
 					activeEditor = _data.requester;
-					buildInterface();
 					$(this).dialog("close");
+					nextDisabled = true;
+					backDisabled = true;
+					buildInterface();
 				}
 			}
 		});

@@ -338,8 +338,10 @@ function checkLockMode(){
 						justRelinquishedLock = true;
 						forcedReviewer = true;
 						cognizenSocket.emit('passLock', { me: username });
-						buildInterface();
 						$(this).dialog("close");
+						nextDisabled = true;
+						backDisabled = true;
+						buildInterface();
 					},
 					NO: function(){
 						$(this).dialog("close");
@@ -460,15 +462,18 @@ function clickBack(){
 }
 
 function clickNext(){
+	console.log("click next");
 	if(indexState == true){
 		toggleIndex();
 	}
 	currentPage++;
 	currentTemplate.destroySelf();
+	
 }
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
+	console.log("currentPage = " + currentPage);
 	if(currentPage == 0){
 		$('#back').css({opacity:.5});
 		$('#back').off('click');
@@ -484,6 +489,7 @@ function checkNavButtons(){
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		$('#next').css({opacity:.5});
 		$('#next').off('click');
+		console.log("next set to off");
 		nextDisabled = true;
 		//on the last page so complete the course
 		if(isScorm ){
@@ -492,6 +498,7 @@ function checkNavButtons(){
 	}else{
 		$('#next').css({opacity: 1});
 		if(nextDisabled == true){
+			console.log("click is set for next");
 			$("#next").click(clickNext);
 			nextDisabled = false;
 		}
