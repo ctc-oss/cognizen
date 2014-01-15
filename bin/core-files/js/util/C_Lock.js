@@ -36,13 +36,65 @@ function updateActiveEditor(_user){
 	}
 }
 
+
+var requestInterval;
+var lockCounter = 20;
+
+function startLockTimer(_data){
+	lockCounter = 20;
+	requestInterval = setInterval(function() {
+		lockCounter--;
+		$("#lockCountdown").text(lockCounter);
+		if(lockCounter < 5){
+			$("#lockCountdown").css("color", "red");
+		}
+		if (lockCounter == 0) {
+			
+			mode = "review";
+			justRelinquishedLock = true;
+			forcedReviewer = true;
+			activeEditor = _data.requester;
+			cognizenSocket.emit('approveLockRequest', { me: username, requester: _data.requester });
+			$("#dialog-incomingLockRequest").dialog("close");
+			nextDisabled = true;
+			backDisabled = true;
+			buildInterface();
+			openTimeOutAlert(_data);
+			clearInterval(requestInterval);
+		}
+	}, 1000);
+}
+
+function openTimeOutAlert(_data){
+	var msg = '<div id="dialog-incomingLockRequestTimeout" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' was given the editor lock becuase you did not respond to the request.</p><p>To request the lock back, close this dialog and click on the lock icon below.</p></div>';
+			
+	//Add to stage.
+	$("#stage").append(msg);
+	
+	//Make it a dialog
+	$("#dialog-incomingLockRequestTimeout").dialog({
+		dialogClass: "no-close",
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("#dialog-incomingLockRequestTimeout").remove();
+		},
+		buttons: {
+			OK: function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+}
+
+
 function openLockRequest(_data){
 	if(username == _data.requestee){
-		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' is requesting permission to edit this lesson.</p><p>You currently hold the lock on edit controls.  Would you like to give '+ _data.requester +' the edit lock?  Your rights will be changed to reviewer mode.</p></div>';
+		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' is requesting permission to edit this lesson.</p><p>You currently hold the lock on edit controls.  Would you like to give '+ _data.requester +' the edit lock?  Your rights will be changed to reviewer mode.</p><p>If you do not make a choice in <span id="lockCountdown"> </span> the lock will be passed to '+ _data.requester + '.</p></div>';
 			
 		//Add to stage.
 		$("#stage").append(msg);
-				
+		startLockTimer(_data);	
 		//Make it a dialog
 		$("#dialog-incomingLockRequest").dialog({
 			dialogClass: "no-close",
@@ -61,10 +113,12 @@ function openLockRequest(_data){
 					$(this).dialog("close");
 					nextDisabled = true;
 					backDisabled = true;
+					clearInterval(requestInterval);
 					buildInterface();
 				},
 				NO: function(){
 					cognizenSocket.emit('refuseLockRequest', { me: username, requester: _data.requester });
+					clearInterval(requestInterval);
 					$(this).dialog("close");
 				}
 			}
@@ -126,8 +180,6 @@ function openLockRequestRefused(_data){
 		});
 	}
 }
-
-
 
 function forcedReviewAlert(){
 	var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
