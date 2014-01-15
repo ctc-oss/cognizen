@@ -4,6 +4,7 @@
 		<preferences>
 			<!-- mode options: "review", "edit", "production"-->
 			<mode value="edit"/>
+			<lockRequestDuration value="30"/>
 			<courseTitle value="Cognizen Information"/>
 			<lessonTitle value="Cognizen Overview"/>
 			<nextBack value="true"/>

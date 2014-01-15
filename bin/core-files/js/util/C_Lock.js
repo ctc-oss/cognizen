@@ -38,14 +38,14 @@ function updateActiveEditor(_user){
 
 
 var requestInterval;
-var lockCounter = 20;
+var lockCounter = $(data).find('lockRequestDuration').attr("value");
 
 function startLockTimer(_data){
-	lockCounter = 20;
+	lockCounter = $(data).find('lockRequestDuration').attr("value");
 	requestInterval = setInterval(function() {
 		lockCounter--;
 		$("#lockCountdown").text(lockCounter);
-		if(lockCounter < 5){
+		if(lockCounter <= 10){
 			$("#lockCountdown").css("color", "red");
 		}
 		if (lockCounter == 0) {
@@ -90,7 +90,7 @@ function openTimeOutAlert(_data){
 
 function openLockRequest(_data){
 	if(username == _data.requestee){
-		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' is requesting permission to edit this lesson.</p><p>You currently hold the lock on edit controls.  Would you like to give '+ _data.requester +' the edit lock?  Your rights will be changed to reviewer mode.</p><p>If you do not make a choice in <span id="lockCountdown"> </span> the lock will be passed to '+ _data.requester + '.</p></div>';
+		var msg = '<div id="dialog-incomingLockRequest" title="Request for Edit Control"><p class="validateTips">'+ _data.requester +' is requesting permission to edit this lesson.</p><p>You currently hold the lock on edit controls.  Would you like to give '+ _data.requester +' the edit lock?  Your rights will be changed to reviewer mode.</p><p>If you do not make a choice in <span id="lockCountdown"> </span> seconds the lock will be passed to '+ _data.requester + '.</p></div>';
 			
 		//Add to stage.
 		$("#stage").append(msg);
