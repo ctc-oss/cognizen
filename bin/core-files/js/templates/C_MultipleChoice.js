@@ -535,6 +535,10 @@ function C_MultipleChoice(_myType) {
 							$("#next").click();
 						}
 					},
+					open: function(){
+						$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
+						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+					},
 					close: function(){
 						mandatoryInteraction = false;
 						checkNavButtons();

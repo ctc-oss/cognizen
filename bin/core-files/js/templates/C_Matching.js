@@ -366,6 +366,10 @@ function C_Matching(_type) {
 							}	
 							$("#next").click();
 						}
+					},
+					open: function(){
+						$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
+						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
 					}
 				});
 			}else{
