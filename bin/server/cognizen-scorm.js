@@ -146,7 +146,7 @@ var SCORM = {
 						manifestFile += "    <resources>\n";
 						//have to add the resources here because the items all have to be added before the org can be closed
 						for(var i=0; i<resourceLines.length; i++){
-							manifestFile += "      <resource identifier=\"RES-"+lessonsName[i]+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+lessonsName[i]+"/index.html\">\n";
+							manifestFile += "      <resource identifier=\"RES-"+lessonsName[i].replace(/\s/g, "")+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+encodeURIComponent(lessonsName[i])+"/index.html\">\n";
 							manifestFile += resourceLines[i];
 							manifestFile += '      </resource>\n';
 						}				    
@@ -274,7 +274,7 @@ var SCORM = {
 	},
 
 	_add2004Item: function(lessonName){
-        var item = "           <item identifier=\""+lessonName+"_id\" identifierref=\"RES-"+lessonName+"-files\">\n"+
+        var item = "           <item identifier=\""+lessonName.replace(/\s+/g, '')+"_id\" identifierref=\"RES-"+lessonName.replace(/\s+/g, '')+"-files\">\n"+
             "               <title>"+lessonName+"</title>\n"+
             "               <adlnav:presentation>\n"+
             "                   <adlnav:navigationInterface>\n"+
@@ -441,7 +441,8 @@ var SCORM = {
 	        var fileName = file.path.split("\\");
 	        //does not include files that don't have an "." ext, directories
 	        if(fileName[fileName.length-1].indexOf('.') !== -1){
-	            resources.push("         <file href=\"bin/"+lesson+file.path.replace(/\\/g,"/")+"\"/>\n");
+	        	var fullPath = lesson+file.path.replace(/\\/g,"/");
+	            resources.push("         <file href=\"bin/"+fullPath.replace(/\s+/g, '%20')+"\"/>\n");
 	        }
 	    });
 	    return resources;		
