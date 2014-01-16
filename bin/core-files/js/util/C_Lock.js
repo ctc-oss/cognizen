@@ -39,12 +39,15 @@ function updateActiveEditor(_user){
 
 var requestInterval;
 var lockCounter = $(data).find('lockRequestDuration').attr("value");
-
+var alertSnd;
 function startLockTimer(_data){
 	lockCounter = $(data).find('lockRequestDuration').attr("value");
 	requestInterval = setInterval(function() {
 		lockCounter--;
 		$("#lockCountdown").text(lockCounter);
+		if(lockCounter == 10){
+			alertSnd.play();
+		}
 		if(lockCounter <= 10){
 			$("#lockCountdown").css("color", "red");
 		}
@@ -124,6 +127,9 @@ function openLockRequest(_data){
 				}
 			}
 		});
+		
+		alertSnd = new Audio("media/RequestAlert.mp3"); // buffers automatically when created
+		alertSnd.play();
 	}
 }
 
