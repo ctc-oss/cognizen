@@ -1428,24 +1428,11 @@ var SocketHandler = {
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
-
-                        var itemsToSave = [found];
-                        //set mode to production and scormVersion in content.xml file
-                        _this.Content.updateAllXml(itemsToSave, function(content, etree) {
-                            var parent = content.getParent();
-                            etree.find('./courseInfo/preferences/mode').set('value','production');
-                            etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
-                        }, function() {});
                         
                         _this._copyJSFiles(contentPath, function () {});
                         
                         //calls the generateSCORMLesson function in congizen-scorm.js
                         scorm.generateSCORMLesson(function(err, filepath){
-                            //set mode back to edit in content.xml file, not matter what
-                            _this.Content.updateAllXml(itemsToSave, function(content, etree) {
-                                var parent = content.getParent();
-                                etree.find('./courseInfo/preferences/mode').set('value','edit');
-                            }, function() {});
 
                             if(err){
                                 _this.logger.error(err);

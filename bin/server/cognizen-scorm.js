@@ -7,9 +7,11 @@ var SCORM = {
     logger: {},
     scormPath: '',
     contentPath: '',
-    xmlContentPath: '',
+    xmlContentFile: '',
     scormVersion: '',
     courseName: '',
+    packageFolder: '',
+    tempXmlContentFile: '',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -34,31 +36,63 @@ var SCORM = {
             }
             , function (err, res) {
 
-		        var data, etree;
-		        data = fs.readFileSync(_this.xmlContentFile).toString();
-		        etree = et.parse(data);
-			    
-			    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-                var manifestFile = _this._populateManifest(res);
+            	//copy content.xml file to temp location
+            	_this.packageFolder = _this.contentPath + '/packages/';
+            	_this.tempXmlContentFile = _this.packageFolder + 'content.xml';
+            	fs.copy(_this.xmlContentFile, _this.tempXmlContentFile, function(err){
+            		if(err){
+            			_this.logger.error("Error copying content.xml file " + err);
+            			callback(err, null);
+            		}
+            		_this.logger.info('content.xml file copied success');
 
-                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
-                var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+			        var data, etree;
+			        data = fs.readFileSync(_this.tempXmlContentFile).toString();
+			        fs.readFile(_this.tempXmlContentFile, function(err, data){
+			        	if(err){
+			        		_this.logger.error("Error reading temp content.xml file " + err);
+            				callback(err, null);
+			        	}
 
-                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
-                    if(err) {
-                        _this.logger.error("Write file error" + err);
-                        callback(err, null);
-                    }
-                    else {
-                    	_this._zipScormPackage(callback, res, scormBasePath, imsManifestFilePath);
+			        	data = data.toString();
+				        etree = et.parse(data);
 
-                    }
-                    fs.remove(imsManifestFilePath, function(err){
-						if(err) return _this.logger.error(err);
-						_this.logger.info('imsmanifest.xml file removed.');
-					});
-                });
+				        //set mode to production and scorm version in temp content.xml
+		                etree.find('./courseInfo/preferences/mode').set('value','production');
+		                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);	
+		                var xml = etree.write({'xml_decleration': false});
+		                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
+		                    if (err) callback(err, null);
+		                });		                	        
+					    
+					    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+		                var manifestFile = _this._populateManifest(res);
 
+		                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+		                var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+
+		                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+		                    if(err) {
+		                        _this.logger.error("Write file error" + err);
+		                        callback(err, null);
+		                    }
+		                    else {
+		                    	_this._zipScormPackage(callback, res, scormBasePath, imsManifestFilePath);
+
+		                    }
+		                    fs.remove(imsManifestFilePath, function(err){
+								if(err) return _this.logger.error(err);
+								_this.logger.info('imsmanifest.xml file removed.');
+							});
+							fs.remove(_this.tempXmlContentFile, function(err){
+								if(err) return _this.logger.error(err);
+								_this.logger.info('temp content.xml file removed.');
+							})
+		                });			        	
+			        });
+
+
+            	});
 
             }
         );
@@ -89,8 +123,8 @@ var SCORM = {
 	    manifestFile = _this._startManifest();				    	
 
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
-        var packageFolder = _this.contentPath + '/packages/';
-        var outputFile = packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        _this.packageFolder = _this.contentPath + '/packages/';
+        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
 
@@ -440,7 +474,7 @@ var SCORM = {
 	    res.files.forEach(function(file) {
 	        var fileName = file.path.split("\\");
 	        //does not include files that don't have an "." ext, directories
-	        if(fileName[fileName.length-1].indexOf('.') !== -1){
+	        if(fileName[fileName.length-1].indexOf('.') !== -1 && fileName.indexOf('packages') == -1){
 	        	var fullPath = lesson+file.path.replace(/\\/g,"/");
 	            resources.push("         <file href=\"bin/"+fullPath.replace(/\s+/g, '%20')+"\"/>\n");
 	        }
@@ -451,8 +485,8 @@ var SCORM = {
 	_zipScormPackage: function(callback, res, scormBasePath, imsManifestFilePath) {
 		var _this = this;
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
-        var packageFolder = _this.contentPath + '/packages/';
-        var outputFile = packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        //var packageFolder = _this.contentPath + '/packages/';
+        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
 
@@ -464,9 +498,14 @@ var SCORM = {
         //builds the bin directory
         res.files.forEach(function(file) {
             var localFile = file.path.replace(/\\/g,"/");
-            var inputFile = _this.contentPath + '/' + localFile;
-            archive.append(fs.createReadStream(inputFile), { name: 'bin/'+localFile });
+            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf('packages') == -1){
+            	var inputFile = _this.contentPath + '/' + localFile;
+            	archive.append(fs.createReadStream(inputFile), { name: 'bin/'+localFile });
+        	}
         });
+
+        //adds temp content.xml file to zip
+        archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: 'bin/xml/content.xml'});
 
         //add SCORM files
         readdirp({
@@ -496,7 +535,7 @@ var SCORM = {
         
             //tells the engine that it is done writing the zip file
             callback(null, outputFile);
-            _this.logger.debug("packageFolder = " + packageFolder);
+            _this.logger.debug("packageFolder = " + _this.packageFolder);
 
         });		
 	}  
