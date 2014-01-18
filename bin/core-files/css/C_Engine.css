@@ -410,10 +410,11 @@ CONTENT TEXT LAYOUTS*/
 
 #contentHolder.top{
 	position: absolute;
+	overflow: auto;
 	height: auto;
 	/*top: 85px;*/
 	left: 0px;
-	width: 1024px;
+	/*width: 1024px;*/
 	outline: none;
 }
 

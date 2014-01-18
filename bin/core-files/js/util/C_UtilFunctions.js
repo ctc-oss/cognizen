@@ -63,16 +63,22 @@ var queryStringParameters = function() {
 RANDOM GUID GENERATION
 *****************************************************************/
 var oldIE = false;
-
+var isIE = false;
 function isOldIE() {
     "use strict";
-
     // Detecting IE
    
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
+    
+    if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
+        isIE = true;
+    }
+    
 }
+
+isOldIE();
 /*****************************************************************
 RANDOM GUID GENERATION
 *****************************************************************/

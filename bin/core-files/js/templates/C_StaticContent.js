@@ -134,7 +134,7 @@ function C_StaticContent(_type) {
         //Add classes for page layouts - updatable in css
         if(type == "bottom" || type == "top"){
 	        $("#stage").append('<div id="scrollableContent" class="nano"><div id="contentHolder" class="overthrow content"><div id="content"></div></div></div>');
-	        $("#scrollableContent").css("overflow", "visible");
+	        $("#scrollableContent").css("overflow", "hidden");
         }else{
         	$('#stage').append('<div id="contentHolder" class="nano"><div id="content" class="overthrow content"></div></div>');
 		}
@@ -669,7 +669,7 @@ function C_StaticContent(_type) {
      		$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
      	}
      	
-     	if(type != "graphicOnly"){
+     	if(type != "graphicOnly" && isIE == false){
      		$(".nano").nanoScroller({
         		flashDelay: 3000,
 				flash: true
