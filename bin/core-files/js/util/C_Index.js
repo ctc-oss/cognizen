@@ -383,6 +383,9 @@ function addIndex(){
 	}
 	
 	updatePageCount();
+	if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
+		buildTrackingArray();
+	}
 }
 //Index end.
 

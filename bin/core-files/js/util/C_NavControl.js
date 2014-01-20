@@ -279,7 +279,7 @@ function updatePrefs(_pub){
 			}
 		},
 		error: function(){
-	   		alert("unable to load content.xml in updateIndex")
+	   		alert("unable to load content.xml in updatePrefs")
 	   	}
 	});
 }
@@ -436,6 +436,12 @@ if($(data).find('scored').attr("value") == 'true'){
 	
 //If the course is linear - must complete page by page - setup a page completion tracking array.
 if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
+	buildTrackingArray();
+}
+	//END OF TRACKING SET UP.
+
+//If the course is linear - must complete page by page - setup a page completion tracking array.
+function buildTrackingArray(){
 	isLinear = true;
 	tracking_arr = [];
 	for(var i = 0; i < totalPages; i++){
@@ -445,8 +451,6 @@ if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progr
 		tracking_arr.push(page_obj);
 	}
 }
-	//END OF TRACKING SET UP.
-
 
 
  
