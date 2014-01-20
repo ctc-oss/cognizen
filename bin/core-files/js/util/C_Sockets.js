@@ -196,10 +196,12 @@ function initializeSockets(){
 		
 
 		socket.on('updateXMLWithRefreshComplete', function(){
-	        cognizenSocket.emit('contentSaved', {
-	            content: {type: urlParams['type'], id: urlParams['id']},
-	            user: {id: urlParams['u']}
-	        });
+	        if(mode == "edit"){
+		        cognizenSocket.emit('contentSaved', {
+		            content: {type: urlParams['type'], id: urlParams['id']},
+		            user: {id: urlParams['u']}
+		        });
+		    }
 			updateIndex();
 		});
 		
