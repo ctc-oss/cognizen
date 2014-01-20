@@ -964,7 +964,7 @@ function C_TabbedContent(_type) {
 
 	   	var fileType = (parts[last - 1]);
 	   	if(fileType == "mp3"){
-            if(audioPath == "yourFile.mp3"){
+            if(audioPath == "yourFile.mp3" || audioPath == "" || audioPath == "null" || audioPath == " "){
                 $(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
                 $(data).find("page").eq(currentPage).attr("audio", audioPath);
