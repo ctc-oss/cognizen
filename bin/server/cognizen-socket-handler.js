@@ -1263,6 +1263,12 @@ var SocketHandler = {
             });
         }
     },
+    
+    clearLessonComments: function (lesson){
+    	console.log("lessonID = " + lesson.lesson);
+    	
+    	ContentComment.find({contentId: lesson.lesson}).remove()
+    },
 
     addComment: function (comment) {
         //comment.user

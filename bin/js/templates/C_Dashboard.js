@@ -40,6 +40,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
+            console.log(data);
             $("#preloadholder").remove();
             proj = data;
             buildTemplate();

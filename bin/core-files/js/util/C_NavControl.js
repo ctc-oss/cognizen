@@ -183,7 +183,8 @@ function launchPrefs(){
 	msg += "<div class='preferences_option' id='hasGlossaryDialog' title='Add/Remove Glossary'>";
 	msg += "<label id='label'>Glossary: </label>";
 	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
-	msg += "</div>";
+	msg += "</div><br/>";
+	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
 	
@@ -211,6 +212,11 @@ function launchPrefs(){
 		}
 	});
 	
+	$("#clearLessonComments").button().click(function(){
+		openCommentKillerDialog();
+		//cognizenSocket.emit("clearLessonComments", {lesson: urlParams['id']})
+	});
+	
 	$("#scormform").tooltip();
 	
 	if(glossary == true){
@@ -224,6 +230,35 @@ function launchPrefs(){
 	$("#hasGlossaryDialog").tooltip();
 }
 
+function openCommentKillerDialog(){
+	var msg = '<div id="dialog-removeComments" title="Remove ALL Lesson Comments"><p class="validateTips">Do you want to remove all lesson comments?</p>';
+	//Add the scorm form
+	msg += "<p>Be 100% sure that this is what you want to do before pressing yes.  This will remove all comments for this lesson and they are recoverable.</p>";
+	
+	//Add the resources/docs checkbox.   -------TODO
+	msg += "</div>";
+	
+	$("#stage").append(msg);
+	
+	//Make it a dialog
+	$("#dialog-removeComments").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+				$("#dialog-removeComments").remove();
+			},
+		buttons: {
+			No: function () {
+            	$(this).dialog("close");
+            },
+            Yes: function(){
+            	cognizenSocket.emit("clearLessonComments", {lesson: urlParams['id']});
+            	$("#dialog-lessonPrefs").remove();
+	            $(this).dialog("close");
+            }
+		}
+	});
+}
 
 function savePreferences(_pub){
 	//check if glossary changed.
@@ -297,7 +332,7 @@ function clickPublish(){
 	};
 
 	cognizenSocket.emit('publishContent', publishData, function(fdata) {
-	//this function gets called once the server is done writing to the zip file
+		//this function gets called once the server is done writing to the zip file
 		//$(data).find('mode').attr("value", 'edit');
 		sendUpdate();
 		$('#publishLoader').remove();

@@ -540,6 +540,10 @@ var Content = {
             socket.on('addComment', function (data) {
                 SocketHandler.socket(socket).addComment(data);
             });
+            
+            socket.on('clearLessonComments', function (data) {
+	            SocketHandler.socket(socket).clearLessonComments(data);
+            });
 
             socket.on('closeComment', function (data) {
                 SocketHandler.socket(socket).closeComment(data);
