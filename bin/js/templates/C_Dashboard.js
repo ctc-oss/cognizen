@@ -40,7 +40,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
-            console.log(data);
+            //console.log(data);
             $("#preloadholder").remove();
             proj = data;
             buildTemplate();
@@ -416,7 +416,7 @@ function C_Dashboard(_type) {
         // This is either an unload event for older browsers,
         // or a pagehide event for page tear-down in supported browsers.
         // It's safe to do everything my old unload event handler did here.
-        console.log("close");
+        //console.log("close");
         if(moduleLessonWindow){
         	//var r = confirm("Closing the dashboard will also close all open lesson windows.")
 			//if (r){

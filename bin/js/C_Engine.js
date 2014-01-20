@@ -121,7 +121,7 @@ function isOldIE() {
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
-    console.log("isOldIE = " + oldIE);
+    //console.log("isOldIE = " + oldIE);
 }
 
 /****************************************************
@@ -137,7 +137,7 @@ function buildInterface(){
 	
 	if (isOldIE()){
 		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
-		console.log("saying is IE");
+		//console.log("saying is IE");
 	}else{
 		console.log("not IE");
 		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
