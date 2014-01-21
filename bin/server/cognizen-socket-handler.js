@@ -13,7 +13,8 @@ var Utils = require('./cognizen-utils'),
     FileUtils = require('./file-utils'),
     SocketIOFileUploadServer = require('socketio-file-upload'),
     ContentSocket = require('./content-socket'),
-    scorm = require('./cognizen-scorm');
+    scorm = require('./cognizen-scorm'),
+    unzip = require('adm-zip');
 
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -82,7 +83,8 @@ var SocketHandler = {
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3", "svg"];
                                     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
                                     var convertableVectorTypes = ["eps"];
-                                    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
+                                    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+                                    var archiveTypes = ["zip"]; 
                                     if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
                                         var stream = fs.createReadStream(event.file.pathName);
                                         stream.pipe(fs.createWriteStream(contentPath));
@@ -95,7 +97,7 @@ var SocketHandler = {
                                             if (!had_error) fs.unlink(event.file.pathName);
                                         });
                                         //Git commit
-                                    } else if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || /*convertableVectorTypes.indexOf(mediaType.toLowerCase()) >= 0 ||*/ convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                    } else if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
                                         //Convert files
                                         var convertedFileName;
                                         var convertedPathName;
@@ -112,22 +114,11 @@ var SocketHandler = {
 												.withAudioBitrate('160k')
 												.withAudioCodec('libfaac')
 												.withAudioChannels(2)
-
 												.onCodecData(function (codecinfo) {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
-                                            /*.takeScreenshots({count: 1, timemarks: ['5']}, capPath, function(err, filenames) {
-                                             _this.logger.info("fileNames = " + filenames);
-                                             _this.logger.info('screenshots were saved');
-                                             })*/
-										}/*else if(convertableVectorTypes.indexOf(mediaType.toLowerCase()) >= 0){
-											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.svg';
-											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.svg';
-											convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.svg';
-											var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
-                                            	.toFormat('svg')
-										}*/else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+										}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
 											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
 											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
 											convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
@@ -140,10 +131,10 @@ var SocketHandler = {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
-										}
-                                        proc.onProgress(function (progress) {
-                                        	_this._socket.emit('mediaConversionProgress', progress);
-										})
+											}
+	                                        proc.onProgress(function (progress) {
+	                                        	_this._socket.emit('mediaConversionProgress', progress);
+											})
 											.saveToFile(convertedPathName, function (stdout, stderr) {
 	                                        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
 	                                            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
@@ -163,6 +154,18 @@ var SocketHandler = {
 	                                            });
 											})
 										});
+                                    }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+                                    	var zip = new unzip(event.file.pathName);
+                                    	var zipEntries = zip.getEntries();
+                                    	
+                                    	zipEntries.forEach(function(entry) {
+										    var entryName = entry.entryName;
+										    console.log(entryName);
+										    var decompressedData = zip.readFile(entryName); // decompressed buffer of the entry
+										    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true); 
+										});
+										
+										console.log("all done");
                                     }
                                 }
                             });
@@ -1146,7 +1149,6 @@ var SocketHandler = {
 			if (!isSent){
 				for(var i = 0; i < activeEdit_arr.length; i++){
 				    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
-					    console.log("this is = " + data.me);
 					    activeEdit_arr[i].rejectEdit = false;
 					    activeEdit_arr[i].isEditor = true;
 					    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
@@ -1265,8 +1267,6 @@ var SocketHandler = {
     },
     
     clearLessonComments: function (lesson){
-    	console.log("lessonID = " + lesson.lesson);
-    	
     	ContentComment.find({contentId: lesson.lesson}).remove()
     },
 

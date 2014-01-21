@@ -1261,25 +1261,37 @@ function C_StaticContent(_type) {
 						fadeComplete();
 					}
 				});	
-			}else if(mediaType == "swf"){
-             	//If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
-			 	$(data).find("page").eq(currentPage).attr("img", imgPath);
-			 	$("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
-			 	$("#swfDialog").dialog({
-                	autoOpen: true,
-					modal: true,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: function(){
-						$(data).find("page").eq(currentPage).attr("w", $("#swfWidth").val());
-						$(data).find("page").eq(currentPage).attr("h", $("#swfHeight").val());
-						sendUpdateWithRefresh();
-						fadeComplete();
-					}
+		}else if(mediaType == "swf"){
+             //If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
+			 $(data).find("page").eq(currentPage).attr("img", imgPath);
+			 $("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
+			 $("#swfDialog").dialog({
+                autoOpen: true,
+				modal: true,
+				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+				close: function(){
+					$(data).find("page").eq(currentPage).attr("w", $("#swfWidth").val());
+					$(data).find("page").eq(currentPage).attr("h", $("#swfHeight").val());
+					sendUpdateWithRefresh();
+					fadeComplete();
+				}
 			});
 		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "svg" || mediaType == "SVG"){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
-		}else{
-				 
+		}else if(mediaType == "html" || mediaType == "HTML" || mediatType == "htm" || mediaType == "HTM"){
+			$(data).find("page").eq(currentPage).attr("img", imgPath);
+			$("#stage").append("<div id='htmlDialog' title='Input Page Information'><div>HTML Width: <input id='htmlWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>HTML Height: <input id='htmlHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
+			 $("#htmlDialog").dialog({
+                autoOpen: true,
+				modal: true,
+				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
+				close: function(){
+					$(data).find("page").eq(currentPage).attr("w", $("#htmlWidth").val());
+					$(data).find("page").eq(currentPage).attr("h", $("#htmlHeight").val());
+					sendUpdateWithRefresh();
+					fadeComplete();
+				}
+			});
 		}
 		
 		if(mediaType != "mp4"  && mediaType != "swf"){
