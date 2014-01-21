@@ -160,12 +160,12 @@ var SocketHandler = {
                                     	
                                     	zipEntries.forEach(function(entry) {
 										    var entryName = entry.entryName;
-										    console.log(entryName);
-										    var decompressedData = zip.readFile(entryName); // decompressed buffer of the entry
 										    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true); 
 										});
 										
-										console.log("all done");
+										fs.unlink(event.file.pathName, function (err) {
+	                                    	_this._socket.emit('unzipComplete', convertedPath);
+	                                    });
                                     }
                                 }
                             });

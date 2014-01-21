@@ -921,6 +921,10 @@ function C_StaticContent(_type) {
 						});
 					}
 					$("#mediaLoader").remove();
+				}else if(myExt == "zip" || myExt == "ZIP"){
+					$("#mediaLoaderText").empty();
+					$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+					cognizenSocket.on('unzipComplete', unzipComplete);			
 				}else{
 					$("#mediaLoaderText").empty();
 					$("#mediaLoaderText").append("The file format that you upladed can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
@@ -1026,6 +1030,35 @@ function C_StaticContent(_type) {
 			mediaWidth = splitDim[0];
 			mediaHeight = splitDim[1];
 		}
+	}
+	
+	function unzipComplete(){
+		$("#mediaLoader").remove();
+		cognizenSocket.removeListener("unzipComplete", unzipComplete);
+		var msg = "<div id='zipUploadCompleteDialog' title='Input Audio Path'>";
+		msg += "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
+		msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. For instance, if you zipped a folder called myFolder with a video named myMedia.mp4 in it, when you access the media in the system, the path would be myFolder/myMedia.mp4.</p>";
+		msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  For instance, if you zipped myImage.png, myImage2.png and myImage3.png, you access the media through the system, you would just input myImage.png.</p>"
+		msg += "</div>";
+								
+		$("#stage").append(msg);
+		
+		//Style it to jQuery UI dialog
+		$("#zipUploadCompleteDialog").dialog({
+			autoOpen: true,
+			modal: true,
+			width: 500,
+			height: 200,
+			buttons:{
+				OK: function(){
+					$(this).dialog("close");
+					sendUpdateWithRefresh();
+				},
+			},
+			close: function(){
+				$("#zipUploadCompleteDialog").remove();
+			}
+		});
 	}
 	
 	function mediaConversionComplete(data){
