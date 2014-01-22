@@ -161,19 +161,17 @@ function C_StaticContent(_type) {
         
         /*Attach Media*/
         if(type == "textOnly"){
+            checkMode();
             if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
-            }else{
-                checkMode();
+                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
             }
         }else if(type == "sidebar"){
             $('#stage').append('<div id="sidebarHolder" class="nano"></div>');
             $('#sidebarHolder').append('<div id="sidebar" class="sidebar content"></div>');
             $('#sidebar').append(mySidebar);
+            checkMode();
             if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
-            }else{
-                checkMode();
+                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
             }        
         }else{
         	//HAS MEDIA
@@ -577,10 +575,9 @@ function C_StaticContent(_type) {
 	        $("#content").css("top", $("#caption").position().top + $("#caption").height() + 20 +"px");
         }
         
+        checkMode();
         if(transition == true){
-        	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
-        }else{
-        	checkMode();
+        	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
         }
     }
 
@@ -668,6 +665,8 @@ function C_StaticContent(_type) {
      	if(type != "textOnly" && type != "sidebar"){
      		$(".mediaPop").css({'position': 'absolute', 'top': $("#loader").position().top + $("#loader").height() - 3, 'left': $("#loader").position().left + $("#loader").width() - 84});
      	}
+
+		$(this).scrubContent();
      	
      	if(type != "graphicOnly" && isIE == false){
      		$(".nano").nanoScroller({
@@ -1016,7 +1015,6 @@ function C_StaticContent(_type) {
 				launchAudioDialog(audioText, false);
 			}).tooltip();
 		}
-		$(this).scrubContent();
 	}
 	
 	function mediaConversionProgress(data){
