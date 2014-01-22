@@ -74,3 +74,8 @@ function completeCourse(){
 	}
 	scorm.quit();
 }
+
+function completeLession(){
+	//scorm.status("set", "");
+	
+}
