@@ -72,7 +72,7 @@ function checkNav(){
 		//grab URL of help file and attach click action
 		helpURL = $(data).find('help').attr('url');
 		$("#help").click(function() {
-			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, width=807, height=600');
+			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width=807, height=750');
 		});
 	}
 
@@ -110,7 +110,7 @@ function checkNav(){
 		//grab URL of reference file and attach click action
 		referenceURL = $(data).find('reference').attr('url');
 		$("#reference").click(function() {
-			window.open(referenceURL, 'referenceWindow', 'menubar=0, status=0, toolbar=0, width=817, height=600');
+			window.open(referenceURL, 'referenceWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width=817, height=750');
 		});
 	}
 
