@@ -80,7 +80,8 @@ function initScripts(_data){
 				corePath +"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
 				corePath +"js/libs/jquery.nestable.js",
 				//Import Cognizen layout templates
-				corePath +"js/templates/C_LessonTitle.js", 
+				corePath +"js/templates/C_LessonTitle.js",
+				corePath +"js/templates/C_Completion.js", 
 				corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
 				corePath +"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
 				corePath +"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.

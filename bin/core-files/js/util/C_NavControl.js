@@ -501,7 +501,6 @@ function clickBack(){
 }
 
 function clickNext(){
-	console.log("click next");
 	if(indexState == true){
 		toggleIndex();
 	}
@@ -512,7 +511,6 @@ function clickNext(){
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-	console.log("currentPage = " + currentPage);
 	if(currentPage == 0){
 		$('#back').css({opacity:.5});
 		$('#back').off('click');
@@ -528,7 +526,6 @@ function checkNavButtons(){
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		$('#next').css({opacity:.5});
 		$('#next').off('click');
-		console.log("next set to off");
 		nextDisabled = true;
 		//on the last page so complete the course
 		if(isScorm ){
@@ -537,7 +534,6 @@ function checkNavButtons(){
 	}else{
 		$('#next').css({opacity: 1});
 		if(nextDisabled == true){
-			console.log("click is set for next");
 			$("#next").click(clickNext);
 			nextDisabled = false;
 		}
@@ -561,7 +557,12 @@ function updatePageCount(){
 /****************************************************
 ********************************** TRACKING
 *****************************************************/
-
+function rejoinTracking(_location){
+	for(var i = 0; i < _location; i++){
+		tracking_arr[i].complete = true;
+	}
+	updateMenuItems();
+}
 
 function updateTracking(){
 	tracking_arr[currentPage].complete = true;
@@ -695,6 +696,10 @@ this.loadPage = function(){
 		//Satic Layouts
 		case "group":
 			currentTemplate = new C_LessonTitle(currentTemplateType);
+			currentTemplate.initialize();
+			break;
+		case "completion":
+			currentTemplate = new C_Completion(currentTemplateType);
 			currentTemplate.initialize();
 			break;
 		case "textOnly":

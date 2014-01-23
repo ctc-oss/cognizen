@@ -48,6 +48,7 @@ function checkScorm(){
 					if(location != ""){
 						//figure out what is going on here.
 						loadPageFromID(location);
+						rejoinTracking(location);
 					}
 				}
 			}
@@ -57,6 +58,7 @@ function checkScorm(){
 					if(location != ""){
 						//figure out what is going on here.
 						loadPageFromID(location);
+						rejoinTracking(location);
 					}
 				}
 			}
@@ -75,7 +77,7 @@ function completeCourse(){
 	scorm.quit();
 }
 
-function completeLession(){
+function completeLesson(){
 	//scorm.status("set", "");
 	
 }
