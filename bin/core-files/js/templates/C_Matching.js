@@ -64,6 +64,7 @@ function C_Matching(_type) {
 			$('#stage').css({'opacity':0});
 		}
 		
+		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbackType');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackDisplay');
 		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctresponse').text();
@@ -479,7 +480,7 @@ function C_Matching(_type) {
 			$("#questionEdit").click(function(){
 				
                	//Create the Content Edit Dialog
-               	var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
+               	var msg = "<div id='questionEditDialog' title='Create Matching Question'>";
                	msg += "<label id='label'>no. of attempts: </label><input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/><br/>";
 				msg += "<div id='questionLabel'>Input your question:</div><div id='questionEditText' type='text'  >" + myContent + "</div><br/><br/>";
 				msg += "<div id='feedbackLabel'>Input your feedback:</div><div id='feedbackEditText' type='text'  >" + feedback + "</div><br/><br/>";
@@ -701,7 +702,7 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).find("question").append(newCDATA);
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
-		$(data).find("page").eq(currentPage).attr("attempt", $("#inputAttempts").val());
+		$(data).find("page").eq(currentPage).attr("attempts", $("#inputAttempts").val());
 		var correctOptions = 0;
 		for(var i = 0; i < optionEdit_arr.length; i++){
 			var optionText = $("#"+optionEdit_arr[i]+"Text").getCode();
