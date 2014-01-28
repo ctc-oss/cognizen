@@ -689,6 +689,7 @@ function C_Dashboard(_type) {
             msg += "<option>2004_4th</option>";
             msg += "<option>2004_3rd</option>";
             msg += "<option>1.2</option>";
+            msg += "<option>SGST</option>";
             msg += "<option>none</option>";
             msg += "</select></form>";
             msg += "</p>";         

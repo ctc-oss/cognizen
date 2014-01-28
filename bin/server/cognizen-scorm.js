@@ -12,6 +12,7 @@ var SCORM = {
     courseName: '',
     packageFolder: '',
     tempXmlContentFile: '',
+    binDir: 'bin',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -26,13 +27,16 @@ var SCORM = {
         var _this = this;
         //handle if scormVersion = none...
 
+        if(_this.scormVersion === 'SGST'){
+        	_this.binDir = "bin2";
+        }
+
         readdirp(
             { root: _this.contentPath,
                 directoryFilter: [ '!server', '!scorm', '!.git'],
                 fileFilter: [ '!.*' ] }
             , function(fileInfo) {
                 //console.log("---------------------------------------------------------" + fileInfo);
-                //gResults.push("         <file href=\"bin/"+fileInfo.path+"\"/>\n");
             }
             , function (err, res) {
 
@@ -47,7 +51,7 @@ var SCORM = {
             		_this.logger.info('content.xml file copied success');
 
 			        var data, etree;
-			        // data = fs.readFileSync(_this.tempXmlContentFile).toString();
+
 			        fs.readFile(_this.tempXmlContentFile, function(err, data){
 			        	if(err){
 			        		_this.logger.error("Error reading temp content.xml file " + err);
@@ -69,6 +73,12 @@ var SCORM = {
 		                var manifestFile = _this._populateManifest(res);
 
 		                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+
+		                //catch for SGST - use 2004_3rd files
+		                if(_this.scormVersion === 'SGST'){
+		                	scormBasePath = _this.scormPath + '/2004_3rd/';
+		                }
+
 		                var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 		                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -138,8 +148,6 @@ var SCORM = {
 
     //end of generateSCORMCourse    
 	},
-
-
 
 	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
 		var _this = this;
@@ -387,7 +395,7 @@ var SCORM = {
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
-	    if (_this.scormVersion === '2004_3rd'){
+	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === 'SGST'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -471,6 +479,7 @@ var SCORM = {
 	        manifest += "       </organization>\n";
 	        manifest += "    </organizations>\n";
 	    }
+	    //SCORM 1.2
 	    else{
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n';
 	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"'+
@@ -494,7 +503,7 @@ var SCORM = {
 	    }
 	    //resources go here - resourcesgenerator
         manifest += "   <resources>\n";
-        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/index.html\">\n";	    
+        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	    
 	    var resources = _this._resourcesGenerator(res, '');
 	    for (var i = 0; i < resources.length; i++) {
 	    	manifest += resources[i];
@@ -508,13 +517,14 @@ var SCORM = {
 	},
 
 	_resourcesGenerator: function(res, lesson){
+		var _this = this;
 		var resources = [];
 	    res.files.forEach(function(file) {
 	        var fileName = file.path.split("\\");
 	        //does not include files that don't have an "." ext, directories
 	        if(fileName[fileName.length-1].indexOf('.') !== -1 && fileName.indexOf('packages') == -1){
 	        	var fullPath = lesson+file.path.replace(/\\/g,"/");
-	            resources.push("         <file href=\"bin/"+fullPath.replace(/\s+/g, '%20')+"\"/>\n");
+	            resources.push("         <file href=\"" +_this.binDir+ "/"+fullPath.replace(/\s+/g, '%20')+"\"/>\n");
 	        }
 	    });
 	    return resources;		
@@ -538,12 +548,12 @@ var SCORM = {
             var localFile = file.path.replace(/\\/g,"/");
             if(localFile.indexOf('content.xml') == -1 && localFile.indexOf('packages') == -1){
             	var inputFile = _this.contentPath + '/' + localFile;
-            	archive.append(fs.createReadStream(inputFile), { name: 'bin/'+localFile });
+            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+localFile });
         	}
         });
 
         //adds temp content.xml file to zip
-        archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: 'bin/xml/content.xml'});
+        archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: _this.binDir+'/xml/content.xml'});
 
         //add SCORM files
         readdirp({
