@@ -1381,18 +1381,8 @@ var SocketHandler = {
                             _this.logger.info("created packages directory");
                         });    
 
-                        // var itemsToSave = [found.lessons];
-
                         //init SCORM (itemsToSave may need to be passed into init)
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
-
-                        //set mode to production and scormVersion in content.xml file
-                        // _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
-                        //     var parent = content.getParent();
-                        //     etree.find('./courseInfo/preferences/mode').set('value','production');
-                        //     etree.find('./courseInfo/preferences/scormVersion').set('value', data.scorm.version);
-                        // }, function() {});
-
 
                         //copies the js directory into each of the lessons
                         for(var i=0; i<found.lessons.length; i++){
@@ -1402,11 +1392,7 @@ var SocketHandler = {
                         }
 
                         scorm.generateSCORMCourse(function(err, filepath){
-                            //set mode back to edit in content.xml file, not matter what
-                            // _this.Content.updateAllXml(itemsToSave[0], function(content, etree) {
-                            //     var parent = content.getParent();
-                            //     etree.find('./courseInfo/preferences/mode').set('value','edit');
-                            // }, function() {});
+
                             if(err){
                                 _this.logger.error(err);
                                 _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});                
