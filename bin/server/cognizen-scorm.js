@@ -47,7 +47,7 @@ var SCORM = {
             		_this.logger.info('content.xml file copied success');
 
 			        var data, etree;
-			        data = fs.readFileSync(_this.tempXmlContentFile).toString();
+			        // data = fs.readFileSync(_this.tempXmlContentFile).toString();
 			        fs.readFile(_this.tempXmlContentFile, function(err, data){
 			        	if(err){
 			        		_this.logger.error("Error reading temp content.xml file " + err);
@@ -156,95 +156,133 @@ var SCORM = {
             , function (err, res) {
 		        var data, etree;
 		        var lessonXmlContentFile = _lessonPath + '/xml/content.xml';
-		        console.log(lessonXmlContentFile);
-		        data = fs.readFileSync(lessonXmlContentFile).toString();  
-		        etree = et.parse(data);          	
-                //add item & item sequencing (objectives)
-                lessonsName.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
-                manifestFile += _this._add2004Item(lessonsName[count]);
+            	_this.tempXmlContentFile = _this.packageFolder +count+'content.xml';
 
-                //add resources
-                resourceLines.push(_this._addResources(res, lessonsName[count]+'/'));
-		        //builds the bin directory
-		        res.files.forEach(function(file) {
-		            var localFile = file.path.replace(/\\/g,"/");
-		            var inputFile = _lessonPath + '/' + localFile;
-		            archive.append(fs.createReadStream(inputFile), { name: 'bin/'+lessonsName[count]+'/'+localFile });
-		        });
+            	fs.copy(lessonXmlContentFile, _this.tempXmlContentFile, function(err){
+            		if(err){
+            			_this.logger.error("Error copying content.xml file " + err);
+            			callback(err, null);
+            		}
+            		_this.logger.info('content.xml file copied success');	
 
-                if(count+1 == lArray.length){
-			        if(manifestFile != ''){
-				        //sequencing rules for the course go here
-				        manifestFile += "       </organization>\n";
-				        manifestFile += "    </organizations>\n";
-						manifestFile += "    <resources>\n";
-						//have to add the resources here because the items all have to be added before the org can be closed
-						for(var i=0; i<resourceLines.length; i++){
-							manifestFile += "      <resource identifier=\"RES-"+lessonsName[i].replace(/\s/g, "")+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+encodeURIComponent(lessonsName[i])+"/index.html\">\n";
-							manifestFile += resourceLines[i];
-							manifestFile += '      </resource>\n';
-						}				    
-					    manifestFile += '   </resources>\n';
-				    	manifestFile += '</manifest>';	
+			        fs.readFile(_this.tempXmlContentFile, function(err, data){
+			        	if(err){
+			        		_this.logger.error("Error reading temp content.xml file " + err);
+            				callback(err, null);
+			        	}
+			        	data = data.toString();
+				        etree = et.parse(data);
 
-			        }
-			        else{
-			        	callback("no manifestFile", null);
-			        }                	
+				        //set mode to production and scorm version in temp content.xml
+		                etree.find('./courseInfo/preferences/mode').set('value','production');
+		                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);	
+		                var xml = etree.write({'xml_decleration': false});
+		                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
+		                    if (err) callback(err, null);
+		                });	
+   	
+		                //add item & item sequencing (objectives)
+		                lessonsName.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
+		                manifestFile += _this._add2004Item(lessonsName[count]);
 
-			        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
-			        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+		                //add resources
+		                resourceLines.push(_this._addResources(res, lessonsName[count]+'/'));
+				        //builds the bin directory
+				        res.files.forEach(function(file) {
+				            var localFile = file.path.replace(/\\/g,"/");
+				            if(localFile.indexOf('content.xml') == -1 ){
+				            	var inputFile = _lessonPath + '/' + localFile;
+				            	archive.append(fs.createReadStream(inputFile), { name: 'bin/'+lessonsName[count]+'/'+localFile });
+				        	}
+				        });
 
-			        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
-			            if(err) {
-			                _this.logger.error("Write file error" + err);
-			                callback(err, null);
-			            }
-			            else {
+		                if(count+1 == lArray.length){
+					        if(manifestFile != ''){
+						        //sequencing rules for the course go here
+						        manifestFile += "       </organization>\n";
+						        manifestFile += "    </organizations>\n";
+								manifestFile += "    <resources>\n";
+								//have to add the resources here because the items all have to be added before the org can be closed
+								for(var i=0; i<resourceLines.length; i++){
+									manifestFile += "      <resource identifier=\"RES-"+lessonsName[i].replace(/\s/g, "")+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+encodeURIComponent(lessonsName[i])+"/index.html\">\n";
+									manifestFile += resourceLines[i];
+									manifestFile += '      </resource>\n';
+								}				    
+							    manifestFile += '   </resources>\n';
+						    	manifestFile += '</manifest>';	
 
-					        //add SCORM files
-					        readdirp({
-					                root: scormBasePath,
-					                directoryFilter: ['*'],
-					                fileFilter: [ '!.DS_Store' ]
-					            },
-					            function(fileInfo) {},
-					            function (err, res) {
-					                res.files.forEach(function(file) {
-					                    var localFile = file.path.replace(/\\/g,"/")
-					                    var inputFile = scormBasePath + localFile;
-					                    archive.append(fs.createReadStream(inputFile), { name: localFile });
-					                });
+					        }
+					        else{
+					        	callback("no manifestFile", null);
+					        }                	
 
-					            }
-					        );
+					        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+					        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
-					        //add imsmanifest.xml file
-					        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
-
-					        archive.finalize(function(err, written) {
-					            if (err) {
+					        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+					            if(err) {
+					                _this.logger.error("Write file error" + err);
 					                callback(err, null);
 					            }
-					            //tells the engine that it is done writing the zip file
-					            callback(null, outputFile);
-					            _this.logger.debug("packageFolder = " + outputFile);
+					            else {
 
-					        });				            	
+							        //add SCORM files
+							        readdirp({
+							                root: scormBasePath,
+							                directoryFilter: ['*'],
+							                fileFilter: [ '!.DS_Store' ]
+							            },
+							            function(fileInfo) {},
+							            function (err, res) {
+							                res.files.forEach(function(file) {
+							                    var localFile = file.path.replace(/\\/g,"/")
+							                    var inputFile = scormBasePath + localFile;
+							                    archive.append(fs.createReadStream(inputFile), { name: localFile });
+							                });
 
-			            }
-			            fs.remove(imsManifestFilePath, function(err){
-							if(err) return _this.logger.error(err);
-							_this.logger.info('imsmanifest.xml file removed.');
-						});
-			        });
+							            }
+							        );
 
-                }
-                else{
-	    			_this._recurseLessons(callback, count+1, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
-                }
+							        //add imsmanifest.xml file
+							        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+				        			//adds temp content.xml file to zip
+				        			for(var j=0; j<lArray.length; j++){
+				        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: 'bin/'+lessonsName[j]+'/xml/content.xml'});	
+				        			}
+							        
+							        archive.finalize(function(err, written) {
+							            if (err) {
+							                callback(err, null);
+							            }
+							            //tells the engine that it is done writing the zip file
+							            callback(null, outputFile);
+							            _this.logger.debug("packageFolder = " + outputFile);
 
+							        });				            	
 
+					            }
+					            fs.remove(imsManifestFilePath, function(err){
+									if(err) return _this.logger.error(err);
+									_this.logger.info('imsmanifest.xml file removed.');
+								});
+								//remove temp content.xml files
+								for (var i = 0; i < lArray.length; i++) {
+									fs.remove(_this.packageFolder +i+'content.xml', function(err){
+										if(err) return _this.logger.error(err);
+									});	
+								};
+
+					        });
+
+		                }
+		                else{
+			    			_this._recurseLessons(callback, count+1, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+		                }	                			        	
+
+			        });            		
+
+		        });        
+		            			        
             }
         ); 
 
