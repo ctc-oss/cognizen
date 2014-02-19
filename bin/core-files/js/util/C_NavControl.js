@@ -527,9 +527,9 @@ function checkNavButtons(){
 		$('#next').css({opacity:.5});
 		$('#next').off('click');
 		nextDisabled = true;
-		//on the last page so complete the course
-		if(isScorm ){
-			completeCourse();
+		//on the last page of lesson so set complete and passed for the lesson
+		if(currentPage == totalPages -1 && isScorm && $(data).find("page").eq(currentPage).attr('layout') != "completion"){
+			completeLessonDefault();
 		};
 	}else{
 		$('#next').css({opacity: 1});
