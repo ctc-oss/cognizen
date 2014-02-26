@@ -113,7 +113,7 @@ function C_VisualMediaHolder(callback){
             //if(oldIE == true){
 	        //    $("#loader").append(
             //}else{
-            	$("#loader").append('<object id="edgeContent" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
+            	$("#loader").append('<object id="edgeContent" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
             //}
             $("#loader").removeClass('loading');
         }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){////////////////////////////////////////////////VIDEO
