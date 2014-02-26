@@ -110,7 +110,11 @@ function C_VisualMediaHolder(callback){
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
         }else if (mediaType == "html"){////////////////////////////////////////////////HTML for edge or js apps.
-            $("#loader").append('<object id="edgeContent" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
+            //if(oldIE == true){
+	        //    $("#loader").append(
+            //}else{
+            	$("#loader").append('<object id="edgeContent" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
+            //}
             $("#loader").removeClass('loading');
         }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){////////////////////////////////////////////////VIDEO
             
