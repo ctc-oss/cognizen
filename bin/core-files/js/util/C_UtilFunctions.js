@@ -72,12 +72,14 @@ function isOldIE() {
         oldIE = true;
     }
     
-    if (Function('/*@cc_on return document.documentMode===10@*/')()) {
-	    isIE = true;
-	}
+    
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
         isIE = true;
     }
+    
+    if (Function('/*@cc_on return document.documentMode===10@*/')()) {
+	    isIE = true;
+	}
     
 }
 

@@ -111,9 +111,9 @@ else{
 				}
 				$("#mediaLoader").remove();
 			}else if(myExt == "zip" || myExt == "ZIP"){
-				$("#mediaLoaderText").empty();
-				$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-				cognizenSocket.on('unzipComplete', unzipComplete);			
+				//$("#mediaLoaderText").empty();
+				//$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+				//cognizenSocket.on('unzipComplete', unzipComplete);			
 			}else{
 				$("#mediaLoaderText").empty();
 				$("#mediaLoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");

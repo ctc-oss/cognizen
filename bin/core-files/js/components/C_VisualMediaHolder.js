@@ -122,8 +122,7 @@ function C_VisualMediaHolder(callback){
             autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
             
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
-
-            if(mediaLinkType == "youtube"){
+			if(mediaLinkType == "youtube"){
                 vidHTMLString += " preload='none'";
             }
 
@@ -165,11 +164,8 @@ function C_VisualMediaHolder(callback){
             if(hasSubs == true){
                 vidHTMLString += "<track kind='subtitles' src='media/" + subLink + "' srclang='en'/>"
             }
+			vidHTMLString += "</video>";
 
-            vidHTMLString += "</video>";
-
-
-            //Add the HTML to it's div.
             $("#loader").append(vidHTMLString);
             
             $('video').mediaelementplayer({
