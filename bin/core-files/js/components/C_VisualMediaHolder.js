@@ -110,7 +110,7 @@ function C_VisualMediaHolder(callback){
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
         }else if (mediaType == "html"){////////////////////////////////////////////////HTML for edge or js apps.
-            console.log("oldIE = " + oldeIE);
+            console.log("oldIE = " + oldIE);
             if(oldIE == true){
 	            $("#loader").append('<iframe seamless frameborder="0" src="'+ myImage +'" width="' + imageWidth + '" height="' + imageHeight + '"></iframe>');
             }else{
