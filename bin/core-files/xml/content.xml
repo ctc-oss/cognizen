@@ -33,6 +33,7 @@
 			<feedback value="false"/>
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
+			<finalLesson value="false"/>
 		</preferences>
 		<glossary value="false">
 			<glossaryitem> 

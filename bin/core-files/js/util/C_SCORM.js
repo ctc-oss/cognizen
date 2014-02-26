@@ -66,18 +66,41 @@ function checkScorm(){
 	}
 }
 
-function completeCourse(){
+function completeLessonDefault(){
 	scorm.status("set", "completed");
 	if(scorm.VERSION == "1.2"){
-		scorm.set("cmi.core.exit", "");
+		//no calls 4 now
 	}
 	else if(scorm.VERSION.substring(0,4) == "2004"){
-		scorm.set("cmi.exit", "normal");
+		scorm.set("cmi.success_status", "passed");
 	}
 	scorm.quit();
 }
 
 function completeLesson(){
-	//scorm.status("set", "");
+	scorm.status("set", "completed");
+	if(scorm.VERSION.substring(0,4) == "2004"){
+		scorm.set("cmi.success_status", "passed");
+		var finalLesson = $(data).find('finalLesson').attr('value');
+		if(finalLesson === 'true'){
+			scorm.set("adl.nav.request", "exitAll");
+		}
+		else
+		{
+			var validContinue = scorm.get("adl.nav.request_valid.continue");
+			if(validContinue === 'true')
+			{
+				scorm.set("adl.nav.request", "continue");
+			}
+			else
+			{
+				scorm.set("adl.nav.request", "exit");
+			}
+		}
+	}
+	else if(scorm.VERSION == "1.2"){
+		//no calls 4 now
+	}
+	scorm.quit();
 	
 }
