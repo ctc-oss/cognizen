@@ -22,7 +22,7 @@ function checkComment(){
 		var pageNumber = currentPage + 1;
 		
 		//Create the Comment Dialog
-		$("#stage").append("<div id='commentDialog' title='Comments for Page "+ pageNumber + ": " + $(data).find("page").eq(currentPage).find('title').text() + "'><div id='commentDisplayHolder' class='nano'><div id='pageComments' class='commentDisplay overthrow content'></div></div><div id='commentInputText' class='commentInput' type='text'>Add Comment Here...</div><label id='label'>Resolved: </label><input id='commentStatus' type='checkbox' name='status' class='radio' value='true'/><br/></div>");
+		$("#stage").append("<div id='commentDialog' title='Comments for Page "+ pageNumber + ": " + $(data).find("page").eq(currentPage).find('title').text() + "'><div id='commentDisplayHolder' class='antiscroll-wrap'><div id='pageComments' class='commentDisplay overthrow antiscroll-inner'></div></div><div id='commentInputText' class='commentInput' type='text'>Add Comment Here...</div><label id='label'>Resolved: </label><input id='commentStatus' type='checkbox' name='status' class='radio' value='true'/><br/></div>");
 			
 						
 		if(pageComments.length > 0){
@@ -94,12 +94,13 @@ function checkComment(){
 		});
 		 
 		 //Set Scrollbar for comments if one is needed...
-		 $(".nano").nanoScroller({
+		 /*$(".nano").nanoScroller({
             flashDelay: 4000,
 		 	flash: true,
 		 	sliderMaxHeight: 350,
 		 	scroll: 'bottom'
-		 });
+		 });*/
+		 $('.antiscroll-wrap').antiscroll();
 	});
 }
 
@@ -126,12 +127,13 @@ function refreshPageComments(){
 		}
 	}
 	
-	 $(".nano").nanoScroller({
+	 /*$(".nano").nanoScroller({
       	flashDelay: 4000,
 		flash: true,
 		sliderMaxHeight: 350,
 		scroll: 'bottom'
-	});
+	});*/
+	$('.antiscroll-wrap').antiscroll();
 }
 
 function updateIndexCommentFlags(){

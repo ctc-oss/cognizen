@@ -200,15 +200,18 @@ Description:	Called when a user creates a new glossary item.
 ************************************************************************************************/
 function addGlossaryTerm(){
 	//Create the base message.
-	var msg = '<div id="dialog-addGlossaryTerm" title="Add New Term"><p class="validateTips">Complete the form to create your new glossary term.</p><input id="newTerm" type="text" value="New Term" defaultValue="New Term" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">Input defintion here.</div></div>';
+	var msg = '<div id="dialog-addGlossaryTerm" title="Add New Term"><p class="validateTips">Complete the form to create your new glossary term.</p><input id="newTerm" type="text" value="New Term" defaultValue="New Term" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" contenteditable="true" class="dialogInput">Input defintion here.</div></div>';
 	
 	//Add to stage.
 	$("#stage").append(msg);
 	
-	$("#definitionEditText").redactor({
-		focus: true,
-		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-	});
+	CKEDITOR.inline( "definitionEditText", {
+		toolbar: contentToolbar,
+		toolbarGroups :contentToolgroup,
+		enterMode : CKEDITOR.ENTER_BR,
+		shiftEnterMode: CKEDITOR.ENTER_P,
+		extraPlugins: 'sourcedialog'
+	});	
 
 	//Make it a dialog
 	$("#dialog-addGlossaryTerm").dialog({
@@ -222,9 +225,8 @@ function addGlossaryTerm(){
                     $(this).dialog("close");
 			},
 			Add: function(){
-				var myDef = $("#definitionEditText").getCode();
-				$("#defintionEditText").destroyEditor();
-				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				insertGlossaryTerm($("#newTerm").val(), CKEDITOR.instances.definitionEditText.getData());
+				if (CKEDITOR.instances.definitionEditText) CKEDITOR.instances.definitionEditText.destroy();				
 				$(this).dialog("close");
 			}
 		}
@@ -239,15 +241,18 @@ Description:	Called when a user edits an existing glossary item.
 function editGlossaryTerm(myNode){
 	var myTerm = $(data).find("glossaryitem").eq(myNode).find("term").text();
 	var myDef = $(data).find("glossaryitem").eq(myNode).find("content").text();
-	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" style="width:480px; height:80%">'+myDef+'</div></div>';
+	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" contenteditable="true" class="dialogInput">'+myDef+'</div></div>';
 	
 	//Add to stage.
 	$("#stage").append(msg);
 	
-	$("#definitionEditText").redactor({
-		focus: true,
-		buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
-	});
+	CKEDITOR.inline( "definitionEditText", {
+		toolbar: contentToolbar,
+		toolbarGroups :contentToolgroup,
+		enterMode : CKEDITOR.ENTER_BR,
+		shiftEnterMode: CKEDITOR.ENTER_P,
+		extraPlugins: 'sourcedialog'
+	});	
 
 	//Make it a dialog
 	$("#dialog-editGlossaryTerm").dialog({
@@ -261,12 +266,9 @@ function editGlossaryTerm(myNode){
                     $(this).dialog("close");
 			},
 			Add: function(){
-				var updateDef = $("#definitionEditText").getCode();
-				$("#defintionEditText").destroyEditor();
-				console.log("before = " + $(data).find("glossaryitem").eq(myNode).find("term").text());
 				$(data).find("glossaryitem").eq(myNode).remove();
-				console.log("after = " + $(data).find("glossaryitem").eq(myNode).find("term").text());
-				insertGlossaryTerm($("#newTerm").val(), $("#definitionEditText").getCode());
+				insertGlossaryTerm($("#newTerm").val(), CKEDITOR.instances.definitionEditText.getData());
+				if (CKEDITOR.instances.definitionEditText) CKEDITOR.instances.definitionEditText.destroy();
 				$(this).dialog("close");
 			}
 		}

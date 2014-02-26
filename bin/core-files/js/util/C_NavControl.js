@@ -372,6 +372,7 @@ function checkLockMode(){
 						mode = "review";
 						justRelinquishedLock = true;
 						forcedReviewer = true;
+						activeEditor = null;
 						cognizenSocket.emit('passLock', { me: username });
 						$(this).dialog("close");
 						nextDisabled = true;
@@ -386,7 +387,12 @@ function checkLockMode(){
 		}
 		//Request Edit Control
 		else{
-			var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
+			console.log("activeEditor = " + activeEditor);
+			if(activeEditor == null){
+				var msg = '<div id="dialog-requestEdit" title="Take Edit Controls"><p class="validateTips">No one is currently editing the lesson.</p><p>Would you like to assume the edit controls?</p></div>';
+			}else{
+				var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
+			}
 			
 			//Add to stage.
 			$("#stage").append(msg);
@@ -558,8 +564,18 @@ function updatePageCount(){
 ********************************** TRACKING
 *****************************************************/
 function rejoinTracking(_location){
-	for(var i = 0; i < _location; i++){
-		tracking_arr[i].complete = true;
+	var foundCurrPage = 0;
+	for(var i = 0; i < tracking_arr.length; i++){
+		if(tracking_arr[i].id === _location)
+		{
+			foundCurrPage = 1;
+			tracking_arr[i].complete = true;
+		}
+		else if(foundCurrPage == 0)
+		{
+			tracking_arr[i].complete = true;
+		}
+		
 	}
 	updateMenuItems();
 }
@@ -769,6 +785,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		case "multipleSelect":
+			currentTemplate = new C_MultipleChoice("multipleChoice");
+			currentTemplate.initialize();
+			break;
+		case "multipleChoiceMedia":
 			currentTemplate = new C_MultipleChoice(currentTemplateType);
 			currentTemplate.initialize();
 			break;

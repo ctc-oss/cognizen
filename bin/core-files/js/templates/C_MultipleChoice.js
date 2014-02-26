@@ -23,9 +23,9 @@
  *		7. Ability to add higher score related to time to answer.
  *		8. Point weighted questions - more points for more difficult ones.
  */
-function C_MultipleChoice(_myType) {
-
-    var myPageTitle;//Title of this page.
+function C_MultipleChoice(_type) {
+	var pageTitle;
+	var audioHolder;
     var myContent;//Body
     var optionHolderY = 0;
     var optionStartX = 0;
@@ -33,7 +33,7 @@ function C_MultipleChoice(_myType) {
     var attemptsAllowed = 2;
     var attemptsMade = 0;
     var optionLabeling = "a"; //"a" for alphabetic - "n" for numeric
-    var myType = _myType; //Other options are trueFalse,  multipleSelect
+    var type = _type; 
     var option_arr = [];
     var feedbackType;
     var feedbackDisplay;
@@ -43,12 +43,12 @@ function C_MultipleChoice(_myType) {
     var feedback;
     var iconClicked = false;
     var conHeight;
+    var isMulti = false;
     
     var isComplete;
-    
     var optionEdit_arr = [];
     var optionCount = 0;
-    
+        
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		buildTemplate();
@@ -72,43 +72,38 @@ function C_MultipleChoice(_myType) {
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		
-		$('#stage').append('<div id="pageTitle"></div>');
-		$('#stage').append('<div id="question" class="questionTop"></div>');
-		$('#stage').append('<div id="answerOptions"></div>');
-		$("#myCanvas").append("<div id='mcSubmit'></div>");
+		pageTitle = new C_PageTitle();
+		
+		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div>');
+		
+		audioHolder = new C_AudioHolder();
 		
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
 		
-		//Set Page Title		
-		myPageTitle = $(data).find("page").eq(currentPage).find('title').text();
-		$("#pageTitle").append(myPageTitle);
+		var correctCount = 0;
+		for(var i = 0; i < optionCount; i++){
+			if($(data).find("page").eq(currentPage).find("option").eq(i).attr('correct') == "true"){
+				correctCount++;
+			}
+		}
 		
+		if(correctCount > 1){
+			isMulti = true;
+		}
+				
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-		
-		//Figure out the question height to properly place the options
-		$("#body").append("<div id='testTop' class='testTop'></div>");
-        $("#testTop").append(myContent);
-        conHeight = $("#testTop").height();
-        $("#testTop").remove();
-           
-        optionHolderY = $("#question").position().top + $("#question").height() + 50;
-		
-		$("#answerOptions").css({'position':'absolute', 'top':optionHolderY});
-		
+           		
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
 		
-		if(myType == "multipleChoice"){
+		if(isMulti == false){
 			$('#answerOptions').append('<div id="answer" class="radioSelector">');
-		}else if (myType == "multipleSelect"){
+		}else{
 			$('#answerOptions').append('<div id="answer" class="checkBox">');
-		}else if (myType == "trueFalse"){
-			$("#answerOption").append("<div id='answer' class='trueFalse'>");
-		}
-		
+		}		
 		//find every option in the xml - place them on the screen.
 		$(data).find("page").eq(currentPage).find("option").each(function()
 		{	
@@ -117,17 +112,14 @@ function C_MultipleChoice(_myType) {
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 
-			if(myType == "multipleChoice"){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + myType + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
+			if(isMulti == false){
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + myType + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
 			}
-			//Position each option with css
-			$("#"+myOption).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});//, 'top':optionY});
 			
 			$("#" + myOption + "Check").click(function(){
 				iconClicked = true;
-				
 				if($(this).prop('checked') == true){
 					$(this).parent().addClass("optionSelected")
 				}else{
@@ -140,7 +132,7 @@ function C_MultipleChoice(_myType) {
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
 				
-				if(myType == "multipleChoice"){
+				if(isMulti == false){
 					$(this).find('input').prop('checked', true);
 					for(var i=0; i<option_arr.length; i++){
 						if(option_arr[i].hasClass("optionSelected") ){
@@ -148,7 +140,7 @@ function C_MultipleChoice(_myType) {
 						}
 					}
 					$(this).addClass("optionSelected");
-				}else if(myType == "multipleSelect"){
+				}else if(isMulti == true){
 					if($(this).find('input').prop('checked') == true){
 						if(iconClicked != true){
 							$(this).find('input').prop('checked', false);
@@ -176,23 +168,24 @@ function C_MultipleChoice(_myType) {
 			option_arr.push($('#' + myOption));
 			
 		});
-
-		if($(data).find("page").eq(currentPage).attr('img')!= undefined){
-			myImage = $(data).find("page").eq(currentPage).attr('img');
-			if(myImage != null){
-				myImage = "media/" + myImage;
-				$("#answerOptions").addClass("answerOptionsWImage");
-				loadVisualMedia();
-			}
-		};
+		
+		$("#answerOptions").append('<div id="mcSubmit"></div>');
 
 		$("#answerOptions").append("</div>");
 		
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim);
 		
+		if(type == "multipleChoiceMedia"){
+        	$("#answerOptions").addClass("left");
+        	mediaHolder = new C_VisualMediaHolder();
+        	mediaHolder.loadVisualMedia(checkMode());
+        }else{
+			checkMode();
+        }
 		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:Power2.easeIn, onComplete:checkMode});
+			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 	}
 	
@@ -204,163 +197,6 @@ function C_MultipleChoice(_myType) {
 		}
 	}
 
-
-	/*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     MEDIA FUNCTIONALITY
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-    /**********************************************************************
-     **Load Visual Content from Link  -  creates tags and media player instance -
-     ** Currently handles - .png, .swf, .jpg, .gif, .mp4, .html
-     **********************************************************************/
-	 var mediaType;
-	 var imageWidth;
-	 var imageHeight;
-	 var imgX;
-	 var imgY;
-	 
-    function loadVisualMedia(){
-    	$("#stage").append("<div id='loader' class='mcLoader'></div>");
-        
-        var questionH = $("#question").height();
-        var questionW = $("#question").width();
-        var questionX = $("#question").position().left;
-        var questionY = $("#question").position().top;
-        var titleY = $("#pageTitle").position().top;
-        var titleH = $("#pageTitle").height();
-       
-        var mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
-
-        var parts = myImage.split('.'), i, l;
-        var last = parts.length;
-
-        mediaType = (parts[last - 1]);
-
-        if(mediaType == "swf"){
-            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
-            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
-            resizeForMobile();
-            $("#loader").removeClass('loading');
-            $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
-
-            ////////////////////////////////////////////////HTML for edge or js apps.
-        }else if (mediaType == "html"){
-            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
-            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
-            resizeForMobile();
-
-            $("#loader").append('<object id="edgeContent" data='+myImage+' type="text/html" width="' + imageWidth + '" height="' + imageHeight + '" align="absmiddle"></object>');
-            $("#loader").removeClass('loading');
-                       ////////////////////////////////////////////////HTML for edge or js apps.
-        }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){
-
-            autoNext = $(data).find("page").eq(currentPage).attr('autoNext');
-            imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
-            imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
-            autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
-            //resizeForMobile();
-
-            var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
-
-            if(mediaLinkType == "youtube"){
-                vidHTMLString += " preload='none'";
-            }
-
-            var hasPoster;
-            var posterLink;
-            var hasSubs;
-            var subsLink;
-
-            if($(data).find("page").eq(currentPage).attr('poster') != undefined && $(data).find("page").eq(currentPage).attr('poster') != "null" && $(data).find("page").eq(currentPage).attr('poster').length != 0){
-                hasPoster = true;
-                posterLink = $(data).find("page").eq(currentPage).attr('poster');
-            }else{
-                hasPoster = false;
-            }
-
-            //Check Poster
-            if(hasPoster == true){
-                vidHTMLString += "poster='"+posterLink+"'>";
-            }else{
-                vidHTMLString += ">";
-            }
-
-            vidHTMLString += "<source type='video/";
-
-            //Check type and add appropriate.
-            if(mediaLinkType == "youtube"){
-                vidHTMLString += "youtube' ";
-            }else{
-                vidHTMLString += "mp4' ";
-            }
-
-            //Add the video source and close the source node.
-            vidHTMLString += "src='" + myImage + "'/>";
-
-            //Check for subs - defaults to false.
-            if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
-                hasSubs = true;
-                subLink = $(data).find("page").eq(currentPage).attr('subs');
-            }else{
-                hasSubs = false;
-            }
-
-            //Check subs - if subs at track node.
-            if(hasSubs == true){
-                vidHTMLString += "<track kind='subtitles' src='" + subLink + "' srclang='en'/>"
-            }
-
-            vidHTMLString += "</video>";
-
-
-            //Add the HTML to it's div.
-            $("#loader").append(vidHTMLString);
-
-
-            $('video').mediaelementplayer({
-                success: function(player, node) {
-                    //If autoNext then move to next page upon completion.
-                    if(autoNext == "true"){
-                        player.addEventListener('ended', function(e) {
-                            hasEnded();
-                        }, false);
-                    }
-
-                    //If autoplay - cick off the vid
-                    if(autoPlay == "true"){
-                        $('.mejs-overlay-button').trigger('click');
-                    }
-                }
-            });
-        }else{
-            var img = new Image();
-            $(img).load(function(){
-                $("#loader").removeClass('loading').append(img);
-                imageWidth = $(img).width();
-                imageHeight = $(img).height();
-
-                if(transition == true){
-                    TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType/*, onComplete:setCaption*/});
-                }else{
-                    //setCaption();
-                }
-            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
-        }
-
-        //Other media types include their size so we don't need to wait for them to load to place the caption - images (png, gif, jpg) don't so we have to do caption inside of the load event.
-        if(mediaType == "mp4" || mediaType == "html"  || mediaType == "swf" || mediaLinkType == "youtube"){
-
-            if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType/*, onComplete:setCaption*/});
-            }else{
-                //setCaption();
-            }
-        }
-
-        $("#loader").removeClass('loading');
-    }
-    /////////////END of loadVisualMedia
 
 	//questionResponse_arr is in....
 	function checkQuestionComplete(){
@@ -404,14 +240,14 @@ function C_MultipleChoice(_myType) {
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var tempCorrect = true;
 		attemptsMade++;
-		if(myType == "multipleChoice"){
+		if(isMulti == false){
 			var selected = $("#answer input[type='radio']:checked");
 			if(selected.val() == "true"){
 				tempCorrect = true;
 			}else{
 				tempCorrect = false;
 			}
-		}else if (myType == "multipleSelect"){
+		}else{
 			for(var i = 0; i < option_arr.length; i++){
 				if(option_arr[i].find('input').attr("value") == "true"){
 					if(option_arr[i].find("input").prop("checked") == false){
@@ -431,12 +267,12 @@ function C_MultipleChoice(_myType) {
 		if(feedbackType == 'undifferentiated'){
 			//Undifferentiated correct answer
 			if(tempCorrect == true){
-				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p>'+feedbackCorrectTitle +'</p><p> '+ feedback +'</p></div>';	
+				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p> '+ feedback +'</p></div>';	
 			//Undifferentiated wrong answer	
 			}else{
 				if(attemptsMade == attemptsAllowed){
 					//incorrect feedback here
-					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectTitle +'</p><p> '+ feedback +'</p></div>';
+					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p> '+ feedback +'</p></div>';
 				}else{
 					//try again.
 					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';	
@@ -450,7 +286,7 @@ function C_MultipleChoice(_myType) {
 					if(option_arr[i].find("input").prop("checked") == true){
 						feedbackMsg += "<p><b>You selected</b>: " + $(data).find("page").eq(currentPage).find("option").eq(i).find("content").text() + ", ";
 						if($(data).find("page").eq(currentPage).find("option").eq(i).attr("correct") == "true"){
-							if(myType == "multipleSelect"){
+							if(isMulti == true){
 								feedbackMsg += "that was a correct response.</p>"
 							}else{
 								feedbackMsg += "that was the correct response.</p>"
@@ -507,6 +343,7 @@ function C_MultipleChoice(_myType) {
 				mandatoryInteraction = false;
 				checkNavButtons();
 			}
+			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
 		
@@ -563,51 +400,51 @@ function C_MultipleChoice(_myType) {
 		}
 	}
 	
+	function resizeForMobile(){
+		
+	}
+	
 	function checkMode(){
+		$('.antiscroll-wrap').antiscroll();
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim);
 		if(mode == "edit"){
-			/*******************************************************
-			* Edit Title
-			********************************************************/
-                //Add and style titleEdit button
-			 $('#stage').append("<div id='titleEdit' class='btn_edit_text' title='Edit Title'></div>");
-			 $("#titleEdit").css({'position':'absolute', 'top':$("#pageTitle").position().top - 18, 'left': $("#pageTitle").position().left + $("#pageTitle").width() - 18});
-			 //Add title Edit functionality
-			 $("#titleEdit").click(function(){
-                	//Create the Dialog
-			 	$("#stage").append("<div id='titleDialog' title='Input Page Title'><div id='titleEditText' type='text'>" + myPageTitle + "</div></div>");
-			 	//Style it to jQuery UI dialog
-			 	$("#titleDialog").dialog({
-                    autoOpen: true,
-					modal: true,
-					width: 550,
-					buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-					close: saveTitleEdit
-				});
-
-				$("#titleEditText").redactor({
-                    focus: true,
-					buttons: ['bold', 'italic', 'underline', 'deleted', '|', 'fontcolor', 'backcolor']
-				});
-			}).tooltip();
-			
+			/***************************************************************************************************
+			EDIT QUESTION
+			***************************************************************************************************/
+			$("#question").attr('contenteditable', true);
+			CKEDITOR.inline( 'question', {
+				on: {
+					blur: function (event){
+						if(cachedTextPreEdit != event.editor.getData()){
+							saveContentEdit(event.editor.getData());
+						}
+					},
+					focus: function (event){
+						cachedTextPreEdit = event.editor.getData();
+					}
+				},
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				extraPlugins: 'sourcedialog'
+			}); 
 			
 			/*******************************************************
 			* Edit Question
 			********************************************************/
-               //Add and style titleEdit button
-			$('#stage').append("<div id='questionEdit' class='btn_edit_text' title='Edit Text Question'></div>");
-			$("#questionEdit").css({'position':'absolute', 'top':$("#question").position().top - 18, 'left': $("#question").position().left + $("#question").width() - 18});
-			
+            //Add and style titleEdit button
+			$('#answerOptions').prepend("<div id='questionEdit' class='btn_edit_text' title='Edit Text Question'></div>");
+						
 			$("#questionEdit").click(function(){
 				updateQuestionEditDialog();
 			}).tooltip();
 		}
 	}
 	
+	
 	function updateQuestionEditDialog(){
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
 		msg += "<label id='label'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='regText text ui-widget-content ui-corner-all' style='width:35px;'/><br/>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/><br/>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
@@ -615,41 +452,35 @@ function C_MultipleChoice(_myType) {
 		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated'>differentiated  </input>";
 		
 		msg += "</div>"
-		msg += "<div id='questionLabel'><b>Input your question:</b></div>";
-		msg += "<div id='questionEditText' type='text'  >" + myContent + "</div><br/>";
+		
 		if(feedbackType == "undifferentiated"){
 			msg += "<div id='feedbackLabel'><b>Input your feedback:</b></div>";
-			msg += "<div id='feedbackEditText' type='text'  >" + feedback + "</div><br/>";
+			msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		}
 		msg += "</div>";
 		$("#stage").append(msg);
+		
+		if(feedbackType == "undifferentiated"){
+			CKEDITOR.inline( "feedbackEditText", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog'
+			});
+			//$("#feedbackEditText").height(40);			
+		}
 		
 		$('#' + feedbackType).prop('checked', true);
 		
 		//Switch to show the correct feedback type....
 		$("#feedbackTypeGroup").change(function(){
-			$("#questionEditText").destroyEditor();
-			for(var i = 0; i < optionEdit_arr.length; i++){
-				$("#"+optionEdit_arr[i]+"Text").destroyEditor();
-				if(feedbackType == "differentiated"){
-					$("#"+optionEdit_arr[i]+"DifFeedText").destroyEditor();
-				}
-			}
 			feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
 			$("#questionEditDialog").remove();
 			optionEdit_arr = [];
-			
 			updateQuestionEditDialog();
 		});
-			
-		$("#questionEditText").redactor({
-			focus: true,
-			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
-		});
-			
-		$("#feedbackEditText").redactor({
-			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
-		});
+		
 		//find every option in the xml - place them on the screen.
 		for (var i = 0; i < optionCount; i++){
 			addOption(i, false);
@@ -663,24 +494,35 @@ function C_MultipleChoice(_myType) {
 			height: 650,
 			buttons: {
 				Cancel: function(){
-					$("#questionEditText").destroyEditor();
-					for(var i = 0; i < optionEdit_arr.length; i++){
-						$("#"+optionEdit_arr[i]+"Text").destroyEditor();
-						if(feedbackType == "differentiated"){
-							$("#"+optionEdit_arr[i]+"DifFeedText").destroyEditor();
-						}
-					}
 					$( this ).dialog( "close" );	
 				},
 				Add: function(){
 					addOption(optionEdit_arr.length, true);	
 				},
 				Save: function(){
-					saveQuestionEdit();
+					var tmpObj = new Object();
+					tmpObj.attempts = $("#inputAttempts").val();
+					tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
+					if(feedbackType == "undifferentiated"){
+						tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
+					}
+					var tmpOptionArray = new Array();
+					for(var i = 0; i < optionEdit_arr.length; i++){
+						var tmpOptionObj = new Object();
+						tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
+						tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Correct").prop("checked");
+						if(feedbackType == "differentiated"){
+							tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
+						}
+						tmpOptionArray.push(tmpOptionObj);
+					}
+					tmpObj.option_arr = tmpOptionArray;
+					saveQuestionEdit(tmpObj);
+					$("#questionEditDialog").dialog("close");
 				}
 			},
 			close: function(){
-				$(this).remove();
+				$("#questionEditDialog").remove();
 			}
 		});
 	}
@@ -694,10 +536,6 @@ function C_MultipleChoice(_myType) {
 		}
 		$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
 		optionEdit_arr.splice(arrIndex, 1);
-		$("#option"+_id+"Text").destroyEditor();
-		if(feedbackType == "differentiated"){
-			$("#option"+_id+"DifFeedText").destroyEditor();
-		}
 		$("#option" + _id +"Container").remove();
 		
 		
@@ -726,7 +564,7 @@ function C_MultipleChoice(_myType) {
 		var msg = "<div id='"+optionID+"Container' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='"+optionID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer option'/>";
 		msg += "<div id='"+optionID+"Input'><b>Option " + optionLabel + ":</b></div>";
-		msg += "<div id='"+optionID+"Text'>" + optionContent + "</div>";
+		msg += "<div id='"+optionID+"Text' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label'><b>correct:</b></label>";
 		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){	
 			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true'/>";
@@ -738,7 +576,7 @@ function C_MultipleChoice(_myType) {
 			msg += "<br/>"
 			var difFeedContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").text();
 			msg += "<label id='label'><b>Option " + optionLabel + " Differentiated Feedback:</b></label>";
-			msg += "<div id='"+optionID+"DifFeedText'>" + difFeedContent + "</div>";
+			msg += "<div id='"+optionID+"DifFeedText' contenteditable='true' class='dialogInput'>" + difFeedContent + "</div>";
 		}
 		msg += "</div>";
 				
@@ -747,87 +585,68 @@ function C_MultipleChoice(_myType) {
 		$("#" +optionID+"Remove").on('click', function(){
 			removeOption($(this).attr("value"));
 		});
-					
-		$("#"+optionID+"Text").redactor({
-			buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
-		});
+		
+		CKEDITOR.inline( optionID+"Text", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog'
+		});	
 		
 		if(feedbackType == "differentiated"){
-			$("#"+optionID+"DifFeedText").redactor({
-				buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'alignleft', 'aligncenter', 'alignright', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'fontcolor', 'backcolor', '|', 'table', 'link', 'image']
-			});
-		}
-																	
+			CKEDITOR.inline( optionID+"DifFeedText", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog'
+			});	
+		}																	
 		optionEdit_arr.push(optionID);
 	}
 	
 	/**********************************************************************
-     **Save Title Edit - save updated page title text to content.xml
-     **********************************************************************/
-	function saveTitleEdit(){
-        var titleUpdate = $("#titleEditText").getCode().replace('<p>', '').replace('</p>', '');;
-	   	var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
-	   	var newCDATA=docu.createCDATASection(titleUpdate);
-	   	$("#pageTitle").html(titleUpdate);
-	   	myPageTitle = titleUpdate;
-	   	$("#titleEditText").destroyEditor();
-	   	$(data).find("page").eq(currentPage).find("title").empty();
-	   	$(data).find("page").eq(currentPage).find("title").append(newCDATA);
-	   	$("#titleDialog").remove();
-	   	sendUpdateWithRefresh();
-	};	
-	
-	function saveQuestionEdit(){
-		//Grab the updated text from redactor.
-		var questionUpdate = $("#questionEditText").getCode();
-		//We create an xml doc - add the contentUpdate into a CDATA Section
-		var docu = new DOMParser().parseFromString('<question></question>',  "application/xml")
-		var newCDATA=docu.createCDATASection(questionUpdate);
-		//Now, destroy redactor.
-		$("#question").html($("#questionEditText").html());
-		$("#questionEditText").destroyEditor();
-		
-		if(feedbackType == "undifferentiated"){
-			var feedbackUpdate = $("#feedbackEditText").getCode();
+    **Save Content Edit - save updated content text to content.xml
+    **********************************************************************/
+    function saveContentEdit(_data){
+        var docu = new DOMParser().parseFromString('<question></question>',  "application/xml")
+        var newCDATA=docu.createCDATASection(_data);
+        $(data).find("page").eq(currentPage).find("question").first().empty();
+        $(data).find("page").eq(currentPage).find("question").first().append(newCDATA);
+        sendUpdateWithRefresh();
+    };
+
+	/**********************************************************************
+    **Save Question Edit - save updated question preferences to content.xml
+    **********************************************************************/
+	function saveQuestionEdit(_data){
+		if(_data.feedbackType == "undifferentiated"){
+			var feedbackUpdate = _data.feedbackUpdate;//$("#feedbackEditText").getCode();
 			var feedDoc = new DOMParser().parseFromString('<feedback></feedback>', 'application/xml');
 			var feedCDATA = feedDoc.createCDATASection(feedbackUpdate);
-			$("#feedbackEditText").destroyEditor();
 			$(data).find("page").eq(currentPage).find("feedback").empty();
 			$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
 		}
-		//Update the local xml - first clearning the content node and then updating it with out newCDATA
-		$(data).find("page").eq(currentPage).find("question").empty();
-		$(data).find("page").eq(currentPage).find("question").append(newCDATA);
-		
-		$(data).find("page").eq(currentPage).attr("attempts", $("#inputAttempts").val());
-		$(data).find("page").eq(currentPage).attr("feedbackType", $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val());
+
+		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
+		$(data).find("page").eq(currentPage).attr("feedbackType", _data.feedbackType);
 		var correctOptions = 0;
 		for(var i = 0; i < optionEdit_arr.length; i++){
-			var optionText = $("#"+optionEdit_arr[i]+"Text").getCode();
-			var optionCorrect = $("#"+optionEdit_arr[i]+"Correct").prop("checked");
+			var optionText = _data.option_arr[i].optionText;
+			var optionCorrect = _data.option_arr[i].optionCorrect;
 			var newOption = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			var optionCDATA = newOption.createCDATASection(optionText);
 			$(data).find("page").eq(currentPage).find("option").eq(i).find('content').empty();
 			$(data).find("page").eq(currentPage).find("option").eq(i).find('content').append(optionCDATA);
-			if(feedbackType == "differentiated"){
-				var optionDifFeedText = $("#"+optionEdit_arr[i]+"DifFeedText").getCode();
+			if(_data.feedbackType == "differentiated"){
+				var optionDifFeedText = _data.option_arr[i].difText;
 				var optionDifFeedCDATA = newOption.createCDATASection(optionDifFeedText);
 				$(data).find("page").eq(currentPage).find("option").eq(i).find('diffeed').empty();
 				$(data).find("page").eq(currentPage).find("option").eq(i).find('diffeed').append(optionDifFeedCDATA);
 			}
 			$(data).find("page").eq(currentPage).find("option").eq(i).attr("correct", optionCorrect);
 			
-			$("#"+optionEdit_arr[i]+"Text").destroyEditor();
-			
-			if(optionCorrect == true){
-				correctOptions++;
-			}
-		}
-		
-		if(correctOptions > 1){
-			$(data).find("page").eq(currentPage).attr("layout", "multipleSelect");
-		}else{
-			$(data).find("page").eq(currentPage).attr("layout", "multipleChoice");
 		}
 		
 		var extra = $(data).find("page").eq(currentPage).find("option").length;
@@ -837,7 +656,6 @@ function C_MultipleChoice(_myType) {
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
 		
-		$("#questionEditDialog").dialog("close");
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
@@ -861,11 +679,16 @@ function C_MultipleChoice(_myType) {
 		   	tabindex++;
 		}
 		
-		
 		$("#pageTitle").focus();
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
 	
+
+	/*****************************************************************************************************************************************************************************************************************
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
@@ -875,18 +698,17 @@ function C_MultipleChoice(_myType) {
     }
     
     function fadeComplete(){
-	    $('#pageTitle').remove();
-	    $('#question').remove();
-	    $('#answerOptions').remove();
-		$('#loader').remove();
-	    $("#mcSubmit").remove();
-	    if(mode == "edit"){
-		    $("#titleEdit").remove();
-		    $("#questionEdit").remove();
-		    $("#titleEditDialog").remove();
-		    $("#questionEditDialog").remove();
-	    }
-	    loadPage();
+		try { pageTitle.destroy(); } catch (e) {}
+        try { audioHolder.destroy(); } catch (e) {}
+        try { mediaHolder.destroy(); } catch (e) {}
+        
+		try { $("#scrollableContent").remove(); } catch (e) {}
+				
+		for(name in CKEDITOR.instances){
+			try { CKEDITOR.instances[name].destroy() } catch (e) {}
+		}
+		
+		loadPage();
     }
-
+    ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }

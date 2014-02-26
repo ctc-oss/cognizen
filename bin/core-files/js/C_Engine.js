@@ -32,6 +32,7 @@ var corePath = "../../../../core-files/";
 var audioVolume = 0.8; //persistant audio volume between pages
 var audioMute = false; //persistant audio mute state between pages
 
+var cachedTextPreEdit;
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/
@@ -64,22 +65,23 @@ function initScripts(_data){
     require.config({
         waitSeconds: 0
     });
-	//LOADING IN ALL OF THE EXTERNAL JS FILES
-	//TODO: needs to be updated to build the required files based on the output e.g. SCORM
-	require([		//Funtionality/utilities
+	//GATHERING AND LOADING ALL OF THE ENGINE PARTS
+	require([		
+		//Funtionality/utilities
 				corePath +"js/libs/jqueryui/jquery-ui.min.js",
 				corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 				corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-				corePath +"js/libs/jquery.nanoscroller.min.js", //Add the hover mac like scrollbars
+				corePath +"js/libs/antiscroll.js",
 				corePath +"js/libs/overthrow.min.js",
 				corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
-				corePath +"js/libs/redactor/redactor.js", //Inline content editing tool
+				corePath +"js/libs/ckeditor/ckeditor.js",
+				corePath +"js/libs/ckeditor/adapters/jquery.js",
 				corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
 				corePath +"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
 				corePath +"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				corePath +"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
 				corePath +"js/libs/jquery.nestable.js",
-				//Import Cognizen layout templates
+		//Import Cognizen layout templates
 				corePath +"js/templates/C_LessonTitle.js",
 				corePath +"js/templates/C_Completion.js", 
 				corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
@@ -87,12 +89,17 @@ function initScripts(_data){
 				corePath +"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
 				corePath +"js/templates/C_Flashcard.js",
 				corePath +"js/templates/C_Unity3D.js", //Template for importing Unity 3D swf files - requires more than regular swf
-				//Import Cognizen Knowledge Check templates
+		//Import Cognizen Knowledge Check templates
 				corePath +"js/templates/C_MultipleChoice.js", //Multiple choice quizzing
 				corePath +"js/templates/C_MultipleChoiceImage.js",
 				corePath +"js/templates/C_Matching.js", //Matching quizzing
-				//Import Cognizen Utilities
+		//Import Cognizen Components
+				corePath +"js/components/C_PageTitle.js",
+				corePath +"js/components/C_VisualMediaHolder.js",
+				corePath +"js/components/C_AudioHolder.js",
+		//Import Cognizen Utilities
 				corePath +"js/util/C_Index.js",
+				corePath +"js/util/C_EditorToolbarFormat.js",
 				corePath +"js/util/C_AddPage.js",
 				corePath +"js/util/C_Glossary.js",
 				corePath +"js/util/C_DocList.js",
@@ -107,21 +114,23 @@ function initScripts(_data){
 				corePath +"js/libs/modernizr.js",
 				corePath +"js/libs/siofu/client.js",
 				corePath +"js/libs/pretty-data.js",
-				//Give mouse super powers.
+		//Give mouse super powers.
 				corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
-				//Lightbox for media popups and galleries.
+		//Lightbox for media popups and galleries.
 				corePath +"js/libs/fancybox/jquery.fancybox.js",
 				corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
 	], startEngine);
 }
 
+//VROOM VROOM
 function startEngine(){
 	//Enable popups from within the dialogs.
-	$.widget( "ui.dialog", $.ui.dialog, {
-		_allowInteraction: function( event ) {
-			return $( event.target ).closest( ".ui-draggable" ).length;
+	$.widget("ui.dialog", $.ui.dialog, {
+		_allowInteraction: function(event) {
+			return !!$(event.target).closest(".cke_dialog").length || this._super(event);
 		}
-	});
+	});	
+	//Function found in C_Socket.js
 	initializeSockets();
 }
 
@@ -136,7 +145,7 @@ function buildInterface(){
 	//Set variables consumed by templates.
 	stageX = $("#stage").position().left;
 	stageY = $("#stage").position().top;
-	stageW = $("#stage").height();
+	stageW = $("#stage").width();
 	stageH = $("#stage").height();
 	
 	if(forcedReviewer == true && justRelinquishedLock == false){
@@ -164,7 +173,6 @@ function buildInterface(){
 	
 	if(mode == "edit" || mode == "review"){
 		checkComment();
-		checkToggleMode();
 		checkLockMode();
 	}
 	

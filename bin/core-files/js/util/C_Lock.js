@@ -1,7 +1,9 @@
 var justRelinquishedLock = false;
 
 function updateActiveEditor(_user){
-	if(username == _user){
+	console.log("update active editor to: " +_user);
+	activeEditor = _user;
+	/*if(username == _user){
 		var msg = '<div id="dialog-offerEdit" title="Editor Queue"><p class="validateTips">'+ activeEditor +' has left this session and you are the next in line to edit.</p><p>Would you like to edit this lesson?</p></div>';
 			
 		//Add to stage.
@@ -33,7 +35,7 @@ function updateActiveEditor(_user){
 				}
 			}
 		});
-	}
+	}*/
 }
 
 
@@ -189,7 +191,11 @@ function openLockRequestRefused(_data){
 }
 
 function forcedReviewAlert(){
-	var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>Your priveleges are being set to review mode. You can view the content but cannot edit it.</p></div>';
+	if(activeEditor == null){
+		var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is not currently being edited.</p><p>To make edits, click the lock icon.</p></div>';
+	}else{
+		var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>You can view the content but cannot edit it.</p><p>To request the lock from ' + activeEditor + ', click the lock icon.</p></div>';
+	}
 			
 	//Add to stage.
 	$("#stage").append(msg);

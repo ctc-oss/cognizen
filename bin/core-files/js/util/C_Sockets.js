@@ -22,7 +22,7 @@ var forcedReviewer = false;
 var activeEditor;
  
 function initializeSockets(){
-	if(mode == "edit" || mode == "review"){
+	if(mode != "prod" && mode != "production"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
 	    //Add a check for IE < 10...
@@ -46,6 +46,7 @@ function initializeSockets(){
         });
 
 	    cognizenSocket.on("contentPermissionFound", function(data){
+			console.log("data.permission = " + data.permission);
 			if(data.permission == "admin" || data.permission == "editor"){
 				mode = "edit";
 			}else if(data.permission == "reviewer"){
@@ -60,7 +61,7 @@ function initializeSockets(){
 			buildInterface();  
 	    });
 	    
-	    cognizenSocket.on('assignEditorByQueue', function(data){
+	    cognizenSocket.on('updateActiveEditor', function(data){
 		    updateActiveEditor(data);
 	    });
 	    
@@ -187,7 +188,11 @@ function initializeSockets(){
 		
 		//Simple listener checking connectivity
 		cognizenSocket.on('setUsername', function (data) {
+           console.log(data);
            username = data.username.username;
+           if(username == undefined){
+	           alert("your username was not set properly. please close this lesson, log out and try to log back in.");
+           }
 		});
 		
 		socket.on('siofu_progress', function (data) {

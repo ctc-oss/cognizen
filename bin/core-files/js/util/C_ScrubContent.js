@@ -29,7 +29,7 @@
 				modal: true,
 				autoOpen: false,
 				width: 500,
-				close: function(){$(this).remove();}
+				//close: function(){$(this).remove();}
 			})
 		});
 		

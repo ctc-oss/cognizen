@@ -11,8 +11,51 @@ body{
 	width: 100% 
 }
 
-body .redactor_toolbar li a.redactor_btn_close{
-	background: url(images/redactor/close.png) no-repeat;
+/* Style a bit the inline editables. */
+.cke_editable.cke_editable_inline
+{
+	cursor: pointer;
+}
+
+/* Once an editable element gets focused, the "cke_focus" class is
+   added to it, so we can style it differently. */
+.cke_editable.cke_editable_inline.cke_focus
+{
+	box-shadow: inset 0px 0px 5px 3px #eee, inset 0 0 1px #ededed;
+	outline: none;
+	/*background: #eee;*/
+	cursor: text;
+}
+
+/* Avoid pre-formatted overflows inline editable. */
+.cke_editable_inline pre
+{
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+blockquote
+{
+	font-style: italic;
+	font-family: Georgia, Times, "Times New Roman", serif;
+	padding: 2px 0;
+	border-style: solid;
+	border-color: #ccc;
+	border-width: 0;
+}
+
+.cke_contents_ltr blockquote
+{
+	padding-left: 20px;
+	padding-right: 8px;
+	border-left-width: 5px;
+}
+
+.cke_contents_rtl blockquote
+{
+	padding-left: 8px;
+	padding-right: 20px;
+	border-right-width: 5px;
 }
 
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
@@ -76,6 +119,9 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 .btn_edit_text{
+	position: absolute;
+	right: 0px;
+	z-index: 5;
 	width: 18px;
 	height: 18px;
 	background: url(images/editText.png) no-repeat;
@@ -84,6 +130,9 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 .btn_edit_media{
+	position: absolute;
+	right: 0px;
+	z-index: 5;
 	width: 18px;
 	height: 18px;
 	background: url(images/editMedia.png) no-repeat;
@@ -123,11 +172,11 @@ body .redactor_toolbar li a.redactor_btn_close{
 	cursor: hand; 
 	cursor: pointer;
 }
-/*.btn_preferences{*/
+
 .btn_comment{
 	position: absolute;
-	bottom: 7px;
-	left: 105px;
+	bottom: 8px;
+	left: 10px;
 	width: 30px;
 	height: 30px;
 	background: url(images/comment.png) no-repeat;
@@ -138,7 +187,7 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_preferences{
 	position:absolute;
 	bottom :8px; 
-	left: 140px;
+	left: 45px;
 	width: 30px;
 	height: 30px;
 	background: url(images/prefs.png) no-repeat;
@@ -149,10 +198,10 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_passLock{
 	position:absolute;
 	bottom :8px; 
-	left: 175px;
+	left: 80px;
 	width: 30px;
 	height: 30px;
-	background: url(images/lock.png) no-repeat;
+	background: url(images/lockActive.png) no-repeat;
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -160,12 +209,25 @@ body .redactor_toolbar li a.redactor_btn_close{
 .btn_requestLock{
 	position:absolute;
 	bottom :8px; 
-	left: 140px;
+	left: 45px;
 	width: 30px;
 	height: 30px;
 	background: url(images/lock.png) no-repeat;
 	cursor: hand; 
 	cursor: pointer;
+}
+
+.dialogInput{
+	background-color:#ffffff; 
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px; 
+	border-top-style: inset; 
+	border-top-width: 1px; 
+	border-left-style: inset; 
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;
 }
 
 #toggleMode{
@@ -306,10 +368,11 @@ body .redactor_toolbar li a.redactor_btn_close{
 }
 
 #pageTitle{
-	position: absolute;
+	position: relative;
 	width: 924px;
-	top: 20px;
 	left: 50px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	overflow : auto;
 	font-size : 175%;
 	font-weight: normal;
@@ -354,13 +417,16 @@ body .redactor_toolbar li a.redactor_btn_close{
 CONTENT TEXT LAYOUTS*/
 /**************************************************************************************/
 #content{
-	position: absolute;
 	color: #000000;
 	font-family: "Helvetica", "Arial";
 	overflow: auto;
-	padding-right: 15px;
 	background: none; 
 	border-width: 0px;
+	padding-right: 15px;
+}
+
+#content p{
+	margin-top: 0px;
 }
 
 .testTop{
@@ -376,88 +442,83 @@ CONTENT TEXT LAYOUTS*/
 	width: 924px;
 }
 
-#content.top{
-	/*top: 85px;*/
+#contentHolder{
+	position: static;
+}
+
+#scrollableContent.top,.text,.tabsLeft{
+	position: relative;
+	width: 960px;
 	left: 50px;
-	width: 924px;
-}
-
-#content.tabTop{
-	position: absolute;
-	top: 85px;
-	left: 50px;
-	width: 924px;
-}
-
-#content.left{
-	top: 85px;
-	left: 50px;
-	width: 460px;
-	height: 573px;
-}
-
-#content.right{
-	top: 85px;
-	right: 50px;
-	width: 460px;
-	height: 573px;
-}
-
-/*#content.bottom{
-	right: 50px;
-	width: 924px;
-}*/
-
-#contentHolder.top{
-	position: absolute;
-	overflow: auto;
-	height: auto;
-	/*top: 85px;*/
-	left: 0px;
-	/*width: 1024px;*/
-	outline: none;
-}
-
-#contentHolder.left{
-	position: absolute;
-	top: 85px;
-	left: 50px;
-	width: 460px;
-	height: 573px;
-}
-
-#contentHolder.right{
-	position: absolute;
-	top: 85px;
-	right: 50px;
-	width: 460px;
-	height: 573px;
-}
-
-#scrollableContent{
-	position: absolute;
-	top: 85px;
-	left: 0px;
-	width: 1024px;
 	border-style: hidden;
 	outline: none;
 }
 
-#contentHolder.text{
-	position: absolute;
-	top: 85px;
+#scrollableContent.matching{
+	position: relative;
+	width: 960px;
 	left: 50px;
-	width: 944px;
-	height: 573px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.left{
+	position: relative;
+	float: left;
+	width: 536px;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.right{
+	position: relative;
+	float: right;
+	width: 536px;
+	right: 14px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.sidebarContent{
+	position: relative;
+	float: left;
+	width: 536px;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}
+
+
+/* FOR TABBED CONTENT */
+#tabs.tabTop{
+	position: relative;
+	background: transparent;
+	width: 924px;
+	outline: none;
+	/*border-width: 0px 0px 1px 0px;*/
+	border: none;
 }
 
 /* FOR TABBED CONTENT */
-#content .ui-tabs-nav li a {
+#tabs.left{
+	position: relative;
+	/*top: 85px;*/
+	/*left: 0px;*/
+	width: 510px;
+	background: transparent;
+	outline: none;
+	/*border-width: 0px 0px 1px 0px;*/
+	border: none;
+	float: left;
+}
+
+#tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
 	font-family: "Helvetica", "Arial" !important;
 }
 
-#content .ui-tabs-panel {
+#tabs .ui-tabs-panel {
 	font-family: "Helvetica", "Arial" !important;
 	font-size: 12pt !important;
 	border-width: 1px;
@@ -466,7 +527,7 @@ CONTENT TEXT LAYOUTS*/
 	overflow: auto;
 }
 
-#content .ui-tabs-nav {
+#tabs .ui-tabs-nav {
 	padding-left: 0px; 
 	background: transparent; 
 	border-width: 0px 0px 1px 0px; 
@@ -475,21 +536,22 @@ CONTENT TEXT LAYOUTS*/
 	border-radius: 0px; 
 }
 
-#contentHolder .ui-tabs-nav li a {
+#tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
 	font-family: "Helvetica", "Arial" !important;
 }
 
-#contentHolder .ui-tabs-panel {
+#tabs .ui-tabs-panel {
 	font-family: "Helvetica", "Arial" !important;
 	font-size: 12pt !important;
 	border-width: 1px;
 	color: black;
 	background: transparent;
 	overflow: auto;
+	outline: none;
 }
 
-#contentHolder .ui-tabs-nav {
+#tabs .ui-tabs-nav {
 	padding-left: 0px; 
 	background: transparent; 
 	border-width: 0px 0px 1px 0px; 
@@ -608,7 +670,7 @@ ul.no-indent {
 }
 
 /* FOR REVEAL CONTENT */
-#content .revealRight{
+#contentHolder .revealRight{
 	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
@@ -616,9 +678,12 @@ ul.no-indent {
 	border-radius: 8px; 
 	cursor: hand; 
 	cursor: pointer;
+	float: left;
+	clear: both;
+	margin-bottom: 10px;
 }
 
-#content .revealLeft{
+#contentHolder .revealLeft{
 	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
@@ -626,51 +691,115 @@ ul.no-indent {
 	border-radius: 8px; 
 	cursor: hand; 
 	cursor: pointer;
+	float: right;
+	clear: both;
+	margin-bottom: 10px;
 }
 
-#content .revealBottom{
-	overflow: auto;
+#contentHolder .revealBottom{
+	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px; 
 	cursor: hand; 
 	cursor: pointer;
+	float: left;
+	margin-right: 10px;
 }
 
-#content .revealTop{
-	overflow: auto;
+#contentHolder .revealTop{
+	/*overflow: auto;*/
 	background-color: #EEEEEE;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px; 
 	cursor: hand; 
 	cursor: pointer;
+	float: left;
+	margin-right: 10px;
 }
 
-#content .revealRightImage, #content .revealLeftImage, #content .revealBottomImage, #content .revealTopImage{
+#contentHolder .revealRightImage, #contentHolder .revealLeftImage, #contentHolder .revealBottomImage, #contentHolder .revealTopImage{
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px; 
+	position: relative;
+}
+
+#contentHolder .revealRightImage{
+	float: left;
+	top: 5px;
+	left: 5px;
+}
+
+#contentHolder .revealLeftImage{
+	float: right;
+	top: 5px;
+	right: 5px;
+}
+
+#contentHolder .revealBottomImage{
+	top:5px; 
+	margin-left:auto; 
+	margin-right:auto;
+}
+
+#contentHolder .revealTopImage{
+	position: absolute !important;
+	bottom: 5px; 
+	left: 65px;
 }
 
 .revealText{
+	position: relative;
 	overflow : auto;
 	font-family: "Helvetica", "Arial" !important;
 	font-size: 12pt !important;
 	color: #9DA6AB;
+	opacity: .1;
+	padding-right: 10px;
+}
+
+#revealTextHolder{
+	padding-right: 10px;
+}
+
+.revealTextLeft{
+	float: left;
+	height: 150px;
+	left: 10px;
+	top: 5px;
+}
+
+.revealTextRight{
+	float: right;
+	height: 150px;
+	right: 10px;
+	top: 5px;
+}
+
+.revealTextBottom{
+	width: 280px;
+	height: 130px;
+	padding-top: 10px;
+}
+
+.revealTextTop{
+	width: 265px;
+	padding-left: 10px;
 }
 
 /* FOR FLASHCARD CONTENT */
 #flashcardHolder{
-	position: absolute;
-	overflow: auto;
-	width: 1024px;
+	position: relative;
+	overflow: visible;
+	margin-bottom: 10px;
 }
 
 .flashcard{
 	position: absolute;
-	overflow: auto;
+	overflow: scroll;
 	width: 300px;
 	height: 400px;
 	text-align: center;
@@ -700,12 +829,13 @@ ul.no-indent {
 }
 
 #flashcardReshuffle{
-	position:absolute;
-	bottom: 10px;
+	position:relative;
+	/*bottom: 10px;*/
 	width: 200px;
 	right: 80px;
-	margin-left: 0 auto;
-	margin-right: 0 auto;
+	float: right;
+	/*margin-left: 0 auto;
+	margin-right: 0 auto;*/
 }
 
 .cardText{
@@ -732,56 +862,80 @@ SIDEBAR LAYOUTS
 }
 
 #sidebarHolder {
-	position: absolute;
-	right: 20px;
-	top: 85px;
+	position: relative;
+	float: right;
+	right: 15px;
 	width: 400px;		
-	max-height: 500px;
+	/*max-height: 500px;*/
 	border-width: 0px;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px; 
-	padding: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
 }
+
+.sidebar p{
+	margin-top: 0px;
+}
+
 /****************************************************** SIDEBAR LAYOUTS END *****/
 
 
 /**************************************************************************************
 MEDIA LAYOUTS
 **************************************************************************************/
-#loader {
+/*#loader {
 	position: absolute;
-	overflow: hidden;
+	overflow: visible;
+}*/
+
+#mediaHolder{
+	position: relative;
 }
 
-/*#loader.top{
-	top: 85px;*/
-	/*x-coordinate is set in the code because it is variable and css doesn't wait for the image to load*/
-/*}*/
+#mediaHolder.top{
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 15px;
+}
 
-#loader.left{
+#mediaHolder.left{
+	float: left;
 	left: 50px;
-	top: 85px;	
 }
 
-#loader.leftTabs{
+#mediaHolder.graphic{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#mediaHolder.leftTabs{
 	left: 50px;
 	top: 110px;	
 }
 
-#loader.right{
-	left: 600px;
-	top: 85px;
-}
-
-#loader.rightTabs{
+#mediaHolder.right{
+	float: right;
 	right: 25px;
-	top: 180px;
 }
 
-#loader.bottom{
-	/*y-coordinate is set in the code because the text field size is variable.*/
-	/*x-coordinate is set in the code because it is variable and css doesn't wait for the image to load*/
+/*#loader.tabsRight{
+	position: static;
+}*/
+
+#mediaHolder.tabsRight{
+	float: right;
+	right: 25px;
+	margin-bottom: 15px;
+}
+
+#mediaHolder.bottom{
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 15px;
 }
 
 .templateAddItem{
@@ -806,12 +960,22 @@ MEDIA LAYOUTS
 }
 
 .mediaPop{
-	position: absolute;
+	position: relative;
 	background: url(images/img-enlarge.gif) no-repeat;
+	right: 10px;
+	float: right;
 	width: 86px;
 	height: 22px;
 	cursor: hand; 
 	cursor: pointer;
+	z-index: 5;
+}
+
+#centerMe{
+	position: relative;
+	float: left;
+	width: 86px;
+	height: 22px;
 }
 
 #loader.graphic{
@@ -899,6 +1063,8 @@ MEDIA LAYOUTS
 	text-align: center; 
 	color: #000000; 
 	font-family: Helvetica;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /************************************************************** MEDIA LAYOUTS END *****/
@@ -908,65 +1074,47 @@ MEDIA LAYOUTS
 KNOWLEDGE CHECK TEXT LAYOUTS
 **************************************************************************************/
 .questionTop{
-	position: absolute;
-	top: 80px;
-	left: 50px;
-	width: 944px;
+	position: relative;
+	width: 945px;
 	overflow : auto;
-	font-size : 150%;
+	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
 	font-family:"Helvetica", "Arial";
 }
 
-.questionLeft{
-	position: absolute;
-	top: 70px;
-	left: 50px;
-	width: 400px;
-	overflow : auto;
-	font-size : 150%;
-	font-weight: bold;
-	color:	#000000;
-	font-family:"Helvetica", "Arial";
-}
-
-.questionRight{
-	position: absolute;
-	top: 70px;
-	right: 50px;
-	width: 400px;
-	overflow : auto;
-	font-size : 150%;
-	font-weight: bold;
-	color:	#000000;
-	font-family:"Helvetica", "Arial";
+.questionTop p{
+	margin-top: 0px;
 }
 
 /**************************************************************************************
 MULTIPLE CHOICE LAYOUTS
 **************************************************************************************/
 #answerOptions{
-	position: absolute;
-	left: 75px;
-	max-width: 919px;
+	position: relative;
+	left: 25px;
+	max-width: 890px;
 }
 
-/*#answerOptionsImage{
-	position: absolute;
-}*/
-
-/* reduce the text width if media is being displayed */
-.answerOptionsWImage{
-	width: 480px !important;
+#answerOptions.left{
+	position: relative;
+	/*top: 85px;*/
+	/*left: 0px;*/
+	width: 490px;
+	background: transparent;
+	outline: none;
+	/*border-width: 0px 0px 1px 0px;*/
+	border: none;
+	float: left;
 }
 
-/* position optional media  */
+/* position optional media
 .mcLoader{
    	top: 85px;
    	left: 580px;
 }
-
+*/
+  
 .multipleChoiceImageLabel{
 	position: absolute;
 	overflow : auto;
@@ -991,14 +1139,21 @@ MULTIPLE CHOICE LAYOUTS
 }
 
 .option{
-	position: absolute;
+	position: relative;
 	overflow: visible;
 	font-size : 100%;
-	font-weight: bold;
+	font-weight: normal;
 	color:	#000000;
 	font-family:"Helvetica", "Arial";
 	cursor: hand; 
 	cursor: pointer;
+	padding: 10px 35px 10px 4px;
+	margin-bottom: 10px;
+}
+
+.option #label{
+	margin-left: 10px;
+	vertical-align: middle;
 }
 
 .multipleChoiceImageHover{
@@ -1058,34 +1213,38 @@ MULTIPLE CHOICE LAYOUTS
 MATCHING LAYOUTS
 **************************************************************************************/
 .matchingOptions{
-	position: absolute;
-	left: 75px;
+	position: relative;
+	float: left;
+	left: 25px;
 	width: 440px;
 	overflow: visible;
 }
 
 .matchingDragImgOptions{
-	position: absolute;
-	left: 75px;
-	width: 950px;
+	position: relative;
+	float: left;
+	left: 25px;
 	overflow: visible;
 }
 
 .matchingAnswers{
-	position: absolute;
-	right: 30px;
+	position: relative;
+	float: right;
+	right: 15px;
 	width: 440px;
 }
 
 .matchingDragImgAnswers{
-	position: absolute;
+	position: relative;
+	float: right;
 	right: 30px;
-	width: 300px;
 }
 
 .matchingStatement{
-	position: absolute;
+	position: relative;
 	overflow : visible;
+	padding: 10px 35px 10px 4px;
+	margin: 10px;
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
@@ -1097,7 +1256,7 @@ MATCHING LAYOUTS
 	position: absolute;
 	overflow : visible;
 	font-size : 100%;
-	font-weight: bold;
+	font-weight: normal;
 	color:	#000000;
 	font-family:"Helvetica", "Arial";
 }
@@ -1120,9 +1279,13 @@ MATCHING LAYOUTS
 }
 
 #mcSubmit{
-	position: absolute; 
-	bottom: 60px;
-	left: 905px;
+	position: relative; 
+	display: block !important;
+	width: 100px;
+	margin-top: 50px;
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #matchingSubmit{
@@ -1142,9 +1305,11 @@ MATCHING LAYOUTS
 }
 
 .inlineLeftFeedback{
-	position: absolute;
+	position: relative;
+	float: left;
 	width: 450px;
-	left: 75px;
+	left: 40px;
+	top: 40px;
 	font-size : 100%;
 	font-weight: bold;
 	color: red;
@@ -1493,13 +1658,16 @@ MATCHING LAYOUTS
 }
 
 .dd3-status { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
+    height: 30px;
     border: 1px solid #aaa;
     background: #ddd;
     background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
     background:    -moz-linear-gradient(top, #ddd 0%, #bbb 100%);
     background:         linear-gradient(top, #ddd 0%, #bbb 100%);
+    border-radius: 3px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    box-sizing: border-box;
 }
 
 .dd3-handle { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
@@ -1598,79 +1766,72 @@ MATCHING LAYOUTS
 	width: 350px;
 }
 
-/**************************************************************************************
-REDACTOR TABLE EDITOR STYLE OVERRIDES*/
-/**************************************************************************************/
-.redactor_editor table {
-	margin-left: auto !important;
-	margin-right: auto !important;
-}
-
-.redactor_editor table td {
-	border: 1px solid #000 !important;
-	padding: 4px !important;
-}
-
-.redactor_editor table thead td {
-	border-bottom: 1px solid #000 !important;
-}
 
 /************************************** NANO SCROLLBAR STYLE **************************************/
-.nano {
-  position : relative;
-  overflow : hidden;
-}
-.nano .content {
-  position      : absolute;
-  overflow      : scroll;
-  overflow-x    : hidden;
-  top           : 0;
-  right         : 0;
-  bottom        : 0;
-  left          : 0;
-}
-.nano .content:focus {
-  outline: thin dotted;
-}
-.nano .content::-webkit-scrollbar {
-  visibility: hidden;
-}
-.has-scrollbar .content::-webkit-scrollbar {
-  visibility: visible;
-}
-.nano > .pane {
-  background : rgba(0,0,0,.25);
-  position   : absolute;
-  width      : 10px;
-  right      : 0;
-  top        : 0;
-  bottom     : 0;
-  visibility : hidden\9; /* Target only IE7 and IE8 with this hack */
-  opacity    : .01; 
-  -webkit-transition    : .2s;
-  -moz-transition       : .2s;
-  -o-transition         : .2s;
-  transition            : .2s;
-  -moz-border-radius    : 5px;
-  -webkit-border-radius : 5px;  
-  border-radius         : 5px;
-}
-.nano > .pane > .slider {
-  background: #444;
-  background: rgba(0,0,0,.5);
-  position              : relative;
-  margin                : 0 1px;
-  -moz-border-radius    : 3px;
-  -webkit-border-radius : 3px;  
-  border-radius         : 3px;
-}
-.nano:hover > .pane, .pane.active, .pane.flashed {
-  visibility : visible\9; /* Target only IE7 and IE8 with this hack */
-  opacity    : 0.99;
+.antiscroll-wrap {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
 }
 
-/*FANCY BOX*/
-/*FANCY BOX*/
+.antiscroll-scrollbar {
+  background: gray;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+  -webkit-box-shadow: 0 0 1px #fff;
+  -moz-box-shadow: 0 0 1px #fff;
+  box-shadow: 0 0 1px #fff;
+  position: absolute;
+  opacity: 0;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  -webkit-transition: linear 300ms opacity;
+  -moz-transition: linear 300ms opacity;
+  -o-transition: linear 300ms opacity;
+}
+
+.antiscroll-scrollbar-shown {
+  opacity: 1;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+}
+
+.antiscroll-scrollbar-horizontal {
+  height: 7px;
+  margin-left: 2px;
+  bottom: 2px;
+  left: 0;
+}
+
+.antiscroll-scrollbar-vertical {
+  width: 7px;
+  margin-top: 2px;
+  right: 2px;
+  top: 0;
+}
+
+.antiscroll-inner {
+  overflow: scroll;
+}
+
+/** A bug in Chrome 25 on Lion requires each selector to have their own
+    blocks. E.g. the following:
+
+    .antiscroll-inner::-webkit-scrollbar, .antiscroll-inner::scrollbar {...}
+
+    causes the width and height rules to be ignored by the browser resulting
+    in both native and antiscroll scrollbars appearing at the same time.
+ */
+.antiscroll-inner::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.antiscroll-inner::scrollbar {
+  width: 0;
+  height: 0;
+}
+
 /*FANCY BOX*/
 /*! fancyBox 3.0.0 Beta 1 fancyapps.com | fancyapps.com/fancybox/#license */
 #fancybox-loading,
@@ -2187,10 +2348,6 @@ a.fancybox-expand {
 		outline: 0px; 
 	}
 
-	body .redactor_toolbar li a.redactor_btn_close{
-		background: url(images/redactor/close.png) no-repeat;
-	}
-
 	/* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 	#myCanvas{
@@ -2360,12 +2517,12 @@ a.fancybox-expand {
 	}		
 
 	/* FOR TABBED CONTENT*/
-	#content .ui-tabs-nav li a {
+	#tabs .ui-tabs-nav li a {
 		font-size:10pt !important;
 		font-family: "Helvetica", "Arial" !important;
 	}
 
-	#content .ui-tabs-panel {
+	#tabs .ui-tabs-panel {
 		font-family: "Helvetica", "Arial" !important;
 		font-size: 12pt !important;
 		border-width: 1px;
@@ -2375,7 +2532,7 @@ a.fancybox-expand {
 		overflow: hidden;
 	}
 
-	#content .ui-tabs-nav {
+	#tabs .ui-tabs-nav {
 		padding-left: 0px; 
 		background: transparent; 
 		border-width: 0px 0px 1px 0px; 
@@ -2384,7 +2541,7 @@ a.fancybox-expand {
 		border-radius: 0px; 
 	}
 
-	#content .revealRightImage{
+	#tabs .revealRightImage{
 		-moz-border-radius: 8px; 
 		-webkit-border-radius: 8px; 
 		border-radius: 8px; 

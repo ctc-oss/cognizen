@@ -152,7 +152,7 @@
         </resources>
 	</courseInfo>
 	<pages>
-		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181980" layout="textOnly" img="" audio="" direction="To proceed, click 'Next.'" prevPage="null" nextPage="null">
+		<page id="447dd3a6-87f9-1185-4b5a-bc8e75181980" layout="textOnly" img="" audio="" subs="null" autoplay="false" autonext="false" popup="" popcaps="" enlarge="" alt="image description" popalt="" w="" h="" prevPage="null" nextPage="null" controlType="bar" graded="false" poster="null" type="">
 			<title>
 				<![CDATA[Objectives]]>
 			</title>

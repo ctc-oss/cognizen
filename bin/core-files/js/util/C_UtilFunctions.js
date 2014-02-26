@@ -60,7 +60,7 @@ var queryStringParameters = function() {
 }
 
 /*****************************************************************
-RANDOM GUID GENERATION
+Discover if we are dealing with IE....
 *****************************************************************/
 var oldIE = false;
 var isIE = false;
@@ -72,6 +72,9 @@ function isOldIE() {
         oldIE = true;
     }
     
+    if (Function('/*@cc_on return document.documentMode===10@*/')()) {
+	    isIE = true;
+	}
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
         isIE = true;
     }

@@ -428,61 +428,50 @@ var SocketHandler = {
 
     userPermissionForContent: function(data) {
         var _this = this;
-        var alreadySent = false;
         var emitter = 'contentPermissionFound';
         var foundPermission = 'viewer';
         var contentType = _this.Content.objectType(data.content.type);
 		var activeEditor = null;
 		for (var i = 0; i < activeEdit_arr.length; i++){
-			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].rejectEdit == false && activeEdit_arr[i].isActive == true){
+			if(activeEdit_arr[i].lessonID == data.content.id && activeEdit_arr[i].isEditor == true){
 				var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 				var user = _this.SocketSessions.socketUsers[sessionId];
 				activeEditor = activeEdit_arr[i].user;
-				if(activeEdit_arr[i].user == user.username && activeEdit_arr[i].rejectEdit == false && activeEdit_arr[i].isActive == true){
-					foundPermission = activeEdit_arr[i].permission;
-					activeEdit_arr[i].isEditor = true;
-					alreadySent = true;
-					_this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});	
-				}else{
-					foundPermission = "forcedReviewer";
-				}
-				
 				break;
 			}
 		}
 		
-		if(!alreadySent){
-	        if (contentType) {
-	            contentType.findAndPopulate(data.content.id, function (err, found) {
-	                if (found) {
-	                    // Get the user associated
-	                    User.findById(data.user.id).populate('permissions').exec(function (err, user) {
-	                        if (user && user.permissions) {
-	
+		if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    // Get the user associated
+                    User.findById(data.user.id).populate('permissions').exec(function (err, user) {
+                        if (user && user.permissions) {
+                            if(user.admin == true){
+                            	foundPermission = 'forcedReviewer'
+                            }else{
 	                            user.permissions.forEach(function(permission) {
 	                                if (permission.contentId == data.content.id) {
-	                                    if(foundPermission == "forcedReviewer"){
-	                                    	if(permission.permission != "admin" && permission.permission != "editor"){
-	                                    		foundPermission = permission.permission;
-	                                    	}
+	                                    if(permission.permission != "admin" && permission.permission != "editor"){
+	                                    	foundPermission = permission.permission;
 	                                    }else{
-		                                    foundPermission = permission.permission;
+		                                    foundPermission = "forcedReviewer";
 	                                    }
 	                                }
 	                            });
 	                        }
-	                        _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
-	                    });
-	                }
-	                else {
-	                    _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
-	                }
-	            });
-	        }
-	        else {
-	            _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
-	        }
-	    }
+                        }
+                        _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
+                    });
+                }
+                else {
+                    _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
+                }
+            });
+        }
+        else {
+            _this._socket.emit(emitter, {permission: foundPermission, currentEditor: activeEditor});
+        }
     },
 
     _copyProgramFiles: function (program, callback) {
@@ -1051,24 +1040,7 @@ var SocketHandler = {
 			if(wasEditor){
 				if(disconnectingLessonID != null){
 					var newEditor = null;
-					for (var i = 0; i < activeEdit_arr.length; i++){
-						if(disconnectingLessonID == activeEdit_arr[i].lessonID){
-							if(activeEdit_arr[i].rejectEdit == false  && activeEdit_arr[i].isActive == true){	
-								activeEdit_arr[i].isEditor = true;
-								newEditor = activeEdit_arr[i].user;
-								break;
-							}
-						}
-					}
-					
-					if(newEditor != null){
-						//Pass the new editor, editor rights...
-						_this.logger.info("new editor = " + newEditor);
-						_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
-					}else{
-						//Unlock the lesson in the dashboard...
-						_this.logger.info("remove the deal lock");
-					}
+					_this._socket.broadcast.emit('updateActiveEditor', newEditor);
 				}
 			}
 	    }
@@ -1088,31 +1060,10 @@ var SocketHandler = {
 		    	_this.logger.info("isEditor: " + activeEdit_arr[i].isEditor);
 		    	_this.logger.info("rejectEdit: " + activeEdit_arr[i].rejectEdit);
 		    	lessonID = activeEdit_arr[i].lessonID;
-				
+				_this._socket.broadcast.emit('updateActiveEditor', null);
 		    	break;
 		    }
 	    }
-
-	    var newEditor = null;
-	    for(var i = 0; i < activeEdit_arr.length; i++){
-		    if(lessonID == activeEdit_arr[i].lessonID){
-		    	if(activeEdit_arr[i].user != data.me && activeEdit_arr[i].rejectEdit == false){
-				    
-				    newEditor = activeEdit_arr[i].user;
-				    //_this.logger.info("new editor = " + activeEdit_arr[i].user);
-				    break;
-				}	
-		    }
-	    }
-	    
-	    if(newEditor != null){
-			//Pass the new editor, editor rights...
-			//_this.logger.info("new editor = " + activeEdit_arr[i].user);
-			_this._socket.broadcast.emit('assignEditorByQueue', newEditor);
-		}else{
-			//Unlock the lesson in the dashboard...
-			_this.logger.info("remove the deal lock");
-		}
     },
     
     editModeAccepted: function (data){
@@ -1151,6 +1102,7 @@ var SocketHandler = {
 				    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
 					    activeEdit_arr[i].rejectEdit = false;
 					    activeEdit_arr[i].isEditor = true;
+					    _this._socket.broadcast.emit('updateActiveEditor', data.me);
 					    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
 					    break;
 				    }
@@ -1182,6 +1134,7 @@ var SocketHandler = {
 		    for(var i = 0; i < activeEdit_arr.length; i++){
 			    if(activeEdit_arr[i].user == data.requester && activeEdit_arr[i].isActive == true){
 				    activeEdit_arr[i].isEditor = true;
+				    _this._socket.broadcast.emit('updateActiveEditor', data.requester);
 				    _this._socket.broadcast.emit('lockRequestAccepted', data);
 				    break;
 			    }
@@ -1447,7 +1400,6 @@ var SocketHandler = {
             });
         }             
   
-    }
-};
+    }};
 
 module.exports = SocketHandler;
