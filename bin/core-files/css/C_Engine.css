@@ -903,6 +903,7 @@ MEDIA LAYOUTS
 #mediaHolder.left{
 	float: left;
 	left: 50px;
+	max-width: 410px;
 }
 
 #mediaHolder.graphic{
@@ -913,11 +914,13 @@ MEDIA LAYOUTS
 #mediaHolder.leftTabs{
 	left: 50px;
 	top: 110px;	
+	max-width: 410px;
 }
 
 #mediaHolder.right{
 	float: right;
 	right: 25px;
+	max-width: 410px;
 }
 
 /*#loader.tabsRight{
@@ -928,6 +931,7 @@ MEDIA LAYOUTS
 	float: right;
 	right: 25px;
 	margin-bottom: 15px;
+	max-width: 410px;
 }
 
 #mediaHolder.bottom{
