@@ -296,7 +296,7 @@ blockquote
 .commentItemEven{
 	background-color: #eeeeee;
 	text-indent: 3px;
-	width: 100%;
+	width: 95%;
 	color: #9DA6Ab;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
@@ -310,7 +310,7 @@ blockquote
 .commentItemOdd{
 	background-color: #EEEEEE;
 	text-indent: 3px;
-	width: 100%;
+	width: 95%;
 	color: #3383BB;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
@@ -324,7 +324,7 @@ blockquote
 .commentHeaderEven{
 	background-color: #9DA6Ab;
 	text-indent: 3px;
-	width: 100%;
+	width: 95%;
 	color: #EEEEEE;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-top-right-radius: 8px; 
@@ -338,7 +338,7 @@ blockquote
 .commentHeaderOdd{
 	background-color: #9DA6Ab;
 	text-indent: 3px;
-	width: 100%;
+	width: 95%;
 	color: #EEEEEE;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-top-right-radius: 8px; 
