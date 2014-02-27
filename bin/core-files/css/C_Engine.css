@@ -250,8 +250,8 @@ blockquote
 
 .commentOpen{
 	position: absolute;
-	bottom: 7px;
-	left: 105px;
+	bottom: 8px;
+	left: 10px;
 	width: 30px;
 	height: 30px;
 	background: url(images/commentRed.png) no-repeat;
@@ -261,8 +261,8 @@ blockquote
 
 .commentClosed{
 	position: absolute;
-	bottom: 7px;
-	left: 105px;
+	bottom: 8px;
+	left: 10px;
 	width: 30px;
 	height: 30px;
 	background: url(images/commentGreen.png) no-repeat;
@@ -270,10 +270,8 @@ blockquote
 	cursor: pointer;
 }
 
-
-
 #commentDisplayHolder{
-	width: 570px;
+	width: 100%;
 	height: 350px;
 	padding-bottom: 10px;
 }
@@ -281,7 +279,7 @@ blockquote
 .commentDisplay{
 	overflow: auto;
 	background-color: #ffffff;
-	width: 570px;
+	width: 100%;
 	height: 350px;
 	color: #000000;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
@@ -292,13 +290,13 @@ blockquote
 
 .commentHolder{
 	padding: 5px;
-	width: 560px;
+	width: 100%;
 }
 
 .commentItemEven{
 	background-color: #eeeeee;
 	text-indent: 3px;
-	width: 560px;
+	width: 100%;
 	color: #9DA6Ab;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
@@ -312,7 +310,7 @@ blockquote
 .commentItemOdd{
 	background-color: #EEEEEE;
 	text-indent: 3px;
-	width: 560px;
+	width: 100%;
 	color: #3383BB;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
@@ -326,7 +324,7 @@ blockquote
 .commentHeaderEven{
 	background-color: #9DA6Ab;
 	text-indent: 3px;
-	width: 560px;
+	width: 100%;
 	color: #EEEEEE;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-top-right-radius: 8px; 
@@ -340,7 +338,7 @@ blockquote
 .commentHeaderOdd{
 	background-color: #9DA6Ab;
 	text-indent: 3px;
-	width: 560px;
+	width: 100%;
 	color: #EEEEEE;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-top-right-radius: 8px; 
@@ -353,8 +351,8 @@ blockquote
 
 .commentInput{
 	background-color: #ffffff;
-	width: 500px;
-	height: 25%;
+	width: 100%;
+	height: auto;
 	color: #000000;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
@@ -363,8 +361,9 @@ blockquote
 	-moz-border-bottom-left-radius: 8px; 
 	-webkit-border-bottom-left-radius: 8px; 
 	border-bottom-left-radius: 8px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
 }
 
 #pageTitle{

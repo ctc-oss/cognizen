@@ -78,7 +78,7 @@ function checkComment(){
 						user: {id: urlParams['u']},
 						content: {type: urlParams['type'], id: urlParams['id']},
 						page: {id: $(data).find("page").eq(currentPage).attr("id")},
-						text: $("#commentInputText").getCode(),
+						text: CKEDITOR.instances['commentInputText'].getData(),
 						status: myStatus
 					});
 				}
@@ -88,18 +88,19 @@ function checkComment(){
 			}
 		});
 
-		$("#commentInputText").redactor({
-			focus: true,
-			buttons: ['html', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'link', 'fontcolor', 'backcolor']
+		
+		
+		//Add and style contentEdit button
+        $("#commentInputText").attr('contenteditable', true);
+        CKEDITOR.disableAutoInline = true;
+		CKEDITOR.inline( 'commentInputText', {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P
 		});
 		 
-		 //Set Scrollbar for comments if one is needed...
-		 /*$(".nano").nanoScroller({
-            flashDelay: 4000,
-		 	flash: true,
-		 	sliderMaxHeight: 350,
-		 	scroll: 'bottom'
-		 });*/
+		 
 		 $('.antiscroll-wrap').antiscroll();
 	});
 }
@@ -127,12 +128,6 @@ function refreshPageComments(){
 		}
 	}
 	
-	 /*$(".nano").nanoScroller({
-      	flashDelay: 4000,
-		flash: true,
-		sliderMaxHeight: 350,
-		scroll: 'bottom'
-	});*/
 	$('.antiscroll-wrap').antiscroll();
 }
 
