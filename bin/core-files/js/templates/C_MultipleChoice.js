@@ -176,6 +176,9 @@ function C_MultipleChoice(_type) {
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim);
+		if(isIE){
+			$("#contentHolder").css("margin-bottom", "-16px");
+		}
 		
 		if(type == "multipleChoiceMedia"){
         	$("#answerOptions").addClass("left");
