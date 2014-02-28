@@ -330,9 +330,7 @@ else{
 		var mediaPath = splitPath[last-1];
 		var splitType = splitPath[last-1].split(".");
 		var type = splitType[splitType.length-1];
-		if(type == "mp4"){
-			saveImageEdit(mediaPath, true);
-		}else if(type == "mp3"){
+		if(type == "mp3"){
 			launchAudioDialog(mediaPath, true);
 		}
 		$("#mediaLoader").remove();

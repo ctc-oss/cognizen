@@ -520,8 +520,6 @@ function C_VisualMediaHolder(callback){
 		var type = splitType[splitType.length-1];
 		if(type == "mp4"){
 			saveImageEdit(mediaPath, true);
-		}else if(type == "mp3"){
-			launchAudioDialog(mediaPath, true);
 		}
 		$("#mediaLoader").remove();
 	}

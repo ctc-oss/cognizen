@@ -133,10 +133,11 @@ function C_Dashboard(_type) {
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
         $stage.append("<ul id='projList' class='filetree'></ul>");
-		
+		console.log(proj.directories);
         var tree_arr = [];
         //Cycle through the proj object
         for (var i = 0; i < proj.directories.length; i++) {
+            
             var project = proj.directories[i];
             var $project = $("#" + project.id);
             var idIfiedPath = idIfyPath(proj.directories[i].id);
@@ -157,8 +158,12 @@ function C_Dashboard(_type) {
 	                //Take the last item of the array - that is the title of the folder to put in the tree.
 	                var parentName = result.pop();
 	                for (var j = 0; j < proj.directories.length; j++) {
-	                    if (proj.directories[j].name == parentName) {
+	                    console.log(parentName + " = " + proj.directories[i].id);
+	                    console.log(proj.directories[j].name + " = " + proj.directories[j].parent);
+	                    if (proj.directories[j].name == parentName && proj.directories[j].id == proj.directories[i].parent) {
 	                        var parent = proj.directories[j].id;
+	                        console.log("hit it and quit it");
+	                        break;
 	                    }
 	                }
 	                //What folder do I belong to - create a faux ID to be able to refer to it.
