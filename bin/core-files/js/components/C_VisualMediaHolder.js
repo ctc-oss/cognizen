@@ -392,7 +392,8 @@ function C_VisualMediaHolder(callback){
 				
 				$("#loader").tooltip();
 			}
-				siofu.addEventListener("complete", function(event){
+			
+			siofu.addEventListener("complete", function(event){
 				siofu.removeEventListener("complete");
 				siofu.removeEventListener("load");
 				//if successful upload, else....
@@ -448,6 +449,7 @@ function C_VisualMediaHolder(callback){
 			});
 			
 			siofu.addEventListener("start", function(event){
+				try { $("#loader").tooltip("destroy"); } catch (e) {}
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
 				if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
@@ -458,12 +460,11 @@ function C_VisualMediaHolder(callback){
 						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
 					}
 				}else{
+					
 					$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
 					$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
 					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
 					$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
-					
-					try { $("#loader").tooltip("destroy"); } catch (e) {}
 				}
 			});
         }

@@ -240,7 +240,8 @@ function C_StaticContent(_type) {
         	fadeComplete();
 	}
 
-	function fadeComplete() {	
+	function fadeComplete() {
+			
         try { pageTitle.destroy(); } catch (e) {}
         try { audioHolder.destroy(); } catch (e) {}
         try { mediaHolder.destroy(); } catch (e) {}
