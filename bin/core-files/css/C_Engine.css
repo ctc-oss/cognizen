@@ -8,7 +8,7 @@ body{
 	border: 0px;
 	outline: 0px;
 	height: 100%;
-	width: 100% 
+	width: 100%;
 }
 
 /* Style a bit the inline editables. */
@@ -66,12 +66,12 @@ blockquote
 	width: 100%; 
 	height: 100%;
 	position: absolute; 
-	display: table
+	display: table;
 }
   
 #inner {
 	display: table-cell; 
-	vertical-align: middle
+	vertical-align: middle;
 }
 
 #myCanvas{
@@ -171,6 +171,7 @@ blockquote
 	border-radius: 8px; 
 	cursor: hand; 
 	cursor: pointer;
+	z-index: 5000;
 }
 
 .btn_comment{
@@ -433,7 +434,7 @@ CONTENT TEXT LAYOUTS*/
 	color: #000000;
 	font-family: "Helvetica", "Arial";
 	overflow: auto;
-	padding: -5px; 
+	padding: 0px; 
 	background: none; 
 	border-width: 0px;
 	top:85px;
@@ -758,6 +759,7 @@ ul.no-indent {
 	color: #9DA6AB;
 	opacity: .1;
 	padding-right: 10px;
+	left: 10px;
 }
 
 #revealTextHolder{
@@ -780,7 +782,6 @@ ul.no-indent {
 
 .revealTextBottom{
 	width: 280px;
-	height: 130px;
 	padding-top: 10px;
 }
 
@@ -1044,7 +1045,7 @@ MEDIA LAYOUTS
 	color: #eeeeee; 
 	font-family: Helvetica, Arial; 
 	font-size: 10pt;
-	top: 3px
+	top: 3px;
 }
 								
 .ui-progressbar{
@@ -1189,7 +1190,7 @@ MULTIPLE CHOICE LAYOUTS
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
 	padding: 4px;
-	padding-right: 35px
+	padding-right: 35px;
 }
 
 .optionIncorrect{
@@ -1198,7 +1199,7 @@ MULTIPLE CHOICE LAYOUTS
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
 	padding: 4px;
-	padding-right: 35px
+	padding-right: 35px;
 }
 
 .optionLabel{
