@@ -323,7 +323,7 @@ function C_VisualMediaHolder(callback){
 				extraPlugins: 'sourcedialog',
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				allowedContent: 'p b i span div; div span[*]'
+				allowedContent: 'p b i span div; p b i div span[*](*)'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
 			
