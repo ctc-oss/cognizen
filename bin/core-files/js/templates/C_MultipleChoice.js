@@ -175,7 +175,7 @@ function C_MultipleChoice(_type) {
 		
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
-		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim);
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
 		}
@@ -409,7 +409,7 @@ function C_MultipleChoice(_type) {
 	
 	function checkMode(){
 		$('.antiscroll-wrap').antiscroll();
-		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim);
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(mode == "edit"){
 			/***************************************************************************************************
 			EDIT QUESTION
