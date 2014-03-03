@@ -193,6 +193,17 @@ function C_VisualMediaHolder(callback){
                 $("#mediaHolder").css({'width': imageWidth});
                 $("#loader").css({'width': imageWidth, 'height': imageHeight});
                 
+                if(type == "multipleChoiceMedia"){
+	                var greaterHeight = 0;
+					if($("#answerOptions").height() > $("#loader").height()){
+						greaterHeight = $("#answerOptions").height();
+					}else{
+						greaterHeight = $("#loader").height();
+					}
+					$("#contentHolder").height(greaterHeight);
+					$('.antiscroll-wrap').antiscroll();
+				}
+                
 				if(hasPop == true || largeImg != ""){
 					setupGallery(mediaType);
 				}
@@ -206,6 +217,18 @@ function C_VisualMediaHolder(callback){
             $("#loader").removeClass('loading');
             $("#mediaHolder").css({'width': imageWidth});
             $("#loader").css({'width': imageWidth, 'height': imageHeight});
+            
+            if(type == "multipleChoiceMedia"){
+                var greaterHeight = 0;
+				if($("#answerOptions").height() > $("#loader").height()){
+					greaterHeight = $("#answerOptions").height();
+				}else{
+					greaterHeight = $("#loader").height();
+				}
+				$("#contentHolder").height(greaterHeight);
+				$('.antiscroll-wrap').antiscroll();
+			}
+            
             if(hasPop == true || largeImg != ""){
 				setupGallery(mediaType);
 			}
@@ -404,11 +427,7 @@ function C_VisualMediaHolder(callback){
 	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
 				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
 					if(event.success == true){
-						if(myExt == "mp3" || myExt == "MP3"){
-							launchAudioDialog(myFile, true)
-						}else{
-							saveImageEdit(myFile, true);
-						}
+						saveImageEdit(myFile, true);
 					}else{
 						$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
 						//Theres an error
