@@ -278,7 +278,7 @@ function C_VisualMediaHolder(callback){
 	}
 	
 	function setCaption(){
-        var myCaption = $(data).find("page").eq(currentPage).find('caption').text();
+        var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
 		
         if(hasPop == true || largeImg != ""){
 	    	$('<div id="centerMe" style="position: relative; float: left; height:'+ $("#mediaPop").height()+ 'px; width:'+ $("#mediaPop").width()+ 'px;">&nbsp;</div>').insertAfter("#myImgList");
@@ -776,8 +776,13 @@ function C_VisualMediaHolder(callback){
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
-		
+		try { $("#caption").remove(); } catch (e) {}
+		try { $("#centerMe").remove(); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
+		
+		for(name in CKEDITOR.instances){
+			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
+		}
 
         try { $('#loader').flash().remove(); } catch (e) {}
 
