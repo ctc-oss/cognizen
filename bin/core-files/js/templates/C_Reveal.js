@@ -248,6 +248,8 @@ function C_Reveal(_type) {
 			$("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>").insertAfter("#content");
 
 			$("#conEdit").click(function(){			
+				var revealImgHeight = $("#"+rev_arr[0]+"Img").css('height');
+				var revealImgWidth = $("#"+rev_arr[0]+"Img").css('width');
 				revealEdit_arr.length = 0;
 				//Create the Content Edit Dialog
 				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
@@ -278,8 +280,6 @@ function C_Reveal(_type) {
 					var last = parts.length;
 			
 					mediaString = (parts[last - 1]);
-					var revealImgHeight = $("#"+rev_arr[i]+"Img").css('height');
-					var revealImgWidth = $("#"+rev_arr[i]+"Img").css('width');
 					
 					revealImgHeight = revealImgHeight.replace('px','');
 					revealImgWidth = revealImgWidth.replace('px','');
@@ -289,12 +289,7 @@ function C_Reveal(_type) {
 					msg += "<b>Reveal "+revealLabel+":</b>";
 					msg += "<label id='"+revealID+"Image'><br/><b>Image: </b></label>";
 					msg += "<input id='"+revealID+"ImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-					/*
-msg += "<label> <b>Width: </b></label>";
-					msg += "<input id='"+revealID+"Width'  class='dialogInput' type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
-					msg += "<label> <b>Height: </b></label>";
-					msg += "<input id='"+revealID+"Height'  class='dialogInput' type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
-*/
+					
 					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();	
 					msg += "<div><b>Content:</b></div>";
 					msg += "<div id='"+revealID+"ContentText' class='dialogInput'>" + myRevealContent + "</div>";
@@ -342,8 +337,7 @@ msg += "<label> <b>Width: </b></label>";
 							}else{
 								backgroundWidth = 280;
 							}
-							//msg += "<label> <b>Width: </b></label><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
-							//msg += "<label> <b>Height: </b></label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
+							
 							var myRevealContent = "New Reveal Content";
 							msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
 							msg += "</div>"
