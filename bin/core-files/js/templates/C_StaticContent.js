@@ -151,7 +151,7 @@ function C_StaticContent(_type) {
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
-					allowedContent: 'span div img; div span img [*](*){*}'
+					allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 				}); 
 			}
 
@@ -176,7 +176,7 @@ function C_StaticContent(_type) {
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
-					allowedContent: 'span div img; div span img[*](*){*}'
+					allowedContent: 'p b i span div img; p b i div span img[*](*){*}'
 				}); 
 			}
 		}
