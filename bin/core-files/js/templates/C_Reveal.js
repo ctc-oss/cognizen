@@ -121,6 +121,7 @@ function C_Reveal(_type) {
 							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
 															'height':$('#revealTextHolder').height()});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
+							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if(type == "revealBottom"){
@@ -134,7 +135,7 @@ function C_Reveal(_type) {
 															'opacity':0.1
 															});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$("#revealTextHolder").scrubContent();
+							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealTop"){
