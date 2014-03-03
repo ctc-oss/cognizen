@@ -128,7 +128,7 @@ function C_Reveal(_type) {
 						TweenMax.to($(this), transitionLength, {css:{height:550}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextBottom'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
 							$("#" + currentSelected + "Text").css({//'position':'absolute', 
-															'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
+															//'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
 															'padding': 5,
 															'left' : 5,
 															'width' : $("#" + currentSelected).width() - 10,
@@ -179,7 +179,7 @@ function C_Reveal(_type) {
 						TweenMax.to($(this), transitionLength, {css:{height:300}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextBottom'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
 							$("#" + currentSelected + "Text").css({//'position':'absolute', 
-															'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
+															//'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
 															'padding': 5,
 															'left' : 5,
 															'width' : $("#" + currentSelected).width() - 10,
