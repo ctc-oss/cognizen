@@ -323,7 +323,7 @@ function C_VisualMediaHolder(callback){
 				extraPlugins: 'sourcedialog',
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				allowedContent: 'p b i span div; p b i div span[*](*)'
+				allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
 			
@@ -739,7 +739,8 @@ function C_VisualMediaHolder(callback){
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+			allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 		});							
 						
 		galleryEdit_arr.push(galleryItemID);
@@ -776,15 +777,9 @@ function C_VisualMediaHolder(callback){
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
-		try { $("#caption").remove(); } catch (e) {}
-		try { $("#centerMe").remove(); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
 		
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-
-        try { $('#loader').flash().remove(); } catch (e) {}
+		try { $('#loader').flash().remove(); } catch (e) {}
 
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}

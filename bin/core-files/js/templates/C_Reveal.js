@@ -240,7 +240,7 @@ function C_Reveal(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
-				allowedContent: 'p b i span div; p b i div span[*](*)'
+				allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 			});
 			
 			$("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>").insertAfter("#content");
@@ -303,7 +303,7 @@ function C_Reveal(_type) {
 						enterMode : CKEDITOR.ENTER_BR,
 						shiftEnterMode: CKEDITOR.ENTER_P,
 						extraPlugins: 'sourcedialog',
-						allowedContent: 'p b i span div; p b i div span[*](*)'
+						allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 					});
 						
 					revealEdit_arr.push(revealID);
@@ -351,7 +351,7 @@ function C_Reveal(_type) {
 								enterMode : CKEDITOR.ENTER_BR,
 								shiftEnterMode: CKEDITOR.ENTER_P,
 								extraPlugins: 'sourcedialog',
-								allowedContent: 'p b i span div; p b i div span[*](*)'
+								allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
 							});
 							
 							var boxWidth = $("#"+revealID+"Width").width() + 10;
