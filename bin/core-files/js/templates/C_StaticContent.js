@@ -176,7 +176,7 @@ function C_StaticContent(_type) {
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
-					allowedContent: 'p b i span div; p b i div span[*](*)'
+					allowedContent: 'p b i span div img; p b i div span img[*](*)'
 				}); 
 			}
 		}
