@@ -49,7 +49,6 @@
 		CREATES A TOOLTIP on .tooltip class members.
 		***********************************************************/
 		$(".toolTip").each(function(){
-			console.log("found tooltip");
 			$(this).tooltip({
 				content: $(this).attr("title")
 			})
