@@ -250,6 +250,8 @@ function C_Reveal(_type) {
 			$("#conEdit").click(function(){			
 				var revealImgHeight = $("#"+rev_arr[0]+"Img").css('height');
 				var revealImgWidth = $("#"+rev_arr[0]+"Img").css('width');
+				revealImgHeight = revealImgHeight.replace('px','');
+				revealImgWidth = revealImgWidth.replace('px','');
 				revealEdit_arr.length = 0;
 				//Create the Content Edit Dialog
 				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
@@ -280,9 +282,6 @@ function C_Reveal(_type) {
 					var last = parts.length;
 			
 					mediaString = (parts[last - 1]);
-					
-					revealImgHeight = revealImgHeight.replace('px','');
-					revealImgWidth = revealImgWidth.replace('px','');
 					
 					var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+i+"'>";
 					msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/>";
