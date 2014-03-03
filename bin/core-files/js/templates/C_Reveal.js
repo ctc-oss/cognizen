@@ -113,7 +113,6 @@ function C_Reveal(_type) {
 						TweenMax.to($(this), transitionLength, {css:{width:$(this).data("myWidth")}, ease:transitionType});
 					}
 				}).click(function(){
-					console.log("I've been clicked");
 					$(this).unbind('mouseenter mouseleave click');
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
