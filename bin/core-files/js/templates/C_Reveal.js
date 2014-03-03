@@ -239,7 +239,8 @@ function C_Reveal(_type) {
 				},
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+				allowedContent: 'p b i span div; p b i div span[*](*)'
 			});
 			
 			$("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>").insertAfter("#content");
@@ -301,7 +302,8 @@ function C_Reveal(_type) {
 						toolbarGroups :contentToolgroup,
 						enterMode : CKEDITOR.ENTER_BR,
 						shiftEnterMode: CKEDITOR.ENTER_P,
-						extraPlugins: 'sourcedialog'
+						extraPlugins: 'sourcedialog',
+						allowedContent: 'p b i span div; p b i div span[*](*)'
 					});
 						
 					revealEdit_arr.push(revealID);
@@ -348,7 +350,8 @@ function C_Reveal(_type) {
 								toolbarGroups :contentToolgroup,
 								enterMode : CKEDITOR.ENTER_BR,
 								shiftEnterMode: CKEDITOR.ENTER_P,
-								extraPlugins: 'sourcedialog'
+								extraPlugins: 'sourcedialog',
+								allowedContent: 'p b i span div; p b i div span[*](*)'
 							});
 							
 							var boxWidth = $("#"+revealID+"Width").width() + 10;

@@ -133,7 +133,8 @@ function C_TabbedContent(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+			allowedContent: 'p b i span div; p b i div span[*](*)'
 		});				
 		tabEdit_arr.push(tabID);
 	}
@@ -178,7 +179,8 @@ function C_TabbedContent(_type) {
 				},
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+				allowedContent: 'p b i span div; p b i div span[*](*)'
 			}); 
 			
 			
@@ -229,62 +231,7 @@ function C_TabbedContent(_type) {
 		$(this).scrubContent();	
 	}
 	
-	function addGalleryItem(_addID, _isNew){
-		if(_isNew == true){						
-			//If no entries - just add the next one.
-			if(media_arr.length == 0){
-				$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
-				$(data).find("page").eq(currentPage).attr('popcaps', " ");
-				$(data).find("page").eq(currentPage).attr('popalt', " ");
-			}else{
-				var popString = $(data).find("page").eq(currentPage).attr('popup');
-				popString += ",defaultTop.png";
-				$(data).find("page").eq(currentPage).attr('popup', popString);
-				var captionString = $(data).find("page").eq(currentPage).attr('popcaps');
-				captionString += "!!! ";
-				$(data).find("page").eq(currentPage).attr('popcaps', captionString);
-				var altString = $(data).find("page").eq(currentPage).attr('popalt');
-				altString += "!!! ";
-				$(data).find("page").eq(currentPage).attr('popalt', altString);
-			}
 			
-			media_arr.push("defaultTop.png");
-			caption_arr.push(" ");
-			alt_arr.push(" "); 
-		}
-		
-		var imgID = "imgPath" + _addID;
-		var captionTextID = "captionEditText" + _addID;
-		var altTextID = "altEditText" + _addID;
-		var removeID = "removeMedia" + _addID;
-		var galleryItemID = "galleryItem" + _addID;
-		captionEditText_arr.push(captionTextID);
-								
-		var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+_addID+"'>";
-		msg += "<div id='"+removeID+"' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
-		msg += "<label id='label'><b>Gallery Item: </b><br/></label>";
-		msg += "<label id='label'>Media: </label><input id='imgPath" + _addID + "' type='text' value='"+media_arr[_addID]+"' defaultValue='"+media_arr[_addID]+"' style='width:80%;'/><br/>";
-		msg += "<div>Caption:</div><div id='"+captionTextID+"' type='text' contenteditable='true' class='dialogInput'>"+caption_arr[_addID]+"</div>";
-		msg += "<label id='label'>ALT text: </label>";
-		msg += "<input id='"+altTextID+"' type='text' value='"+alt_arr[_addID]+"' defaultValue='"+alt_arr[_addID]+"' style='width:70%'/>";
-		msg += "</div>"
-		$("#imgDialog").append(msg);
-								
-		$("#" + removeID).click(function(){
-			removeGalleryItem($(this).attr("value"));	
-		});
-		
-		CKEDITOR.inline( captionTextID, {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
-		});							
-						
-		galleryEdit_arr.push(galleryItemID);
-	}
-		
 	 /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
