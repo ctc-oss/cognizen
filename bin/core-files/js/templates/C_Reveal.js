@@ -117,7 +117,7 @@ function C_Reveal(_type) {
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#revealTextHolder").css({'height': $("#"+revID).height()});
+							$("#revealTextHolder").css({'height': $("#"+revID).height() - 10});
 							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
 															'height':$('#revealTextHolder').height()});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -164,7 +164,7 @@ function C_Reveal(_type) {
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#revealTextHolder").css({'height': $("#"+revID).height()});
+							$("#revealTextHolder").css({'height': $("#"+revID).height() - 10});
 							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
 															'height':$('#revealTextHolder' ).height()});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -253,6 +253,10 @@ function C_Reveal(_type) {
 				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
 				msg += "<label id='hover'>Hover: </label>";
 				msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/>";
+				msg += "<label> <b>Reveal Image Width: </b></label>";
+				msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
+				msg += "<label> <b>Reveal Image Height: </b></label>";
+				msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
 				msg += "</div><br/>";
 				$("#stage").append(msg);
 				
@@ -285,10 +289,12 @@ function C_Reveal(_type) {
 					msg += "<b>Reveal "+revealLabel+":</b>";
 					msg += "<label id='"+revealID+"Image'><br/><b>Image: </b></label>";
 					msg += "<input id='"+revealID+"ImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-					msg += "<label> <b>Width: </b></label>";
+					/*
+msg += "<label> <b>Width: </b></label>";
 					msg += "<input id='"+revealID+"Width'  class='dialogInput' type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
 					msg += "<label> <b>Height: </b></label>";
 					msg += "<input id='"+revealID+"Height'  class='dialogInput' type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
+*/
 					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();	
 					msg += "<div><b>Content:</b></div>";
 					msg += "<div id='"+revealID+"ContentText' class='dialogInput'>" + myRevealContent + "</div>";
@@ -336,8 +342,8 @@ function C_Reveal(_type) {
 							}else{
 								backgroundWidth = 280;
 							}
-							msg += "<label> <b>Width: </b></label><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
-							msg += "<label> <b>Height: </b></label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
+							//msg += "<label> <b>Width: </b></label><input id='"+revealID+"Width'  type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
+							//msg += "<label> <b>Height: </b></label><input id='"+revealID+"Height'  type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
 							var myRevealContent = "New Reveal Content";
 							msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
 							msg += "</div>"
@@ -378,8 +384,8 @@ function C_Reveal(_type) {
 								var tmpObj = new Object();
 								tmpObj.title = $("#" + revealEdit_arr[i] +"TitleText").val();
 								tmpObj.img = $("#"+revealEdit_arr[i]+"ImageText").val();
-								var imgW = $("#"+revealEdit_arr[i]+"Width").val();
-								var imgH = $("#"+revealEdit_arr[i]+"Height").val();
+								var imgW = $("#imageWidth").val();
+								var imgH = $("#imageHeight").val();
 								
 								if(type == "revealRight"){
 									tmpObj.boxW = parseInt(imgW) + 10;
