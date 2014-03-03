@@ -134,6 +134,7 @@ function C_Reveal(_type) {
 															'opacity':0.1
 															});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
+							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
 					}else if (type == "revealTop"){
