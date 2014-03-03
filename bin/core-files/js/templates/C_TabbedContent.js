@@ -134,7 +134,7 @@ function C_TabbedContent(_type) {
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
-			allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
+			allowedContent: 'p b i li ol ul span div img; p b i li ol ul div span img [*](*){*}'
 		});				
 		tabEdit_arr.push(tabID);
 	}
@@ -180,7 +180,7 @@ function C_TabbedContent(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
-				allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
+				allowedContent: 'p b i li ol ul span div img; p b i li ol ul div span img [*](*){*}'
 			}); 
 			
 			
