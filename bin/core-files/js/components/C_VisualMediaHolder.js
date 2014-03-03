@@ -323,7 +323,7 @@ function C_VisualMediaHolder(callback){
 				extraPlugins: 'sourcedialog',
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				format_tags: 'p;h2;h3;h4;h5;h6;pre;address;div;span;'
+				allowedContent: 'p b i span div;'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
 			
