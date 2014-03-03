@@ -117,8 +117,7 @@ function C_Reveal(_type) {
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-															'height':$('#'+revID).height()});
+							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 							$('.antiscroll-wrap').antiscroll();
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
@@ -163,8 +162,7 @@ function C_Reveal(_type) {
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-															'height':$('#'+revID).height()});
+							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 							$('.antiscroll-wrap').antiscroll();
 						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
