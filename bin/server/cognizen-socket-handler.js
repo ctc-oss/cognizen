@@ -498,7 +498,10 @@ var SocketHandler = {
         //FileUtils.rmdir(baseWritePath);
 
         FileUtils.copyDir('../core-files/js', baseWritePath+"/js", null, function (err) {
-            if (err) callback(err);
+            if (err){ 
+                callback(err);
+            }
+            callback(null);
         });
     },
 
@@ -1309,6 +1312,38 @@ var SocketHandler = {
         });
     },
 
+    _copyJSArray: function(lessons, index, callback){
+        var _this = this;
+        _this._copyJSFiles(lessons[index], function(err){
+            if(err){
+                callback(err);
+            }
+
+            if(index+1 != lessons.length){
+                _this._copyJSArray(lessons, index+1, callback);
+            }
+            else{
+                callback(null);
+            }
+        });
+    },
+
+    _removeJSArray: function(lessons, index, callback){
+        var _this = this;
+        fs.remove(lessons[index], function(err){
+            if(err){
+                callback(err);
+            }
+
+            if(index+1 != lessons.length){
+                _this._removeJSArray(lessons, index+1, callback);
+            }
+            else{
+                callback(null);
+            }
+        });
+    },    
+
     publishContent: function (data, callback){
         var _this = this;
         if (data.content.type === 'program') {
@@ -1338,31 +1373,47 @@ var SocketHandler = {
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
 
                         //copies the js directory into each of the lessons
+                        var lessonJSPaths = [];
                         for(var i=0; i<found.lessons.length; i++){
                             var obj = found.lessons[i];
                             var lessonPath = contentPath + "/" + obj.name;
-                            _this._copyJSFiles(lessonPath, function() {});                            
+                            lessonJSPaths.push(lessonPath);
+                            //_this._copyJSFiles(lessonPath, function() {});                            
                         }
 
-                        scorm.generateSCORMCourse(function(err, filepath){
-
+                        _this._copyJSArray(lessonJSPaths,0, function(err){
                             if(err){
                                 _this.logger.error(err);
-                                _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});                
                             }
-                            else{
-                                _this.logger.info("publish Course success.");
-                                _this.logger.info("---------- filepath = " + filepath);
-                                for(var i=0; i<found.lessons.length; i++){
-                                    var obj = found.lessons[i];
-                                    var lessonPath = contentPath + "/" + obj.name;
-                                    fs.remove(lessonPath + "/js", function(err){
-                                        if(err) return _this.logger.error(err);
-                                    });                         
+
+                            scorm.generateSCORMCourse(function(err, filepath){
+
+                                if(err){
+                                    _this.logger.error(err);
+                                    _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});                
                                 }
-                                
-                                callback(filepath);
-                            }                                                        
+                                else{
+                                    _this.logger.info("publish Course success.");
+                                    _this.logger.info("---------- filepath = " + filepath);
+                                    
+                                    callback(filepath);
+                                } 
+                                var lessonJStoRemove = [];    
+                                for(var i=0; i<found.lessons.length; i++){
+                                    lessonJStoRemove.push(lessonJSPaths[i] + "/js");
+                                    // var obj = found.lessons[i];
+                                    // var lessonPath = contentPath + "/" + obj.name;
+                                    // fs.remove(lessonPath + "/js", function(err){
+                                    //     if(err) return _this.logger.error(err);
+                                    // });                         
+                                }                                                   
+                                _this._removeJSArray(lessonJStoRemove, 0, function(err){
+                                    if(err){
+                                        _this.logger.error(err);
+                                    }
+                                    _this.logger.info("js directories removed from lessons after publishing");
+                                });                            
+                            });
                         });
                     }
                     else{
@@ -1374,27 +1425,31 @@ var SocketHandler = {
                         
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
                         
-                        _this._copyJSFiles(contentPath, function () {});
-                        
-                        //calls the generateSCORMLesson function in congizen-scorm.js
-                        scorm.generateSCORMLesson(function(err, filepath){
-
+                        _this._copyJSFiles(contentPath, function (err) {
                             if(err){
                                 _this.logger.error(err);
-                                _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});                
                             }
-                            else{
-                                _this.logger.info("publishLesson success.");
-                                _this.logger.info("---------- filepath = " + filepath);
+
+                            //calls the generateSCORMLesson function in congizen-scorm.js
+                            scorm.generateSCORMLesson(function(err, filepath){
+
+                                if(err){
+                                    _this.logger.error(err);
+                                    _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});                
+                                }
+                                else{
+                                    _this.logger.info("publishLesson success.");
+                                    _this.logger.info("---------- filepath = " + filepath);
+
+                                    callback(filepath);
+                                }
 
                                 fs.remove(contentPath + "/js", function(err){
                                     if(err) return _this.logger.error(err);
-                                    _this.logger.info('js directory removed from lesson after publishing')
-                                });
-
-                                callback(filepath);
-                            }
-                        });
+                                    _this.logger.info('js directory removed from lesson after publishing');
+                                });                            
+                            });
+                        });                            
                     }                                           
                 }
             });
