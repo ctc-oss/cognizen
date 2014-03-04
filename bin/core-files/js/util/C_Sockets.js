@@ -46,7 +46,6 @@ function initializeSockets(){
         });
 
 	    cognizenSocket.on("contentPermissionFound", function(data){
-			console.log("data.permission = " + data.permission);
 			if(data.permission == "admin" || data.permission == "editor"){
 				mode = "edit";
 			}else if(data.permission == "reviewer"){
@@ -62,6 +61,7 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on('updateActiveEditor', function(data){
+		    console.log("updateActiveEditor called with data (C_Sockets) = " + data.newEditor);
 		    updateActiveEditor(data);
 	    });
 	    

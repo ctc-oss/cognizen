@@ -1,41 +1,11 @@
 var justRelinquishedLock = false;
 
-function updateActiveEditor(_user){
-	console.log("update active editor to: " +_user);
-	activeEditor = _user;
-	/*if(username == _user){
-		var msg = '<div id="dialog-offerEdit" title="Editor Queue"><p class="validateTips">'+ activeEditor +' has left this session and you are the next in line to edit.</p><p>Would you like to edit this lesson?</p></div>';
-			
-		//Add to stage.
-		$("#stage").append(msg);
-				
-		//Make it a dialog
-		$("#dialog-offerEdit").dialog({
-			dialogClass: "no-close",
-			modal: true,
-			width: 550,
-			close: function(event, ui){
-				$("#dialog-offerEdit").remove();
-			},
-			buttons: {
-				YES: function () {
-					mode = "edit";
-					forcedReviewer = false;
-					activeEditor = _user;
-					$(this).dialog("close");
-					nextDisabled = true;
-					backDisabled = true;
-					buildInterface();
-					cognizenSocket.emit('editModeAccepted', {me: _user})
-					
-				},
-				NO: function(){
-					$(this).dialog("close");
-					cognizenSocket.emit('passLock', { me: _user });
-				}
-			}
-		});
-	}*/
+function updateActiveEditor(data){
+	console.log("in updateActiveEditor");
+	if(urlParams['id'] == data.lessonID){
+		console.log("update active editor to: " + data.newEditor);
+		activeEditor = data.newEditor;
+	}
 }
 
 
@@ -54,7 +24,6 @@ function startLockTimer(_data){
 			$("#lockCountdown").css("color", "red");
 		}
 		if (lockCounter == 0) {
-			
 			mode = "review";
 			justRelinquishedLock = true;
 			forcedReviewer = true;

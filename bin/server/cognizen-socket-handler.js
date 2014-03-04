@@ -1044,7 +1044,10 @@ var SocketHandler = {
 			if(wasEditor){
 				if(disconnectingLessonID != null){
 					var newEditor = null;
-					_this._socket.broadcast.emit('updateActiveEditor', newEditor);
+					var tmpObj = new Object();
+					tmpObj.newEditor = null;
+					tmpObj.lessonID = disconnectingLessonID;
+					_this._socket.broadcast.emit('updateActiveEditor', tmpObj);
 				}
 			}
 	    }
@@ -1060,11 +1063,10 @@ var SocketHandler = {
 		    if(activeEdit_arr[i].user == data.me){
 		    	activeEdit_arr[i].isEditor = false;
 		    	activeEdit_arr[i].rejectEdit = true;
-		    	_this.logger.info(activeEdit_arr[i].user + " is passing the lock.");
-		    	_this.logger.info("isEditor: " + activeEdit_arr[i].isEditor);
-		    	_this.logger.info("rejectEdit: " + activeEdit_arr[i].rejectEdit);
-		    	lessonID = activeEdit_arr[i].lessonID;
-				_this._socket.broadcast.emit('updateActiveEditor', null);
+		    	var tmpObj = new Object();
+		    	tmpObj.newEditor = null;
+		    	tmpObj.lessonID = activeEdit_arr[i].lessonID;
+				_this._socket.broadcast.emit('updateActiveEditor', tmpObj);
 		    	break;
 		    }
 	    }
@@ -1106,7 +1108,10 @@ var SocketHandler = {
 				    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
 					    activeEdit_arr[i].rejectEdit = false;
 					    activeEdit_arr[i].isEditor = true;
-					    _this._socket.broadcast.emit('updateActiveEditor', data.me);
+					    var tmpObj = new Object();
+					    tmpObj.lessonID = activeEdit_arr[i].lessonID;
+					    tmpObj.newEditor = data.me;
+					    _this._socket.broadcast.emit('updateActiveEditor', tmpObj);
 					    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
 					    break;
 				    }
@@ -1138,7 +1143,10 @@ var SocketHandler = {
 		    for(var i = 0; i < activeEdit_arr.length; i++){
 			    if(activeEdit_arr[i].user == data.requester && activeEdit_arr[i].isActive == true){
 				    activeEdit_arr[i].isEditor = true;
-				    _this._socket.broadcast.emit('updateActiveEditor', data.requester);
+				    var tmpObj = new Object();
+				    tmpObj.newEditor = data.requester;
+				    tmpObj.lessonID = activeEdit_arr[i].lessonID;
+				    _this._socket.broadcast.emit('updateActiveEditor', tmpObj);
 				    _this._socket.broadcast.emit('lockRequestAccepted', data);
 				    break;
 			    }
