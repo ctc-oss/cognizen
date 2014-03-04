@@ -368,13 +368,14 @@ var SocketHandler = {
                     myPath = myPath.substr(1);
                 }
 
-                var url = _this.config.url + encodeURIComponent(data.path);
+                var url = _this.config.url + myPath;
+                var fileName = url.substring(url.lastIndexOf('/')+1);
 
                 _this.Mail.send({
                     user: user.username,
                     subject: "Download Link for SCORM Content",
                     txtMsg: user.firstName + ", your content package can be downloaded by navigiating to the below address.  Since you don't have html enabled in your mail client, you may have to copy and paste it into a web browser's url bar and hit the 'Return' key on your keyboard.  " + url,
-                    msg: user.firstName + ",<br/><br/><p>Your content package can be downloaded by clicking on the link below.</p><p><a href=" + url + ">" + url + "</a></p>"
+                    msg: user.firstName + ",<br/><br/><p>Your content package can be downloaded by clicking on the link below.</p><p><a href=" + url + ">" + fileName + "</a></p>"
                 });
                 _this._socket.emit("packageLinkAlert", {
                     path: url

@@ -824,10 +824,6 @@ function C_Dashboard(_type) {
                 if(splitPath[i] == "programs"){
                     notYet = false;
                 }
-                /*if(notYet == false){
-                    dlPath += "/";
-                    dlPath += splitPath[i];
-                }*/
                 
                 if(notYet == false){
 					if(first == false){
@@ -837,8 +833,9 @@ function C_Dashboard(_type) {
 					}
 					dlPath += splitPath[i];
 				}
-            }            
-            
+            }    
+            dlPath = dlPath.replace(/\s+/g, '%20');        
+
             socket.emit('sendPackageMail', {
                 user: user._id,
                 path: dlPath

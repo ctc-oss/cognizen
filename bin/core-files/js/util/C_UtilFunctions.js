@@ -137,6 +137,8 @@ function getExtension(myFile){
 }
 
 function parsePackageLocation(myPath){
+
+    myPath = myPath.replace(/\\/g, '/');
 	var splitPath = myPath.split("/");
 	var notYet = true;
 	var first = true;
@@ -154,7 +156,8 @@ function parsePackageLocation(myPath){
 			dlPath += splitPath[i];
 		}
 	}
-	
+	dlPath = dlPath.replace(/\s+/g, '%20'); 
+
 	cognizenSocket.emit("sendPackageMail", {
 		user: urlParams['u'],
 		path: dlPath
