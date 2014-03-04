@@ -110,7 +110,6 @@ function C_VisualMediaHolder(callback){
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
         }else if (mediaType == "html"){////////////////////////////////////////////////HTML for edge or js apps.
-            console.log("oldIE = " + oldIE);
             if(oldIE == true){
 	            $("#loader").append('<iframe seamless frameborder="0" src="'+ myImage +'" width="' + imageWidth + '" height="' + imageHeight + '"></iframe>');
             }else{
@@ -119,7 +118,9 @@ function C_VisualMediaHolder(callback){
             $("#loader").removeClass('loading');
         }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){////////////////////////////////////////////////VIDEO
             
-            autoPlay = $(data).find("page").eq(currentPage).attr('autoplay');
+            if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
+				autoPlay = true;
+			}
             
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
 			if(mediaLinkType == "youtube"){
@@ -176,7 +177,7 @@ function C_VisualMediaHolder(callback){
                             hasEnded();
                         }, false);
                     }
-
+					
                     //If autoplay - cick off the vid
                     if(autoPlay == true){
                         $('.mejs-overlay-button').trigger('click');
@@ -587,10 +588,43 @@ function C_VisualMediaHolder(callback){
 		  
 		if(mediaType == "mp4"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
-			$("#loader").append("<div id='videoDialog' title='Input Video Stats'><div>Video Width: <input id='videoWidth' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:100%;'/></div><div>Video Height: <input id='videoHeight' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:100%;'/></div><input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/><label id='label'>autoplay</label></input><input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/><label id='label'>autonext</label></input><input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/><label id='label'>poster</label></input><input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/><label id='label'>subtitles</label></input></div>");
+			if(mediaWidth == 0){
+				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
+					mediaWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+				}
+			}
+			
+			var msg = "<div id='videoDialog' title='Input Video Stats'>";
+			msg += "<div id='videoDialog' title='Input Video Stats'>";
+			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
+			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div><br/>";
+			msg += "<label id='label'>autoplay: </label>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
+			msg += "<label id='label'>autonext: </label>";
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+			msg += "<label id='label'>poster: </label>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input><br/>";
+			msg += "<label id='label'>subtitles: </label>";
+			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input></div>";
+			
+			$("#loader").append(msg);
+			
+			if(hasSubs == true){
+				$("#subs").attr("checked", "checked");
+			}
+								
+			if(autoPlay == true){
+				$("#autoplay").attr("checked", "checked");
+			}
+								
+			if(autoNext == true){
+				$("#autonext").attr("checked", "checked");
+			}
 			 	
 			$("#videoDialog").dialog({
             	autoOpen: true,
+            	dialogClass: "no-close",
 				modal: true,
 				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 					close: function(){
@@ -632,9 +666,18 @@ function C_VisualMediaHolder(callback){
 		}else if(mediaType == "swf"){
              //If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
 			 $(data).find("page").eq(currentPage).attr("img", imgPath);
-			 $("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>SWF Height: <input id='swfHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
+			 
+			 if(mediaWidth == 0){
+				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
+					mediaWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+				}
+			}
+			 
+			 $("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>SWF Height: <input id='swfHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight+ " style='width:15%;'/></div></div>");
 			 $("#swfDialog").dialog({
                 autoOpen: true,
+                dialogClass: "no-close",
 				modal: true,
 				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 				close: function(){
@@ -648,7 +691,15 @@ function C_VisualMediaHolder(callback){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
 		}else if(mediaType == "html" || mediaType == "HTML" || mediatType == "htm" || mediaType == "HTM"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
-			$("#stage").append("<div id='htmlDialog' title='Input Page Information'><div>HTML Width: <input id='htmlWidth' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div><div>HTML Height: <input id='htmlHeight' type='text' value="+ 000 + " defaultValue="+ 000 + " style='width:100%;'/></div></div>");
+			
+			if(mediaWidth == 0){
+				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
+					mediaWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+				}
+			}
+			
+			$("#stage").append("<div id='htmlDialog' title='Input Page Information'><div>HTML Width: <input id='htmlWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>HTML Height: <input id='htmlHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div></div>");
 			 $("#htmlDialog").dialog({
                 autoOpen: true,
 				modal: true,

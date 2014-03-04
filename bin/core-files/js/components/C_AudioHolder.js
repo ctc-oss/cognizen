@@ -217,9 +217,12 @@ else{
 		var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
 		msg += "<label id='label'>file name: </label>";
 		msg += "<input id='audioPath' class='dialogInput' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:70%;'/><br/>";
-		msg += "<label id='label'>autoplay:</label><input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
-		msg += "<label id='label'>autonext:</label><input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input>";
-		msg += "<label id='label'>subtitle:</label><input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
+		msg += "<label id='label'>autoplay:</label>";
+		msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
+		msg += "<label id='label'>autonext:</label>";
+		msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+		msg += "<label id='label'>subtitle:</label>";
+		msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
 		msg += "</div>";
 							
 		$("#stage").append(msg);
@@ -239,9 +242,10 @@ else{
 		//Style it to jQuery UI dialog
 		$("#audioEditDialog").dialog({
 			autoOpen: true,
+			dialogClass: "no-close",
 			modal: true,
 			width: 450,
-			height: 200,
+			height: 400,
 			buttons:{
 				Cancel: function(){
 					$(this).dialog("close");
