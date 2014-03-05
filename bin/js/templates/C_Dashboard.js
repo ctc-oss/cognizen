@@ -675,7 +675,8 @@ function C_Dashboard(_type) {
             msg += "<select id='scormVersion'>";
             msg += "<option>2004_4th</option>";
             msg += "<option>2004_3rd</option>";
-            msg += "<option>2004_USSOCOM</option>";
+            msg += "<option>2004_3rd_CTCU</option>";
+            msg += "<option>2004_USSOCOM</option>";            
             msg += "<option>none</option>";
             msg += "</select></form>";
             msg += "</p>";              

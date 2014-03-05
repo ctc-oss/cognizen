@@ -467,6 +467,12 @@ var SCORM = {
 		             					manifestFile += "		   <imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
 		           						manifestFile += "		</imsss:sequencing>\n"; 						        	
 							        }
+							        //CTCU is flow only
+							        else if(_this.scormVersion === '2004_3rd_CTCU'){
+								        manifestFile += "       <imsss:sequencing>\n";
+		             					manifestFile += "		   <imsss:controlMode choice=\"false\" flow=\"true\"/>\n";
+		           						manifestFile += "		</imsss:sequencing>\n"; 							        	
+							        }
 	   
 							        manifestFile += "       </organization>\n";
 							        manifestFile += "    </organizations>\n";
@@ -509,6 +515,10 @@ var SCORM = {
 							        if(_this.scormVersion === '2004_USSOCOM'){
 							        	scormBasePath = _this.scormPath + '/2004_4th/'; 
 							        }
+					                //catch for CTC - use 2004_3rd files
+					                else if(_this.scormVersion === '2004_3rd_CTCU'){
+					                	scormBasePath = _this.scormPath + '/2004_3rd/';
+					                }							        
 							        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 							        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -652,7 +662,7 @@ var SCORM = {
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
-	    if (_this.scormVersion === '2004_3rd'){
+	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_CTCU'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -799,6 +809,25 @@ var SCORM = {
 			}
 
 		}
+		//seq rules for CTCU
+		else if(_this.scormVersion === '2004_3rd_CTCU'){
+			if(lessonCount + 1 == totalLessons){
+				//sequencing elements for the post test
+				seq += "               <imsss:sequencing>\n"+
+					//handles the score from the post test to be the only activity that counts towards rollup so that the course (these defaults and don't have to be included)					          
+					"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
+					"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
+					"	        	</imsss:sequencing>\n";						
+			}
+			else{
+				seq += "               <imsss:sequencing>\n"+
+				// Set all content SCOs to not count towards any rollup. Only the post test will count
+					"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+
+					"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
+					"	        	</imsss:sequencing>\n";						
+			}
+		}
+		//default
 		else{
 			seq += "               <imsss:sequencing>\n"+		
 			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
