@@ -151,7 +151,7 @@ function C_StaticContent(_type) {
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
-					allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+					allowedContent: true;//'a p b i li ol ul table tr td th tbody thead span div img; a p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 				}); 
 			}
 
@@ -176,7 +176,7 @@ function C_StaticContent(_type) {
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
-					allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+					allowedContent: true;//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 				}); 
 			}
 		}
