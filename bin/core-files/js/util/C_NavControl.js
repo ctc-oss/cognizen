@@ -711,7 +711,7 @@ this.loadPage = function(){
 	switch (currentTemplateType) {
 		//Satic Layouts
 		case "group":
-			currentTemplate = new C_LessonTitle(currentTemplateType);
+			currentTemplate = new C_StaticContent("textOnly");
 			currentTemplate.initialize();
 			break;
 		case "completion":

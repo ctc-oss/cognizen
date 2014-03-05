@@ -98,7 +98,7 @@ function checkForGroup(_id){
 	return virgin;
 }
 
-var indexGroupID_arr
+var indexGroupID_arr;
 
 function addIndex(){
 	indexItem_arr = [];
@@ -292,7 +292,7 @@ function addIndex(){
 					//Create a Unique ID for the page
 					var myID = guid();
 					//Place a page element
-					$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="group" type="group"></page>'));
+					$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="textOnly" type="group"></page>'));
 					
 					//Place the page title element
 					$(data).find("page").eq(childParent).append($("<title>"));
