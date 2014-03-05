@@ -250,7 +250,7 @@ function C_Reveal(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
-				allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
 			
 			$("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>").insertAfter("#content");
@@ -313,7 +313,7 @@ function C_Reveal(_type) {
 						enterMode : CKEDITOR.ENTER_BR,
 						shiftEnterMode: CKEDITOR.ENTER_P,
 						extraPlugins: 'sourcedialog',
-						allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+						allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 					});
 						
 					revealEdit_arr.push(revealID);
@@ -360,7 +360,7 @@ function C_Reveal(_type) {
 								enterMode : CKEDITOR.ENTER_BR,
 								shiftEnterMode: CKEDITOR.ENTER_P,
 								extraPlugins: 'sourcedialog',
-								allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+								allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 							});
 							
 							var boxWidth = $("#"+revealID+"Width").width() + 10;

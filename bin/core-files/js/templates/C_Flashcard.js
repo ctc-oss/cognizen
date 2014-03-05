@@ -167,7 +167,7 @@ function C_Flashcard(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
-				allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
 			
 			/**
@@ -261,7 +261,7 @@ function C_Flashcard(_type) {
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
-			allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});	
 		
 		CKEDITOR.inline( cardID+"BackText", {
@@ -270,7 +270,7 @@ function C_Flashcard(_type) {
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
-			allowedContent: 'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});	
 		
 		cardEdit_arr.push(cardID);

@@ -27,7 +27,8 @@ function C_PageTitle(){
 			},
 			toolbarGroups : pageTitleToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			allowedContent: true
 		});
 	}
 	

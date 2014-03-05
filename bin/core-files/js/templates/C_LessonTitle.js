@@ -79,7 +79,7 @@ function C_LessonTitle(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
-				allowedContent: 'p b i li ol ul span div img; p b i li ol ul div span img [*](*){*}'
+				allowedContent: true//'p b i li ol ul span div img; p b i li ol ul div span img [*](*){*}'
 			}); 
 		}
 		$(this).scrubContent();	

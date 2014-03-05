@@ -324,7 +324,7 @@ function C_VisualMediaHolder(callback){
 				extraPlugins: 'sourcedialog',
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
+				allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
 			
@@ -791,7 +791,7 @@ function C_VisualMediaHolder(callback){
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
-			allowedContent: 'p b i span div img; p b i div span img [*](*){*}'
+			allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
 		});							
 						
 		galleryEdit_arr.push(galleryItemID);
