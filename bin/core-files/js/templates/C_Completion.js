@@ -15,6 +15,12 @@ function C_Completion(_type) {
     var mySidebar;
     var myContent;//Body
     var audioHolder;
+    var scored;
+    var minScore;
+    var correctQuestions;
+    var totalQuestions;
+    var userScore;
+    var scoreText;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -25,6 +31,23 @@ function C_Completion(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
+
+		//evaluate score
+		scored = $(data).find('scored').attr('value');
+		if(scored == "true"){
+			correctQuestions = getNumberCorrect();
+			totalQuestions = getNumberOfQuestions();
+			minScore = parseInt($(data).find('minScore').attr('value'));
+			userScore = Math.round(correctQuestions/totalQuestions*100);
+			if(userScore < minScore){
+				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
+			}else{
+				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
+			}
+			scoreText += 'The minimum score is ' + minScore + '%.</p>';
+			scoreText += '<p class="completionText">You answered ' + correctQuestions + ' out of ' + totalQuestions + ' questions correctly.</p>';
+			scoreText += '<p class="completionText">Your total score is ' + userScore + '%.';
+		}
 		
 		//Position the page text
         myContent = $(data).find("page").eq(currentPage).find("content").first().text();
@@ -38,10 +61,11 @@ function C_Completion(_type) {
         //Add classes for page layouts - updatable in css
 	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
+		$("#content").append(scoreText);
 		$("#content").append(myContent);
 		
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
-		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});
+//		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
 			completeLesson();
 		});
