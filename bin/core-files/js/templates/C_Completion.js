@@ -20,6 +20,9 @@ function C_Completion(_type) {
     var correctQuestions;
     var totalQuestions;
     var userScore;
+    var userScorePercent;
+    var completed = true;
+    var passed = false;
     var scoreText;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,15 +41,18 @@ function C_Completion(_type) {
 			correctQuestions = getNumberCorrect();
 			totalQuestions = getNumberOfQuestions();
 			minScore = parseInt($(data).find('minScore').attr('value'));
-			userScore = Math.round(correctQuestions/totalQuestions*100);
-			if(userScore < minScore){
+			userScore = correctQuestions/totalQuestions;
+			userScorePercent = Math.round(userScore*100);
+			if(userScorePercent < minScore){
+				passed = false;
 				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
 			}else{
+				passed = true;
 				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
 			}
 			scoreText += 'The minimum score is ' + minScore + '%.</p>';
 			scoreText += '<p class="completionText">You answered ' + correctQuestions + ' out of ' + totalQuestions + ' questions correctly.</p>';
-			scoreText += '<p class="completionText">Your total score is ' + userScore + '%.';
+			scoreText += '<p class="completionText">Your total score is ' + userScorePercent + '%.';
 		}
 		
 		//Position the page text
@@ -67,7 +73,7 @@ function C_Completion(_type) {
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
 //		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
-			completeLesson();
+			completeLesson(completed, passed, userScore);
 		});
         
         audioHolder = new C_AudioHolder();
