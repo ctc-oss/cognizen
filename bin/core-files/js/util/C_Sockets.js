@@ -52,7 +52,9 @@ function initializeSockets(){
 				mode = "review";
 			}else if(data.permission == "forcedReviewer"){
 				mode = "review";
-				forcedReviewer = true;
+				if(!isIE){
+					forcedReviewer = true;
+				}
 			}else if(data.permission == "viewer"){
 				mode = "production";
 			}
