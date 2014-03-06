@@ -198,9 +198,11 @@ var SocketHandler = {
             var contentPermissions = {};
 
             if (permissions) {
-                permissions.forEach(function(permission) {
-                    contentPermissions[permission.user.id] = permission.permission;
-                });
+               permissions.forEach(function(permission) {
+					if (permission.user && permission.user.id) {
+						contentPermissions[permission.user.id] = permission.permission;
+					}
+                });
             }
 
             // Now, get all the users and marry up the permission if it exists.
