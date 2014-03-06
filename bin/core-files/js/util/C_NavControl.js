@@ -28,7 +28,7 @@ var scored = false;
 var passScore = 0;
 var restartOnFail = false;
 var totalQuestions;
-var questionResponse_arr;
+var questionResponse_arr = [];
 var mandatoryInteraction = false;
 var hoverSubNav = false;
 var nextBack = false;
