@@ -1,9 +1,7 @@
 var justRelinquishedLock = false;
 
 function updateActiveEditor(data){
-	console.log("in updateActiveEditor");
 	if(urlParams['id'] == data.lessonID){
-		console.log("update active editor to: " + data.newEditor);
 		activeEditor = data.newEditor;
 	}
 }

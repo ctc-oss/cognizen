@@ -790,6 +790,57 @@ ul.no-indent {
 	padding-left: 10px;
 }
 
+.imgPalette{
+	position: relative;
+	margin-right: auto;
+	margin-left: auto;
+	padding-bottom: 10px;
+	max-width: 960px;
+}
+
+.clickImg{
+	position: relative;
+	float: left;
+	background-color: #EEEEEE;
+	padding: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	border-width: thick;
+	border-color: green;
+	cursor: hand; 
+	cursor: pointer;
+}
+
+.clickImgText{
+	position: relative;
+	font-family: Helvetica, Arial;
+	height: 190px;
+	padding-left: 15px;
+	padding-right: 15px;
+	color: #EEEEEE;
+	
+}
+
+.clickImgTextHolder{
+	position: relative;
+	background-color: #9DA6AB;
+	border-width: 2px;
+	border-color: #333333;
+	margin-top: 10px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-bottom: 15px;
+	width: 95%;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	
+}
+
 /* FOR FLASHCARD CONTENT */
 #flashcardHolder{
 	position: relative;

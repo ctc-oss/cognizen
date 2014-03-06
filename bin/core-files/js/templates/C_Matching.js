@@ -575,7 +575,6 @@ function C_Matching(_type) {
 							tmpAnswerObj.answerText = $("#"+ answerEdit_arr[i]+"Text").val();
 						}else{
 							tmpAnswerObj.answerText = CKEDITOR.instances[answerEdit_arr[i]+"Text"].getData();
-							console.log("answerText = " + tmpAnswerObj.answerText);
 						}	
 						tmpAnswerObj.answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
 								
@@ -733,7 +732,6 @@ function C_Matching(_type) {
 			var answerText = _data.answer_arr[i].answerText;
 			var answerCorrect = _data.answer_arr[i].answerCorrect;
 			if(_data.layout == "matching"){
-				console.log("should be placing it in the text... === " + answerText);
 				var newAnswer = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
 				var answerCDATA = newAnswer.createCDATASection(answerText);
 				$(data).find("page").eq(currentPage).find("answer").eq(i).find("content").empty();

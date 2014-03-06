@@ -387,7 +387,6 @@ function checkLockMode(){
 		}
 		//Request Edit Control
 		else{
-			console.log("activeEditor = " + activeEditor);
 			if(activeEditor == null){
 				var msg = '<div id="dialog-requestEdit" title="Take Edit Controls"><p class="validateTips">No one is currently editing the lesson.</p><p>Would you like to assume the edit controls?</p></div>';
 			}else{
@@ -747,6 +746,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		//Interactive Layouts
+		case "clickImage":
+			currentTemplate = new C_ClickImage(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "tabsOnly":
 			currentTemplate = new C_TabbedContent(currentTemplateType);
 			currentTemplate.initialize();

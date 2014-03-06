@@ -289,7 +289,6 @@ function insertGlossaryTerm(_term, _definition){
 	var insertPoint = 0;
 	var isOnly = false;
 	var totalGlossary = $(data).find('glossaryitem').length;
-	console.log("totalGlossary = " + totalGlossary);
 	if(totalGlossary != 0){
 		for(var i = 0; i < totalGlossary; i++){
 			var testTerm = $(data).find('glossaryitem').eq(i).find('term').text().toLowerCase();

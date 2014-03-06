@@ -62,7 +62,6 @@ function C_Completion(_type) {
      function checkMode(){
      	$(this).scrubContent();
      	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-     	console.log("OK - hit checkMode");
 		$('.antiscroll-wrap').antiscroll();
 
      	if(mode == "edit"){

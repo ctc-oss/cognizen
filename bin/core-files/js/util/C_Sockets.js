@@ -61,7 +61,6 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on('updateActiveEditor', function(data){
-		    console.log("updateActiveEditor called with data (C_Sockets) = " + data.newEditor);
 		    updateActiveEditor(data);
 	    });
 	    
@@ -188,7 +187,6 @@ function initializeSockets(){
 		
 		//Simple listener checking connectivity
 		cognizenSocket.on('setUsername', function (data) {
-           console.log(data);
            username = data.username.username;
            if(username == undefined){
 	           alert("your username was not set properly. please close this lesson, log out and try to log back in.");

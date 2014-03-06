@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "multipleChoiceMedia", "matching", "completion"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "multipleChoiceMedia", "matching", "completion"];
 
 
 /************************************************************************************
@@ -363,6 +363,44 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
 			
+			break;
+			
+		case "clickImage":
+			$(data).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(data).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("w", "150");
+			$(data).find("page").eq(newPage).attr("h", "150");
+
 			break;
 			
 		case "multipleChoice":
