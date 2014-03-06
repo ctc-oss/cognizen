@@ -655,6 +655,20 @@ function getFinalScore(){
 	alert("you got a score of: " + scoreString);
 }
 
+function getNumberCorrect(){
+	var correct = 0;
+	for(var i = 0; i < questionResponse_arr.length; i++){
+		if(questionResponse_arr[i].correct != false){
+			correct++;
+		}
+	}
+	return correct;
+}	
+
+function getNumberOfQuestions(){
+	return questionResponse_arr.length;
+}	
+
 /////////////////////////////////////////////////////END SCORING FUNCTIONALITY
 
 /****************************************************
