@@ -28,7 +28,7 @@ var Mail = {
         // send mail with defined transport object
         smtpTransport.sendMail(mailOptions, function (error, response) {
             if (error) {
-                _this.logger.info("Houston: We have a problem = " + error);
+                _this.logger.info("Houston: We have a mail problem = " + error);
             } else {
                 _this.logger.info("Message sent: " + response.message);
             }
