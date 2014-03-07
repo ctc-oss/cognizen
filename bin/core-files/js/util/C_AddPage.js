@@ -100,7 +100,8 @@ function createNewPageByType(_myType){
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
-			$(data).find("page").eq(newPage).attr("type", "group");
+			$(data).find("page").eq(newPage).attr("graded", "true");
+			$(data).find("page").eq(newPage).attr("mandatory", "true");
 			break;
 		case "textOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -459,12 +460,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
 			
 			$(data).find("page").eq(newPage).attr("attempts", 2);
-			$(data).find("page").eq(newPage).attr("graded", true);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
 			
 			var userSelection_arr = [];
 			var question_obj = new Object();
 			question_obj.complete = false;
 			question_obj.correct = null;
+			question_obj.graded = false;
 			question_obj.id = myID;
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
@@ -535,12 +538,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
 			
 			$(data).find("page").eq(newPage).attr("attempts", 2);
-			$(data).find("page").eq(newPage).attr("graded", true);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
 			
 			var userSelection_arr = [];
 			var question_obj = new Object();
 			question_obj.complete = false;
 			question_obj.correct = null;
+			question_obj.graded = false;
 			question_obj.id = myID;
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
@@ -618,12 +623,15 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
 			
 			$(data).find("page").eq(newPage).attr("attempts", 2);
-			$(data).find("page").eq(newPage).attr("graded", true);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
 			
 			var userSelection_arr = [];
+			
 			var question_obj = new Object();
 			question_obj.complete = false;
 			question_obj.correct = null;
+			question_obj.graded = false;
 			question_obj.id = $(data).find('page').eq(i).attr('id');
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
