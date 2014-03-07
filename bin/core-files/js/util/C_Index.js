@@ -471,6 +471,7 @@ function addRollovers(myItem){
 ** Index Button Funcitonality
 *************************************************************/
 function toggleIndex(){
+	console.log("toggleIndex");
 	$("#indexPane").css({'z-index':1});
 	$("#glossaryPane").css({'z-index':0});
 	$("#docPane").css({'z-index':0});

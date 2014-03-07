@@ -48,7 +48,9 @@ function C_Matching(_type) {
     
     var optionStatementY = 0;
     var optionAnswerY = 0;
-    
+    var graded = false;
+    var mandatory = true;
+  
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -68,6 +70,12 @@ function C_Matching(_type) {
 		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectresponse').text();
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
+		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
+			graded = true;
+		}
+		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
+			mandatory = false;
+		}
 		
 		pageTitle = new C_PageTitle();
 		
@@ -465,15 +473,31 @@ function C_Matching(_type) {
 		//Create the Content Edit Dialog
         var msg = "<div id='questionEditDialog' title='Set Question Preferences'>";
         msg += "<label id='label'>no. of attempts: </label>";
-        msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px; text-align=center;'/>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'><b>graded: </b></label>";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'><b>mandatory: </b></label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         msg += "<label id='label'>drag and drop: </label>";
-		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true'/>";
+		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='feedbackLabel'>Input your feedback:</div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
 		msg += "<b>Answers:</b><br/><div id='myAnswerList'></div>";
 		$("#stage").append(msg);
 				
+        if(!graded){
+			$("#isGraded").removeAttr('checked');
+		}else{
+			$("#isGraded").attr('checked', 'checked');
+		}
+
+        if(!mandatory){
+			$("#isMandatory").removeAttr('checked');
+		}else{
+			$("#isMandatory").attr('checked', 'checked');
+		}
+
 		if(type == "matching"){
 			$("#dragAndDrop").removeAttr('checked');
 		}else{
@@ -542,6 +566,17 @@ function C_Matching(_type) {
 				Save: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
+
+					if($("#isGraded").prop("checked") == true){
+						$(data).find("page").eq(currentPage).attr("graded", "true");
+					}else{
+						$(data).find("page").eq(currentPage).attr("graded", "false");
+					}
+					if($("#isMandatory").prop("checked") == true){
+						$(data).find("page").eq(currentPage).attr("mandatory", "true");
+					}else{
+						$(data).find("page").eq(currentPage).attr("mandatory", "false");
+					}
 					
 					if($("#dragAndDrop").prop("checked") == true){
 						tmpObj.layout = "matchingDrag";
@@ -712,6 +747,8 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
+		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
+		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).attr("layout", _data.layout);
 		
 		for(var i = 0; i < optionEdit_arr.length; i++){

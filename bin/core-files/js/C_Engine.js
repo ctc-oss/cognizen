@@ -190,6 +190,7 @@ function buildInterface(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(_type){
+	updateTotalGradedQuestions();
 	//Serialize the xml and send it to nodejs using socket.
 	var myData = $(data);
 	var xmlString = undefined;
@@ -219,6 +220,7 @@ function sendUpdateWithRefresh(_type){
 
 
 function sendUpdate(){
+	updateTotalGradedQuestions();
 	//Serialize the xml and send it to nodejs using socket.
 	var myData = $(data);
 	var xmlString;

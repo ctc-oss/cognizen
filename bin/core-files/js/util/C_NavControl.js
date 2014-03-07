@@ -27,13 +27,15 @@ var sectionLength = 0;
 var scored = false;
 var passScore = 0;
 var restartOnFail = false;
-var totalQuestions;
+var totalGradedQuestions = 0;
 var questionResponse_arr = [];
 var mandatoryInteraction = false;
+var assessment = false;
 var hoverSubNav = false;
 var nextBack = false;
 var nextDisabled = true;
 var backDisabled = false;
+var indexDisabled = false;
 var helpButton = false;
 var helpURL = "";
 var printButton = false;
@@ -453,24 +455,40 @@ function checkToggleMode(){
 //If this is a graded exercise, track the questions.  Am marking questions as graded so that you can have questions that ARE NOT scored as well...
 if($(data).find('scored').attr("value") == 'true'){
 	scored = true;
-	
 	if($(data).find('restartOnFail').attr("value") == 'true'){
 		restartOnFail = true;
 	}
-	
-	questionResponse_arr = [];
+	passScore = $(data).find('minScore').attr("value") / 100;
+}	
+
+function updateTotalGradedQuestions(){
+	totalGradedQuestions = 0;
 	for(var i = 0; i < totalPages; i++){
-		if($(data).find("page").eq(i).attr('graded')){
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
+		if( ($(data).find("page").eq(i).attr('type') == 'kc') && ($(data).find("page").eq(i).attr('graded') == 'true') ){
+			totalGradedQuestions++;
 		}
 	}
-	passScore = $(data).find('minScore').attr("value") / 100;
+}
+
+updateTotalGradedQuestions();
+	
+questionResponse_arr = [];
+
+for(var i = 0; i < totalPages; i++){
+	if($(data).find("page").eq(i).attr('type') == 'kc'){
+		var userSelection_arr = [];
+		var question_obj = new Object();
+		question_obj.complete = false;
+		question_obj.correct = null;
+		if($(data).find("page").eq(i).attr('graded') == 'true'){
+			question_obj.graded = true;
+		}else{
+			question_obj.graded = false;
+		}
+		question_obj.id = $(data).find('page').eq(i).attr('id');
+		question_obj.userAnswer = userSelection_arr;
+		questionResponse_arr.push(question_obj);
+	}
 }
 //END OF SCORING SET UP.
 	
@@ -514,33 +532,77 @@ function clickNext(){
 	
 }
 
+function disableBack(){
+	$('#back').addClass('disabled');
+	$('#back').off('click');
+	backDisabled = true;
+//	console.log("disableBack");
+}
+
+function enableBack(){
+	$('#back').removeClass('disabled');
+	$("#back").click(clickBack);
+	backDisabled = false;
+//	console.log("enableBack");
+}
+
+function disableNext(){
+	$('#next').addClass('disabled');
+	$('#next').off('click');
+	nextDisabled = true;
+//	console.log("disableNext");
+}
+
+function enableNext(){
+	$('#next').removeClass('disabled');
+	$("#next").click(clickNext);
+	nextDisabled = false;
+//	console.log("enableNext");
+}
+
+function disableIndex(){
+	$('#indexTab').addClass('disabled');
+	$('#indexTab').off('click');
+	indexDisabled = true;
+	console.log("disableIndex");
+}
+
+function enableIndex(){
+	if(indexDisabled){
+		$('#indexTab').removeClass('disabled');
+		$('#indexTab').click(toggleIndex);
+		indexDisabled = false;
+	}
+	console.log("enableIndex");
+}
+
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-	if(currentPage == 0){
-		$('#back').css({opacity:.5});
-		$('#back').off('click');
-		backDisabled = true;
+//	console.log("assessment = " + assessment);
+//	console.log("mandatoryInteraction = " + mandatoryInteraction);
+
+	if(assessment){
+		disableIndex();
 	}else{
-		$('#back').css({opacity: 1});
+		enableIndex();
+	}
+	
+	if(currentPage == 0 || assessment == true){
+		disableBack();
+	}else{
 		if(backDisabled == true){
-			$("#back").click(clickBack);
-			backDisabled = false;
+			enableBack();
 		}
 	}
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
-		$('#next').css({opacity:.5});
-		$('#next').off('click');
-		nextDisabled = true;
-		//on the last page of lesson so set complete and passed for the lesson
+		disableNext();
 		if(currentPage == totalPages -1 && isScorm && $(data).find("page").eq(currentPage).attr('layout') != "completion"){
 			completeLessonDefault();
 		};
 	}else{
-		$('#next').css({opacity: 1});
 		if(nextDisabled == true){
-			$("#next").click(clickNext);
-			nextDisabled = false;
+			enableNext();
 		}
 	}
 }
@@ -608,12 +670,12 @@ function updateScoring(_userSelection, _correct){
 }
 
 function checkForRestart(){
-	var allowedMisses = Math.ceil(questionResponse_arr.length - (questionResponse_arr.length * passScore));
+	var allowedMisses = Math.ceil(totalGradedQuestions - (totalGradedQuestions * passScore));
 	
 	var misses = 0;
 	
 	for (var i = 0; i < questionResponse_arr.length; i++){
-		if(questionResponse_arr[i].correct == false){
+		if(questionResponse_arr[i].correct == false && questionResponse_arr[i].graded){
 			misses++
 		} 
 	}
@@ -644,30 +706,41 @@ function sendRestartOnFail(){
 }
 
 function getFinalScore(){
-	var correct = 0;
-	var scoreString = "";
+	var score_obj = new Object();
+	score_obj.totalQuestions = totalGradedQuestions;
+//	console.log("totalGradedQuestions = " + totalGradedQuestions);
+	score_obj.correctQuestions = 0;
+	score_obj.score = 0;
+	score_obj.scorePercent = 0;
+	score_obj.minScore = parseInt($(data).find('minScore').attr('value'));
+	score_obj.passed = false;
+
 	for(var i = 0; i < questionResponse_arr.length; i++){
-		if(questionResponse_arr[i].correct != false){
-			correct++;
+		if(questionResponse_arr[i].correct && questionResponse_arr[i].graded){
+			score_obj.correctQuestions++;
 		}
 	}
-	scoreString = correct + " out of " + questionResponse_arr.length;
-	alert("you got a score of: " + scoreString);
+	score_obj.score = score_obj.correctQuestions / score_obj.totalQuestions;
+	score_obj.scorePercent = Math.round(score_obj.score*100);
+	if(score_obj.scorePercent >= score_obj.minScore){
+		score_obj.passed = true;
+	}
+
+	return score_obj;
 }
 
-function getNumberCorrect(){
-	var correct = 0;
+function checkQuestionComplete(){
+	var isComplete = false;
 	for(var i = 0; i < questionResponse_arr.length; i++){
-		if(questionResponse_arr[i].correct != false){
-			correct++;
+		if(currentPageID == questionResponse_arr[i].id){
+			if(questionResponse_arr[i].complete == true){
+				isComplete = true;
+			}
 		}
 	}
-	return correct;
-}	
-
-function getNumberOfQuestions(){
-	return questionResponse_arr.length;
-}	
+//	console.log("isComplete = " + isComplete);
+	return isComplete;
+}
 
 /////////////////////////////////////////////////////END SCORING FUNCTIONALITY
 
@@ -685,10 +758,16 @@ this.loadPage = function(){
 		updateTracking();
 	}
 	
-	if($(data).find("page").eq(currentPage).attr("graded") == "true"){
+	if($(data).find("page").eq(currentPage).attr("mandatory") == "true" && mode != "edit"){
+		if($(data).find("page").eq(currentPage).attr("graded") == "true"){
+			assessment = true;
+		}else{
+			assessment = false;
+		}
 		mandatoryInteraction = true;
 	}else{
 		mandatoryInteraction = false;
+		assessment = false;
 	}
 	
 	if(mode == "edit" || mode == "review"){

@@ -15,14 +15,7 @@ function C_Completion(_type) {
     var mySidebar;
     var myContent;//Body
     var audioHolder;
-    var scored;
-    var minScore;
-    var correctQuestions;
-    var totalQuestions;
-    var userScore;
-    var userScorePercent;
     var completed = true;
-    var passed = false;
     var scoreText;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,23 +29,17 @@ function C_Completion(_type) {
         }
 
 		//evaluate score
-		scored = $(data).find('scored').attr('value');
-		if(scored == "true"){
-			correctQuestions = getNumberCorrect();
-			totalQuestions = getNumberOfQuestions();
-			minScore = parseInt($(data).find('minScore').attr('value'));
-			userScore = correctQuestions/totalQuestions;
-			userScorePercent = Math.round(userScore*100);
-			if(userScorePercent < minScore){
-				passed = false;
-				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
-			}else{
-				passed = true;
+		if($(data).find('scored').attr('value') == "true"){
+			var score_obj = getFinalScore();
+
+			if(score_obj.passed){
 				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
+			}else{
+				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
 			}
-			scoreText += 'The minimum score is ' + minScore + '%.</p>';
-			scoreText += '<p class="completionText">You answered ' + correctQuestions + ' out of ' + totalQuestions + ' questions correctly.</p>';
-			scoreText += '<p class="completionText">Your total score is ' + userScorePercent + '%.';
+			scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
+			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
+			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%.';
 		}
 		
 		//Position the page text
@@ -73,7 +60,7 @@ function C_Completion(_type) {
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
 //		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
-			completeLesson(completed, passed, userScore);
+			completeLesson(completed, score_obj.passed, score_obj.score);
 		});
         
         audioHolder = new C_AudioHolder();
