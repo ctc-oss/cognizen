@@ -276,27 +276,33 @@ function C_Matching(_type) {
 
 
 	function showUserAnswer(){
-//		console.log("showUserAnswer");
 		//Show markings - green check - red x
 		for(var i=0; i<questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
-//					console.log("temp_arr[k] = " + temp_arr[k]);
-					option_arr[k].find("input").val(temp_arr[k]);
-					if(option_arr[k].find('input').val().toUpperCase() != option_arr[k].data("myMatch")){
-						tempCorrect = false;
-						option_arr[k].addClass("optionIncorrect");
+					if(type == "matching"){
+						option_arr[k].find("input").val(temp_arr[k]);
+						if(option_arr[k].find('input').val().toUpperCase() != option_arr[k].data("myMatch")){
+							tempCorrect = false;
+							option_arr[k].addClass("optionIncorrect");
+						}else{
+							option_arr[k].addClass("optionCorrect");
+						}
 					}else{
-						option_arr[k].addClass("optionCorrect");
+						var tempDrag = temp_arr[k].drag;
+						var tempDrop = temp_arr[k].drop;
+						if($("#" + tempDrop).data("matchID") != $("#" + tempDrag).data("myMatch")){
+							tempCorrect = false;
+							$("#" + tempDrag).addClass("optionIncorrect");
+						}else{
+							$("#" + tempDrag).addClass("optionCorrect");
+						}
+						$("#" + tempDrag).css({"top":temp_arr[k].top, "left":temp_arr[k].left, "position":"absolute"});
+						TweenMax.to($("#" + tempDrag), 1, {css:{scaleX:.5, scaleY:.5}});
+						$("#" + tempDrag).removeClass("ui-draggable");
 					}
-			
-					//if(marking_arr[i].isCorrect == false){
-					//	marking_arr[i].myDrop.addClass('optionIncorrect');
-					//}else{
-					//	marking_arr[i].myDrop.addClass('optionCorrect');
-					//}
 				}
 			}
 		}
@@ -378,11 +384,25 @@ function C_Matching(_type) {
 		
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			var selected_arr = [];
-			for(var i = 0; i < option_arr.length; i++){
+			if(type == "matching"){
+				for(var i = 0; i < option_arr.length; i++){
 //				if(option_arr[i].find("input").prop("checked") == true){
-//				console.log( "val = " + option_arr[i].find("input").val().toUpperCase() );
 					selected_arr.push(option_arr[i].find("input").val().toUpperCase());
-//				}	
+				}
+			}else{
+				for(var i=0; i < drop_arr.length; i++){
+					var tempDrag = drop_arr[i].myDrag;
+					var tempDrop = drop_arr[i].myDrop;
+				
+					var selectedObject = new Object();
+				
+					selectedObject.top = $("#" + tempDrag).position().top;
+					selectedObject.left = $("#" + tempDrag).position().left;
+					selectedObject.drop = tempDrop;
+					selectedObject.drag = tempDrag;
+
+					selected_arr.push(selectedObject);
+				}
 			}
 			updateScoring(selected_arr, tempCorrect);
 			$("#mcSubmit").button({ disabled: true });
