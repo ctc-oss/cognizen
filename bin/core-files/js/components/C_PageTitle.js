@@ -25,7 +25,9 @@ function C_PageTitle(){
 					cachedTextPreEdit = event.editor.getData();
 				}
 			},
+			toolbar: pageTitleToolbar,
 			toolbarGroups : pageTitleToolgroup,
+			extraPlugins: 'sourcedialog',
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true

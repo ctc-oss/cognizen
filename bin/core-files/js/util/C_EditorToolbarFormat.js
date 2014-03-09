@@ -40,9 +40,17 @@ var contentToolgroup = [
 /********************************************************************************************
 **  PAGE TITLE EDITOR TOOLBARS
 ********************************************************************************************/
+var pageTitleToolbar = [
+	{ name: 'basicstyles', groups: [ 'basicstyles'], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+	{ name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+	{ name: 'document', groups: [ 'mode'], items: [ 'Sourcedialog'] }
+];
+
+
 var pageTitleToolgroup = [
 	{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-	{ name: 'colors' }
+	{ name: 'colors' },
+	{ name: 'document', groups: [ 'mode'], items: [ 'Sourcedialog'] }
 ];
 
 /********************************************************************************************
