@@ -564,7 +564,7 @@ function disableIndex(){
 	$('#indexTab').addClass('disabled');
 	$('#indexTab').off('click');
 	indexDisabled = true;
-	console.log("disableIndex");
+//	console.log("disableIndex");
 }
 
 function enableIndex(){
@@ -573,7 +573,7 @@ function enableIndex(){
 		$('#indexTab').click(toggleIndex);
 		indexDisabled = false;
 	}
-	console.log("enableIndex");
+//	console.log("enableIndex");
 }
 
 //Turns the next/back button off for first/last page.
@@ -652,9 +652,11 @@ function updateTracking(){
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
 function updateScoring(_userSelection, _correct){
-	
+//	console.log("updateScoring");
 	for(var i = 0; i < questionResponse_arr.length; i++){
+//		console.log("i=" + i);
 		if(currentPageID == questionResponse_arr[i].id){
+//			console.log("inside if");
 			questionResponse_arr[i].complete = true;
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);

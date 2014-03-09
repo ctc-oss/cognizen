@@ -45,9 +45,12 @@ function C_Matching(_type) {
     var optionEdit_arr = [];
     var answerCount = 0;
     var answerEdit_arr = [];
+	var marking_arr;
+	var tempCorrect = true;
     
     var optionStatementY = 0;
     var optionAnswerY = 0;
+    var isComplete = false;
     var graded = false;
     var mandatory = true;
   
@@ -63,6 +66,9 @@ function C_Matching(_type) {
 			$('#stage').css({'opacity':0});
 		}
 		
+		isComplete = checkQuestionComplete();
+//		console.log("isComplete = " + isComplete);
+
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbackType');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackDisplay');
@@ -246,6 +252,13 @@ function C_Matching(_type) {
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
         checkMode();
+
+		if(isComplete){
+			//disableOptions();
+			//$("#mcSubmit").button({ disabled: true });
+			showUserAnswer();
+		}
+
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
@@ -260,14 +273,44 @@ function C_Matching(_type) {
 		}
 		
 	}
-	
-	var marking_arr;
+
+
+	function showUserAnswer(){
+//		console.log("showUserAnswer");
+		//Show markings - green check - red x
+		for(var i=0; i<questionResponse_arr.length; i++){
+			if(currentPageID == questionResponse_arr[i].id){
+				var temp_arr = questionResponse_arr[i].userAnswer;
+				var tempCorrect = true;
+				for(var k = 0; k < temp_arr.length; k++){
+//					console.log("temp_arr[k] = " + temp_arr[k]);
+					option_arr[k].find("input").val(temp_arr[k]);
+					if(option_arr[k].find('input').val().toUpperCase() != option_arr[k].data("myMatch")){
+						tempCorrect = false;
+						option_arr[k].addClass("optionIncorrect");
+					}else{
+						option_arr[k].addClass("optionCorrect");
+					}
+			
+					//if(marking_arr[i].isCorrect == false){
+					//	marking_arr[i].myDrop.addClass('optionIncorrect');
+					//}else{
+					//	marking_arr[i].myDrop.addClass('optionCorrect');
+					//}
+				}
+			}
+		}
+		$(".matchingInput").prop('disabled', true);
+		$("#mcSubmit").button({ disabled: true });
+		mandatoryInteraction = false;
+		checkNavButtons();
+	}
+
 	
 	function checkAnswer(){
 		//////////////////////////CHECK IF CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		$("#dialog-attemptResponse").remove();
 		attemptsMade++;
-		var tempCorrect = true;
 		marking_arr = [];
 		/*check for regular matching*/
 		if(type == "matching"){
@@ -301,17 +344,6 @@ function C_Matching(_type) {
 			}
 		}
 		
-		//Show markings - green check - red x
-		if(tempCorrect == true || attemptsMade == attemptsAllowed){
-			for(var i=0; i<marking_arr.length; i++){
-				
-				if(marking_arr[i].isCorrect == false){
-					marking_arr[i].myDrop.addClass('optionIncorrect');
-				}else{
-					marking_arr[i].myDrop.addClass('optionCorrect');
-				}
-			}
-		}
 		
 		/************************************
 		POPULATE FEEDBACK STRING
@@ -344,6 +376,18 @@ function C_Matching(_type) {
 			}
 		}
 		
+		if(tempCorrect == true || attemptsMade == attemptsAllowed){
+			var selected_arr = [];
+			for(var i = 0; i < option_arr.length; i++){
+//				if(option_arr[i].find("input").prop("checked") == true){
+//				console.log( "val = " + option_arr[i].find("input").val().toUpperCase() );
+					selected_arr.push(option_arr[i].find("input").val().toUpperCase());
+//				}	
+			}
+			updateScoring(selected_arr, tempCorrect);
+			$("#mcSubmit").button({ disabled: true });
+			showUserAnswer();
+		}
 		
 		/************************************
 		PLACE THE FEEDBACK

@@ -102,12 +102,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
 			$(data).find("page").eq(newPage).attr("graded", "true");
 			$(data).find("page").eq(newPage).attr("mandatory", "true");
+			$(data).find("page").eq(newPage).attr("type", "completion");
 			break;
 		case "textOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "graphicOnly":
 			$(data).find("page").eq(newPage).append($("<caption>"));
@@ -119,6 +121,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "top":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -134,6 +137,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "left":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -149,6 +153,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "right":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -164,6 +169,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "bottom":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -179,6 +185,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "sidebar":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -189,6 +196,7 @@ function createNewPageByType(_myType){
 			var newSidebarContent = new DOMParser().parseFromString('<sidebar></sidebar>',  "text/xml");
 			var sidebarCDATA = newSidebarContent.createCDATASection("<p>New Page Sidebar</p>");
 			$(data).find("page").eq(newPage).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "tabsOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -205,6 +213,7 @@ function createNewPageByType(_myType){
 			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA2 = newTabContent2.createCDATASection("New Tab Content");
 			$(data).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "tabsLeft":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -229,6 +238,7 @@ function createNewPageByType(_myType){
 
 			$(data).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "revealRight":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -249,8 +259,8 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).append(revealCDATA2);
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr('style', 'width:160px; height:160px;');
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr('imgStyle', 'width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Image Picture"');
-			
 			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "revealLeft":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -273,6 +283,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr('imgStyle', 'width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Image Picture"');
 			
 			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "revealTop":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -295,6 +306,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr('imgStyle', 'width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Reveal Image"');
 			
 			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "revealBottom":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -317,6 +329,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr('imgStyle', 'width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px; alt="Default Reveal Image"');
 			
 			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 		case "flashcardText":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -339,6 +352,7 @@ function createNewPageByType(_myType){
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
+			$(data).find("page").eq(newPage).attr("type", "static");
 			
 			break;
 			
@@ -363,6 +377,7 @@ function createNewPageByType(_myType){
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
+			$(data).find("page").eq(newPage).attr("type", "static");
 			
 			break;
 			
@@ -401,6 +416,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
 			
@@ -462,6 +478,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
 			var question_obj = new Object();
@@ -540,6 +557,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
 			var question_obj = new Object();
@@ -625,6 +643,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
 			

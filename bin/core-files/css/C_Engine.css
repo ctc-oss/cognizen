@@ -583,6 +583,11 @@ p.sidebarHeader{
 	font-weight: bold;
 }
 
+p.completionText{
+	text-align: center; 
+	font-weight: bold;
+}
+
 table{
 	border: 1px solid black;
 	border-collapse: collapse;
@@ -1230,7 +1235,6 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #999999;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	/*padding: 4px;*/
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -1240,8 +1244,6 @@ MULTIPLE CHOICE LAYOUTS
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
-	padding: 4px;
-	padding-right: 35px;
 }
 
 .optionIncorrect{
@@ -1249,8 +1251,6 @@ MULTIPLE CHOICE LAYOUTS
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
-	padding: 4px;
-	padding-right: 35px;
 }
 
 .optionLabel{
@@ -1416,12 +1416,27 @@ MATCHING LAYOUTS
 	left: 695px;
 }
 
+#back.disabled{
+	opacity: 0.2;
+}
+
+#back.disabled:hover{
+	opacity: 0.2;
+}
+
 #next{
 	position:absolute;
 	top:720px; 
 	left: 900px;
 }
 
+#next.disabled{
+	opacity: 0.2;
+}
+
+#next.disabled:hover{
+	opacity: 0.2;
+}
 
 #pageCount{
 	position:absolute;
@@ -1549,6 +1564,10 @@ MATCHING LAYOUTS
 	background: #eeeeee url(images/paneTabIndex.png) no-repeat center center;
 	cursor: hand; 
 	cursor: pointer;
+}
+
+#indexTab.disabled{
+	opacity: 0.2;
 }
 
 .indexMenuVisited{
