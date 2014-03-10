@@ -17,6 +17,7 @@ function C_Completion(_type) {
     var audioHolder;
     var completed = true;
     var scoreText;
+    var score_obj;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -30,7 +31,7 @@ function C_Completion(_type) {
 
 		//evaluate score
 		if($(data).find('scored').attr('value') == "true"){
-			var score_obj = getFinalScore();
+			score_obj = getFinalScore();
 
 			if(score_obj.passed){
 				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
