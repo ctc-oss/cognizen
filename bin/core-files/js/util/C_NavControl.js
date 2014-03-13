@@ -129,10 +129,7 @@ function checkNav(){
 			}
 		});
 		//attach home action (go to first page)
-		$("#homeButton").click(function() {
-			currentPage = 0;
-			currentTemplate.destroySelf();
-		});
+		$("#homeButton").click(clickHome);
 	}
 
 
@@ -513,7 +510,7 @@ function buildTrackingArray(){
 
  
 /*************************************************************
-** Next/Back Button Funcitonality
+** Next/Back/Home Button Funcitonality
 *************************************************************/
 function clickBack(){
 	if(indexState == true){
@@ -529,42 +526,56 @@ function clickNext(){
 	}
 	currentPage++;
 	currentTemplate.destroySelf();
-	
+}
+
+function clickHome(){
+	if(indexState == true){
+		toggleIndex();
+	}
+	currentPage = 0;
+	currentTemplate.destroySelf();
 }
 
 function disableBack(){
 	$('#back').addClass('disabled');
 	$('#back').off('click');
 	backDisabled = true;
-//	console.log("disableBack");
 }
 
 function enableBack(){
 	$('#back').removeClass('disabled');
 	$("#back").click(clickBack);
 	backDisabled = false;
-//	console.log("enableBack");
 }
 
 function disableNext(){
 	$('#next').addClass('disabled');
 	$('#next').off('click');
 	nextDisabled = true;
-//	console.log("disableNext");
 }
 
 function enableNext(){
 	$('#next').removeClass('disabled');
 	$("#next").click(clickNext);
 	nextDisabled = false;
-//	console.log("enableNext");
+}
+
+function disableHome(){
+	$('#homeButton').addClass('disabled');
+	$('#homeButton').off('click');
+	homeDisabled = true;
+}
+
+function enableHome(){
+	$('#homeButton').removeClass('disabled');
+	$("#homeButton").click(clickHome);
+	homeDisabled = false;
 }
 
 function disableIndex(){
 	$('#indexTab').addClass('disabled');
 	$('#indexTab').off('click');
 	indexDisabled = true;
-//	console.log("disableIndex");
 }
 
 function enableIndex(){
@@ -573,18 +584,17 @@ function enableIndex(){
 		$('#indexTab').click(toggleIndex);
 		indexDisabled = false;
 	}
-//	console.log("enableIndex");
 }
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-//	console.log("assessment = " + assessment);
-//	console.log("mandatoryInteraction = " + mandatoryInteraction);
 
 	if(assessment){
 		disableIndex();
+		disableHome();
 	}else{
 		enableIndex();
+		enableHome();
 	}
 	
 	if(currentPage == 0 || assessment == true){

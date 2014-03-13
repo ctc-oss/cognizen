@@ -53,6 +53,7 @@ function updateMenuItems(){
 			if(tracking_arr[i].complete == true){
 				if(progressMode == "lockStep"){
 					$("#" + thisID).removeClass('ui-state-disabled');
+					$("#" + thisID).click(clickIndexItem);
 				}
 				if(mode != "edit"){
 					$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
@@ -64,6 +65,7 @@ function updateMenuItems(){
 				if(mode != "edit" && mode != "review"){
 					if(progressMode == "lockStep"){
 						$("#" + thisID).addClass('ui-state-disabled');
+						$("#" + thisID).off('click');
 					}
 				}
 			}
@@ -97,6 +99,17 @@ function checkForGroup(_id){
 	}
 	return virgin;
 }
+
+
+function clickIndexItem(){
+	if(hoverSubNav == false){
+		loadPageFromID($(this).attr("myID"));
+		if(indexState){
+			toggleIndex();
+		}
+	}
+}
+
 
 var indexGroupID_arr;
 
@@ -361,14 +374,7 @@ function addIndex(){
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
-		$(indexItem_arr[i]).click(function(){
-			if(hoverSubNav == false){
-				loadPageFromID($(this).attr("myID"));
-				if(indexState){
-					toggleIndex();
-				}
-			}
-		});
+		$(indexItem_arr[i]).click(clickIndexItem);
 	}
 
 	if(pushedUpdate == true){
