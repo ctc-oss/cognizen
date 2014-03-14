@@ -314,9 +314,13 @@ function C_VisualMediaHolder(callback){
 						if(cachedTextPreEdit != event.editor.getData()){
 							saveCaptionEdit(event.editor.getData());
 						}
+						enableNext();
+						enableBack();
 					},
 					focus: function (event){
 						cachedTextPreEdit = event.editor.getData();
+						disableNext();
+						disableBack();
 					}
 				},
 				toolbar: captionToolbar,

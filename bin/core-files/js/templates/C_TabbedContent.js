@@ -172,9 +172,13 @@ function C_TabbedContent(_type) {
 						if(cachedTextPreEdit != event.editor.getData()){
 							saveContentEdit(event.editor.getData());
 						}
+						enableNext();
+						enableBack();
 					},
 					focus: function (event){
 						cachedTextPreEdit = event.editor.getData();
+						disableNext();
+						disableBack();
 					}
 				},
 				toolbar: contentToolbar,

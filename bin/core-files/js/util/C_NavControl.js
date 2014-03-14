@@ -418,37 +418,6 @@ function checkLockMode(){
 	});
 }
 
-function checkToggleMode(){
-	$("#myCanvas").append("<div id='toggleMode' class='toggleOn' title='Toggle edit mode.'></div>");
-	$("#toggleMode").tooltip().click(function(){
-		if($("#toggleMode").hasClass('toggleOn')){
-			$("#toggleMode").removeClass("toggleOn");
-			$("#toggleMode").addClass("toggleOff");
-			$("#scormform").hide();
-			$("#publish").hide();
-			$("#preferences").hide();
-			$("#passLock").hide();
-			$("#comment").hide();
-			$("#addPage").hide();
-			$("#audioDrop").hide();				
-			mode = "prod";
-		}else{
-			$("#toggleMode").removeClass("toggleOff");
-			$("#toggleMode").addClass("toggleOn");
-			$("#scormform").show();
-			$("#publish").show();
-			$("#preferences").show();
-			$("#passLock").show();
-			$("#comment").show();
-			$("#addPage").show();
-			$("#audioDrop").show();
-			mode = "edit";
-		}
-		currentTemplate.fadeComplete();
-	});
-}
-
-
 //If this is a graded exercise, track the questions.  Am marking questions as graded so that you can have questions that ARE NOT scored as well...
 if($(data).find('scored').attr("value") == 'true'){
 	scored = true;

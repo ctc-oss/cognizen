@@ -20,9 +20,13 @@ function C_PageTitle(){
 					if(cachedTextPreEdit != event.editor.getData()){
 						saveTitleEdit(event.editor.getData());
 					}
+					enableNext();
+					enableBack();
 				},
 				focus: function(event){
 					cachedTextPreEdit = event.editor.getData();
+					disableNext();
+					disableBack();
 				}
 			},
 			toolbar: pageTitleToolbar,
