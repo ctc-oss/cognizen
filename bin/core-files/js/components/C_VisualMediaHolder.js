@@ -490,7 +490,7 @@ function C_VisualMediaHolder(callback){
 	function unzipComplete(){
 		$("#mediaLoader").remove();
 		cognizenSocket.removeListener("unzipComplete", unzipComplete);
-		var msg = "<div id='zipUploadCompleteDialog' title='Input Audio Path'>";
+		var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
 		msg += "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
 		msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. For instance, if you zipped a folder called myFolder with a video named myMedia.mp4 in it, when you access the media in the system, the path would be myFolder/myMedia.mp4.</p>";
 		msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  For instance, if you zipped myImage.png, myImage2.png and myImage3.png, you access the media through the system, you would just input myImage.png.</p>"
