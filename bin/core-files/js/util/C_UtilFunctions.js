@@ -59,7 +59,16 @@ var queryStringParameters = function() {
 	return urlParams;
 }
 
-function shuffleArray(a) { // Fisher-Yates shuffle, no side effects
+/*****************************************************
+shuffleArray
+randomize the order of any array.  Just pass in array.
+var my_arr = shuffleArray(anyArray);
+OR
+anyArray = shuffleArray(anyArray); 
+to shuffle self.
+*****************************************************/
+// Fisher-Yates shuffle, no side effects
+function shuffleArray(a) { 
     var i = a.length, t, j;
     a = a.slice();
     while (--i) t = a[i], a[i] = a[j = ~~(Math.random() * (i+1))], a[j] = t;
