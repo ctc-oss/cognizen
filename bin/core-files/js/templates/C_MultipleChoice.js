@@ -50,6 +50,7 @@ function C_MultipleChoice(_type) {
     var optionCount = 0;
     var graded = false;
     var mandatory = true;
+    var randomize = false;
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -76,6 +77,9 @@ function C_MultipleChoice(_type) {
 		}
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
 			mandatory = false;
+		}
+		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
+			randomize = true;
 		}
 		
 		pageTitle = new C_PageTitle();
@@ -110,18 +114,35 @@ function C_MultipleChoice(_type) {
 		}else{
 			$('#answerOptions').append('<div id="answer" class="checkBox">');
 		}		
+		//console.log("number of options = " + optionCount);
+		
+		var order_arr = [];
+		for (var i = 0; i < optionCount; i++){
+			order_arr.push(i);
+		}
+		
+		console.log("randomize = " + randomize);
+		
+		if(randomize){
+			console.log("RANDOMIZE");
+			var order_arr = shuffleArray(order_arr);
+		}
+		
+		
 		//find every option in the xml - place them on the screen.
-		$(data).find("page").eq(currentPage).find("option").each(function()
-		{	
+		//$(data).find("page").eq(currentPage).find("option").each(function()
+		for(var j = 0; j < order_arr.length; j++){	
+			var myNode = $(data).find("page").eq(currentPage).find("option").eq(order_arr[j]);
+			console.log("myNode = " + myNode);
 			//Create unique class name for each option
 			var myOption = "option" + iterator;
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
-
+			
 			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + $(this).attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +$(this).find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
 			
 			$("#" + myOption + "Check").click(function(){
@@ -173,7 +194,7 @@ function C_MultipleChoice(_type) {
 			iterator++;
 			option_arr.push($('#' + myOption));
 			
-		});
+		};
 		
 		$("#answerOptions").append('<div id="mcSubmit"></div>');
 
@@ -451,11 +472,13 @@ function C_MultipleChoice(_type) {
 	function updateQuestionEditDialog(){
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
 		msg += "<label id='label'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/><br/>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'><b>randomize options: </b></label>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
@@ -481,6 +504,12 @@ function C_MultipleChoice(_type) {
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
+		}
+		
+		if(!randomize){
+			$("#isRandom").removeAttr('checked');
+		}else{
+			$("#isRandom").attr('checked', 'checked');
 		}
 
 		if(feedbackType == "undifferentiated"){
@@ -534,6 +563,11 @@ function C_MultipleChoice(_type) {
 						$(data).find("page").eq(currentPage).attr("mandatory", "true");
 					}else{
 						$(data).find("page").eq(currentPage).attr("mandatory", "false");
+					}
+					if($("#isRandom").prop("checked") == true){
+						$(data).find("page").eq(currentPage).attr("randomize", "true");
+					}else{
+						$(data).find("page").eq(currentPage).attr("randomize", "false");
 					}
 					tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
 					if(feedbackType == "undifferentiated"){

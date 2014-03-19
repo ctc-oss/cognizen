@@ -478,6 +478,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
@@ -557,6 +558,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
@@ -643,6 +645,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];
