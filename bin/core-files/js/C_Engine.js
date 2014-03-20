@@ -81,6 +81,7 @@ function initScripts(_data){
 				corePath +"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				corePath +"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
 				corePath +"js/libs/jquery.nestable.js",
+				corePath +"js/libs/jquery.browser.js",
 		//Import Cognizen layout templates
 				//corePath +"js/templates/C_LessonTitle.js",
 				corePath +"js/templates/C_ClickImage.js",
