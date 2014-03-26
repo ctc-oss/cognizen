@@ -117,7 +117,11 @@ function C_Flashcard(_type) {
 			}
 		}		
 		enableNextCard();
-		$("<div id='flashcardReshuffle'>shuffle</div>").insertAfter("#flashcardHolder");
+		if(randomize == true){
+			$("<div id='flashcardReshuffle'>shuffle</div>").insertAfter("#flashcardHolder");
+		}else{
+			$("<div id='flashcardReshuffle'>reset</div>").insertAfter("#flashcardHolder");
+		}
 		$("#flashcardReshuffle").button().click(function(){
 			$("#flashcardHolder").empty();
 			card_arr = [];
@@ -147,7 +151,9 @@ function C_Flashcard(_type) {
 				myIndex++;
 				
 				if(currentCard == 0){
-					
+					if(mandatory == true){
+						
+					}
 				}else{
 					currentCard--;
 					enableNextCard();
