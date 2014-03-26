@@ -49,7 +49,6 @@ function C_Flashcard(_type) {
 		
         $("#content").addClass("top");
         $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim())); 
 		$("#content").append(myContent);
 		
 		shuffle();		
@@ -72,7 +71,7 @@ function C_Flashcard(_type) {
 				$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardImg' style='" + myTerm + "'></div></div>");
 			}
 			//Position the card.
-			$("#" + tempID).css({'left': (($("#contentHolder").width() - $("#content").position().left *2) -  (($("#" + tempID).width()) * 2 + 100))/2 + (i*4)});
+			$("#" + tempID).css({'left': 69 + i*4});
 			//Postion the text within the card.
 			$("#" + tempTextID).css({'position': 'absolute', 'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2, 'left': ($("#" + tempID).width() - $("#"+tempTextID).width())/2});
 			
@@ -123,7 +122,7 @@ function C_Flashcard(_type) {
 					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</dev>");
 					$("#" + tempID).css({'position': 'absolute', 'top': (target.height() - $("#" + tempID).height())/2, 'left': (target.width() - $("#" + tempID).width())/2});
 					target.addClass("flashcardBack");
-					TweenMax.to(target, .2, {rotationY:0, left: target.position().left + (4 * myIndex)});
+					TweenMax.to(target, .2, {rotationY:0, left: target.position().left});
 					
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
