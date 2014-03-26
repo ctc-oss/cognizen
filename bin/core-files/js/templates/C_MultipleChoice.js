@@ -121,16 +121,11 @@ function C_MultipleChoice(_type) {
 			order_arr.push(i);
 		}
 		
-		console.log("randomize = " + randomize);
-		
 		if(randomize){
-			console.log("RANDOMIZE");
 			var order_arr = shuffleArray(order_arr);
 		}
 		
-		
 		//find every option in the xml - place them on the screen.
-		//$(data).find("page").eq(currentPage).find("option").each(function()
 		for(var j = 0; j < order_arr.length; j++){	
 			var myNode = $(data).find("page").eq(currentPage).find("option").eq(order_arr[j]);
 			console.log("myNode = " + myNode);
