@@ -24,11 +24,21 @@ function C_Flashcard(_type) {
 	var imageHeight;
 	var virgin = true;
 	var myIndex = 1;
+	var mandatory = false;
+	var randomize = false;
 	
 	//Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('mandatory') == "true"){
+			mandatory = true;
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
+			randomize = true;
 		}
 		
 		//Position the page text		
@@ -60,9 +70,18 @@ function C_Flashcard(_type) {
 		//FLASHCARDS
 		currentCard = cardCount - 1;
 		
+		var order_arr = [];
+		for (var j = 0; j < cardCount; j++){
+			order_arr.push(j);
+		}
+		
+		if(randomize){
+			var order_arr = shuffleArray(order_arr);
+		}
+		
 		for(var i=0; i<cardCount; i++){
-			var myTerm = $(data).find("page").eq(currentPage).find("card").eq(i).find("term").text();
-			var myDef = $(data).find("page").eq(currentPage).find("card").eq(i).find("definition").text();
+			var myTerm = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("term").text();
+			var myDef = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("definition").text();
 			var tempID = "card" + i;
 			var tempTextID = "cardText" + i;
 			if(type == "flashcardText"){
@@ -181,9 +200,28 @@ function C_Flashcard(_type) {
 			$("#cardEdit").click(function(){
 				cardEdit_arr.length = 0;
 				//Create the Content Edit Dialog
-				var msg = "<div id='cardEditDialog' title='Input Card Content'></div>";
+				var msg = "<div id='cardEditDialog' title='Input Card Content'>";
+				//msg += "<label id='label'><b>mandatory: </b></label>";
+				//msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				msg += "<label id='label'><b>randomize options: </b></label>";
+				msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
+				msg += "</div>";
 				$("#stage").append(msg);
-				for(var i = 0; i < cardCount; i++){
+				
+				if(!mandatory){
+					$("#isMandatory").removeAttr('checked');
+				}else{
+					$("#isMandatory").attr('checked', 'checked');
+				}
+				
+				if(!randomize){
+					$("#isRandom").removeAttr('checked');
+				}else{
+					$("#isRandom").attr('checked', 'checked');
+				}
+				
+				
+				for(var i = cardCount - 1; i >= 0; i--){
 					addCard(i, false);
 				}
 				
@@ -201,7 +239,19 @@ function C_Flashcard(_type) {
 							addCard(cardEdit_arr.length, true);	
 						},
 						Save: function(){
+							/*if($("#isMandatory").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("mandatory", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("mandatory", "false");
+							}*/
+							if($("#isRandom").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("randomize", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("randomize", "false");
+							}
+							
 							var tmpArray = new Array();
+							
 							for(var i = 0; i < cardEdit_arr.length; i++){
 								var tmpObj = new Object();
 								

@@ -352,6 +352,8 @@ function createNewPageByType(_myType){
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
+			$(data).find("page").eq(newPage).attr("mandatory", false);
+			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "static");
 			
 			break;
@@ -377,6 +379,8 @@ function createNewPageByType(_myType){
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
+			$(data).find("page").eq(newPage).attr("mandatory", false);
+			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "static");
 			
 			break;
