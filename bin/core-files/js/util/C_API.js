@@ -25,3 +25,16 @@
  				C_Pass:Boolean
  				C_Complete
  */
+ 
+ 
+ /*************************************************************************
+ C_DisableNav
+ Utilized to disable all nav items - specifically developed for assessments.
+ *************************************************************************/
+ 
+ function C_DisableNav(){
+	 disableNext();
+	 disableBack();
+	 disableIndex();
+	 
+ }
