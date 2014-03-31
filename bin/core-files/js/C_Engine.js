@@ -112,6 +112,7 @@ function initScripts(_data){
 				corePath +"js/util/C_SCORM.js",
 				corePath +"js/util/C_Comment.js",
 				corePath +"js/util/C_Lock.js",
+				corePath +"js/util/C_API.js",
 				corePath +"js/libs/jquery.corner.js",
 				corePath +"js/libs/modernizr.js",
 				corePath +"js/libs/siofu/client.js",
