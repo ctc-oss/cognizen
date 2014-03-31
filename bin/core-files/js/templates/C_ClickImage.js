@@ -192,6 +192,7 @@ function C_ClickImage(_type) {
 								var tmpObj = new Object();
 								tmpObj.title = $("#" + revealEdit_arr[i] +"TitleText").val();
 								tmpObj.img = $("#"+revealEdit_arr[i]+"ImageText").val();
+								console.log(tmpObj.img);
 								var myRevealText = revealEdit_arr[i]+"ContentText";
 								tmpObj.content = CKEDITOR.instances[myRevealText].getData();
 								tmpArray.push(tmpObj);
@@ -293,7 +294,7 @@ function C_ClickImage(_type) {
 			var revealCDATA = newRevealContent.createCDATASection(revealText);
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").empty();
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").append(revealCDATA);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("title", _data[i].img);
+			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("img", _data[i].img);
 		}
 		
 		//If the list is now shorter than before remove any extras from the xml...
