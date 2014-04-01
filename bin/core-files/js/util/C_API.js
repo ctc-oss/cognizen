@@ -36,5 +36,11 @@
 	 disableNext();
 	 disableBack();
 	 disableIndex();
-	 
+ }
+ 
+ function C_EnableNav(){
+	 enableNext();
+	 enableBack();
+	 enableIndex();
+	 checkNavButtons();
  }

@@ -161,7 +161,15 @@ function checkNav(){
 
 function addEditNav(){
 	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
-	$("#preferences").tooltip().click(launchPrefs);
+	$("#preferences").tooltip().click(function(){
+		connected = socket.socket.connected;
+	
+		if(connected){
+			launchPrefs();
+		}else{
+			fireConnectionError();
+		}
+	});
 }
 
 
@@ -351,69 +359,75 @@ function checkLockMode(){
 	}
 	$("#passLock").tooltip().click(function(){
 		//Relinquish Edit Control
-		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer);
-		if(!forcedReviewer){
-			var msg = '<div id="dialog-relinquishEdit" title="Relinquish Edit Control"><p class="validateTips">Do you want to relinquish edit control of the lesson?</p></div>';
-			
-			//Add to stage.
-			$("#stage").append(msg);
+		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer); 
+		connected = socket.socket.connected;
+	
+		if(connected){
+			if(!forcedReviewer){
+				var msg = '<div id="dialog-relinquishEdit" title="Relinquish Edit Control"><p class="validateTips">Do you want to relinquish edit control of the lesson?</p></div>';
 				
-			//Make it a dialog
-			$("#dialog-relinquishEdit").dialog({
-				dialogClass: "no-close",
-				modal: true,
-				width: 550,
-				close: function(event, ui){
-					$("#dialog-relinquishEdit").remove();
-				},
-				buttons: {
-					YES: function () {
-						mode = "review";
-						justRelinquishedLock = true;
-						forcedReviewer = true;
-						activeEditor = null;
-						cognizenSocket.emit('passLock', { me: username });
-						$(this).dialog("close");
-						nextDisabled = true;
-						backDisabled = true;
-						buildInterface();
+				//Add to stage.
+				$("#stage").append(msg);
+					
+				//Make it a dialog
+				$("#dialog-relinquishEdit").dialog({
+					dialogClass: "no-close",
+					modal: true,
+					width: 550,
+					close: function(event, ui){
+						$("#dialog-relinquishEdit").remove();
 					},
-					NO: function(){
-						$(this).dialog("close");
+					buttons: {
+						YES: function () {
+							mode = "review";
+							justRelinquishedLock = true;
+							forcedReviewer = true;
+							activeEditor = null;
+							cognizenSocket.emit('passLock', { me: username });
+							$(this).dialog("close");
+							nextDisabled = true;
+							backDisabled = true;
+							buildInterface();
+						},
+						NO: function(){
+							$(this).dialog("close");
+						}
 					}
-				}
-			});
-		}
-		//Request Edit Control
-		else{
-			if(activeEditor == null){
-				var msg = '<div id="dialog-requestEdit" title="Take Edit Controls"><p class="validateTips">No one is currently editing the lesson.</p><p>Would you like to assume the edit controls?</p></div>';
-			}else{
-				var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
+				});
 			}
-			
-			//Add to stage.
-			$("#stage").append(msg);
-				
-			//Make it a dialog
-			$("#dialog-requestEdit").dialog({
-				dialogClass: "no-close",
-				modal: true,
-				width: 550,
-				close: function(event, ui){
-					$("#dialog-requestEdit").remove();
-				},
-				buttons: {
-					YES: function () {
-						//console.log("username on yes = " + username);
-						cognizenSocket.emit('requestLock', {me: username});
-						$(this).dialog("close");
-					},
-					NO: function(){
-						$(this).dialog("close");
-					}
+			//Request Edit Control
+			else{
+				if(activeEditor == null){
+					var msg = '<div id="dialog-requestEdit" title="Take Edit Controls"><p class="validateTips">No one is currently editing the lesson.</p><p>Would you like to assume the edit controls?</p></div>';
+				}else{
+					var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
 				}
-			});
+				
+				//Add to stage.
+				$("#stage").append(msg);
+					
+				//Make it a dialog
+				$("#dialog-requestEdit").dialog({
+					dialogClass: "no-close",
+					modal: true,
+					width: 550,
+					close: function(event, ui){
+						$("#dialog-requestEdit").remove();
+					},
+					buttons: {
+						YES: function () {
+							//console.log("username on yes = " + username);
+							cognizenSocket.emit('requestLock', {me: username});
+							$(this).dialog("close");
+						},
+						NO: function(){
+							$(this).dialog("close");
+						}
+					}
+				});
+			}
+		}else{
+			fireConnectionError();
 		}
 	});
 }

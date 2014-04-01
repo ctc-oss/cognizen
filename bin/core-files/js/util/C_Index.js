@@ -125,7 +125,15 @@ function addIndex(){
 			icons:{
 				primary: 'ui-icon-circle-plus'
 			}
-		}).click(addPage);
+		}).click(function(){
+			connected = socket.socket.connected;
+		
+			if(connected){
+				addPage();
+			}else{
+				fireConnectionError();
+			}
+		});
 	}
 
 	//loop through the xml and add items to index.

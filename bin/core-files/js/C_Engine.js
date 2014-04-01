@@ -33,6 +33,7 @@ var audioVolume = 0.8; //persistant audio volume between pages
 var audioMute = false; //persistant audio mute state between pages
 
 var cachedTextPreEdit;
+var connected;
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/
@@ -185,6 +186,14 @@ function buildInterface(){
 
 	checkScorm();
 	loadPage();
+	
+	if(mode == "edit" || mode == "review"){
+		connected = socket.socket.connected;
+		
+		if(!connected){
+			fireConnectionError();
+		}
+	}
 }
 
 /**
@@ -192,53 +201,91 @@ function buildInterface(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(_type){
-	updateTotalGradedQuestions();
-	//Serialize the xml and send it to nodejs using socket.
-	var myData = $(data);
-	var xmlString = undefined;
-	//IE being a beatch, as always - have handle xml differently.
-	if (window.ActiveXObject){
-        xmlString = myData[0].xml;
-	}
+	connected = socket.socket.connected;
 	
-	if(xmlString === undefined){
-		var oSerializer = new XMLSerializer();
-		xmlString = oSerializer.serializeToString(myData[0]);
-	}
-	
-	var pd = new pp();
-	var xmlString  = pd.xml(xmlString);
-	
-	if(_type == undefined){
-		socket.emit('updateXMLWithRefresh', { my: xmlString });
-	}else if(_type == 'glossary'){
-		socket.emit('updateXMLGlossary', { my: xmlString });
-	}else if(_type == 'updatePrefs'){
-		socket.emit('updateXMLPrefs', { my: xmlString });
-	}else if (_type == 'updatePrefsWithPublish'){
-		socket.emit('updateXMLPrefsWithPublish', { my: xmlString });
+	if(connected){
+		updateTotalGradedQuestions();
+		//Serialize the xml and send it to nodejs using socket.
+		var myData = $(data);
+		var xmlString = undefined;
+		//IE being a beatch, as always - have handle xml differently.
+		if (window.ActiveXObject){
+	        xmlString = myData[0].xml;
+		}
+		
+		if(xmlString === undefined){
+			var oSerializer = new XMLSerializer();
+			xmlString = oSerializer.serializeToString(myData[0]);
+		}
+		
+		var pd = new pp();
+		var xmlString  = pd.xml(xmlString);
+		
+		if(_type == undefined){
+			socket.emit('updateXMLWithRefresh', { my: xmlString });
+		}else if(_type == 'glossary'){
+			socket.emit('updateXMLGlossary', { my: xmlString });
+		}else if(_type == 'updatePrefs'){
+			socket.emit('updateXMLPrefs', { my: xmlString });
+		}else if (_type == 'updatePrefsWithPublish'){
+			socket.emit('updateXMLPrefsWithPublish', { my: xmlString });
+		}
+	}else{
+		fireConnectionError()
 	}
 }
 
 
 function sendUpdate(){
-	updateTotalGradedQuestions();
-	//Serialize the xml and send it to nodejs using socket.
-	var myData = $(data);
-	var xmlString;
-	//IE being a beatch, as always - have handle xml differently.
-	if (window.ActiveXObject){
-        xmlString = myData[0].xml;
-	}
+	connected = socket.socket.connected;
 	
-	if(xmlString === undefined){
-		var oSerializer = new XMLSerializer();
-		xmlString = oSerializer.serializeToString(myData[0]);
+	if(connected){
+		updateTotalGradedQuestions();
+		//Serialize the xml and send it to nodejs using socket.
+		var myData = $(data);
+		var xmlString;
+		//IE being a beatch, as always - have handle xml differently.
+		if (window.ActiveXObject){
+	        xmlString = myData[0].xml;
+		}
+		
+		if(xmlString === undefined){
+			var oSerializer = new XMLSerializer();
+			xmlString = oSerializer.serializeToString(myData[0]);
+		}
+		
+		var pd = new pp();
+		var xmlString  = pd.xml(xmlString);
+		socket.emit('updateXML', { my: xmlString });
+	}else{
+		fireConnectionError();
 	}
+}
+
+function fireConnectionError(){
+	var msg = '<div id="dialog-connectionLost" title="ALERT: Connection Lost">';
+	msg += '<p>Your socket connection to the server has been compromised.</p>';
+	msg += '<p>You must close this lesson (by clicking "OK" below) and relaunch it.</p>';
+	msg += '</div>';
+			
+	//Add to stage.
+	$("#stage").append(msg);
 	
-	var pd = new pp();
-	var xmlString  = pd.xml(xmlString);
-	socket.emit('updateXML', { my: xmlString });
+	//Make it a dialog
+	$("#dialog-connectionLost").dialog({
+		dialogClass: "no-close",
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("#dialog-connectionLost").remove();
+		},
+		buttons: {
+			OK: function () {
+				$(this).dialog("close");
+				window.close();
+			}
+		}
+	});
 }
 
 /*************************************************************
