@@ -28,7 +28,7 @@ function C_StaticContent(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-		
+        
         //Position the page text
         myContent = $(data).find("page").eq(currentPage).find("content").first().text();
 
