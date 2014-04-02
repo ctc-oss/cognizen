@@ -36,6 +36,12 @@
 		<!--  This loads the proper scripts if this is running outside of the authoring environment --> 
 		<script>
 			window.jQuery || document.write('<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>');
+			window.onunload = function(){
+				if(window.top.opener){
+					window.top.opener.lessonComplete();
+				}
+			}
+			
 		</script>	
 	</head>
 	<body>

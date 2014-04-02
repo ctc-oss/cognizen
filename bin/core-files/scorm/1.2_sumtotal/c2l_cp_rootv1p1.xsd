@@ -1,0 +1,414 @@
+<?xml version="1.0"?>
+<!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by Gunjan Jha (Click2learn Inc.) -->
+<!-- filename=c2l_cp_rootv1p1.xsd -->
+<!-- Conforms to w3c http://www.w3.org/TR/xmlschema-1/ 2000-10-24-->
+<xsd:schema targetNamespace="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1" elementFormDefault="unqualified" version="Click2learn Version 1.1.3">
+	<!-- ******************** -->
+	<!-- ** Change History ** -->
+	<!-- ******************** -->
+	<xsd:annotation>
+		<xsd:documentation>Version 1.1.3</xsd:documentation>
+		<xsd:documentation> Nov 19, 2001</xsd:documentation>
+		<xsd:documentation>Mod for compatibility with ADL SCORM1.2 beta test suite</xsd:documentation>
+		<xsd:documentation xml:lang="en">This schema is Click2Learn Inc. specific</xsd:documentation>
+		<xsd:documentation> Copyright (c) 2004-2005 SumTotal Systems, Inc. All rights reserved. </xsd:documentation>
+	</xsd:annotation>
+	<!-- ************************** -->
+	<!-- ** Simple Types  ** -->
+	<!-- ************************** -->
+	<xsd:simpleType name="stageType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="frame"/>
+			<xsd:enumeration value="popup"/>
+			<xsd:enumeration value="full screen"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="stageDimensionPixels">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="32000"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="itemModeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="browse"/>
+			<xsd:enumeration value="review"/>
+			<xsd:enumeration value="normal"/>
+			<xsd:enumeration value=""/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ************************** -->
+	<!-- ** Complex Types  ** -->
+	<!-- ************************** -->
+	<xsd:complexType name="launchWindowType">
+		<xsd:all>
+			<xsd:element ref="windowtype" minOccurs="0"/>
+			<xsd:element ref="width" minOccurs="0"/>
+			<xsd:element ref="height" minOccurs="0"/>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="techSpecType">
+		<xsd:all>
+			<xsd:element ref="launchwindow" minOccurs="0"/>
+			<!-- Other elements to be inserted here -->
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="colorType">
+		<xsd:sequence>
+			<xsd:element name="Light" type="xsd:string"/>
+			<xsd:element name="Medium" type="xsd:string"/>
+			<xsd:element name="Dark" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="imageType" mixed="true">
+		<xsd:attribute name="width" type="xsd:integer" use="required"/>
+		<xsd:attribute name="height" type="xsd:integer" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="TOCtype">
+		<xsd:sequence>
+			<xsd:element name="MaxLevels" type="xsd:integer"/>
+			<xsd:element name="MaxWidth" type="xsd:integer"/>
+			<xsd:element name="ScrollBar" type="xsd:string"/>
+			<xsd:element name="TreeOpenIcon" type="imageType"/>
+			<xsd:element name="TreeCloseIcon" type="imageType"/>
+			<xsd:element name="TopImage" type="imageType"/>
+			<xsd:element name="BottomImage" type="imageType"/>
+			<xsd:element name="BackgroundColor" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CourseDisplayType">
+		<xsd:sequence>
+			<xsd:element name="ColorNav" type="colorType"/>
+			<xsd:element name="ColorData" type="colorType"/>
+			<xsd:element name="TOC" type="TOCtype"/>
+			<xsd:element name="ShowNavBar" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LaunchType">
+		<xsd:sequence>
+			<xsd:element name="Width" type="xsd:integer"/>
+			<xsd:element name="Height" type="xsd:integer"/>
+			<xsd:element name="AllowResize" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DataType" mixed="true">
+		<xsd:attribute name="Id" type="xsd:integer"/>
+	</xsd:complexType>
+	<xsd:complexType name="GlobalDataType">
+		<xsd:sequence>
+			<xsd:element name="Data" type="DataType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PackagePropertiesType">
+		<xsd:sequence>
+			<xsd:element name="CourseDisplay" type="CourseDisplayType"/>
+			<xsd:element name="Launch" type="LaunchType"/>
+			<xsd:element name="GlobalData" type="GlobalDataType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencedLOsType">
+		<xsd:sequence>
+			<xsd:element name="ReferencedLO" type="ReferencedLOType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ReferencedLOType">
+		<xsd:sequence>
+			<xsd:element name="ReferencedLO" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="CourseDataType">
+		<xsd:all>
+			<xsd:element name="Subject" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="SubArea" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="CourseID" type="xsd:string"/>
+			<xsd:element name="SelectedAudienceTypes" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="ExpertScoreCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="HighScoreCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="LowScoreCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="HighProficiencyCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="LowProficiencyCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="SkillProficiencyCutOff" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="PackageProperties" type="PackagePropertiesType" minOccurs="0"/>
+			<xsd:element name="ReferencedLOs" type="ReferencedLOsType" minOccurs="0"/>
+		</xsd:all>
+		<xsd:attribute name="Adaptation" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="Xoffset" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="Yoffset" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="TemplateId" type="xsd:string" use="optional"/>
+		<xsd:attribute name="TemplateName" type="xsd:string" use="optional"/>
+		<xsd:attribute name="Vendor" type="xsd:string" use="optional"/>
+		<xsd:attribute name="CourseVersion" type="xsd:string" use="optional"/>
+		<xsd:attribute name="UserMajorVersion" type="xsd:string" use="optional"/>
+		<xsd:attribute name="UserMinorVersion" type="xsd:string" use="optional"/>
+		<xsd:attribute name="CBVersion" type="xsd:string" use="optional"/>
+		<xsd:attribute name="EnableMultiFileUnits" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="MultiFileUnitStartLevel" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="PackageId" type="xsd:string" use="optional"/>
+		<xsd:attribute name="EndCourseId" type="xsd:string" use="optional"/>
+		<xsd:attribute name="PackageVersion" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="PackageStatus" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="AppendTime" type="xsd:string" use="optional"/>
+		<xsd:attribute name="LanguageId" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="CourseAuthorType">
+		<xsd:sequence>
+			<xsd:element name="FirstName" type="xsd:string"/>
+			<xsd:element name="LastName" type="xsd:string"/>
+			<xsd:element name="Organization" type="xsd:string"/>
+			<xsd:element name="Address1" type="xsd:string"/>
+			<xsd:element name="Address2" type="xsd:string"/>
+			<xsd:element name="City" type="xsd:string"/>
+			<xsd:element name="State" type="xsd:string"/>
+			<xsd:element name="Zip" type="xsd:string"/>
+			<xsd:element name="Country" type="xsd:string"/>
+			<xsd:element name="Phone" type="xsd:string"/>
+			<xsd:element name="Email" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="PublishInfo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="WordType">
+		<xsd:sequence>
+			<xsd:element name="Term" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Definition" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RuleType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="GroupId" type="xsd:integer" use="required"/>
+				<xsd:attribute name="RuleId" type="xsd:integer" use="required"/>
+				<xsd:attribute name="RuleOrder" type="xsd:integer" use="required"/>
+				<xsd:attribute name="Enabled" type="xsd:string" use="required"/>
+				<xsd:attribute name="GroupName" type="xsd:string" use="required"/>
+				<xsd:attribute name="RuleName" type="xsd:string" use="required"/>
+				<xsd:attribute name="Description" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="GlossaryType">
+		<xsd:sequence>
+			<xsd:element name="Word" type="WordType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AdviceRulesType">
+		<xsd:sequence>
+			<xsd:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="QuestionType">
+		<xsd:sequence>
+			<xsd:element name="CorrectAnswer" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Instruction" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
+		<xsd:attribute name="CorrectPoints" type="xsd:integer" use="required"/>
+		<xsd:attribute name="PassScore" type="xsd:integer" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="AssessmentType">
+		<xsd:sequence>
+			<xsd:element name="Instruction" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="QuestionItemId" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="AutoTime" type="xsd:string" use="required"/>
+		<xsd:attribute name="AssessmentType" type="xsd:string" use="required"/>
+		<xsd:attribute name="CheckAnswer" type="xsd:string" use="required"/>
+		<xsd:attribute name="AddScore" type="xsd:string" use="required"/>
+		<xsd:attribute name="Randomized" type="xsd:string" use="required"/>
+		<xsd:attribute name="UserQuestions" type="xsd:integer" use="required"/>
+		<xsd:attribute name="PassPoints" type="xsd:integer" use="required"/>
+		<xsd:attribute name="EndAssessmentId" type="xsd:string" use="required"/>
+		<xsd:attribute name="NumberAttempts" type="xsd:integer" use="required"/>
+		<xsd:attribute name="TimeAllowed" type="xsd:integer" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="EndAssessmentType">
+		<xsd:sequence>
+			<xsd:element name="UseEndAssessment" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="AuxiliaryType">
+		<xsd:sequence>
+			<xsd:element name="AuxWinHeight" type="xsd:string"/>
+			<xsd:element name="AuxWinWidth" type="xsd:string"/>
+			<xsd:element name="AuxWinScroll" type="xsd:string"/>
+			<xsd:element name="AuxWinResize" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="EndCourseType">
+		<xsd:sequence>
+			<xsd:element name="UseEndCourse" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="ItemSpecificDataType">
+		<xsd:all>
+			<xsd:element ref="Question" minOccurs="0"/>
+			<xsd:element name="CorrectAnswer" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Instruction" minOccurs="0"/>
+			<xsd:element ref="Test" minOccurs="0"/>
+			<xsd:element ref="EndAssessment" minOccurs="0"/>
+			<xsd:element name="Auxiliary" type="AuxiliaryType" minOccurs="0"/>
+			<xsd:element ref="EndCourse" minOccurs="0"/>
+			<xsd:element ref="CourseData" minOccurs="0"/>
+			<xsd:element ref="CourseAuthor" minOccurs="0"/>
+			<xsd:element ref="WordList" minOccurs="0"/>
+			<xsd:element ref="AdviceRules" minOccurs="0"/>
+		</xsd:all>
+		<xsd:attribute name="FirstElement" type="xsd:integer"/>
+		<xsd:attribute name="FirstItemId" type="xsd:string"/>
+		<xsd:attribute name="FirstScore" type="xsd:integer" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="locationType">
+		<xsd:sequence>
+			<xsd:element name="Xcoord" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="Ycoord" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="ZIndex" type="xsd:integer" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="dimensionType">
+		<xsd:sequence>
+			<xsd:element name="Width" type="xsd:string"/>
+			<xsd:element name="Height" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="textHyperlinkType">
+		<xsd:sequence>
+			<xsd:element name="Term" type="xsd:string"/>
+			<xsd:element name="TreeLocation" type="xsd:string"/>
+			<xsd:element name="LinkType" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="widgetType">
+		<xsd:sequence>
+			<xsd:element name="Text" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Hotword" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Hyperlink" type="textHyperlinkType" minOccurs="0"/>
+			<xsd:element name="Resource" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="GraphicHyperlink" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="GraphicHyperlinkType" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="QueryString" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Dimension" type="dimensionType" minOccurs="0"/>
+			<xsd:element name="Location" type="locationType" minOccurs="0"/>
+			<xsd:element name="Visible" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Style" type="xsd:string" minOccurs="0"/>
+			<!-- Workflow elements not supported in Storyboarding for now
+			<xsd:element name="Owner" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Status" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Notes" type="xsd:string" minOccurs="0"/>
+			-->
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+		<xsd:attribute name="Type" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="templateType">
+		<xsd:sequence>
+			<xsd:element name="Widget" type="widgetType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+		<xsd:attribute name="guid" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="ItemContentType">
+		<xsd:sequence>
+			<xsd:element name="TreeLocation" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Template" type="templateType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="pageTemplateType">
+		<xsd:sequence>
+			<xsd:element name="TemplateId" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="TemplateName" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="TrackType">
+		<xsd:sequence>
+			<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="TracksType">
+		<xsd:sequence>
+			<xsd:element name="Track" type="TrackType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ItemDataType">
+		<xsd:sequence>
+			<xsd:element name="PageTemplate" type="pageTemplateType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TreeLocation" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Tracks" type="TracksType" minOccurs="0"/>
+			<xsd:element ref="Title" minOccurs="0"/>
+			<xsd:element ref="AudienceTypes" minOccurs="0"/>
+			<xsd:element ref="Description" minOccurs="0"/>
+			<xsd:element ref="Prerequisites" minOccurs="0"/>
+			<xsd:element ref="Keywords" minOccurs="0"/>
+			<xsd:element ref="CheckoutStatus" minOccurs="0"/>
+			<xsd:element ref="LockStatus" minOccurs="0"/>
+			<xsd:element ref="LockedBy" minOccurs="0"/>
+			<xsd:element ref="LockedByName" minOccurs="0"/>
+			<xsd:element ref="CheckedOutBy" minOccurs="0"/>
+			<xsd:element ref="LaunchData" minOccurs="0"/>
+			<xsd:element ref="RelatedLinks" minOccurs="0"/>
+			<xsd:element ref="AssociatedTopics" minOccurs="0"/>
+			<xsd:element ref="TopicData" minOccurs="0"/>
+			<xsd:element ref="ItemContent" minOccurs="0"/>
+			<xsd:element ref="ItemSpecificData" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="Priority" type="xsd:string"/>
+		<xsd:attribute name="PackageItemId" type="xsd:string"/>
+		<xsd:attribute name="LastUpdatedBy" type="xsd:string"/>
+		<xsd:attribute name="LastModified" type="xsd:string"/>
+		<xsd:attribute name="LearningObject" type="xsd:integer"/>
+		<xsd:attribute name="LearningObjectTag" type="xsd:integer"/>
+		<xsd:attribute name="LearningObjectPackageId" type="xsd:string"/>
+		<xsd:attribute name="CheckedOutByName" type="xsd:string"/>
+		<xsd:attribute name="ContentStatus" type="xsd:string"/>
+		<xsd:attribute name="MediaStatus" type="xsd:string"/>
+		<xsd:attribute name="Cost" type="xsd:string"/>
+		<xsd:attribute name="DifficultyLevel" type="xsd:string"/>
+		<xsd:attribute name="Leaf" type="xsd:integer"/>
+		<xsd:attribute name="Identifier" type="xsd:string"/>
+		<xsd:attribute name="ExpectedTime" type="xsd:integer"/>
+		<xsd:attribute name="Type" type="xsd:string" use="required"/>
+		<xsd:attribute name="ItemTreeOrder" type="xsd:integer" use="optional"/>
+	</xsd:complexType>
+	<!-- ************************** -->
+	<!-- ** Element Declarations ** -->
+	<!-- ************************** -->
+	<xsd:element name="windowtype" type="stageType"/>
+	<xsd:element name="launchwindow" type="launchWindowType"/>
+	<xsd:element name="width" type="stageDimensionPixels"/>
+	<xsd:element name="height" type="stageDimensionPixels"/>
+	<xsd:element name="required" type="techSpecType"/>
+	<xsd:element name="preferred" type="techSpecType"/>
+	<!-- mode element to be used with content packaging item until simple sequencing spec is available  -->
+	<xsd:element name="mode" type="itemModeType"/>
+	<xsd:element name="ItemData" type="ItemDataType"/>
+	<xsd:element name="Title" type="xsd:string"/>
+	<xsd:element name="Description" type="xsd:string"/>
+	<xsd:element name="Keywords" type="xsd:string"/>
+	<xsd:element name="CourseTracks" type="xsd:string"/>
+	<xsd:element name="AudienceTypes" type="xsd:string"/>
+	<xsd:element name="Prerequisites" type="xsd:string"/>
+	<xsd:element name="CheckoutStatus" type="xsd:string"/>
+	<xsd:element name="LockStatus" type="xsd:integer"/>
+	<xsd:element name="LockedBy" type="xsd:string"/>
+	<xsd:element name="LockedByName" type="xsd:string"/>
+	<xsd:element name="CheckedOutBy" type="xsd:string"/>
+	<xsd:element name="LaunchData" type="xsd:string"/>
+	<xsd:element name="RelatedLinks" type="xsd:string"/>
+	<xsd:element name="AssociatedTopics" type="xsd:string"/>
+	<xsd:element name="TopicData" type="GlobalDataType"/>
+	<xsd:element name="ItemSpecificData" type="ItemSpecificDataType"/>
+	<xsd:element name="ItemContent" type="ItemContentType"/>
+	<xsd:element name="Question" type="QuestionType"/>
+	<xsd:element name="Test" type="AssessmentType"/>
+	<xsd:element name="EndAssessment" type="EndAssessmentType"/>
+	<xsd:element name="EndCourse" type="EndCourseType"/>
+	<xsd:element name="CourseData" type="CourseDataType"/>
+	<xsd:element name="CourseAuthor" type="CourseAuthorType"/>
+	<xsd:element name="WordList" type="GlossaryType"/>
+	<xsd:element name="AdviceRules" type="AdviceRulesType"/>
+	<xsd:attribute name="itemtype" type="xsd:string"/>
+</xsd:schema>

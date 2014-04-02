@@ -113,10 +113,36 @@ function completeLesson(completion, success, score){
 		}
 	}
 	else if(scorm.VERSION == "1.2"){
-		//no calls 4 now
 		var raw = score*100;
 		scorm.set("cmi.core.score.raw", raw.toString());
 	}
-	scorm.quit();
+
+	// reset location for next time lesson is opened
+	var currentPageID = 0;
+	if(scorm.VERSION == "1.2"){
+		scorm.set("cmi.core.lesson_location", currentPageID);
+	}
+	else if(scorm.VERSION.substring(0,4) == "2004"){
+		scorm.set("cmi.location", currentPageID);
+	}
+
+	if(scorm.VERSION = '1.2_CTCU'){
+		var raw = score*100;
+		scorm.set("cmi.core.score.raw", raw.toString());
+		// wait for SCORM termination, then close popup windows
+		var terminated = scorm.quit();
+		if(terminated){
+			if(window.opener){
+				window.opener.lessonComplete();
+			}
+			window.close();
+		}else{
+			console.log("SCORM termination failed");
+		}
+
+	}
+	else{
+		scorm.quit();
+	}
 	
 }

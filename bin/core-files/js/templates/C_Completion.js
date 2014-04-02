@@ -61,7 +61,12 @@ function C_Completion(_type) {
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
 //		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
-			completeLesson(completed, score_obj.passed, score_obj.score);
+			if($(data).find('scormVersion').attr('value') === '1.2_CTCU'){
+				completeLesson(score_obj.passed, score_obj.passed, score_obj.score);
+			}
+			else{
+				completeLesson(completed, score_obj.passed, score_obj.score);
+			}
 		});
         
         audioHolder = new C_AudioHolder();

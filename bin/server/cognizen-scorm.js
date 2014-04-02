@@ -12,7 +12,7 @@ var SCORM = {
     courseName: '',
     packageFolder: '',
     tempXmlContentFile: '',
-    binDir: 'bin',
+    binDir: 'cognizen',
     previousLesson: '',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
@@ -27,14 +27,14 @@ var SCORM = {
 	generateSCORMLesson: function(callback){
         var _this = this;
 
-        if(_this.scormVersion === '2004_SGST'){
-        	_this.binDir = "bin2";
-        }
-        else
-        {
-        	_this.binDir = "bin";
-        }
-
+        // if(_this.scormVersion === '2004_SGST'){
+        // 	_this.binDir = "bin2";
+        // }
+        // else
+        // {
+        // 	_this.binDir = "bin";
+        // }
+        console.log(_this.scormVersion);
         readdirp(
             { root: _this.contentPath,
                 directoryFilter: [ '!server', '!scorm', '!.git'],
@@ -82,10 +82,13 @@ var SCORM = {
 
 				                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
 
-				                //catch for SGST - use 2004_3rd files
-				                if(_this.scormVersion === '2004_SGST'){
-				                	scormBasePath = _this.scormPath + '/2004_3rd/';
+				                if(_this.scormVersion === '1.2_CTCU'){
+				                	scormBasePath = _this.scormPath + '/1.2/';
 				                }
+				                // //catch for SGST - use 2004_3rd files
+				                // if(_this.scormVersion === '2004_SGST'){
+				                // 	scormBasePath = _this.scormPath + '/2004_3rd/';
+				                // }
 
 				                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
@@ -152,8 +155,8 @@ var SCORM = {
         var manifest;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
-
-	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_SGST'){
+// || _this.scormVersion === '2004_SGST'
+	    if (_this.scormVersion === '2004_3rd'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -244,26 +247,39 @@ var SCORM = {
 	    //SCORM 1.2
 	    else{
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n';
-	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"'+
-	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"'+
-	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'+
-	            '    xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd'+
-	            '                         http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd'+
-	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">';
-	        manifest +='<metadata>'+
-	            '   <schema>ADL SCORM</schema>'+
-	            '   <schemaversion>1.2</schemaversion>'+
-	            '</metadata>';
-	        manifest +='<organizations default="'+_this.courseName.replace(/\s+/g, '') +'">'+
-	            '   <organization identifier="'+_this.courseName.replace(/\s+/g, '') +'">'+
-	            '		<title>'+_this.courseName+'</title>'+
-	            '		<item identifier="Home" identifierref="RES-common-files">'+
-	            '			<title>'+_this.courseName+'</title>'+
-	            '		</item>'+
-	            '	</organization>'+
-	            '</organizations>';
+	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"\n'+
+	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"\n'+
+	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n';
+	        if (_this.scormVersion === '1.2_CTCU'){    
+	        	manifest += '    xmlns:c2lcp="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1"';
+	        }        
+	        manifest += '    xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd\n'+
+	            '                         http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd\n'+
+	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd';
+	        if (_this.scormVersion === '1.2_CTCU'){      
+	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';   
+	        } 
+	        manifest += '\">\n';    
+	        manifest +='<metadata>\n'+
+	            '   <schema>ADL SCORM</schema>\n'+
+	            '   <schemaversion>1.2</schemaversion>\n'+
+	            '</metadata>\n';
+	        manifest +='<organizations default="'+_this.courseName.replace(/\s+/g, '') +'">\n'+
+	            '   <organization identifier="'+_this.courseName.replace(/\s+/g, '') +'">\n'+
+	            '		<title>'+_this.courseName+'</title>\n'+
+	            '		<item identifier="Home" identifierref="RES-common-files">\n'+
+	            '			<title>'+_this.courseName+'</title>\n'+
+	            '		</item>\n'+
+	            '	</organization>\n'+
+	            '</organizations>\n';
 	        manifest += "   <resources>\n";
-        	manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	      
+	        if(_this.scormVersion === '1.2_CTCU'){
+				manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"index.html\">\n";	
+				manifest += "         <file href=\"index.html\"/>\n";
+	        }
+	        else{
+        		manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	      
+        	}
 	    }
 	    //resources go here - resourcesgenerator  
 	    var resources = _this._resourcesGenerator(res, '');
@@ -272,7 +288,37 @@ var SCORM = {
 	    };
 	    manifest += '      </resource>\n';
 	    manifest += '   </resources>\n';
-
+	   
+	    if (_this.scormVersion === '1.2_CTCU'){  
+	    	manifest += '   	<c2lcp:ItemDataExtra>\n'+
+						'			<c2lcp:ItemData Type=\"Course\">\n'+
+						'	 			<c2lcp:ItemSpecificData>\n'+
+						'					<c2lcp:CourseData>\n'+
+		 				'						<c2lcp:PackageProperties>\n'+
+						'							<c2lcp:CourseDisplay>\n'+
+			 			'								<c2lcp:ShowNavBar>no</c2lcp:ShowNavBar>\n'+
+			 			'								<c2lcp:TOC>\n'+
+						'									<c2lcp:MaxLevels>3</c2lcp:MaxLevels>\n'+
+						'									<c2lcp:MaxWidth>1</c2lcp:MaxWidth>\n'+
+						'									<c2lcp:ScrollBar>yes</c2lcp:ScrollBar>\n'+
+						'									<c2lcp:TreeOpenIcon width=\"9\" height=\"9\" />\n'+
+						'									<c2lcp:TreeCloseIcon width=\"9\" height=\"9\" />\n'+
+						'									<c2lcp:TopImage width=\"-1\" height=\"-1\" />\n'+
+						'									<c2lcp:BottomImage width=\"-1\" height=\"-1\" />\n'+
+						'									<c2lcp:BackgroundColor>ffffff</c2lcp:BackgroundColor>\n'+
+			 			'								</c2lcp:TOC>\n'+
+						'							</c2lcp:CourseDisplay>\n'+
+						'							<c2lcp:Launch>\n'+
+			 			'								<c2lcp:Width>640</c2lcp:Width>\n'+
+			 			'								<c2lcp:Height>480</c2lcp:Height>\n'+
+						'							</c2lcp:Launch>\n'+
+		 				'						</c2lcp:PackageProperties>\n'+
+						'					</c2lcp:CourseData>\n'+
+	 					'				</c2lcp:ItemSpecificData>\n'+
+						'			</c2lcp:ItemData>\n'+
+						'		</c2lcp:ItemDataExtra>\n';
+	    }
+	   
 	    manifest += '</manifest>';	
 
 	    return manifest;	
@@ -291,7 +337,7 @@ var SCORM = {
         });
 
         archive.pipe(output);
-        //builds the bin directory
+        //builds the cognizen directory
         res.files.forEach(function(file) {
             var localFile = file.path.replace(/\\/g,"/");
             if(localFile.indexOf('content.xml') == -1 && localFile.indexOf('packages') == -1){
@@ -324,6 +370,51 @@ var SCORM = {
 	            }
 	        );
 
+	        //add sumtotal xsd files for CTC publish
+	        if (_this.scormVersion === '1.2_CTCU'){  
+		        readdirp({
+		                root: _this.scormPath + '/1.2_sumtotal/',
+		                directoryFilter: ['*'],
+		                fileFilter: [ '!.DS_Store' ]
+		            },
+		            function(fileInfo) {},
+		            function (err, res) {
+		                res.files.forEach(function(file) {
+		                    var localFile = file.path.replace(/\\/g,"/")
+		                    //console.log(lFile);
+		                    var inputFile = _this.scormPath + '/1.2_sumtotal/' + localFile;
+		                    archive.append(fs.createReadStream(inputFile), { name: localFile });
+		                });
+
+		            }
+		        );	        	
+
+		        //add a index.html file that launches the cognizen/index.html file to work in SumTotal
+                var indexLaunchFile = _this._buildLaunchFile();
+                var indexFilePath = _this.scormPath + '/index.html';
+
+                fs.writeFile(indexFilePath, indexLaunchFile, function(err) {
+                    if(err) {
+                        _this.logger.error("Write file error" + err);
+                        callback(err, null);
+                    }
+                    else {     
+                    	archive.append(fs.createReadStream(indexFilePath), { name: 'index.html' });  
+				        fs.remove(indexFilePath, function(err){
+							if(err){ 
+								_this.logger.error(err);
+								callback(err, null);
+							}
+							_this.logger.info('index.html launch file removed.');
+					    });                        	
+                    }
+
+                }); 
+
+                    	
+
+	        }
+
 	        //add imsmanifest.xml file
 	        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
@@ -353,6 +444,25 @@ var SCORM = {
     	}
 
 	}, 
+
+	_buildLaunchFile: function(){
+		var _this = this;
+        var index = '<!DOCTYPE html>\n'+
+					'<html>\n'+
+					'	<head>\n'+
+					'		<title>'+_this.courseName+'</title>\n'+
+					'		<!-- launch the lesson window -->\n'+ 
+					'		<script type="text/javascript">\n'+
+					'			window.open("cognizen/index.html", "lessonWindow", "width=1024, height=768");\n'+
+					'			function lessonComplete(){window.top.close();}\n'+
+					'		</script>\n'+	
+					'	</head>\n'+
+					'	<body>\n'+
+					'		<p>Close this window to record your progress and exit.</p>\n'+
+					'	</body>\n'+
+					'</html>';
+		return index;
+	},
 
 	generateSCORMCourse: function(callback){
         var _this = this;
@@ -448,12 +558,12 @@ var SCORM = {
 
 			                //add resources
 			                resourceLines.push(_this._addResources(res, lessonsName[count]+'/'));
-					        //builds the bin directory
+					        //builds the cognizen directory
 					        res.files.forEach(function(file) {
 					            var localFile = file.path.replace(/\\/g,"/");
 					            if(localFile.indexOf('content.xml') == -1 ){
 					            	var inputFile = _lessonPath + '/' + localFile;
-					            	archive.append(fs.createReadStream(inputFile), { name: 'bin/'+lessonsName[count]+'/'+localFile });
+					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+lessonsName[count]+'/'+localFile });
 					        	}
 					        });
 
@@ -462,17 +572,17 @@ var SCORM = {
 							        //sequencing rules for the course go here
 
 							        //USSOCOM uses flow and choice control mode
-							        if(_this.scormVersion === '2004_USSOCOM'){
+							        if(_this.scormVersion === '2004_3rd_USSOCOM' || _this.scormVersion === '2004_4th_USSOCOM'){
 								        manifestFile += "       <imsss:sequencing>\n";
 		             					manifestFile += "		   <imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
 		           						manifestFile += "		</imsss:sequencing>\n"; 						        	
 							        }
-							        //CTCU is flow only
-							        else if(_this.scormVersion === '2004_3rd_CTCU'){
-								        manifestFile += "       <imsss:sequencing>\n";
-		             					manifestFile += "		   <imsss:controlMode choice=\"false\" flow=\"true\"/>\n";
-		           						manifestFile += "		</imsss:sequencing>\n"; 							        	
-							        }
+							        // //CTCU is flow only
+							        // else if(_this.scormVersion === '2004_3rd_CTCU'){
+								       //  manifestFile += "       <imsss:sequencing>\n";
+		             // 					manifestFile += "		   <imsss:controlMode choice=\"false\" flow=\"true\"/>\n";
+		           		// 				manifestFile += "		</imsss:sequencing>\n"; 							        	
+							        // }
 	   
 							        manifestFile += "       </organization>\n";
 							        manifestFile += "    </organizations>\n";
@@ -480,7 +590,7 @@ var SCORM = {
 
 									//have to add the resources here because the items all have to be added before the org can be closed
 									for(var i=0; i<resourceLines.length; i++){
-										manifestFile += "      <resource identifier=\"RES-"+lessonsName[i].replace(/\s/g, "")+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"bin/"+encodeURIComponent(lessonsName[i])+"/index.html\">\n";
+										manifestFile += "      <resource identifier=\"RES-"+lessonsName[i].replace(/\s/g, "")+"-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/"+encodeURIComponent(lessonsName[i])+"/index.html\">\n";
 										manifestFile += resourceLines[i];
 										manifestFile += '      </resource>\n';
 									}				    
@@ -489,7 +599,7 @@ var SCORM = {
 									//Any sequencingCollections go here
 
 									//sequencingCollection for USSOCOM 
-									if(_this.scormVersion === '2004_USSOCOM'){
+									if(_this.scormVersion === '2004_3rd_USSOCOM' || _this.scormVersion === '2004_4th_USSOCOM'){
 										manifestFile += ' 	<imsss:sequencingCollection>\n';
 										manifestFile += ' 		<imsss:sequencing ID = \"scampidl\">\n';
 										// Set all content SCOs to not count towards any rollup. Only the post test will count
@@ -512,13 +622,16 @@ var SCORM = {
 							        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
 
 							        //USSOCOM publishing uses 2004 4th edition SCORM files
-							        if(_this.scormVersion === '2004_USSOCOM'){
+							        if(_this.scormVersion === '2004_4th_USSOCOM'){
 							        	scormBasePath = _this.scormPath + '/2004_4th/'; 
 							        }
-					                //catch for CTC - use 2004_3rd files
-					                else if(_this.scormVersion === '2004_3rd_CTCU'){
-					                	scormBasePath = _this.scormPath + '/2004_3rd/';
-					                }							        
+							        else if(_this.scormVersion === '2004_3rd_USSOCOM'){
+							        	scormBasePath = _this.scormPath + '/2004_3rd/';
+							        }
+					                // //catch for CTC - use 2004_3rd files
+					                // else if(_this.scormVersion === '2004_3rd_CTCU'){
+					                // 	scormBasePath = _this.scormPath + '/2004_3rd/';
+					                // }							        
 							        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 							        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -551,7 +664,7 @@ var SCORM = {
 
 						        			//adds temp content.xml file to zip
 						        			for(var j=0; j<lArray.length; j++){
-						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: 'bin/'+lessonsName[j]+'/xml/content.xml'});	
+						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
 						        			}
 									        
 								            fs.remove(imsManifestFilePath, function(err){
@@ -593,7 +706,7 @@ var SCORM = {
 
 				        			//adds temp content.xml file to zip
 				        			for(var j=0; j<lArray.length; j++){
-				        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: 'bin/'+lessonsName[j]+'/xml/content.xml'});	
+				        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
 				        			}
 							        
 				        			//create index.html file to place at the root of the package
@@ -604,7 +717,7 @@ var SCORM = {
 							                callback(err, null);
 							            }
 
-				        				archive.append(fs.createReadStream(tempNoneIndex), {name: 'bin/index.html'});
+				        				archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
 				        			});
 
 							        archive.finalize(function(err, written) {
@@ -662,7 +775,8 @@ var SCORM = {
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
-	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_CTCU'){
+//|| _this.scormVersion === '2004_3rd_CTCU'
+	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_USSOCOM'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -684,7 +798,7 @@ var SCORM = {
 	            "           <title>"+_this.courseName+"</title>\n";
 
 	    }
-	    else if(_this.scormVersion === "2004_4th" || _this.scormVersion === '2004_USSOCOM'){
+	    else if(_this.scormVersion === "2004_4th" || _this.scormVersion === '2004_4th_USSOCOM'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
 	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
@@ -744,7 +858,7 @@ var SCORM = {
 		// //any objectives stuff goes here - objectivesGenerator
 
 		//seq rules for USSOCOM
-		if(_this.scormVersion === '2004_USSOCOM'){
+		if(_this.scormVersion === '2004_3rd_USSOCOM' || _this.scormVersion === '2004_4th_USSOCOM'){
 			//all of the items except the last one (post test) get IDRef to sequencingCollection "scampidl"
 			if(lessonCount + 1 == totalLessons){
 				//sequencing elements for the post test
@@ -809,24 +923,24 @@ var SCORM = {
 			}
 
 		}
-		//seq rules for CTCU
-		else if(_this.scormVersion === '2004_3rd_CTCU'){
-			if(lessonCount + 1 == totalLessons){
-				//sequencing elements for the post test
-				seq += "               <imsss:sequencing>\n"+
-					//handles the score from the post test to be the only activity that counts towards rollup so that the course (these defaults and don't have to be included)					          
-					"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
-					"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-					"	        	</imsss:sequencing>\n";						
-			}
-			else{
-				seq += "               <imsss:sequencing>\n"+
-				// Set all content SCOs to not count towards any rollup. Only the post test will count
-					"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+
-					"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-					"	        	</imsss:sequencing>\n";						
-			}
-		}
+		// //seq rules for CTCU
+		// else if(_this.scormVersion === '2004_3rd_CTCU'){
+		// 	if(lessonCount + 1 == totalLessons){
+		// 		//sequencing elements for the post test
+		// 		seq += "               <imsss:sequencing>\n"+
+		// 			//handles the score from the post test to be the only activity that counts towards rollup so that the course (these defaults and don't have to be included)					          
+		// 			"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
+		// 			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
+		// 			"	        	</imsss:sequencing>\n";						
+		// 	}
+		// 	else{
+		// 		seq += "               <imsss:sequencing>\n"+
+		// 		// Set all content SCOs to not count towards any rollup. Only the post test will count
+		// 			"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+
+		// 			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
+		// 			"	        	</imsss:sequencing>\n";						
+		// 	}
+		// }
 		//default
 		else{
 			seq += "               <imsss:sequencing>\n"+		
