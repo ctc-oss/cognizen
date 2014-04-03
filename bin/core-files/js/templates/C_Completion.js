@@ -18,6 +18,7 @@ function C_Completion(_type) {
     var completed = true;
     var scoreText;
     var score_obj;
+    var isScored;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -30,7 +31,8 @@ function C_Completion(_type) {
         }
 
 		//evaluate score
-		if($(data).find('scored').attr('value') == "true"){
+		isScored = $(data).find('scored').attr('value');
+		if(isScored === "true"){
 			score_obj = getFinalScore();
 
 			if(score_obj.passed){
@@ -61,11 +63,16 @@ function C_Completion(_type) {
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
 //		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
-			if($(data).find('scormVersion').attr('value') === '1.2_CTCU'){
-				completeLesson(score_obj.passed, score_obj.passed, score_obj.score);
+			if(isScored === "true"){
+				if($(data).find('scormVersion').attr('value') === '1.2_CTCU'){
+					completeLesson(score_obj.passed, score_obj.passed, score_obj.score);
+				}
+				else{
+					completeLesson(completed, score_obj.passed, score_obj.score);
+				}
 			}
 			else{
-				completeLesson(completed, score_obj.passed, score_obj.score);
+				completeLesson(true, true, 0);
 			}
 		});
         
