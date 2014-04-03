@@ -133,7 +133,7 @@ function C_Dashboard(_type) {
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
         $stage.append("<ul id='projList' class='filetree'></ul>");
-		console.log(proj.directories);
+		//console.log(proj.directories);
         var tree_arr = [];
         //Cycle through the proj object
         for (var i = 0; i < proj.directories.length; i++) {
@@ -158,11 +158,11 @@ function C_Dashboard(_type) {
 	                //Take the last item of the array - that is the title of the folder to put in the tree.
 	                var parentName = result.pop();
 	                for (var j = 0; j < proj.directories.length; j++) {
-	                    console.log(parentName + " = " + proj.directories[i].id);
-	                    console.log(proj.directories[j].name + " = " + proj.directories[j].parent);
+	                    //console.log(parentName + " = " + proj.directories[i].id);
+	                    //console.log(proj.directories[j].name + " = " + proj.directories[j].parent);
 	                    if (proj.directories[j].name == parentName && proj.directories[j].id == proj.directories[i].parent) {
 	                        var parent = proj.directories[j].id;
-	                        console.log("hit it and quit it");
+	                        //console.log("hit it and quit it");
 	                        break;
 	                    }
 	                }
@@ -413,7 +413,7 @@ function C_Dashboard(_type) {
         if (evt.persisted) {
             // This is actually a pagehide event and the page is going into the Page Cache.
             // Make sure that we don't do any destructive work, or work that shouldn't be duplicated.
-            console.log("persisted close");
+            //console.log("persisted close");
 
             return;
         }
