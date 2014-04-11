@@ -96,6 +96,7 @@ function initScripts(_data){
 				corePath +"js/templates/C_MultipleChoice.js", //Multiple choice quizzing
 				corePath +"js/templates/C_MultipleChoiceImage.js",
 				corePath +"js/templates/C_Matching.js", //Matching quizzing
+				corePath +"js/templates/C_QuestionBank.js", //Matching quizzing
 		//Import Cognizen Components
 				corePath +"js/components/C_PageTitle.js",
 				corePath +"js/components/C_VisualMediaHolder.js",

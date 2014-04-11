@@ -70,8 +70,8 @@ function C_Matching(_type) {
 //		console.log("isComplete = " + isComplete);
 
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
-		feedbackType = $(data).find("page").eq(currentPage).attr('feedbackType');
-		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackDisplay');
+		feedbackType = $(data).find("page").eq(currentPage).attr('feedbacktype');
+		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackdisplay');
 		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctresponse').text();
 		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectresponse').text();
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();

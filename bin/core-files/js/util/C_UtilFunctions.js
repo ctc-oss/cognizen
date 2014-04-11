@@ -75,6 +75,14 @@ function shuffleArray(a) {
     return a;
 }
 
+
+/*****************************************************
+randomIntFromRange
+provide random int from a number range
+*****************************************************/
+function randomIntFromRange(min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 /*****************************************************************
 Discover if we are dealing with IE....
 *****************************************************************/
@@ -107,7 +115,6 @@ Discover if we are on mobile
 
 var isMobile = jQuery.browser.mobile;
 
-console.log("isMobile = " + isMobile);
 /*****************************************************************
 RANDOM GUID GENERATION
 *****************************************************************/

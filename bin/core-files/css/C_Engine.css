@@ -1010,11 +1010,12 @@ MEDIA LAYOUTS
 }
 
 .removeMedia{
-	position: absolute;
+	position: relative;
+	float: right;
 	background: url(images/close.png) no-repeat;
 	width: 24px;
 	height: 24px;
-	right: 18px;
+	right: 5px;
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -1260,6 +1261,41 @@ MULTIPLE CHOICE LAYOUTS
 	width: 889px;
 	cursor: hand; 
 	cursor: pointer;
+}
+
+.questionBankItem{
+	position: relative; 
+	float: left; 
+	margin-right:5px;
+	height:30px; 
+	text-align:center; 
+	vertical-align:middle; 
+	line-height:30px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px; 
+}
+
+.selectedEditBankMember{
+	background-color: red; 
+	color: #f3f3f3;
+}
+
+.unselectedEditBankMember{
+	background-color: #333333; 
+	color: #eeeeee;
+	cursor: hand; 
+	cursor: pointer;
+}
+
+.editItemContainer{
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px; 
+	border-color: #333333;
+	border-width: thin;
+	border-style: solid;
+	padding: 5px;
 }
 
 /************************************************************** MULTIPLE CHOICE LAYOUTS END *****/

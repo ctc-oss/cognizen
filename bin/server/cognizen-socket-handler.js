@@ -68,7 +68,6 @@ var SocketHandler = {
 
                 var fileSplit = event.file.name.split(".");
                 var mediaType = fileSplit[fileSplit.length - 1];
-
                 if (event.file && event.file.target) {
                     if (target && target.length == 2) {
                         var type = target[0];
@@ -78,6 +77,7 @@ var SocketHandler = {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
                                     var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + event.file.name);
+                                    
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
                                     var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3", "svg"];
@@ -94,6 +94,7 @@ var SocketHandler = {
                                         });
 
                                         stream.on('close', function(){
+											_this.logger.info("wrote to location - now trying to delete file from tmp");
                                             if (!had_error) fs.unlink(event.file.pathName);
                                         });
                                         //Git commit

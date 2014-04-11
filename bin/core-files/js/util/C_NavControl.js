@@ -644,7 +644,7 @@ function updateTracking(){
 /****************************************************
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
-function updateScoring(_userSelection, _correct){
+function updateScoring(_userSelection, _correct, _bankID){
 //	console.log("updateScoring");
 	for(var i = 0; i < questionResponse_arr.length; i++){
 //		console.log("i=" + i);
@@ -654,6 +654,10 @@ function updateScoring(_userSelection, _correct){
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);
 				questionResponse_arr[i].correct = _correct;
+			}
+			
+			if(_bankID){
+				questionResponse_arr[i].bankID = _bankID;
 			}
 			break;
 		}
@@ -871,6 +875,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		//Knowledge Check Layouts
+		case "questionBank":
+			currentTemplate = new C_QuestionBank(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "multipleChoice":
 			currentTemplate = new C_MultipleChoice(currentTemplateType);
 			currentTemplate.initialize();
