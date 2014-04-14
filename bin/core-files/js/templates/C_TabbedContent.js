@@ -77,9 +77,9 @@ function C_TabbedContent(_type) {
 				var tabHeight = $(".ui-tabs-nav").height();
 				var audioHeight = 0;
 				
-				var myTabSpace = stageH - (contentTop + tabTop + tabHeight + audioHolder.getAudioShim() + 45);
-				$(".cognizenTabContent").css('max-height', myTabSpace+'px');
-				$(".cognizenTabContent").css('overflow', 'auto');
+//				var myTabSpace = stageH - (contentTop + tabTop + tabHeight + audioHolder.getAudioShim() + 45);
+//				$(".cognizenTabContent").css('max-height', myTabSpace+'px');
+//				$(".cognizenTabContent").css('overflow', 'auto');
 			}
 		});	
 		
