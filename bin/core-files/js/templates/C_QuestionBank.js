@@ -924,6 +924,12 @@ function C_QuestionBank(_type) {
 	
 	function saveBankEdit(_data){
 		saveQuestionEdit(_data);
+		var extra = $(data).find("page").eq(currentPage).find("bankitem").length;
+		var active = bankLength;
+		var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
+			$(data).find("page").eq(currentPage).find("bankitem").eq(i).remove();
+		}
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
