@@ -460,6 +460,12 @@ for(var i = 0; i < totalPages; i++){
 		var question_obj = new Object();
 		question_obj.complete = false;
 		question_obj.correct = null;
+		if($(data).find("page").eq(i).attr('objective') == undefined){
+			question_obj.objective = "undefined";
+		}else{
+			question_obj.objective = $(data).find("page").eq(i).attr('objective');
+		}
+		
 		if($(data).find("page").eq(i).attr('graded') == 'true'){
 			question_obj.graded = true;
 		}else{

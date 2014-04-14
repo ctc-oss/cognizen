@@ -42,7 +42,25 @@ function C_Completion(_type) {
 			}
 			scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
 			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
-			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%.';
+			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%. </p>';
+		}
+		
+		var trackedObjectives = false;
+		var remediationObjectives = "";
+		for(var i = 0; i < questionResponse_arr.length; i++){
+			if(questionResponse_arr[i].objective != "undefined"){
+				trackedObjectives = true;
+				if(!questionResponse_arr[i].correct){
+					remediationObjectives += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+				}
+			}
+		}
+		
+		if(trackedObjectives && remediationObjectives != ""){
+			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
+			scoreText += '<ul class="completionText">';
+			scoreText += remediationObjectives;
+			scoreText += '</ul></p>';
 		}
 		
 		//Position the page text
@@ -53,15 +71,15 @@ function C_Completion(_type) {
     //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
 		pageTitle = new C_PageTitle();
-
+		
         //Add classes for page layouts - updatable in css
 	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
-		$("#content").append(scoreText);
 		$("#content").append(myContent);
+		$("#content").append(scoreText);
 		
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
-//		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
+		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
 			if(isScored === "true"){
 				if($(data).find('scormVersion').attr('value') === '1.2_CTCU'){
