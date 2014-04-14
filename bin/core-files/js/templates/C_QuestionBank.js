@@ -573,13 +573,13 @@ function C_QuestionBank(_type) {
 			}
 		}
 		
-        if(!graded){
+        if($(data).find("page").eq(currentPage).attr("graded") == "false"){
 			$("#isGraded").removeAttr('checked');
 		}else{
 			$("#isGraded").attr('checked', 'checked');
 		}
 
-        if(!mandatory){
+        if($(data).find("page").eq(currentPage).attr("mandatory") == "false"){
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
@@ -654,13 +654,17 @@ function C_QuestionBank(_type) {
 		tmpObj.attempts = $("#inputAttempts").val();
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
+			tmpObj.graded = true;
 		}else{
 			$(data).find("page").eq(currentPage).attr("graded", "false");
+			tmpObj.graded = false;
 		}
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
+			tmpObj.mandatory = true;
 		}else{
 			$(data).find("page").eq(currentPage).attr("mandatory", "false");
+			tmpObj.mandatory = false;
 		}
 		
 		if($("#isRandom").prop("checked") == true){
@@ -888,6 +892,7 @@ function C_QuestionBank(_type) {
 		
 		$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("attempts", _data.attempts);
 		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
+		console.log("graded = " + _data.graded);
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("feedbacktype", _data.feedbackType);
