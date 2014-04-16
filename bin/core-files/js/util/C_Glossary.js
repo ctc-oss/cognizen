@@ -75,6 +75,14 @@ function updateGlossary(){
 }
 
 
+function compare(a,b) {
+  if (a.term < b.term)
+     return -1;
+  if (a.term > b.term)
+    return 1;
+  return 0;
+}
+
 /************************************************************************************************
 Function: 		addGlossary
 Param: 			none
@@ -83,15 +91,29 @@ Description:	Called when the glossary is built and when the glossary updates com
 function addGlossary(){
 	totalGlossary = $(data).find('glossaryitem').length;
 	glossaryItem_arr = [];
+	glossary_arr = [];
 	var thisTerm;
 	var termID;
 	
-	for(var i = 0; i < totalGlossary; i++){
+	//Alphabatize
+	for(var j = 0; j < totalGlossary; j++){
+		var tmpObj = new Object();
+		tmpObj.term = $(data).find('glossaryitem').eq(j).find('term').text();
+		tmpObj.definition = $(data).find('glossaryitem').eq(j).find('content').text();
+		tmpObj.id = j;
+		glossary_arr.push(tmpObj);
+	}
+	
+	glossary_arr.sort(compare);
+	
+	
+	//Display
+	for(var i = 0; i < glossary_arr.length; i++){
 		thisTerm = "term" + i;
 		termID = "#"+thisTerm;
-		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+$(data).find('glossaryitem').eq(i).find('term').text()+"</div>");
-		$(termID).data("definition", $(data).find('glossaryitem').eq(i).find('content').text());
-		$(termID).data("myID", i);
+		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+glossary_arr[i].term+"</div>");
+		$(termID).data("definition", glossary_arr[i].definition);
+		$(termID).data("myID", glossary_arr[i].id);
 		$(termID).click(function(){
 			if(hoverSubNav == false){
 				$("#glossaryDef").html("<b>Term: </b>" + $(this).text() + "<br/><br/><b>Definition: </b>" + $(this).data("definition"));
