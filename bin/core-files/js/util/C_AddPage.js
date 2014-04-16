@@ -833,6 +833,68 @@ function createNewPageByType(_myType){
 			questionResponse_arr.push(question_obj);
 			
 			break;
+			
+		/*case "sequencing":
+			$(data).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Place the items below, into the proper order:</p>");
+			$(data).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			var option1CDATA = option1.createCDATASection("Option1");
+			$(data).find("page").eq(newPage).find("option").eq(0).append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).attr("correct", "1");
+			
+			$(data).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			var option2CDATA = option2.createCDATASection("Option2");
+			$(data).find("page").eq(newPage).find("option").eq(1).append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).attr("correct", "2");
+			
+			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
+			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(data).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(data).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(data).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(data).find("page").eq(newPage).attr("objective", "undefined");
+			$(data).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(data).find("page").eq(newPage).attr("audio", "null");
+			$(data).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(data).find("page").eq(newPage).attr("attempts", 2);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
+			$(data).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;*/
 	}
 	newPageAdded = true;
 	sendUpdateWithRefresh();

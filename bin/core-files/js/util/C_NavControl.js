@@ -578,7 +578,7 @@ function enableIndex(){
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
 
-	if(assessment){
+	if(assessment && mode != "edit"){
 		disableIndex();
 		disableHome();
 	}else{
@@ -919,6 +919,10 @@ this.loadPage = function(){
 			break;
 		case "matchingDrag":
 			currentTemplate = new C_Matching(currentTemplateType);
+			currentTemplate.initialize();
+			break;
+		case "sequencing":
+			currentTemplate = new C_Sequencing(currentTemplateType);
 			currentTemplate.initialize();
 			break;
 		//UNITY SWF Layouts

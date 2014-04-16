@@ -1,27 +1,20 @@
 /*!
- * C_Matching
- * This class creates a template for multipleChoice type questions.
+ * C_Sequencing
+ * This class creates a template for sequncing items in to the correct order.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
  * VERSION: alpha 1.0
- * DATE: 2013-1-25
+ * DATE: 2014-2-25
  * JavaScript
  *
- * Copyright (c) 2012, CTC. All rights reserved. 
+ * Copyright (c) 2014, CTC. All rights reserved. 
  * 
  * @author: Philip Double, doublep@ctc.com
  * 
  * This function allows for multiple parameters including:
  * 		1. Number of attempts: defaults to 1
- *		2. Any number of options for the answer.
- *		3. Multiple feedback types:
- *			a. Differentiated.
- *			b. Single.
- *			c. None
- *		4. Auto-matchingSubmit - when a user selects an option, it is matchingSubmitted without having to click matchingSubmit. Default == false;
- *		5. Allows for a background image to utilized.
- *		6. Timer - a timer can be set which counts down until 0 - if they don't answer they get a zero.
+ *		2. Undifferentiated Feedback
  */
-function C_Matching(_type) {
+function C_Sequencing(_type) {
 	var type = _type;
 	var pageTitle;
 	var audioHolder;
@@ -38,22 +31,16 @@ function C_Matching(_type) {
     var feedbackIncorrectTitle;
     var feedbackIncorrectAttempt;
     var feedback;
-    var drops = 0;
-    var dropsMax = $(data).find("page").eq(currentPage).find("option").length;
-    var drop_arr = [];
     var optionCount = 0;
     var optionEdit_arr = [];
-    var answerCount = 0;
-    var answerEdit_arr = [];
 	var marking_arr;
 	var tempCorrect = true;
     
     var optionStatementY = 0;
-    var optionAnswerY = 0;
     var isComplete = false;
     var graded = false;
     var mandatory = true;
-    var myObjective = "undefined";
+  
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -67,24 +54,18 @@ function C_Matching(_type) {
 		}
 		
 		isComplete = checkQuestionComplete();
-//		console.log("isComplete = " + isComplete);
 
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
-		feedbackType = $(data).find("page").eq(currentPage).attr('feedbacktype');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackdisplay');
 		feedbackCorrectTitle = $(data).find("page").eq(currentPage).find('correctresponse').text();
 		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectresponse').text();
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		
-		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective');
-		}
-		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
-		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
+		if($(data).find("page").eq(currentPage).attr('mandatory') == "false" || $(data).find("page").eq(currentPage).attr('mandatory') == undefined){
 			mandatory = false;
 		}
 		
@@ -102,13 +83,9 @@ function C_Matching(_type) {
 		
 		$('#stage').append(msg);
 		
-		if(type == "matching"){
-			$("#matchingOptions").addClass("matchingOptions");
-			$("#matchingAnswers").addClass("matchingAnswers");
-		}else if(type == "matchingDrag"){
-			$("#matchingOptions").addClass("matchingDragImgOptions");
-			$("#matchingAnswers").addClass("matchingDragImgAnswers");
-		}
+		
+		$("#matchingOptions").addClass("matchingDragImgOptions");
+		$("#matchingAnswers").addClass("matchingDragImgAnswers");
 		
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
@@ -171,87 +148,6 @@ function C_Matching(_type) {
 		
 		iterator = 0;
 		
-		//find every answer or drop spot in the xml - place them on the screen.
-		$(data).find("page").eq(currentPage).find("answer").each(function(){
-			var myAnswer = "answer" + iterator;
-			var myImg = $(this).attr("img");
-			var myLabel = String.fromCharCode(iterator % 26 + 65);
-			
-			if(type == "matching" || myImg == undefined){
-				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + $(this).find("content").text() + "</div>");
-			}else if(type == "matchingDrag"){
-				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img id='funk' src='media/"  + myImg + "'></img></div>");
-				$("#funk").load(function(){
-					var greaterHeight = 0;
-					if($("#matchingAnswers").height() > $("#matchingOptions").height()){
-						greaterHeight = $("#matchingAnswers").height();
-					}else{
-						greaterHeight = $("#matchingOptions").height();
-					}
-					$("#matching").height(greaterHeight);
-					$('.antiscroll-wrap').antiscroll();
-				});
-				
-				$('#' + myAnswer).droppable({
-					activeClass: "ui-state-hover",
-					hoverClass: "ui-state-active",
-					start: function(event, ui){
-						TweenMax.to(ui.draggable, 1, {css:{scaleX:1, scaleY:1}, ease:Bounce.easeOut, duration: 0.5});
-					},
-					drop: function(event, ui){
-						var updateMove = false;
-						for(var i = 0; i < drop_arr.length; i++){
-							if(drop_arr[i].myDrag == ui.draggable.attr("id")){
-								drop_arr[i].myDrag = ui.draggable.attr("id");
-								drop_arr[i].myDrop = event.target.id;
-								updateMove = true;
-							}
-						}
-						
-						if(updateMove == false){
-							var tempObject = new Object();
-							tempObject.myDrag = ui.draggable.attr("id");
-							tempObject.myDrop = event.target.id;
-						
-							drop_arr.push(tempObject);
-						
-							drops++;
-						}
-						
-						if(drops == dropsMax){
-							checkAnswer();
-						}
-						ui.draggable.hover(
-							function(){
-								TweenMax.to($(this), 1, {css:{scaleX:1, scaleY:1}, ease:Bounce.easeOut, duration: 0.5});
-							},
-							function(){
-								TweenMax.to($(this), 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeIn, duration: 0.5});
-							}
-						);
-						TweenMax.to(ui.draggable, 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeOut, duration: 0.5});
-						
-						
-					}
-				});
-			}
-			
-			$("#"+myAnswer).data("matchID", $(this).attr("correct"));
-			$("#"+myAnswer).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
-				
-			iterator++;
-			answer_arr.push($('#' + myAnswer));
-		});
-		$("#matchingAnswers").append("</div>");
-		
-		var greaterHeight = 0;
-		if($("#matchingAnswers").height() > $("#matchingOptions").height()){
-			greaterHeight = $("#matchingAnswers").height();
-		}else{
-			greaterHeight = $("#matchingOptions").height();
-		}
-		$("#matching").height(greaterHeight);
-		
 		placematchingSubmit();
 		
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -282,7 +178,7 @@ function C_Matching(_type) {
 
 	function showUserAnswer(){
 		//Show markings - green check - red x
-		for(var i=0; i<questionResponse_arr.length; i++){
+		/*for(var i=0; i<questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
@@ -314,7 +210,7 @@ function C_Matching(_type) {
 		$(".matchingInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
 		mandatoryInteraction = false;
-		checkNavButtons();
+		checkNavButtons();*/
 	}
 
 	
@@ -553,8 +449,6 @@ function C_Matching(_type) {
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         msg += "<label id='label'>drag and drop: </label>";
 		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true'/><br/><br/>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find("page").eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
 		msg += "<div id='feedbackLabel'>Input your feedback:</div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
@@ -641,8 +535,7 @@ function C_Matching(_type) {
 				Save: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
-					tmpObj.objective = $("#inputObjective").val();
-					
+
 					if($("#isGraded").prop("checked") == true){
 						$(data).find("page").eq(currentPage).attr("graded", "true");
 					}else{
@@ -823,13 +716,6 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
-		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		for(var j = 0; j < questionResponse_arr.length; j++){
-			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
-				questionResponse_arr[j].graded = _data.graded;
-				questionResponse_arr[j].objective = _data.objective;
-			}
-		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).attr("layout", _data.layout);

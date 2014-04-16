@@ -51,6 +51,8 @@ function C_MultipleChoice(_type) {
     var graded = false;
     var mandatory = true;
     var randomize = false;
+    
+    var myObjective = "undefined";
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -72,6 +74,11 @@ function C_MultipleChoice(_type) {
 		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find('incorrectresponse').text();
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
+		
+		if($(data).find("page").eq(currentPage).attr('objective')){
+			myObjective = $(data).find("page").eq(currentPage).attr('objective');
+		}
+		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
@@ -473,6 +480,8 @@ function C_MultipleChoice(_type) {
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>randomize options: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
+		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find("page").eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
@@ -548,6 +557,7 @@ function C_MultipleChoice(_type) {
 				Save: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
+					tmpObj.objective = $("#inputObjective").val();
 					if($("#isGraded").prop("checked") == true){
 						$(data).find("page").eq(currentPage).attr("graded", "true");
 					}else{
@@ -691,6 +701,13 @@ function C_MultipleChoice(_type) {
 		}
 		
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
+		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
+		for(var j = 0; j < questionResponse_arr.length; j++){
+			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
+				questionResponse_arr[j].graded = _data.graded;
+				questionResponse_arr[j].objective = _data.objective;
+			}
+		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).attr("feedbacktype", _data.feedbackType);

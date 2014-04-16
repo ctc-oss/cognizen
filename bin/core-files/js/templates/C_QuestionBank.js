@@ -380,7 +380,7 @@ function C_QuestionBank(_type) {
 					selected_arr.push(i);
 				}	
 			}
-			updateScoring(selected_arr, tempCorrect, bankitem, myObjective);
+			updateScoring(selected_arr, tempCorrect, bankitem);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
@@ -892,7 +892,12 @@ function C_QuestionBank(_type) {
 		
 		$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("attempts", _data.attempts);
 		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		console.log("graded = " + _data.graded);
+		for(var j = 0; j < questionResponse_arr.length; j++){
+			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
+				questionResponse_arr[j].graded = _data.graded;
+				questionResponse_arr[j].objective = _data.objective;
+			}
+		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("feedbacktype", _data.feedbackType);
