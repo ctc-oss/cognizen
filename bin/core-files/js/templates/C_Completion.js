@@ -34,7 +34,7 @@ function C_Completion(_type) {
 		isScored = $(data).find('scored').attr('value');
 		if(isScored === "true"){
 			score_obj = getFinalScore();
-
+			
 			if(score_obj.passed){
 				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
 			}else{
@@ -73,10 +73,10 @@ function C_Completion(_type) {
 		pageTitle = new C_PageTitle();
 		
         //Add classes for page layouts - updatable in css
-	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
+	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div><div id="scoreFeedback"></div></div></div>');
 		$("#scrollableContent").addClass("top");
 		$("#content").append(myContent);
-		$("#content").append(scoreText);
+		$("#scoreFeedback").append(scoreText);
 		
 		$('<div id="completionButton">Continue</div>').insertAfter("#content");
 		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file

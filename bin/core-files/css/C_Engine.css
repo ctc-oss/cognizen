@@ -820,6 +820,10 @@ ul.no-indent {
 	cursor: pointer;
 }
 
+.clickImgSelected{
+	background-color: red;
+}
+
 .clickImgText{
 	position: relative;
 	font-family: Helvetica, Arial;

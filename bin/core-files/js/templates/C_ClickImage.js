@@ -70,11 +70,17 @@ function C_ClickImage(_type) {
 			
 			if(interact == "click"){
 				$("#" + revID).click(function(){
+					try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
+					currentItem = $(this);
+					try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
 					$("#clickImgText").html($(this).attr("myContent"));
 					$('.antiscroll-wrap').antiscroll();
 				});
 			}else if(interact == "hover"){
 				$("#" + revID).hover(function(){
+					try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
+					currentItem = $(this);
+					try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
 					$("#clickImgText").html($(this).attr("myContent"));
 					$('.antiscroll-wrap').antiscroll();
 				});
@@ -97,8 +103,12 @@ function C_ClickImage(_type) {
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-		}						
+		}
+		
+		$("#revID0").click();						
 	}
+	
+	var currentItem;
 	
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
