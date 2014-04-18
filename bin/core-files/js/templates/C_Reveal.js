@@ -126,7 +126,7 @@ function C_Reveal(_type) {
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight' style='height: " + imageH + "px; overflow: hidden;'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
 
 							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-																	'height':imageH - 4});
+																	'height':imageH});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
