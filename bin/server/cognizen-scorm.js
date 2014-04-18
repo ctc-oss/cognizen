@@ -840,9 +840,12 @@ var SCORM = {
             //"                       <adlnav:hideLMSUI>exit</adlnav:hideLMSUI>\n"+
             //"                       <adlnav:hideLMSUI>exitAll</adlnav:hideLMSUI>\n"+
             "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
-            "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
-            //"                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
-            "                   </adlnav:navigationInterface>\n"+
+            "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n";
+        if(_this.scormVersion === '2004_4th_USSOCOM'){
+        	item += "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n";
+        }    
+            
+        item +=    "                   </adlnav:navigationInterface>\n"+
             "               </adlnav:presentation>\n";
         item += _this._add2004ItemSeq(lessonNameTrim, lessonCount, totalLessons);    
         item += "           </item>\n";
