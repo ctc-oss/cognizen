@@ -189,6 +189,8 @@ else{
 
         $('#audioPlayer').mediaelementplayer({
             success: function(player, node) {
+            	// set global var audioPlayer (C_Engine.js) so it can be referenced in other files
+            	audioPlayer = player;
 				// set volume and mute from persistant variable
 				player.setVolume(audioVolume);
 				player.setMuted(audioMute);

@@ -11,8 +11,8 @@
  */
 function C_Flashcard(_type) {
 	var type = _type;
-	var pageTitle;
-	var audioHolder;
+	// var pageTitle;
+	// var audioHolder;
 	var myContent;//Body
 	
 	var cardCount//number of tabs.
@@ -424,19 +424,5 @@ function C_Flashcard(_type) {
 	this.fadeComplete = function(){
 		fadeComplete();
 	}
-    
-	function fadeComplete() {
-		try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-		try { $("#scrollableContent").remove(); } catch (e) {}
-		
-		for(name in CKEDITOR.instances){
-		    try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-	    
-		try { $("#cardEditDialog").remove(); } catch (e) {}
-		try { $("#cardEdit").remove(); } catch (e) {}
-
-	    loadPage();
-     }
+    // fadeComplete() moved to C_UtilFunctions.js
 }

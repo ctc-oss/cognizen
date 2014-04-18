@@ -16,8 +16,8 @@
  */
 function C_Sequencing(_type) {
 	var type = _type;
-	var pageTitle;
-	var audioHolder;
+	// var pageTitle;
+	// var audioHolder;
     var myContent;//Body
     var optionStartX = 0;
     var attemptsAllowed = 2;
@@ -764,23 +764,5 @@ function C_Sequencing(_type) {
     this.fadeComplete = function(){
         	fadeComplete();
 	}
-    
-    function fadeComplete(){
-	    try { $("#dialog-attemptResponse").remove(); } catch (e) {}
-	    try { $("#questionEdit").remove(); } catch (e) {}
-		try { $("#questionEditDialog").remove(); } catch (e) {}
-	    
-	    try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-        try { mediaHolder.destroy(); } catch (e) {}
-        
-		try { $("#scrollableContent").remove(); } catch (e) {}
-				
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy() } catch (e) {}
-		}
-		
-	    loadPage();
-    }
-
+    // fadeComplete() moved to C_UtilFunctions.js
 }

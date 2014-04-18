@@ -24,8 +24,8 @@
  *		8. Point weighted questions - more points for more difficult ones.
  */
 function C_MultipleChoice(_type) {
-	var pageTitle;
-	var audioHolder;
+	// var pageTitle;
+	// var audioHolder;
     var myContent;//Body
     var optionHolderY = 0;
     var optionStartX = 0;
@@ -776,19 +776,7 @@ function C_MultipleChoice(_type) {
     this.fadeComplete = function() {
 	    fadeComplete();
     }
-    
-    function fadeComplete(){
-		try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-        try { mediaHolder.destroy(); } catch (e) {}
-        
-		try { $("#scrollableContent").remove(); } catch (e) {}
-				
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy() } catch (e) {}
-		}
-		
-		loadPage();
-    }
+    // fadeComplete() moved to C_UtilFunctions.js
+
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }

@@ -10,11 +10,11 @@
  */
 function C_Completion(_type) {
 	var type = _type;
-    var pageTitle;
-    var mediaHolder;
+    // var pageTitle;
+    // var mediaHolder;
     var mySidebar;
     var myContent;//Body
-    var audioHolder;
+    // var audioHolder;
     var completed = true;
     var scoreText;
     var score_obj;
@@ -82,7 +82,8 @@ function C_Completion(_type) {
 		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 		$("#completionButton").button().click(function(){
 			if(isScored === "true"){
-				if($(data).find('scormVersion').attr('value') === '1.2_CTCU'){
+				var _scormVersion = $(data).find('scormVersion').attr('value');
+				if(_scormVersion === '1.2_CTCU' || _scormVersion === '2004_4th_USSOCOM'){
 					completeLesson(score_obj.passed, score_obj.passed, score_obj.score);
 				}
 				else{
@@ -189,17 +190,7 @@ function C_Completion(_type) {
 	this.fadeComplete = function(){
         	fadeComplete();
 	}
-
-	function fadeComplete() {	
-        try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-		try { $("#scrollableContent").remove(); } catch (e) {}
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-		
-		loadPage();
-    }
+	// fadeComplete() moved to C_UtilFunctions.js
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }
 

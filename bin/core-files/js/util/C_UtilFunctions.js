@@ -195,3 +195,43 @@ function parsePackageLocation(myPath){
 	});
 	
 }
+
+//cleans up all of the data between templates
+function fadeComplete() {
+		
+    try { pageTitle.destroy(); } catch (e) {}
+    try { audioHolder.destroy(); } catch (e) {}
+    try { mediaHolder.destroy(); } catch (e) {}
+    try { audioPlayer.pause(); } catch (e) {}
+    try { $("#sidebar").remove(); } catch (e) {}
+    try { $("#sidebarHolder").remove(); } catch (e) {}
+	try { $("#scrollableContent").remove(); } catch (e) {}
+	try { $("#conEdit").remove(); } catch (e) {}
+	try { $(".dialog").remove(); } catch (e){};
+	try { $("#cardEditDialog").remove(); } catch (e) {}
+	try { $("#cardEdit").remove(); } catch (e) {}
+	try { $("#content").remove(); } catch (e) {}
+    try { $("#dialog-attemptResponse").remove(); } catch (e) {}
+    try { $("#questionEdit").remove(); } catch (e) {}
+	try { $("#questionEditDialog").remove(); } catch (e) {}	
+	try { $('#pageTitle').remove(); } catch (e) {}
+	try { $('#question').remove(); } catch (e) {}
+	try { $('#answerOptionsImage').remove(); } catch (e) {}
+	try { $("#mcSubmit").remove(); } catch (e) {}	   
+	try { $('#audioCon').remove(); } catch (e) {}
+	try { $('#player').remove(); } catch (e) {}
+	try { $("#titleEdit").remove(); } catch (e) {}
+	try { $("#imgEdit").remove(); } catch (e) {}
+	try { $("#captionEdit").remove(); } catch (e) {}
+	try { $('#loader').flash().remove(); } catch (e) {}
+	try { $('#caption').remove(); } catch (e) {}
+	try { $('#loader').remove(); } catch (e) {}
+	try { $("#imgEdit").remove(); } catch (e) {}
+  
+
+	for(name in CKEDITOR.instances){
+		try { CKEDITOR.instances[name].destroy(); } catch (e) {}
+	}
+	loadPage();
+
+}

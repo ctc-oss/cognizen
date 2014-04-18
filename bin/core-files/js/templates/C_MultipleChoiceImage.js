@@ -25,8 +25,8 @@
  */
 function C_MultipleChoiceImage(_type) {
 
-    var myPageTitle;//Title of this page.
-    var myContent;//Body
+    // var myPageTitle;//Title of this page.
+    // var myContent;//Body
     var optionHolderY = 0;
     var optionStartX = 0;
     var mcSubmitButtonY = 0;
@@ -341,13 +341,6 @@ function C_MultipleChoiceImage(_type) {
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), 1, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
-    
-    function fadeComplete(){
-	    $('#pageTitle').remove();
-	    $('#question').remove();
-	    $('#answerOptionsImage').remove();
-	    $("#mcSubmit").remove();
-	    loadPage();
-    }
+    // fadeComplete() moved to C_UtilFunctions.js
 
 }

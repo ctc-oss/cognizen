@@ -34,6 +34,11 @@ var audioMute = false; //persistant audio mute state between pages
 
 var cachedTextPreEdit;
 var connected;
+var audioPlayer;
+
+var pageTitle;
+var mediaHolder;
+var audioHolder;
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/

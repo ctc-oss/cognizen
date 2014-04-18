@@ -12,9 +12,9 @@
  */
 function C_TabbedContent(_type) {
 	var type = _type;
-	var pageTitle;
-	var mediaHolder;
-	var audioHolder;
+	// var pageTitle;
+	// var mediaHolder;
+	// var audioHolder;
 	var myContent
     var tabEdit_arr = [];
 	    
@@ -310,17 +310,5 @@ function C_TabbedContent(_type) {
 	this.fadeComplete = function(){
 		fadeComplete();
 	}
-    
-    function fadeComplete() {
-		try { $("#conEdit").remove(); } catch (e) {}
-		try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-        try { mediaHolder.destroy(); } catch (e) {}
-	    try { $("#scrollableContent").remove(); } catch (e) {}
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-		
-	    loadPage();
-    }
+    // fadeComplete() moved to C_UtilFunctions.js
 }

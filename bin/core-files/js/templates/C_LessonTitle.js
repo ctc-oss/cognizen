@@ -12,11 +12,11 @@
  */
 function C_LessonTitle(_type) {
 	var type = _type;
-    var pageTitle;
-    var mediaHolder;
+    // var pageTitle;
+    // var mediaHolder;
     var mySidebar;
     var myContent;//Body
-    var audioHolder;
+    // var audioHolder;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -136,16 +136,6 @@ function C_LessonTitle(_type) {
 	this.fadeComplete = function(){
         	fadeComplete();
 	}
-
-	function fadeComplete() {	
-        try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-		try { $("#content").remove(); } catch (e) {}
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-		
-		loadPage();
-    }
+	// fadeComplete() moved to C_UtilFunctions.js
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }

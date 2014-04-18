@@ -12,11 +12,11 @@
  */
 function C_StaticContent(_type) {
 	var type = _type;
-    var pageTitle;
-    var mediaHolder;
+    // var pageTitle;
+    // var mediaHolder;
     var mySidebar;
     var myContent;//Body
-    var audioHolder;
+    // var audioHolder;
    
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -250,19 +250,6 @@ function C_StaticContent(_type) {
         	fadeComplete();
 	}
 
-	function fadeComplete() {
-			
-        try { pageTitle.destroy(); } catch (e) {}
-        try { audioHolder.destroy(); } catch (e) {}
-        try { mediaHolder.destroy(); } catch (e) {}
-        try { $("#sidebar").remove(); } catch (e) {}
-        try { $("#sidebarHolder").remove(); } catch (e) {}
-		try { $("#scrollableContent").remove(); } catch (e) {}
-		try { $(".dialog").remove(); } catch (e){};
-		for(name in CKEDITOR.instances){
-			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
-		}
-		loadPage();
-    }
+    // fadeComplete() moved to C_UtilFunctions.js
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }
