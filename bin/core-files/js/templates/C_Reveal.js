@@ -123,10 +123,9 @@ function C_Reveal(_type) {
 							if(isIE){
 								currentShowText += "<br><br>";
 							}
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight' style='height: " + imageH + "px; overflow: hidden;'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
+							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight' style='height: " + imageH + "px; overflow: hidden;'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + imageH + "px;'>" + currentShowText + "</div></div>");
 
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-																	'height':imageH});
+							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
