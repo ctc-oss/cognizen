@@ -20,6 +20,8 @@ function C_Reveal(_type) {
 	var rev_arr = [];
 	var revealEdit_arr = [];
 	var editStartLength;
+	
+	var imageH;
 	    
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -82,7 +84,9 @@ function C_Reveal(_type) {
 			
 			$("#"+revID).data("myText", myContent);
 			$("#"+revID).data("myWidth", $("#"+revID).width());
-			$("#"+revID).data("myHeight", $("#"+revID).height());
+			imageH = $("#"+revID+"Img").height();
+			console.log("imageH = " + imageH);
+			$("#"+revID).data("myHeight", $("#"+revID+"Img").height());
 			$("#"+revID).data("myLeft", $("#"+revID).position().left);
 			if(type != "revealTop"){
 				$("#"+revID).data("myTop", $("#"+revID).position().top);
@@ -116,10 +120,12 @@ function C_Reveal(_type) {
 					$(this).unbind('mouseenter mouseleave click');
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#revealTextHolder").css({'height': $("#"+revID).height() - 10});
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-															'height':$('#revealTextHolder').height()});
+							if(isIE){
+								currentShowText += "<br><br>";
+							}
+							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight' style='height: " + imageH + "px; overflow: hidden;'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + imageH + "px;'>" + currentShowText + "</div></div>");
+
+							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25});
 							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 							$(this).scrubContent();
 							$('.antiscroll-wrap').antiscroll();
@@ -127,8 +133,7 @@ function C_Reveal(_type) {
 					}else if(type == "revealBottom"){
 						TweenMax.to($(this), transitionLength, {css:{height:550}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
 							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextBottom'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({//'position':'absolute', 
-															//'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
+							$("#" + currentSelected + "Text").css({
 															'padding': 5,
 															'left' : 5,
 															'width' : $("#" + currentSelected).width() - 10,
