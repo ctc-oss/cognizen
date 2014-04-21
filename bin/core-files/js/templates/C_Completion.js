@@ -46,20 +46,41 @@ function C_Completion(_type) {
 		}
 		
 		var trackedObjectives = false;
-		var remediationObjectives = "";
+		//array used to track objectives for duplicates
+		var remediationObjectives = [];
+		var displayRemedObj = "";
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(questionResponse_arr[i].objective != "undefined"){
 				trackedObjectives = true;
 				if(!questionResponse_arr[i].correct){
-					remediationObjectives += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+					//check for duplicates
+					if(remediationObjectives.indexOf(questionResponse_arr[i].objective) == -1){
+						remediationObjectives.push(questionResponse_arr[i].objective);
+						if(questionResponse_arr[i].objItemId != "undefined"){
+							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objective+"</a></li>";
+						}
+						else{
+							displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+						}
+					}						
 				}
+			}
+			else if(questionResponse_arr[i].objItemId != "undefined"){
+				trackedObjectives = true;
+					if(!questionResponse_arr[i].correct){
+						//check for duplicates
+						if(remediationObjectives.indexOf(questionResponse_arr[i].objItemId) == -1){
+							remediationObjectives.push(questionResponse_arr[i].objItemId);
+							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objItemId+"</a></li>";
+						}
+					}				
 			}
 		}
 		
 		if(trackedObjectives && remediationObjectives != ""){
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';
-			scoreText += remediationObjectives;
+			scoreText += displayRemedObj;
 			scoreText += '</ul></p>';
 		}
 		

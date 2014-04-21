@@ -465,6 +465,12 @@ for(var i = 0; i < totalPages; i++){
 		}else{
 			question_obj.objective = $(data).find("page").eq(i).attr('objective');
 		}
+
+		if($(data).find("page").eq(i).attr('objItemId') == undefined){
+			question_obj.objItemId = "undefined";
+		}else{
+			question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
+		}
 		
 		if($(data).find("page").eq(i).attr('graded') == 'true'){
 			question_obj.graded = true;
