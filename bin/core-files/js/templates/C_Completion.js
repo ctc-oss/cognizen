@@ -54,7 +54,7 @@ function C_Completion(_type) {
 				trackedObjectives = true;
 				if(!questionResponse_arr[i].correct){
 					//check for duplicates
-					if(remediationObjectives.indexOf(questionResponse_arr[i].objective) == -1){
+					if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
 						remediationObjectives.push(questionResponse_arr[i].objective);
 						if(questionResponse_arr[i].objItemId != "undefined"){
 							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objective+"</a></li>";
@@ -69,7 +69,7 @@ function C_Completion(_type) {
 				trackedObjectives = true;
 					if(!questionResponse_arr[i].correct){
 						//check for duplicates
-						if(remediationObjectives.indexOf(questionResponse_arr[i].objItemId) == -1){
+						if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
 							remediationObjectives.push(questionResponse_arr[i].objItemId);
 							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 						}
