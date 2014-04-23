@@ -921,7 +921,7 @@ this.loadPage = function(){
 			currentTemplate = new C_Matching(currentTemplateType);
 			currentTemplate.initialize();
 			break;
-		case "sequencing":
+		case "sequence":
 			currentTemplate = new C_Sequencing(currentTemplateType);
 			currentTemplate.initialize();
 			break;

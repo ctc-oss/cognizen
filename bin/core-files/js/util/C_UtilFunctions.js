@@ -198,11 +198,11 @@ function parsePackageLocation(myPath){
 
 //cleans up all of the data between templates
 function fadeComplete() {
-		
+	try { audioPlayer.pause(); } catch (e) {}	
     try { pageTitle.destroy(); } catch (e) {}
     try { audioHolder.destroy(); } catch (e) {}
     try { mediaHolder.destroy(); } catch (e) {}
-    try { audioPlayer.pause(); } catch (e) {}
+    
     try { $("#sidebar").remove(); } catch (e) {}
     try { $("#sidebarHolder").remove(); } catch (e) {}
 	try { $("#scrollableContent").remove(); } catch (e) {}

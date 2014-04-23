@@ -357,6 +357,7 @@ else{
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	this.destroy = function(){
+		console.log("destroyingAudioPlayer");
 		try { siofu.destroy(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
