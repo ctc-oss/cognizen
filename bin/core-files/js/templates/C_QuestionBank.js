@@ -48,6 +48,7 @@ function C_QuestionBank(_type) {
     var bankLength = 0;
     var bankitem = 0;
     var myObjective = "undefined";
+    var myObjItemId = "undefined";    
     
     var isComplete = false;
     var optionEdit_arr = [];
@@ -94,6 +95,11 @@ function C_QuestionBank(_type) {
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
+
+		if($(data).find("page").eq(currentPage).attr('objItemId')){
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		}	
+
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
@@ -491,7 +497,9 @@ function C_QuestionBank(_type) {
 		msg += "<label id='label'>mandatory: </label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>bank objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find("page").eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";			
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -651,6 +659,7 @@ function C_QuestionBank(_type) {
 	function makeQuestionDataStore(_feedbackTypeChange){
 		var tmpObj = new Object();
 		tmpObj.objective = $("#inputObjective").val();
+		tmpObj.objItemId = $("#inputObjItemId").val();
 		tmpObj.attempts = $("#inputAttempts").val();
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
@@ -892,10 +901,12 @@ function C_QuestionBank(_type) {
 		
 		$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("attempts", _data.attempts);
 		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
+		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
 				questionResponse_arr[j].objective = _data.objective;
+				questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);

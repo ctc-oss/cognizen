@@ -146,3 +146,12 @@ function completeLesson(completion, success, score){
 	}
 	
 }
+
+function choice(lesson){
+
+	var lessonNameTrim = lesson.replace(/\s+/g, '');
+
+	scorm.set("adl.nav.request", "{target="+lessonNameTrim+"_id}choice");
+	scorm.set("cmi.exit", "normal");
+	scorm.API.getHandle().Terminate("");
+}

@@ -53,6 +53,7 @@ function C_MultipleChoice(_type) {
     var randomize = false;
     
     var myObjective = "undefined";
+    var myObjItemId = "undefined";
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -78,6 +79,10 @@ function C_MultipleChoice(_type) {
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
+
+		if($(data).find("page").eq(currentPage).attr('objItemId')){
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		}		
 		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
@@ -481,7 +486,9 @@ function C_MultipleChoice(_type) {
 		msg += "<label id='label'><b>randomize options: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find("page").eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";		
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
@@ -558,6 +565,7 @@ function C_MultipleChoice(_type) {
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
 					tmpObj.objective = $("#inputObjective").val();
+					tmpObj.objItemId = $("#inputObjItemId").val();
 					if($("#isGraded").prop("checked") == true){
 						$(data).find("page").eq(currentPage).attr("graded", "true");
 					}else{
@@ -702,10 +710,12 @@ function C_MultipleChoice(_type) {
 		
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
 		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
+		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
 				questionResponse_arr[j].objective = _data.objective;
+				questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);

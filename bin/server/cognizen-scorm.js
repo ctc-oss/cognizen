@@ -866,7 +866,7 @@ var SCORM = {
 			if(lessonCount + 1 == totalLessons){
 				//sequencing elements for the post test
 				seq += "               <imsss:sequencing>\n"+
-					"                	<imsss:controlMode choiceExit=\"false\" />\n"+				
+					//"                	<imsss:controlMode choiceExit=\"false\" />\n"+				
 					"        			<imsss:sequencingRules>\n"+
 					"	            		<imsss:preConditionRule>\n"+
 					"		   	                <imsss:ruleConditions conditionCombination=\"any\">\n"+
