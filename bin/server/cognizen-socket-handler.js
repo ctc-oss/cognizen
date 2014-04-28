@@ -15,7 +15,7 @@ var Utils = require('./cognizen-utils'),
     ContentSocket = require('./content-socket'),
     scorm = require('./cognizen-scorm'),
     unzip = require('adm-zip');
-
+var et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -934,78 +934,92 @@ var SocketHandler = {
                         else {
                             var serverDetails = _this.Content.serverDetails(found);
 							var permission = data.content.permission;
-							
-                            if (serverDetails.running) {
-                                _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
-                                _this._socket.emit('contentServerStarted', {
-                                    id: found.id,
-                                    path: found.path,
-                                    type: data.content.type
-                                });  
-                            }
-                            else {
-                                var scormPath = path.normalize('../core-files/scorm/');
-                                var scormDir = path.resolve(process.cwd(), scormPath);
-                                var programPath = path.normalize('../programs/' + found.path + '/');
-                                var parentDir = path.resolve(process.cwd(), programPath);
-                                
-                                
-                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
-                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
-                                    if (error) {
-                                        _this.logger.error(error);
-                                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
-                                        serverDetails.running = false;
-                                    }
-                                    else {
-                                       _this._socket.emit('contentServerStarted', {
-                                       		id: found.id,
-                                            path: encodeURIComponent(found.path),
-                                            type: data.content.type
-                                        });
-                                        
-                                       serverDetails.running = true;
-                                    }
-                                });
-                            }
-                            
-                            //Setting up array to track whether a lesson is locked due to another editor already in....
-                            if(permission == "admin" || permission == "editor"){
-                            	var alreadyIn = false;
-                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
-								var user = _this.SocketSessions.socketUsers[sessionId];
-								
-								//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
-                            	for(var i = 0; i < activeEdit_arr.length; i++){
-                            		if(activeEdit_arr[i].user == user.username){
-	                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
-	                            		alreadyIn = true;
-	                            		activeEdit_arr[i].lessonID = found.id;
-	                            		activeEdit_arr[i].permission = permission;
-	                            		activeEdit_arr[i].rejectEdit = false;
-	                            		activeEdit_arr[i].isEditor = false;
-	                            		activeEdit_arr[i].isActive = false;
-	                            		activeEdit_arr[i].socketID = _this._socket.id;
-	                            		activeEdit_arr[i].socket = _this._socket;
-	                            		activeEdit_arr[i].sessionID = sessionId;
-	                            		activeEdit_arr[i].user = user.username;
-                            		}
-                            	}
-                            	
-                            	if(!alreadyIn){
-	                            	var tmpObject = new Object();
-	                            	tmpObject.lessonID = found.id;
-	                            	tmpObject.permission = permission;
-	                            	tmpObject.rejectEdit = false;
-	                            	tmpObject.isEditor = false;
-	                            	tmpObject.isActive = false;
-	                            	tmpObject.socketID = _this._socket.id;
-	                            	tmpObject.socket = _this._socket;
-									tmpObject.sessionID = sessionId;
-									tmpObject.user = user.username;
-	                            	activeEdit_arr.push(tmpObject);
-	                            }
-                            }
+							var xmlPath = path.normalize('../programs/' + found.path + '/xml/content.xml');
+							var conWidth = 1024;
+							var conHeight = 768;
+							fs.exists(xmlPath, function(exists) {
+					            if (exists) {
+					                var xmldata = fs.readFileSync(xmlPath).toString();
+					                var etree = et.parse(xmldata);
+					                try { conWidth = etree.find('./courseInfo/preferences/lessonWidth').get('value'); } catch(e) {}
+					                try { conHeight = etree.find('./courseInfo/preferences/lessonHeight').get('value'); } catch(e) {}
+					                if (serverDetails.running) {
+		                                _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
+		                                _this._socket.emit('contentServerStarted', {
+		                                    id: found.id,
+		                                    path: found.path,
+		                                    myWidth: conWidth,
+		                                    myHeight: conHeight,
+		                                    type: data.content.type
+		                                });  
+		                            }
+		                            else {
+		                                var scormPath = path.normalize('../core-files/scorm/');
+		                                var scormDir = path.resolve(process.cwd(), scormPath);
+		                                var programPath = path.normalize('../programs/' + found.path + '/');
+		                                var parentDir = path.resolve(process.cwd(), programPath);
+		                                
+		                                
+		                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
+		                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
+		                                    if (error) {
+		                                        _this.logger.error(error);
+		                                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
+		                                        serverDetails.running = false;
+		                                    }
+		                                    else {
+		                                       _this._socket.emit('contentServerStarted', {
+		                                       		id: found.id,
+		                                            path: encodeURIComponent(found.path),
+		                                            myWidth: conWidth,
+													myHeight: conHeight,
+		                                            type: data.content.type
+		                                        });
+		                                        
+		                                       serverDetails.running = true;
+		                                    }
+		                                });
+		                            }
+		                            
+		                            //Setting up array to track whether a lesson is locked due to another editor already in....
+		                            if(permission == "admin" || permission == "editor"){
+		                            	var alreadyIn = false;
+		                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+										var user = _this.SocketSessions.socketUsers[sessionId];
+										
+										//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
+		                            	for(var i = 0; i < activeEdit_arr.length; i++){
+		                            		if(activeEdit_arr[i].user == user.username){
+			                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
+			                            		alreadyIn = true;
+			                            		activeEdit_arr[i].lessonID = found.id;
+			                            		activeEdit_arr[i].permission = permission;
+			                            		activeEdit_arr[i].rejectEdit = false;
+			                            		activeEdit_arr[i].isEditor = false;
+			                            		activeEdit_arr[i].isActive = false;
+			                            		activeEdit_arr[i].socketID = _this._socket.id;
+			                            		activeEdit_arr[i].socket = _this._socket;
+			                            		activeEdit_arr[i].sessionID = sessionId;
+			                            		activeEdit_arr[i].user = user.username;
+		                            		}
+		                            	}
+		                            	
+		                            	if(!alreadyIn){
+			                            	var tmpObject = new Object();
+			                            	tmpObject.lessonID = found.id;
+			                            	tmpObject.permission = permission;
+			                            	tmpObject.rejectEdit = false;
+			                            	tmpObject.isEditor = false;
+			                            	tmpObject.isActive = false;
+			                            	tmpObject.socketID = _this._socket.id;
+			                            	tmpObject.socket = _this._socket;
+											tmpObject.sessionID = sessionId;
+											tmpObject.user = user.username;
+			                            	activeEdit_arr.push(tmpObject);
+			                            }
+		                            }
+					            }
+					        });
                         }
                     });
                 }

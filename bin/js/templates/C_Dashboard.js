@@ -67,8 +67,9 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerStarted', function (details) {
+            console.log(details);
             var url = [window.location.protocol, '//', window.location.host, '/programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
-            openProject(url);
+            openProject(url, details.myWidth, details.myHeight);
         });
 
         socket.on('contentServerDidNotStart', function (details) {
@@ -398,12 +399,12 @@ function C_Dashboard(_type) {
 	var moduleLessonWindow;
     /****************************************************************************************************************************END OF ROLLOVERS FOR TREE ITEMS*/
     //////OPEN A PROJECT\\\\\\
-    function openProject(projectPath) {
+    function openProject(projectPath, w, h) {
         var myPath = projectPath.replace(/\s/g, "%20");
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
-        moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=1024, height=768");
-        //moduleLessonWindow = window.open(myPath, '_blank');//, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=1024, height=768");
+        moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
+        
         moduleLessonWindow.focus();
     }
     
