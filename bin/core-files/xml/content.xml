@@ -4,6 +4,8 @@
 		<preferences>
 			<!-- mode options: "review", "edit", "production"-->
 			<mode value="edit"/>
+			<lessonWidth value="1024"/>
+			<lessonHeight value="768"/>
 			<lockRequestDuration value="30"/>
 			<courseTitle value="Cognizen Information"/>
 			<lessonTitle value="Cognizen Overview"/>
