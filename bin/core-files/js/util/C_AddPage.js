@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion"];
 
 
 /************************************************************************************
@@ -854,7 +854,7 @@ function createNewPageByType(_myType){
 			
 			break;
 			
-		/*case "sequencing":
+		case "sequence":
 			$(data).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Place the items below, into the proper order:</p>");
@@ -862,15 +862,39 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option1CDATA = option1.createCDATASection("Option1");
-			$(data).find("page").eq(newPage).find("option").eq(0).append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("Sequence Item 1");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(newPage).find("option").eq(0).attr("correct", "1");
 			
 			$(data).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var option2CDATA = option2.createCDATASection("Option2");
-			$(data).find("page").eq(newPage).find("option").eq(1).append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("Sequence Item 2");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(data).find("page").eq(newPage).find("option").eq(1).attr("correct", "2");
+			
+			$(data).find("page").eq(newPage).append($("<option>"));
+			var option3 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(data).find("page").eq(newPage).find("option").eq(2).append($("<content>"));
+			var content3 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option3CDATA = content3.createCDATASection("Sequence Item 3");
+			$(data).find("page").eq(newPage).find("option").eq(2).find("content").append(option3CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(2).append($("<diffeed>"));
+			var diffFeed3 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed3CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(2).find("diffeed").append(difFeed3CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(2).attr("correct", "3");
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
@@ -914,7 +938,7 @@ function createNewPageByType(_myType){
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
 			
-			break;*/
+			break;
 	}
 	newPageAdded = true;
 	sendUpdateWithRefresh();

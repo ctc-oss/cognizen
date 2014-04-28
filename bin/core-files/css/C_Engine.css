@@ -902,9 +902,46 @@ ul.no-indent {
 	position: absolute;
 	text-align: center;
 }
-
 /****************************************************** CONTENT TEXT LAYOUTS END *****/
 
+
+/**************************************************************************************
+SEQUENCING LAYOUTS
+**************************************************************************************/
+.sequenceHolder{
+	position: relative;
+	width: 65%;
+	margin-right: auto;
+	margin-left: auto;
+	border: solid #9DA6AB;
+	border-width: 2px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.sequenceOption{
+	position: relative;
+	text-align: center;
+	vertical-align:middle;
+	font-family: "Helvetica", "Arial";
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 12pt;
+	color: #9DA6AB;
+	background-color: #EEEEEE;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	cursor: hand; 
+	cursor: pointer;
+}
+/****************************************************** SEQUENCING END *****/
 
 /**************************************************************************************
 SIDEBAR LAYOUTS
