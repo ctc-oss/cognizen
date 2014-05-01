@@ -298,7 +298,7 @@ function C_Reveal(_type) {
 							$(this).dialog('close');
 						},
 						Add: function(){
-							addReveal(revealCount, true);
+							addReveal(revealEdit_arr.length, true);
 						},
 						Save: function(){
 							if($("#isHover").prop("checked") == true){
@@ -378,7 +378,7 @@ function C_Reveal(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-						
+					
 		revealEdit_arr.push(revealID);
 	}
 			

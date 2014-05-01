@@ -183,7 +183,7 @@ function C_ClickImage(_type) {
 							$(this).dialog('close');
 						},
 						Add: function(){
-							addReveal(revealCount, true);
+							addReveal(revealEdit_arr.length, true);
 						},
 						Save: function(){
 							if($("#isHover").prop("checked") == true){
@@ -226,7 +226,7 @@ function C_ClickImage(_type) {
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("New Image Reveal Text");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text</p>");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").append(option1CDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<caption>"));
 			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
