@@ -386,7 +386,7 @@ function addIndex(){
 	}
 
 	if(pushedUpdate == true){
-		currentTemplate.fadeComplete();
+		fadeComplete();
 		pushedUpdate = false;
 	}
 	

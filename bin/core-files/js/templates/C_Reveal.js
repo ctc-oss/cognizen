@@ -11,18 +11,41 @@
  */
 function C_Reveal(_type) {
 	var type = _type;
-	// var pageTitle;
-	// var audioHolder;
-	
 	var revealCount//number of tabs.
 	var myContent;//Body
-
-	var rev_arr = [];
-	var revealEdit_arr = [];
-	var editStartLength;
 	var mediaWidth;
 	var mediaHeight;
 	var interact = "click";
+	var currentEditBankMember = 0;
+	var revealMenu_arr = [];
+	var currentItem;
+	var myObjective = "undefined";
+    var myObjItemId = "undefined"; 
+	    
+    //Defines a public method - notice the difference between the private definition below.
+	this.initialize = function(){
+		if(transition == true){
+			$('#stage').css({'opacity':0});
+		}
+		
+		//Set template variable values.
+		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
+		myContent = $(data).find("page").eq(currentPage).find("content").first().text();
+		mediaWidth = $(data).find("page").eq(currentPage).attr('w');		
+		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
+		interact = $(data).find("page").eq(currentPage).attr("interact");
+		if($(data).find("page").eq(currentPage).attr('objective')){
+			myObjective = $(data).find("page").eq(currentPage).attr('objective');
+		}
+
+		if($(data).find("page").eq(currentPage).attr('objItemId')){
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		}
+		pageTitle = new C_PageTitle();
+		audioHolder = new C_AudioHolder();
+		
+		buildTemplate();
+	}
 	    
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -35,27 +58,25 @@ function C_Reveal(_type) {
 		mediaWidth = $(data).find("page").eq(currentPage).attr('w');		
 		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
 		interact = $(data).find("page").eq(currentPage).attr('interact');
+		pageTitle = new C_PageTitle();
+		audioHolder = new C_AudioHolder();
 		
 		buildTemplate();
 	}
 	
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
-		pageTitle = new C_PageTitle();
-		
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
-		
-		audioHolder = new C_AudioHolder();
 		
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		
 		if(isIE){
 			$("#contentHolder").height($("#contentHolder").height() - 22);
 		}
-		
 		
         $("#content").append(myContent);
 		
@@ -143,21 +164,23 @@ function C_Reveal(_type) {
 				});
 			//INTERACTION FOR HOVER INTERACT	
 			}else if(interact == "hover"){
-				$(this).unbind('mouseenter mouseleave click');
 				//REVEAL RIGHT HOVER
-				if(type == "revealRight" || "revealLeft"){
-					TweenMax.to(
-						$(this), 
-						transitionLength, 
-						{css:{width:"95%"}, 
-						ease:transitionType, 
-						onComplete: showRevealText, 
-						onCompleteParams:[
-							$(this).attr("id"), 
-							$(this).data("myText")
-						]
-					});
-				}
+				$("#"+revID).hover(function(){
+					$(this).unbind('mouseenter mouseleave');
+					if(type == "revealRight" || "revealLeft"){
+						TweenMax.to(
+							$(this), 
+							transitionLength, 
+							{css:{width:"95%"}, 
+							ease:transitionType, 
+							onComplete: showRevealText, 
+							onCompleteParams:[
+								$(this).attr("id"), 
+								$(this).data("myText")
+							]
+						});
+					}
+				});
 			}
 		}	
 		if(type == "revealBottom" || type == "revealTop"){
@@ -262,86 +285,163 @@ function C_Reveal(_type) {
 			$("#imgPalette").prepend("<div id='conEdit' class='btn_edit_text' title='Edit Image Hotspots'></div>");
 			
 			$("#conEdit").click(function(){
-				revealEdit_arr.length = 0;
-				
-				//Create the Content Edit Dialog
-				var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
-				msg += "<label id='hover'>Hover: </label>";
-				msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/>";
-				msg += "<label> <b>Reveal Image Width: </b></label>";
-				msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + mediaWidth + "' defaultValue='" + mediaWidth + "' style='width:10%;'/>";
-				msg += "<label> <b>Reveal Image Height: </b></label>";
-				msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + mediaHeight + "' defaultValue='" + mediaHeight + "' style='width:10%;'/>";
-				msg += "</div><br/>";
-				$("#stage").append(msg);
-				
-				if(interact == "hover"){
-					$("#isHover").attr("checked", "checked");
-				}
-				
-				revealEdit_arr.length = 0;
-				
-				for(var i = 0; i < revealCount; i++){
-					addReveal(i, false);
-				}
-				
-				$("#contentEditDialog").dialog({ 	
-					modal: true,
-					width: 875,
-					height: 750,
-					resizable: false,
-					close: function(){
-						$("#contentEditDialog").remove();
-					},
-					buttons: {
-						Cancel: function(){
-							$(this).dialog('close');
-						},
-						Add: function(){
-							addReveal(revealEdit_arr.length, true);
-						},
-						Save: function(){
-							if($("#isHover").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr('interact', "hover");
-								interact = "hover";
-							}else{
-								$(data).find("page").eq(currentPage).attr('interact', "click");
-								interact = "click";
-							}
-							
-							$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
-							$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
-							
-							var tmpArray = new Array();
-							for(var i = 0; i < revealEdit_arr.length; i++){
-								var tmpObj = new Object();
-								tmpObj.title = $("#" + revealEdit_arr[i] +"TitleText").val();
-								tmpObj.img = $("#"+revealEdit_arr[i]+"ImageText").val();
-								console.log(tmpObj.img);
-								var myRevealText = revealEdit_arr[i]+"ContentText";
-								tmpObj.content = CKEDITOR.instances[myRevealText].getData();
-								tmpArray.push(tmpObj);
-							}
-							
-							saveRevealEdit(tmpArray);
-							$( this ).dialog( "close" );
-						}
-					}
-				});
+				updateRevealDialog();
 			}).tooltip();
 		}
 	}
 	
+	function updateRevealDialog(){
+		//Create the Content Edit Dialog
+		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
+		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find('page').eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
+		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		msg += "<label> <b>Reveal Image Width: </b></label>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
+		msg += "<label> <b>Reveal Image Height: </b></label>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/><br/>";
+		msg += "<div id='revealTypeGroup'>";
+		msg += "<label id='hover'><b>Hover: </b></label>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<label id='label'>           <b>Reveal Direction: </b></label>";
+		msg += "<input id='revealRight' type='radio' name='manageRevealType' value='revealRight'>open right  </input>";
+		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft'>open left  </input>";
+		msg += "<input id='revealBottom' type='radio' name='manageRevealType' value='revealBottom'>open down  </input>";
+		msg += "</div><br/>"
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
+		$("#stage").append(msg);
+		
+		$('#' + type).prop('checked', true);
+		
+		//Switch to show the correct layout
+		$("#revealTypeGroup").change(function(){
+			type = $('input[name=manageRevealType]:checked', '#revealTypeGroup').val();
+			$(data).find("page").eq(currentPage).attr('layout', type);
+		});
+		updateRevealMenu();
+		
+		if(interact == "hover"){
+			$("#isHover").attr("checked", "checked");
+		}
+		
+		addReveal(currentEditBankMember, false);
+		
+		$("#contentEditDialog").dialog({ 	
+			modal: true,
+			width: 875,
+			height: 655,
+			resizable: false,
+			close: function(){
+				$("#contentEditDialog").remove();
+			},
+			buttons: {
+				Add: function(){
+					try { $("#revealContainer").remove(); } catch (e) {}
+					addReveal(revealCount, true);
+					updateRevealMenu();
+				},
+				Done: function(){
+					makeRevealDataStore();
+					saveRevealEdit();
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+	
+	function updateRevealMenu(){
+		revealMenu_arr = [];
+		$(".questionBankItem").remove();
+		var msg = "";
+		for(var h = 0; h < revealCount; h++){
+			var label = parseInt(h + 1);
+			var tmpID = "revealItem"+h;
+			msg += "<div id='"+tmpID+"' class='questionBankItem";
+			if(currentEditBankMember == h){
+				msg += " selectedEditBankMember";
+			}else{
+				msg += " unselectedEditBankMember";
+			}
+			msg += "' style='";
+			
+			if(h < 100){
+				msg += "width:30px;";
+			}else if(h > 99){
+				msg += "width:45px;";
+			}
+			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text();//////////////////////Need to clean out html tags.....
+			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
+			
+			revealMenu_arr.push(tmpID);
+		}
+		
+		$("#questionMenu").append(msg);
+		
+		for(var j = 0; j < revealMenu_arr.length; j++){
+			if(currentEditBankMember != j){
+				var tmpID = "#" + revealMenu_arr[j];
+				$(tmpID).click(function(){
+					makeRevealDataStore();
+					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+					$("#contentEditDialog").remove();
+					currentEditBankMember = $(this).attr("data-myID");
+					console.log("currentEditBankMember = " + currentEditBankMember);
+					updateRevealDialog();
+				}).tooltip();
+			}
+		}
+	}
+	
+	function makeRevealDataStore(){
+		//myObjective = $("#inputObjective").val();
+		//myObjItemId = $("#inputObjItemId").val();
+		
+		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
+		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
+		
+		$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
+		$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
+		
+		if($("#isHover").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("interact", "hover");
+			interact = "hover";
+		}else{
+			$(data).find("page").eq(currentPage).attr("interact", "click");
+			interact = "click";
+		}
+		/*if($("#isMandatory").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("mandatory", "true");
+			tmpObj.mandatory = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("mandatory", "false");
+			tmpObj.mandatory = false;
+		}*/
+		
+		/*if($("#isRandom").prop("checked") == true){
+			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "true");
+		}else{
+			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "false");
+		}*/
+		
+		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("img", $("#revealImageText").val());
+	}
+	
 	function addReveal(_addID, _isNew){
 		var revealID = "reveal" + _addID;
-		var revealLabel = _addID + 1;
+		var revealLabel = parseInt(_addID) + 1;
 		
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("New Image Reveal Text");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text</p>");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").append(option1CDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<caption>"));
 			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
@@ -349,28 +449,30 @@ function C_Reveal(_type) {
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("caption").append(difFeed1CDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt", "Default alt text");
-			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("title", "Default title");
+			
+			currentEditBankMember = _addID;
+			revealCount++;
 		}
 		
 		var mediaString = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img");
 		
-		var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+_addID+"'>";
-			msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
+		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
+			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
-			msg += "<label id='"+revealID+"Image'><br/><b>Image: </b></label>";
-			msg += "<input id='"+revealID+"ImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
 					
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
-			msg += "<div id='"+revealID+"ContentText' class='dialogInput'>" + myRevealContent + "</div>";
+			msg += "<div id='revealContentText' class='dialogInput'>" + myRevealContent + "</div>";
 			msg += "</div>";
 		$("#contentEditDialog").append(msg);
 					
-		$("#" +revealID+"Remove").click(function(){
-			removeReveal($(this).attr("value"));
+		$("#revealRemove").click(function(){
+			removeReveal();
 		});
 					
-		CKEDITOR.replace( revealID+"ContentText", {
+		CKEDITOR.replace( "revealContentText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
@@ -378,21 +480,21 @@ function C_Reveal(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-					
-		revealEdit_arr.push(revealID);
 	}
 			
 		
-	function removeReveal(_id){
-		for(var i = 0; i < revealEdit_arr.length; i++){
-			if(_id == $("#"+revealEdit_arr[i]+"Container").attr("value")){
-				var arrIndex = i;
-				break;
-			}
+	function removeReveal(){
+		if(revealCount > 1){
+			console.log("currentEditBankMember = " + currentEditBankMember);
+			$(data).find("pages").eq(currentPage).find("reveal").eq(currentEditBankMember).remove();
+			console.log($(data).find("page").eq(currentPage).find("reveal").length);
+			$("#revealContainer").remove();
+			revealCount--;
+			currentEditBankMember = 0;
+			updateRevealDialog();
+		}else{
+			alert("you must have at least one bank item.");
 		}
-		$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
-		revealEdit_arr.splice(arrIndex, 1);
-		$("#reveal" + _id +"Container").remove();
 	}
 	
 	/**********************************************************************
@@ -412,24 +514,13 @@ function C_Reveal(_type) {
 	/**saveRevealEdit
 	* Sends the updated content to node.
 	*/
-	function saveRevealEdit(_data){
-		for(var i = 0; i < revealEdit_arr.length; i++){
-			var revealText = _data[i].content;
-			var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			var revealCDATA = newRevealContent.createCDATASection(revealText);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").empty();
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").append(revealCDATA);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("img", _data[i].img);
-		}
-		
-		//If the list is now shorter than before remove any extras from the xml...
+	function saveRevealEdit(){
 		var extra = $(data).find("page").eq(currentPage).find("reveal").length;
-		var active = revealEdit_arr.length;
-		var removed = extra - active;
+		var active = revealCount;
+		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
 		}
-
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
@@ -469,9 +560,4 @@ function C_Reveal(_type) {
 		   	fadeComplete();
 	   	}
     }
-		
-	this.fadeComplete = function(){
-		fadeComplete();
-	}
-    // fadeComplete() moved to C_UtilFunctions.js
 }
