@@ -103,6 +103,7 @@ function initScripts(_data){
 				corePath +"js/templates/C_Matching.js", //Matching quizzing
 				corePath +"js/templates/C_QuestionBank.js", //Matching quizzing
 				corePath +"js/templates/C_Sequencing.js",
+				corePath +"js/templates/C_TextInput.js",
 		//Import Cognizen Components
 				corePath +"js/components/C_PageTitle.js",
 				corePath +"js/components/C_VisualMediaHolder.js",

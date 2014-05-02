@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput"];
 
 
 /************************************************************************************
@@ -765,6 +765,65 @@ function createNewPageByType(_myType){
 			
 			break;
 			
+		case "textInput":
+			$(data).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			$(data).find("page").eq(newPage).find("question").eq(0).attr("attempts", 1);
+			//content
+			$(data).find("page").eq(newPage).find("question").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var question1CDATA = content1.createCDATASection("<p>Input a question.</p>");
+			$(data).find("page").eq(newPage).find("question").eq(0).find("content").append(question1CDATA);
+			//acceptedresponse
+			$(data).find("page").eq(newPage).find("question").eq(0).append($("<acceptedresponse>"));
+			var acceptedResponse1 = new DOMParser().parseFromString('<acceptedresponse></acceptedresponse>', "text/xml");
+			var acceptedResponse1CDATA = acceptedResponse1.createCDATASection("Yes");
+			$(data).find("page").eq(newPage).find("question").eq(0).find("acceptedresponse").append(acceptedResponse1CDATA);
+			//diffeed
+			$(data).find("page").eq(newPage).find("question").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("question").eq(0).find("diffeed").append(difFeed1CDATA);
+			//correctresponse
+			$(data).find("page").eq(newPage).find("question").eq(0).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(data).find("page").eq(newPage).find("question").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			// $(data).find("page").eq(newPage).append($("<incorrectresponse>"));
+			// var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			// var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			// $(data).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			// $(data).find("page").eq(newPage).append($("<feedback>"));
+			// var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			// var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			// $(data).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("feedbacktype", "differentiated");
+			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(data).find("page").eq(newPage).attr("audio", "null");
+			$(data).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			//$(data).find("page").eq(newPage).attr("attempts", 2);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
+			$(data).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;	
+
 		case "matching":
 			$(data).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");

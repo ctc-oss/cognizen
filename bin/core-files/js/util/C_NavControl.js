@@ -931,6 +931,10 @@ this.loadPage = function(){
 			currentTemplate = new C_Sequencing(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "textInput":
+			currentTemplate = new C_TextInput(currentTemplateType);
+			currentTemplate.initialize();
+			break;			
 		//UNITY SWF Layouts
 		case "unity":
 			currentTemplate = new C_Unity3D(currentTemplateType);
