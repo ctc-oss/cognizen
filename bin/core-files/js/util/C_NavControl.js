@@ -759,7 +759,6 @@ function checkQuestionComplete(){
 ********************************** STEP 4 - LOAD PAGE
 *****************************************************
 **Details:
-***Function is called from templates - last line of fadeComplete.
 ***utilizes this. namespace so that it can be referenced from external template files.
 ***Was placed like that to enable page fade tranistions.
 ***utilizes currentPage variable, which is an int representing a node in content .xml*/

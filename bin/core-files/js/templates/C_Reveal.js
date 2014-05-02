@@ -11,17 +11,41 @@
  */
 function C_Reveal(_type) {
 	var type = _type;
-	// var pageTitle;
-	// var audioHolder;
-	
 	var revealCount//number of tabs.
 	var myContent;//Body
+	var mediaWidth;
+	var mediaHeight;
+	var interact = "click";
+	var currentEditBankMember = 0;
+	var revealMenu_arr = [];
+	var currentItem;
+	var myObjective = "undefined";
+    var myObjItemId = "undefined"; 
+	    
+    //Defines a public method - notice the difference between the private definition below.
+	this.initialize = function(){
+		if(transition == true){
+			$('#stage').css({'opacity':0});
+		}
+		
+		//Set template variable values.
+		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
+		myContent = $(data).find("page").eq(currentPage).find("content").first().text();
+		mediaWidth = $(data).find("page").eq(currentPage).attr('w');		
+		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
+		interact = $(data).find("page").eq(currentPage).attr("interact");
+		if($(data).find("page").eq(currentPage).attr('objective')){
+			myObjective = $(data).find("page").eq(currentPage).attr('objective');
+		}
 
-	var rev_arr = [];
-	var revealEdit_arr = [];
-	var editStartLength;
-	
-	var imageH;
+		if($(data).find("page").eq(currentPage).attr('objItemId')){
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		}
+		pageTitle = new C_PageTitle();
+		audioHolder = new C_AudioHolder();
+		
+		buildTemplate();
+	}
 	    
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -30,72 +54,64 @@ function C_Reveal(_type) {
 		}
 		
 		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
-		myContent = $(data).find("page").eq(currentPage).find("content").text();		
-
+		myContent = $(data).find("page").eq(currentPage).find("content").first().text();
+		mediaWidth = $(data).find("page").eq(currentPage).attr('w');		
+		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
+		interact = $(data).find("page").eq(currentPage).attr('interact');
+		pageTitle = new C_PageTitle();
+		audioHolder = new C_AudioHolder();
+		
 		buildTemplate();
 	}
 	
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
-		pageTitle = new C_PageTitle();
-		
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
-		
-		audioHolder = new C_AudioHolder();
 		
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-
-        $("#content").append($(data).find("page").eq(currentPage).find("content").text());
-
-		var myTop = $("#content").height();
 		
-		var interact = $(data).find("page").eq(currentPage).attr("interact");
-		var horPos = 0;		
-			
+		if(isIE){
+			$("#contentHolder").height($("#contentHolder").height() - 22);
+		}
+		
+        $("#content").append(myContent);
+		
+		$("<div id='imgPalette' class='revealPalette'></div>").insertAfter("#content");
+		
 		for(var i = 0; i < revealCount; i++){
-			var currentImg = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("imgStyle");
+			var currentImg = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("img");
 			var currentAlt = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("alt");
-			var currentStyle = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("style");
-			var myContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();
-	
-			//if mobile revealBottom type and revealTop type will be handled as revealRight for UI reasons
-			if(windowWidth <= mobileWidth){
-				if(type == "revealBottom" || type == "revealTop"){
-					type = "revealRight";
-				}  
-				currentStyle = "width:160px; height:160px;"
-			}			
+			var tmpContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").text();
+			var tmpCaption = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("caption").text();
 			
 			var revID = "revID" + i;
 			
+			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			
 			if(type == "revealRight"){
-				$("#contentHolder").append("<div id='"+revID+"' class='"+ type +"' style='"+ currentStyle+"'><div id='"+ revID + "Img' class='"+type+"Image' style='"+ currentImg+"'/></div><br/>");
-			}else if (type == "revealBottom"){
-				$("#contentHolder").append("<div id='"+revID+"' class='"+ type +"' style='"+ currentStyle+"'><div id='"+ revID + "Img' class='"+type+"Image' style='"+ currentImg+"'/></div>");
-			}else if (type == "revealTop"){
-				$("#contentHolder").append("<div id='"+revID+"' class='"+ type +"' style='"+ currentStyle+" bottom:30px; left:"+ horPos +"px; position:absolute;'><div id='"+ revID + "Img' class='"+type+"Image' style='"+ currentImg+"'/></div>");
-			}else if (type == "revealLeft"){
-				$("#contentHolder").append("<div id='"+revID+"' class='"+ type +"' style='"+ currentStyle+"'><div id='"+ revID + "Img' class='"+type+"Image' style='"+ currentImg+"'/></div><br/>");
+				$("#"+revID).addClass("revealRight");
+				$("#imgPalette").addClass("revealPaletteLandscape");
+			}else if(type == "revealBottom"){
+				$("#"+revID).addClass("revealBottom");
+				$("#imgPalette").addClass("revealPalettePortrait");
+			}else if(type == "revealLeft"){
+				$("#"+revID).addClass("revealLeft");
+				$("#imgPalette").addClass("revealPaletteLandscape");
+			}else if(type == "revealTop"){
+				$("#"+revID).addClass("revealTop");
+				$("#imgPalette").addClass("revealPalettePortrait");
 			}
 			
-			$("#"+revID).data("myText", myContent);
+			$("#"+revID).data("myText", tmpContent);
 			$("#"+revID).data("myWidth", $("#"+revID).width());
-			imageH = $("#"+revID+"Img").height();
-			console.log("imageH = " + imageH);
-			$("#"+revID).data("myHeight", $("#"+revID+"Img").height());
-			$("#"+revID).data("myLeft", $("#"+revID).position().left);
-			if(type != "revealTop"){
-				$("#"+revID).data("myTop", $("#"+revID).position().top);
-			}else{
-				$("#"+revID).data("myTop", $("#"+revID).position().bottom);
-			}
+			$("#"+revID).data("myHeight", $("#"+revID).height());
 			
-			////////////////////////////////////////  PLACE THE INTERACTIONS  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 			if(interact == "click"){
+				//HOVER FUNCITONALITY FOR CLICK INTERACT
 				$("#"+revID).hover(function(){
 					if(type == "revealRight"){
 						TweenMax.to($(this), transitionLength, {css:{width:$(this).width() + 20}, ease:transitionType});
@@ -116,117 +132,120 @@ function C_Reveal(_type) {
 					}else if (type == "revealLeft"){
 						TweenMax.to($(this), transitionLength, {css:{width:$(this).data("myWidth")}, ease:transitionType});
 					}
+				//CLICK FUNCTIONALITY FOR CLICK INTERACT ----- ANIMATE THE OPENING
 				}).click(function(){
 					$(this).unbind('mouseenter mouseleave click');
-					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							if(isIE){
-								currentShowText += "<br><br>";
-							}
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight' style='height: " + imageH + "px; overflow: hidden;'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + imageH + "px;'>" + currentShowText + "</div></div>");
-
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:550}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextBottom'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({
-															'padding': 5,
-															'left' : 5,
-															'width' : $("#" + currentSelected).width() - 10,
-															'opacity':0.1
-															});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).prepend("<div id='revealTextHolder' class='antiscroll-wrap revealTextTop'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({
-															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - 15, 
-															'top': 10, 
-															'left' : 5,
-															'width' : $("#" + currentSelected).width() - 25,
-															'opacity':0
-															});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap'><div id='"+currentSelected+"Text' class='revealText revealTextLeft antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - 25});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
+					//REVEAL RIGHT CLICK
+					if(type == "revealRight" || type == "revealLeft"){
+						TweenMax.to(
+							$(this), 
+							transitionLength, 
+							{css:{width:"95%"}, 
+							ease:transitionType, 
+							onComplete: showRevealText, 
+							onCompleteParams:[
+								$(this).attr("id"), 
+								$(this).data("myText")
+							]
+						});
+					}else if (type == "revealBottom" || "revealTop"){
+						TweenMax.to(
+							$(this), 
+							transitionLength, 
+							{css:{height:$("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100}, 
+							ease:transitionType, 
+							onComplete: showRevealText, 
+							onCompleteParams:[
+								$(this).attr("id"), 
+								$(this).data("myText")
+							]
+						});
 					}
 				});
-			}else{
+			//INTERACTION FOR HOVER INTERACT	
+			}else if(interact == "hover"){
+				//REVEAL RIGHT HOVER
 				$("#"+revID).hover(function(){
 					$(this).unbind('mouseenter mouseleave');
-					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextRight'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + currentShowText + "</div></div>");
-							$("#revealTextHolder").css({'height': $("#"+revID).height() - 10});
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - ($("#" + currentSelected + "Img").position().left * 2) - 25,
-															'height':$('#revealTextHolder' ).height()});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:550}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap revealTextBottom'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({//'position':'absolute', 
-															//'height': $("#" + revID).height() - $("#" + currentSelected + "Img").height(),
-															'padding': 5,
-															'left' : 5,
-															'width' : $("#" + currentSelected).width() - 10,
-															'opacity':0.1
-															});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$("#contentHolder").height() - ($("#content").position().top + myTop + 20)}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).prepend("<div id='revealTextHolder' class='antiscroll-wrap revealTextTop'><div id='"+currentSelected+"Text' class='revealText antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({
-															'height':$("#" + currentSelected).height() - $("#" + currentSelected + "Img").height() - 15, 
-															'top': 10, 
-															'left' : 5,
-															'width' : $("#" + currentSelected).width() - 25,
-															'opacity':0
-															});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
-					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:"100%"}, ease:transitionType, onComplete:function(currentSelected, currentShowText){
-							$("#" + currentSelected).append("<div id='revealTextHolder' class='antiscroll-wrap'><div id='"+currentSelected+"Text' class='revealText revealTextLeft antiscroll-inner'>" + $("#" + currentSelected).data("myText") + "</div></div>");
-							$("#" + currentSelected + "Text").css({'width':$("#" + currentSelected).width() - $("#" + currentSelected + "Img").width() - 25});
-							TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
-							$(this).scrubContent();
-							$('.antiscroll-wrap').antiscroll();
-						}, onCompleteParams:[$(this).attr("id"), $(this).data("myText")]});
+					if(type == "revealRight" || "revealLeft"){
+						TweenMax.to(
+							$(this), 
+							transitionLength, 
+							{css:{width:"95%"}, 
+							ease:transitionType, 
+							onComplete: showRevealText, 
+							onCompleteParams:[
+								$(this).attr("id"), 
+								$(this).data("myText")
+							]
+						});
 					}
 				});
 			}
-			horPos += $("#" + revID).width() + 40;
-			rev_arr.push(revID);
+		}	
+		if(type == "revealBottom" || type == "revealTop"){
+			console.log($("#revID0").width() + 20);
+			$("#imgPalette").width(revealCount * ($("#revID0").width() + 30 ));
+			console.log($("#imgPalette").width());
 		}
-						
+		
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-		}						
+		}				
+	}
+	
+	
+	var ieWidth = null;
+
+	function showRevealText(currentSelected, currentShowText){
+		//Add the text field and attach needed sizes and classes....
+		//Divided up by page types.
+		
+		if(type == "revealRight"){
+			var msg = "<div id='revealTextHolder' class='revealTextRight antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
+			$("#" + currentSelected).append(msg);
+			//BECAUSE IE FUCKING SUCKS!!!!
+			if(isIE){
+				if(ieWidth == null){
+					ieWidth = $("#"+ currentSelected).width() - mediaWidth - 30;
+				}
+				$("#" + currentSelected + "Text").css({'width': ieWidth, 'max-width': ieWidth});
+			}else{
+				$("#" + currentSelected + "Text").css({'width': $("#"+ currentSelected).width() - mediaWidth - 10});
+			}
+		}else if(type == "revealBottom"){
+			var tmpWidth = $("#" + currentSelected).width() - 10;
+			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div>";
+			$("#" + currentSelected).append(msg);
+			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected) - mediaHeight - 10});
+		}else if(type == "revealLeft"){
+			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
+			$("#" + currentSelected).append(msg);
+			//BECAUSE IE FUCKING SUCKS!!!!
+			if(isIE){
+				if(ieWidth == null){
+					ieWidth = $("#"+ currentSelected).width() - mediaWidth - 30;
+				}
+				$("#" + currentSelected + "Text").css({'width': ieWidth, 'max-width': ieWidth});
+			}else{
+				$("#" + currentSelected + "Text").css({'width': $("#"+ currentSelected).width() - mediaWidth - 10});
+			}
+		}else if(type == "revealTop"){
+			var msg = "<div id='revealTextHolder' class='revealTextTop antiscroll-wrap' style='width: " + mediaWidth + "px; overflow: hidden;'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + mediaWidth + "px;'>" + currentShowText + "</div></div>";
+		}
+		
+		if(isIE){
+			$("#contentHolder").height($("#contentHolder").height() - 22);
+		}
+
+		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
+		$(this).scrubContent();
+		$('.antiscroll-wrap').antiscroll();
 	}
 	
 	/*****************************************************************************************************************************************************************************************************************
@@ -237,8 +256,8 @@ function C_Reveal(_type) {
 	function checkMode(){
 		$(this).scrubContent();	
 		$('.antiscroll-wrap').antiscroll();	
+		
 		if(mode == "edit"){			
-			
 			$("#content").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
 			CKEDITOR.inline( 'content', {
@@ -262,184 +281,220 @@ function C_Reveal(_type) {
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
 			
-			$("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>").insertAfter("#content");
-
-			$("#conEdit").click(function(){			
-				var revealImgHeight = $("#"+rev_arr[0]+"Img").css('height');
-				var revealImgWidth = $("#"+rev_arr[0]+"Img").css('width');
-				revealImgHeight = revealImgHeight.replace('px','');
-				revealImgWidth = revealImgWidth.replace('px','');
-				revealEdit_arr.length = 0;
-				//Create the Content Edit Dialog
-				var msg = "<div id='contentEditDialog' title='Input Page Content'>";
-				msg += "<label id='hover'>Hover: </label>";
-				msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/>";
-				msg += "<label> <b>Reveal Image Width: </b></label>";
-				msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + revealImgWidth + "' defaultValue='" + revealImgWidth + "' style='width:10%;'/>";
-				msg += "<label> <b>Reveal Image Height: </b></label>";
-				msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + revealImgHeight + "' defaultValue='" + revealImgHeight + "' style='width:10%;'/>";
-				msg += "</div><br/>";
-				$("#stage").append(msg);
-				
-				if($(data).find("page").eq(currentPage).attr("interact") == "hover"){
-					$("#isHover").attr("checked", "checked");
-				}
-				
-				editStartLength = revealCount;	
-				//Cycle through the tabs from the xml
-				for(var i = 0; i < revealCount; i++){
-					var revealID = "reveal" + i;
-					var revealLabel = i + 1;
-					
-					//Get image info
-					var bg = $("#"+rev_arr[i]+"Img").css('background-image')
-					bg = bg.replace('url(','').replace(')','');
-					var myImage = bg;
-					var parts = myImage.split('/'), i, l;
-					var last = parts.length;
+			//Edit media and reveal content.
+			$("#imgPalette").prepend("<div id='conEdit' class='btn_edit_text' title='Edit Image Hotspots'></div>");
 			
-					mediaString = (parts[last - 1]);
-					
-					var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+i+"'>";
-					msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+i+"' title='Click to remove this reveal'/>";
-					msg += "<b>Reveal "+revealLabel+":</b>";
-					msg += "<label id='"+revealID+"Image'><br/><b>Image: </b></label>";
-					msg += "<input id='"+revealID+"ImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-					
-					var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).text();	
-					msg += "<div><b>Content:</b></div>";
-					msg += "<div id='"+revealID+"ContentText' class='dialogInput'>" + myRevealContent + "</div>";
-					msg += "</div>";
-					$("#contentEditDialog").append(msg);
-					
-					$("#" +revealID+"Remove").click(function(){
-						removeReveal($(this).attr("value"));
-					});
-					
-					CKEDITOR.replace( revealID+"ContentText", {
-						toolbar: contentToolbar,
-						toolbarGroups :contentToolgroup,
-						enterMode : CKEDITOR.ENTER_BR,
-						shiftEnterMode: CKEDITOR.ENTER_P,
-						extraPlugins: 'sourcedialog',
-						allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-					});
-						
-					revealEdit_arr.push(revealID);
-				}
-					
-				//Style it to jQuery UI dialog
-				$("#contentEditDialog").dialog({ 	
-					modal: true,
-					width: 875,
-					height: 750,
-					resizable: false,
-					close: function(){
-						$("#contentEditDialog").remove();
-					},
-					buttons: {
-						Add: function(){
-							editStartLength++;
-							var revealCount = revealEdit_arr.length;
-							var revealID = "reveal" + revealCount;
-							var revealLabel = revealCount + 1;
-							
-							var msg = "<div id='"+revealID+"Container' class='templateAddItem' value='"+revealCount+"'>";
-							msg += "<div id='"+revealID+"Remove' class='removeMedia' value='"+revealCount+"' title='Click to remove this reveal'/>";
-							msg += "<b>Reveal "+revealLabel+":</b>";
-							msg += "<label id='"+revealID+"Image'><br/><b>Image:</b></label> <input id='"+revealID+"ImageText' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-							if(type == "revealRight" || type == "revealLeft"){
-								backgroundWidth = 160;
-							}else{
-								backgroundWidth = 280;
-							}
-							
-							var myRevealContent = "New Reveal Content";
-							msg += "<div id='"+revealID+"Content'><b>Content:</b></div> <div id='"+revealID+"ContentText'>" + myRevealContent + "</div>";
-							msg += "</div>"
-							$("#contentEditDialog").append(msg);
-							
-							$("#" +revealID+"Remove").on('click', function(){
-								removeReveal($(this).attr("value"));
-							});
-							
-							CKEDITOR.replace( revealID+"ContentText", {
-								toolbar: contentToolbar,
-								toolbarGroups :contentToolgroup,
-								enterMode : CKEDITOR.ENTER_BR,
-								shiftEnterMode: CKEDITOR.ENTER_P,
-								extraPlugins: 'sourcedialog',
-								allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-							});
-							
-							var boxWidth = $("#"+revealID+"Width").width() + 10;
-							var boxHeight = $("#"+revealID+"Height").height() + 10;
-							$(data).find("page").eq(currentPage).append($("<reveal>"));
-							var newRevealContent1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-							var revealCDATA1 = newRevealContent1.createCDATASection("<p>New Reveal Content</p>");
-							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).append(revealCDATA1);
-							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('style', 'width:'+backgroundWidth+'px; height:160px;');
-							$(data).find("page").eq(currentPage).find("reveal").eq(revealCount).attr('imgStyle', 'position:relative; top:5px; left:5px; width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;" alt="Default Image Picture"');
-								
-							revealEdit_arr.push(revealID);	
-						},
-						Save: function(){
-							if($("#isHover").prop("checked") == true){
-								$(data).find("page").eq(currentPage).attr('interact', "hover");
-							}else{
-								$(data).find("page").eq(currentPage).attr('interact', "click");
-							}
-							var tmpArray = new Array();
-							for(var i = 0; i < revealEdit_arr.length; i++){
-								var tmpObj = new Object();
-								tmpObj.title = $("#" + revealEdit_arr[i] +"TitleText").val();
-								tmpObj.img = $("#"+revealEdit_arr[i]+"ImageText").val();
-								var imgW = $("#imageWidth").val();
-								var imgH = $("#imageHeight").val();
-								
-								if(type == "revealRight"){
-									tmpObj.boxW = parseInt(imgW) + 10;
-									tmpObj.boxH = parseInt(imgH) + 10;
-									tmpObj.imgAttr = 'position:relative; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ tmpObj.img +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
-								}else if(type == "revealLeft"){
-									tmpObj.boxW = parseInt(imgW) + 10;
-									tmpObj.boxH = parseInt(imgH) + 10;
-									tmpObj.imgAttr = 'position:relative; top:5px; right:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ tmpObj.img +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
-								}else{
-									tmpObj.boxW = 280;
-									tmpObj.boxH = parseInt(imgH) + 10;
-									if(type == "revealBottom"){
-										tmpObj.imgAttr = 'position:relative; margin-left:auto; margin-right:auto; top:5px; left:5px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ tmpObj.img +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
-									}else{
-										tmpObj.imgAttr = 'position:relative; margin-left:auto; margin-right:auto; bottom:5px; right:65px; width:' + imgW + 'px; height:' + imgH + 'px; background:url(media/'+ tmpObj.img +') no-repeat; background-size: ' + imgW + 'px ' + imgH + 'px;" alt="Default Image"';
-									}
-								}
-			
-								var myRevealText = revealEdit_arr[i]+"ContentText";
-								tmpObj.content = CKEDITOR.instances[myRevealText].getData();
-								tmpArray.push(tmpObj);
-							}
-							
-							saveRevealEdit(tmpArray);
-							$( this ).dialog( "close" );
-						}
-					}
-				});
+			$("#conEdit").click(function(){
+				updateRevealDialog();
 			}).tooltip();
 		}
-		//scroller.refresh();
 	}
+	
+	function updateRevealDialog(){
+		//Create the Content Edit Dialog
+		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
+		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find('page').eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
+		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		msg += "<label> <b>Reveal Image Width: </b></label>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
+		msg += "<label> <b>Reveal Image Height: </b></label>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/><br/>";
+		msg += "<div id='revealTypeGroup'>";
+		msg += "<label id='hover'><b>Hover: </b></label>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<label id='label'>           <b>Reveal Direction: </b></label>";
+		msg += "<input id='revealRight' type='radio' name='manageRevealType' value='revealRight'>open right  </input>";
+		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft'>open left  </input>";
+		msg += "<input id='revealBottom' type='radio' name='manageRevealType' value='revealBottom'>open down  </input>";
+		msg += "</div><br/>"
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
+		$("#stage").append(msg);
 		
-	function removeReveal(_id){
-		for(var i = 0; i < revealEdit_arr.length; i++){
-			if(_id == $("#"+revealEdit_arr[i]+"Container").attr("value")){
-				var arrIndex = i;
-				break;
+		$('#' + type).prop('checked', true);
+		
+		//Switch to show the correct layout
+		$("#revealTypeGroup").change(function(){
+			type = $('input[name=manageRevealType]:checked', '#revealTypeGroup').val();
+			$(data).find("page").eq(currentPage).attr('layout', type);
+		});
+		updateRevealMenu();
+		
+		if(interact == "hover"){
+			$("#isHover").attr("checked", "checked");
+		}
+		
+		addReveal(currentEditBankMember, false);
+		
+		$("#contentEditDialog").dialog({ 	
+			modal: true,
+			width: 875,
+			height: 655,
+			resizable: false,
+			close: function(){
+				$("#contentEditDialog").remove();
+			},
+			buttons: {
+				Add: function(){
+					try { $("#revealContainer").remove(); } catch (e) {}
+					addReveal(revealCount, true);
+					updateRevealMenu();
+				},
+				Done: function(){
+					makeRevealDataStore();
+					saveRevealEdit();
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+	
+	function updateRevealMenu(){
+		revealMenu_arr = [];
+		$(".questionBankItem").remove();
+		var msg = "";
+		for(var h = 0; h < revealCount; h++){
+			var label = parseInt(h + 1);
+			var tmpID = "revealItem"+h;
+			msg += "<div id='"+tmpID+"' class='questionBankItem";
+			if(currentEditBankMember == h){
+				msg += " selectedEditBankMember";
+			}else{
+				msg += " unselectedEditBankMember";
+			}
+			msg += "' style='";
+			
+			if(h < 100){
+				msg += "width:30px;";
+			}else if(h > 99){
+				msg += "width:45px;";
+			}
+			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text();//////////////////////Need to clean out html tags.....
+			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
+			
+			revealMenu_arr.push(tmpID);
+		}
+		
+		$("#questionMenu").append(msg);
+		
+		for(var j = 0; j < revealMenu_arr.length; j++){
+			if(currentEditBankMember != j){
+				var tmpID = "#" + revealMenu_arr[j];
+				$(tmpID).click(function(){
+					makeRevealDataStore();
+					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+					$("#contentEditDialog").remove();
+					currentEditBankMember = $(this).attr("data-myID");
+					console.log("currentEditBankMember = " + currentEditBankMember);
+					updateRevealDialog();
+				}).tooltip();
 			}
 		}
-		$(data).find("pages").eq(currentPage).find("reveal").eq(arrIndex).remove();
-		revealEdit_arr.splice(arrIndex, 1);
-		$("#reveal" + _id +"Container").remove();
+	}
+	
+	function makeRevealDataStore(){
+		//myObjective = $("#inputObjective").val();
+		//myObjItemId = $("#inputObjItemId").val();
+		
+		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
+		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
+		
+		$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
+		$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
+		
+		if($("#isHover").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("interact", "hover");
+			interact = "hover";
+		}else{
+			$(data).find("page").eq(currentPage).attr("interact", "click");
+			interact = "click";
+		}
+		/*if($("#isMandatory").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("mandatory", "true");
+			tmpObj.mandatory = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("mandatory", "false");
+			tmpObj.mandatory = false;
+		}*/
+		
+		/*if($("#isRandom").prop("checked") == true){
+			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "true");
+		}else{
+			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "false");
+		}*/
+		
+		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("img", $("#revealImageText").val());
+	}
+	
+	function addReveal(_addID, _isNew){
+		var revealID = "reveal" + _addID;
+		var revealLabel = parseInt(_addID) + 1;
+		
+		if(_isNew == true){
+			$(data).find("page").eq(currentPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text</p>");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").append(option1CDATA);
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Caption Input");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("caption").append(difFeed1CDATA);
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img", "defaultReveal.png");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt", "Default alt text");
+			
+			currentEditBankMember = _addID;
+			revealCount++;
+		}
+		
+		var mediaString = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img");
+		
+		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
+			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
+			msg += "<b>Reveal "+revealLabel+":</b>";
+			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+					
+		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
+			msg += "<div><b>Content:</b></div>";
+			msg += "<div id='revealContentText' class='dialogInput'>" + myRevealContent + "</div>";
+			msg += "</div>";
+		$("#contentEditDialog").append(msg);
+					
+		$("#revealRemove").click(function(){
+			removeReveal();
+		});
+					
+		CKEDITOR.replace( "revealContentText", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+		});
+	}
+			
+		
+	function removeReveal(){
+		if(revealCount > 1){
+			console.log("currentEditBankMember = " + currentEditBankMember);
+			$(data).find("pages").eq(currentPage).find("reveal").eq(currentEditBankMember).remove();
+			console.log($(data).find("page").eq(currentPage).find("reveal").length);
+			$("#revealContainer").remove();
+			revealCount--;
+			currentEditBankMember = 0;
+			updateRevealDialog();
+		}else{
+			alert("you must have at least one bank item.");
+		}
 	}
 	
 	/**********************************************************************
@@ -459,26 +514,13 @@ function C_Reveal(_type) {
 	/**saveRevealEdit
 	* Sends the updated content to node.
 	*/
-	function saveRevealEdit(_data){
-		for(var i = 0; i < revealEdit_arr.length; i++){
-			var revealText = _data[i].content;
-			var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			var revealCDATA = newRevealContent.createCDATASection(revealText);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).empty();
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).append(revealCDATA);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("title", _data[i].img);
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr('style', 'width:'+_data[i].boxW+'px; height:'+ _data[i].boxH +'px;');
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).attr('imgStyle', _data[i].imgAttr);
-		}
-		
-		//If the list is now shorter than before remove any extras from the xml...
+	function saveRevealEdit(){
 		var extra = $(data).find("page").eq(currentPage).find("reveal").length;
-		var active = revealEdit_arr.length;
-		var removed = extra - active;
+		var active = revealCount;
+		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
 		}
-
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
@@ -518,9 +560,4 @@ function C_Reveal(_type) {
 		   	fadeComplete();
 	   	}
     }
-		
-	this.fadeComplete = function(){
-		fadeComplete();
-	}
-    // fadeComplete() moved to C_UtilFunctions.js
 }

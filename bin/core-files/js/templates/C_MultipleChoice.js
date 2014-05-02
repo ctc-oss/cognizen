@@ -494,7 +494,6 @@ function C_MultipleChoice(_type) {
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
 		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated'>undifferentiated  </input>";
 		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated'>differentiated  </input>";
-		
 		msg += "</div>"
 		
 		if(feedbackType == "undifferentiated"){

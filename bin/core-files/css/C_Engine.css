@@ -675,85 +675,37 @@ ul.no-indent {
 }
 
 /* FOR REVEAL CONTENT */
-#contentHolder .revealRight{
-	/*overflow: auto;*/
-	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
-	cursor: pointer;
-	float: left;
-	clear: both;
-	margin-bottom: 10px;
-}
-
-#contentHolder .revealLeft{
-	/*overflow: auto;*/
-	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
-	cursor: pointer;
-	float: right;
-	clear: both;
-	margin-bottom: 10px;
-}
-
-#contentHolder .revealBottom{
-	/*overflow: auto;*/
-	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
-	cursor: pointer;
-	float: left;
-	margin-right: 10px;
-}
-
-#contentHolder .revealTop{
-	/*overflow: auto;*/
-	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
-	cursor: pointer;
-	float: left;
-	margin-right: 10px;
-}
-
-#contentHolder .revealRightImage, #contentHolder .revealLeftImage, #contentHolder .revealBottomImage, #contentHolder .revealTopImage{
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+/* FOR REVEAL CONTENT */
+.revealPalette{
 	position: relative;
+	/*margin-right: auto;*/
+	padding-bottom: 10px;
 }
 
-#contentHolder .revealRightImage{
-	float: left;
-	top: 5px;
-	left: 5px;
+.revealPaletteLandscape{
+	max-width: 960px;
 }
 
-#contentHolder .revealLeftImage{
-	float: right;
-	top: 5px;
-	right: 5px;
+.revealPalettePortrait{
+	min-height: 300px;
+	max-height: 500px;
+	width: auto;
+	margin-right: auto;
+	margin-left: auto;
 }
 
-#contentHolder .revealBottomImage{
-	top:5px; 
-	margin-left:auto; 
-	margin-right:auto;
-}
-
-#contentHolder .revealTopImage{
-	position: absolute !important;
-	bottom: 5px; 
-	left: 65px;
+.revealImg{
+	position: relative;
+	background-color: #3f3f3f;
+	padding: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	cursor: hand; 
+	cursor: pointer;
 }
 
 .revealText{
@@ -761,28 +713,85 @@ ul.no-indent {
 	overflow : auto;
 	font-family: "Helvetica", "Arial" !important;
 	font-size: 12pt !important;
-	color: #9DA6AB;
+	color: #E4DBC9;
 	opacity: .1;
-	padding-right: 10px;
-	left: 10px;
 }
 
-#revealTextHolder{
-	padding-right: 10px;
+.revealText p{
+   margin-top: 0px;
 }
 
-.revealTextLeft{
+.revealBottom{
 	float: left;
-	height: 150px;
-	left: 10px;
+	width: 250px;
+}
+
+.revealBottom img{
+	display: block;
+	margin: auto;
+}
+
+.revealBottom .revealText{
+	float: left;
+	margin-right: -17px;
+	padding-right: 17px;
+}
+
+.revealTextBottom{
+	float: bottom;
+	right: 2px;
 	top: 5px;
+}
+
+.revealRight{
+	float:left;
+	clear: both;
+}
+
+.revealRight .revealText{
+	float: left;
+	margin-right: -17px;
+	padding-right: 17px;
 }
 
 .revealTextRight{
 	float: right;
-	height: 150px;
-	right: 10px;
+	right: 2px;
 	top: 5px;
+}
+
+.revealLeft{
+	float:right;
+	right:20px;
+	clear: both;
+}
+
+.revealLeft .revealText{
+	float: right;
+	margin-right: -17px;
+	padding-right: 17px;
+}
+
+.revealTextLeft{
+	float: right;
+	right: 2px;
+	top: 5px;
+}
+
+/*#revealTextHolder{
+	padding-right: 10px;
+}*/
+
+#revealTextHolder > div.antiscroll-scrollbar.antiscroll-scrollbar-horizontal{
+	display: none;
+}
+
+.imgPalette > div.antiscroll-scrollbar.antiscroll-scrollbar-horizontal{
+	display: none;
+}
+
+.revealPalette > div.antiscroll-scrollbar.antiscroll-scrollbar-horizontal{
+	display: none;
 }
 
 .revealTextBottom{
