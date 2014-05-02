@@ -717,6 +717,10 @@ ul.no-indent {
 	opacity: .1;
 }
 
+.revealText p{
+   margin-top: 0px;
+}
+
 .revealBottom{
 	float: left;
 	width: 250px;
