@@ -103,7 +103,22 @@ function C_ClickImage(_type) {
 			rows = Math.ceil(totalWidth/maxWidth);
 		}
 		
-		$("#imgPalette").width(totalWidth);
+		if(rows > 1){
+			var itemsPerRow = 0;
+			var itemSpace = ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
+			for(var j = 0; j < revealCount; j++){
+				if(j * itemSpace <= maxWidth){
+					itemsPerRow = j;
+				}else{
+					break;
+				}
+			}
+			var rowWidth = itemsPerRow * itemSpace;
+			$("#imgPalette").width(rowWidth);
+		}else{
+			$("#imgPalette").width(totalWidth);
+		}
+		
 		$("#imgPalette").height(heightSpacer * rows);
 		
 		//Insert the Text Display area.
@@ -160,6 +175,7 @@ function C_ClickImage(_type) {
 	}
 	
 	function updateRevealDialog(){
+		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
 		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
@@ -211,7 +227,7 @@ function C_ClickImage(_type) {
 		$(".questionBankItem").remove();
 		var msg = "";
 		for(var h = 0; h < revealCount; h++){
-			var label = parseInt(h + 1);
+			var label = parseInt(h) + 1;
 			var tmpID = "revealItem"+h;
 			msg += "<div id='"+tmpID+"' class='questionBankItem";
 			if(currentEditBankMember == h){
@@ -221,6 +237,7 @@ function C_ClickImage(_type) {
 			}
 			msg += "' style='";
 			
+			//size boxes depending upon number of characters.
 			if(h < 100){
 				msg += "width:30px;";
 			}else if(h > 99){
@@ -241,13 +258,13 @@ function C_ClickImage(_type) {
 					makeRevealDataStore();
 					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
-					$("#contentEditDialog").remove();
+					
 					currentEditBankMember = $(this).attr("data-myID");
-					console.log("currentEditBankMember = " + currentEditBankMember);
 					updateRevealDialog();
 				}).tooltip();
 			}
 		}
+		console.log("updateRevealMenu completed");
 	}
 	
 	function makeRevealDataStore(){
@@ -289,15 +306,17 @@ function C_ClickImage(_type) {
 	}
 	
 	function addReveal(_addID, _isNew){
+		console.log("add reveal started");
 		var revealID = "reveal" + _addID;
 		var revealLabel = parseInt(_addID) + 1;
 		
 		if(_isNew == true){
+		    var tmpLabel = parseInt(_addID) + 1;
 			$(data).find("page").eq(currentPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text</p>");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text " + tmpLabel + "</p>");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").append(option1CDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<caption>"));
 			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
@@ -336,16 +355,23 @@ function C_ClickImage(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
+		
+		console.log("addReveal completed");
 	}
 			
 		
 	function removeReveal(){
 		if(revealCount > 1){
-			console.log("currentEditBankMember = " + currentEditBankMember);
 			$(data).find("pages").eq(currentPage).find("reveal").eq(currentEditBankMember).remove();
-			console.log($(data).find("page").eq(currentPage).find("reveal").length);
 			$("#revealContainer").remove();
 			revealCount--;
+			var extra = $(data).find("page").eq(currentPage).find("reveal").length;
+			var active = revealCount;
+			//var removed = extra - active;
+			for(var i = extra + 1; i >= active; i--){
+				$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
+			}
+			
 			currentEditBankMember = 0;
 			updateRevealDialog();
 		}else{

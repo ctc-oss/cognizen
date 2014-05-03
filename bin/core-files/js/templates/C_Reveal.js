@@ -184,9 +184,7 @@ function C_Reveal(_type) {
 			}
 		}	
 		if(type == "revealBottom" || type == "revealTop"){
-			console.log($("#revID0").width() + 20);
 			$("#imgPalette").width(revealCount * ($("#revID0").width() + 30 ));
-			console.log($("#imgPalette").width());
 		}
 		
 		checkMode();
@@ -220,7 +218,7 @@ function C_Reveal(_type) {
 			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div>";
 			$("#" + currentSelected).append(msg);
-			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected) - mediaHeight - 10});
+			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10});
 		}else if(type == "revealLeft"){
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
@@ -240,7 +238,12 @@ function C_Reveal(_type) {
 		}
 		
 		if(isIE){
-			$("#contentHolder").height($("#contentHolder").height() - 22);
+			if(type == "revealRight" || type == "revealLeft"){
+				$("#contentHolder").height($("#contentHolder").height() - 22);
+			}else{
+				$("#contentHolder").height($("#contentHolder").height() - 25);
+				$("#contentHolder").width($("#contentHolder").width() - 17);
+			}
 		}
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -291,6 +294,7 @@ function C_Reveal(_type) {
 	}
 	
 	function updateRevealDialog(){
+		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
 		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";

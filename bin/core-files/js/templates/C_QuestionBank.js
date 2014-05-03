@@ -490,6 +490,7 @@ function C_QuestionBank(_type) {
 	
 	
 	function updateQuestionEditDialog(){
+		try { $("#questionEditDialog").remove(); } catch (e) {}
 		var msg = "<div id='questionEditDialog' title='Edit Question Bank'>";
 		msg += "<label style='position: relative; float: left; margin-right:20px;'><b>Bank Preferences: </b></label>";
 		msg += "<label id='label'>graded: </label>";

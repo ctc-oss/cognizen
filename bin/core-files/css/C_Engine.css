@@ -675,7 +675,6 @@ ul.no-indent {
 }
 
 /* FOR REVEAL CONTENT */
-/* FOR REVEAL CONTENT */
 .revealPalette{
 	position: relative;
 	/*margin-right: auto;*/
@@ -739,8 +738,7 @@ ul.no-indent {
 
 .revealTextBottom{
 	float: bottom;
-	right: 2px;
-	top: 5px;
+	bottom: 5px;
 }
 
 .revealRight{
@@ -809,7 +807,7 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	padding-bottom: 10px;
-	max-width: 960px;
+	max-width: 920px;
 }
 
 .clickImg{
