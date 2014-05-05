@@ -167,11 +167,23 @@ function C_Reveal(_type) {
 				//REVEAL RIGHT HOVER
 				$("#"+revID).hover(function(){
 					$(this).unbind('mouseenter mouseleave');
-					if(type == "revealRight" || "revealLeft"){
+					if(type == "revealRight" || type == "revealLeft"){
 						TweenMax.to(
 							$(this), 
 							transitionLength, 
 							{css:{width:"95%"}, 
+							ease:transitionType, 
+							onComplete: showRevealText, 
+							onCompleteParams:[
+								$(this).attr("id"), 
+								$(this).data("myText")
+							]
+						});
+					}else if (type == "revealBottom" || "revealTop"){
+						TweenMax.to(
+							$(this), 
+							transitionLength, 
+							{css:{height:$("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100}, 
 							ease:transitionType, 
 							onComplete: showRevealText, 
 							onCompleteParams:[
@@ -195,7 +207,8 @@ function C_Reveal(_type) {
 	
 	
 	var ieWidth = null;
-
+	var ieHeight = null;
+	
 	function showRevealText(currentSelected, currentShowText){
 		//Add the text field and attach needed sizes and classes....
 		//Divided up by page types.
@@ -218,7 +231,16 @@ function C_Reveal(_type) {
 			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div>";
 			$("#" + currentSelected).append(msg);
-			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10});
+			//BECAUSE IE FUCKING SUCKS!!!!
+			if(isIE){
+				if(ieHeight == null){
+					ieHeight = $("#" + currentSelected).height() - mediaHeight - 35;
+				}
+				$("#" + currentSelected + "Text").css({'height': ieHeight, 'max-height': ieHeight});
+			}else{
+				$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
+			}
+			
 		}else if(type == "revealLeft"){
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";

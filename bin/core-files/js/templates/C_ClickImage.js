@@ -60,6 +60,10 @@ function C_ClickImage(_type) {
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		
+		if(isIE){
+			$("#contentHolder").height($("#contentHolder").height() - 22);
+		}
 
         $("#content").append(myContent);
 		
@@ -80,7 +84,26 @@ function C_ClickImage(_type) {
 					try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
 					currentItem = $(this);
 					try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
-					$("#clickImgText").html($(this).attr("myContent"));
+					$("#clickImgText").empty();
+					
+					$("#clickImgText").append($(this).attr("myContent"));
+					//BECAUSE IE FUCKING SUCKS!!!!
+					if(isIE){
+						if(ieHeight == null){
+							ieHeight = $("#clickImgText").height() - 30;
+							ieWidth = $("#clickImgText").width() - 17;
+						}
+						$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth});
+					}else{
+						//$("#clickImgText").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
+					}
+					
+					if(isIE){
+						$("#contentHolder").height($("#contentHolder").height() - 25);
+						$("#contentHolder").width($("#contentHolder").width() - 17);
+					}
+					
+					
 					$('.antiscroll-wrap').antiscroll();
 				});
 			}else if(interact == "hover"){
@@ -123,13 +146,23 @@ function C_ClickImage(_type) {
 		
 		//Insert the Text Display area.
 		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div>").insertAfter("#imgPalette");
-					
+		if(isIE){
+			ieWidth = $("#clickImgTextHolder").width();
+			$("<br/><br/><br/><br/>").insertAfter(".clickImgTextHolder");
+		}		
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		
 		$("#revID0").click();						
+	}
+	
+	var ieWidth = null;
+	var ieHeight = null;
+	
+	function updateRevealContent(_myContent){
+		
 	}
 	
 	/*****************************************************************************************************************************************************************************************************************
