@@ -426,7 +426,7 @@ function removePage(myNode){
 						}
 						//Load either previous or next page if you are removing the currentPage...
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
-						currentTemplate.fadeComplete();
+						fadeComplete();
 					}
 					sendUpdateWithRefresh();
 				}else{
@@ -527,7 +527,7 @@ function updateIndex(){
 			    	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
 					var newPage = currentPage + currentChildrenLength + 1;
 			    	currentPage = newPage;
-			    	currentTemplate.fadeComplete();
+			    	fadeComplete();
 		    	}else{
 		    		currentPage = findNodeByID();
 		    	}

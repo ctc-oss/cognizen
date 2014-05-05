@@ -675,6 +675,7 @@ ul.no-indent {
 }
 
 /* FOR REVEAL CONTENT */
+/* FOR REVEAL CONTENT */
 .revealPalette{
 	position: relative;
 	/*margin-right: auto;*/
@@ -695,7 +696,7 @@ ul.no-indent {
 
 .revealImg{
 	position: relative;
-	background-color: #3f3f3f;
+	background-color: #eeeeee;
 	padding: 5px;
 	margin-left: 10px;
 	margin-right: 10px;
@@ -712,7 +713,7 @@ ul.no-indent {
 	overflow : auto;
 	font-family: "Helvetica", "Arial" !important;
 	font-size: 12pt !important;
-	color: #E4DBC9;
+	color: #000000;
 	opacity: .1;
 }
 
@@ -738,6 +739,7 @@ ul.no-indent {
 
 .revealTextBottom{
 	float: bottom;
+	margin-right: 10px;
 	bottom: 5px;
 }
 
@@ -807,6 +809,7 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	padding-bottom: 10px;
+	width: auto;
 	max-width: 920px;
 }
 
@@ -835,26 +838,26 @@ ul.no-indent {
 	position: relative;
 	font-family: Helvetica, Arial;
 	height: 190px;
-	padding-left: 15px;
-	padding-right: 15px;
-	color: #EEEEEE;
-	
+	margin-left: auto;
+	margin-right: auto;
+	color: #000000;
+	width: 95%;
+	margin-right: -17px;
+	padding-right: 17px;
 }
 
 .clickImgTextHolder{
 	position: relative;
-	background-color: #9DA6AB;
+	background-color: #eeeeee;
 	border-width: 2px;
-	border-color: #333333;
 	margin-top: 10px;
 	margin-right: auto;
 	margin-left: auto;
 	margin-bottom: 15px;
-	width: 95%;
+	width: 920px;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
-	
 }
 
 /* FOR FLASHCARD CONTENT */
