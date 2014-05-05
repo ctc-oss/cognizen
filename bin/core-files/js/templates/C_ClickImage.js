@@ -61,7 +61,7 @@ function C_ClickImage(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		
-		if(isIE){
+		if(isIE || isFF){
 			$("#contentHolder").height($("#contentHolder").height() - 22);
 		}
 
@@ -88,7 +88,7 @@ function C_ClickImage(_type) {
 					
 					$("#clickImgText").append($(this).attr("myContent"));
 					//BECAUSE IE FUCKING SUCKS!!!!
-					if(isIE){
+					if(isIE || isFF){
 						if(ieHeight == null){
 							ieHeight = $("#clickImgText").height();// - 30;
 							ieWidth = $("#clickImgText").width() - 17;
@@ -98,7 +98,7 @@ function C_ClickImage(_type) {
 						//$("#clickImgText").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
 					}
 					
-					if(isIE){
+					if(isIE || isFF){
 						$("#contentHolder").height($("#contentHolder").height() - 17);
 						$("#contentHolder").width($("#contentHolder").width() - 17);
 					}
@@ -146,9 +146,9 @@ function C_ClickImage(_type) {
 		
 		//Insert the Text Display area.
 		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div><br/><br/>").insertAfter("#imgPalette");
-		if(isIE){
+		if(isIE || isFF){
 			ieWidth = $("#clickImgTextHolder").width();
-			//$("<br/><br/><br/><br/>").insertAfter(".clickImgTextHolder");
+			$("<br/><br/>").insertAfter(".clickImgTextHolder");
 		}		
 		checkMode();
 		if(transition == true){
