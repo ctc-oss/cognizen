@@ -113,11 +113,11 @@ isOldIE();
 var isFF = false;
 
 function checkFF(){
-	var isFirefox = typeof InstallTrigger !== 'undefined';
+	isFF = typeof InstallTrigger !== 'undefined';
 }
 
 checkFF();
-console.log("isFF = " + isFF)
+
 /*****************************************************************
 Discover if we are on mobile
 *****************************************************************/

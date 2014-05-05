@@ -103,7 +103,6 @@ function C_ClickImage(_type) {
 						$("#contentHolder").width($("#contentHolder").width() - 17);
 					}
 					
-					
 					$('.antiscroll-wrap').antiscroll();
 				});
 			}else if(interact == "hover"){
