@@ -31,6 +31,7 @@ function C_TextInput(_type) {
     var acceptedResponseEdit_arr = [];
     var currentEditBankMember = 0;
     var diffeedEdit_arr = [];
+    var userAttempts = [];
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -98,6 +99,7 @@ function C_TextInput(_type) {
 			trackFeedbackNum.push(new Array(myQuestion, 0));
 			correctResponses.push(new Array(myQuestion, myNode.find('correctresponse').text()));
 			attempts.push(new Array(myQuestion, myNode.attr("attempts")));
+			userAttempts.push(new Array(myQuestion, 0));
 			
 			var ars = [];
 			for (var m = 0; m < myNode.find('acceptedresponse').length; m++) {
@@ -134,11 +136,26 @@ function C_TextInput(_type) {
 			var qId = inputIds[i];
 			var inputAnswer = $("#"+qId).val();
 			if($.trim(inputAnswer).length != 0){
+				var qAttemptCount = 0;
+				var qMaxAttempt = 0;
+				for (var j = 0; j < userAttempts.length; j++) {
+					if(userAttempts[j][0] == qId){
+						var qAttemptCount = userAttempts[j][1] + 1;
+						userAttempts[j][1] = qAttemptCount;
+					}
+					if(attempts[j][0] == qId){
+						qMaxAttempt = parseInt(attempts[j][1]);
+					}
+
+				};
+
 				var isCorrect = false;//correctAnswers[i].join().match(inputAnswer);
 				var qAnswers = correctAnswers[i];
-				for(var j = 0; j<qAnswers.length; j++){
-					if($.trim(qAnswers[j]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase() === inputAnswer.toLowerCase()){
-						isCorrect = true;
+				if(qMaxAttempt<=qAttemptCount){
+					for(var j = 0; j<qAnswers.length; j++){
+						if($.trim(qAnswers[j]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase() === inputAnswer.toLowerCase()){
+							isCorrect = true;
+						}
 					}
 				}
 				if(isCorrect === true){
@@ -159,6 +176,11 @@ function C_TextInput(_type) {
 							textComboFeedback.splice(feedbackPos, 1);	
 						}
 					}
+					if(qAttemptCount >= qMaxAttempt){
+						$("#"+qId).val($.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
+						$("#"+qId).attr("disabled", "disabled");
+					}
+							
 					// else{
 					// 	$('#fb'+qId).html('Incorrect').css("color", "red");
 					// }
@@ -279,9 +301,9 @@ function C_TextInput(_type) {
 		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
-		msg += "<label id='label2'>Correct Response: </label>";
-		msg += "<input type='text' name='myName' id='inputCorrectResponse' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("correctresponse").text() +"' class='dialogInput'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";	
-		msg += "</div>"
+		msg += "<div id='inputCRLabel'><b>Correct Response: </b></div>";
+		msg += "<div id='inputCorrectResponse' class='dialogInput' contenteditable='true'></div>";	
+		msg += "</div><br/>"
 		msg += "<div id='acceptedResponseEdit'/>";
 		msg += "<div id='diffeedEdit'/>";
 
@@ -289,9 +311,18 @@ function C_TextInput(_type) {
 		$("#stage").append(msg);
 
 		$("#questionEditText").append($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("content").text());
+		$("#inputCorrectResponse").append($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("correctresponse").eq(0).text());
 		$("#removeBankItem").click(removeBankItem).tooltip();
 
 		CKEDITOR.inline( "questionEditText", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog'
+		});
+
+		CKEDITOR.inline( "inputCorrectResponse", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
@@ -342,7 +373,7 @@ function C_TextInput(_type) {
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
 			modal: true,
-			width: 800,
+			width: 875,
 			height: 650,
 			buttons: {
 				// Cancel: function(){
@@ -359,7 +390,7 @@ function C_TextInput(_type) {
 				AddFeedback: function(){
 					addDiffeed(diffeedEdit_arr.length, true);
 				},
-				Save: function(){
+				Done: function(){
 					var tmpObj = makeQuestionDataStore();
 					saveBankEdit(tmpObj);
 					$("#questionEditDialog").dialog("close");
@@ -376,7 +407,8 @@ function C_TextInput(_type) {
 		tmpObj.objective = $("#inputObjective").val();
 		tmpObj.objItemId = $("#inputObjItemId").val();
 		tmpObj.attempts = $("#inputAttempts").val();
-		tmpObj.correctResponse = $("#inputCorrectResponse").val();
+		tmpObj.correctResponse = CKEDITOR.instances["inputCorrectResponse"].getData();
+		try{ CKEDITOR.instances["inputCorrectResponse"].destroy() } catch (e) {}
 
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
@@ -489,8 +521,8 @@ function C_TextInput(_type) {
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).append($("<correctresponse>"));
 		var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 		var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
-		$(data).find("page").eq(currentPage).find("question").eq(_addID).find("correctresponse").append(myCorrectResponseCDATA);			
-				
+		$(data).find("page").eq(currentPage).find("question").eq(_addID).find("correctresponse").eq(0).append(myCorrectResponseCDATA);		
+
 		questionCount++;
 		currentEditBankMember = _addID;
 		$("#questionEditDialog").remove();
@@ -590,22 +622,21 @@ function C_TextInput(_type) {
 		var correctResponseUpdate = _data.correctResponse;
 		var correctResponseDoc = new DOMParser().parseFromString('<correctresponse></correctresponse>', 'text/xml')
 		var correctResponseCDATA = correctResponseDoc.createCDATASection(correctResponseUpdate);
-		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').empty();
-		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').append(correctResponseCDATA);
+		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').eq(0).empty();
+		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').eq(0).append(correctResponseCDATA);
 
 		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
 		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
-		// for(var j = 0; j < questionResponse_arr.length; j++){
-		// 	if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
-		// 		questionResponse_arr[j].graded = _data.graded;
-		// 		questionResponse_arr[j].objective = _data.objective;
-		// 		questionResponse_arr[j].objItemId = _data.objItemId;
-		// 	}
-		// }
+		for(var j = 0; j < questionResponse_arr.length; j++){
+			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
+				questionResponse_arr[j].graded = _data.graded;
+				questionResponse_arr[j].objective = _data.objective;
+				questionResponse_arr[j].objItemId = _data.objItemId;
+			}
+		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 
-		//im here updating the acceptedResponseEdit_arr
 		for(var i = 0; i < acceptedResponseEdit_arr.length; i++){
 			//var correctOptions = 0;
 			var acceptedResponseText = _data.accepted_arr[i].acceptedText;
