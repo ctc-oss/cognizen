@@ -90,7 +90,7 @@ function C_ClickImage(_type) {
 					//BECAUSE IE FUCKING SUCKS!!!!
 					if(isIE){
 						if(ieHeight == null){
-							ieHeight = $("#clickImgText").height() - 30;
+							ieHeight = $("#clickImgText").height();// - 30;
 							ieWidth = $("#clickImgText").width() - 17;
 						}
 						$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth});
@@ -99,7 +99,7 @@ function C_ClickImage(_type) {
 					}
 					
 					if(isIE){
-						$("#contentHolder").height($("#contentHolder").height() - 25);
+						$("#contentHolder").height($("#contentHolder").height() - 17);
 						$("#contentHolder").width($("#contentHolder").width() - 17);
 					}
 					
@@ -145,10 +145,10 @@ function C_ClickImage(_type) {
 		$("#imgPalette").height(heightSpacer * rows);
 		
 		//Insert the Text Display area.
-		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div>").insertAfter("#imgPalette");
+		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div><br/><br/>").insertAfter("#imgPalette");
 		if(isIE){
 			ieWidth = $("#clickImgTextHolder").width();
-			$("<br/><br/><br/><br/>").insertAfter(".clickImgTextHolder");
+			//$("<br/><br/><br/><br/>").insertAfter(".clickImgTextHolder");
 		}		
 		checkMode();
 		if(transition == true){
