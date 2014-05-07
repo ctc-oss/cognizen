@@ -81,41 +81,18 @@ function C_ClickImage(_type) {
 			
 			if(interact == "click"){
 				$("#" + revID).click(function(){
-					try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
-					currentItem = $(this);
-					try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
-					$("#clickImgText").empty();
-					
-					$("#clickImgText").append($(this).attr("myContent"));
-					//BECAUSE IE FUCKING SUCKS!!!!
-					if(isIE || isFF){
-						if(ieHeight == null){
-							ieHeight = $("#clickImgText").height();// - 30;
-							ieWidth = $("#clickImgText").width() - 17;
-						}
-						$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth});
-					}else{
-						//$("#clickImgText").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
-					}
-					
-					if(isIE || isFF){
-						$("#contentHolder").height($("#contentHolder").height() - 17);
-						$("#contentHolder").width($("#contentHolder").width() - 17);
-					}
-					
-					$('.antiscroll-wrap').antiscroll();
+					updateRevealContent($(this));
 				});
 			}else if(interact == "hover"){
 				$("#" + revID).hover(function(){
-					try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
-					currentItem = $(this);
-					try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
-					$("#clickImgText").html($(this).attr("myContent"));
-					$('.antiscroll-wrap').antiscroll();
+					updateRevealContent($(this));
 				});
 			}
 		}	
-
+		
+		//Figure out columns and rows if not enough space to fit all images...
+		//Need to find an exact width so that it centers properly...
+		//This ugliness allows designers not to have to have exactly divisible width to media width and padding to center properly...
 		var heightSpacer = $("#"+revID).height() + parseInt($("#"+revID).css('margin-top')) + parseInt($("#"+revID).css('margin-bottom'));
 		var totalWidth = revealCount * ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
 		var maxWidth = parseInt($("#imgPalette").css('max-width'));
@@ -153,15 +130,36 @@ function C_ClickImage(_type) {
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
-		
+		//Select the first one...
 		$("#revID0").click();						
 	}
 	
+	//Holders to set a static size for IE...
 	var ieWidth = null;
 	var ieHeight = null;
 	
-	function updateRevealContent(_myContent){
+	function updateRevealContent(_myItem){
+		try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
+		currentItem = _myItem;
+		try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
+		$("#clickImgText").empty();
 		
+		$("#clickImgText").append(_myItem.attr("myContent"));
+		//BECAUSE IE FUCKING SUCKS!!!!
+		if(isIE || isFF){
+			if(ieHeight == null){
+				ieHeight = $("#clickImgText").height();// - 30;
+				ieWidth = $("#clickImgText").width() - 17;
+			}
+			$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
+		}
+		
+		if(isIE || isFF){
+			$("#contentHolder").height($("#contentHolder").height() - 17);
+			$("#contentHolder").width($("#contentHolder").width() - 17);
+		}
+		
+		$('.antiscroll-wrap').antiscroll();
 	}
 	
 	/*****************************************************************************************************************************************************************************************************************
@@ -236,6 +234,7 @@ function C_ClickImage(_type) {
 			width: 875,
 			height: 655,
 			resizable: false,
+			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
 			},

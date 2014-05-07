@@ -237,7 +237,7 @@ function C_QuestionBank(_type) {
         }
 
 		if(isComplete){
-			disableOptions();
+			//disableOptions();
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
@@ -261,8 +261,9 @@ function C_QuestionBank(_type) {
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
-					option_arr[temp_arr[k]].find("input").prop("checked", "checked");
-					if(option_arr[temp_arr[k]].find('input').attr("value") == "false"){
+					
+					option_arr[parseInt(temp_arr[k])].find("input").prop("checked", "checked");
+					if(option_arr[parseInt(temp_arr[k])].find('input').attr("value") == "false"){
 						tempCorrect = false;
 						option_arr[temp_arr[k]].addClass("optionIncorrect");
 					}else{
@@ -281,7 +282,9 @@ function C_QuestionBank(_type) {
 		}
 		$(".radio").prop('disabled', true);
 		mandatoryInteraction = false;
+		disableOptions();
 		checkNavButtons();
+		
 	}
 		
 	function checkAnswer(){
@@ -386,7 +389,7 @@ function C_QuestionBank(_type) {
 					selected_arr.push(i);
 				}	
 			}
-			updateScoring(selected_arr, tempCorrect, bankitem);
+			updateScoring(selected_arr, tempCorrect, null, bankitem);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}

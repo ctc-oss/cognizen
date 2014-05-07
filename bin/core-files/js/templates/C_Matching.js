@@ -55,6 +55,8 @@ function C_Matching(_type) {
     var mandatory = true;
     var myObjective = "undefined";
     var myObjItemId = "undefined";
+	var order_arr = [];
+
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -128,8 +130,6 @@ function C_Matching(_type) {
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		
-		var randomOrderLength = $(data).find("page").eq(currentPage).find("answer").length;
-
 		//find every option in the xml - place them on the screen.
 		$(data).find("page").eq(currentPage).find("option").each(function()
 		{	
@@ -174,16 +174,33 @@ function C_Matching(_type) {
 			
 		});
 		
-		iterator = 0;
+		
+		//Randomize the answer order or set from previous...
+		if(isComplete){
+			for(var k=0; k<questionResponse_arr.length; k++){
+				if(currentPageID == questionResponse_arr[k].id){
+					order_arr = [];
+					order_arr = questionResponse_arr[k].order;
+					break;
+				}
+			}
+		}else{
+			iterator = 0;
+			$(data).find("page").eq(currentPage).find("answer").each(function(){
+				order_arr.push(iterator);
+				iterator++;
+			});
+			order_arr = shuffleArray(order_arr);
+		}
 		
 		//find every answer or drop spot in the xml - place them on the screen.
-		$(data).find("page").eq(currentPage).find("answer").each(function(){
-			var myAnswer = "answer" + iterator;
-			var myImg = $(this).attr("img");
-			var myLabel = String.fromCharCode(iterator % 26 + 65);
-			
+		for(var j = 0; j < order_arr.length; j++){
+			var myAnswer = "answer" + j;
+			var myImg = $(data).find("page").eq(currentPage).find("answer").eq(order_arr[j]).attr("img");
+			var myContent = $(data).find("page").eq(currentPage).find("answer").eq(order_arr[j]).find("content").text();
+			var myLabel = String.fromCharCode(j % 26 + 65);
 			if(type == "matching" || myImg == undefined){
-				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + $(this).find("content").text() + "</div>");
+				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + myContent + "</div>");
 			}else if(type == "matchingDrag"){
 				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img id='funk' src='media/"  + myImg + "'></img></div>");
 				$("#funk").load(function(){
@@ -235,18 +252,17 @@ function C_Matching(_type) {
 							}
 						);
 						TweenMax.to(ui.draggable, 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeOut, duration: 0.5});
-						
-						
 					}
 				});
 			}
 			
-			$("#"+myAnswer).data("matchID", $(this).attr("correct"));
+			$("#"+myAnswer).data("matchID", $(data).find("page").eq(currentPage).find("answer").eq(order_arr[j]).attr("correct"));
+			$("#"+myAnswer).data("matchMap", myLabel);
 			$("#"+myAnswer).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
 				
-			iterator++;
+			//iterator++;
 			answer_arr.push($('#' + myAnswer));
-		});
+		};
 		$("#matchingAnswers").append("</div>");
 		
 		var greaterHeight = 0;
@@ -294,9 +310,28 @@ function C_Matching(_type) {
 				for(var k = 0; k < temp_arr.length; k++){
 					if(type == "matching"){
 						option_arr[k].find("input").val(temp_arr[k]);
-						if(option_arr[k].find('input').val().toUpperCase() != option_arr[k].data("myMatch")){
+						//Map the user input to the matchID - needed since randomizing
+						var userInput = option_arr[k].find('input').val().toUpperCase()
+						var userMap = null;
+						for(var h = 0; h < answer_arr.length; h++){
+							if(answer_arr[h].data("matchMap") == userInput){
+								userMap = answer_arr[h].data("matchID");
+								break;
+							}
+						}
+						
+						if(option_arr[k].data("myMatch") != userMap){
 							tempCorrect = false;
 							option_arr[k].addClass("optionIncorrect");
+							//Find the correct answer to display.
+							var correctDisplay = "";
+							for(var l = 0; l < answer_arr.length; l++){
+								if(option_arr[k].data("myMatch") == answer_arr[l].data("matchID")){
+									correctDisplay = answer_arr[l].data("matchMap");
+								}
+							}
+							//Display the correct answer before the input.
+							option_arr[k].prepend("<b>" + correctDisplay + "  </b>");
 						}else{
 							option_arr[k].addClass("optionCorrect");
 						}
@@ -333,12 +368,23 @@ function C_Matching(_type) {
 			for(var i=0; i < option_arr.length; i++){
 				var markingObject = new Object();
 				
-				if(option_arr[i].data("myMatch") != option_arr[i].find($('input[id=myInput]')).val().toUpperCase()){
+				//Map the user input to the matchID - needed since randomizing
+				var userInput = option_arr[i].find($('input[id=myInput]')).val().toUpperCase();
+				var userMap = null;
+				for(var h = 0; h < answer_arr.length; h++){
+					if(answer_arr[h].data("matchMap") == userInput){
+						userMap = answer_arr[h].data("matchID");
+						break;
+					}
+				}
+				
+				if(option_arr[i].data("myMatch") != userMap){
 					tempCorrect = false;
 					markingObject.isCorrect = false;		
 				}else{
 					markingObject.isCorrect = true;
 				}
+				markingObject.userInput = userInput;
 				markingObject.myDrop = option_arr[i];
 				marking_arr.push(markingObject);
 			}
@@ -396,7 +442,6 @@ function C_Matching(_type) {
 			var selected_arr = [];
 			if(type == "matching"){
 				for(var i = 0; i < option_arr.length; i++){
-//				if(option_arr[i].find("input").prop("checked") == true){
 					selected_arr.push(option_arr[i].find("input").val().toUpperCase());
 				}
 			}else{
@@ -405,16 +450,14 @@ function C_Matching(_type) {
 					var tempDrop = drop_arr[i].myDrop;
 				
 					var selectedObject = new Object();
-				
 					selectedObject.top = $("#" + tempDrag).position().top;
 					selectedObject.left = $("#" + tempDrag).position().left;
 					selectedObject.drop = tempDrop;
 					selectedObject.drag = tempDrag;
-
 					selected_arr.push(selectedObject);
 				}
 			}
-			updateScoring(selected_arr, tempCorrect);
+			updateScoring(selected_arr, tempCorrect, order_arr, 0);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
@@ -733,7 +776,7 @@ function C_Matching(_type) {
 		var myLabel = $(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("correct");
 		var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer'/>";
-		msg += "<label id='label'>Answer "+ answerLabel +" Label: </label>";
+		msg += "<label id='label'>Answer "+ answerLabel +" Match: </label>";
 		msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='dialogInput' style='width:35px; text-align:center'/><br/>";
 		if(type == "matching"){
 			var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(_addID).find("content").text();

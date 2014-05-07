@@ -928,6 +928,8 @@ var SocketHandler = {
                             // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
                             if (errorMessage.indexOf('index.lock') == -1) {
                                 _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. GIT INDEX.LOCK issue.'});
+                                //Add call to right here to fire the fix git lock script passing the program name...
+                                ///apache/vhosts/cognizen.ctc.com/scripts/git-index-fix.sh program
                             }
                         }
 

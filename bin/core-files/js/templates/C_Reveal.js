@@ -358,6 +358,7 @@ function C_Reveal(_type) {
 			width: 875,
 			height: 655,
 			resizable: false,
+			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
 			},

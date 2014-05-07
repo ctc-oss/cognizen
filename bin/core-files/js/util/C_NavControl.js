@@ -656,18 +656,19 @@ function updateTracking(){
 /****************************************************
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
-function updateScoring(_userSelection, _correct, _bankID){
-//	console.log("updateScoring");
+function updateScoring(_userSelection, _correct, _order, _bankID){
 	for(var i = 0; i < questionResponse_arr.length; i++){
-//		console.log("i=" + i);
 		if(currentPageID == questionResponse_arr[i].id){
-//			console.log("inside if");
 			questionResponse_arr[i].complete = true;
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);
 				questionResponse_arr[i].correct = _correct;
 			}
-			
+			//Assures that we display correctly upon return
+			if(_order){
+				questionResponse_arr[i].order = _order;
+			}
+			//Show proper bank item, if a bank...
 			if(_bankID){
 				questionResponse_arr[i].bankID = _bankID;
 			}

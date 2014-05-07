@@ -54,6 +54,7 @@ function C_MultipleChoice(_type) {
     
     var myObjective = "undefined";
     var myObjItemId = "undefined";
+    var order_arr = [];
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -128,13 +129,24 @@ function C_MultipleChoice(_type) {
 		}		
 		//console.log("number of options = " + optionCount);
 		
-		var order_arr = [];
-		for (var i = 0; i < optionCount; i++){
-			order_arr.push(i);
-		}
-		
-		if(randomize){
-			var order_arr = shuffleArray(order_arr);
+		order_arr = [];
+		//Randomize the answer order or set from previous...
+		if(isComplete){
+			for(var k=0; k<questionResponse_arr.length; k++){
+				if(currentPageID == questionResponse_arr[k].id){
+					order_arr = [];
+					order_arr = questionResponse_arr[k].order;
+					break;
+				}
+			}
+		}else{
+			for (var i = 0; i < optionCount; i++){
+				order_arr.push(i);
+			}
+			
+			if(randomize){
+				order_arr = shuffleArray(order_arr);
+			}
 		}
 		
 		//find every option in the xml - place them on the screen.
@@ -372,7 +384,7 @@ function C_MultipleChoice(_type) {
 					selected_arr.push(i);
 				}	
 			}
-			updateScoring(selected_arr, tempCorrect);
+			updateScoring(selected_arr, tempCorrect, order_arr);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
