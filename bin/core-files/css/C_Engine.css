@@ -869,12 +869,11 @@ ul.no-indent {
 
 .flashcard{
 	position: absolute;
-	overflow: scroll;
 	width: 300px;
 	height: 400px;
 	text-align: center;
 	vertical-align:middle;
-	font-family: "Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12pt;
 	font-weight: bold;
 	color: #9DA6AB;
@@ -900,17 +899,17 @@ ul.no-indent {
 
 #flashcardReshuffle{
 	position:relative;
-	/*bottom: 10px;*/
+	display: block;
 	width: 200px;
-	right: 80px;
-	float: right;
-	/*margin-left: 0 auto;
-	margin-right: 0 auto;*/
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .cardText{
-	position: absolute;
 	text-align: center;
+	width: 90%;
+	padding-left: 5%;
+	padding-right: 5%;
 }
 /****************************************************** CONTENT TEXT LAYOUTS END *****/
 
