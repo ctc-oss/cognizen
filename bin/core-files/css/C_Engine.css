@@ -588,7 +588,7 @@ p.completionText{
 	font-weight: bold;
 }
 
-table{
+#content table, #tabs table{
 	border: 1px solid black;
 	border-collapse: collapse;
 	margin-top: 4px;
@@ -596,56 +596,37 @@ table{
 	margin-right: auto;
 	}
 
+#content table p, #tabs table p{
+	margin-bottom: 0px;
+}
+
 table.center{
 	margin-left: auto;
 	margin-right: auto;
 }
 
-thead td{
+thead th{
 	font-weight: bold;
 	background-color: #E0E0E0;
-	vertical-align: top;
+	vertical-align: middle;
 	padding: 4px;
 	text-align: center;
 }
 
-th{
+tbody th{
 	font-weight: bold;
 	background-color: #E0E0E0;
-	vertical-align: top;
+	vertical-align: middle;
 	padding: 4px;
 	border: 1px solid black;
 }
 
-th.center{
-	text-align: center;
-	vertical-align: middle;
-}
-
-th.left{
-	text-align: left;
-}
-
-th.subhead{
-	text-align: center;
-	vertical-align: middle;
-	background-color: #F1F1F1;
-}
-
 td{
-	vertical-align: top;
+	vertical-align: middle;
 	text-align: left;
 	padding: 4px;
 	background-color: #FFFFFF;
 	border: 1px solid black;
-}
-
-td.center{
-	text-align: center;
-}
-
-td.right{
-	text-align: right;
 }
 
 caption{
