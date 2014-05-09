@@ -84,15 +84,13 @@ function C_Flashcard(_type) {
 			var myDef = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("definition").text();
 			var tempID = "card" + i;
 			var tempTextID = "cardText" + i;
-			if(type == "flashcardText"){
-				$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
-			}else if(type == "flashcardMedia"){
-				$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardImg' style='" + myTerm + "'></div></div>");
-			}
+			
+			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
+			
 			//Position the card.
 			$("#" + tempID).css({'left': 69 + i*4});
 			//Postion the text within the card.
-			$("#" + tempTextID).css({'position': 'absolute', 'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
+			$("#" + tempTextID).css({'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
 			
 			$("#" + tempID).data("myTerm", myTerm);
 			$("#" + tempID).data("myDef", myDef);
@@ -143,7 +141,7 @@ function C_Flashcard(_type) {
 					target.empty();
 					tempID = "cardBackText" + myIndex;
 					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</dev>");
-					$("#" + tempID).css({'position': 'absolute', 'top': (target.height() - $("#" + tempID).height())/2});
+					$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
 					target.addClass("flashcardBack");
 					TweenMax.to(target, .2, {rotationY:0, left: target.position().left});
 					

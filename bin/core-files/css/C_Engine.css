@@ -906,8 +906,10 @@ ul.no-indent {
 }
 
 .cardText{
+	position: relative;
 	text-align: center;
 	width: 90%;
+	margin: auto;
 	padding-left: 5%;
 	padding-right: 5%;
 }

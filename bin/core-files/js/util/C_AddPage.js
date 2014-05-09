@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcardText", "flashcardMedia", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion"/*, "textInput"*/];
 
 
 /************************************************************************************
@@ -434,7 +434,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
-		case "flashcardText":
+		case "flashcard":
 			$(data).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>Click on each of the images below to discover more information:</p>");
@@ -452,36 +452,6 @@ function createNewPageByType(_myType){
 			var newFront2 = new DOMParser().parseFromString('<term></term>',  "text/xml");
 			var newBack2 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
 			var frontCDATA2 = newFront2.createCDATASection("New Card Term");
-			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
-			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
-			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
-			
-			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
-			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(data).find("page").eq(newPage).attr("mandatory", false);
-			$(data).find("page").eq(newPage).attr("randomize", false);
-			$(data).find("page").eq(newPage).attr("type", "static");
-			
-			break;
-			
-		case "flashcardMedia":
-			$(data).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>Click on each of the images below to discover more information:</p>");
-			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
-			
-			$(data).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
-			var newFront1 = new DOMParser().parseFromString('<term></term>',  "text/xml");
-			var newBack1 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
-			var frontCDATA1 = newFront1.createCDATASection("position:absolute; bottom:5px; right:65px; width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;");
-			var backCDATA1 = newBack1.createCDATASection("New Card Definition");
-			$(data).find("page").eq(newPage).find("card").eq(0).find("term").append(frontCDATA1);
-			$(data).find("page").eq(newPage).find("card").eq(0).find("definition").append(backCDATA1);
-			
-			$(data).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
-			var newFront2 = new DOMParser().parseFromString('<term></term>',  "text/xml");
-			var newBack2 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
-			var frontCDATA2 = newFront2.createCDATASection("position:absolute; bottom:5px; right:65px; width:150px; height:150px; background:url(media/defaultReveal.png) no-repeat; background-size: 150px 150px;");
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(data).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
