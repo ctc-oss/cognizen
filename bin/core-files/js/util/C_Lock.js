@@ -159,7 +159,7 @@ function openLockRequestRefused(_data){
 
 function forcedReviewAlert(){
 	if(activeEditor == null){
-		var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is not currently being edited.</p><p>To make edits, click the lock icon.</p></div>';
+		//var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is not currently being edited.</p><p>To make edits, click the lock icon.</p></div>';
 	}else{
 		var msg = '<div id="dialog-locked" title="Content: Locked"><p class="validateTips">This lesson is currently being edited by '+ activeEditor +'.</p><p>You can view the content but cannot edit it.</p><p>To request the lock from ' + activeEditor + ', click the lock icon.</p></div>';
 	}
