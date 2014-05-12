@@ -397,7 +397,7 @@ function C_Reveal(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text();//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 			
 			revealMenu_arr.push(tmpID);

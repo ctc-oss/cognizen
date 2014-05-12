@@ -522,7 +522,8 @@ function C_QuestionBank(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("bankitem").eq(h).find("question").text();//////////////////////Need to clean out html tags.....
+			
+			var cleanText = $(data).find("page").eq(currentPage).find("bankitem").eq(h).find("question").text().replace(/<\/?[^>]+(>|$)/g, "");;//////////////////////Need to clean out html tags.....
 			//var cleanText = someText.text();
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 			
