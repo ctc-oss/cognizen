@@ -306,7 +306,7 @@ function C_Matching(_type) {
 		for(var i=0; i<questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
 				var temp_arr = questionResponse_arr[i].userAnswer;
-				var tempCorrect = true;
+				tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
 					if(type == "matching"){
 						option_arr[k].find("input").val(temp_arr[k]);
@@ -351,12 +351,28 @@ function C_Matching(_type) {
 				}
 			}
 		}
+
+		setScormObjs();
+
 		$(".matchingInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
 		mandatoryInteraction = false;
 		checkNavButtons();
 	}
 
+function setScormObjs(){
+		var _objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') + "."+
+					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
+					 myObjective.replace(/\s+/g, '');
+		if(tempCorrect && graded){
+			alert("all correct and graded");
+			setObjectiveSuccess(_objId, myObjItemId, true);
+		}
+		else if(!tempCorrect && graded){
+			alert("incorrect and graded");
+			setObjectiveSuccess(_objId, myObjItemId, false);
+		}	
+}
 	
 	function checkAnswer(){
 		//////////////////////////CHECK IF CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -457,6 +473,7 @@ function C_Matching(_type) {
 					selected_arr.push(selectedObject);
 				}
 			}
+
 			updateScoring(selected_arr, tempCorrect, order_arr, 0);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
@@ -478,6 +495,7 @@ function C_Matching(_type) {
 					width: 550,
 					dialogClass: "no-close",
 					close: function(event, ui){
+
 						mandatoryInteraction = false;
 						checkNavButtons();
 						$("#dialog-attemptResponse").remove();

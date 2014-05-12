@@ -14,6 +14,7 @@ var SCORM = {
     tempXmlContentFile: '',
     binDir: 'cognizen',
     previousLesson: '',
+    objectives_arr: [],
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -27,14 +28,10 @@ var SCORM = {
 	generateSCORMLesson: function(callback){
         var _this = this;
 
-        // if(_this.scormVersion === '2004_SGST'){
-        // 	_this.binDir = "bin2";
-        // }
-        // else
-        // {
-        // 	_this.binDir = "bin";
-        // }
-        console.log(_this.scormVersion);
+        //clear objectives_arr
+        _this.objectives_arr = [];
+
+        //console.log(_this.scormVersion);
         readdirp(
             { root: _this.contentPath,
                 directoryFilter: [ '!server', '!scorm', '!.git'],
@@ -69,11 +66,36 @@ var SCORM = {
 		                etree.find('./courseInfo/preferences/mode').set('value','production');
 		                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);	
 		                etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+		                if(_this.scormVersion === 'none'){
+		                	etree.find('./courseInfo/preferences/scorm').set('value','false');
+		                }
 		                var xml = etree.write({'xml_decleration': false});
 		                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
 		                    if (err) callback(err, null);
 					    
 						    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+						    
+						    //find the objectives in the pages. 
+						    var pageCount = etree.findall('./pages/page').length;
+
+						    for (var i = 0; i < pageCount; i++) {
+						    	var myNode = etree.findall('./pages/page')[i];
+						    	var pageObj = myNode.get('objective');
+						    	var pageTitle = myNode.findtext('title');
+						    	if(pageObj != undefined && pageObj !== "undefined"){
+						    		//console.log(i + " : " + pageObj);
+						 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+						 			var tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
+						 							pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+						 							pageObj.replace(/\s+/g, '');
+						    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
+						    			_this.objectives_arr.push(tmpObjId);	
+						    		}
+						    		else{
+						    			_this.objectives_arr.push(tmpObjId+i);						    			
+						    		}
+						    	}
+						    }
 
 						    var imsManifestFilePath = '';
 						    //do not need to do scorm files if publishing to "none"						    
@@ -85,10 +107,6 @@ var SCORM = {
 				                if(_this.scormVersion === '1.2_CTCU'){
 				                	scormBasePath = _this.scormPath + '/1.2/';
 				                }
-				                // //catch for SGST - use 2004_3rd files
-				                // if(_this.scormVersion === '2004_SGST'){
-				                // 	scormBasePath = _this.scormPath + '/2004_3rd/';
-				                // }
 
 				                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
@@ -155,7 +173,7 @@ var SCORM = {
         var manifest;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
-// || _this.scormVersion === '2004_SGST'
+
 	    if (_this.scormVersion === '2004_3rd'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
 	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
@@ -191,7 +209,11 @@ var SCORM = {
 	            "               </adlnav:presentation>\n"+
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
-	        manifest += "\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
+	       	if(_this.objectives_arr.length > 0){
+	        	manifest += _this._objectivesGenerator();
+	        }
+
+	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
 	        manifest += "               </imsss:sequencing>\n";
 	        manifest += "           </item>\n";
 	        //sequencing rules for the course go here
@@ -235,7 +257,11 @@ var SCORM = {
 	            "               </adlnav:presentation>\n"+
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
-	        manifest += "\n                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
+	        if(_this.objectives_arr.length > 0){
+	        	manifest += _this._objectivesGenerator();
+	        }
+	        
+	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
 	        manifest += "               </imsss:sequencing>\n";
 	        manifest += "           </item>\n";
 	        //sequencing rules for the course go here
@@ -445,6 +471,40 @@ var SCORM = {
 
 	}, 
 
+	_objectivesGenerator: function(){
+		var _this = this;
+		var objectives = "                    <imsss:objectives>\n"+
+        "                       <imsss:primaryObjective />\n";
+        objectives += _this._secondaryObjectivesGenerator();
+        // for (var i = 0; i < _this.objectives_arr.length; i++) {
+        // 	var tmpObj_arr = _this.objectives_arr[i];
+        // 	//console.log("inplace " + tmpObj_arr[0] + " <<<< " + tmpObj_arr[1]);
+        // 	objectives += "                       <imsss:objective objectiveID=\""+tmpObj_arr[0]+"."+tmpObj_arr[1]+"\">\n"+
+        //     "                           <imsss:mapInfo targetObjectiveID=\""+tmpObj_arr[0]+"."+tmpObj_arr[1]+"\""+
+        //     "                                          readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+        //     "                       </imsss:objective>\n";	            	
+        // };
+
+        objectives += "                    </imsss:objectives>\n";
+
+        return objectives;
+	},
+
+	_secondaryObjectivesGenerator: function(){
+		var _this = this;
+		var secondaryObjectives = "";
+        for (var i = 0; i < _this.objectives_arr.length; i++) {
+        	//var tmpObj_arr = _this.objectives_arr[i];
+        	//console.log("inplace " + tmpObj_arr[0] + " <<<< " + tmpObj_arr[1]);
+        	secondaryObjectives += "                       <imsss:objective objectiveID=\""+_this.objectives_arr[i]+"\">\n"+
+            "                           <imsss:mapInfo targetObjectiveID=\""+_this.objectives_arr[i]+"\""+
+            "                                          readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+            "                       </imsss:objective>\n";	            	
+        };
+
+        return secondaryObjectives;
+	},
+
 	_buildLaunchFile: function(){
 		var _this = this;
         var index = '<!DOCTYPE html>\n'+
@@ -509,6 +569,8 @@ var SCORM = {
 	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
 		var _this = this;
 		var _lessonPath = lArray[count];
+		//clear objectives_arr
+		_this.objectives_arr = [];
 		console.log(_lessonPath);
         readdirp(
             { root: _lessonPath,
@@ -541,6 +603,9 @@ var SCORM = {
 				        //set mode to production and scorm version in temp content.xml
 		                etree.find('./courseInfo/preferences/mode').set('value','production');
 		                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+		              	if(_this.scormVersion === 'none'){
+		                	etree.find('./courseInfo/preferences/scorm').set('value','false');
+		                }
 		                if(count+1 == lArray.length){
 		                	etree.find('./courseInfo/preferences/finalLesson').set('value','true');	
 		                }
@@ -549,7 +614,32 @@ var SCORM = {
 		                    if (err) callback(err, null);
 
 			                //add item & item sequencing (objectives)
-			                lessonsName.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
+			                var _lessonTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+			                lessonsName.push(_lessonTitle);
+
+						    //find the objectives in the pages. 
+						    var pageCount = etree.findall('./pages/page').length;
+
+						    for (var i = 0; i < pageCount; i++) {
+						    	var myNode = etree.findall('./pages/page')[i];
+						    	var pageObj = myNode.get('objective');
+						    	var pageTitle = myNode.findtext('title');
+						    	if(pageObj != undefined && pageObj !== "undefined"){
+						    		//console.log(i + " : " + pageObj);
+						 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+						 			var tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
+						 							pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+						 							pageObj.replace(/\s+/g, '');
+						    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
+						    			_this.objectives_arr.push(tmpObjId);	
+						    		}
+						    		else{
+						    			_this.objectives_arr.push(tmpObjId+i);						    			
+						    		}
+
+						    	}
+						    }
+
 
 						    //do not need to do scorm files if publishing to "none"
 		    				if(_this.scormVersion != "none"){
@@ -577,12 +667,6 @@ var SCORM = {
 		             					manifestFile += "		   <imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
 		           						manifestFile += "		</imsss:sequencing>\n"; 						        	
 							        }
-							        // //CTCU is flow only
-							        // else if(_this.scormVersion === '2004_3rd_CTCU'){
-								       //  manifestFile += "       <imsss:sequencing>\n";
-		             // 					manifestFile += "		   <imsss:controlMode choice=\"false\" flow=\"true\"/>\n";
-		           		// 				manifestFile += "		</imsss:sequencing>\n"; 							        	
-							        // }
 	   
 							        manifestFile += "       </organization>\n";
 							        manifestFile += "    </organizations>\n";
@@ -628,10 +712,7 @@ var SCORM = {
 							        else if(_this.scormVersion === '2004_3rd_USSOCOM'){
 							        	scormBasePath = _this.scormPath + '/2004_3rd/';
 							        }
-					                // //catch for CTC - use 2004_3rd files
-					                // else if(_this.scormVersion === '2004_3rd_CTCU'){
-					                // 	scormBasePath = _this.scormPath + '/2004_3rd/';
-					                // }							        
+							        
 							        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 							        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -883,8 +964,12 @@ var SCORM = {
 					"			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
 					"		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
 					"	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-					"	            		</imsss:objective>\n"+
-					"	          		</imsss:objectives>\n"+
+					"	            		</imsss:objective>\n";
+			        //any objectives stuff goes here - secondaryObjectivesGenerator
+			        if(_this.objectives_arr.length > 0){
+			        	seq += _this._secondaryObjectivesGenerator();
+			        }					
+					seq += "	          		</imsss:objectives>\n"+
 					"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
 					"	        	</imsss:sequencing>\n";				
 			}
@@ -926,28 +1011,14 @@ var SCORM = {
 			}
 
 		}
-		// //seq rules for CTCU
-		// else if(_this.scormVersion === '2004_3rd_CTCU'){
-		// 	if(lessonCount + 1 == totalLessons){
-		// 		//sequencing elements for the post test
-		// 		seq += "               <imsss:sequencing>\n"+
-		// 			//handles the score from the post test to be the only activity that counts towards rollup so that the course (these defaults and don't have to be included)					          
-		// 			"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
-		// 			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-		// 			"	        	</imsss:sequencing>\n";						
-		// 	}
-		// 	else{
-		// 		seq += "               <imsss:sequencing>\n"+
-		// 		// Set all content SCOs to not count towards any rollup. Only the post test will count
-		// 			"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+
-		// 			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-		// 			"	        	</imsss:sequencing>\n";						
-		// 	}
-		// }
 		//default
 		else{
-			seq += "               <imsss:sequencing>\n"+		
-			"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
+			seq += "               <imsss:sequencing>\n";
+	        //any objectives stuff goes here - objectivesGenerator
+	        if(_this.objectives_arr.length > 0){
+	        	seq += _this._objectivesGenerator();
+	        }					
+			seq += "	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
 			"	        	</imsss:sequencing>\n";					
 		}
 		_this.previousLesson = lessonId;

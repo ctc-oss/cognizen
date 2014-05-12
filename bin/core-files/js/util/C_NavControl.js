@@ -602,14 +602,20 @@ function checkNavButtons(){
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
-		if(currentPage == totalPages -1 && isScorm && $(data).find("page").eq(currentPage).attr('layout') != "completion"){
-			completeLessonDefault();
-		};
+
 	}else{
 		if(nextDisabled == true){
 			enableNext();
 		}
 	}
+
+	if(currentPage == totalPages -1 && isScorm && !mandatoryInteraction && $(data).find("page").eq(currentPage).attr('layout') != "completion"){
+		completeLessonDefault();
+	}
+	else if(currentPage > totalPages -1 && isScorm && mandatoryInteraction && $(data).find("page").eq(currentPage).attr('layout') != "completion"){
+		completeLessonDefault();
+	}
+
 }
 
 
