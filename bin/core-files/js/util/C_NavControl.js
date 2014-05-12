@@ -884,11 +884,7 @@ this.loadPage = function(){
 			currentTemplate = new C_Reveal(currentTemplateType);
 			currentTemplate.initialize();
 			break;
-		case "flashcardText":
-			currentTemplate = new C_Flashcard(currentTemplateType);
-			currentTemplate.initialize();
-			break;
-		case "flashcardMedia":
+		case "flashcard":
 			currentTemplate = new C_Flashcard(currentTemplateType);
 			currentTemplate.initialize();
 			break;

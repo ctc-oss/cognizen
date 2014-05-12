@@ -331,7 +331,8 @@ function C_Matching(_type) {
 								}
 							}
 							//Display the correct answer before the input.
-							option_arr[k].prepend("<b>" + correctDisplay + "  </b>");
+							//$("<span style='position: relative; float: left; margin-top: 2px; margin-right: 5px;'><b>" + correctDisplay + "  </b></span>").insertBefore(option_arr[k].find('input'));
+							option_arr[k].prepend("<span style='position: relative; float: left; margin-top: 2px; margin-right: 5px;'><b>" + correctDisplay + "  </b></span>");
 						}else{
 							option_arr[k].addClass("optionCorrect");
 						}
