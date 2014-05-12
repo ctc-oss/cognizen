@@ -372,6 +372,7 @@ function C_TextInput(_type) {
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
+			dialogClass: "no-close",
 			modal: true,
 			width: 875,
 			height: 650,

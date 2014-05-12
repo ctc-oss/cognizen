@@ -27,7 +27,7 @@ function checkScorm(){
 	scorm = pipwerks.SCORM;
 	//check to see if the scorm perference is set to true
 	//and mode is production
-	if($(data).find('scorm').attr('value') == "true" && mode == "production"){
+	if(doScorm()){
 		isScorm = true;
 		scorm.VERSION = $(data).find('scormVersion').attr('value');
 
@@ -66,92 +66,178 @@ function checkScorm(){
 	}
 }
 
+function doScorm(){
+	if($(data).find('scorm').attr('value') == "true" && mode == "production"){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
 function completeLessonDefault(){
-	scorm.status("set", "completed");
-	if(scorm.VERSION == "1.2"){
-		//no calls 4 now
+	if(doScorm()){
+		scorm.status("set", "completed");
+		if(scorm.VERSION == "1.2"){
+			//no calls 4 now
+		}
+		else if(scorm.VERSION.substring(0,4) == "2004"){
+			scorm.set("cmi.success_status", "passed");
+		}
+		scorm.quit();
 	}
-	else if(scorm.VERSION.substring(0,4) == "2004"){
-		scorm.set("cmi.success_status", "passed");
-	}
-	scorm.quit();
 }
 
 function completeLesson(completion, success, score){
-	if(completion){
-		scorm.status("set", "completed");	
-	}
-	else{
-		scorm.status("set", "incomplete");
-	}
-
-	if(scorm.VERSION.substring(0,4) == "2004"){
-		if(success){
-			scorm.set("cmi.success_status", "passed");			
+	if(doScorm()){
+		if(completion){
+			scorm.status("set", "completed");	
 		}
 		else{
-			scorm.set("cmi.success_status", "failed");
+			scorm.status("set", "incomplete");
 		}
 
-		scorm.set("cmi.score.scaled", score.toString());
+		if(scorm.VERSION.substring(0,4) == "2004"){
+			if(success){
+				scorm.set("cmi.success_status", "passed");			
+			}
+			else{
+				scorm.set("cmi.success_status", "failed");
+			}
 
-		var finalLesson = $(data).find('finalLesson').attr('value');
-		if(finalLesson === 'true'){
-			scorm.set("adl.nav.request", "exitAll");
-		}
-		else
-		{
-			var validContinue = scorm.get("adl.nav.request_valid.continue");
-			if(validContinue === 'true')
-			{
-				scorm.set("adl.nav.request", "continue");
+			scorm.set("cmi.score.scaled", score.toString());
+
+			var finalLesson = $(data).find('finalLesson').attr('value');
+			if(finalLesson === 'true'){
+				scorm.set("adl.nav.request", "exitAll");
 			}
 			else
 			{
-				scorm.set("adl.nav.request", "exit");
+				var validContinue = scorm.get("adl.nav.request_valid.continue");
+				if(validContinue === 'true')
+				{
+					scorm.set("adl.nav.request", "continue");
+				}
+				else
+				{
+					scorm.set("adl.nav.request", "exit");
+				}
 			}
 		}
-	}
-	else if(scorm.VERSION == "1.2"){
-		var raw = score*100;
-		scorm.set("cmi.core.score.raw", raw.toString());
-	}
-
-	// reset location for next time lesson is opened
-	var currentPageID = 0;
-	if(scorm.VERSION == "1.2"){
-		scorm.set("cmi.core.lesson_location", currentPageID);
-	}
-	else if(scorm.VERSION.substring(0,4) == "2004"){
-		scorm.set("cmi.location", currentPageID);
-	}
-
-	if(scorm.VERSION = '1.2_CTCU'){
-		var raw = score*100;
-		scorm.set("cmi.core.score.raw", raw.toString());
-		// wait for SCORM termination, then close popup windows
-		var terminated = scorm.quit();
-		if(terminated){
-			if(window.opener){
-				window.opener.lessonComplete();
-			}
-			window.close();
-		}else{
-			console.log("SCORM termination failed");
+		else if(scorm.VERSION == "1.2"){
+			var raw = score*100;
+			scorm.set("cmi.core.score.raw", raw.toString());
 		}
 
+		// reset location for next time lesson is opened
+		var currentPageID = 0;
+		if(scorm.VERSION == "1.2"){
+			scorm.set("cmi.core.lesson_location", currentPageID);
+		}
+		else if(scorm.VERSION.substring(0,4) == "2004"){
+			scorm.set("cmi.location", currentPageID);
+		}
+
+		if(scorm.VERSION = '1.2_CTCU'){
+			var raw = score*100;
+			scorm.set("cmi.core.score.raw", raw.toString());
+			// wait for SCORM termination, then close popup windows
+			var terminated = scorm.quit();
+			if(terminated){
+				if(window.opener){
+					window.opener.lessonComplete();
+				}
+				window.close();
+			}else{
+				console.log("SCORM termination failed");
+			}
+
+		}
+		else{
+			scorm.quit();
+		}
 	}
-	else{
-		scorm.quit();
-	}
-	
 }
 
 function choice(lesson){
+	if(doScorm()){
+		var lessonNameTrim = lesson.replace(/\s+/g, '');
 
-	var lessonNameTrim = lesson.replace(/\s+/g, '');
+		scorm.set("adl.nav.request", "{target="+lessonNameTrim+"_id}choice");
+		scorm.set("cmi.exit", "normal");
+		scorm.API.getHandle().Terminate("");
+	}
+}
 
-	scorm.set("adl.nav.request", "{target="+lessonNameTrim+"_id}choice");
-	scorm.set("cmi.exit", "normal");
-	scorm.API.getHandle().Terminate("");
+function choiceValid(lesson){
+	if(doScorm()){
+		var lessonNameTrim = lesson.replace(/\s+/g, '');
+		var valid = (scorm.get("adl.nav.request_valid.choice.{target="+lessonNameTrim+"_id}") === 'true');
+		return valid;
+	}
+	return false;
+}
+
+function getObjectives(){
+
+	var objectives_arr = [];
+	var num = parseInt(scorm.get("cmi.objectives._count"));
+
+    for (var i=0; i < num; ++i) {
+    	var objectivesObj = new Object();
+    	objectivesObj.id = scorm.get("cmi.objectives." + i + ".id");
+    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
+    	objectivesObj.objItemId = scorm.get("cmi.objectives." + i + ".description");
+    	objectives_arr.push(objectivesObj);
+    }
+
+	return objectives_arr;
+}
+
+function setObjectiveSuccess(objId, myObjItemId, success){
+	if(doScorm()){
+
+		var objIndex = findObjective(objId);
+
+		var successStatus = (success) ? "passed":"failed";
+
+		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
+
+		scorm.set("cmi.objectives." + objIndex + ".description", myObjItemId);
+	}
+
+}
+
+
+/*******************************************************************************
+**
+** Function findObjective(objId)
+** Inputs:  objId - the id of the objective
+** Return:  the index where this objective is located 
+**
+** Description:
+** This function looks for the objective within the objective array and returns 
+** the index where it was found or it will create the objective for you and return 
+** the new index.
+** From ADL APIWrapper.js
+*******************************************************************************/
+function findObjective(objId) 
+{
+    var num = parseInt(scorm.get("cmi.objectives._count"));
+    var objIndex = -1;
+
+    for (var i=0; i < num; ++i) {
+        if (scorm.get("cmi.objectives." + i + ".id") == objId) {
+            objIndex = i;
+            break;
+        }
+    }
+
+    if (objIndex == -1) {
+        //message("Objective " + objId + " not found.");
+        objIndex = num;
+        //message("Creating new objective at index " + objIndex);
+        scorm.set("cmi.objectives." + objIndex + ".id", objId);
+    }
+    return objIndex;
 }

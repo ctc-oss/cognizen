@@ -49,31 +49,71 @@ function C_Completion(_type) {
 		//array used to track objectives for duplicates
 		var remediationObjectives = [];
 		var displayRemedObj = "";
-		for(var i = 0; i < questionResponse_arr.length; i++){
-			if(questionResponse_arr[i].objective != "undefined"){
-				trackedObjectives = true;
-				if(!questionResponse_arr[i].correct){
-					//check for duplicates
-					if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
-						remediationObjectives.push(questionResponse_arr[i].objective);
-						if(questionResponse_arr[i].objItemId != "undefined"){
-							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objective+"</a></li>";
+		if(doScorm()){
+			//get objectives, display ones with objectives.n.success_status == failed; only do link if choiceValid(lesson)
+			var scormObjectives = getObjectives();
+			for (var i = 0; i < scormObjectives.length; i++) {
+				var tmpObject = scormObjectives[i];
+				if(tmpObject.id != "undefined"){
+					trackedObjectives = true;
+					if(tmpObject.successStatus == "failed"){
+						//check for duplicates
+						if($.inArray(tmpObject.id, remediationObjectives) == -1){
+							remediationObjectives.push(tmpObject.id);
+							if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
+								displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+tmpObject.objItemId+"\")'>"+tmpObject.id+"</a></li>";
+							}
+							else{
+								displayRemedObj += "<li class='completionText'>"+tmpObject.id+"</li>";
+							}							
 						}
-						else{
-							displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
-						}
-					}						
+					}
 				}
+				else if(tmpObject.objItemId != "undefined"){
+					trackedObjectives = true;
+						if(tmpObject.successStatus == "failed"){
+							//check for duplicates
+							if($.inArray(tmpObject.id, remediationObjectives) == -1){
+								remediationObjectives.push(tmpObject.objItemId);
+								if(choiceValid(tmpObject.objItemId)){
+									displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+tmpObject.objItemId+"\")'>"+tmpObject.objItemId+"</a></li>";
+								}
+								else{
+									displayRemedObj += "<li class='completionText'>"+tmpObject.objItemId+"</li>";
+								}
+							}
+						}				
+				}				
 			}
-			else if(questionResponse_arr[i].objItemId != "undefined"){
-				trackedObjectives = true;
+		}
+		else{
+			for(var i = 0; i < questionResponse_arr.length; i++){
+				if(questionResponse_arr[i].objective != "undefined"){
+					trackedObjectives = true;
 					if(!questionResponse_arr[i].correct){
 						//check for duplicates
-						if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
-							remediationObjectives.push(questionResponse_arr[i].objItemId);
-							displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objItemId+"</a></li>";
-						}
-					}				
+						if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
+							remediationObjectives.push(questionResponse_arr[i].objective);
+							// if(questionResponse_arr[i].objItemId != "undefined"){
+							// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objective+"</a></li>";
+							// }
+							// else{
+								displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+							// }
+						}						
+					}
+				}
+				else if(questionResponse_arr[i].objItemId != "undefined"){
+					trackedObjectives = true;
+						if(!questionResponse_arr[i].correct){
+							//check for duplicates
+							if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
+								remediationObjectives.push(questionResponse_arr[i].objItemId);
+								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objItemId+"</a></li>";
+								displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+							}
+						}				
+				}
 			}
 		}
 		
