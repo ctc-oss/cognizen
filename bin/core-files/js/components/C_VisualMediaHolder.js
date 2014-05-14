@@ -29,7 +29,7 @@ function C_VisualMediaHolder(callback){
 	
 	var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
 	
-	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3", "svg"];
+	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg"];
     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
     var convertableVectorTypes = ["eps"];
     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
@@ -109,7 +109,7 @@ function C_VisualMediaHolder(callback){
 		
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
-        }else if (mediaType == "html"){////////////////////////////////////////////////HTML for edge or js apps.
+        }else if (mediaType == "html" || mediaType == "htm"){////////////////////////////////////////////////HTML for edge or js apps.
             if(oldIE == true){
 	            $("#loader").append('<iframe seamless frameborder="0" src="'+ myImage +'" width="' + imageWidth + '" height="' + imageHeight + '"></iframe>');
             }else{
@@ -203,7 +203,7 @@ function C_VisualMediaHolder(callback){
         }
 
         //Other media types include their size so we don't need to wait for them to load to place the caption - images (png, gif, jpg) don't so we have to do caption inside of the load event.
-        if(mediaType == "mp4" || mediaType == "html"  || mediaType == "swf" || mediaLinkType == "youtube"){
+        if(mediaType == "mp4" || mediaType == "html"  || mediaType == "htm" || mediaType == "swf" || mediaLinkType == "youtube"){
             $("#loader").removeClass('loading');
             $("#mediaHolder").css({'width': imageWidth});
             $("#loader").css({'width': imageWidth, 'height': imageHeight});
@@ -342,7 +342,7 @@ function C_VisualMediaHolder(callback){
 				msg += "<br/>";
 				msg += "<label id='label'>large version: </label>";
 				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
-				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value="+ largeImg + " defaultValue="+ largeImg + " style='width:70%;'/>";
             	msg += "<label id='label'>ALT text: </label>";
             	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
             	msg += "<br/><br/></div>";
