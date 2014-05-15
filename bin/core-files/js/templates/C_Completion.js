@@ -94,12 +94,7 @@ function C_Completion(_type) {
 						//check for duplicates
 						if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
 							remediationObjectives.push(questionResponse_arr[i].objective);
-							// if(questionResponse_arr[i].objItemId != "undefined"){
-							// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objective+"</a></li>";
-							// }
-							// else{
-								displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
-							// }
+							displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
 						}						
 					}
 				}
@@ -109,7 +104,6 @@ function C_Completion(_type) {
 							//check for duplicates
 							if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
 								remediationObjectives.push(questionResponse_arr[i].objItemId);
-								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+questionResponse_arr[i].objItemId+"\")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 								displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
 							}
 						}				

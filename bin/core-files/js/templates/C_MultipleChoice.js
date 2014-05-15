@@ -282,11 +282,9 @@ function C_MultipleChoice(_type) {
 					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
 					 myObjective.replace(/\s+/g, '');
 		if(tempCorrect && graded){
-			alert("all correct and graded");
 			setObjectiveSuccess(_objId, myObjItemId, true);
 		}
 		else if(!tempCorrect && graded){
-			alert("incorrect and graded");
 			setObjectiveSuccess(_objId, myObjItemId, false);
 		}	
 

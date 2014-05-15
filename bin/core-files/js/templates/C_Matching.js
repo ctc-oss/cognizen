@@ -353,7 +353,15 @@ function C_Matching(_type) {
 			}
 		}
 
-		setScormObjs();
+		var _objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') + "."+
+					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
+					 myObjective.replace(/\s+/g, '');
+		if(tempCorrect && graded){
+			setObjectiveSuccess(_objId, myObjItemId, true);
+		}
+		else if(!tempCorrect && graded){
+			setObjectiveSuccess(_objId, myObjItemId, false);
+		}
 
 		$(".matchingInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
@@ -361,19 +369,6 @@ function C_Matching(_type) {
 		checkNavButtons();
 	}
 
-function setScormObjs(){
-		var _objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') + "."+
-					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
-					 myObjective.replace(/\s+/g, '');
-		if(tempCorrect && graded){
-			alert("all correct and graded");
-			setObjectiveSuccess(_objId, myObjItemId, true);
-		}
-		else if(!tempCorrect && graded){
-			alert("incorrect and graded");
-			setObjectiveSuccess(_objId, myObjItemId, false);
-		}	
-}
 	
 	function checkAnswer(){
 		//////////////////////////CHECK IF CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
