@@ -432,7 +432,7 @@ function C_VisualMediaHolder(callback){
 					cognizenSocket.on('unzipComplete', unzipComplete);			
 				}else{
 					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("The file format that you upladed can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+					$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
 					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 					$("#conversionProgress").progressbar({
 						value: 0,
