@@ -414,21 +414,14 @@ function C_Dashboard(_type) {
         if (evt.persisted) {
             // This is actually a pagehide event and the page is going into the Page Cache.
             // Make sure that we don't do any destructive work, or work that shouldn't be duplicated.
-            //console.log("persisted close");
-
             return;
         }
 
         // This is either an unload event for older browsers,
         // or a pagehide event for page tear-down in supported browsers.
         // It's safe to do everything my old unload event handler did here.
-        //console.log("close");
         if(moduleLessonWindow){
-        	//var r = confirm("Closing the dashboard will also close all open lesson windows.")
-			//if (r){
-				//alert("closing")
-				moduleLessonWindow.close();
-			//}
+			moduleLessonWindow.close();
         }
     }
 
@@ -740,41 +733,13 @@ function C_Dashboard(_type) {
             }
         });
 
-        $("#scormform").tooltip();
-        //$("#scormVersion").val($(data).find('scormVersion').attr('value'));        
-        
+        $("#scormform").tooltip();     
     }
 
     function clickPublish(parent, level, selectedScorm){
 
         
         if(level === 'course'){
-            // var msg;
-            // msg = '<div id="dialog-clickPublish" title="Publish a SCORM ' + selectedScorm + ' '+ level +'.">';
-            // msg += '<p class="validateTips">Under construction. </p>';
-            // msg += '<p>Functionalities to be added shortly.</p>';
-            // msg += '</div>';
-
-            // $("#stage").append(msg);
-
-            // $("#dialog-clickPublish").dialog({
-            //     modal: true,
-            //     width: 550,
-            //     close: function (event, ui) {
-            //         enableMainKeyEvents();
-            //         disableRenameContentKeyEvents();
-            //     },
-            //     open: function (event, ui) {
-            //         disableMainKeyEvents();
-            //        enableRenameContentKeyEvents()
-            //    },
-            //    buttons: {
-            //         Close: function () {
-            //             $(this).dialog("close");
-            //             $("#dialog-clickPublish").remove();
-            //         }
-            //     }
-            // });
             $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
             disableRenameContentKeyEvents()
             var data = {
@@ -790,11 +755,6 @@ function C_Dashboard(_type) {
                     version: selectedScorm,
                 }
             };
-
-            // socket.emit('publishContent', data, function(fdata){
-            //     $("#dialog-updatePrefs").remove(); 
-            //     $('#publishLoader').remove();
-            // });
         }
 
         else{

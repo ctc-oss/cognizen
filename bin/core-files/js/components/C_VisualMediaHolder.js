@@ -8,6 +8,7 @@ function C_VisualMediaHolder(callback){
     var hasCaption = false;
     var mediaWidth = 0;
     var mediaHeight = 0;
+    var mediaLinkType;
     
     var mediaType = "";
 	var hasPop = false;
@@ -46,6 +47,7 @@ function C_VisualMediaHolder(callback){
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
     }
+    console.log("largeImg = " + largeImg);
     
         //Check for popups...
     if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
@@ -92,19 +94,10 @@ function C_VisualMediaHolder(callback){
 	        $("#mediaHolder").addClass("tabsRight");
         }
 
-        var mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
+        mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
 
-        if($(data).find("page").eq(currentPage).attr('img') != "" && $(data).find("page").eq(currentPage).attr('img') != " "){
-            myImage = "media/" + mediaLink;
-        }else{
-            //We will have default.png's for different layouts - just a series of if, else if below here.
-            if(type == "top" || type == "bottom"){
-            	myImage = "media/defaultTop.png";
-            }else if(type == "left" || type == "right"){
-	            myImage = "media/defaultLeft.png";
-            }
-        }
-
+        myImage = "media/" + mediaLink;
+        
         var parts = myImage.split('.'), i, l;
         var last = parts.length;
 		var imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
@@ -370,7 +363,7 @@ function C_VisualMediaHolder(callback){
 				msg += "<br/>";
 				msg += "<label id='label'>large version: </label>";
 				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
-				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value="+ largeImg + " defaultValue="+ largeImg + " style='width:70%;'/>";
+				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
             	msg += "<label id='label'>ALT text: </label>";
             	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
             	msg += "<br/><br/></div>";
@@ -615,10 +608,12 @@ function C_VisualMediaHolder(callback){
 		var imgPath = _path;
         var parts = imgPath.split('.'), i, l;
 		var last = parts.length;
-
+		if(_path.indexOf("youtube.com") > -1 || _path.indexOf("youtu.be") > -1){
+			mediaLinkType = "youtube";
+		} 
 		mediaType = getExtension(imgPath);
 		  
-		if(mediaType == "mp4"){
+		if(mediaType == "mp4" || mediaLinkType == "youtube"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
 			if(mediaWidth == 0){
 				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
@@ -663,6 +658,14 @@ function C_VisualMediaHolder(callback){
 						var strippedPath = "";
 						$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
 						$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
+						
+						//Check if youtube - add attribute if needed...
+						if(mediaLinkType == "youtube"){
+							$(data).find("page").eq(currentPage).attr("mediaLinkType", "youtube");
+						}else{
+							$(data).find("page").eq(currentPage).attr("mediaLinkType", "");
+						}
+						
 						for(var i = 0; i < last-1; i++){
 							strippedPath += parts[i];
 						}
