@@ -98,7 +98,11 @@ function C_VisualMediaHolder(callback){
             myImage = "media/" + mediaLink;
         }else{
             //We will have default.png's for different layouts - just a series of if, else if below here.
-            myImage = "media/default.png";
+            if(type == "top" || type == "bottom"){
+            	myImage = "media/defaultTop.png";
+            }else if(type == "left" || type == "right"){
+	            myImage = "media/defaultLeft.png";
+            }
         }
 
         var parts = myImage.split('.'), i, l;
@@ -186,6 +190,30 @@ function C_VisualMediaHolder(callback){
             });
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
+            
+            $(img).bind('error', function() {
+				alert("Your media was not found and is being replaced by a default image.")
+				
+				if(type == "top" || type == "bottom"){
+	            	myImage = "media/defaultTop.png";
+	            }else if(type == "left" || type == "right"){
+		            myImage = "media/defaultLeft.png";
+	            }
+				
+				$(img).load(function(){
+	                $("#loader").removeClass('loading').append(img);
+	                imageWidth = $(img).width();
+	                imageHeight = $(img).height();
+	
+	                $("#mediaHolder").css({'width': imageWidth});
+	                $("#loader").css({'width': imageWidth, 'height': imageHeight});
+	                
+					if(hasPop == true || largeImg != ""){
+						setupGallery(mediaType);
+					}
+	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
+			});
+            
             $(img).load(function(){
                 $("#loader").removeClass('loading').append(img);
                 imageWidth = $(img).width();
