@@ -94,6 +94,7 @@ function initScripts(_data){
 				corePath +"js/libs/pretty-data.js",
 		//Import Cognizen layout templates
 				//corePath +"js/templates/C_LessonTitle.js",
+				corePath +"js/templates/C_Categories.js",
 				corePath +"js/templates/C_ClickImage.js",
 				corePath +"js/templates/C_Completion.js", 
 				corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf

@@ -656,6 +656,31 @@ ul.no-indent {
 }
 
 /* FOR REVEAL CONTENT */
+
+.categoryHolder{
+	position: relative;
+	width: 100%;
+	height: 600px;
+}
+
+.categoryOptionHolder{
+	position: relative;
+	width: 90%;
+}
+
+.categoryAnswerHolder{
+	position: relative;
+	width: 90%;
+	background-color: #703800;
+	color: #3f3f3f;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+
+
+/* END OF CATEGORY STYLE */
+
 /* FOR REVEAL CONTENT */
 .revealPalette{
 	position: relative;

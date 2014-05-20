@@ -889,6 +889,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		//Knowledge Check Layouts
+		case "categories":
+			currentTemplate = new C_Categories(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "questionBank":
 			currentTemplate = new C_QuestionBank(currentTemplateType);
 			currentTemplate.initialize();
