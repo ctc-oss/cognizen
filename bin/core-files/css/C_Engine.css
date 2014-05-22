@@ -655,6 +655,127 @@ ul.no-indent {
 	padding:0px;
 }
 
+/* FOR CATEGORIES */
+.categoryHolder{
+	position: relative;
+	width: 100%;
+}
+
+.categoryOptionHolder{
+	position: relative;
+	width: 90%;
+	height: 80%;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.categoryOptionItem{
+	position: relative;
+	width: 80%;
+	background-color: #3f3f3f;
+	color: #e4dbc9;
+	font-family: Verdana, Geneva, Helvetica, sans-serif;
+	font-size: 125%;
+	vertical-align: middle;
+	text-align: center;
+	padding: 15px;
+	margin-right: auto;
+	margin-left: auto;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryAnswerHolder{
+	position: relative;
+	float: bottom;
+	width: 90%;
+	background-color: #C5BA8E;
+	height: 15%;
+	margin-bottom: 10px;
+	color: #3f3f3f;
+	margin-right: auto;
+	margin-left: auto;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryAnswerButtonsHolder{
+	position: relative;
+	margin-right:auto;
+	margin-left: auto;
+}
+
+.categoryAnswerItem{
+	position: relative;
+}
+
+.categoryCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryIncorrect{
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryDisplayCorrect{
+	position: absolute;
+	margin-right: auto;
+	margin-left: auto;
+	background: #98FF97 url(images/correctLarge.png) no-repeat center center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryDisplayIncorrect{
+	position: relative;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+	background: #F49D96 url(images/wrongLarge.png) no-repeat center center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryPerfect{
+	position: relative;
+	margin-right: auto;
+	margin-left: auto;
+	font-family: Verdana, Geneva, Helvetica, sans-serif;
+	font-size: 150%;
+	color: #3f3f3f;
+	text-align: center;
+	background-color: #98FF97;
+	padding: 8px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+
+.categoryImperfect{
+	position: absolute;
+	margin-right: auto;
+	margin-left: auto;
+	font-family: Verdana, Geneva, Helvetica, sans-serif;
+	font-size: 125%;
+	color: #3f3f3f;
+	background-color: #F49D96;
+	padding: 8px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+}
+/* END CATEGORIES */
+
 /* FOR REVEAL CONTENT */
 
 .categoryHolder{
