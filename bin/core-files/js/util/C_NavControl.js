@@ -508,6 +508,7 @@ function buildTrackingArray(){
 ** Next/Back/Home Button Funcitonality
 *************************************************************/
 function clickBack(){
+	disableBack();
 	if(indexState == true){
 		toggleIndex();
 	}
@@ -516,6 +517,7 @@ function clickBack(){
 }
 
 function clickNext(){
+	disableNext();
 	if(indexState == true){
 		toggleIndex();
 	}

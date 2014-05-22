@@ -920,7 +920,6 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                     var program = found.getProgram();
-					_this.logger.info("TO HERE");
                     _this.Git.updateLocalContent(program, function(err){
                         var gitFail = false;
                         if (err) {
