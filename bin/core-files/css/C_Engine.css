@@ -664,7 +664,7 @@ ul.no-indent {
 .categoryOptionHolder{
 	position: relative;
 	width: 90%;
-	height: 80%;
+	height: 70%;
 	margin-right: auto;
 	margin-left: auto;
 }
@@ -691,18 +691,78 @@ ul.no-indent {
 	float: bottom;
 	width: 90%;
 	background-color: #C5BA8E;
-	height: 15%;
-	margin-bottom: 10px;
+	height: 18%;
 	color: #3f3f3f;
 	margin-right: auto;
 	margin-left: auto;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright: : 8px;  
+	-webkit-border-radius: 8px; 
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.categoryProgressTracker{
+	position: relative;
+	width: 90%;
+	background-color: #3f3f3f;
+	height: 10%;
+	color: #C5BA8E;
+	font-family: Verdana, Geneva, Helvetica, sans-serif;
+	margin-right: auto;
+	margin-left: auto;
+	-moz-border-radius-bottomleft:8px;
+	-moz-border-radius-bottomright: : 8px; 
+	-webkit-border-radius: 8px; 
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+
+.categoryTrackingMenu{
+	position: relative;
+	float: left;
+	left: 10px;
+	width: 80%;
+}
+
+.categoryProgressLabel{
+	position: relative; 
+	float: left; 
+	font-weight: bold; 
+	color: #e4dbc9;
+}
+.categoryTrackingMenuItem{
+	position: relative;
+	float: left;
+	margin-left: 5px;
+	display: inline-block;
+	vertical-align: middle;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	font-weight: bold;
+	color: #3f3f3f;
+	background-color: #e4dbc9;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px;
 }
 
+.categoryTrackingMenuItemHighlight{
+	background-color: #C5BA8E;
+}
+
+.categoryTrackingMenuItemCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+}
+
+.categoryTrackingMenuItemIncorrect{
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+}
+
 .categoryAnswerButtonsHolder{
 	position: relative;
+	max-width: 90%;
 	margin-right:auto;
 	margin-left: auto;
 }
@@ -736,7 +796,7 @@ ul.no-indent {
 }
 
 .categoryDisplayIncorrect{
-	position: relative;
+	position: absolute;
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
@@ -775,33 +835,6 @@ ul.no-indent {
 	border-radius: 8px;
 }
 /* END CATEGORIES */
-
-/* FOR REVEAL CONTENT */
-
-.categoryHolder{
-	position: relative;
-	width: 100%;
-	height: 600px;
-}
-
-.categoryOptionHolder{
-	position: relative;
-	width: 90%;
-}
-
-.categoryAnswerHolder{
-	position: relative;
-	width: 90%;
-	background-color: #703800;
-	height: 80px;
-	color: #3f3f3f;
-	margin-right: auto;
-	margin-left: auto;
-}
-
-
-
-/* END OF CATEGORY STYLE */
 
 /* FOR REVEAL CONTENT */
 .revealPalette{

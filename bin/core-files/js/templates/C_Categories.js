@@ -58,12 +58,17 @@ function C_Categories(_type) {
 	var question_arr = []
 	var cycle = false;
 	var currentQuestion = 0;
-	var randomize = true;
+	var randomize = false;
+	var cycleQuestion = 0;
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('cycle') == "true"){
+			cycle = true;
 		}
 		
 		if($(data).find("page").eq(currentPage).attr('objective')){
@@ -97,7 +102,10 @@ function C_Categories(_type) {
 		msg += '<div id="categoryOptionHolder" class="categoryOptionHolder"></div>';
 		msg += '<div id="categoryAnswerHolder" class="categoryAnswerHolder">';
 		msg += '<div id="categoryAnswerButtonsHolder" class="categoryAnswerButtonsHolder"></div>';
-		msg += '</div></div></div></div>';
+		msg += '</div>';
+		msg += '<div id="categoryProgressTracker" class="categoryProgressTracker">';
+		msg += '<div id="categoryTrackingMenu" class="categoryTrackingMenu">';
+		msg += '<div class="categoryProgressLabel"><span style="display:inline-block; vertical-align:middle;">Questions:  </span></div></div></div></div></div></div>';
 		
 		audioHolder = new C_AudioHolder();
 		
@@ -115,6 +123,7 @@ function C_Categories(_type) {
 		//create array of question objects.
 		question_arr = [];
 		var questionIterator = 0;
+		
 		$(data).find("page").eq(currentPage).find("option").each(function(){
 			var questionObj = new Object();
 			questionObj.correct = null;
@@ -124,12 +133,15 @@ function C_Categories(_type) {
 			questionObj.complete = false;
 			questionObj.attempt = null;
 			question_arr.push(questionObj);
+			addTrackingMenuItem(questionIterator);
 			questionIterator++;
 		});
 		
 		if(randomize == true){
 			question_arr = shuffleArray(question_arr);
 		}
+		
+		$("#categoryTrackingMenu").css({'top': ($("#categoryProgressTracker").height() - $("#categoryTrackingMenu").height())/2});
 		
 		/***********************************************************************************************************
 		ADD ANSWERS TO THE SCREEN
@@ -152,7 +164,13 @@ function C_Categories(_type) {
 		}
 	}
 	
+	function addTrackingMenuItem(_id){
+		var label = _id + 1;
+		$("#categoryTrackingMenu").append("<div id='categoryTrackingMenuItem"+_id+"' class='categoryTrackingMenuItem'><span style='display:inline-block; vertical-align:middle;'>"+ label +"</span></div>");
+	}
+	
 	function placeQuestion(_id){
+		highlightMenuItem(_id);
 		var myCorrect = question_arr[_id].match;
 		var myLabel = question_arr[_id].content;
 		$("#categoryOptionHolder").append("<div id='categoryOptionItem' class='categoryOptionItem' value='" + myCorrect + "'>"+myLabel+"</div>");
@@ -161,16 +179,20 @@ function C_Categories(_type) {
 		enableAnswerButtons();
 	}
 	
+	function highlightMenuItem(_id){
+		$("#categoryTrackingMenuItem" + _id).addClass("categoryTrackingMenuItemHighlight")
+	}
+	
 	function placeAnswer(_id){
 		var myCorrect = $(data).find("page").eq(currentPage).find("answer").eq(_id).attr("correct");
 		var myLabel = $(data).find("page").eq(currentPage).find("answer").eq(_id).find("content").text();
 		$("#categoryAnswerButtonsHolder").append("<div id='" + _id + "' class='categoryAnswerItem' value='" + myCorrect + "'>"+myLabel+"</div>");
 		$("#"+_id).button().click(function(){
+			$("#categoryTrackingMenuItem"+cycleQuestion).removeClass("categoryTrackingMenuItemHighlight");
 			disableAnswerButtons();
 			checkAnswer($(this));
 		});
 	}
-	
 	/*CHECK AND PROCESS EACH USER ANSWER*/
 	function checkAnswer(_selection){
 		//Add the correct incorrect fluff and pomp...
@@ -180,19 +202,24 @@ function C_Categories(_type) {
 		$("#displayResult").width($("#categoryOptionHolder").width());
 		
 		//Store what the user attempted.
-		question_arr[currentQuestion].attempt = _selection.attr("value");
+		question_arr[cycleQuestion].attempt = _selection.attr("value");
 		if(_selection.attr("value") == $("#categoryOptionItem").attr("value")){
-			question_arr[currentQuestion].complete = true;
-			question_arr[currentQuestion].correct = true;
+			try { $("#categoryTrackingMenuItem" + cycleQuestion).removeClass("categoryTrackingMenuItemIncorrect");} catch (e) {}
+			$("#categoryTrackingMenuItem" + cycleQuestion).addClass("categoryTrackingMenuItemCorrect");
+			question_arr[cycleQuestion].complete = true;
+			question_arr[cycleQuestion].correct = true;
 			_selection.addClass("categoryCorrect");
 			$("#displayResult").addClass("categoryDisplayCorrect");
+			TweenMax.to($("#categoryOptionItem"), 2, {css:{scaleX:4, scaleY:4, opacity: 0}, ease:transitionType, onComplete:fadeDisplayResult, onCompleteParams:[_selection]});
 		}else{
-			question_arr[currentQuestion].correct = false;
+			question_arr[cycleQuestion].correct = false;
+			$("#categoryTrackingMenuItem" + cycleQuestion).addClass("categoryTrackingMenuItemIncorrect");
 			_selection.addClass("categoryIncorrect");
 			$("#displayResult").addClass("categoryDisplayIncorrect");
+			TweenMax.to($("#categoryOptionItem"), 2, {css:{scaleX:.1, scaleY:.1, opacity: 0}, ease:transitionType, onComplete:fadeDisplayResult, onCompleteParams:[_selection]});
 		}
 		TweenMax.to($("#displayResult"), .5, {css:{opacity: 1}, ease:transitionType});
-		TweenMax.to($("#categoryOptionItem"), 2, {css:{scaleX:4, scaleY:4, opacity: 0}, ease:transitionType, onComplete:fadeDisplayResult, onCompleteParams:[_selection]});
+		
 	}
 		
 	function fadeDisplayResult(_selection){
@@ -205,8 +232,22 @@ function C_Categories(_type) {
 		try { _selection.removeClass("categoryCorrect");} catch (e) {}
 		try { _selection.removeClass("categoryIncorrect");} catch (e) {}
 		currentQuestion++;
-		if(currentQuestion == question_arr.length){
-			if(cycle == false){
+		cycleQuestion = currentQuestion;
+		if(currentQuestion >= question_arr.length){
+			if(cycle){
+				var cycleComplete = true;
+				for(var i = 0; i < question_arr.length; i++){
+					if(question_arr[i].correct == false){
+						cycleComplete = false;
+						cycleQuestion = i;
+						placeQuestion(i);
+						break;
+					}
+				}
+				if(cycleComplete){
+					doPageCompleteCycle();
+				}
+			}else{
 				doPageCompleteNoCycle();
 			}
 		}else{
@@ -214,7 +255,22 @@ function C_Categories(_type) {
 		}
 	}
 	
+	function doPageCompleteCycle(){
+		mandatoryInteraction = false;
+		checkNavButtons();
+		var msg = "<div id='categoryCompletion' class='categoryCompletion'><p>Congratulations, you have completed the exercise.</p></div>";
+		$("#question").remove();
+		$("#categoryOptionHolder").remove();
+		$("#categoryAnswerHolder").remove();
+		$("#categoryProgressTracker").remove();
+		$("#categoryHolder").remove();
+		$("#contentHolder").append(msg);
+		$("#categoryCompletion").addClass("categoryPerfect");
+	}
+	
 	function doPageCompleteNoCycle(){
+		mandatoryInteraction = false;
+		checkNavButtons();
 		var msg = "<div id='categoryCompletion' class='categoryCompletion'><p>Congratulations, you have completed the exercise.</p>";
 		var perfect = true;
 		var missedItems = 0;
@@ -248,8 +304,8 @@ function C_Categories(_type) {
 		$("#question").remove();
 		$("#categoryOptionHolder").remove();
 		$("#categoryAnswerHolder").remove();
-		$("#categoryHolder").remove();
-		$("#contentHolder").append(msg);
+		//$("#categoryHolder").remove();
+		$("#categoryHolder").prepend(msg);
 		if(perfect == true){
 			$("#categoryCompletion").addClass("categoryPerfect");
 		}else{
