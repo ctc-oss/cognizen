@@ -88,7 +88,7 @@ function completeLessonDefault(){
 	}
 }
 
-function completeLesson(completion, success, score){
+function completeLesson(completion, success, score, remediate, attemptExceeded){
 	if(doScorm()){
 		if(completion){
 			scorm.status("set", "completed");	
@@ -108,23 +108,39 @@ function completeLesson(completion, success, score){
 			scorm.set("cmi.score.scaled", score.toString());
 
 			var finalLesson = $(data).find('finalLesson').attr('value');
-			if(finalLesson === 'true'){
-				scorm.set("adl.nav.request", "exitAll");
+			//handle completion for USSOCOM publish
+			if(scorm.VERSION.indexOf('USSOCOM') != -1){
+				if(attemptExceeded){
+					scorm.set("adl.nav.request", "exitAll");
+				}
+				else{
+					// if(remediate){
+					// 	scorm.set("adl.nav.request", "previous");
+					// }
+					// else{
+						scorm.set("adl.nav.request", "continue");
+					//}
+				}
 			}
-			else
-			{
-				var validContinue = scorm.get("adl.nav.request_valid.continue");
-				if(validContinue === 'true')
-				{
-					scorm.set("adl.nav.request", "continue");
+			else{
+				if(finalLesson === 'true' && !remediate){
+					scorm.set("adl.nav.request", "exitAll");
 				}
 				else
 				{
-					scorm.set("adl.nav.request", "exit");
+					var validContinue = scorm.get("adl.nav.request_valid.continue");
+					if(validContinue === 'true')
+					{
+						scorm.set("adl.nav.request", "continue");
+					}
+					else
+					{
+						scorm.set("adl.nav.request", "exit");
+					}
 				}
 			}
 		}
-		else if(scorm.VERSION == "1.2"){
+		else if(scorm.VERSION === "1.2"){
 			var raw = score*100;
 			scorm.set("cmi.core.score.raw", raw.toString());
 		}
@@ -138,7 +154,7 @@ function completeLesson(completion, success, score){
 			scorm.set("cmi.location", currentPageID);
 		}
 
-		if(scorm.VERSION = '1.2_CTCU'){
+		if(scorm.VERSION === '1.2_CTCU'){
 			var raw = score*100;
 			scorm.set("cmi.core.score.raw", raw.toString());
 			// wait for SCORM termination, then close popup windows
@@ -169,6 +185,19 @@ function choice(lesson){
 	}
 }
 
+function jump(lesson, scoreTxt, attemptCount, listString){
+	if(doScorm()){
+		var lessonNameTrim = lesson.replace(/\s+/g, '');
+
+		scorm.set("adl.nav.request", "{target="+lessonNameTrim+"_id}jump");
+		//scorm.set("cmi.location", currentPg);
+		scorm.set("cmi.suspend_data", scoreTxt+"~"+attemptCount+"~"+listString);
+		scorm.set("cmi.competion_status", "incomplete");
+		scorm.set("cmi.exit", "suspend");
+		scorm.API.getHandle().Terminate("");
+	}
+}
+
 function choiceValid(lesson){
 	if(doScorm()){
 		var lessonNameTrim = lesson.replace(/\s+/g, '');
@@ -185,25 +214,42 @@ function getObjectives(){
 
     for (var i=0; i < num; ++i) {
     	var objectivesObj = new Object();
-    	objectivesObj.id = scorm.get("cmi.objectives." + i + ".id");
-    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
-    	objectivesObj.objItemId = scorm.get("cmi.objectives." + i + ".description");
-    	objectives_arr.push(objectivesObj);
+    	var setId = scorm.get("cmi.objectives." + i + ".id").split(".");
+    	if(setId.length > 1){
+	    	objectivesObj.id = setId[2].replace(/_/g, ' ');
+	    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
+	    	objectivesObj.objItemId = setId[setId.length - 1].replace(/_/g, ' ').replace(/:/g, '');
+	    	objectives_arr.push(objectivesObj);
+    	}
     }
 
 	return objectives_arr;
 }
 
-function setObjectiveSuccess(objId, myObjItemId, success){
+function getAttemptObjectivesCount(){
+	var num = parseInt(scorm.get("cmi.objectives._count"));
+	var attemptCount = 0;
+	for (var i=0; i < num; ++i) {
+    	var objId = scorm.get("cmi.objectives." + i + ".id");
+    	if(objId.indexOf("attempt_") != -1){
+    		attemptCount++;
+    	}
+    }
+    return attemptCount;
+}
+
+function setObjectiveSuccess(objId, success){
 	if(doScorm()){
 
 		var objIndex = findObjective(objId);
 
 		var successStatus = (success) ? "passed":"failed";
 
-		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
+		var completionStatus = (success) ? "completed":"incomplete";
 
-		scorm.set("cmi.objectives." + objIndex + ".description", myObjItemId);
+		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
+		scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
+
 	}
 
 }
