@@ -508,6 +508,7 @@ function buildTrackingArray(){
 ** Next/Back/Home Button Funcitonality
 *************************************************************/
 function clickBack(){
+	disableBack();
 	if(indexState == true){
 		toggleIndex();
 	}
@@ -516,6 +517,7 @@ function clickBack(){
 }
 
 function clickNext(){
+	disableNext();
 	if(indexState == true){
 		toggleIndex();
 	}
@@ -889,6 +891,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		//Knowledge Check Layouts
+		case "categories":
+			currentTemplate = new C_Categories(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "questionBank":
 			currentTemplate = new C_QuestionBank(currentTemplateType);
 			currentTemplate.initialize();

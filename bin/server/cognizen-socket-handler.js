@@ -920,20 +920,53 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                     var program = found.getProgram();
-
                     _this.Git.updateLocalContent(program, function(err){
+                        var gitFail = false;
                         if (err) {
+                        	gitFail = true;
                             var errorMessage = JSON.stringify(err);
-                            _this.logger.error(errorMessage);
-                            // Notify the client of an error, unless it is the elusive 'index.lock' error, then just log it, and let it go.
-                            if (errorMessage.indexOf('index.lock') == -1) {
-                                _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. GIT INDEX.LOCK issue.'});
-                                //Add call to right here to fire the fix git lock script passing the program name...
-                                ///apache/vhosts/cognizen.ctc.com/scripts/git-index-fix.sh program
+                            _this.logger.error("errorMessage = " + errorMessage);
+                            
+                            if (errorMessage.indexOf('index.lock') > -1) {
+                                //ATTEMPT TO CLEAN UP GIT INDEX ISSUE - PD - 5/17/14
+								_this.logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!GIT LOCK ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                var util = require('util');
+								var spawn = require('child_process').spawn;
+								var child;
+								var commands = [];
+								var myPath = _this.Content.diskPath(program.path);
+								var gitPath = myPath + '/.git';
+								var gitIndexPath = myPath + '/.git/index';
+								if (!fs.existsSync(gitPath)) {
+									_this.logger.error("The program's folder is not a git repository");
+								}else{
+									var terminal = require('child_process').spawn('bash');
+									
+									try {fs.remove(gitIndexPath, function(err){
+										if (err) return console.error(err);
+										
+										terminal.on('exit', function(code){
+											_this.logger.info('terminal exited with code = ' + code);
+											if(code == 0){
+												//Try to start content again - after successfully fixing it...
+												_this.startContentServer(data);
+											}else{
+												_this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. Returning an error: '});
+											}
+										});
+										
+										terminal.stdin.write('cd ' + myPath + '\n');
+										terminal.stdin.write('git add .\n');
+										terminal.stdin.end();
+									});} catch(e){
+											_this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. Returning an error: ' + e});
+										}
+								}
                             }
                         }
 
                         else {
+                        	_this.logger.info("into the launch code ====================================================================================");
                             var serverDetails = _this.Content.serverDetails(found);
 							var permission = data.content.permission;
 							var xmlPath = path.normalize('../programs/' + found.path + '/xml/content.xml');

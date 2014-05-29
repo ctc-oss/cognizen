@@ -951,6 +951,97 @@ function createNewPageByType(_myType){
 			
 			break;
 			
+		case "categories":
+			$(data).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Match the items on the left to the items on the right:</p>");
+			$(data).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("Category question 1");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(0).attr("correct", "A");
+			
+			$(data).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("Option2");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(data).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
+			
+			$(data).find("page").eq(newPage).append($("<answer>"));
+			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
+			$(data).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var answer1CDATA = content1.createCDATASection("Answer 1");
+			$(data).find("page").eq(newPage).find("answer").eq(0).find("content").append(answer1CDATA);
+			$(data).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
+			
+			$(data).find("page").eq(newPage).append($("<answer>"));
+			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
+			$(data).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var answer2CDATA = content2.createCDATASection("Answer 2");
+			$(data).find("page").eq(newPage).find("answer").eq(1).find("content").append(answer2CDATA);
+			$(data).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
+			
+			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(data).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(data).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(data).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(data).find("page").eq(newPage).attr("audio", "null");
+			$(data).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(data).find("page").eq(newPage).attr("attempts", 2);
+			$(data).find("page").eq(newPage).attr("cycle", false);
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("randomize", false);
+			$(data).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+			
 		case "sequence":
 			$(data).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
