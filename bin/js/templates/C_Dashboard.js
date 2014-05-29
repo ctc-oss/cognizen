@@ -159,11 +159,9 @@ function C_Dashboard(_type) {
 	                //Take the last item of the array - that is the title of the folder to put in the tree.
 	                var parentName = result.pop();
 	                for (var j = 0; j < proj.directories.length; j++) {
-	                    //console.log(parentName + " = " + proj.directories[i].id);
-	                    //console.log(proj.directories[j].name + " = " + proj.directories[j].parent);
+	                    
 	                    if (proj.directories[j].name == parentName && proj.directories[j].id == proj.directories[i].parent) {
 	                        var parent = proj.directories[j].id;
-	                        //console.log("hit it and quit it");
 	                        break;
 	                    }
 	                }
@@ -175,7 +173,7 @@ function C_Dashboard(_type) {
 	                if (project.type != 'course' && $(parentID).has("ul").length) {
 	                    $(parentID + ' ul').append("<li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li>");
 	                } else {
-	                    $(parentID).append("<ul id='" + newULID + "'><li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li></ul>");
+	                    $(parentID).append("<ul id='" + newULID + "' class='C_MenuFolder'><li id='" + idIfiedPath + "' class='closed'><span class='folder'>" + unescape(proj.directories[i].name) + "</span></li></ul>");
 	                }
 	            }
 	            tree_arr.push(project);
@@ -184,8 +182,10 @@ function C_Dashboard(_type) {
 
         $("#projList").append("</ul>");
 
-        $("#projList").listorder();//Alphabetize root.
-
+        //$("#projList").listorder();//Alphabetize root.
+		$("ul").listorder();
+		
+		
         //ONCE the UL is created add specific funcitionalities related to whether Program, Course, Project or Lesson.
         for (var i = 0; i < tree_arr.length; i++) {
             var content = tree_arr[i];
