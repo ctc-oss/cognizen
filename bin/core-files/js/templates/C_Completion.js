@@ -16,9 +16,18 @@ function C_Completion(_type) {
     var myContent;//Body
     // var audioHolder;
     var completed = true;
-    var scoreText;
-    var score_obj;
+    var scoreText = '';
+    var score_obj = new Object();;
     var isScored;
+    var scormVersion;
+    var finalLesson;
+    var HTMLString;
+    var attemptExceeded = false;
+    //var review = "false";
+    var attemptCount = 0;
+    var resumed = false;
+    var score_arr = [];
+    var stringQR_arr = [];
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -30,11 +39,44 @@ function C_Completion(_type) {
         	$('#stage').css({'opacity':0});
         }
 
+		scormVersion = $(data).find('scormVersion').attr('value');
+		finalLesson = $(data).find('finalLesson').attr('value');
+		// if($(data).find("page").eq(currentPage).attr('review')){
+		// 	review = $(data).find("page").eq(currentPage).attr('review');
+		// }		
 		//evaluate score
+		debugger;
 		isScored = $(data).find('scored').attr('value');
+
+		if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+			if(scorm.get("cmi.entry") == "resume"){
+				var suspend_data = scorm.get("cmi.suspend_data");
+				if(suspend_data.length != 0){
+					var tmpData = suspend_data.split("~");
+					if(tmpData[0] !== "na"){
+						var tmpscore = tmpData[0].replace(/##/g , ',').split(",");
+						score_obj.passed = (tmpscore[0] === "true");
+						score_obj.minScore = parseInt(tmpscore[1]);
+						score_obj.correctQuestions = parseInt(tmpscore[2]);
+						score_obj.totalQuestions = parseInt(tmpscore[3]);
+						score_obj.scorePercent = parseInt(tmpscore[4]);
+						score_obj.score = parseFloat(tmpscore[5]);
+						var tmpQArray = tmpData[2].split(",");
+						for (var i = 0; i < tmpQArray.length; i++) {
+							stringQR_arr.push(tmpQArray[i]);
+						};
+						resumed = true;
+					}
+				}
+				
+			}
+		}
+
 		if(isScored === "true"){
-			score_obj = getFinalScore();
-			
+			if(!resumed){
+				score_obj = getFinalScore();
+			}
+
 			if(score_obj.passed){
 				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
 			}else{
@@ -43,79 +85,175 @@ function C_Completion(_type) {
 			scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
 			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
 			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%. </p>';
+			//check attempt for USSOCOM publish, using SCORM objectives
+			if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+				//convert score_obj to score_arr
+				score_arr.push(score_obj.passed);
+				score_arr.push(score_obj.minScore);
+				score_arr.push(score_obj.correctQuestions);
+				score_arr.push(score_obj.totalQuestions);
+				score_arr.push(score_obj.scorePercent);
+				score_arr.push(score_obj.score);
+				score_arr = score_arr.join();
+				//attemptCount = parseInt(getAttemptObjectivesCount());
+				var suspend_data = scorm.get("cmi.suspend_data")
+				var tmpData = suspend_data.split("~");
+				if(tmpData.length > 1){
+					attemptCount = parseInt(tmpData[1]);
+				}
+
+				if(!resumed){				
+					//update the number here to increase or decrease attempts
+					if(attemptCount + 1 == 3 ){
+						if(!score_obj.passed){
+							attemptExceeded = true;
+						}
+					}
+					else{
+							attemptCount = attemptCount + 1;
+					}
+				}
+				//var tmpCount = attemptCount + 1;
+				//setObjectiveSuccess("attempt_"+tmpCount, true);
+						
+			}			
 		}
 		
 		var trackedObjectives = false;
 		//array used to track objectives for duplicates
 		var remediationObjectives = [];
 		var displayRemedObj = "";
-		if(doScorm()){
+		var displayRemedObjAlt = "";
+		if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
 			//get objectives, display ones with objectives.n.success_status == failed; only do link if choiceValid(lesson)
 			var scormObjectives = getObjectives();
-			for (var i = 0; i < scormObjectives.length; i++) {
-				var tmpObject = scormObjectives[i];
-				if(tmpObject.id != "undefined"){
-					trackedObjectives = true;
-					if(tmpObject.successStatus == "failed"){
-						//check for duplicates
-						if($.inArray(tmpObject.id, remediationObjectives) == -1){
-							remediationObjectives.push(tmpObject.id);
-							if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
-								displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+tmpObject.objItemId+"\")'>"+tmpObject.id+"</a></li>";
-							}
-							else{
-								displayRemedObj += "<li class='completionText'>"+tmpObject.id+"</li>";
-							}							
-						}
-					}
-				}
-				else if(tmpObject.objItemId != "undefined"){
-					trackedObjectives = true;
+			if(scormObjectives.length > 0){
+				for (var i = 0; i < scormObjectives.length; i++) {
+					var tmpObject = scormObjectives[i];
+					if(tmpObject.id != "undefined"){
+						trackedObjectives = true;
 						if(tmpObject.successStatus == "failed"){
 							//check for duplicates
 							if($.inArray(tmpObject.id, remediationObjectives) == -1){
-								remediationObjectives.push(tmpObject.objItemId);
-								if(choiceValid(tmpObject.objItemId)){
-									displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+tmpObject.objItemId+"\")'>"+tmpObject.objItemId+"</a></li>";
+								remediationObjectives.push(tmpObject.id);
+								if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
+									var split = tmpObject.objItemId.split("id");
+									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+tmpObject.id+"</a></li>";
+									displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+tmpObject.id+"</a></li>";
+									
 								}
 								else{
-									displayRemedObj += "<li class='completionText'>"+tmpObject.objItemId+"</li>";
-								}
+									displayRemedObj += "<li class='completionText'>"+tmpObject.id+"</li>";
+								}							
 							}
-						}				
-				}				
+						}
+					}
+					else if(tmpObject.objItemId != "undefined"){
+						trackedObjectives = true;
+							if(tmpObject.successStatus == "failed"){
+								//check for duplicates
+								if($.inArray(tmpObject.id, remediationObjectives) == -1){
+									remediationObjectives.push(tmpObject.objItemId);
+									var split = tmpObject.objItemId.split("id");
+									 if(choiceValid(tmpObject.objItemId)){
+										//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+split[0]+"</a></li>";
+										displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+split[0]+"</a></li>";
+									}
+									else{
+										displayRemedObj += "<li class='completionText'>"+split[0]+"</li>";
+									}
+								}
+							}				
+					}				
+				}
 			}
 		}
 		else{
-			for(var i = 0; i < questionResponse_arr.length; i++){
-				if(questionResponse_arr[i].objective != "undefined"){
-					trackedObjectives = true;
-					if(!questionResponse_arr[i].correct){
-						//check for duplicates
-						if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
-							remediationObjectives.push(questionResponse_arr[i].objective);
-							displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
-						}						
-					}
-				}
-				else if(questionResponse_arr[i].objItemId != "undefined"){
-					trackedObjectives = true;
+
+			// for(var i = 0; i < questionResponse_arr.length; i++){
+			// 	//should try this
+			// 	//stringQR_arr.push(JSON.stringify(questionResponse_arr[i]).encodeURIComponent());
+			// }
+			//use this for SOCOM, push 4 things separated by | as string to stringQR_arr, use to build displayRemedObj, parse at start and read in.  
+			if(stringQR_arr.length == 0){
+
+				for(var i = 0; i < questionResponse_arr.length; i++){
+					if(questionResponse_arr[i].objective != "undefined"){
+						trackedObjectives = true;
 						if(!questionResponse_arr[i].correct){
 							//check for duplicates
-							if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
-								remediationObjectives.push(questionResponse_arr[i].objItemId);
-								displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
-							}
-						}				
+							if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
+								remediationObjectives.push(questionResponse_arr[i].objective);
+								if(scormVersion.indexOf('USSOCOM') != -1){
+									stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
+								}
+								else{
+									displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+								}
+								//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+								//stringQR_arr.push(questionResponse_arr[i].objItemId. + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
+								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objective+"</a></li>";
+							}						
+						}
+					}
+					else if(questionResponse_arr[i].objItemId != "undefined"){
+						trackedObjectives = true;
+							if(!questionResponse_arr[i].correct){
+								//check for duplicates
+								if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
+									remediationObjectives.push(questionResponse_arr[i].objItemId);
+									if(scormVersion.indexOf('USSOCOM') != -1){
+										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+									}
+									else{
+										displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+									}
+									//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+									//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
+								}
+							}				
+					}
 				}
+			}
+
+			if(scormVersion.indexOf('USSOCOM') != -1){
+				var stringQR_arr_string = stringQR_arr.join();
+				for (var i = 0; i < stringQR_arr.length; i++) {
+					trackedObjectives = true;
+					var li = stringQR_arr[i].split("|");
+					remediationObjectives.push(li[3]);
+					displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+li[0]+"\",\""+li[1]+"\", \""+li[2]+"\", \""+stringQR_arr_string+"\")'>"+li[3].replace(/##/g , ',')+"</a></li>";
+				};
 			}
 		}
 		
 		if(trackedObjectives && remediationObjectives != ""){
+			var scoreTextAlt = scoreText;
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';
 			scoreText += displayRemedObj;
 			scoreText += '</ul></p>';
+			// if(scormVersion.indexOf('USSOCOM') != -1){
+				
+			// 	HTMLString = '<HTML>\n';
+			// 	HTMLString += '<HEAD><TITLE>Test Review</TITLE></HEAD>\n';
+			// 	HTMLString += '<BODY>\n';
+			// 	HTMLString += scoreTextAlt;
+			// 	HTMLString += '<p class="completionText">You missed questions regarding the following objectives: ';
+			// 	HTMLString += '<ul class="completionText">';
+			// 	HTMLString += displayRemedObjAlt;
+			// 	HTMLString += '</ul></p>';				
+			// 	HTMLString += '<p>Press \"Ctrl+P\" on your keyboard to print this page.</p>';
+			// 	HTMLString += '</BODY></HTML>';
+			// 	newwindow = window.open('','','width=400, height=600');
+			// 	newdocument = newwindow.document;
+			// 	newdocument.write(HTMLString);
+			// 	newdocument.close();
+			// 	scoreText += '<p>The results have opened in another browser window that you can keep open as a refererence. <br/>';
+			// 	//'To print this list for reference while reviewing the modules before retaking the test press the print button.</p>';
+			// }
+
 		}
 		
 		//Position the page text
@@ -132,23 +270,77 @@ function C_Completion(_type) {
 		$("#scrollableContent").addClass("top");
 		$("#content").append(myContent);
 		$("#scoreFeedback").append(scoreText);
-		
-		$('<div id="completionButton">Continue</div>').insertAfter("#content");
-		$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
-		$("#completionButton").button().click(function(){
-			if(isScored === "true"){
-				var _scormVersion = $(data).find('scormVersion').attr('value');
-				if(_scormVersion === '1.2_CTCU' || _scormVersion === '2004_4th_USSOCOM'){
-					completeLesson(score_obj.passed, score_obj.passed, score_obj.score);
+		if(attemptExceeded){
+			$("#content").append("You have exceeded the attempt limit of the test. <br/>" +
+				"You will need to drop the course and reenroll to retake the course. Press the \"Continue\" button to end the coures.");
+		}
+		else{
+			if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === "true" && !score_obj.passed){
+				$("#content").append("Use a link(s) below to review any missed objectives or press the \"Continue\" button to retry the coures.");
+			}
+		}
+
+		if(doScorm() ){
+			$('<div id="completionButton">Continue</div>').insertAfter("#content");
+			$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
+			$("#completionButton").button().click(function(){
+				if(isScored === "true"){
+					if(scormVersion === '1.2_CTCU') {
+						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
+					}
+					else if(scormVersion.indexOf('USSOCOM') != -1){
+						if(attemptExceeded){
+							scorm.set("adl.nav.request", "exitAll");
+							scorm.set("cmi.completion_status", "incomplete");
+							scorm.set("cmi.success_status", "failed");
+							scorm.set("cmi.score.scaled", score_obj.score.toString());	
+							scorm.set("cmi.exit", "normal");
+							scorm.API.getHandle().Terminate("");
+							//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, true);
+						}
+						else{
+							if(!score_obj.passed){
+								scorm.set("adl.nav.request", "{target=Module10FinalTest_id}jump");
+								scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+								scorm.set("cmi.suspend_data", "na~"+attemptCount);
+								scorm.set("cmi.completion_status", "incomplete");
+								scorm.set("cmi.exit", "suspend");
+								scorm.API.getHandle().Terminate("");
+							}
+							else{
+								scorm.set("adl.nav.request", "continue");
+								//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+								//scorm.set("cmi.suspend_data", "na~"+attemptCount);
+								scorm.set("cmi.completion_status", "completed");
+								scorm.set("cmi.success_status", "passed");
+								scorm.set("cmi.score.scaled", score_obj.score.toString());	
+								scorm.set("cmi.exit", "normal");
+								scorm.API.getHandle().Terminate("");
+							}
+							//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, !score_obj.passed, false);
+						}
+					}
+					else{
+						completeLesson(completed, score_obj.passed, score_obj.score, false, false);
+					}
 				}
 				else{
-					completeLesson(completed, score_obj.passed, score_obj.score);
+					completeLesson(true, true, 0, false, false);
 				}
-			}
-			else{
-				completeLesson(true, true, 0);
-			}
-		});
+			});
+		}
+
+		// if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === 'true'){
+		// 	$('<div id="printButton">Print</div>').insertAfter("#scoreFeedback");
+		// 	$("#printButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
+		// 	$("#printButton").button().click(function(){
+		// 		newWin = window.open();
+		// 		newWin.document.write(HTMLString);
+		// 		newWin.focus();
+		// 		newWin.print();
+		// 		newWin.close();
+		// 	});
+		// }		
         
         audioHolder = new C_AudioHolder();
         checkMode();
@@ -206,6 +398,7 @@ function C_Completion(_type) {
         var newCDATA=docu.createCDATASection(_data);
         $(data).find("page").eq(currentPage).find("content").first().empty();
         $(data).find("page").eq(currentPage).find("content").first().append(newCDATA);
+        $(data).find("page").eq(currentPage).attr("review", review);
         sendUpdate();
     };
     

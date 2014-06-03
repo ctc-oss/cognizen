@@ -41,6 +41,7 @@ function C_Sequencing(_type) {
     var myObjective = "undefined";
     var order_arr = [];
     var myObjItemId = "undefined";
+    var scormVersion;
   
     
     //Defines a public method - notice the difference between the private definition below.
@@ -64,7 +65,7 @@ function C_Sequencing(_type) {
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
-		
+		scormVersion = $(data).find('scormVersion').attr('value');
 		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
@@ -179,15 +180,38 @@ function C_Sequencing(_type) {
 			}
 		}
 
-		var _objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') + "."+
-					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
-					 myObjective.replace(/\s+/g, '');
-		if(tempCorrect && graded){
-			setObjectiveSuccess(_objId, myObjItemId, true);
+		//set SCORM objectives
+		if(scormVersion.indexOf('USSOCOM') == -1){
+			var _objId = "";
+	    	if(myObjective != undefined && myObjective !== "undefined"){
+	    		//console.log(i + " : " + pageObj);
+	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjective.replace(/\s+/g, '_');
+
+	    	}
+
+	    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+	    		if(_objId.length > 0){
+	    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+	    		}
+	    		else{
+		 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+	    		}
+	    	}
+
+			if(_objId.length > 0){	
+				if(tempCorrect && graded){
+					setObjectiveSuccess(_objId, true);
+				}
+				else if(!tempCorrect && graded){
+					setObjectiveSuccess(_objId, false);
+				}
+			}
 		}
-		else if(!tempCorrect && graded){
-			setObjectiveSuccess(_objId, myObjItemId, false);
-		}	
 
 		$(".sequenceInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });

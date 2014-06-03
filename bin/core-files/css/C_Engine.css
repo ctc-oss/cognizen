@@ -231,6 +231,32 @@ blockquote
 	padding-right: 8px;
 }
 
+.dialogInputCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	border-top-style: inset; 
+	border-top-width: 1px; 
+	border-left-style: inset; 
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;	
+}
+
+.dialogInputIncorrect{
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;	
+	border-top-style: inset; 
+	border-top-width: 1px; 
+	border-left-style: inset; 
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;		
+}
+
 #toggleMode{
 	position: absolute;
 	bottom: 12px;

@@ -166,6 +166,8 @@ function C_TextInput(_type) {
 					else{
 						$('#fb'+qId).html('Correct, the answer is '+ qAnswers[0]).css("color", "green");
 					}
+					$('#'+qId).removeClass();
+					$('#'+qId).addClass("dialogInputCorrect");
 				}
 				else{
 					var feedbackPos = returnTCFeedback(qId);
@@ -180,7 +182,8 @@ function C_TextInput(_type) {
 						$("#"+qId).val($.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
 						$("#"+qId).attr("disabled", "disabled");
 					}
-							
+					$('#'+qId).removeClass();
+					$('#'+qId).addClass("dialogInputIncorrect");		
 					// else{
 					// 	$('#fb'+qId).html('Incorrect').css("color", "red");
 					// }

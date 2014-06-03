@@ -57,6 +57,7 @@ function C_QuestionBank(_type) {
     var mandatory = true;
     var randomize = false;
     var currentEditBankMember = 0;
+    var scormVersion;
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -92,6 +93,8 @@ function C_QuestionBank(_type) {
 		feedbackIncorrectTitle = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('incorrectresponse').text();
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('feedback').text();
+		scormVersion = $(data).find('scormVersion').attr('value');
+
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
@@ -281,14 +284,37 @@ function C_QuestionBank(_type) {
 			}
 		}
 
-		var _objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') + "."+
-					 pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '') + "." +
-					 myObjective.replace(/\s+/g, '');
-		if(tempCorrect && graded){
-			setObjectiveSuccess(_objId, myObjItemId, true);
-		}
-		else if(!tempCorrect && graded){
-			setObjectiveSuccess(_objId, myObjItemId, false);
+		//set SCORM objectives
+		if(scormVersion.indexOf('USSOCOM') == -1){
+			var _objId = "";
+	    	if(myObjective != undefined && myObjective !== "undefined"){
+	    		//console.log(i + " : " + pageObj);
+	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjective.replace(/\s+/g, '_');
+
+	    	}
+
+	    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+	    		if(_objId.length > 0){
+	    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+	    		}
+	    		else{
+		 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+	    		}
+	    	}
+
+			if(_objId.length > 0){	
+				if(tempCorrect && graded){
+					setObjectiveSuccess(_objId, true);
+				}
+				else if(!tempCorrect && graded){
+					setObjectiveSuccess(_objId, false);
+				}
+			}
 		}
 
 		$(".radio").prop('disabled', true);
