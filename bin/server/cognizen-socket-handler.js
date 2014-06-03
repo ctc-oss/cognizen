@@ -926,10 +926,8 @@ var SocketHandler = {
                         	gitFail = true;
                             var errorMessage = JSON.stringify(err);
                             _this.logger.error("errorMessage = " + errorMessage);
-                            
-                            if (errorMessage.indexOf('index.lock') > -1) {
+                            if (errorMessage.indexOf('index.lock') >= -1 || err.code == 128) {
                                 //ATTEMPT TO CLEAN UP GIT INDEX ISSUE - PD - 5/17/14
-								_this.logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!GIT LOCK ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                                 var util = require('util');
 								var spawn = require('child_process').spawn;
 								var child;
@@ -1235,7 +1233,7 @@ var SocketHandler = {
                     found.name = data.content.name;
                     found.generatePath();
                     var newDiskPath = _this.Content.diskPath(found.path);
-//                    _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
+                    _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
 
                     var itemsToSave = [found];
 
@@ -1267,6 +1265,7 @@ var SocketHandler = {
                                         }, function() {
                                             // Need to git commit the program, then let the user know it is done.
                                             _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
+                                                _this.logger.info("rename commit went well.")
                                                 _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                                             }, function(err){
                                                 _this.logger.error('_this.Git.commitProgramContent(): ' + err);

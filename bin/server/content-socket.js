@@ -11,6 +11,7 @@ var ContentSocket = {
 
     start: function(port, path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
+        console.log("xmlContentFile == " + xmlContentFile);
 
         //scorm.init(logger, scormPath, contentPath, xmlContentFile);
 
