@@ -13,7 +13,6 @@
 
 //VARIABLES
 var data;
-
 var stageX;
 var stageY;
 var stageH;
