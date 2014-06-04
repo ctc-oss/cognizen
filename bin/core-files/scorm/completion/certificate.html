@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Certificate</title>
+
+
+<script type="text/javascript">
+	var message = "Please print for your records"; 
+	function rtclickcheck(keyp){ if (navigator.appName == "Netscape" && keyp.which == 3){ 
+	    alert(message); 
+		window.print();
+		return false; 
+	} 
+	if (navigator.appVersion.indexOf("MSIE") != -1 && event.button == 2) { 
+		alert(message);
+		window.print(); 	
+		return false; }
+		
+	 } 
+	document.onmousedown = rtclickcheck;
+	
+</script>
+
+		<script type="text/javascript">
+			function getString(myDay) {
+				if(myDay < 10)
+					return "0" + myDay;
+				else
+					return myDay;
+			}
+			
+
+
+			function onloadFunctions(){
+			
+				
+			//	document.getElementById('courseKeydiv').innerHTML = window.opener.courseKey;
+				document.getElementById('usersFullName').innerHTML = window.opener.fullName;
+				
+				var d=new Date();
+				document.getElementById('date').innerHTML = getString(d.getMonth()+1) + "/" + getString(d.getDate()) + "/" + d.getFullYear();
+				mywindow = window.open('information.html', '_blank','height=300,width=700,status=yes,toolbar=no,menubar=yes,location=no');
+				mywindow.moveTo(500,500);
+				opener.endCourseNow();
+				
+				
+			}
+			
+			
+		</script>
+		<style type="text/css">
+			body, html {
+				padding: 0;
+				margin: 0;
+				font-size: 18px;
+			}
+			#courseKeydiv {
+	position: absolute;
+	top: 665px;
+	left: 38px;
+	font-size:20px;
+	color: #999999;
+			}
+			#usersFullName {
+	font-size:30px;
+	position:absolute;
+	text-align:center;
+	top:389px;
+	width:1000px;
+	left: -20px;
+	height: 22px;
+			}
+			#date {
+	font-size:30px;
+	position:absolute;
+	text-align:center;
+	top:551px;
+	width:1000px;
+	left: -15px;
+			}
+		</style>
+	</head>
+	<body onload="onloadFunctions();">
+		<img src="media/certificate.jpg" alt="Certificate Background" />
+		<div id='courseKeydiv'></div>
+<br>
+		<div id='usersFullName'></div>
+<br>
+		<div id="date"></div>
+</body>
+</html>

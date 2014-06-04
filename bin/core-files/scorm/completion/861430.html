@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://www.w3.org/1999/xhtml" xmlns:h="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<title>Course Completion</title>
+<link href="../templates/uit/700521_1/styles/uiTemplate.css" type="text/css" rel="stylesheet" />
+<link href="../templates/clt/700127_1/styles/clTemplate.css" type="text/css" rel="stylesheet" />
+<link href="../templates/clt/700127_1/styles/customStyles.css" type="text/css" rel="stylesheet" />
+        <style xmlns="">
+        #Flash_700127 {
+            position:absolute;
+            overflow:auto;
+            width:760px;
+            height:530px;
+            left:0px;
+            top:0px;
+        }
+       </style>
+	   
+	   <style xmlns="">
+        #blue_box {
+            position:absolute;
+            left:613px;
+            top:24px;
+        }
+       </style>
+	    <style xmlns="">
+			#certificate {
+				font-size:16px;
+				position:absolute;
+				text-align:left;
+				top:290px;
+				left:250px;
+			}
+		</style>
+	     
+            <link href="media/Font_Arial.css" type="text/css" rel="stylesheet">
+            
+        
+<script xmlns="http://www.w3.org/1999/xhtml" src="../js/flashobject.js" type="text/javascript"></script>
+<script src="../js/prototype.js" type="text/javascript"></script>
+<script src="../js/soundmanager2-nodebug-jsmin.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+				soundManager.debugMode = false; // disable debug output
+				soundManager.url = '../media/soundmanager2.swf'; // path to movie
+				soundManager.onload = function() {
+					$$('.audio').each(function(a) {
+						soundManager.createSound({
+							id:a.id,
+							url:a.innerHTML
+						});
+						soundManager.play(a.id);
+					});
+				}
+</script>
+
+<script src="../js/KnowledgeCheck.js" type="text/javascript"></script>
+<script src="../js/APIWrapper.js" type="text/javascript"></script>
+
+ 
+<script type="text/javascript" language="Javascript">
+				var courseKey = 0;
+				var fullName = "JKO Student";
+				var stringName = "Hanshaw, Jennifer Hanshaw";
+
+				parent.progress[parent.currentLsn][parent.currentTopic][parent.currentSubtopic][1] = 1;
+				parent.checkLessonCompletion();
+
+				doLMSSetValue('cmi.location','861430.html');
+				doLMSSetValue('cmi.objectives.0.success_status','passed');
+				doLMSSetValue('cmi.completion_status','completed');
+				
+				
+			
+				
+				function onLoadFunctions() { 
+				
+					showCompletionCertificate();
+				
+				}
+				
+				
+				
+				
+				function endCourseNow(){
+					doLMSSetValue('adl.nav.request', 'continue'); 
+					document.location.href = document.location.href + document.forms[0].hiddenFieldIputMyPostVarsInInQueryStringFormat.value;
+				}
+				
+			
+			
+				function showCompletionCertificate() {
+
+						courseKey = Math.floor(Math.random() * 100000000000000000000);
+						stringName = doLMSGetValue('cmi.learner_name');
+						changedName = stringName.split(",");
+						fullName = changedName[1];
+					
+
+
+						var certWindow = window.open('certificate.html', null,'height=720,width=950,status=yes,toolbar=no,menubar=yes,location=no');
+						
+						
+						
+						if(certWindow > 0) {
+							certWindow.opener.location='/html/desktop/Desktop.jsp';
+						}
+						
+						//if(window.focus()) {certWindow.focus();}
+						return false;
+				}
+				
+
+		
+
+                function onUnLoadFunctions() {
+				
+	
+				 }
+				
+
+				function playAudio() {
+					$$('.audio').each(function(a) {
+						soundManager.play(a.id);
+					});
+				}
+
+				function muteAudio() {
+					$$('.audio').each(function(a) {
+						var mySMSound = soundManager.getSoundById(a.id);
+						if (mySMSound.muted == true) {
+							mySMSound.unmute();
+							mySMSound.muted = false;
+						} else {
+							mySMSound.mute();
+							mySMSound.muted = true;
+						}
+					});
+				}
+
+				function replayAudio() {
+					playAudio();
+				}
+
+				function pauseAudio() {
+					$$('.audio').each(function(a) {
+						soundManager.togglePause(a.id);
+					});
+				}
+
+				function showTranscript() {
+					newWindow = window.open('','Transcript','height=400,width=350,resizable=1,scrollbars=1');
+
+					var doc = newWindow.document;
+
+					doc.write('<html>');
+					doc.write('<head>');
+					doc.write('<link xmlns="" href="media/Font_Arial.css" type="text/css" rel="stylesheet">');
+					doc.write('</head>');
+					doc.write('<body>');
+					doc.write('<div id="transcript">');
+					doc.write($('transcript').innerHTML);
+					doc.write($('transcript2').innerHTML);
+					doc.write('</div>');
+					doc.write('</body>');
+					doc.write('</html>');
+					doc.close();
+				}
+</script>
+
+</head>
+<body onunload="onUnLoadFunctions();" onload="onLoadFunctions();">
+<noscript><p>Make sure your browser has JavaScript support.</p></noscript>
+<p class="access"></p>
+</body>
+</html>

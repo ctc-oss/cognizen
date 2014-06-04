@@ -23,11 +23,12 @@ function C_Completion(_type) {
     var finalLesson;
     var HTMLString;
     var attemptExceeded = false;
-    //var review = "false";
+    var review = "false";
     var attemptCount = 0;
     var resumed = false;
     var score_arr = [];
     var stringQR_arr = [];
+    var lessonTitle = '';
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -41,9 +42,11 @@ function C_Completion(_type) {
 
 		scormVersion = $(data).find('scormVersion').attr('value');
 		finalLesson = $(data).find('finalLesson').attr('value');
-		// if($(data).find("page").eq(currentPage).attr('review')){
-		// 	review = $(data).find("page").eq(currentPage).attr('review');
-		// }		
+		lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
+		
+		if($(data).find("page").eq(currentPage).attr('review')){
+			review = $(data).find("page").eq(currentPage).attr('review');
+		}		
 		//evaluate score
 		debugger;
 		isScored = $(data).find('scored').attr('value');
@@ -104,7 +107,7 @@ function C_Completion(_type) {
 
 				if(!resumed){				
 					//update the number here to increase or decrease attempts
-					if(attemptCount + 1 == 3 ){
+					if(attemptCount + 1 == 99 ){
 						if(!score_obj.passed){
 							attemptExceeded = true;
 						}
@@ -124,7 +127,7 @@ function C_Completion(_type) {
 		var remediationObjectives = [];
 		var displayRemedObj = "";
 		var displayRemedObjAlt = "";
-		if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
+		if(doScorm()) {//&& scormVersion.indexOf('USSOCOM') == -1){
 			//get objectives, display ones with objectives.n.success_status == failed; only do link if choiceValid(lesson)
 			var scormObjectives = getObjectives();
 			if(scormObjectives.length > 0){
@@ -136,15 +139,15 @@ function C_Completion(_type) {
 							//check for duplicates
 							if($.inArray(tmpObject.id, remediationObjectives) == -1){
 								remediationObjectives.push(tmpObject.id);
-								if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
-									var split = tmpObject.objItemId.split("id");
-									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+tmpObject.id+"</a></li>";
-									displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+tmpObject.id+"</a></li>";
+								// if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
+								// 	var split = tmpObject.objItemId.split("id");
+								// 	//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+tmpObject.id+"</a></li>";
+								// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+tmpObject.id+"</a></li>";
 									
-								}
-								else{
+								// }
+								// else{
 									displayRemedObj += "<li class='completionText'>"+tmpObject.id+"</li>";
-								}							
+								//}							
 							}
 						}
 					}
@@ -155,13 +158,13 @@ function C_Completion(_type) {
 								if($.inArray(tmpObject.id, remediationObjectives) == -1){
 									remediationObjectives.push(tmpObject.objItemId);
 									var split = tmpObject.objItemId.split("id");
-									 if(choiceValid(tmpObject.objItemId)){
-										//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+split[0]+"</a></li>";
-										displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+split[0]+"</a></li>";
-									}
-									else{
+									//  if(choiceValid(tmpObject.objItemId)){
+									// 	//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+split[0]+"</a></li>";
+									// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+split[0]+"</a></li>";
+									// }
+									// else{
 										displayRemedObj += "<li class='completionText'>"+split[0]+"</li>";
-									}
+									//}
 								}
 							}				
 					}				
@@ -275,45 +278,144 @@ function C_Completion(_type) {
 				"You will need to drop the course and reenroll to retake the course. Press the \"Continue\" button to end the coures.");
 		}
 		else{
-			if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === "true" && !score_obj.passed){
-				$("#content").append("Use a link(s) below to review any missed objectives or press the \"Continue\" button to retry the coures.");
+			if(review === "true"){
+				$("#content").append("Use a list below to review any missed objectives. You can come back to this module at any time to review this list. "+
+				"<br/><br/>Select a module to review or select the test module to retry the test. "+
+				"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");
+			}			
+			else if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === "true"){
+				$("#content").append("<br/><br/>Use a list below to review any missed objectives and press the <b>Next Lesson</b> button in the header to access the review page.");
 			}
+			else if(scormVersion.indexOf('USSOCOM') != -1){
+				$("#content").append("<br/><br/>Press the <b>Next Lesson</b> button in the header to access the next module.");
+			}
+
 		}
 
-		if(doScorm() ){
+		if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+			var _objIndex = findObjective(lessonTitle +"_satisfied");
+			if(isScored === "true"){
+
+				if(attemptExceeded){
+					
+					scorm.set("cmi.completion_status", "incomplete");
+					scorm.set("cmi.success_status", "failed");
+					scorm.set("cmi.score.scaled", score_obj.score.toString());	
+					scorm.set("adl.nav.request", "exitAll");
+					scorm.set("cmi.exit", "normal");
+					scorm.API.getHandle().Terminate("");
+					//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, true);
+				}
+				else{
+					if(!score_obj.passed){
+						// scorm.set("adl.nav.request", "{target=Module10FinalTest_id}jump");
+						// scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+						// scorm.set("cmi.suspend_data", "na~"+attemptCount);
+						// scorm.set("cmi.completion_status", "incomplete");
+						// scorm.set("cmi.exit", "suspend");
+						// scorm.API.getHandle().Terminate("");
+						
+						scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+						// scorm.set("cmi.suspend_data", "na~"+attemptCount);
+						scorm.set("cmi.completion_status", "incomplete");
+						scorm.set("cmi.success_status", "failed");
+						scorm.set("cmi.score.scaled", score_obj.score.toString());
+						scorm.set("cmi.objectives."+_objIndex+".success_status", "failed");
+						scorm.set("cmi.objectives."+_objIndex+".completion_status", "incomplete");
+						//scorm.set("adl.nav.request", "continue");																	
+						scorm.set("cmi.exit", "suspend");
+						scorm.API.getHandle().Terminate("");								
+					}
+					else{
+						
+						//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+						//scorm.set("cmi.suspend_data", "na~"+attemptCount);
+						scorm.set("cmi.completion_status", "completed");
+						scorm.set("cmi.success_status", "passed");
+						scorm.set("cmi.score.scaled", score_obj.score.toString());	
+						scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
+						scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
+						//have to satisfy all objectives
+						var num = parseInt(scorm.get("cmi.objectives._count"));
+						for (var i=0; i < num; ++i) {
+							scorm.set("cmi.objectives."+i+".success_status", "passed");
+						}							
+						//scorm.set("adl.nav.request", "continue");
+						scorm.set("cmi.exit", "normal");
+						scorm.API.getHandle().Terminate("");
+					}
+					//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, !score_obj.passed, false);
+				}
+
+			}
+			else{
+				//completeLesson(true, true, 0, false, false);
+
+				//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+				//scorm.set("cmi.suspend_data", "na~"+attemptCount);
+				scorm.set("cmi.completion_status", "completed");
+				scorm.set("cmi.success_status", "passed");
+				scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
+				scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
+				//scorm.set("cmi.score.scaled", score_obj.score.toString());	
+				//scorm.set("adl.nav.request", "continue");					
+				scorm.set("cmi.exit", "normal");
+				scorm.API.getHandle().Terminate("");					
+			}
+		}
+		else if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
 			$('<div id="completionButton">Continue</div>').insertAfter("#content");
 			$("#completionButton").css({"postion": "relative", "width": "200px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
 			$("#completionButton").button().click(function(){
+				var _objIndex = findObjective(lessonTitle +"_satisfied");
 				if(isScored === "true"){
 					if(scormVersion === '1.2_CTCU') {
 						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
 					}
 					else if(scormVersion.indexOf('USSOCOM') != -1){
 						if(attemptExceeded){
-							scorm.set("adl.nav.request", "exitAll");
+							
 							scorm.set("cmi.completion_status", "incomplete");
 							scorm.set("cmi.success_status", "failed");
 							scorm.set("cmi.score.scaled", score_obj.score.toString());	
+							scorm.set("adl.nav.request", "exitAll");
 							scorm.set("cmi.exit", "normal");
 							scorm.API.getHandle().Terminate("");
 							//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, true);
 						}
+						else if(review === "true"){
+							completeLesson(true, true, 0, false, false);
+						}
 						else{
 							if(!score_obj.passed){
-								scorm.set("adl.nav.request", "{target=Module10FinalTest_id}jump");
+								// scorm.set("adl.nav.request", "{target=Module10FinalTest_id}jump");
+								// scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+								// scorm.set("cmi.suspend_data", "na~"+attemptCount);
+								// scorm.set("cmi.completion_status", "incomplete");
+								// scorm.set("cmi.exit", "suspend");
+								// scorm.API.getHandle().Terminate("");
+								
 								scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-								scorm.set("cmi.suspend_data", "na~"+attemptCount);
+								// scorm.set("cmi.suspend_data", "na~"+attemptCount);
 								scorm.set("cmi.completion_status", "incomplete");
+								scorm.set("cmi.success_status", "failed");
+								scorm.set("cmi.score.scaled", score_obj.score.toString());
+								scorm.set("cmi.objectives."+_objIndex+".success_status", "failed");
+								scorm.set("cmi.objectives."+_objIndex+".completion_status", "incomplete");
+								scorm.set("adl.nav.request", "continue");																	
 								scorm.set("cmi.exit", "suspend");
-								scorm.API.getHandle().Terminate("");
+								scorm.API.getHandle().Terminate("");								
 							}
 							else{
-								scorm.set("adl.nav.request", "continue");
+								
 								//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
 								//scorm.set("cmi.suspend_data", "na~"+attemptCount);
 								scorm.set("cmi.completion_status", "completed");
 								scorm.set("cmi.success_status", "passed");
 								scorm.set("cmi.score.scaled", score_obj.score.toString());	
+								scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
+								scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
+								scorm.set("adl.nav.request", "continue");
 								scorm.set("cmi.exit", "normal");
 								scorm.API.getHandle().Terminate("");
 							}
@@ -325,7 +427,18 @@ function C_Completion(_type) {
 					}
 				}
 				else{
-					completeLesson(true, true, 0, false, false);
+					//completeLesson(true, true, 0, false, false);
+
+					//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+					//scorm.set("cmi.suspend_data", "na~"+attemptCount);
+					scorm.set("cmi.completion_status", "completed");
+					scorm.set("cmi.success_status", "passed");
+					scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
+					scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
+					//scorm.set("cmi.score.scaled", score_obj.score.toString());	
+					scorm.set("adl.nav.request", "continue");
+					scorm.set("cmi.exit", "normal");
+					scorm.API.getHandle().Terminate("");					
 				}
 			});
 		}

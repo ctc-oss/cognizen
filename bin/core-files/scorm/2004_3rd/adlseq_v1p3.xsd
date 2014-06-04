@@ -1,13 +1,15 @@
 <?xml version = "1.0"?>
 <xs:schema targetNamespace = "http://www.adlnet.org/xsd/adlseq_v1p3"
            xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
            xmlns = "http://www.adlnet.org/xsd/adlseq_v1p3"
            elementFormDefault = "qualified"
-           version = "2.0">
+           version = "ADL Version 1.3">
 
    <xs:annotation>
       <xs:documentation>
-          This file represents the W3C XML Schema Language Binding of the ADL namespaced elements for sequencing extensions.
+          This is a draft version of the ADL namespaced elements for sequencing extensions.
+          Further modifications will be made prior to the SCORM 1.3 final release.
       </xs:documentation>
    </xs:annotation>
 
@@ -17,14 +19,9 @@
    <xs:annotation>
       <xs:documentation>
       *************************************************************************
-      *                             Change History                            *
+      *                                Change History                                  *
       *************************************************************************
       2003-18-09  Initial creation.
-      2004-23-01  Final edits in preparation for release
-      2008-15-12  Added data, map, objectives, objective and mapInfo elements 
-                  and sharedDataGlobalToSystem attribute.
-      2009-30-01  Removed the data element, map element and 
-                  sharedDataGlobalToSystem attribute.           
       *************************************************************************
       </xs:documentation>
    </xs:annotation>
@@ -32,13 +29,7 @@
    <xs:element name = "constrainedChoiceConsiderations" type = "constrainChoiceConsiderationsType"/>
 
    <xs:element name = "rollupConsiderations" type = "rollupConsiderationsType"/>
-   
-   <xs:element name = "objectives" type = "objectivesType"/>
-   
-   <xs:element name = "objective" type = "objectiveType"/>
-   
-   <xs:element name = "mapInfo" type = "mapInfoType"/>
-   
+
    <xs:complexType name = "rollupConsiderationsType">
       <xs:attribute name = "requiredForSatisfied" default = "always" type = "rollupConsiderationType"/>
       <xs:attribute name = "requiredForNotSatisfied" default = "always" type = "rollupConsiderationType"/>
@@ -60,34 +51,7 @@
       <xs:attribute name = "preventActivation" default = "false" type = "xs:boolean"/>
       <xs:attribute name = "constrainChoice" default = "false" type = "xs:boolean"/>
    </xs:complexType>
-   
-   <xs:complexType name="objectivesType">
-      <xs:sequence>
-         <xs:element ref = "objective" minOccurs = "1" maxOccurs = "unbounded"/>
-      </xs:sequence>
-   </xs:complexType>
-   
-   <xs:complexType name="objectiveType">
-     <xs:sequence>
-        <xs:element ref = "mapInfo" minOccurs = "1" maxOccurs = "unbounded"/>
-     </xs:sequence>
-     <xs:attribute name = "objectiveID" use = "required" type = "xs:anyURI"/>
-   </xs:complexType>
-   
-   <xs:complexType name="mapInfoType">
-      <xs:attribute name="targetObjectiveID" use="required" type="xs:anyURI" />
-      <xs:attribute name="readRawScore" default="true" type="xs:boolean" />
-      <xs:attribute name="readMinScore" default="true" type="xs:boolean" />
-      <xs:attribute name="readMaxScore" default="true" type="xs:boolean" />
-      <xs:attribute name="readCompletionStatus" default="true" type="xs:boolean" />
-      <xs:attribute name="readProgressMeasure" default="true" type="xs:boolean" />
-      <xs:attribute name="writeRawScore" default="false" type="xs:boolean" />
-      <xs:attribute name="writeMinScore" default="false" type="xs:boolean" />
-      <xs:attribute name="writeMaxScore" default="false" type="xs:boolean" />
-      <xs:attribute name="writeCompletionStatus" default="false" type="xs:boolean" />
-      <xs:attribute name="writeProgressMeasure" default="false" type="xs:boolean" />
-   </xs:complexType>
 
-   <xs:attribute name = "objectivesGlobalToSystem" default = "true" type = "xs:boolean" />
-   
+   <xs:attribute name = "objectivesGlobalToSystem" default = "true" type = "xs:boolean" />               
+
 </xs:schema>

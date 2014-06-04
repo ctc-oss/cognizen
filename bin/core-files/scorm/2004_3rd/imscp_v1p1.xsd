@@ -5,7 +5,7 @@
 	 xmlns:xsd = "http://www.w3.org/2001/XMLSchema"
 	 version = "IMS CP 1.1.3"
 	 elementFormDefault = "unqualified">
-	<xsd:import namespace = "http://www.w3.org/XML/1998/namespace" schemaLocation = "xml.xsd"/>
+	<xsd:import namespace = "http://www.w3.org/XML/1998/namespace" schemaLocation = "http://www.w3.org/2001/03/xml.xsd"/>
 	<xsd:annotation>
 		<xsd:documentation xml:lang = "en">DRAFT XSD for IMS Content Packaging version 1.1 DRAFT                </xsd:documentation>
 		<xsd:documentation> Copyright (c) 2001 IMS GLC, Inc.                                                    </xsd:documentation>

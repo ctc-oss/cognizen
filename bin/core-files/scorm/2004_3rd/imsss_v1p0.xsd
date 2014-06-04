@@ -39,14 +39,7 @@
 			<xs:element name = "rollupRules" type = "rollupRulesType"
 				 block = "#all" minOccurs = "0"/>
 			<xs:element name = "objectives" type = "objectivesType"
-				 block = "#all" minOccurs = "0">
-<!--
-				<xs:unique name = "uniqueGlobalObjective">
-					<xs:selector xpath = ".//imsss:mapInfo[@writeSatisfiedStatus = 'true' or @writeNormalizedMeasure = 'true']"/>
-					<xs:field xpath = "@targetObjectiveID"/>
-				</xs:unique>
--->
-			</xs:element>
+				 block = "#all" minOccurs = "0"/>
 			<xs:element name = "randomizationControls" type = "randomizationType"
 				 block = "#all" minOccurs = "0"/>
 			<xs:element name = "deliveryControls" type = "deliveryControlsType"

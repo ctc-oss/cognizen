@@ -34,9 +34,17 @@ function checkScorm(){
 		lmsConnected = scorm.init();
 		lessonStatus = scorm.status("get");
 
+		var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
+		var _objIndex = findObjective(_lessonTitle+"_satisfied");
+
 		//course has already been completed
 		if(lessonStatus == "completed"){
-			scorm.quit();
+			scorm.set("cmi.success_status", "passed");
+			//scorm.quit();
+		}
+		else if(scorm.get("cmi.objectives."+_objIndex+".success_status") === "passed"){
+			scorm.status("set", "completed");
+			scorm.set("cmi.success_status", "passed");
 		}
 		else{
 			scorm.status("set", "incomplete");
