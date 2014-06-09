@@ -34,9 +34,7 @@ function C_VisualMediaHolder(callback){
     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
     var convertableVectorTypes = ["eps"];
     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
-    $(".toolTip").each(function(){
-		$(this).tooltip("destroy");
-	})
+   
     //Populate Key Variables
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
 		autoNext = true;
@@ -878,6 +876,11 @@ function C_VisualMediaHolder(callback){
 		
 		try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 		try { $("#loader").tooltip("destroy"); } catch (e) {}
+		
+		try { $(".toolTip").each(function(){
+				$(this).tooltip("destroy");
+			})
+		}catch (e) {}
     }
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }
