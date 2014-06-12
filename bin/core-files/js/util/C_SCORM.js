@@ -30,8 +30,13 @@ function checkScorm(){
 	if(doScorm()){
 		isScorm = true;
 		scorm.VERSION = $(data).find('scormVersion').attr('value');
-
+		debugger;
 		lmsConnected = scorm.init();
+		if(!lmsConnected && scorm.VERSION.indexOf('USSOCOM') != -1){
+			scorm.connection.isActive = true;
+				// scorm.API.getHandle().Terminate("");
+				// lmsConnected = scorm.init();	
+		}
 		lessonStatus = scorm.status("get");
 
 		var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
@@ -61,7 +66,7 @@ function checkScorm(){
 				}
 			}
 			else if(scorm.VERSION.substring(0,4) == "2004"){
-				if(scorm.get("cmi.entry") == "resume"){
+				if(scorm.get("cmi.entry") == "resume" || scorm.VERSION.indexOf('USSOCOM') != -1){
 					var location = scorm.get("cmi.location");
 					if(location != ""){
 						//figure out what is going on here.

@@ -477,6 +477,12 @@ for(var i = 0; i < totalPages; i++){
 		}else{
 			question_obj.graded = false;
 		}
+
+		if($(data).find("page").eq(i).attr('layout') == 'textInput'){
+			var _textInputQuestions = [];
+			question_obj.textInputQuestions = _textInputQuestions;
+		}
+
 		question_obj.id = $(data).find('page').eq(i).attr('id');
 		question_obj.userAnswer = userSelection_arr;
 		questionResponse_arr.push(question_obj);
@@ -762,6 +768,24 @@ function checkQuestionComplete(){
 	return isComplete;
 }
 
+function updateTextInputQuestionResponse(_questionObj){
+	for(var i = 0; i < questionResponse_arr.length; i++){
+		if(currentPageID == questionResponse_arr[i].id){
+
+			for(var j = 0; j < questionResponse_arr[i].textInputQuestions.length; j++){
+				if(_questionObj.question == questionResponse_arr[i].textInputQuestions[j].question){
+					questionResponse_arr[i].textInputQuestions[j].userAnswer = _questionObj.userAnswer;
+					questionResponse_arr[i].textInputQuestions[j].correct = _questionObj.correct;
+					questionResponse_arr[i].textInputQuestions[j].feedback = _questionObj.feedback;
+					questionResponse_arr[i].textInputQuestions[j].userAttempts = _questionObj.userAttempts;
+					questionResponse_arr[i].textInputQuestions[j].maxAttempts = _questionObj.maxAttempts;
+				}
+			}
+
+		}
+	}	
+}
+
 /////////////////////////////////////////////////////END SCORING FUNCTIONALITY
 
 /****************************************************
@@ -812,10 +836,12 @@ this.loadPage = function(){
 		if(scorm.VERSION == "1.2"){
 			scorm.set("cmi.core.lesson_location", currentPageID);
 			scorm.set("cmi.core.exit", "suspend");
+			scorm.save();
 		}
 		else if(scorm.VERSION.substring(0,4) == "2004"){
 			scorm.set("cmi.location", currentPageID);
 			scorm.set("cmi.exit", "suspend");
+			scorm.save();
 		}
 	}
 
