@@ -372,73 +372,12 @@ function C_Completion(_type) {
 					if(scormVersion === '1.2_CTCU') {
 						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
 					}
-					else if(scormVersion.indexOf('USSOCOM') != -1){
-						if(attemptExceeded){
-							
-							scorm.set("cmi.completion_status", "incomplete");
-							scorm.set("cmi.success_status", "failed");
-							scorm.set("cmi.score.scaled", score_obj.score.toString());	
-							scorm.set("adl.nav.request", "exitAll");
-							scorm.set("cmi.exit", "normal");
-							scorm.API.getHandle().Terminate("");
-							//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, true);
-						}
-						else if(review === "true"){
-							completeLesson(true, true, 0, false, false);
-						}
-						else{
-							if(!score_obj.passed){
-								// scorm.set("adl.nav.request", "{target=Module10FinalTest_id}jump");
-								// scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-								// scorm.set("cmi.suspend_data", "na~"+attemptCount);
-								// scorm.set("cmi.completion_status", "incomplete");
-								// scorm.set("cmi.exit", "suspend");
-								// scorm.API.getHandle().Terminate("");
-								
-								scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-								// scorm.set("cmi.suspend_data", "na~"+attemptCount);
-								scorm.set("cmi.completion_status", "incomplete");
-								scorm.set("cmi.success_status", "failed");
-								scorm.set("cmi.score.scaled", score_obj.score.toString());
-								scorm.set("cmi.objectives."+_objIndex+".success_status", "failed");
-								scorm.set("cmi.objectives."+_objIndex+".completion_status", "incomplete");
-								scorm.set("adl.nav.request", "continue");																	
-								scorm.set("cmi.exit", "suspend");
-								scorm.API.getHandle().Terminate("");								
-							}
-							else{
-								
-								//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-								//scorm.set("cmi.suspend_data", "na~"+attemptCount);
-								scorm.set("cmi.completion_status", "completed");
-								scorm.set("cmi.success_status", "passed");
-								scorm.set("cmi.score.scaled", score_obj.score.toString());	
-								scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
-								scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
-								scorm.set("adl.nav.request", "continue");
-								scorm.set("cmi.exit", "normal");
-								scorm.API.getHandle().Terminate("");
-							}
-							//completeLesson(score_obj.passed, score_obj.passed, score_obj.score, !score_obj.passed, false);
-						}
-					}
 					else{
 						completeLesson(completed, score_obj.passed, score_obj.score, false, false);
 					}
 				}
 				else{
-					//completeLesson(true, true, 0, false, false);
-
-					//scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-					//scorm.set("cmi.suspend_data", "na~"+attemptCount);
-					scorm.set("cmi.completion_status", "completed");
-					scorm.set("cmi.success_status", "passed");
-					scorm.set("cmi.objectives."+_objIndex+".success_status", "passed");
-					scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
-					//scorm.set("cmi.score.scaled", score_obj.score.toString());	
-					scorm.set("adl.nav.request", "continue");
-					scorm.set("cmi.exit", "normal");
-					scorm.API.getHandle().Terminate("");					
+					completeLesson(true, true, 0, false, false);		
 				}
 			});
 		}
