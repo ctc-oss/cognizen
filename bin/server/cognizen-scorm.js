@@ -1050,17 +1050,17 @@ var SCORM = {
 
 	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_USSOCOM'){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
-	        manifest += "   xmlns=\"http://www.imsglobal.org/xsd/imscp_v1p1\"\n"+
-	            "   xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_v1p3\"\n"+
-	            "   xmlns:adlnav=\"http://www.adlnet.org/xsd/adlnav_v1p3\"\n"+
-	            "   xmlns:imsss=\"http://www.imsglobal.org/xsd/imsss\"\n"+
-	            "   xmlns:adlseq=\"http://www.adlnet.org/xsd/adlseq_v1p3\"\n"+
-	            "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
-	            "   xsi:schemaLocation=\"http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
-	            "                        http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
-	            "                        http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n"+
-	            "                        http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
-	            "                        http://www/imsglobal.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\">\n"+
+	        manifest += "	xmlns = \"http://www.imsglobal.org/xsd/imscp_v1p1\" \n"+
+    			"	xmlns:adlcp = \"http://www.adlnet.org/xsd/adlcp_v1p3\" \n"+
+    			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
+    			"	xmlns:adlnav = \"http://www.adlnet.org/xsd/adlnav_v1p3\" \n"+
+    			"	xmlns:imsss = \"http://www.imsglobal.org/xsd/imsss\" \n"+
+    			"	xmlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\" \n"+
+    			"	xsi:schemaLocation = \"http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+    			"							http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
+    			"							http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\n"+
+    			"							http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
+    			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\">\n"+
 	            "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
@@ -1539,6 +1539,7 @@ var SCORM = {
 		'		<title>'+_this.courseName +'</title>\n'+
 		'	</head>\n'+
 		'	<body>\n'+
+		'		<h2>'+_this.courseName+'</h2>\n'+
 		'		<ul>\n';
 		for(var j=0; j<lArray.length; j++){
 			index += '<li><a href=\"'+lessonsName[j]+'/index.html\">'+lessonsName[j]+'</a></li>\n';	
