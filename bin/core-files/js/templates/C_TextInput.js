@@ -32,6 +32,7 @@ function C_TextInput(_type) {
     var currentEditBankMember = 0;
     var diffeedEdit_arr = [];
     var userAttempts = [];
+    var isComplete = false;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -43,6 +44,8 @@ function C_TextInput(_type) {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
+
+		isComplete = checkQuestionComplete();
 
 		questionCount = $(data).find("page").eq(currentPage).find("question").length;
 
@@ -61,11 +64,11 @@ function C_TextInput(_type) {
 		
 		if($(data).find("page").eq(currentPage).attr('objItemId')){
 			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
-		}
+		}	
 
 		pageTitle = new C_PageTitle();
 
-		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
+		var msg = '<div id="scrollableContent" class="antiscroll-wrap text">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="textInputHolder" class="textInputHolder"></div>';
 		msg += '</div></div>';		
@@ -75,6 +78,10 @@ function C_TextInput(_type) {
 		audioHolder = new C_AudioHolder();
 		
 		$('#stage').append(msg);
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		if(isIE){
+			$("#contentHolder").css("margin-bottom", "-16px");
+		}
 
 		placeQuestions();
 
@@ -91,9 +98,9 @@ function C_TextInput(_type) {
 		for(var j = 0; j < input_arr.length; j++){
 
 			var myNode = $(data).find("page").eq(currentPage).find("question").eq(input_arr[j]);
-
 			var myQuestion = "question" + j;
-			msg += myNode.find('content').text() + '<input type="text" name="' + myQuestion  + '" id="' + myQuestion  + '" class="dialogInput" style="width: 440px;" value="">';
+	
+			msg += myNode.find('content').text() + '<div class="ui-widget"><input type="text" name="' + myQuestion  + '" id="' + myQuestion  + '" class="dialogInput" style="width: 440px;" value=""></div>';
 			msg += '<div id="fb'+myQuestion+'"></div>';
 			inputIds.push(myQuestion);
 			trackFeedbackNum.push(new Array(myQuestion, 0));
@@ -103,7 +110,7 @@ function C_TextInput(_type) {
 			
 			var ars = [];
 			for (var m = 0; m < myNode.find('acceptedresponse').length; m++) {
-				ars.push(myNode.find('acceptedresponse').eq(m).text());
+				ars.push($.trim(myNode.find('acceptedresponse').eq(m).text().replace("<![CDATA[", "").replace("]]>", "")));
 			};
 
 			correctAnswers.push(ars);
@@ -116,9 +123,81 @@ function C_TextInput(_type) {
 		msg += '</div>';
 		$('#textInputHolder').append(msg);
 
-		$("#contentHolder").append('<div id="mcSubmit"></div>');
-		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-		$("#mcSubmit").click(checkTextCombo);	
+		//apply accepted answers to autocorrect
+		for(var w = 0; w < inputIds.length; w++){
+			$("#question"+w).autocomplete({
+				minLength: 2,
+				source: correctAnswers[w]
+			});
+		}
+
+		var textInputQuestion_obj = new Object();
+		for(var i = 0; i < questionResponse_arr.length; i++){
+			if(currentPageID == questionResponse_arr[i].id){
+				var _tiQuestions = questionResponse_arr[i].textInputQuestions;
+				if(_tiQuestions.length > 0){
+					for(var j = 0; j < _tiQuestions.length; j++){
+						textInputQuestion_obj = _tiQuestions[j];
+						if(textInputQuestion_obj.question == "question" + j)
+						{
+							$("#"+textInputQuestion_obj.question).val(textInputQuestion_obj.userAnswer);
+							if($.trim(textInputQuestion_obj.userAnswer).length != 0){
+								if(textInputQuestion_obj.correct)
+								{
+									$('#fb'+textInputQuestion_obj.question).html('Correct, the answer is '+ textInputQuestion_obj.userAnswer).css("color", "green");
+									$('#'+textInputQuestion_obj.question).removeClass();
+									$('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
+									$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
+								}
+								else{
+
+									if(textInputQuestion_obj.userAttempts >= textInputQuestion_obj.maxAttempts){
+										var qAnswers = correctAnswers[j];
+										$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
+										$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
+									}
+
+									for (var m = 0; m < userAttempts.length; m++) {
+										if(userAttempts[m][0] == textInputQuestion_obj.question){
+											userAttempts[m][1] = textInputQuestion_obj.userAttempts;
+										}
+									}
+
+									$('#fb'+textInputQuestion_obj.question).html(textInputQuestion_obj.feedback).css("color", "red");					
+									$('#'+textInputQuestion_obj.question).removeClass();
+									$('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");	
+								}
+							}
+							else{
+								$('#fb'+textInputQuestion_obj.question).html('Please provide an answer.').css("color", "red");;
+							}							
+						}
+					}
+				}
+				else{
+					for(var k = 0; k < input_arr.length; k++){
+						var _tempTIQ_obj = new Object();
+						_tempTIQ_obj.question = "question" + k;
+						_tempTIQ_obj.userAnswer = '';
+						_tempTIQ_obj.correct = false;
+						_tempTIQ_obj.feedback = '';
+						_tempTIQ_obj.userAttempts = 0;
+						_tempTIQ_obj.maxAttempts = parseInt(attempts[k][1]);
+						questionResponse_arr[i].textInputQuestions.push(_tempTIQ_obj);
+					}
+				}				
+			}
+		}
+
+		if(!isComplete){
+			$("#contentHolder").append('<div id="mcSubmit"></div>');
+			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
+			$("#mcSubmit").click(checkTextCombo);	
+		}
+		else{
+			mandatoryInteraction = false;
+			checkNavButtons();
+		}
 
 		checkMode();
 
@@ -132,68 +211,106 @@ function C_TextInput(_type) {
 	/////////////////////////////////////////////////////////////
 	function checkTextCombo()
 	{
-		for (var i = 0; i < inputIds.length; i++) {
-			var qId = inputIds[i];
-			var inputAnswer = $("#"+qId).val();
-			if($.trim(inputAnswer).length != 0){
-				var qAttemptCount = 0;
-				var qMaxAttempt = 0;
-				for (var j = 0; j < userAttempts.length; j++) {
-					if(userAttempts[j][0] == qId){
-						var qAttemptCount = userAttempts[j][1] + 1;
-						userAttempts[j][1] = qAttemptCount;
-					}
-					if(attempts[j][0] == qId){
-						qMaxAttempt = parseInt(attempts[j][1]);
-					}
+		var allComplete = true;
+		var selected_arr = [];
 
-				};
+		var textInputQuestion_obj = new Object();
+		for(var i = 0; i < questionResponse_arr.length; i++){
+			if(currentPageID == questionResponse_arr[i].id){
+				var _tiQuestions = questionResponse_arr[i].textInputQuestions;
+				if(_tiQuestions.length > 0){
+					for(var j = 0; j < _tiQuestions.length; j++){
+						textInputQuestion_obj = _tiQuestions[j];
+						if(textInputQuestion_obj.question == "question" + j)
+						{
+							if(!textInputQuestion_obj.correct)
+							{
+								var inputAnswer = $("#"+textInputQuestion_obj.question).val();
+								textInputQuestion_obj.userAnswer = inputAnswer;
+								selected_arr.push(inputAnswer);
 
-				var isCorrect = false;//correctAnswers[i].join().match(inputAnswer);
-				var qAnswers = correctAnswers[i];
-				if(qMaxAttempt<=qAttemptCount){
-					for(var j = 0; j<qAnswers.length; j++){
-						if($.trim(qAnswers[j]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase() === inputAnswer.toLowerCase()){
-							isCorrect = true;
+								if($.trim(inputAnswer).length != 0){
+									var qAttemptCount = 0;
+									var qMaxAttempt = 0;
+									for (var k = 0; k < userAttempts.length; k++) {
+										if(userAttempts[k][0] == textInputQuestion_obj.question){
+											var qAttemptCount = userAttempts[k][1] + 1;
+											textInputQuestion_obj.userAttempts = userAttempts[k][1] = qAttemptCount;
+
+										}
+										if(attempts[k][0] == textInputQuestion_obj.question){
+											qMaxAttempt = parseInt(attempts[k][1]);
+											textInputQuestion_obj.maxAttempts = qMaxAttempt;
+										}
+
+									};
+
+									var isCorrect = false;
+									var qAnswers = correctAnswers[j];
+									if(qMaxAttempt>=qAttemptCount){
+										for(var m = 0; m<qAnswers.length; m++){
+											if($.trim(qAnswers[m]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase() === inputAnswer.toLowerCase()){
+												isCorrect = true;
+											}
+										}
+									}
+
+									textInputQuestion_obj.correct = isCorrect;
+
+									if(isCorrect === true){
+										var crPos = returnCorrectResponse(textInputQuestion_obj.question);
+										if(crPos != -1){
+											$('#fb'+textInputQuestion_obj.question).html(correctResponses[crPos][1]).css("color", "green");
+										}
+										else{
+											$('#fb'+textInputQuestion_obj.question).html('Correct, the answer is '+ qAnswers[0]).css("color", "green");
+										}
+										$('#'+textInputQuestion_obj.question).removeClass();
+										$('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
+										$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
+									}
+									else{
+										var feedbackPos = returnTCFeedback(textInputQuestion_obj.question);
+										if(feedbackPos != -1){
+											textInputQuestion_obj.feedback = textComboFeedback[feedbackPos][1];
+											$('#fb'+textInputQuestion_obj.question).html(textComboFeedback[feedbackPos][1]).css("color", "red");
+											if(getFeedbackAttempt(textInputQuestion_obj.question) < attempts[returnAttemptsPos(textInputQuestion_obj.question)][1]){
+												increaseFeedbackAttempt(textInputQuestion_obj.question);
+												textComboFeedback.splice(feedbackPos, 1);	
+											}
+										}
+										if(qAttemptCount >= qMaxAttempt){
+											$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
+											$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
+										}
+										else{
+											allComplete = false;
+										}
+										$('#'+textInputQuestion_obj.question).removeClass();
+										$('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");		
+
+									}
+
+									updateTextInputQuestionResponse(textInputQuestion_obj);
+
+								}
+								else
+								{
+									allComplete = false;
+									$('#fb'+textInputQuestion_obj.question).html('Please provide an answer.').css("color", "red");;
+								}
+							}																												
 						}
 					}
-				}
-				if(isCorrect === true){
-					var crPos = returnCorrectResponse(qId);
-					if(crPos != -1){
-						$('#fb'+qId).html(correctResponses[crPos][1]).css("color", "green");
-					}
-					else{
-						$('#fb'+qId).html('Correct, the answer is '+ qAnswers[0]).css("color", "green");
-					}
-					$('#'+qId).removeClass();
-					$('#'+qId).addClass("dialogInputCorrect");
-				}
-				else{
-					var feedbackPos = returnTCFeedback(qId);
-					if(feedbackPos != -1){
-						$('#fb'+qId).html(textComboFeedback[feedbackPos][1]).css("color", "red");
-						if(getFeedbackAttempt(qId) < attempts[returnAttemptsPos(qId)][1]){
-							increaseFeedbackAttempt(qId);
-							textComboFeedback.splice(feedbackPos, 1);	
-						}
-					}
-					if(qAttemptCount >= qMaxAttempt){
-						$("#"+qId).val($.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
-						$("#"+qId).attr("disabled", "disabled");
-					}
-					$('#'+qId).removeClass();
-					$('#'+qId).addClass("dialogInputIncorrect");		
-					// else{
-					// 	$('#fb'+qId).html('Incorrect').css("color", "red");
-					// }
-				}
+				}		
 			}
-			else
-			{
-				$('#fb'+qId).html('Please provide an answer.').css("color", "red");;
-			}
-		};
+		}		
+
+		if(allComplete){
+			updateScoring(selected_arr, allComplete, null, null);
+			mandatoryInteraction = false;
+			checkNavButtons();
+		}
 	}
 
 	function returnTCFeedback(id){
