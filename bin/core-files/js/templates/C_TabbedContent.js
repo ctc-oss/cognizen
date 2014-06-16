@@ -60,7 +60,7 @@ function C_TabbedContent(_type) {
 			tabString += '<div id="'+ tabID +'" class="cognizenTabContent"><p>' + currentTabContent + '</p></div>';	
 		}
 		
-		tabString += '</div>';
+		//tabString += '</div>';
 		
 		$("#tabs").append(tabString);
 		
