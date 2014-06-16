@@ -599,11 +599,11 @@ function checkNavButtons(){
 		enableIndex();
 		enableHome();
 	}
-	
+
 	if(currentPage == 0 || assessment == true){
 		disableBack();
 	}else{
-		if(backDisabled == true){
+		if(backDisabled == true || scorm.get("cmi.core.entry") == "resume"){
 			enableBack();
 		}
 	}
@@ -800,7 +800,7 @@ this.loadPage = function(){
 	if(isLinear == true){
 		updateTracking();
 	}
-	
+
 	if($(data).find("page").eq(currentPage).attr("mandatory") == "true" && mode != "edit"){
 		if($(data).find("page").eq(currentPage).attr("graded") == "true"){
 			assessment = true;
