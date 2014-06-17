@@ -547,6 +547,8 @@ function disableBack(){
 
 function enableBack(){
 	$('#back').removeClass('disabled');
+	//ensure all click events are off on "#back
+	$('#back').off('click');
 	$("#back").click(clickBack);
 	backDisabled = false;
 }
@@ -603,8 +605,13 @@ function checkNavButtons(){
 	if(currentPage == 0 || assessment == true){
 		disableBack();
 	}else{
-		if(backDisabled == true || scorm.get("cmi.core.entry") == "resume"){
+		var _cmi = 'cmi.core.entry';
+		if(scorm.VERSION.substring(0,4) == "2004"){
+			_cmi = 'cmi.entry';
+		}
+		if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
 			enableBack();
+			markResume = false;
 		}
 	}
 

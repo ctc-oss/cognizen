@@ -18,6 +18,7 @@ var isScorm = false;//indicates if is a SCORM course
 var lessonStatus;//holds the status of the SCORM lesson
 var lmsConnected = false;//indicates if connected to the LMS
 var scorm;//Set after script is initialized. = pipwerks.SCORM;//var for SCORM API wrapper
+var markResume = false; //had to use this for JKO since it doesn't call terminate() successfully
 
 /*************************************************************
 ** SCORM Funcitonality
@@ -68,6 +69,7 @@ function checkScorm(){
 			else if(scorm.VERSION.substring(0,4) == "2004"){
 				if(scorm.get("cmi.entry") == "resume" || scorm.VERSION.indexOf('USSOCOM') != -1){
 					var location = scorm.get("cmi.location");
+					markResume = true;
 					if(location != ""){
 						//figure out what is going on here.
 						loadPageFromID(location);
