@@ -606,7 +606,7 @@ function checkNavButtons(){
 		disableBack();
 	}else{
 		var _cmi = 'cmi.core.entry';
-		if(scorm.VERSION.substring(0,4) == "2004"){
+		if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
 			_cmi = 'cmi.entry';
 		}
 		if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
