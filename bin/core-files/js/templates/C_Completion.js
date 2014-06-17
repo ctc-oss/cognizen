@@ -359,8 +359,8 @@ function C_Completion(_type) {
 				scorm.set("cmi.objectives."+_objIndex+".completion_status", "completed");
 				//scorm.set("cmi.score.scaled", score_obj.score.toString());	
 				//scorm.set("adl.nav.request", "continue");					
-				scorm.set("cmi.exit", "normal");
-				scorm.API.getHandle().Terminate("");					
+				//scorm.set("cmi.exit", "normal");
+				//scorm.API.getHandle().Terminate("");					
 			}
 		}
 		else if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
