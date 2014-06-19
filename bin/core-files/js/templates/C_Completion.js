@@ -29,6 +29,7 @@ function C_Completion(_type) {
     var score_arr = [];
     var stringQR_arr = [];
     var lessonTitle = '';
+	var remediationObjectives = [];    //array used to track objectives for duplicates
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -48,7 +49,6 @@ function C_Completion(_type) {
 			review = $(data).find("page").eq(currentPage).attr('review');
 		}		
 		//evaluate score
-		debugger;
 		isScored = $(data).find('scored').attr('value');
 
 		if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
@@ -123,8 +123,6 @@ function C_Completion(_type) {
 		}
 		
 		var trackedObjectives = false;
-		//array used to track objectives for duplicates
-		var remediationObjectives = [];
 		var displayRemedObj = "";
 		var displayRemedObjAlt = "";
 		if(doScorm()) {//&& scormVersion.indexOf('USSOCOM') == -1){
@@ -231,12 +229,12 @@ function C_Completion(_type) {
 			}
 		}
 		
-		if(trackedObjectives && remediationObjectives != ""){
+		if(trackedObjectives && remediationObjectives.length != 0){
 			var scoreTextAlt = scoreText;
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';
 			scoreText += displayRemedObj;
-			scoreText += '</ul></p>';
+			scoreText += '</ul></p><br/><br/>';
 			// if(scormVersion.indexOf('USSOCOM') != -1){
 				
 			// 	HTMLString = '<HTML>\n';
@@ -279,15 +277,21 @@ function C_Completion(_type) {
 		}
 		else{
 			if(review === "true"){
-				$("#content").append("Use a list below to review any missed objectives. You can come back to this module at any time to review this list. "+
-				"<br/><br/>Select a module to review or select the test module to retry the test. "+
-				"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");
+				if(remediationObjectives.length != 0){
+					$("#content").append("Use a list below to review any missed objectives. You can come back to this module at any time to review this list. "+
+					"<br/><br/>Select a module to review or select the test module to retry the test. "+
+					"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");					
+				}
+				else{
+					$("#content").append("You have passed the test. Use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );				
+				}
+
 			}			
 			else if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === "true"){
 				$("#content").append("<br/><br/>Use a list below to review any missed objectives and press the <b>Next Lesson</b> button in the header to access the review page.");
 			}
 			else if(scormVersion.indexOf('USSOCOM') != -1){
-				$("#content").append("<br/><br/>Press the <b>Next Lesson</b> button in the header to access the next module.");
+				$("#content").append("<br/><br/>Press the <b>Next Lesson</b> button in the header to access the next module.<br/><br/>");
 			}
 
 		}
