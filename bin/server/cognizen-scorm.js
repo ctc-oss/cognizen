@@ -1012,7 +1012,7 @@ var SCORM = {
 
 		//add resource for completion res
 		if(icompletionLines != ''){
-			_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/certificate.html\">\n";
+			_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/wrapper.html\">\n";
 			_manifestFile += icompletionLines;
 			_manifestFile += '      </resource>\n';									
 		}
