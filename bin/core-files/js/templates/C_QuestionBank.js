@@ -536,13 +536,13 @@ function C_QuestionBank(_type) {
 		var msg = "<div id='questionEditDialog' title='Edit Question Bank'>";
 		msg += "<label style='position: relative; float: left; margin-right:20px;'><b>Bank Preferences: </b></label>";
 		msg += "<label id='label'>graded: </label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'>mandatory: </label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>bank objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";			
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";			
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -577,7 +577,7 @@ function C_QuestionBank(_type) {
 		
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
 		msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'>randomize options: </label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/>";
 		msg += "<div id='label'><b>Input your question: </b></div>";

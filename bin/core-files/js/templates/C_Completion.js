@@ -278,11 +278,13 @@ function C_Completion(_type) {
 		else{
 			if(review === "true"){
 				if(remediationObjectives.length != 0){
+					$("#content").empty();
 					$("#content").append("Use a list below to review any missed objectives. You can come back to this module at any time to review this list. "+
-					"<br/><br/>Select a module to review or select the test module to retry the test. "+
-					"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");					
+					"<br/><br/>Select a module to review or select the test module to retry the test. <br/><br/>");//+
+					//"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");					
 				}
 				else{
+					$("#content").empty();
 					$("#content").append("You have passed the test. Use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );				
 				}
 

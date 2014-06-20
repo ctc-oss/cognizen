@@ -380,13 +380,13 @@ function C_TextInput(_type) {
 	function updateQuestionEditDialog(){
 		var msg = "<div id='questionEditDialog' title='Create Text Input Question'>";
 		msg += "<label id='label'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</br>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</br>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";		
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";		
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";	
 		var questionMenu_arr = [];
 		for (var i = 0; i < questionCount; i++) {
@@ -405,7 +405,7 @@ function C_TextInput(_type) {
 			}else if(i > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("question").eq(i).find("content").text();
+			var cleanText = $(data).find("page").eq(currentPage).find("question").eq(i).find("content").text().replace("<p>", "").replace("</p>", "");
 			msg += "' data-myID='" + i + "' title='" + cleanText + "'>" + label + "</div>";
 
 			questionMenu_arr.push(tmpID);
@@ -418,7 +418,7 @@ function C_TextInput(_type) {
 		msg += "<div id='removeBankItem' class='removeMedia' title='Click to remove this bank item'/>";
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
 		msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' title='Increase the number of attempts' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputCRLabel'><b>Correct Response: </b></div>";
@@ -439,7 +439,12 @@ function C_TextInput(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit the question.");
+		    	}
+		    }
 		});
 
 		CKEDITOR.inline( "inputCorrectResponse", {
@@ -447,7 +452,12 @@ function C_TextInput(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit the correct response.");
+		    	}
+		    }			
 		});
 
 		for(var j = 0; j < questionMenu_arr.length; j++){
@@ -520,7 +530,17 @@ function C_TextInput(_type) {
 			close: function(){
 				$("#questionEditDialog").remove();
 			}
-		});		
+		});	
+
+		//adds tooltips to the edit dialog buttons
+	    $('button').eq(3).attr('title', 'Add a new Question');
+	    $('button').eq(4).attr('title', 'Add a new accepted response phrase');
+	    $('button').eq(5).attr('title', 'Add a new feedback based off of the number of attempts');
+	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog');
+	    $(function () {
+	        $(document).tooltip();
+	    });
+
 	}	
 
 	function makeQuestionDataStore(){
@@ -667,7 +687,7 @@ function C_TextInput(_type) {
 		var msg = "<div id='"+acceptedID+"Container' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='"+acceptedID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this accepted response'/>";
 		msg += "<div id='"+acceptedID+"Input' style='padding-bottom:5px;'><b>Accepted Response " + acceptedLabel + ":</b></div>";
-		msg += "<div id='"+acceptedID+"Text' contenteditable='true' class='dialogInput'>" + acceptedContent + "</div>";	
+		msg += "<div id='"+acceptedID+"Text' contenteditable='true' class='dialogInput' >" + acceptedContent + "</div>";	
 		msg += "</div>";
 				
 		$("#acceptedResponseEdit").append(msg);		
@@ -681,7 +701,12 @@ function C_TextInput(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this accepted response.");
+		    	}
+		    }			
 		});
 		acceptedResponseEdit_arr.push(acceptedID);			
 	}
@@ -704,7 +729,7 @@ function C_TextInput(_type) {
 
 			var diffeedContent = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("diffeed").eq(_addID).text();
 			var msg = "<div id='"+diffeedID+"Container' class='templateAddItem' value='"+_addID+"'>";
-			msg += "<div id='"+diffeedID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this accepted response'/>";
+			msg += "<div id='"+diffeedID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this feedback'/>";
 			msg += "<div id='"+diffeedID+"Input' style='padding-bottom:5px;'><b>Feedback " + diffeedLabel + ":</b></div>";
 			msg += "<div id='"+diffeedID+"Text' contenteditable='true' class='dialogInput'>" + diffeedContent + "</div>";	
 			msg += "</div>";
@@ -720,7 +745,12 @@ function C_TextInput(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+			    	}
+			    }				
 			});
 
 			diffeedEdit_arr.push(diffeedID);
