@@ -634,13 +634,13 @@ function C_Matching(_type) {
 		//Create the Content Edit Dialog
         var msg = "<div id='questionEditDialog' title='Set Question Preferences'>";
         msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         msg += "<label id='label'>drag and drop: </label>";
-		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true'/><br/><br/>";
+		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true' title='Check for drag and drop functionality.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
 		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
@@ -686,7 +686,12 @@ function C_Matching(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+		    	}
+		    }			
 		});	
 				
 		optionCount = option_arr.length;
@@ -789,6 +794,16 @@ function C_Matching(_type) {
 				}
 			}
 		});
+
+		//adds tooltips to the edit dialog buttons
+	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
+	    $('button').eq(4).attr('title', 'Adds a new matching option.');
+	    $('button').eq(5).attr('title', 'Adds a new matching answer.');
+	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
+	    $(function () {
+	        $(document).tooltip();
+	    });
+
 	}
 	
 	function addAnswer(_addID, _isNew){
@@ -817,7 +832,7 @@ function C_Matching(_type) {
 		var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer'/>";
 		msg += "<label id='label'>Answer "+ answerLabel +" Match: </label>";
-		msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='dialogInput' style='width:35px; text-align:center'/><br/>";
+		msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='dialogInput' style='width:35px; text-align:center' title='Click here to edit the answer label.'/><br/>";
 		if(type == "matching"){
 			var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(_addID).find("content").text();
 			msg += "<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div>";
@@ -837,7 +852,12 @@ function C_Matching(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this matching answer text.");
+			    	}
+			    }				
 			});
 		}	
 		
@@ -869,7 +889,7 @@ function C_Matching(_type) {
 		var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
-		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;'/><br/>";
+		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;' title='Click here to edit the option label.'/><br/>";
 		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();			
 		msg +="<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div>";
 		msg += "<div id='"+optionID+"Text' class='dialogInput' contenteditable='true'>" + optionContent + "</div>";
@@ -881,7 +901,12 @@ function C_Matching(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this matching option.");
+		    	}
+		    }			
 		});	
 							
 		$("#" +optionLabel+"Remove").click(function(){

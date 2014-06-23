@@ -418,7 +418,7 @@ function C_TextInput(_type) {
 		msg += "<div id='removeBankItem' class='removeMedia' title='Click to remove this bank item'/>";
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
 		msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' title='Increase the number of attempts' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' title='Increase the number of attempts.' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputCRLabel'><b>Correct Response: </b></div>";
@@ -533,10 +533,10 @@ function C_TextInput(_type) {
 		});	
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Add a new Question');
-	    $('button').eq(4).attr('title', 'Add a new accepted response phrase');
-	    $('button').eq(5).attr('title', 'Add a new feedback based off of the number of attempts');
-	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog');
+	    $('button').eq(3).attr('title', 'Adds a new question.');
+	    $('button').eq(4).attr('title', 'Adds a new accepted response phrase.');
+	    $('button').eq(5).attr('title', 'Adds a new feedback based off of the number of attempts.');
+	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });

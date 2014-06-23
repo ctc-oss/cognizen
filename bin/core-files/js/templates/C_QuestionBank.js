@@ -577,16 +577,16 @@ function C_QuestionBank(_type) {
 		
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
 		msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'>randomize options: </label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this question.'/><br/>";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label' style='margin-right:20px;'><b>Question Feedback Type: </b></label>";
 		//msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized</input>";
-		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated'>undifferentiated</input>";
-		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated'>differentiated</input>";
+		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated' title='One user defined feedback is used.'>undifferentiated</input>";
+		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated' title='User defined feedback is used for each option.'>differentiated</input>";
 		
 		msg += "</div></div>"
 		
@@ -606,7 +606,12 @@ function C_QuestionBank(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this question.");
+		    	}
+		    }		
 		});
 		
 		for(var j = 0; j < questionMenu_arr.length; j++){
@@ -649,7 +654,12 @@ function C_QuestionBank(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+			    	}
+			    }					
 			});		
 		}
 		
@@ -698,6 +708,15 @@ function C_QuestionBank(_type) {
 				$("#questionEditDialog").remove();
 			}
 		});
+
+		//adds tooltips to the edit dialog buttons
+	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
+	    $('button').eq(4).attr('title', 'Adds a new question.');
+	    $('button').eq(5).attr('title', 'Adds a new matching option.');
+	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
+	    $(function () {
+	        $(document).tooltip();
+	    });		
 	}
 	
 	function makeQuestionDataStore(_feedbackTypeChange){
@@ -874,9 +893,9 @@ function C_QuestionBank(_type) {
 		msg += "<div id='"+optionID+"Text' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label'><b>correct:</b></label>";
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).find("option").eq(_addID).attr("correct") == "true"){	
-			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true'/>";
+			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}else{
-			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true'/>";
+			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}
 		
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("feedbacktype") == "differentiated"){
@@ -898,7 +917,12 @@ function C_QuestionBank(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
+		    	}
+		    }				
 		});	
 		
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("feedbacktype") == "differentiated"){
@@ -907,7 +931,12 @@ function C_QuestionBank(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+			    	}
+			    }					
 			});	
 		}																	
 		optionEdit_arr.push(optionID);

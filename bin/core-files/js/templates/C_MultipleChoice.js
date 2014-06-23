@@ -528,22 +528,22 @@ function C_MultipleChoice(_type) {
 	function updateQuestionEditDialog(){
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
 		msg += "<label id='label'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>randomize options: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this page.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
 		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
 		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";		
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
-		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized'>standardized  </input>";
-		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated'>undifferentiated  </input>";
-		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated'>differentiated  </input>";
+		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized' title='Standard feedback is used.'>standardized  </input>";
+		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated' title='One user defined feedback is used.'>undifferentiated  </input>";
+		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated' title='User defined feedback is used for each option.'>differentiated  </input>";
 		msg += "</div>"
 		
 		if(feedbackType == "undifferentiated"){
@@ -577,7 +577,12 @@ function C_MultipleChoice(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+			    	}
+			    }				
 			});
 			//$("#feedbackEditText").height(40);			
 		}
@@ -653,6 +658,14 @@ function C_MultipleChoice(_type) {
 				$("#questionEditDialog").remove();
 			}
 		});
+
+		//adds tooltips to the edit dialog buttons
+	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
+	    $('button').eq(4).attr('title', 'Adds a new question option.');
+	    $('button').eq(5).attr('title', 'Saves and closes the edit dialog.');
+	    $(function () {
+	        $(document).tooltip();
+	    });
 	}
 	
 	function removeOption(_id){
@@ -695,9 +708,9 @@ function C_MultipleChoice(_type) {
 		msg += "<div id='"+optionID+"Text' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label'><b>correct:</b></label>";
 		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){	
-			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true'/>";
+			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}else{
-			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true'/>";
+			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}
 		
 		if(feedbackType == "differentiated"){
@@ -719,7 +732,12 @@ function C_MultipleChoice(_type) {
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog'
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
+		    	}
+		    }			
 		});	
 		
 		if(feedbackType == "differentiated"){
@@ -728,7 +746,12 @@ function C_MultipleChoice(_type) {
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog'
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+			    	}
+			    }				
 			});	
 		}																	
 		optionEdit_arr.push(optionID);
