@@ -240,6 +240,7 @@ function fadeComplete() {
   	try { $("#inputCorrectResponse").remove(); } catch (e) {}
   	try { $("#acceptedResponseEdit").remove(); } catch (e) {}
   	try { $("#diffeedEdit").remove(); } catch(e) {}
+  	try { $("#essayCompareHolder").remove(); } catch (e) {}
 
 	for(name in CKEDITOR.instances){
 		try { CKEDITOR.instances[name].destroy(); } catch (e) {}

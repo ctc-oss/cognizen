@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealTop", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare"];
 
 
 /************************************************************************************
@@ -1127,6 +1127,44 @@ function createNewPageByType(_myType){
 			questionResponse_arr.push(question_obj);
 			
 			break;
+
+		case "essayCompare":
+			$(data).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
+			$(data).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+							
+			$(data).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("Expert response goes here...");
+			$(data).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+					
+			$(data).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(data).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(data).find("page").eq(newPage).attr("audio", "null");
+			$(data).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+
 	}
 	newPageAdded = true;
 	sendUpdateWithRefresh();

@@ -975,7 +975,11 @@ this.loadPage = function(){
 		case "textInput":
 			currentTemplate = new C_TextInput(currentTemplateType);
 			currentTemplate.initialize();
-			break;			
+			break;		
+		case "essayCompare":
+			currentTemplate = new C_EssayCompare(currentTemplateType);
+			currentTemplate.initialize();
+			break;		
 		//UNITY SWF Layouts
 		case "unity":
 			currentTemplate = new C_Unity3D(currentTemplateType);
