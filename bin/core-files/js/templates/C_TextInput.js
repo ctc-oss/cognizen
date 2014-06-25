@@ -33,6 +33,7 @@ function C_TextInput(_type) {
     var diffeedEdit_arr = [];
     var userAttempts = [];
     var isComplete = false;
+    var scormVersion;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -48,6 +49,7 @@ function C_TextInput(_type) {
 		isComplete = checkQuestionComplete();
 
 		questionCount = $(data).find("page").eq(currentPage).find("question").length;
+		scormVersion = $(data).find('scormVersion').attr('value');
 
 		//randomize currentEditBankMember
 
@@ -306,11 +308,49 @@ function C_TextInput(_type) {
 			}
 		}		
 
-		if(allComplete){
+
+		//set SCORM objectives
+		if(scormVersion.indexOf('USSOCOM') == -1){
+			var _objId = "";
+	    	if(myObjective != undefined && myObjective !== "undefined"){
+	    		//console.log(i + " : " + pageObj);
+	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjective.replace(/\s+/g, '_');
+
+	    	}
+
+	    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+	    		if(_objId.length > 0){
+	    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+	    		}
+	    		else{
+		 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+	    		}
+	    	}
+
+			if(_objId.length > 0){	
+				_objId += "_id";
+				if(allComplete && graded){
+					setObjectiveSuccess(_objId, true);
+				}
+				else if(!allComplete && graded){
+					setObjectiveSuccess(_objId, false);
+				}
+			}	
+		}	
+
+		if(allComplete){					
 			updateScoring(selected_arr, allComplete, null, null);
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
+
+
+
 	}
 
 	function returnTCFeedback(id){
@@ -378,7 +418,7 @@ function C_TextInput(_type) {
 	}	
 
 	function updateQuestionEditDialog(){
-		var msg = "<div id='questionEditDialog' title='Create Text Input Question'>";
+		var msg = "<div id='questionEditDialog' title='Create Text Input Question(s)'>";
 		msg += "<label id='label'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
