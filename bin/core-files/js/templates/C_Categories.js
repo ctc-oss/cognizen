@@ -107,7 +107,7 @@ function C_Categories(_type) {
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()) + 5);
 		$("#categoryHolder").height($("#contentHolder").height() - $("#categoryHolder").position().top - 5);
 		
-		if(isComplete){
+		if(isComplete && mode != "edit"){
 			if(cycle){
 				TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 				doPageCompleteCycle();

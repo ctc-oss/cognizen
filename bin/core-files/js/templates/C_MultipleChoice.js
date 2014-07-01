@@ -133,7 +133,7 @@ function C_MultipleChoice(_type) {
 		
 		order_arr = [];
 		//Randomize the answer order or set from previous...
-		if(isComplete){
+		if(isComplete  && mode != "edit"){
 			for(var k=0; k<questionResponse_arr.length; k++){
 				if(currentPageID == questionResponse_arr[k].id){
 					order_arr = [];

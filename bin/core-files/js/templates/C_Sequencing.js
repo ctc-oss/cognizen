@@ -108,7 +108,7 @@ function C_Sequencing(_type) {
 		////Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		
-		if(isComplete){
+		if(isComplete && mode != "edit"){
 			for(var k=0; k<questionResponse_arr.length; k++){
 				if(currentPageID == questionResponse_arr[k].id){
 					for(var h = 0; h < questionResponse_arr[k].userAnswer.length; h++){

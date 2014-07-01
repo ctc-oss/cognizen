@@ -72,7 +72,7 @@ function C_QuestionBank(_type) {
 		isComplete = checkQuestionComplete();
 		bankLength = $(data).find("page").eq(currentPage).find("bankitem").length;
 		
-		if(isComplete){
+		if(isComplete && mode != "edit"){
 			for(var i = 0; i < questionResponse_arr.length; i++){
 				if(currentPageID == questionResponse_arr[i].id){
 					bankitem = questionResponse_arr[i].bankID;
