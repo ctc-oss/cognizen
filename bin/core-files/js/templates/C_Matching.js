@@ -710,6 +710,7 @@ function C_Matching(_type) {
 			modal: true,
 			width: 800,
 			height: 650,
+			dialogClass: "no-close",
 			close: function(){
 				CKEDITOR.instances["feedbackEditText"].destroy();
 				
@@ -724,16 +725,13 @@ function C_Matching(_type) {
 				$("#questionEditDialog").remove();
 			},
 			buttons: {
-				Cancel: function(){
-					$("#questionEditDialog").dialog("close");
-				},
 				AddOption: function(){
 					addOption(optionEdit_arr.length, true);	
 				},
 				AddAnswer: function(){
 					addAnswer(answerEdit_arr.length, true);	
 				},
-				Save: function(){
+				Done: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
 					tmpObj.objective = $("#inputObjective").val();
@@ -796,10 +794,9 @@ function C_Matching(_type) {
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
-	    $('button').eq(4).attr('title', 'Adds a new matching option.');
-	    $('button').eq(5).attr('title', 'Adds a new matching answer.');
-	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
+	    $('button').eq(3).attr('title', 'Adds a new matching option.');
+	    $('button').eq(4).attr('title', 'Adds a new matching answer.');
+	    $('button').eq(5).attr('title', 'Closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });

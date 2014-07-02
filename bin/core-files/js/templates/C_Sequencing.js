@@ -455,14 +455,12 @@ function C_Sequencing(_type) {
 			modal: true,
 			width: 800,
 			height: 650,
+			dialogClass: "no-close",
 			buttons: {
-				Cancel: function(){
-					$( this ).dialog( "close" );	
-				},
 				Add: function(){
 					addOption(optionEdit_arr.length, true);	
 				},
-				Save: function(){
+				Done: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
 					tmpObj.objective = $("#inputObjective").val();
@@ -503,9 +501,8 @@ function C_Sequencing(_type) {
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
-	    $('button').eq(4).attr('title', 'Adds a new sequencing option.');
-	    $('button').eq(5).attr('title', 'Saves and closes the edit dialog.');
+	    $('button').eq(1).attr('title', 'Adds a new sequencing option.');
+	    $('button').eq(2).attr('title', 'Closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });

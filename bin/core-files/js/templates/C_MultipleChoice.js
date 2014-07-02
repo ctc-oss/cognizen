@@ -608,14 +608,12 @@ function C_MultipleChoice(_type) {
 			modal: true,
 			width: 800,
 			height: 650,
+			dialogClass: "no-close",
 			buttons: {
-				Cancel: function(){
-					$( this ).dialog( "close" );	
-				},
 				Add: function(){
 					addOption(optionEdit_arr.length, true);	
 				},
-				Save: function(){
+				Done: function(){
 					var tmpObj = new Object();
 					tmpObj.attempts = $("#inputAttempts").val();
 					tmpObj.objective = $("#inputObjective").val();

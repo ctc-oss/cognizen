@@ -686,10 +686,8 @@ function C_QuestionBank(_type) {
 			modal: true,
 			width: 800,
 			height: 650,
+			dialogClass: "no-close",
 			buttons: {
-				Cancel: function(){
-					$( this ).dialog( "close" );	
-				},
 				AddQuestion: function(){
 					var tmpObj = makeQuestionDataStore();
 					saveQuestionEdit(tmpObj);
@@ -698,7 +696,7 @@ function C_QuestionBank(_type) {
 				AddOption: function(){
 					addOption(optionEdit_arr.length, true);	
 				},
-				Save: function(){
+				Done: function(){
 					var tmpObj = makeQuestionDataStore();
 					saveBankEdit(tmpObj);
 					$("#questionEditDialog").dialog("close");
@@ -710,10 +708,9 @@ function C_QuestionBank(_type) {
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
-	    $('button').eq(4).attr('title', 'Adds a new question.');
-	    $('button').eq(5).attr('title', 'Adds a new matching option.');
-	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
+	    $('button').eq(3).attr('title', 'Adds a new question.');
+	    $('button').eq(4).attr('title', 'Adds a new matching option.');
+	    $('button').eq(5).attr('title', 'Closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });		

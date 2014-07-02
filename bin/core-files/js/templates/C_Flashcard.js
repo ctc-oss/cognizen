@@ -235,14 +235,12 @@ function C_Flashcard(_type) {
 					modal: true,
 					width: 600,
 					height: 500,
+					dialogClass: "no-close",
 					buttons: {
-						Cancel: function(){
-							$( this ).dialog( "close" );
-						},
 						Add: function(){
 							addCard(cardEdit_arr.length, true);	
 						},
-						Save: function(){
+						Done: function(){
 							/*if($("#isMandatory").prop("checked") == true){
 								$(data).find("page").eq(currentPage).attr("mandatory", "true");
 							}else{

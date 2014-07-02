@@ -209,11 +209,12 @@ function C_TabbedContent(_type) {
 					modal: true,
 					width: 875,
 					height: 650,
+					dialogClass: "no-close",
 					buttons: {
 						Add: function(){	
 							addTab(tabEdit_arr.length, true);	
 						},
-						Save: function(){
+						Done: function(){
 							var tmpArray = new Array();
 							for(var i = 0; i < tabEdit_arr.length; i++){
 								var tmpObj = new Object();
