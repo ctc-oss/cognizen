@@ -102,7 +102,10 @@ function C_Flashcard(_type) {
 		$("#flashcardHolder").height($("#card0").height());
 		
 		if(transition == true){
-			if (virgin == true){
+			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
+		}else{
+			checkMode();
+			/*if (virgin == true){
 				TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
 				virgin = false;
 			}else{
@@ -112,7 +115,7 @@ function C_Flashcard(_type) {
 			if (virgin == true){
 				checkMode();
 				virgin = false;
-			}
+			}*/
 		}		
 		enableNextCard();
 		if(randomize == true){
@@ -166,41 +169,16 @@ function C_Flashcard(_type) {
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
+		console.log("checkMode called");
 		$('.antiscroll-wrap').antiscroll();
-		
-		if(mode == "edit"){
-			/**
-			* Edit Content
-			*/
-			//Add and style contentEdit button
-			$("#content").attr('contenteditable', true);
-            CKEDITOR.disableAutoInline = true;
-			CKEDITOR.inline( 'content', {
-				on: {
-					blur: function (event){
-						if(cachedTextPreEdit != event.editor.getData()){
-							saveContentEdit(event.editor.getData());
-						}
-						enableNext();
-						enableBack();
-					},
-					focus: function (event){
-						cachedTextPreEdit = event.editor.getData();
-						disableNext();
-						disableBack();
-					}
-				},
-				toolbar: contentToolbar,
-				toolbarGroups :contentToolgroup,
-				extraPlugins: 'sourcedialog',
-				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-			});
-			
+		console.log("mode = " + mode);
+		if(mode === "edit"){
 			/**
 			* Edit Cards
 			*/
+			console.log("wtf is going on");
 			$('#flashcardHolder').append("<div id='cardEdit' class='btn_edit_text' title='Edit Cards'></div>");
-			
+			console.log("card edit should be appended...");
 			$("#cardEdit").click(function(){
 				cardEdit_arr.length = 0;
 				//Create the Content Edit Dialog
@@ -272,6 +250,35 @@ function C_Flashcard(_type) {
 					} 
 				});
 			}).tooltip();
+			console.log("it says mode is edit and I can edit the ckeditor below...");
+			/**
+			* Edit Content
+			*/
+			//Add and style contentEdit button
+			$("#content").attr('contenteditable', true);
+            CKEDITOR.disableAutoInline = true;
+			CKEDITOR.inline( 'content', {
+				on: {
+					blur: function (event){
+						if(cachedTextPreEdit != event.editor.getData()){
+							saveContentEdit(event.editor.getData());
+						}
+						enableNext();
+						enableBack();
+					},
+					focus: function (event){
+						cachedTextPreEdit = event.editor.getData();
+						disableNext();
+						disableBack();
+					}
+				},
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				extraPlugins: 'sourcedialog',
+				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+			});
+			console.log("made it to here...");
+			
 		}
 		$(this).scrubContent();	
 	}
