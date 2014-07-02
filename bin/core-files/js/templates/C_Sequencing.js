@@ -511,6 +511,17 @@ function C_Sequencing(_type) {
 	    });
 	}
 	
+	function removeOption(_id){
+		for(var i = 0; i < optionEdit_arr.length; i++){
+			if(_id == $("#"+optionEdit_arr[i]+"Container").attr("value")){
+				var arrIndex = i;
+				break;
+			}
+		}
+		$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
+		optionEdit_arr.splice(arrIndex, 1);
+		$("#option" + _id +"Container").remove();
+	}
 	
 	function addOption(_addID, _isNew){
 		var optionID = "option" + _addID;
