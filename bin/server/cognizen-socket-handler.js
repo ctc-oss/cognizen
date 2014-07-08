@@ -80,7 +80,7 @@ var SocketHandler = {
                                     
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
-                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg"];
+                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf"];
                                     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
                                     var convertableVectorTypes = ["eps"];
                                     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];

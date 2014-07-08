@@ -1688,7 +1688,11 @@ MATCHING LAYOUTS
 }
 /************************************************************** KNOWLEDGE CHECK END *****/
 
-
+#help{
+	position:absolute;
+	top:720px; 
+	left: 590px;
+}
 
 #back{
 	position:absolute;
@@ -1696,11 +1700,11 @@ MATCHING LAYOUTS
 	left: 695px;
 }
 
-#back.disabled{
+#help.disabled, #back.disabled{
 	opacity: 0.2;
 }
 
-#back.disabled:hover{
+#help.disabled:hover, #back.disabled:hover{
 	opacity: 0.2;
 }
 
@@ -3334,8 +3338,20 @@ a.fancybox-expand {
 		height: 50px;
 		border-radius: 0px;
 	}
+
+	#help{
+		position: fixed;
+		top: auto;
+		opacity: 1.0;
+		filter: alpha(opacity=100); /* For IE8 and earlier */
+		left: 90%;
+		/*bottom: 92%;*/
+		width: 40px;
+		height: 40px;
+		border-radius: 0px;		
+	}	
 	
-	#back:focus, #next:focus{
+	#back:focus, #next:focus, #help:focus{
 		outline: 0px;
 	}
 

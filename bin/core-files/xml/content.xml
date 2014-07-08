@@ -36,6 +36,7 @@
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
 			<finalLesson value="false"/>
+			<help value="false" url="media/test.png"/>
 		</preferences>
 		<glossary value="false">
 			<glossaryitem> 

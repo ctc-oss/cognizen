@@ -62,21 +62,19 @@ function checkNav(){
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
 	helpButton = $(data).find('help').attr('value');
-	if(helpButton == "true"){
-		helpButton = true;
-		$('#myCanvas').append("<button id='help'>help</button>");
-		//Style the Help button and give it its listener
-		$("#help").button({
-			icons:{
-				primary: 'ui-icon-help'
-			}
-		});
-		//grab URL of help file and attach click action
-		helpURL = $(data).find('help').attr('url');
-		$("#help").click(function() {
-			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width=807, height=750');
-		});
+	if(helpButton == undefined || helpButton == "undefined"){
+		$(data).find("preferences").append($('<help>'));
+		// var newHelp = new DOMParser().parseFromString('<help></help>',  "text/xml");
+		// $(data).find("help").append(newHelp);		
+		$(data).find("help").attr("value", "false");
+		$(data).find("help").attr("url", "");
+		helpButton = false;
 	}
+	else{
+		helpButton = ($(data).find('help').attr('value') === 'true');
+	}
+
+	checkHelp();
 
 	//Check if we are using print button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
@@ -191,12 +189,20 @@ function launchPrefs(){
 	msg += "<label id='label'>Glossary: </label>";
 	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
 	msg += "</div><br/>";
+	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help File'>"
+	msg += "<label id='helpLabel'>Help File: </label>";
+	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'/>";	
+	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>HelpDrop</div>";
+	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
+	msg += "</div><br/>";
 	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
 	
 	$("#stage").append(msg);
 	
+
+
 	//Make it a dialog
 	$("#dialog-lessonPrefs").dialog({
 		modal: true,
@@ -228,10 +234,57 @@ function launchPrefs(){
 	
 	if(glossary == true){
 		$("#hasGlossary").attr('checked', true);
-	}else{
+	} else{
 		$("#hasGlossary").attr('checked', false);
 	}
-	
+	var contentId = urlParams['type'] + '_' + urlParams['id'];
+
+	siofu.listenOnInput(document.getElementById("inputHelp"));
+
+	$("#inputHelp").attr('data-content', contentId);
+	$("#inputHelp").find('*').attr('data-content', contentId);
+
+	if(helpButton == true){
+		$("#hasHelp").attr('checked', true);
+	} else{
+		$("#hasHelp").attr('checked', false);
+	}
+
+	$("#hasHelp").click(function() {
+		$("#inputHelp").toggle(this.checked);
+	});
+
+	$("#inputHelp").click(function(){
+		siofu.prompt($("#inputHelp").attr('data-content'));	
+	});
+
+	siofu.addEventListener("complete", function(event){
+		siofu.removeEventListener("complete");
+		siofu.removeEventListener("load");
+		//if successful upload, else....
+		var myFile = event.file.name;
+		var myExt = getExtension(myFile);
+	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf"];
+        if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
+			if(event.success == true){
+				$(data).find('help').attr('url', 'media/' + myFile );
+				$("#selectedHelp").text(myFile);
+				$("#hasHelp").attr('checked', true);
+			}else{
+				$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+				//Theres an error
+				//Style it to jQuery UI dialog
+				$("#uploadErrorDialog").dialog({
+			    	autoOpen: true,
+					modal: true,
+					width: 400,
+					height: 200,
+					buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+				});
+			}
+		}
+	});
+
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
 	
 	$("#hasGlossaryDialog").tooltip();
@@ -283,6 +336,17 @@ function savePreferences(_pub){
 		$(data).find('scormVersion').attr('value', selectedScorm);
 		updateNeeded = true;
 	}
+
+	var helpSelected = $("#hasHelp").is(':checked');
+	if(helpButton != helpSelected){
+		$(data).find('help').attr('value', helpSelected);
+		updateNeeded = true;
+	}
+
+	if(helpSelected){
+		helpButton = true;
+	}
+	else{ helpButton = false; }
 	 
 	if(updateNeeded == true && _pub != true){
 		sendUpdateWithRefresh("updatePrefs");
@@ -319,6 +383,7 @@ function updatePrefs(_pub){
 			if(_pub == true){
 				clickPublish();
 			}
+			checkHelp();
 		},
 		error: function(){
 	   		alert("unable to load content.xml in updatePrefs")
@@ -349,6 +414,28 @@ function clickPublish(){
 	$("#dialog-lessonPrefs").dialog("close");
 }
 
+function checkHelp(){
+	if(helpButton == true){
+		if($("#help").length == 0){
+			$('#myCanvas').append("<button id='help'>help</button>");
+			//Style the Help button and give it its listener
+			$("#help").button({
+				icons:{
+					primary: 'ui-icon-help'
+				}
+			});
+
+		}
+		//grab URL of help file and attach click action
+		helpURL = $(data).find('help').attr('url');
+		$("#help").click(function() {
+			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width=807, height=750');
+		});		
+	}
+	else{
+		$("#help").remove();
+	}
+}
 
 ////checkLock Mode and enable pass functions....
 function checkLockMode(){
