@@ -288,6 +288,8 @@ function launchPrefs(){
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
 	
 	$("#hasGlossaryDialog").tooltip();
+	$("#helpDialog").tooltip();
+
 }
 
 function openCommentKillerDialog(){
