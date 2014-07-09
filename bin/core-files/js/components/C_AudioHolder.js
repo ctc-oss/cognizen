@@ -52,10 +52,10 @@ function C_AudioHolder(){
 	 		
 	 		$("#audioDrop").click(function(){
 				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-				siofu.prompt($("#audioDrop").attr('data-content'));
+				siofuAudio.prompt($("#audioDrop").attr('data-content'));
 			}).tooltip();
 			
-			siofu.listenOnDrop(document.getElementById("audioDrop"));
+			siofuAudio.listenOnDrop(document.getElementById("audioDrop"));
      	} 
 		
 		$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
@@ -79,9 +79,9 @@ function C_AudioHolder(){
 			launchAudioDialog(audioText, false);
 		}).tooltip();
 		
-		siofu.addEventListener("complete", function(event){
-			siofu.removeEventListener("complete");
-			siofu.removeEventListener("load");
+		siofuAudio.addEventListener("complete", function(event){
+			siofuAudio.removeEventListener("complete");
+			siofuAudio.removeEventListener("load");
 			//if successful upload, else....
 						
 			var myFile = event.file.name;
@@ -136,7 +136,7 @@ else{
 			}
 		});
 		
-		siofu.addEventListener("start", function(event){
+		siofuAudio.addEventListener("start", function(event){
 			var myFile = event.file.name;
 			var myExt = getExtension(myFile);
 			if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
@@ -357,7 +357,7 @@ else{
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	this.destroy = function(){
-		try { siofu.destroy(); } catch (e) {}
+		try { siofuAudio.destroy(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}

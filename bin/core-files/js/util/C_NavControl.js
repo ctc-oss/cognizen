@@ -239,7 +239,7 @@ function launchPrefs(){
 	}
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 
-	siofu.listenOnInput(document.getElementById("inputHelp"));
+	siofuHelp.listenOnInput(document.getElementById("inputHelp"));
 
 	$("#inputHelp").attr('data-content', contentId);
 	$("#inputHelp").find('*').attr('data-content', contentId);
@@ -255,16 +255,16 @@ function launchPrefs(){
 	});
 
 	$("#inputHelp").click(function(){
-		siofu.prompt($("#inputHelp").attr('data-content'));	
+		siofuHelp.prompt($("#inputHelp").attr('data-content'));	
 	});
 
-	siofu.addEventListener("complete", function(event){
-		siofu.removeEventListener("complete");
-		siofu.removeEventListener("load");
+	siofuHelp.addEventListener("complete", function(event){
+		siofuHelp.removeEventListener("complete");
+		siofuHelp.removeEventListener("load");
 		//if successful upload, else....
 		var myFile = event.file.name;
 		var myExt = getExtension(myFile);
-	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf"];
+	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
         if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
 			if(event.success == true){
 				$(data).find('help').attr('url', 'media/' + myFile );
@@ -283,6 +283,11 @@ function launchPrefs(){
 				});
 			}
 		}
+		else if(myExt == "zip" || myExt == "ZIP"){
+			// $("#mediaLoaderText").empty();
+			// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+			cognizenSocket.on('unzipComplete', unzipComplete);				
+		}		
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));

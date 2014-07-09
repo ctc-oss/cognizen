@@ -649,7 +649,7 @@ function C_Dashboard(_type) {
     function doPrefs(myParent){
 	    currentParent = myParent;
 	    currentLevel = myParent.data('type');
-	    
+
 	    var msg;
 	    if (currentLevel == "program") {
         	msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
@@ -693,7 +693,8 @@ function C_Dashboard(_type) {
             msg += "<option>1.2_CTCU</option>";
             msg += "<option>none</option>";
             msg += "</select></form>";
-            msg += "</p>";         
+            msg += "</p>";
+                    
             msg += '</div>';
             enableRenameContentKeyEvents()
         }

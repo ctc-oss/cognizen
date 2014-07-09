@@ -14,9 +14,8 @@
  */
  
 var xhr = false;
-var socket;
-var cognizenSocket;
-var siofu;
+var socket, cognizenSocket, audioSocket, helpSocket;
+var siofu, siofuAudio, siofuHelp; 
 var siofuInitialized = {};
 var forcedReviewer = false;
 var activeEditor;
@@ -176,7 +175,28 @@ function initializeSockets(){
 	        //console.log('FOO');
 	    });
 
+		//Simple listener checking connectivity
+		cognizenSocket.on('setUsername', function (data) {
+           username = data.username.username;
+           if(username == undefined){
+	           alert("your username was not set properly. please close this lesson, log out and try to log back in.");
+           }
+		});
+
+	    //used in C_VisualMediaHolder.js
 	    siofu = new SocketIOFileUpload(cognizenSocket);
+
+	    //socket and siofu for audio file upload
+	    audioSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});	
+	    
+	    siofuAudio = new SocketIOFileUpload(audioSocket); 
+
+	    //socket and siofu for help file upload
+	    helpSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});	    
+	    
+	    siofuHelp = new SocketIOFileUpload(helpSocket);
 
 		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
                          io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
@@ -186,14 +206,6 @@ function initializeSockets(){
 		//}else{
 			//socket = io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
 		//}
-		
-		//Simple listener checking connectivity
-		cognizenSocket.on('setUsername', function (data) {
-           username = data.username.username;
-           if(username == undefined){
-	           alert("your username was not set properly. please close this lesson, log out and try to log back in.");
-           }
-		});
 		
 		socket.on('siofu_progress', function (data) {
             //console.log('progress data: ' + data);
