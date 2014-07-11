@@ -470,7 +470,7 @@ function C_TextInput(_type) {
 		msg += "<br/></div></div>";
 		$("#stage").append(msg);
 
-		$("#questionEditText").append($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("content").text());
+		$("#questionEditText").append($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("content").text().replace("<p>", "").replace("</p>", ""));
 		$("#inputCorrectResponse").append($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("correctresponse").eq(0).text());
 		$("#removeBankItem").click(removeBankItem).tooltip();
 
@@ -546,37 +546,46 @@ function C_TextInput(_type) {
 			modal: true,
 			width: 875,
 			height: 650,
-			buttons: {
+			buttons: [
 				// Cancel: function(){
 				// 	$("#questionEditDialog").remove();	
 				// },
-				AddQuestion: function(){
-					var tmpObj = makeQuestionDataStore();
-					saveQuestionEdit(tmpObj);
-					addQuestion(questionCount);	
+				{
+					text: "Add Question",
+					title: "Adds a new question.",
+					click: function(){
+						var tmpObj = makeQuestionDataStore();
+						saveQuestionEdit(tmpObj);
+						addQuestion(questionCount);
+					}	
 				},
-				AddAcceptedResponse: function(){
-					addAcceptedResponse(acceptedResponseEdit_arr.length, true);
+				{
+					text: "Add Accepted Response",
+					title: "Adds a new acceptec response phrase.",
+					click: function(){
+						addAcceptedResponse(acceptedResponseEdit_arr.length, true);
+					}
 				},
-				AddFeedback: function(){
-					addDiffeed(diffeedEdit_arr.length, true);
+				{
+					text: "Add Feedback",
+					title: "Adds a new feedback based off of the number of attempts.",
+					click: function(){
+						addDiffeed(diffeedEdit_arr.length, true);
+					}
 				},
-				Done: function(){
-					var tmpObj = makeQuestionDataStore();
-					saveBankEdit(tmpObj);
-					$("#questionEditDialog").dialog("close");
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						var tmpObj = makeQuestionDataStore();
+						saveBankEdit(tmpObj);
+						$("#questionEditDialog").dialog("close");
+					}
 				}
-			},
-			close: function(){
-				$("#questionEditDialog").remove();
-			}
+			]
 		});	
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Adds a new question.');
-	    $('button').eq(4).attr('title', 'Adds a new accepted response phrase.');
-	    $('button').eq(5).attr('title', 'Adds a new feedback based off of the number of attempts.');
-	    $('button').eq(6).attr('title', 'Saves and closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });
