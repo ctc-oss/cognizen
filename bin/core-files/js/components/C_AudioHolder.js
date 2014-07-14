@@ -52,10 +52,10 @@ function C_AudioHolder(){
 	 		
 	 		$("#audioDrop").click(function(){
 				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-				siofuAudio.prompt($("#audioDrop").attr('data-content'));
+				siofu.prompt($("#audioDrop").attr('data-content'));
 			}).tooltip();
 			
-			siofuAudio.listenOnDrop(document.getElementById("audioDrop"));
+			siofu.listenOnDrop(document.getElementById("audioDrop"));
      	} 
 		
 		$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
@@ -79,64 +79,68 @@ function C_AudioHolder(){
 			launchAudioDialog(audioText, false);
 		}).tooltip();
 		
-		siofuAudio.addEventListener("complete", function(event){
-			siofuAudio.removeEventListener("complete");
-			siofuAudio.removeEventListener("load");
-			//if successful upload, else....
-						
-			var myFile = event.file.name;
-			var myExt = getExtension(myFile);
-		    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
-            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
-			if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
-				if(event.success == true){
-					if(myExt == "mp3" || myExt == "MP3"){
-						launchAudioDialog(myFile, true)
-					}/*
-else{
-						saveImageEdit(myFile, true);
-					}
-*/
-				}else{
-					$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
-					//Theres an error
-					//Style it to jQuery UI dialog
-					$("#uploadErrorDialog").dialog({
-				    	autoOpen: true,
-						modal: true,
-						width: 400,
-						height: 200,
-						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-					});
-				}
-				$("#mediaLoader").remove();
-			}else if(myExt == "zip" || myExt == "ZIP"){
-				//$("#mediaLoaderText").empty();
-				//$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-				//cognizenSocket.on('unzipComplete', unzipComplete);			
-			}else{
-				$("#mediaLoaderText").empty();
-				$("#mediaLoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-				$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
-				$("#conversionProgress").progressbar({
-					value: 0,
-					change: function() {
-						$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
-					},
-					complete: function() {
-						$(".progress-label").text("Complete!");
-					}
-				});
+		siofu.addEventListener("complete", function(event){
+			//checks to make sure the lessons prefs dialog or mediaDrop dialog are not open.  
+			//help files are uploaded through the lessons prefs dialog
+			if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){		
+				siofu.removeEventListener("complete");
+				siofu.removeEventListener("load");
+				//if successful upload, else....
 							
-				$("#conversionProgress > div").css({ 'background': '#3383bb'});
-															
-				cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
-				cognizenSocket.on('mediaInfo', mediaInfo);
-				cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+				var myFile = event.file.name;
+				var myExt = getExtension(myFile);
+			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
+	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
+					if(event.success == true){
+						if(myExt == "mp3" || myExt == "MP3"){
+							launchAudioDialog(myFile, true)
+						}/*
+	else{
+							saveImageEdit(myFile, true);
+						}
+	*/
+					}else{
+						$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+						//Theres an error
+						//Style it to jQuery UI dialog
+						$("#uploadErrorDialog").dialog({
+					    	autoOpen: true,
+							modal: true,
+							width: 400,
+							height: 200,
+							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+						});
+					}
+					$("#mediaLoader").remove();
+				}else if(myExt == "zip" || myExt == "ZIP"){
+					//$("#mediaLoaderText").empty();
+					//$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+					//cognizenSocket.on('unzipComplete', unzipComplete);			
+				}else{
+					$("#mediaLoaderText").empty();
+					$("#mediaLoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+					$("#conversionProgress").progressbar({
+						value: 0,
+						change: function() {
+							$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+						},
+						complete: function() {
+							$(".progress-label").text("Complete!");
+						}
+					});
+								
+					$("#conversionProgress > div").css({ 'background': '#3383bb'});
+																
+					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+					cognizenSocket.on('mediaInfo', mediaInfo);
+					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+				}
 			}
 		});
 		
-		siofuAudio.addEventListener("start", function(event){
+		siofu.addEventListener("start", function(event){
 			var myFile = event.file.name;
 			var myExt = getExtension(myFile);
 			if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
@@ -218,13 +222,13 @@ else{
     function launchAudioDialog(audioText, dragged){
 		var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
 		msg += "<label id='label'>file name: </label>";
-		msg += "<input id='audioPath' class='dialogInput' type='text' value="+ audioText + " defaultValue="+ audioText + " style='width:70%;'/><br/>";
+		msg += "<input id='audioPath' class='dialogInput' type='text' title='Name of the audio file.' value="+ audioText + " defaultValue="+ audioText + " style='width:70%;'/><br/>";
 		msg += "<label id='label'>autoplay:</label>";
-		msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
+		msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true' title='Add/Remove Autoplay Functionality.'/></input><br/>";
 		msg += "<label id='label'>autonext:</label>";
-		msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+		msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true' title='Add/Remove Autonext Functionality.'/></input><br/>";
 		msg += "<label id='label'>subtitle:</label>";
-		msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
+		msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true' title='Add/Remove Subtitle Functionality.'/></input>";
 		msg += "</div>";
 							
 		$("#stage").append(msg);
@@ -248,18 +252,30 @@ else{
 			modal: true,
 			width: 450,
 			height: 400,
-			buttons:{
-				Cancel: function(){
-					$(this).dialog("close");
+			buttons:[
+				{
+					text: "Cancel",
+					title: "Cancel any changes.",
+					click: function(){
+						$(this).dialog("close");
+					}
 				},
-				Save: function(){
-					saveAudioEdit();
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						saveAudioEdit();
+					}
 				}
-			},
-			close: function(){
-				$(this).remove();
-			}
+			]
+			// close: function(){
+			// 	$(this).remove();
+			// }
 		});
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });		
 	}
 	
 	/**********************************************************************
@@ -357,7 +373,7 @@ else{
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	this.destroy = function(){
-		try { siofuAudio.destroy(); } catch (e) {}
+		try { siofu.destroy(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}

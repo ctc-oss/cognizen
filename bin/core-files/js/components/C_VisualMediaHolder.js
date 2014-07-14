@@ -357,15 +357,15 @@ function C_VisualMediaHolder(callback){
 			
 			//Establish it's functionality
 			$("#imgEdit").click(function(){
-				var msg = "<div id='imgDialog' title='Input Media Path'>";
+				var msg = "<div id='imgDialog' title='Input Media Path' title='Media Edit Window'>";
 				msg += "<label id='label'>file name: </label>";
-				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+				msg += "<input id='imgPath' class='dialogInput' type='text' title='Path and name of the file.' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
 				msg += "<br/>";
 				msg += "<label id='label'>large version: </label>";
-				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
-				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
-            	msg += "<label id='label'>ALT text: </label>";
-            	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
+				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true' title='Add/Remove Enlargable Image.'/>";
+				msg += "<input id='lrgImgPath' class='dialogInput' type='text' title='Path and name of the enlargable image.' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
+            	msg += "<br/><label id='label'>ALT text: </label>";
+            	msg += "<input id='altTextEdit' class='dialogInput' type='text' title='Edit the alt text for the image. ' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
             	msg += "<br/><br/></div>";
             	$("#stage").append(msg);
                 	
@@ -381,27 +381,45 @@ function C_VisualMediaHolder(callback){
 
 				$("#imgDialog").dialog({
                     autoOpen: true,
+                    dialogClass: "no-close",
 				   	modal: true,
 				   	width: 550,
 				   	height: 680,
 				   	resizable: false,
-				   	buttons: {
-						Cancel: function(){
-							$("#imgDialog").dialog( "close" );
+				   	buttons: [
+						{
+							text: "Cancel",
+							title: "Cancel any changes.",
+							click: function(){
+								$("#imgDialog").dialog( "close" );
+							}
 						},
-						Add: function(){
-							addGalleryItem(media_arr.length, true);
+						{
+							text: "Add",
+							title: "Add additional images.",
+							click: function(){
+								addGalleryItem(media_arr.length, true);
+							}
 						},
-						Save: function(){
-							saveImageEdit($("#imgPath").val());
+						{
+							text: "Done",
+							title: "Saves and closes the edit dialog.",
+							click: function(){
+								saveImageEdit($("#imgPath").val());
+							}
 						}
-					},
-					close: function(){
-						$("#imgDialog").remove();
-					}
+					]
+					// close: function(){
+					// 	$("#imgDialog").remove();
+					// }
 				});
-			}).tooltip();
+			});
 			
+			//adds tooltips to the edit dialog buttons
+		    $(function () {
+		        $(document).tooltip();
+		    });
+
 			/*******************************************************
 			* Drag and Drop Upload &&& Click Image for browse to image to upload
 			********************************************************/
@@ -423,85 +441,93 @@ function C_VisualMediaHolder(callback){
 			}
 			
 			siofu.addEventListener("complete", function(event){
-				siofu.removeEventListener("complete");
-				siofu.removeEventListener("load");
-				//if successful upload, else....
-				var myFile = event.file.name;
-				var myExt = getExtension(myFile);
-			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
-	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
-	            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
-					if(event.success == true){
-						saveImageEdit(myFile, true);
-					}else{
-						$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+				//checks to make sure the lessons prefs dialog or mediaDrop dialog are not open. 
+				//help files are uploaded through the lessons prefs dialog
+				debugger;
+				if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){
+					siofu.removeEventListener("complete");
+					siofu.removeEventListener("load");
+					
+					//if successful upload, else....
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+				    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
+		            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
+		            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+					if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
+						if(event.success == true){
+							saveImageEdit(myFile, true);
+						}else{
+							$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+							//Theres an error
+							//Style it to jQuery UI dialog
+							$("#uploadErrorDialog").dialog({
+						    	autoOpen: true,
+								modal: true,
+								width: 400,
+								height: 200,
+								buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+							});
+						}
+						$("#mediaLoader").remove();
+					}else if(myExt == "zip" || myExt == "ZIP"){
+						$("#mediaLoaderText").empty();
+						$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+						cognizenSocket.on('unzipComplete', unzipComplete);				
+					}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase() >= 0)){
+						$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
 						//Theres an error
 						//Style it to jQuery UI dialog
 						$("#uploadErrorDialog").dialog({
 					    	autoOpen: true,
 							modal: true,
 							width: 400,
-							height: 200,
+							height: 300,
 							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 						});
+						$("#mediaLoader").remove();			
+					}else{
+						$("#mediaLoaderText").empty();
+						$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+						$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+						$("#conversionProgress").progressbar({
+							value: 0,
+							change: function() {
+								$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+							},
+							complete: function() {
+								$(".progress-label").text("Complete!");
+							}
+						});
+									
+						$("#conversionProgress > div").css({ 'background': '#3383bb'});
+																	
+						cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+						cognizenSocket.on('mediaInfo', mediaInfo);
+						cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 					}
-					$("#mediaLoader").remove();
-				}else if(myExt == "zip" || myExt == "ZIP"){
-					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-					cognizenSocket.on('unzipComplete', unzipComplete);				
-				}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase() >= 0)){
-					$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
-					//Theres an error
-					//Style it to jQuery UI dialog
-					$("#uploadErrorDialog").dialog({
-				    	autoOpen: true,
-						modal: true,
-						width: 400,
-						height: 300,
-						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-					});
-					$("#mediaLoader").remove();			
-				}else{
-					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
-					$("#conversionProgress").progressbar({
-						value: 0,
-						change: function() {
-							$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
-						},
-						complete: function() {
-							$(".progress-label").text("Complete!");
-						}
-					});
-								
-					$("#conversionProgress > div").css({ 'background': '#3383bb'});
-																
-					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
-					cognizenSocket.on('mediaInfo', mediaInfo);
-					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 				}
 			});
 			
 			siofu.addEventListener("start", function(event){
-				try { $("#loader").tooltip("destroy"); } catch (e) {}
-				var myFile = event.file.name;
-				var myExt = getExtension(myFile);
-				if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
-					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-					if (type != "top" && type != "bottom"){
-						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+				if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){
+					try { $("#loader").tooltip("destroy"); } catch (e) {}
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
+						try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+						if (type != "top" && type != "bottom"){
+							$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						}else{
+							$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						}
 					}else{
-						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						
+						$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
+						$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
+						$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
 					}
-				}else{
-					
-					$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
-					$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
-					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
-					$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
 				}
 			});
         }
@@ -736,7 +762,7 @@ function C_VisualMediaHolder(callback){
 			});
 		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "svg" || mediaType == "SVG"){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
-		}else if(mediaType == "html" || mediaType == "HTML" || mediatType == "htm" || mediaType == "HTM"){
+		}else if(mediaType == "html" || mediaType == "HTML" || mediaType == "htm" || mediaType == "HTM"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
 			
 			if(mediaWidth == 0){
@@ -871,6 +897,7 @@ function C_VisualMediaHolder(callback){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
+    	try { siofu.destroy(); } catch (e) {}
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}

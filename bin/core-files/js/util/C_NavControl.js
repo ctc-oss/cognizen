@@ -170,6 +170,127 @@ function addEditNav(){
 	});
 }
 
+function addMediaDrop(){
+	$("#myCanvas").append("<div id='mediaDrop' class='btn_mediaDrop' title='Add files to the media directory.'></div>");
+
+	$("#mediaDrop").click(function(){
+		launchMediaDrop();	
+	});
+
+	$("#mediaDrop").tooltip();
+}
+
+function launchMediaDrop(){
+
+	var msg = '<div id="dialog-mediaDrop" title="Media File Upload Window.">';
+	msg += "<div id='mediaDropDialog'>"
+	msg += '<p class="validateTips">Add media files to the media directory for the lesson by <br/>'
+	+ 'Dragging and Dropping file onto the Media Drop button or click on the button to browse your computer.</p>';
+	msg += "<div id='inputMedia' title='Browse for file to be used.' class='audioDropSpot'>Media Drop</div>";
+	msg += "<div id='inputFeedback' />";
+	msg += "<br/>";
+	msg += "</div></div>";
+	
+	$("#stage").append(msg);
+
+	//Make it a dialog
+	$("#dialog-mediaDrop").dialog({
+		dialogClass: "no-close",
+		modal: true,
+		width: 550,
+		buttons: [       
+            {
+	            text: "Done",
+	            title: "Saves and closes the media drop dialog.",
+	            click: function(){
+		            $(this).dialog("close");
+		            $("#dialog-mediaDrop").remove();
+		        }
+            }
+		]
+	});
+
+	//adds tooltips to the edit dialog buttons
+    $(function () {
+        $(document).tooltip();
+    });		
+
+	var contentId = urlParams['type'] + '_' + urlParams['id'];
+
+	$("#inputMedia").attr('data-content', contentId);
+	$("#inputMedia").find('*').attr('data-content', contentId);
+
+	$("#inputMedia").click(function(){
+		siofu.prompt($("#inputMedia").attr('data-content'));	
+	});
+
+	siofu.listenOnDrop(document.getElementById("inputMedia"));
+
+	siofu.addEventListener("complete", function(event){
+		if($('#dialog-mediaDrop').length > 0){	
+			siofu.removeEventListener("complete");
+			siofu.removeEventListener("load");
+			//if successful upload, else....
+			debugger;
+			var myFile = event.file.name;
+			var myExt = getExtension(myFile);
+		    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "swf", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+        	$("#inputFeedback").empty();
+	        if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
+				if(event.success == true){
+					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content. Use 'media/"+myFile+"' to create the link.</div>");
+				}else{
+					$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+					//Theres an error
+					//Style it to jQuery UI dialog
+					$("#uploadErrorDialog").tooltip().dialog({
+				    	autoOpen: true,
+						modal: true,
+						width: 400,
+						height: 200,
+						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+					});
+				}
+			}
+			else if(myExt == "zip" || myExt == "ZIP"){
+				$("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
+				cognizenSocket.on('unzipComplete', _unzipComplete);		
+				$("#dialog-mediaDrop").remove();		
+			}
+			else{
+				$("#stage").append("<div id='uploadConversionDialog' title='Upload Coverting'>The file format that you uploaded can't be played in most browsers. We are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments. <br/><br/></div>");
+				$("#uploadConversionDialog").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+				$("#conversionProgress").progressbar({
+					value: 0,
+					change: function() {
+						$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+					},
+					complete: function() {
+						$(".progress-label").text("Complete!");
+					}
+				});
+							
+				$("#conversionProgress > div").css({ 'background': '#3383bb'});
+
+				$("#uploadConversionDialog").tooltip().dialog({
+			    	autoOpen: true,
+					modal: true,
+					width: 400,
+					height: 300,
+					buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+				});			
+															
+				cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+				cognizenSocket.on('mediaInfo', mediaInfo);
+				cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+				$("#dialog-mediaDrop").remove();
+			}				
+		}
+	});
+
+	$("#dialog-mediaDrop").tooltip();
+
+}
 
 function launchPrefs(){
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
@@ -189,10 +310,10 @@ function launchPrefs(){
 	msg += "<label id='label'>Glossary: </label>";
 	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
 	msg += "</div><br/>";
-	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help File'>"
-	msg += "<label id='helpLabel'>Help File: </label>";
-	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'/>";	
-	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>HelpDrop</div>";
+	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
+	msg += "<label id='helpLabel'>Help: </label>";
+	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";	
+	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
 	msg += "</div><br/>";
 	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
@@ -205,25 +326,44 @@ function launchPrefs(){
 
 	//Make it a dialog
 	$("#dialog-lessonPrefs").dialog({
+		dialogClass: "no-close",
 		modal: true,
 		width: 550,
-		close: function(event, ui){
-				$("#dialog-lessonPrefs").remove();
-			},
-		buttons: {
-			Close: function () {
-            	$(this).dialog("close");
+		// close: function(event, ui){
+		// 		$("#dialog-lessonPrefs").remove();
+		// 	},
+		buttons: [
+			{
+				text: "Cancel",
+				title: "Cancel any changes.",
+				click: function () {
+	            	$(this).dialog("close");
+	            	$("#dialog-lessonPrefs").remove();
+	            }
             },
-            Save: function(){
-	            savePreferences();
-            },
-            Publish: function(){
-	            //clickPublish();
-	            savePreferences(true);
-	            $(this).dialog("close");
+            {
+	            text: "Publish",
+	            title: "Publishes the lesson to the chosen format.",
+	            click: function(){
+		            //clickPublish();
+		            savePreferences(true);
+		            $(this).dialog("close");
+	            }
+            },            
+            {
+	            text: "Done",
+	            title: "Saves and closes the preferences dialog.",
+	            click: function(){
+		            savePreferences();
+		        }
             }
-		}
+		]
 	});
+
+	//adds tooltips to the edit dialog buttons
+    $(function () {
+        $(document).tooltip();
+    });	
 	
 	$("#clearLessonComments").button().click(function(){
 		openCommentKillerDialog();
@@ -239,8 +379,6 @@ function launchPrefs(){
 	}
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 
-	siofuHelp.listenOnInput(document.getElementById("inputHelp"));
-
 	$("#inputHelp").attr('data-content', contentId);
 	$("#inputHelp").find('*').attr('data-content', contentId);
 
@@ -255,17 +393,20 @@ function launchPrefs(){
 	});
 
 	$("#inputHelp").click(function(){
-		siofuHelp.prompt($("#inputHelp").attr('data-content'));	
+		siofu.prompt($("#inputHelp").attr('data-content'));	
 	});
 
-	siofuHelp.addEventListener("complete", function(event){
-		siofuHelp.removeEventListener("complete");
-		siofuHelp.removeEventListener("load");
+	siofu.listenOnDrop(document.getElementById("inputHelp"));
+
+	siofu.addEventListener("complete", function(event){
+		siofu.removeEventListener("complete");
+		siofu.removeEventListener("load");
 		//if successful upload, else....
+		debugger;
 		var myFile = event.file.name;
 		var myExt = getExtension(myFile);
 	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
-        if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
+        if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			if(event.success == true){
 				$(data).find('help').attr('url', 'media/' + myFile );
 				$("#selectedHelp").text(myFile);
@@ -286,7 +427,8 @@ function launchPrefs(){
 		else if(myExt == "zip" || myExt == "ZIP"){
 			// $("#mediaLoaderText").empty();
 			// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-			cognizenSocket.on('unzipComplete', unzipComplete);				
+			cognizenSocket.on('unzipComplete', _unzipComplete);
+			$("#dialog-lessonPrefs").remove();				
 		}		
 	});
 
@@ -295,6 +437,34 @@ function launchPrefs(){
 	$("#hasGlossaryDialog").tooltip();
 	$("#helpDialog").tooltip();
 
+}
+
+function _unzipComplete(){
+	try { cognizenSocket.removeListener("unzipComplete", _unzipComplete);; } catch (e) {}
+	var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
+	msg += "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
+	msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. For instance, if you zipped a folder called myFolder with a video named myMedia.mp4 in it, when you access the media in the system, the path would be myFolder/myMedia.mp4.</p>";
+	msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  For instance, if you zipped myImage.png, myImage2.png and myImage3.png, you access the media through the system, you would just input myImage.png.</p>"
+	msg += "</div>";
+							
+	$("#stage").append(msg);
+	
+	//Style it to jQuery UI dialog
+	$("#zipUploadCompleteDialog").dialog({
+		autoOpen: true,
+		modal: true,
+		width: 500,
+		height: 400,
+		buttons:{
+			OK: function(){
+				$(this).dialog("close");
+				sendUpdateWithRefresh();
+			},
+		},
+		close: function(){
+			$("#zipUploadCompleteDialog").remove();
+		}
+	});
 }
 
 function openCommentKillerDialog(){
@@ -358,13 +528,16 @@ function savePreferences(_pub){
 	if(updateNeeded == true && _pub != true){
 		sendUpdateWithRefresh("updatePrefs");
 		$("#dialog-lessonPrefs").dialog("close");
+		$("#dialog-lessonPrefs").remove();
 	}else if(updateNeeded == true && _pub == true){
 		sendUpdateWithRefresh("updatePrefsWithPublish");
 	}else if(updateNeeded == false && _pub == true){
 		clickPublish();
 	}else{
 		$("#dialog-lessonPrefs").dialog("close");
+		$("#dialog-lessonPrefs").remove();
 	}
+	currentTemplate.fadeComplete();
 }
 
 function updatePrefs(_pub){

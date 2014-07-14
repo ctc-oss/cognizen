@@ -245,6 +245,7 @@ function fadeComplete() {
 	for(name in CKEDITOR.instances){
 		try { CKEDITOR.instances[name].destroy(); } catch (e) {}
 	}
+
 	loadPage();
 
 }

@@ -257,6 +257,7 @@ function buildInterface(){
 	checkNav(); 
 	if(mode == "edit"){
 		addEditNav();
+		addMediaDrop();
 	}
 	
 	if(mode == "edit" || mode == "review"){
