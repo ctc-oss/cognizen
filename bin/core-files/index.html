@@ -1,12 +1,9 @@
 ﻿<!DOCTYPE html>
-<html>
 	<!--[if lt IE 7 ]> <html class="ie6"> <![endif]-->
 	<!--[if IE 7 ]>    <html class="ie7"> <![endif]-->
 	<!--[if IE 8 ]>    <html class="ie8"> <![endif]-->
 	<!--[if IE 9 ]>    <html class="ie9"> <![endif]-->
-	<!--[if IE 10 ]>    <html class="ie10"> <![endif]-->
-	<!--[if IE 11 ]>    <html class="ie11"> <![endif]-->
-	<!--[if (gt IE 11)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+	<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
 	<head>
 		<meta name="HandheldFriendly" content="true" />
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -29,6 +26,13 @@
 		<link href="css/C_Engine.css" rel="stylesheet" type="text/css"/>
 
 		<!------------------------------  LOAD SCRIPTS  ------------------------------>
+		<!-- Detect IE10 and add class to html element -->
+		<script>
+			if(Function('/*@cc_on return document.documentMode===10@*/')()){
+				document.documentElement.className+=' ie10';
+			}
+		</script>
+
 		<script type="text/javascript" src="js/libs/jquery.min.js"></script>	
 		<!-- Load everything else - what's loading can be found in C_Engine.js - Step 2. -->
 		<script data-main="js/C_Engine" src="js/libs/require.js"></script>
