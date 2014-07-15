@@ -65,6 +65,13 @@ function C_StaticContent(_type) {
             $("#contentHolder").addClass("graphic");
         }
         
+		if(isMobile){
+			titleBarHeight = $("#courseTitle").height();
+			navBarHeight = $("#pageCount").height();
+			stageH = window.innerHeight - titleBarHeight - navBarHeight;
+			$("#stage").height(stageH);
+		}
+
         if(type != "graphicOnly"){
 		   	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
@@ -81,16 +88,21 @@ function C_StaticContent(_type) {
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
             }
         }else if(type == "sidebar"){
-            $('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div id="sidebar" class="sidebar antiscroll-inner"></div></div>');
-            $('#sidebar').append(mySidebar);
-            
-            if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
-	            $(".sidebar").height(stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40));
-            }else{
-	            $(".sidebar").height($('#sidebar').height());
-            }
-            
-            $('#sidebar').height($('#sidebarHolder').height());
+        	if(isMobile){
+        		$('#content').prepend('<div id="sidebarHolder"><div id="sidebar" class="sidebar"></div></div>');
+				$('#sidebar').append(mySidebar);
+        	}else{
+				$('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div id="sidebar" class="sidebar antiscroll-inner"></div></div>');
+				$('#sidebar').append(mySidebar);
+			
+				if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
+					$(".sidebar").height(stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40));
+				}else{
+					$(".sidebar").height($('#sidebar').height());
+				}
+			
+				$('#sidebar').height($('#sidebarHolder').height());
+			}
             checkMode();
             if(transition == true){
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});

@@ -121,8 +121,14 @@ checkFF();
 /*****************************************************************
 Discover if we are on mobile
 *****************************************************************/
+// jquery.browser has been depricated.  Instead we will define mobile
+// as any screen too small for our standard 1024x768 size.
+//var isMobile = jQuery.browser.mobile;
+var isMobile = false;
 
-var isMobile = jQuery.browser.mobile;
+if( (window.innerWidth < 1024) || (window.innerHeight < 768) ){
+	isMobile = true;
+}
 
 /*****************************************************************
 RANDOM GUID GENERATION
