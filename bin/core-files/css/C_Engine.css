@@ -417,7 +417,7 @@ blockquote
 	font-size : 175%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .lesson{
@@ -430,7 +430,7 @@ blockquote
 	font-size : 200%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .lessonCon{
@@ -443,7 +443,7 @@ blockquote
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 /* uncomment to hide close (X) button on KC feedback dialogs */
@@ -458,7 +458,7 @@ CONTENT TEXT LAYOUTS*/
 /**************************************************************************************/
 #content{
 	color: #000000;
-	font-family: "Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background: none; 
 	border-width: 0px;
@@ -472,7 +472,7 @@ CONTENT TEXT LAYOUTS*/
 .testTop{
 	position: absolute;
 	color: #000000;
-	font-family: "Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	padding: 0px; 
 	background: none; 
@@ -555,11 +555,11 @@ CONTENT TEXT LAYOUTS*/
 
 #tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Helvetica, Arial, sans-serif !important;
 }
 
 #tabs .ui-tabs-panel {
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Helvetica, Arial, sans-serif !important;
 	font-size: 12pt !important;
 	border-width: 1px;
 	color: black;
@@ -578,11 +578,11 @@ CONTENT TEXT LAYOUTS*/
 
 #tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Helvetica, Arial, sans-serif !important;
 }
 
 #tabs .ui-tabs-panel {
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Helvetica, Arial, sans-serif !important;
 	font-size: 12pt !important;
 	border-width: 1px;
 	color: black;
@@ -602,7 +602,7 @@ CONTENT TEXT LAYOUTS*/
 
 #contentEditText{
 	color: #000000;
-	font-family: "Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 }
 
@@ -1162,7 +1162,7 @@ SIDEBAR LAYOUTS
 **************************************************************************************/
 .sidebar {
 	color: #000000;
-	font-family: "Helvetica", "Arial", sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background-color: #EEEEEE; 
 	border-width: 0px;
@@ -1355,7 +1355,7 @@ MEDIA LAYOUTS
 	text-shadow: 1px 1px 0 #fff; 
 	background: #f3f3f3;
 	color: #eeeeee; 
-	font-family: Helvetica, Arial; 
+	font-family: Helvetica, Arial, sans-serif;
 	font-size: 10pt;
 	top: 3px;
 }
@@ -1378,7 +1378,7 @@ MEDIA LAYOUTS
 	font-size: 75%; 
 	text-align: center; 
 	color: #000000; 
-	font-family: Helvetica;
+	font-family: Helvetica, Arial, sans-serif;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -1396,7 +1396,7 @@ KNOWLEDGE CHECK TEXT LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .questionTop p{
@@ -1436,7 +1436,7 @@ MULTIPLE CHOICE LAYOUTS
 	overflow : auto;
 	width: 100%;
 	text-align: center;
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Helvetica, Arial, sans-serif !important;
 	font-size: 12pt !important;
 	color: #9DA6AB;
 	top: 5px;
@@ -1460,7 +1460,7 @@ MULTIPLE CHOICE LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	cursor: hand; 
 	cursor: pointer;
 	padding: 10px 35px 10px 4px;
@@ -1481,7 +1481,6 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #eeeeee;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	/*padding: 4px;*/
 	cursor: hand; 
 	cursor: pointer;
 }
@@ -1594,7 +1593,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	display: table;
 }
 
@@ -1604,7 +1603,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .matchingInput{
@@ -1615,7 +1614,7 @@ MATCHING LAYOUTS
 	text-transform:uppercase;
 	font-size: 100%;
 	font-weight: bold;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	display: table-cell;
 }
 
@@ -1647,7 +1646,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: bold;
 	color: red;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .inlineLeftFeedback{
@@ -1659,7 +1658,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: bold;
 	color: red;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .markWrong{
@@ -1741,7 +1740,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	color:	#3383bb;
 	text-align: center; 
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 
@@ -1774,7 +1773,7 @@ MATCHING LAYOUTS
 /*Styling for the tip text */
 .footnoteTip .ui-tooltip-content{
     border-radius: 20px;
-    font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
     font-size: 10px;
 }
 
@@ -1838,7 +1837,7 @@ MATCHING LAYOUTS
 .docPaneItemDescription{
 	font-size : 80%;
 	color:	#333333;
-	font-family:"Helvetica", "Arial";
+	font-family: Helvetica, Arial, sans-serif;
 	padding: 5px;
 }
 
@@ -2815,93 +2814,22 @@ a.fancybox-expand {
 		width: 100%;
 	}
 	
-/*
-	#content{
-		position: absolute;
-		color: #000000;
-		font-family: Verdana, Geneva, sans-serif;
-		overflow: hidden;
-		padding: -5px; 
-		background: none; 
-		border-width: 0px;
-		width:95% !important;
+	/* FOR TABBED CONTENT */
+
+	#tabs.tabTop{
+		width: 98%;
 	}
 
-	#content.top{
-		top: 40px;
-		left: 10px;
-		width: 100%;
+	#tabs.left{
+		width: auto;
+		max-width: 56%;
+	}
+	
+	#mediaHolder.tabsRight{
+		max-width: 40%;
+		right: 1%;
 	}
 
-	#content.left{
-		top: 40px;
-		left: 10px;
-		width: 95%;
-		height: 30%;
-	}
-
-	#content.right{
-		top: 40px;
-		right: 10px;
-		width: 460px;
-		height: 445px;
-	}
-
-	#content.bottom{
-		top: 335px;
-		right: 10px;
-		width: 944px;
-		height: 300px;
-	}
-
-	#content.text{
-		top: 40px;
-		left: 10px;
-		width: 95%;
-		height: 100%;
-	}
-
-
-	#contentHolder.top{
-		position: absolute;
-		height: auto;
-		top: 65px;
-		left: 10px;
-		width: 95%;
-	}
-
-	#contentHolder.left{
-		position: absolute;
-		top: 65px;
-		left: 10px;
-		width: 95%;
-		height: 35%;
-	}
-
-	#contentHolder.right{
-		position: absolute;
-		top: 85px;
-		right: 50px;
-		width: 95%;
-		height: 35%;
-	}
-
-	#contentHolder.bottom{
-		position: absolute;
-		top: 380px;
-		right: 50px;
-		width: 944px;
-	}
-
-	#contentHolder.text{
-		position: relative;
-		top: 65px;
-		left: 10px;
-		width: 95%;
-		height: 85%;
-	}		
-*/
-	/* FOR TABBED CONTENT*/
 	#tabs .ui-tabs-nav li a {
 		font-size:10pt !important;
 		font-family: Helvetica, Arial, sans-serif !important;
@@ -3487,6 +3415,39 @@ a.fancybox-expand {
 		height: auto;
 	}
 
+	/*glossary pane specific*/
+	#glossaryPane{
+		position: fixed;
+		top: 0px;
+		left: -406px;
+	}
+
+	#glossaryTab{
+		position:absolute;
+		top: 40px;
+		left: 409px;
+		margin-left: -10px;
+/*	    margin-top: -25px;*/
+	    height: 60px;	
+	    width: 50px;
+	}
+
+	#glossaryContent{
+		overflow: scroll;
+		left:0px;
+		top:0px;
+		width: 400px;
+		/*height: auto;*/
+	}
+	/* Glossary Menu */
+	.ui-tabs-vertical { width: 400px; }
+	.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+	.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+	.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+	.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+	.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 100%;}
+
+
 	@media screen and (max-device-width: 568px) {
 
 		#stage{
@@ -3554,6 +3515,20 @@ a.fancybox-expand {
 			width: 360px;
 		}
 
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -366px;
+		}
+
+		#glossaryTab{
+			left: 369px;
+	    	height: 40px;
+		}
+
+		#glossaryContent{
+			width: 360px;
+		}
+
 		#addPage{
 			width: 100%;
 		}
@@ -3561,6 +3536,26 @@ a.fancybox-expand {
 		#removePage{
 			width: 150px;
 		}		
+
+		#tabs.left{
+			width: 98%;
+			max-width: 98%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	
+		#mediaHolder.tabsRight{
+			max-width: 98%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
 	}
 
 	@media screen and (max-device-width: 320px) {
@@ -3576,6 +3571,20 @@ a.fancybox-expand {
 		}
 
 		#indexContent{
+			width: 276px;
+		}
+
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -283px;
+		}
+
+		#glossaryTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#glossaryContent{
 			width: 276px;
 		}
 
@@ -3596,43 +3605,4 @@ a.fancybox-expand {
 			height: 400px;
 		}
 	}	*/
-	/*glossary pane specific*/
-	#glossaryPane{
-		position:absolute;
-		top:-645px;
-		right:0px;
-		left:auto;
-	}
-
-	#glossaryTab{
-		position:absolute;
-		top:660px;
-		right:0px;
-		left:auto;
-		margin-left: -10px;
-	    margin-top: -25px;
-	    height: 70px;	
-	    width:30px;
-	    /* rotation and positioning for modern browsers */
-		-moz-transform:    rotate(0deg);
-	    -o-transform:      rotate(0deg);
-	    -webkit-transform: rotate(0deg);
-	    /*-ms-transform: 	  rotate(0deg);*/
-	    transform:         rotate(0deg);	
-	}
-
-	#glossaryContent{
-		overflow: scroll;
-		left:0px;
-		top:0px;
-		width: 400px;
-		height: 635px;
-	}
-	/* Glossary Menu */
-	.ui-tabs-vertical { width: 400px; }
-	.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
-	.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
-	.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
-	.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
-	.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 100%;}
 }
