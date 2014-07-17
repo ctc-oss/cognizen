@@ -117,10 +117,13 @@ function initScripts(_data){
 	// Initialize the ieUserAgent object
 	ieUserAgent.init();
 
-    var val = "IE" + ieUserAgent.version;
+    var val = "IE" + ieUserAgent.renderVersion;
+    if(ieUserAgent.renderVersion == 7){
+    	val += " or Compatibility View";
+    }
     if (ieUserAgent.compatibilityMode)
     {
-        val += " Compatibility Mode (IE" + ieUserAgent.renderVersion + " emulation)";
+        val += " Compatibility Mode (IE" + ieUserAgent.version + " emulation)";
         //alert(val);
     	$('body').empty();
 		$('body').append("<div style=\"background-color: #FFFFFF\"> <p>We have detected the following IE browser: " + val + "<br/><br/>"+
