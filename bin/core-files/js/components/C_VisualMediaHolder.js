@@ -481,7 +481,6 @@ function C_VisualMediaHolder(callback){
 			siofu.addEventListener("complete", function(event){
 				//checks to make sure the lessons prefs dialog or mediaDrop dialog are not open. 
 				//help files are uploaded through the lessons prefs dialog
-				debugger;
 				if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){
 					siofu.removeEventListener("complete");
 					siofu.removeEventListener("load");

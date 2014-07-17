@@ -231,7 +231,6 @@ function launchMediaDrop(){
 			siofu.removeEventListener("complete");
 			siofu.removeEventListener("load");
 			//if successful upload, else....
-			debugger;
 			var myFile = event.file.name;
 			var myExt = getExtension(myFile);
 		    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "swf", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
@@ -402,7 +401,6 @@ function launchPrefs(){
 		siofu.removeEventListener("complete");
 		siofu.removeEventListener("load");
 		//if successful upload, else....
-		debugger;
 		var myFile = event.file.name;
 		var myExt = getExtension(myFile);
 	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
