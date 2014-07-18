@@ -146,7 +146,7 @@ function initScripts(_data){
 			"<p>Instructions for disabling Compatibility Mode:</p>"+
 			"<ol><li>Go to tools (on the top) on Internet Explorer 8, 9 or 10.</li>"+
 			"<li>Click on \"Compatibility View Settings\".</li>"+
-			"<li>Uncheck \"Include updated websites list from Microsoft\".</li>"+
+			"<li>Uncheck \"Display intranet sites in Compatibility View.”  \".</li>"+
 			"<li>Uncheck \"Display all websites in compatibility view\" if it is checked.</li>"+
 			"<li>Click on \"Close\". You are now done. Please refresh the page.</li></ol></div>");
     }
