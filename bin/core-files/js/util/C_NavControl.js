@@ -237,7 +237,7 @@ function launchMediaDrop(){
         	$("#inputFeedback").empty();
 	        if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 				if(event.success == true){
-					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content. Use 'media/"+myFile+"' to create the link.</div>");
+					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
 				}else{
 					$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
 					//Theres an error
@@ -252,9 +252,9 @@ function launchMediaDrop(){
 				}
 			}
 			else if(myExt == "zip" || myExt == "ZIP"){
-				$("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
+				// $("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
 				cognizenSocket.on('unzipComplete', _unzipComplete);		
-				$("#dialog-mediaDrop").remove();		
+				//$("#dialog-mediaDrop").remove();		
 			}
 			else{
 				$("#stage").append("<div id='uploadConversionDialog' title='Upload Coverting'>The file format that you uploaded can't be played in most browsers. We are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments. <br/><br/></div>");
@@ -275,19 +275,43 @@ function launchMediaDrop(){
 			    	autoOpen: true,
 					modal: true,
 					width: 400,
-					height: 300,
+					height: 350,
 					buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 				});			
 															
-				cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
-				cognizenSocket.on('mediaInfo', mediaInfo);
-				cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+				cognizenSocket.on('mediaConversionProgress', _mediaConversionProgress);								
+				cognizenSocket.on('mediaInfo', _mediaInfo);
+				cognizenSocket.on('mediaConversionComplete', _mediaConversionComplete);
 				$("#dialog-mediaDrop").remove();
 			}				
 		}
 	});
 
 	$("#dialog-mediaDrop").tooltip();
+
+}
+
+function _mediaConversionProgress(data){
+    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
+}
+
+function _mediaInfo(data){
+	if(data.video != ""){
+		var splitDim = data.video_details[2].split("x");
+		mediaWidth = splitDim[0];
+		mediaHeight = splitDim[1];
+	}
+}
+
+function _mediaConversionComplete(data){
+	var splitPath = data.split("/");
+	var last = splitPath.length;
+	var mediaPath = splitPath[last-1];
+	var splitType = splitPath[last-1].split(".");
+	var type = splitType[splitType.length-1];
+	if(type == "mp4"){
+		saveImageEdit(mediaPath, true);
+	}
 
 }
 
@@ -422,12 +446,12 @@ function launchPrefs(){
 				});
 			}
 		}
-		else if(myExt == "zip" || myExt == "ZIP"){
-			// $("#mediaLoaderText").empty();
-			// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-			cognizenSocket.on('unzipComplete', _unzipComplete);
-			$("#dialog-lessonPrefs").remove();				
-		}		
+		// else if(myExt == "zip" || myExt == "ZIP"){
+		// 	// $("#mediaLoaderText").empty();
+		// 	// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+		// 	cognizenSocket.on('unzipComplete', _unzipComplete);
+		// 	$("#dialog-lessonPrefs").remove();				
+		// }		
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
@@ -439,30 +463,31 @@ function launchPrefs(){
 
 function _unzipComplete(){
 	try { cognizenSocket.removeListener("unzipComplete", _unzipComplete);; } catch (e) {}
-	var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
-	msg += "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
-	msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. For instance, if you zipped a folder called myFolder with a video named myMedia.mp4 in it, when you access the media in the system, the path would be myFolder/myMedia.mp4.</p>";
-	msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  For instance, if you zipped myImage.png, myImage2.png and myImage3.png, you access the media through the system, you would just input myImage.png.</p>"
-	msg += "</div>";
+	// var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
+	var msg = "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
+	msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. Ex. myFolder/myMedia.mp4</p>";
+	msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  Ex. myImage.png, myImage2.png and myImage3.png</p>"
+	// msg += "</div>";
 							
-	$("#stage").append(msg);
+	// $("#stage").append(msg);
+	$("#inputFeedback").append(msg);
 	
-	//Style it to jQuery UI dialog
-	$("#zipUploadCompleteDialog").dialog({
-		autoOpen: true,
-		modal: true,
-		width: 500,
-		height: 400,
-		buttons:{
-			OK: function(){
-				$(this).dialog("close");
-				sendUpdateWithRefresh();
-			},
-		},
-		close: function(){
-			$("#zipUploadCompleteDialog").remove();
-		}
-	});
+	// //Style it to jQuery UI dialog
+	// $("#zipUploadCompleteDialog").dialog({
+	// 	autoOpen: true,
+	// 	modal: true,
+	// 	width: 500,
+	// 	height: 400,
+	// 	buttons:{
+	// 		OK: function(){
+	// 			$(this).dialog("close");
+	// 			sendUpdateWithRefresh();
+	// 		},
+	// 	},
+	// 	close: function(){
+	// 		$("#zipUploadCompleteDialog").remove();
+	// 	}
+	// });
 }
 
 function openCommentKillerDialog(){

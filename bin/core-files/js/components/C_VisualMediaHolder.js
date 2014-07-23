@@ -488,6 +488,7 @@ function C_VisualMediaHolder(callback){
 					//if successful upload, else....
 					var myFile = event.file.name;
 					var myExt = getExtension(myFile);
+					debugger;
 				    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
 		            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
 		            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
@@ -511,7 +512,7 @@ function C_VisualMediaHolder(callback){
 						$("#mediaLoaderText").empty();
 						$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
 						cognizenSocket.on('unzipComplete', unzipComplete);				
-					}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase() >= 0)){
+					}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase()) >= 0){
 						$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
 						//Theres an error
 						//Style it to jQuery UI dialog

@@ -119,6 +119,9 @@ var SocketHandler = {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
+                                           //used for ffmpeg on windows machine         
+                                           //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')    
+
 										}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
 											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
 											convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
@@ -132,28 +135,28 @@ var SocketHandler = {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
-											}
-	                                        proc.onProgress(function (progress) {
-	                                        	_this._socket.emit('mediaConversionProgress', progress);
-											})
-											.saveToFile(convertedPathName, function (stdout, stderr) {
-	                                        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
-	                                            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
-												   
-												var stream = fs.createReadStream(convertedPathName);
-	                                            stream.pipe(fs.createWriteStream(convertedPath));
-												   
-												var had_error = false;
-												stream.on('error', function(err){
-													had_error = true;
-												});
-												   
-												stream.on('close', function(){
-		                                        if (!had_error) fs.unlink(event.file.pathName);
-		                                        fs.unlink(convertedPathName, function (err) {
-	                                            	_this._socket.emit('mediaConversionComplete', convertedPath);
-	                                            });
-											})
+										}
+                                        proc.onProgress(function (progress) {
+                                        	_this._socket.emit('mediaConversionProgress', progress);
+										})
+										.saveToFile(convertedPathName, function (stdout, stderr) {
+                                        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+                                            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+											   
+											var stream = fs.createReadStream(convertedPathName);
+                                            stream.pipe(fs.createWriteStream(convertedPath));
+											   
+											var had_error = false;
+											stream.on('error', function(err){
+												had_error = true;
+											});
+											   
+											stream.on('close', function(){
+	                                        if (!had_error) fs.unlink(event.file.pathName);
+	                                        fs.unlink(convertedPathName, function (err) {
+                                            	_this._socket.emit('mediaConversionComplete', convertedPath);
+                                            });
+										})
 										});
                                     }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
                                     	var zip = new unzip(event.file.pathName);
