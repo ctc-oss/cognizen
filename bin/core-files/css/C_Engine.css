@@ -3412,7 +3412,8 @@ a.fancybox-expand {
 		left:0px;
 		top:0px;
 		width: 400px;
-		height: auto;
+		height: 500px; /* need to determine this dynamically or adjust for various devices */
+		box-shadow: -3px 2px 10px 1px;
 	}
 
 	/*glossary pane specific*/
