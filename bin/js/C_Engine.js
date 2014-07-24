@@ -151,38 +151,36 @@ function initScripts(_data){
 			"<li>Click on \"Close\". You are now done. Please refresh the page.</li></ol></div>");
     }
     else{	
-		totalPages = $(data).find('page').length;
-		mode = $(data).find('mode').attr("value");
-		
-		// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
-	    require.config({
-	        waitSeconds: 0
-	    });
-		//LOADING IN ALL OF THE EXTERNAL JS FILES
-		require([	//Already included in require.js
-					//Funtionality
-					"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
-					"js/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-					"js/libs/socket.io-client/dist/socket.io.js",
-					"js/libs/underscore-min.js", 
-					//"js/jquery.fontface.js",
-					"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
-					"js/libs/greensock/TweenMax.min.js", //Our animation library.
-					//"js/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
-					"js/templates/C_Login.js", //Secure login mechanism.
-					//"js/templates/C_RandomMedia.js", //Template to display Adobe Edge packages.
-					//"js/templates/C_LeaderBoard.js",//Load the multiplayer leaderBoard template.
-					//"js/templates/C_MultiplayerQuiz.js", //Load the multiplayer quiz template.
-					"js/templates/C_Dashboard.js",
-					"js/libs/jquery.cookie.js", 
-					"js/jquery.treeview.js",
-					"js/listorder-min.js",
-					"js/jquery.corner.js"
-					], function($) {  
-		    //Once all of the external js has loaded, build the application.
-		    buildInterface();
-		   
-		});
+	totalPages = $(data).find('page').length;
+	mode = $(data).find('mode').attr("value");
+	
+	// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
+    require.config({
+        waitSeconds: 0
+    });
+	//LOADING IN ALL OF THE EXTERNAL JS FILES
+	require([	//Already included in require.js
+				//Funtionality
+				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
+				"js/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
+				"js/libs/socket.io-client/dist/socket.io.js",
+				"js/libs/underscore-min.js",
+				"js/libs/jquery.nestable.js",
+				"js/pretty-data.js", 
+				"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
+				"js/libs/greensock/TweenMax.min.js", //Our animation library.
+				"js/templates/C_Login.js", //Secure login mechanism.
+				"js/templates/C_Dashboard.js",
+				"js/libs/jquery.cookie.js",
+				"js/util/C_Outline.js", 
+				"js/jquery.treeview.js",
+				"js/listorder-min.js",
+				"js/jquery.corner.js"
+				], function($) {  
+	    //Once all of the external js has loaded, build the application.
+	    buildInterface();
+	   
+	});
 	}
 }
 

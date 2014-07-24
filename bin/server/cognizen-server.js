@@ -468,6 +468,18 @@ var Content = {
             socket.on('checkLoginStatus', function() {
                 SocketHandler.socket(socket).checkLoginStatus();
             });
+			
+			socket.on('getCoursePath', function(data){
+				SocketHandler.socket(socket).getCoursePath(data);
+			});
+			
+			socket.on('updateCourseXML', function(data){
+				SocketHandler.socket(socket).updateCourseXML(data);
+			});
+			
+			socket.on('updateModuleXML', function(data){
+				SocketHandler.socket(socket).updateModuleXML(data);
+			});
 
             socket.on('getProjects', function (data) {
                 Content.allContentForUser(socket, data);
@@ -527,6 +539,10 @@ var Content = {
                         io.sockets.emit('refreshDashboard');
                     }
                 });
+            });
+            
+            socket.on('closeOutline', function(data){
+	           io.sockets.emit('refreshDashboard'); 
             });
 
             socket.on('getContentServerUrl', function (data) {

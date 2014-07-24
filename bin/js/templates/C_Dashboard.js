@@ -35,12 +35,15 @@ function C_Dashboard(_type) {
             userRoster = data;
         });
         
+        /*socket.on('receiveCoursePath', function (data){
+	    	receiveCoursePath(data); 
+        });*/
+        
         socket.on('contentPermissions', function(data){
 	        assignUser(data);
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
-            //console.log(data);
             $("#preloadholder").remove();
             proj = data;
             buildTemplate();
@@ -277,6 +280,7 @@ function C_Dashboard(_type) {
                 } else if (myItem.data('type') == "course") {
                     $(this).addClass("courseHover");
                     if(myItem.data('permission') == "admin"){
+                    	$(this).append("<div id='myOutline' class='courseOutline' title='outline the " + $(this).parent().find("span").first().text() + " course.'></div>");
 	                    $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
 	                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
 	                    $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
@@ -290,6 +294,23 @@ function C_Dashboard(_type) {
 	                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                }
                 }
+			 
+			 $("#myOutline").click(function () {
+				 	var co = new C_Outline(myItem, proj);
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
+                        show: {
+                            delay: 1500,
+                            effect: "fadeIn",
+                            duration: 200
+                        }
+                    });
 			 
 			 $("#myPref").click(function () {
                     doPrefs(myItem);
@@ -369,6 +390,7 @@ function C_Dashboard(_type) {
             	$("#myRemove").remove();
                 $("#myAdd").remove();
                 $("#myUserAdd").remove();
+                $("#myOutline").remove();
                 if (myItem.data('type') == "program") {
                     $(this).removeClass("programHover");
                 } else if (myItem.data('type') == "course") {
@@ -694,7 +716,6 @@ function C_Dashboard(_type) {
             msg += "<option>none</option>";
             msg += "</select></form>";
             msg += "</p>";
-                    
             msg += '</div>';
             enableRenameContentKeyEvents()
         }

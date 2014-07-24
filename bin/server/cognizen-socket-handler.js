@@ -914,6 +914,102 @@ var SocketHandler = {
     getContentServerUrl: function (data) {
         this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
     },
+    
+    getCoursePath: function (data){
+		var _this = this;
+        var contentType = _this.Content.objectType(data.content.type);
+
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                	var program = found.getProgram();
+                	 _this.Git.updateLocalContent(program, function(err){
+                	 	if (err) {
+                	 		_this.logger.error("GIT ERROR ON STARTING OUTLINER");
+                	 	}else{
+	                	 	var serverDetails = _this.Content.serverDetails(found);
+							var permission = data.content.permission;
+							var xmlPath = path.normalize(found.path);
+							_this._socket.emit('receiveCoursePath', {
+                           		id: found.id,
+                                path: encodeURIComponent(xmlPath),
+                                type: data.content.type
+                            });
+                	 	}
+                	 });
+                }
+            });
+        }    
+    },
+    
+	updateCourseXML: function (data){
+		var _this = this;
+		var contentType = _this.Content.objectType(data.content.type);	
+		if (contentType) {
+			_this.logger.info("content.id = " + data.content.id)
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                	var program = found.getProgram();
+            	 	var serverDetails = _this.Content.serverDetails(found);
+					var permission = data.content.permission;
+					var xmlPath = path.normalize(found.path);
+					var programPath = path.normalize('../programs/' + found.path + '/course.xml');
+					var contentPath = path.resolve(process.cwd(), programPath); 
+					_this.logger.info("outliner updating " + contentPath) 
+					fs.outputFile(contentPath, data.myXML, function(err) {
+	                    //Refresh the index if successfully updating the content.xml
+	                    if (err == null){
+	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
+                            	_this.logger.info("Outliner successfully updated xml")
+                                //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                            }, function(err){
+                            	_this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
+                            });
+	                    }
+	                    else{
+	                        logger.debug("Houston, we have a problem - the course.xml update failed");
+	                    }
+	                })
+                }
+            });
+        } 
+	},
+    
+    updateModuleXML: function (data){
+		var _this = this;
+		_this.logger.info("contentType = " + data.content.type);
+		var contentType = _this.Content.objectType(data.content.type);	
+		if (contentType) {
+			_this.logger.info("content.id = " + data.content.id)
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                	var program = found.getProgram();
+            	 	var serverDetails = _this.Content.serverDetails(found);
+					var permission = data.content.permission;
+					var xmlPath = path.normalize(found.path);
+					var programPath = path.normalize('../programs/' + found.path + '/' + data.moduleXMLPath);
+					var contentPath = path.resolve(process.cwd(), programPath); 
+					_this.logger.info("outliner updating " + contentPath) 
+					fs.outputFile(contentPath, data.myXML, function(err) {
+	                    //Refresh the index if successfully updating the content.xml
+	                    if (err == null && data.commit == true){
+	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
+                            	_this.logger.info("Outliner successfully updated xml")
+                                //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                            }, function(err){
+                            	_this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                                _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
+                            });
+	                    }
+	                    else{
+	                        logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update glossary for node");
+	                    }
+	                })
+                }
+            });
+        } 
+    },
 
     startContentServer: function (data) {
         var _this = this;
