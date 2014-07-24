@@ -136,10 +136,17 @@ function C_Outline(_myItem, _proj) {
 	    msg += '<div id="outlineIndexPane" class="paneContent">';
 	    msg += '<div class="dd" id="C_Index">';
 	    msg += '<ol class="dd-list">';
+	    //COURSE LEVEL
+	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="root">';
+		//msg += '<div class="dd-handle dd3-handle">Drag</div>';
+		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="root">'+currentOutlineItem.find("span").first().text() +'</div>';
+		msg += '<ol class="dd-list">';
+	    
+	    //MODULE and PAGES LEVEL
 	    for(var i = 0; i < outlineModule_arr.length; i++){
 	     	msg += buildOutlineModule(i);
      	}
-     	msg += '</ol>';
+     	msg += '</ol></li></ol>';
      	msg += '</div>';
 	    msg += '</div>';//close the outline index
 	    msg += '<div id = "outlinePagePrefPane"></div>';
@@ -190,13 +197,22 @@ function C_Outline(_myItem, _proj) {
         });
         
         $('#C_Index').nestable('collapseAll');
-        
+        $("#courseIndex")
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
 		var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
 		startList = tmpStartList.nestable('serialize');
         startListJSON = window.JSON.stringify(startList);
 		
         //Add button listeners
+        //Course
+        $("#courseIndexHotspot").click(function(){
+	        if(hoverSubNav == false){
+		        try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
+		        currentMenuItem = $(this);
+				currentMenuItem.addClass("dd3-selected");
+				displayCourseData($(this).attr("data-id"));
+	        }
+        });
         //Modules
         for(var j = 0; j < outlineModule_arr.length; j++){
 	        $("#module"+j+"IndexHotspot").click(function(){
@@ -210,7 +226,7 @@ function C_Outline(_myItem, _proj) {
 			});
 			addOutlineRollovers($("#module"+j+"IndexHotspot"), "module");
 		}
-		$("#module0IndexHotspot").click();
+		$("#courseIndexHotspot").click();
 		//Pages
 		addPageClicks();
      }
@@ -279,6 +295,64 @@ function C_Outline(_myItem, _proj) {
 			 startList = tmpStartList.nestable('serialize');
 			 startListJSON = window.JSON.stringify(startList);
 		}
+     }
+     
+     /****************************************************************
+     * Display editable Course Preferences.
+     ****************************************************************/
+     function displayCourseData(_id){
+     	$("#outlinePagePrefPane").empty();
+	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + currentOutlineItem.find("span").first().text() + "</div>";
+		msg += "<div><b>Details:</b></div>";
+		msg += "<label for='out_courseTitle'>course title: </label>";
+		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" value="'+ currentOutlineItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		//msg += "<label for='out_courseObjective'>course objective: </label>";
+		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(outlineModule_arr[i]).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+			
+		/*msg += "<div>"
+		msg += "<label for='lessonWidth'>width of lesson:</label>";
+		msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(outlineModule_arr[i]).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+		msg += "<label for='lessonHeight'>height of lesson:</label>";
+		msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(outlineModule_arr[i]).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
+		msg += "<label for='mode'>set mode:</label>";
+		msg += "<select name='mode' id='mode'>";
+		msg += "<option>production</option>";
+		msg += "<option>edit</option>";
+		msg += "<option>review</option>";
+		msg += "</select><br/>"*/
+			
+			
+		
+		$("#outlinePagePrefPane").append(msg);
+			
+		$("#out_courseTitle").on("change", function(){
+			//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
+			var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
+			currentMenuItem.text(titleUpdate);
+			$(courseData).attr("name", titleUpdate);
+			updateCourseXML(currentPageParentModule);
+			
+			var data = {
+	            content: {
+	                id: outlineCourseID,
+	                type: outlineCourseType,
+	                name: titleUpdate
+	            },
+	            user: {
+	                id: user._id,
+	                username: user.username
+	            }
+	        };
+	
+	        socket.emit('renameContent', data);
+		}).css({'width': '500px', 'color': '#3383bb;'});
+		
+		/*$("#out_courseObjective").on("change", function(){
+		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
+		 	var titleUpdate = $("#out_pageObjective").val().trim();
+		   	$(outlineModule_arr[i]).find('page').eq(j).attr('objective', titleUpdate);
+			updateModuleXML(currentPageParentModule);
+		}).css({'width': '500px', 'color': '#3383bb;'});*/
      }
      
      /****************************************************************
@@ -522,6 +596,7 @@ function C_Outline(_myItem, _proj) {
 						displayPageData($(this).attr("myID"));
 					}
 				});
+				addOutlineRollovers($(tmp_arr[j]), "page");
 			}
 	     }
      }
@@ -617,7 +692,7 @@ function C_Outline(_myItem, _proj) {
 				if(isVirgin){
 					indexString += '<li id="'+pageID+'"class="dd-item dd3-item outlinePageItem" data-id="'+ idCounter + '">';
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+idCounter+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div><ol class="dd-list">';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+idCounter+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +/*'<div id="commentSpot"></div>*/'</div><ol class="dd-list">';
 					idCounter++;
 
 				}			
@@ -630,7 +705,7 @@ function C_Outline(_myItem, _proj) {
 			indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+idCounter+'">';
 			idCounter++;
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div></li>';
 			moduleIndexItem_arr.push("#" + thisID);
 		}
 		if(groupMode == true){
@@ -665,12 +740,12 @@ function C_Outline(_myItem, _proj) {
 		//ADD Program Level Buttons
 	    myItem.hover(
 	    	function () {
-	    		$(this).append("<div id='outlineModuleAdd' class='outlineModuleAdd' title='Add a new module to your course.'></div><div id='outlineModuleRemove' class='outlineModuleRemove' title='Remove this module from your course.'></div>");
-	            $("#outlineModuleRemove").click(function(){
+	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd' title='Add a new module to your course.'></div><div id='outlineRemove' class='outlineModuleRemove' title='Remove this module from your course.'></div>");
+	            $("#outlineRemove").click(function(){
 	            	if(_level == "module"){
-	            		console.log("clicked remove module.");
+	            		removeModuleFromCourse();
 	            	}else{
-		            	console.log("clicked remove page");
+		            	removePageFromModule();
 	            	}
 		        }).hover(
 	            	function () {
@@ -687,11 +762,11 @@ function C_Outline(_myItem, _proj) {
 	                }
 	           });
 	           
-	           $("#outlineModuleAdd").click(function(){
+	           $("#outlineAdd").click(function(){
 	            	if(_level == "module"){
-	            		console.log("clicked add module.");
+	            		addModuleToCourse();
 	            	}else{
-		            	console.log("clicked add page");
+		            	addPageToModule();
 	            	}
 		        }).hover(
 	            	function () {
@@ -709,9 +784,25 @@ function C_Outline(_myItem, _proj) {
 	           });
 	        },
 	        function () {
-				$("#outlineModuleAdd").remove();
-				$("#outlineModuleRemove").remove();
+				$("#outlineAdd").remove();
+				$("#outlineRemove").remove();
 			});   
+	}
+	
+	function addModuleToCourse(){
+		console.log("addModuleToCourse.");
+	}
+	
+	function removeModuleFromCourse(){
+		console.log("removeModuleFromCourse.");
+	}
+	
+	function addPageToModule(){
+		console.log("addPageToModule.");
+	}
+	
+	function removePageFromModule(){
+		console.log("removePageFromModule");
 	}
 
     

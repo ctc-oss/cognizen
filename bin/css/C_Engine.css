@@ -407,10 +407,12 @@ TREE MENU STYLES
 	float: right;
 	width: 600px;
 	height: 689px;
-	overflow: scroll;
+	overflow: auto;
 	border-color: #eee;
 	border-width: thin;
 	border-style: solid;
+	-webkit-border-radius: 3px;
+            border-radius: 3px;
 }
 
 #outlineIndexPane{
@@ -418,10 +420,12 @@ TREE MENU STYLES
 	float: left;
 	width: 385px;
 	height: 689px;
-	overflow: scroll;
+	overflow: auto;
 	border-color: #eee;
 	border-width: thin;
 	border-style: solid;
+	-webkit-border-radius: 3px;
+            border-radius: 3px;
 }
 
 .ui-widget-content{
@@ -441,7 +445,7 @@ TREE MENU STYLES
 .outlineModuleAdd {position: relative; float: right; padding-left: 2px; width: 18px; height: 18px; z-index: 5; background: url(images/outlinePlus.png) no-repeat;}
 
 
-.dd { position: relative; display: block; margin: 0; padding: 0; max-width: 385px; list-style: none; font-size: 13px; line-height: 20px; }
+.dd { position: relative; display: block; margin: 0; padding: 0; max-width: 385px; list-style: none; font-size: 11px; line-height: 20px; }
 
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
@@ -449,7 +453,7 @@ TREE MENU STYLES
 
 .dd-item,
 .dd-empty,
-.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 11px; line-height: 20px; }
 
 .dd-visited { display: block; height: 30px; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
     background: #f80808;
@@ -482,7 +486,7 @@ TREE MENU STYLES
 }
 .dd-handle:hover { color: #2ea8e5; background: #fff; }
 
-.dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
+.dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 11px; line-height: 1; text-align: center; font-weight: bold; }
 .dd-item > button:before { content: '+'; display: block; position: absolute; width: 100%; text-align: center; text-indent: 0; }
 .dd-item > button[data-action="collapse"]:before { content: '-'; }
 
