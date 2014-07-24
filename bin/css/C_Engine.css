@@ -416,7 +416,7 @@ TREE MENU STYLES
 #outlineIndexPane{
 	position: relative;
 	float: left;
-	width: 375px;
+	width: 385px;
 	height: 689px;
 	overflow: scroll;
 	border-color: #eee;
@@ -437,11 +437,11 @@ TREE MENU STYLES
 	padding: 0em !important;	
 }
 
-.outlineModuleRemove {position: relative; float: right; width: 18px; height: 18px; z-index: 5; background: url(images/minus.png) no-repeat;}
-.outlineModuleAdd {position: relative; float: right; width: 18px; height: 18px; z-index: 5; background: url(images/plus.png) no-repeat;}
+.outlineModuleRemove {position: relative; float: right; padding-left: 2px; width: 18px; height: 18px; z-index: 5; background: url(images/outlineMinus.png) no-repeat;}
+.outlineModuleAdd {position: relative; float: right; padding-left: 2px; width: 18px; height: 18px; z-index: 5; background: url(images/outlinePlus.png) no-repeat;}
 
 
-.dd { position: relative; display: block; margin: 0; padding: 0; max-width: 375px; list-style: none; font-size: 13px; line-height: 20px; }
+.dd { position: relative; display: block; margin: 0; padding: 0; max-width: 385px; list-style: none; font-size: 13px; line-height: 20px; }
 
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
