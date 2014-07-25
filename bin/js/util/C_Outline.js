@@ -349,7 +349,7 @@ function C_Outline(_myItem, _proj) {
 		$("#outlinePagePrefPane").append(msg);
 		
 		//set objectivesGlobalToSystem based off value in xml
-		if($(courseData).find('sequencing').attr("objectivesGlobalToSystem") === "true"){
+		if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
 			$('#objGlobaltrue').prop('checked',true);
 		}
 		else{
@@ -367,7 +367,7 @@ function C_Outline(_myItem, _proj) {
 		});
 
 		//set choice based off value in xml
-		if($(courseData).find('sequencing').attr("choice") === "true"){
+		if($(courseData).find('sequencing').first().attr("choice") === "true"){
 			$('#choicetrue').prop('checked',true);
 		}
 		else{
@@ -385,7 +385,7 @@ function C_Outline(_myItem, _proj) {
 		});
 
 		//set flow based off value in xml
-		if($(courseData).find('sequencing').attr("flow") === "true"){
+		if($(courseData).find('sequencing').first().attr("flow") === "true"){
 			$('#flowtrue').prop('checked',true);
 		}
 		else{
@@ -403,7 +403,7 @@ function C_Outline(_myItem, _proj) {
 		});
 
 		//set forwardOnly based off value in xml
-		if($(courseData).find('sequencing').attr("forwardOnly") === "true"){
+		if($(courseData).find('sequencing').first().attr("forwardOnly") === "true"){
 			$('#forwardOnlytrue').prop('checked',true);
 		}
 		else{
@@ -545,11 +545,15 @@ function C_Outline(_myItem, _proj) {
 		msg += '<input type="radio" id="choiceExittrue" name="choiceExitRadio" /><label for="choiceExittrue" title="Set choiceExit to true.">true </label>';
 		msg += '<input type="radio" id="choiceExitfalse" name="choiceExitRadio" /><label for="choiceExitfalse" title="Set choiceExit to false">false</label>';
 		msg += '</div>';
-		msg += '<br/><div title="Control which navigational UI elements should be presented by the LMS."><b>Navigation Controls:</b></div>';		
-		msg += '<div id="previousRadio" title="Remove the previous button LMS navigation.">previous: ';
+		msg += '<br/><div title="Indicates which navigational UI elements the LMS should hide when this activity is being delivered."><b>Hide LMS UI Values:</b></div>';		
+		msg += '<div id="previousRadio" title="Remove the previous button from the LMS navigation.">previous: ';
 		msg += '<input type="radio" id="previoustrue" name="previousRadio" /><label for="previoustrue" title="Set previous to true.">true </label>';
 		msg += '<input type="radio" id="previousfalse" name="previousRadio" /><label for="previousfalse" title="Set previous to false">false</label>';
-		msg += '</div>';		
+		msg += '</div>';	
+		msg += '<div id="continueRadio" title="Remove the continue button from the LMS navigation.">continue: ';
+		msg += '<input type="radio" id="continuetrue" name="continueRadio" /><label for="continuetrue" title="Set continue to true.">true </label>';
+		msg += '<input type="radio" id="continuefalse" name="continueRadio" /><label for="continuefalse" title="Set continue to false">false</label>';
+		msg += '</div>';				
 
 		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';	     	
 
@@ -648,8 +652,16 @@ function C_Outline(_myItem, _proj) {
 		   updateModuleXML(_id);
 	    });
 
+	    //find the index number for the item
+	    var modIndex = 0;
+		for(var j = 0; j < $(courseData).find("item").length; j++){
+			console.log($(courseData).find("item").eq(j).attr('name'));
+			if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+				modIndex = j+1;
+			}
+		}
 		//set choice based off value in xml
-		if($(outlineModule_arr[_id]).find('sequencing').attr("choice") === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).attr("choice") === "true"){
 			$('#choicetrue').prop('checked',true);
 		}
 		else{
@@ -659,15 +671,15 @@ function C_Outline(_myItem, _proj) {
 		//update the xml when choice toggle is changed
 		$("#choiceRadio").on("change", function(){
 		   if($('#choicetrue').prop('checked')){
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choice", "true");
+			   $(courseData).find('sequencing').eq(modIndex).attr("choice", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choice", "false");
+			   $(courseData).find('sequencing').eq(modIndex).attr("choice", "false");
 		   }
-		   uupdateModuleXML(_id);
+		   updateCourseXML();
 		});
 
 		//set flow based off value in xml
-		if($(outlineModule_arr[_id]).find('sequencing').attr("flow") === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).attr("flow") === "true"){
 			$('#flowtrue').prop('checked',true);
 		}
 		else{
@@ -677,15 +689,15 @@ function C_Outline(_myItem, _proj) {
 		//update the xml when flow toggle is changed
 		$("#flowRadio").on("change", function(){
 		   if($('#flowtrue').prop('checked')){
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("flow", "true");
+			   $(courseData).find('sequencing').eq(modIndex).attr("flow", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("flow", "false");
+			   $(courseData).find('sequencing').eq(modIndex).attr("flow", "false");
 		   }
-		   updateModuleXML(_id);
+		   updateCourseXML();
 		});
 
 		//set forwardOnly based off value in xml
-		if($(outlineModule_arr[_id]).find('sequencing').attr("forwardOnly") === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).attr("forwardOnly") === "true"){
 			$('#forwardOnlytrue').prop('checked',true);
 		}
 		else{
@@ -695,15 +707,15 @@ function C_Outline(_myItem, _proj) {
 		//update the xml when forwardOnly toggle is changed
 		$("#forwardOnlyRadio").on("change", function(){
 		   if($('#forwardOnlytrue').prop('checked')){
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("forwardOnly", "true");
+			   $(courseData).find('sequencing').eq(modIndex).attr("forwardOnly", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("forwardOnly", "false");
+			   $(courseData).find('sequencing').eq(modIndex).attr("forwardOnly", "false");
 		   }
-		   updateModuleXML(_id);
+		   updateCourseXML();
 		});
 
 		//set choiceExit based off value in xml
-		if($(outlineModule_arr[_id]).find('sequencing').attr("choiceExit") === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).attr("choiceExit") === "true"){
 			$('#choiceExittrue').prop('checked',true);
 		}
 		else{
@@ -713,15 +725,15 @@ function C_Outline(_myItem, _proj) {
 		//update the xml when choiceExit toggle is changed
 		$("#choiceExitRadio").on("change", function(){
 		   if($('#choiceExittrue').prop('checked')){
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choiceExit", "true");
+			   $(courseData).find('sequencing').eq(modIndex).attr("choiceExit", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choiceExit", "false");
+			   $(courseData).find('sequencing').eq(modIndex).attr("choiceExit", "false");
 		   }
-		   updateModuleXML(_id);
+		   updateCourseXML();
 		});		
 
 		//set previous based off value in xml
-		if($(outlineModule_arr[_id]).find('sequencing').attr("previous") === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).attr("previous") === "true"){
 			$('#previoustrue').prop('checked',true);
 		}
 		else{
@@ -731,12 +743,34 @@ function C_Outline(_myItem, _proj) {
 		//update the xml when previous toggle is changed
 		$("#previousRadio").on("change", function(){
 		   if($('#previoustrue').prop('checked')){
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("previous", "true");
+			   $(courseData).find('sequencing').eq(modIndex).attr("previous", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('sequencing').first().attr("previous", "false");
+			   $(courseData).find('sequencing').eq(modIndex).attr("previous", "false");
 		   }
-		   updateModuleXML(_id);
-		});			
+		   updateCourseXML();
+		});		
+
+		//set continue based off value in xml
+		if($(courseData).find('sequencing').eq(modIndex).attr("continue") === "true"){
+			$('#continuetrue').prop('checked',true);
+		}
+		else{
+			$('#continuefalse').prop('checked',true);
+		}
+
+		//update the xml when continue toggle is changed
+		$("#continueRadio").on("change", function(){
+		   if($('#continuetrue').prop('checked')){
+			   $(courseData).find('sequencing').eq(modIndex).attr("continue", "true");
+		   } else{
+			   $(courseData).find('sequencing').eq(modIndex).attr("continue", "false");
+		   }
+		   updateCourseXML();
+		});	
+
+
+				
+				
 
 		$(function () {
 			$("div[id$='Radio']").buttonset();
