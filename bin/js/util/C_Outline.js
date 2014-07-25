@@ -160,23 +160,27 @@ function C_Outline(_myItem, _proj) {
 			})
 			.on('start', function(e, _item){
 				oldNodePos = _item.attr('data-id');
-				for(var i = 0; i < startList.length; i++){
-					if(oldNodePos == startList[i].id){
+				console.log("oldNodePos = " + oldNodePos);
+				
+				for(var i = 0; i < startList[0].children.length; i++){
+					console.log("a = " +  startList[0].children[i].id);
+					if(oldNodePos == startList[0].children[i].id){
 						startChild = false;
 						startParent = "course";
 						break;
 					}
-					if(startList[i].children){
-						for(var j = 0; j < startList[i].children.length; j++){
-							if(oldNodePos == startList[i].children[j].id){
+					if(startList[0].children[i].children){
+						for(var j = 0; j < startList[0].children[i].children.length; j++){
+							if(oldNodePos == startList[0].children[i].children[j].id){
 								startChild = true;
 								startParent = i;
-								startChildrenLength = startList[i].children.length;
+								startChildrenLength = startList[0].children[i].children.length;
 								break;
 							}
 						}
 					}
 				}
+				console.log("set to " + startParent);
 			})
 			.on('stop', function(e, _item){
 				updateOrder();
@@ -245,21 +249,21 @@ function C_Outline(_myItem, _proj) {
 		 if(listJSON != startListJSON){
 			 //Check top level
 			 var endParent;
-			 for(var i = 0; i < list.length; i++){
-			 	if (oldNodePos == startList[i].id){
+			 for(var i = 0; i < list[0].children.length; i++){
+			 	if (oldNodePos == startList[0].children[i].id){
 				 	startPoint = i;
 				 }
-				 if(oldNodePos == list[i].id){
+				 if(oldNodePos == list[0].children[i].id){
 					 endPoint = i;
 					 endParent = i;
 				}
 				//check children
-			 	for(var j = 0; j < startList[i].children.length; j++){
-					if(oldNodePos == startList[i].children[j].id){
+			 	for(var j = 0; j < startList[0].children[i].children.length; j++){
+					if(oldNodePos == startList[0].children[i].children[j].id){
 				 		startPoint = j;
 				 	}
-				 	if(list[i].children[j]){
-					 	if(oldNodePos == list[i].children[j].id){
+				 	if(list[0].children[i].children[j]){
+					 	if(oldNodePos == list[0].children[i].children[j].id){
 							endPoint = j;
 							endParent = i;
 						}
@@ -267,6 +271,7 @@ function C_Outline(_myItem, _proj) {
 				 }
 			 }
 			 
+			 console.log(startParent);
 			 //Define which xml to update and update them...
 			 if(startParent == "course"){
 			 	//Moving up or down - where to instert...
