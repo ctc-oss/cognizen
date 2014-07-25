@@ -311,6 +311,7 @@ function C_Outline(_myItem, _proj) {
 		msg += '<input type="radio" id="objGlobaltrue" name="objGlobalRadio" /><label for="objGlobaltrue" title="Shared global objective information will exist per learner for the lifetime of the learner in the system.">true </label>';
 		msg += '<input type="radio" id="objGlobalfalse" name="objGlobalRadio" /><label for="objGlobalfalse" title="The LMS will maintain and resolve shared global objective IDs scoped to only one attempt on the activity tree. Shared global objective information will exist per learner per attempt on the activity tree.">false</label>';
 		msg += '</div>';
+		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
 		msg += '<div id="choiceRadio" title="Enable the table of contents for navigating among this activity’s children.">choice: ';
 		msg += '<input type="radio" id="choicetrue" name="choiceRadio" /><label for="choicetrue" title="Set choice to true.">true </label>';
 		msg += '<input type="radio" id="choicefalse" name="choiceRadio" /><label for="choicefalse" title="Set choice to false">false</label>';
@@ -521,6 +522,31 @@ function C_Outline(_myItem, _proj) {
      	msg += "<label for='lockDuration'>duration for lock request (s): </label>";
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(outlineModule_arr[_id]).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "</div>";
+		msg += '<br/><div><b>Sequencing:</b></div>';
+		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
+		msg += '<div id="choiceRadio" title="Enable the table of contents for navigating among this activity’s children.">choice: ';
+		msg += '<input type="radio" id="choicetrue" name="choiceRadio" /><label for="choicetrue" title="Set choice to true.">true </label>';
+		msg += '<input type="radio" id="choicefalse" name="choiceRadio" /><label for="choicefalse" title="Set choice to false">false</label>';
+		msg += '</div>';
+		msg += '<div id="flowRadio" title="Enable previous and next buttons for navigating among this activity’s children.">flow: ';
+		msg += '<input type="radio" id="flowtrue" name="flowRadio" /><label for="flowtrue" title="Set flow to true.">true </label>';
+		msg += '<input type="radio" id="flowfalse" name="flowRadio" /><label for="flowfalse" title="Set flow to false">false</label>';
+		msg += '</div>';	
+		msg += '<div id="forwardOnlyRadio" title="Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.">forwardOnly: ';
+		msg += '<input type="radio" id="forwardOnlytrue" name="forwardOnlyRadio" /><label for="forwardOnlytrue" title="Set forwardOnly to true.">true </label>';
+		msg += '<input type="radio" id="forwardOnlyfalse" name="forwardOnlyRadio" /><label for="forwardOnlyfalse" title="Set forwardOnly to false">false</label>';
+		msg += '</div>';
+		msg += '<div id="choiceExitRadio" title="Can the learner jump out of this activity using a choice request?">choiceExit: ';
+		msg += '<input type="radio" id="choiceExittrue" name="choiceExitRadio" /><label for="choiceExittrue" title="Set choiceExit to true.">true </label>';
+		msg += '<input type="radio" id="choiceExitfalse" name="choiceExitRadio" /><label for="choiceExitfalse" title="Set choiceExit to false">false</label>';
+		msg += '</div>';
+		msg += '<br/><div title="Control which navigational UI elements should be presented by the LMS."><b>Navigation Controls:</b></div>';		
+		msg += '<div id="previousRadio" title="Remove the previous button LMS navigation.">previous: ';
+		msg += '<input type="radio" id="previoustrue" name="previousRadio" /><label for="previoustrue" title="Set previous to true.">true </label>';
+		msg += '<input type="radio" id="previousfalse" name="previousRadio" /><label for="previousfalse" title="Set previous to false">false</label>';
+		msg += '</div>';		
+
+		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';	     	
 
 	    $("#outlinePagePrefPane").append(msg);
 	   
@@ -616,6 +642,101 @@ function C_Outline(_myItem, _proj) {
 		   }
 		   updateModuleXML(_id);
 	    });
+
+		//set choice based off value in xml
+		if($(outlineModule_arr[_id]).find('sequencing').attr("choice") === "true"){
+			$('#choicetrue').prop('checked',true);
+		}
+		else{
+			$('#choicefalse').prop('checked',true);
+		}
+
+		//update the xml when choice toggle is changed
+		$("#choiceRadio").on("change", function(){
+		   if($('#choicetrue').prop('checked')){
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choice", "true");
+		   } else{
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choice", "false");
+		   }
+		   uupdateModuleXML(_id);
+		});
+
+		//set flow based off value in xml
+		if($(outlineModule_arr[_id]).find('sequencing').attr("flow") === "true"){
+			$('#flowtrue').prop('checked',true);
+		}
+		else{
+			$('#flowfalse').prop('checked',true);
+		}
+
+		//update the xml when flow toggle is changed
+		$("#flowRadio").on("change", function(){
+		   if($('#flowtrue').prop('checked')){
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("flow", "true");
+		   } else{
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("flow", "false");
+		   }
+		   updateModuleXML(_id);
+		});
+
+		//set forwardOnly based off value in xml
+		if($(outlineModule_arr[_id]).find('sequencing').attr("forwardOnly") === "true"){
+			$('#forwardOnlytrue').prop('checked',true);
+		}
+		else{
+			$('#forwardOnlyfalse').prop('checked',true);
+		}
+
+		//update the xml when forwardOnly toggle is changed
+		$("#forwardOnlyRadio").on("change", function(){
+		   if($('#forwardOnlytrue').prop('checked')){
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("forwardOnly", "true");
+		   } else{
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("forwardOnly", "false");
+		   }
+		   updateModuleXML(_id);
+		});
+
+		//set choiceExit based off value in xml
+		if($(outlineModule_arr[_id]).find('sequencing').attr("choiceExit") === "true"){
+			$('#choiceExittrue').prop('checked',true);
+		}
+		else{
+			$('#choiceExitfalse').prop('checked',true);
+		}
+
+		//update the xml when choiceExit toggle is changed
+		$("#choiceExitRadio").on("change", function(){
+		   if($('#choiceExittrue').prop('checked')){
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choiceExit", "true");
+		   } else{
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("choiceExit", "false");
+		   }
+		   updateModuleXML(_id);
+		});		
+
+		//set previous based off value in xml
+		if($(outlineModule_arr[_id]).find('sequencing').attr("previous") === "true"){
+			$('#previoustrue').prop('checked',true);
+		}
+		else{
+			$('#previousfalse').prop('checked',true);
+		}
+
+		//update the xml when previous toggle is changed
+		$("#previousRadio").on("change", function(){
+		   if($('#previoustrue').prop('checked')){
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("previous", "true");
+		   } else{
+			   $(outlineModule_arr[_id]).find('sequencing').first().attr("previous", "false");
+		   }
+		   updateModuleXML(_id);
+		});			
+
+		$(function () {
+			$("div[id$='Radio']").buttonset();
+		});					
+
      }
      
      
