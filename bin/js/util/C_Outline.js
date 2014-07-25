@@ -302,10 +302,29 @@ function C_Outline(_myItem, _proj) {
      ****************************************************************/
      function displayCourseData(_id){
      	$("#outlinePagePrefPane").empty();
-	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + currentOutlineItem.find("span").first().text() + "</div>";
+	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + currentOutlineItem.find("span").first().text() + "</b></div>";
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
-		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" value="'+ currentOutlineItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ currentOutlineItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += '<br/><div><b>Sequencing:</b></div>';
+		msg += '<div id="objGlobalRadio" title="Enable shared global objective information for the lifetime of the learner in the system.">objectivesGlobalToSystem: ';
+		msg += '<input type="radio" id="objGlobaltrue" name="objGlobalRadio" /><label for="objGlobaltrue" title="Shared global objective information will exist per learner for the lifetime of the learner in the system.">true </label>';
+		msg += '<input type="radio" id="objGlobalfalse" name="objGlobalRadio" /><label for="objGlobalfalse" title="The LMS will maintain and resolve shared global objective IDs scoped to only one attempt on the activity tree. Shared global objective information will exist per learner per attempt on the activity tree.">false</label>';
+		msg += '</div>';
+		msg += '<div id="choiceRadio" title="Enable the table of contents for navigating among this activity’s children.">choice: ';
+		msg += '<input type="radio" id="choicetrue" name="choiceRadio" /><label for="choicetrue" title="Set choice to true.">true </label>';
+		msg += '<input type="radio" id="choicefalse" name="choiceRadio" /><label for="choicefalse" title="Set choice to false">false</label>';
+		msg += '</div>';
+		msg += '<div id="flowRadio" title="Enable previous and next buttons for navigating among this activity’s children.">flow: ';
+		msg += '<input type="radio" id="flowtrue" name="flowRadio" /><label for="flowtrue" title="Set flow to true.">true </label>';
+		msg += '<input type="radio" id="flowfalse" name="flowRadio" /><label for="flowfalse" title="Set flow to false">false</label>';
+		msg += '</div>';	
+		msg += '<div id="forwardOnlyRadio" title="Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.">forwardOnly: ';
+		msg += '<input type="radio" id="forwardOnlytrue" name="forwardOnlyRadio" /><label for="forwardOnlytrue" title="Set forwardOnly to true.">true </label>';
+		msg += '<input type="radio" id="forwardOnlyfalse" name="forwardOnlyRadio" /><label for="forwardOnlyfalse" title="Set forwardOnly to false">false</label>';
+		msg += '</div>';
+		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';					
+		//alert($(courseData).find('sequencing').attr("choice"));
 		//msg += "<label for='out_courseObjective'>course objective: </label>";
 		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(outlineModule_arr[i]).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			
@@ -321,10 +340,80 @@ function C_Outline(_myItem, _proj) {
 		msg += "<option>review</option>";
 		msg += "</select><br/>"*/
 			
-			
-		
 		$("#outlinePagePrefPane").append(msg);
-			
+		
+		//set objectivesGlobalToSystem based off value in xml
+		if($(courseData).find('sequencing').attr("objectivesGlobalToSystem") === "true"){
+			$('#objGlobaltrue').prop('checked',true);
+		}
+		else{
+			$('#objGlobalfalse').prop('checked',true);
+		}
+
+		//update the xml when objectivesGlobalToSystem toggle is changed
+		$("#objGlobalRadio").on("change", function(){
+		   if($('#objGlobaltrue').prop('checked')){
+			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "true");
+		   } else{
+			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "false");
+		   }
+		   updateCourseXML(currentPageParentModule);
+		});
+
+		//set choice based off value in xml
+		if($(courseData).find('sequencing').attr("choice") === "true"){
+			$('#choicetrue').prop('checked',true);
+		}
+		else{
+			$('#choicefalse').prop('checked',true);
+		}
+
+		//update the xml when choice toggle is changed
+		$("#choiceRadio").on("change", function(){
+		   if($('#choicetrue').prop('checked')){
+			   $(courseData).find('sequencing').first().attr("choice", "true");
+		   } else{
+			   $(courseData).find('sequencing').first().attr("choice", "false");
+		   }
+		   updateCourseXML(currentPageParentModule);
+		});
+
+		//set flow based off value in xml
+		if($(courseData).find('sequencing').attr("flow") === "true"){
+			$('#flowtrue').prop('checked',true);
+		}
+		else{
+			$('#flowfalse').prop('checked',true);
+		}
+
+		//update the xml when flow toggle is changed
+		$("#flowRadio").on("change", function(){
+		   if($('#flowtrue').prop('checked')){
+			   $(courseData).find('sequencing').first().attr("flow", "true");
+		   } else{
+			   $(courseData).find('sequencing').first().attr("flow", "false");
+		   }
+		   updateCourseXML(currentPageParentModule);
+		});
+
+		//set forwardOnly based off value in xml
+		if($(courseData).find('sequencing').attr("forwardOnly") === "true"){
+			$('#forwardOnlytrue').prop('checked',true);
+		}
+		else{
+			$('#forwardOnlyfalse').prop('checked',true);
+		}
+
+		//update the xml when forwardOnly toggle is changed
+		$("#forwardOnlyRadio").on("change", function(){
+		   if($('#forwardOnlytrue').prop('checked')){
+			   $(courseData).find('sequencing').first().attr("forwardOnly", "true");
+		   } else{
+			   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
+		   }
+		   updateCourseXML(currentPageParentModule);
+		});		
+
 		$("#out_courseTitle").on("change", function(){
 			//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 			var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
@@ -353,6 +442,13 @@ function C_Outline(_myItem, _proj) {
 		   	$(outlineModule_arr[i]).find('page').eq(j).attr('objective', titleUpdate);
 			updateModuleXML(currentPageParentModule);
 		}).css({'width': '500px', 'color': '#3383bb;'});*/
+
+		$(function () {
+			$("div[id$='Radio']").buttonset();
+			$( document ).tooltip();
+		});	
+
+
      }
      
      /****************************************************************
