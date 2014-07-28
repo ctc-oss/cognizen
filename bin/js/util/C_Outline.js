@@ -1,53 +1,59 @@
 function C_Outline(_myItem, _proj) {
-	var myItem = _myItem;
-	var outlineCourseID = myItem.data('id');
-    var outlineCourseType = myItem.data('type');
-    var outlineCoursePermission = myItem.data('permission');
-	var proj = _proj;
-	/* proj.directories holds directories for all course content
-	id: "533edfe1cb89ab0000000001"
-	name: "z9"
-	parent: "531f3654c764a5609d000003"
-	parentDir: "Course 1"
-	path: "VA/Course 1/z9"
-	permission: "admin"
-	type: "lesson"
-	__proto__: Object
-	]*/		
-	var currentOutlineItem;	
-    var outlineURL;
-    var totalOutlineModules;
-    var loadedOutlineModules;
-    var outlineModule_arr;
-    var indexItem_arr;
-    var indexGroupID_arr;
-    var currentCourseID = myItem.data('id');
-    var courseData;
-    var courseXMLPath;
-    var module_arr = [];
-    var idCounter = 0;
+	
+	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	var myItem = _myItem;										//The Button that was clicked in the dashboard.
+	var courseID = myItem.data('id');					//Course to check for modules
+    var currentCourseType = myItem.data('type');				//Type to be passed to node server
+    var currentCoursePermission = myItem.data('permission');	//Permission to be passed to node server
+	var proj = _proj;											//Data object holding course module data
+																/* proj.directories holds directories for all course content
+																id: "533edfe1cb89ab0000000001"
+																name: "z9"
+																parent: "531f3654c764a5609d000003"
+																parentDir: "Course 1"
+																path: "VA/Course 1/z9"
+																permission: "admin"
+																type: "lesson"
+																__proto__: Object
+																]*/		
+    
+    var coursePath;												//Path to the course
+    var courseData;												//Variable to hold and manipulate course.xml - the xml is imported and held in courseData object.
+    var courseXMLPath;											//Path to the course.xml
+    
+    
+    ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    var totalOutlineModules;									//Number of modules in course
+    var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
+	var module_arr = [];										//Array holding all module data
+																/*id: "533edfe1cb89ab0000000001"
+																name: "z9"
+																parent: "531f3654c764a5609d000003"
+																parentDir: "Course 1"
+																path: "VA/Course 1/z9"
+																permission: "admin"
+																type: "lesson"*/
+       
+    ////////////////////////////////////////////////   PAGE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    
+    ////////////////////////////////////////////////   MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var currentPageParentModule;
     var currentPage;
     var currentPageFamily;
-    var familyType_arr = [];
     var currentMenuItem;
-    
+    var indexItem_arr;											//Array of moduleIndexItem_arr arrays which hold each button
+    var idCounter = 0;											//Give each menu item a unique numeric id 										----- MAY NOT NEED THIS NOW WITH FULL GUID SUPPORT
+
+	
+	////////////////////////////////////////////////   MOVING MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var startParent;
     var startList;
+    var startLesson = null;
+    var hoverSubNav = false;
     var startListJSON;
-    //var staticFamily = new Object();
-    var staticFamily = ["textOnly", "top", "left", "right", "bottom"];
-    familyType_arr.push(staticFamily);
-    //var revealFamily = new Object();
-    var revealFamily = ["revealRight", "revealLeft", "revealBottom"];
-    familyType_arr.push(revealFamily);
-    
-    for(var i = 0; i < myItem.find("ul").find("li").length; i++){
-	    var moduleObj = new Object();
-	    moduleObj.name = myItem.find("ul").find("li").eq(i).find("span").first().text();
-	    moduleObj.id = myItem.find("ul").find("li").eq(i).attr("id");
-	    module_arr.push(moduleObj);
-    }
+    var currentDragID;
+    var currentDragItem;
+
     
     $(document).ready(function(){
     	initOutline();
@@ -58,24 +64,28 @@ function C_Outline(_myItem, _proj) {
     });
     	
 	 /************************************************************************************
-     Do Outline
+     initOutline()
+     -- reach out to the node server and get the path to the course.
      ************************************************************************************/
      function initOutline(){
      	loadedOutlineModules = 0;
-     	outlineModule_arr = [];
-     	currentOutlineItem = myItem;
 		socket.emit("getCoursePath", {
         	content: {
-            	id: outlineCourseID,
-                type: outlineCourseType,
-                permission: outlineCoursePermission
+            	id: courseID,
+                type: currentCourseType,
+                permission: currentCoursePermission
              }
 		});
      }
      
+     /************************************************************************************
+     recieveCoursePath(data)
+     -- recieve course path back from node in data object.
+     -- use recieved path to load the course.xml file.
+     ************************************************************************************/
      function receiveCoursePath(data){
-	     outlineURL = [window.location.protocol, '//', window.location.host, '/programs/', data.path].join('');
-	     var xmlPath = outlineURL + "/course.xml";
+	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', data.path].join('');
+	     var xmlPath = coursePath + "/course.xml";
 	     courseXMLPath = xmlPath;
 	     $.ajax({
 		    type: "GET",
@@ -89,23 +99,47 @@ function C_Outline(_myItem, _proj) {
 		});
      }
      
-     
+     /************************************************************************************
+     importModuleItems(_data);
+     -- store the course.xml in courseData variable to read and manipulate as needed.
+     -- call functionimport each of the module content.xml files.
+     ************************************************************************************/
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
-		 for(var i = 0; i < totalOutlineModules; i++){
-			 importModuleXML($(courseData).find('item').eq(i).attr("name"));
-		 }
+	     //Construct Module Data Structure Model Array and store module_arr
+	     for (var i = 0; i < totalOutlineModules; i++){
+	     	for(var j = 0; j < proj.directories.length; j++){
+			    if(proj.directories[j].parent == courseID && proj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
+				    var moduleObj = new Object();
+				    moduleObj.name = proj.directories[j].name;
+				    moduleObj.id = proj.directories[j].id;
+				    moduleObj.parent = proj.directories[j].parent;
+				    moduleObj.parentDir = proj.directories[j].parentDir;
+				    moduleObj.parh = proj.directories[j].path;
+				    moduleObj.permission = proj.directories[j].permission;
+				    moduleObj.type = proj.directories[j].type;
+				    moduleObj.xml = null;
+				    moduleObj.xmlPath = ["/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+				    module_arr.push(moduleObj);
+				    
+					var currentXML = [coursePath, "/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+				    importModuleXML(currentXML);
+			    }
+			}
+	     }
      }
      
-     var xml_arr = [];
-     function importModuleXML(_module){
-	     _module = encodeURIComponent(_module.trim());
-	     var currentXML = [outlineURL, "/", _module, "/xml/content.xml"].join("");
-	     xml_arr.push(["/", _module, "/xml/content.xml"].join(""));
+     
+     /************************************************************************************
+     importModuleXML(_path)
+     -- download content.xml for each module
+	 -- call importOUtlineModuleComplete after each is pulled to see if all are pulled.
+     ************************************************************************************/
+     function importModuleXML(_path){
 	     $.ajax({
 		    type: "GET",
-		    url: currentXML,
+		    url: _path,
 		    dataType: "xml",
 		    async: false,
 		    success: importOutlineModuleItemComplete,
@@ -115,79 +149,74 @@ function C_Outline(_myItem, _proj) {
 		});
      }
      
+     
+     /************************************************************************************
+     importOutlineModuleItemComplete(_data);
+     -- attach module content.xml to appropriate module_arr item
+	 -- Check if all are downloaded then move on.
+     ************************************************************************************/
      function importOutlineModuleItemComplete(_data){
-	     outlineModule_arr.push(_data);
+	     for(var i = 0; i < module_arr.length; i++){
+		     if($(_data).find("lessonTitle").attr("value") == module_arr[i].name){
+			     module_arr[i].xml = _data;
+		     }
+	     }
 	     loadedOutlineModules++;
 	     if(loadedOutlineModules === totalOutlineModules){
 		     buildOutlineInterface();
 	     }
      }
      
-     var oldNodePos;
      
+     /************************************************************************************
+	 buildOutlineInterface()
+     -- build menuing system and add functionalities
+     ************************************************************************************/     
      function buildOutlineInterface(){
      	var thisID;
 	 	var groupMode;
-	 	indexGroupID_arr = [];
      	indexItem_arr = [];
 	 	
-     	msg = '<div id="dialog-outline" title="Outline '+ currentOutlineItem.find("span").first().text() + ':">';
+     	msg = '<div id="dialog-outline" title="Outline '+ myItem.find("span").first().text() + ':">';
 	    msg += '<div id="outlinePane" class="pane">'
 	    msg += '<div id="outlineIndexPane" class="paneContent">';
 	    msg += '<div class="dd" id="C_Index">';
 	    msg += '<ol class="dd-list">';
 	    //COURSE LEVEL
-	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="root">';
+	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="idCounter">';
 		//msg += '<div class="dd-handle dd3-handle">Drag</div>';
-		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="root">'+currentOutlineItem.find("span").first().text() +'</div>';
+		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="'+ courseID+'">'+myItem.find("span").first().text() +'</div>';
 		msg += '<ol class="dd-list">';
 	    
-	    //MODULE and PAGES LEVEL
-	    for(var i = 0; i < outlineModule_arr.length; i++){
+	    //idCounter++;
+	    //ADD MODULE and PAGES LEVEL  ----- Calls a separate function for cleanliness
+	    for(var i = 0; i < module_arr.length; i++){
 	     	msg += buildOutlineModule(i);
      	}
+
      	msg += '</ol></li></ol>';
      	msg += '</div>';
 	    msg += '</div>';//close the outline index
 	    msg += '<div id = "outlinePagePrefPane"></div>';
 	    msg += '</div>';//close the outline pane
 	    msg += '</div>';//close the dialog
+        //ADD menu to stage
         $("#stage").append(msg);
         
-        $('#C_Index').nestable({maxDepth: 3})
+        //Apply nestable capabilities
+        $('#C_Index').nestable({maxDepth: 4})
         	.on('change', function(e, _item){
 				console.log("onChange");
 			})
 			.on('start', function(e, _item){
-				oldNodePos = _item.attr('data-id');
-				console.log("oldNodePos = " + oldNodePos);
-				
-				for(var i = 0; i < startList[0].children.length; i++){
-					console.log("a = " +  startList[0].children[i].id);
-					if(oldNodePos == startList[0].children[i].id){
-						startChild = false;
-						startParent = "course";
-						break;
-					}
-					if(startList[0].children[i].children){
-						for(var j = 0; j < startList[0].children[i].children.length; j++){
-							if(oldNodePos == startList[0].children[i].children[j].id){
-								startChild = true;
-								startParent = i;
-								startChildrenLength = startList[0].children[i].children.length;
-								break;
-							}
-						}
-					}
-				}
-				console.log("set to " + startParent);
+				startDrag(_item);
 			})
 			.on('stop', function(e, _item){
 				updateOrder();
 			})
-     	
+     	msg = '<div id="dialog-outline" title="Outline '+ myItem.find("span").first().text() + ':">';
         $("#dialog-outline").dialog({
-            //modal: true,
+            modal: true,
             width: 1024,
             height: 768,
             resizable: false,
@@ -200,15 +229,17 @@ function C_Outline(_myItem, _proj) {
             }
         });
         
+        //OPEN WITH ALL MENU ITEMS COLLAPSED
         $('#C_Index').nestable('collapseAll');
-        $("#courseIndex")
+
+        //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
 		var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
 		startList = tmpStartList.nestable('serialize');
         startListJSON = window.JSON.stringify(startList);
 		
         //Add button listeners
-        //Course
+        //COURSE BUTTON LISTENER
         $("#courseIndexHotspot").click(function(){
 	        if(hoverSubNav == false){
 		        try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
@@ -217,8 +248,69 @@ function C_Outline(_myItem, _proj) {
 				displayCourseData($(this).attr("data-id"));
 	        }
         });
-        //Modules
-        for(var j = 0; j < outlineModule_arr.length; j++){
+        
+        //START WITH COURSE SELECTED
+        $("#courseIndexHotspot").click();
+        
+        //MODULE BUTTON LISTENERS
+        addModuleClicks();
+        		
+		//Pages
+		addPageClicks();
+     }
+     
+     /*****************************************************************
+     buildOutlineModule - builds the index for the module.
+     Retruns a string representing the module and it's pages.
+     *****************************************************************/
+     function buildOutlineModule(_id){
+	     var data = module_arr[_id].xml;
+	     var thisID;
+		 var groupMode;
+		 var moduleIndexItem_arr = [];
+		 var totalPages = $(data).find('page').length;
+		 var indexString = '<li id="module'+ _id + 'Index" class="dd-item dd3-item outlineModuleItem" data-id="'+ module_arr[_id].id +'">';
+		 idCounter++;
+		 indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+		 indexString += '<div id="module'+ _id + 'IndexHotspot" class="dd3-content" data-id="'+ module_arr[_id].id +'">'+$(data).find("lessonTitle").attr("value") +'</div>';
+		 indexString += '<ol class="dd-list">';
+		 for(var i = 0; i < totalPages; i++){
+		 	thisID = "module"+ _id + "indexMenuItem" + i;
+		 	var pageID = $(data).find("page").eq(i).attr("id");
+		 	indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+pageID+'">';
+			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div>';
+			moduleIndexItem_arr.push("#" + thisID);
+		 	idCounter++;
+		 	if($(data).find("page").eq(i).find("page").length){
+		 		indexString += '<ol class="dd-list">';
+
+		 		for(var j = 0; j < $(data).find("page").eq(i).find("page").length; j++){
+			 		thisID = "module"+ _id + "indexMenuItem" + i + "lessonItem" + j;
+			 		pageID = $(data).find("page").eq(i).find("page").eq(j).attr("id");
+			 		indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+pageID+'">';
+			 		idCounter++;
+			 		indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			 		indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find("page").eq(j).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div></li>';
+					moduleIndexItem_arr.push("#" + thisID);
+		 		}
+		 		i = i + j;
+		 		indexString += "</ol>"
+		 	}
+		 	
+		 	indexString += "</li>";
+		}
+		indexItem_arr.push(moduleIndexItem_arr)
+		indexString += '</ol></li>';
+		return indexString;
+     }
+     
+     /************************************************************************************
+     addModuleClicks()
+     -- Add listeners to the menu times for the course module buttons
+     ************************************************************************************/
+     function addModuleClicks(){
+	      for(var j = 0; j < module_arr.length; j++){
 	        $("#module"+j+"IndexHotspot").click(function(){
 				if(hoverSubNav == false){
 					//Call for when a module is clicked.
@@ -230,9 +322,79 @@ function C_Outline(_myItem, _proj) {
 			});
 			addOutlineRollovers($("#module"+j+"IndexHotspot"), "module");
 		}
-		$("#courseIndexHotspot").click();
-		//Pages
-		addPageClicks();
+     }
+     
+     /************************************************************************************
+     addPageClicks()
+     -- Add listeners to the menu times for the course page buttons
+     ************************************************************************************/
+     function addPageClicks(){
+	     for(var i = 0; i < indexItem_arr.length; i++){
+		     var tmp_arr = [];
+		     tmp_arr = indexItem_arr[i];
+		     for(var j = 0; j < tmp_arr[i].length; j++){
+			     $(tmp_arr[j]).click(function(){
+					//don't fire if click subNavButtons like add or remove.
+					if(hoverSubNav == false){
+						//Call for when a page is clicked.
+						try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
+						currentMenuItem = $(this);
+						currentMenuItem.addClass("dd3-selected");
+						displayPageData($(this).attr("myID"));
+					}
+				});
+				addOutlineRollovers($(tmp_arr[j]), "page");
+			}
+	     }
+     }
+
+     
+     /***************************************************************************************
+     startDrag
+     SET KEY VARIABLES FOR REPOSITIONING - SET START POINT VARIALBLES
+     ***************************************************************************************/
+     function startDrag(_item){
+       	currentDragID = _item.attr('data-id');
+		//check module level
+		for(var i = 0; i < startList[0].children.length; i++){
+			if(currentDragID == startList[0].children[i].id){
+				startChild = false;
+				startLesson = null;
+				startParent = "course";
+				startPoint = i;
+				console.log("startPoint = " + startPoint);
+				break;
+			}
+			//Check Page Level
+			if(startList[0].children[i].children){
+				var startIterator = 0;
+				for(var j = 0; j < startList[0].children[i].children.length; j++){
+					if(currentDragID == startList[0].children[i].children[j].id){
+						startChild = true;
+						startLesson = null;
+						startParent = i;
+						startPoint = startIterator;
+						console.log("startPoint = " + startPoint);
+						break;
+					}
+					startIterator++;
+					//Check sub-page level (lessons)
+					if(startList[0].children[i].children[j].children){
+						for (var k = 0; k < startList[0].children[i].children[j].children.length; k++){
+							if(currentDragID == startList[0].children[i].children[j].children[k].id){
+								startChild = true;
+								startLesson = j;
+								startParent = i;
+								startPoint = startIterator;
+								console.log("startPoint = " + startPoint);
+								break;
+							}
+							startIterator++;
+						}
+					}
+				}
+			}
+		}
      }
      
      /******************************************************************
@@ -245,52 +407,69 @@ function C_Outline(_myItem, _proj) {
 		 var tmpList   = tmp.length ? tmp : $(tmp.target);
 		 var list = tmpList.nestable('serialize');
 		 var listJSON = window.JSON.stringify(list);
+		 console.log(startList);
+		 console.log(list);
 		 //If the list has changed, record that change.
 		 if(listJSON != startListJSON){
-			 //Check top level
-			 var endParent;
-			 for(var i = 0; i < list[0].children.length; i++){
-			 	if (oldNodePos == startList[0].children[i].id){
-				 	startPoint = i;
-				 }
-				 if(oldNodePos == list[0].children[i].id){
-					 endPoint = i;
-					 endParent = i;
-				}
-				//check children
-			 	for(var j = 0; j < startList[0].children[i].children.length; j++){
-					if(oldNodePos == startList[0].children[i].children[j].id){
-				 		startPoint = j;
-				 	}
-				 	if(list[0].children[i].children[j]){
-					 	if(oldNodePos == list[0].children[i].children[j].id){
-							endPoint = j;
-							endParent = i;
-						}
-					}
-				 }
+			 var startNode = getNode(currentDragID);
+			 var moveFrom = startNode.node;
+			 var startModule = startNode.module;
+			 var startModuleID = module_arr[startNode.module].id;
+			 var startNodeLevel = startNode.level;
+			 
+			 var endNode;
+			 var myInsert;
+			 if($('#' + currentDragID).next().attr("id")){
+			 	endNode = getNode($('#' + currentDragID).next().attr("id"));
+			 	myInsert = "before";
+			 }else{
+				 endNode = getNode($('#' + currentDragID).prev().attr("id"));
+				 myInsert = "after";
 			 }
 			 
-			 console.log(startParent);
-			 //Define which xml to update and update them...
-			 if(startParent == "course"){
-			 	//Moving up or down - where to instert...
-			 	if(startPoint > endPoint){
-					$(courseData).find("item").eq(startPoint).insertBefore($(courseData).find("item").eq(endPoint));
-				}else{
-					$(courseData).find("item").eq(startPoint).insertAfter($(courseData).find("item").eq(endPoint));
-				}
-				updateCourseXML();	 
+			 var moveTo = endNode.node;
+			 var endModule = endNode.module;
+			 var endModuleID = module_arr[endNode.module].id;
+			 var endNodeLevel = endNode.level;			 
+			 
+			 //MOVE from original position to updated position.
+			 if(myInsert == "before" || endNodeLevel == "module"){
+				 moveFrom.insertBefore(moveTo);
 			 }else{
-			 	if(startPoint > endPoint){
-			 		$(outlineModule_arr[startParent]).find("page").eq(startPoint).insertBefore($(outlineModule_arr[endParent]).find("page").eq(endPoint));
-			 	}else{
-				 	$(outlineModule_arr[startParent]).find("page").eq(startPoint).insertAfter($(outlineModule_arr[endParent]).find("page").eq(endPoint));
-			 	}
-			 	if(startParent != endParent){
-			 		updateModuleXML(startParent, false);
-			 	}
-			 	updateModuleXML(endParent, true);
+				 moveFrom.insertAfter(moveTo);
+			 }	
+			 
+			 console.log("startNodeLevel = " + startNodeLevel);
+			 console.log("endNodeLevel = " + endNodeLevel);
+			 //REORDERING MODULES			 	 
+			 if(endNodeLevel == "module" && startNodeLevel == "module"){
+				 updateCourseXML();
+			 }
+			 //MOVING A MODULE INTO ANOTHER MODULE
+			 	else if(startNodeLevel == "module" && endNodeLevel == "page"){
+				 var msg = '<div id="import-moduleDialog" title="Import alert!"></div>';
+				 $("#stage").append(msg);
+		         $("#dialog-outline").dialog({
+		            modal: true,
+		            width: 400,
+		            height: 300,
+		            resizable: false,
+		            close: function (event, ui) {
+		                //socket.emit("closeOutline");
+		                destroy();
+		            },
+		            open: function (event, ui) {
+		               
+		            }
+		         });
+				 
+			 }
+			 //REORDERING PAGES WITHIN MODULES
+			 	else if (startNodeLevel == "page" && endNodeLevel == "page"){ 
+			 	if(endModule != startModule){
+				 	updateModuleXML(startModule, false);
+				 }
+			 	 updateModuleXML(endModule, true);
 			 }
 			 
 			 //Update start list in case more than one change is made... 
@@ -299,7 +478,31 @@ function C_Outline(_myItem, _proj) {
 			 var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
 			 startList = tmpStartList.nestable('serialize');
 			 startListJSON = window.JSON.stringify(startList);
+
 		}
+     }
+     
+     function getNode(_nodeID){
+         var nodeData = new Object();
+	     for(var i = 0; i < module_arr.length; i++){
+		     if(module_arr[i].id == _nodeID){
+			     nodeData.node = $(courseData).find('item[name="' +module_arr[i].name+ '"]');
+			     nodeData.module = i;
+			     nodeData.level = "module";
+			     return nodeData; 
+			     break;
+		     }else{
+			     var $xml = $(module_arr[i].xml)
+			     
+			     if($xml.find('page[id="'+_nodeID+'"]').length > 0){
+			     	 nodeData.node = $xml.find('page[id="'+_nodeID+'"]');
+			     	 nodeData.module = i;
+			     	 nodeData.level = "page";
+				     return nodeData;
+				     break;
+			     }
+			 }
+	     }
      }
      
      /****************************************************************
@@ -307,10 +510,10 @@ function C_Outline(_myItem, _proj) {
      ****************************************************************/
      function displayCourseData(_id){
      	$("#outlinePagePrefPane").empty();
-	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + currentOutlineItem.find("span").first().text() + "</b></div>";
+	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + myItem.find("span").first().text() + "</b></div>";
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
-		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ currentOutlineItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 		msg += '<br/><div><b>Sequencing:</b></div>';
 		msg += '<div id="objGlobalRadio" title="Enable shared global objective information for the lifetime of the learner in the system.">objectivesGlobalToSystem: ';
 		msg += '<input type="radio" id="objGlobaltrue" name="objGlobalRadio" /><label for="objGlobaltrue" title="Shared global objective information will exist per learner for the lifetime of the learner in the system.">true </label>';
@@ -332,13 +535,13 @@ function C_Outline(_myItem, _proj) {
 		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';					
 		//alert($(courseData).find('sequencing').attr("choice"));
 		//msg += "<label for='out_courseObjective'>course objective: </label>";
-		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(outlineModule_arr[i]).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			
 		/*msg += "<div>"
 		msg += "<label for='lessonWidth'>width of lesson:</label>";
-		msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(outlineModule_arr[i]).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+		msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[i].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
 		msg += "<label for='lessonHeight'>height of lesson:</label>";
-		msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(outlineModule_arr[i]).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
+		msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[i].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
 		msg += "<label for='mode'>set mode:</label>";
 		msg += "<select name='mode' id='mode'>";
 		msg += "<option>production</option>";
@@ -429,8 +632,8 @@ function C_Outline(_myItem, _proj) {
 			
 			var data = {
 	            content: {
-	                id: outlineCourseID,
-	                type: outlineCourseType,
+	                id: courseID,
+	                type: currentCourseType,
 	                name: titleUpdate
 	            },
 	            user: {
@@ -445,7 +648,7 @@ function C_Outline(_myItem, _proj) {
 		/*$("#out_courseObjective").on("change", function(){
 		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 		 	var titleUpdate = $("#out_pageObjective").val().trim();
-		   	$(outlineModule_arr[i]).find('page').eq(j).attr('objective', titleUpdate);
+		   	$(module_arr[i].xml).find('page').eq(j).attr('objective', titleUpdate);
 			updateModuleXML(currentPageParentModule);
 		}).css({'width': '500px', 'color': '#3383bb;'});*/
 
@@ -462,15 +665,15 @@ function C_Outline(_myItem, _proj) {
      ****************************************************************/
      function displayModuleData(_id){
      	$("#outlinePagePrefPane").empty();
-     	var msg = "<div class='outlineModuleEditHeader'><b>Module Preferences: " + $(outlineModule_arr[_id]).find('lessonTitle').attr("value") + "</b></div><br/>";
+     	var msg = "<div class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
      	msg += "<div><b>Details:</b></div>";
      	msg += "<label for='lessonTitle'>lesson title: </label>";
-        msg += '<input type="text" name="lessonTitle" id="lessonTitle" value="'+ $(outlineModule_arr[_id]).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += '<input type="text" name="lessonTitle" id="lessonTitle" value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<div>"
      	msg += "<label for='lessonWidth'>width of lesson: </label>";
-        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(outlineModule_arr[_id]).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[_id].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
         msg += "<label for='lessonHeight'>height of lesson: </label>";
-        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(outlineModule_arr[_id]).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
+        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[_id].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
         msg += "<label for='mode'>set mode: </label>";
      	msg += "<select name='mode' id='mode'>";
      	msg += "<option>production</option>";
@@ -521,11 +724,11 @@ function C_Outline(_myItem, _proj) {
      	msg += "<option>Strong.easeOut</option>";
      	msg += "</select> ";
      	msg += "<label for='transitionDuration'>transition duration (s): </label>";
-        msg += '<input type="text" name="transitionDuration" id="transitionDuration" value="'+ $(outlineModule_arr[_id]).find('transitionLength').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += '<input type="text" name="transitionDuration" id="transitionDuration" value="'+ $(module_arr[_id].xml).find('transitionLength').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<br/><br/>";
      	msg += "<div><b>Lock:</b></div>";
      	msg += "<label for='lockDuration'>duration for lock request (s): </label>";
-        msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(outlineModule_arr[_id]).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
+        msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "</div>";
 		msg += '<br/><div><b>Sequencing:</b></div>';
 		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
@@ -565,21 +768,20 @@ function C_Outline(_myItem, _proj) {
 	   
 	    //Set module settings.
 	    //Mode
-		$("#mode option:contains(" + $(outlineModule_arr[_id]).find('mode').attr("value") + ")").attr('selected', 'selected');
-		$("#transition").val($(outlineModule_arr[_id]).find('transitionType').attr("value"));
+		$("#mode option:contains(" + $(module_arr[_id].xml).find('mode').attr("value") + ")").attr('selected', 'selected');
+		$("#transition").val($(module_arr[_id].xml).find('transitionType').attr("value"));
 		
-		if($(outlineModule_arr[_id]).find('glossary').attr("value") === "true"){
+		if($(module_arr[_id].xml).find('glossary').attr("value") === "true"){
 			$('#hasGlossary').prop('checked',true);
 		}
 
 	    //Listeners for Module Settings
 	     $("#lessonTitle").on("change", function(){
 
-			$(outlineModule_arr[_id]).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
+			$(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
 			updateModuleXML(_id, false);
 			
 			for(var j = 0; j < $(courseData).find("item").length; j++){
-				console.log($(courseData).find("item").eq(j).attr('name'));
 				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
 					$(courseData).find("item").eq(j).attr('name', $("#lessonTitle").val().trim());
 					updateCourseXML();
@@ -612,46 +814,46 @@ function C_Outline(_myItem, _proj) {
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 	    
 	    $("#mode").on("change", function(){
-		    $(outlineModule_arr[_id]).find('mode').attr("value", $("#mode").val());
+		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
 		    updateModuleXML(_id);
 	    });
 	    
 	    $("#transition").on("change", function(){
-		    $(outlineModule_arr[_id]).find('transitionType').attr("value", $("#transition").val());
+		    $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
 		    if($("#transition").val() == "none"){
-				$(outlineModule_arr[_id]).find('transition').attr("value", false);
+				$(module_arr[_id].xml).find('transition').attr("value", false);
 		    }else{
-				$(outlineModule_arr[_id]).find('transition').attr("value", true);
-				$(outlineModule_arr[_id]).find('transitionType').attr("value", $("#transition").val());
+				$(module_arr[_id].xml).find('transition').attr("value", true);
+				$(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
 		    }
 		    updateModuleXML(_id);
 	    });
 	    
 	    $("#transitionDuration").on("change", function(){
-			$(outlineModule_arr[_id]).find('transitionLength').attr("value", $("#transitionDuration").val());
+			$(module_arr[_id].xml).find('transitionLength').attr("value", $("#transitionDuration").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
 	    
 	    $("#lockDuration").on("change", function(){
-			$(outlineModule_arr[_id]).find('lockRequestDuration').attr("value", $("#lockDuration").val());
+			$(module_arr[_id].xml).find('lockRequestDuration').attr("value", $("#lockDuration").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
 	    
 	    $("#lessonWidth").on("change", function(){
-			$(outlineModule_arr[_id]).find('lessonWidth').attr("value", $("#lessonWidth").val());
+			$(module_arr[_id].xml).find('lessonWidth').attr("value", $("#lessonWidth").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
 	    
 	    $("#lessonHeight").on("change", function(){
-			$(outlineModule_arr[_id]).find('lessonHeight').attr("value", $("#lessonHeight").val());
+			$(module_arr[_id].xml).find('lessonHeight').attr("value", $("#lessonHeight").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
 	    
 	    $("#hasGlossary").on("change", function(){
 		   if($('#hasGlossary').prop('checked')){
-			   $(outlineModule_arr[_id]).find('glossary').attr("value", "true");
+			   $(module_arr[_id].xml).find('glossary').attr("value", "true");
 		   } else{
-			   $(outlineModule_arr[_id]).find('glossary').attr("value", "false");
+			   $(module_arr[_id].xml).find('glossary').attr("value", "false");
 		   }
 		   updateModuleXML(_id);
 	    });
@@ -659,7 +861,6 @@ function C_Outline(_myItem, _proj) {
 	    //find the index number for the item
 	    var modIndex = 0;
 		for(var j = 0; j < $(courseData).find("item").length; j++){
-			console.log($(courseData).find("item").eq(j).attr('name'));
 			if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
 				modIndex = j+1;
 			}
@@ -707,13 +908,14 @@ function C_Outline(_myItem, _proj) {
 		   }
 		   updateCourseXML();
 		});	     	
+
      }
      
      
      function updateCourseXML(){
 	    var myData = $(courseData);
 		var xmlString;
-		
+		console.log(myData);
 		//IE being a beatch, as always - have handle xml differently.
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
@@ -727,19 +929,20 @@ function C_Outline(_myItem, _proj) {
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 		var tmpPath = courseXMLPath.replace(new RegExp("%20", "g"), ' ');
-		console.log("tmpPath = " + tmpPath);
 		socket.emit('updateCourseXML', { myXML: xmlString, courseXMLPath: tmpPath, user: user ,content: {
-        	id: outlineCourseID,
-            type: outlineCourseType,
-            permission: outlineCoursePermission
+        	id: courseID,
+            type: currentCourseType,
+            permission: currentCoursePermission
             } 
 		});
      }
+     
      /****************************************************************
      * Serialize XML and send it to the server.
      ****************************************************************/
      function updateModuleXML(_id, _commit){
-	 	var myData = $(outlineModule_arr[_id]);
+	 	var myData = $(module_arr[_id].xml);
+	 	console.log(myData);
 		var xmlString;
 		
 		//IE being a beatch, as always - have handle xml differently.
@@ -758,60 +961,42 @@ function C_Outline(_myItem, _proj) {
 		}
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
-
-		var moduleXMLPath = xml_arr[_id].replace(new RegExp("%20", "g"), ' ');
+				
+		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
+		console.log("moduleXMLPath = " + moduleXMLPath);
 		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, user: user ,content: {
-        	id: outlineCourseID,
-            type: outlineCourseType,
-            permission: outlineCoursePermission
+        	id: courseID,
+            type: currentCourseType,
+            permission: currentCoursePermission
             } 
 		});
      }
      
-     function addPageClicks(){
-	     for(var i = 0; i < indexItem_arr.length; i++){
-		     var tmp_arr = [];
-		     tmp_arr = indexItem_arr[i];
-		     for(var j = 0; j < tmp_arr[i].length; j++){
-			     $(tmp_arr[j]).click(function(){
-					//don't fire if click subNavButtons like add or remove.
-					if(hoverSubNav == false){
-						//Call for when a page is clicked.
-						try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
-						currentMenuItem = $(this);
-						currentMenuItem.addClass("dd3-selected");
-						displayPageData($(this).attr("myID"));
-					}
-				});
-				addOutlineRollovers($(tmp_arr[j]), "page");
-			}
-	     }
-     }
-     
+          
      
      
      function displayPageData(_id){
      	var matched = false;
-     	for(var i = 0; i < outlineModule_arr.length; i++){
-		    for(var j = 0; j < $(outlineModule_arr[i]).find("page").length; j++){
-		    	if(_id == $(outlineModule_arr[i]).find("page").eq(j).attr("id")){
+     	for(var i = 0; i < module_arr.length; i++){
+		    for(var j = 0; j < $(module_arr[i].xml).find("page").length; j++){
+		    	if(_id == $(module_arr[i].xml).find("page").eq(j).attr("id")){
 			    	matched = true;
 			    	currentPageParentModule = i;
 			    	currentPage = j;
 			     	
 			     	$("#outlinePagePrefPane").empty();
-				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(outlineModule_arr[i]).find('page').eq(j).find("title").text().trim() + "</div>";
+				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
 			     	msg += "<label for='out_pageTitle'>page title: </label>";
-			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+ $(outlineModule_arr[i]).find('page').eq(j).find("title").text().trim() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	msg += "<label for='out_pageObjective'>page objective: </label>";
-			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective" value="'+ $(outlineModule_arr[i]).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	
 			     	/*msg += "<div>"
 			     	msg += "<label for='lessonWidth'>width of lesson:</label>";
-			        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(outlineModule_arr[i]).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+			        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[i].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
 			        msg += "<label for='lessonHeight'>height of lesson:</label>";
-			        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(outlineModule_arr[i]).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
+			        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[i].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
 			        msg += "<label for='mode'>set mode:</label>";
 			     	msg += "<select name='mode' id='mode'>";
 			     	msg += "<option>production</option>";
@@ -829,15 +1014,15 @@ function C_Outline(_myItem, _proj) {
 				     	currentMenuItem.text(titleUpdate);
 					   	var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
 					   	var newCDATA=docu.createCDATASection(titleUpdate);
-					   	$(outlineModule_arr[i]).find('page').eq(j).find("title").first().empty();
-					   	$(outlineModule_arr[i]).find('page').eq(j).find("title").first().append(newCDATA);
+					   	$(module_arr[i].xml).find('page').eq(j).find("title").first().empty();
+					   	$(module_arr[i].xml).find('page').eq(j).find("title").first().append(newCDATA);
 						updateModuleXML(currentPageParentModule);
 				    }).css({'width': '500px', 'color': '#3383bb;'});
 				    
 				    $("#out_pageObjective").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 				     	var titleUpdate = $("#out_pageObjective").val().trim();
-					   	$(outlineModule_arr[i]).find('page').eq(j).attr('objective', titleUpdate);
+					   	$(module_arr[i].xml).find('page').eq(j).attr('objective', titleUpdate);
 						updateModuleXML(currentPageParentModule);
 				    }).css({'width': '500px', 'color': '#3383bb;'});
 			     	break;
@@ -848,86 +1033,20 @@ function C_Outline(_myItem, _proj) {
 		     }
 		 }
      }
-     
-     /*****************************************************************
-     buildOutlineModule - builds the index for the module.
-     *****************************************************************/
-     function buildOutlineModule(_id){
-	     var data = outlineModule_arr[_id];
-	     var thisID;
-		 var groupMode;
-		 var moduleIndexItem_arr = [];
-		 var totalPages = $(data).find('page').length;
-
-		 var indexString = '<li id="module'+ _id + 'Index" class="dd-item dd3-item outlineModuleItem" data-id="'+ idCounter +'">';
-		 idCounter++;
-		 indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-		 indexString += '<div id="module'+ _id + 'IndexHotspot" class="dd3-content" data-id="'+_id +'">'+$(data).find("lessonTitle").attr("value") +'</div>';
-		 indexString += '<ol class="dd-list">';
-		 for(var i = 0; i < totalPages; i++){
-		 	thisID = "module"+ _id + "indexMenuItem" + i;
-		 	var pageID = $(data).find("page").eq(i).attr("id");
-		 	if($(data).find("page").eq(i).attr("type") == "group"){
-				//Resolves issue of group butting into group...
-				if(groupMode == true){
-					indexString += '</ol></li>';
-				}
-				groupMode = true;
-				
-				var isVirgin = checkForGroup(thisID);
-				
-				if(isVirgin){
-					indexString += '<li id="'+pageID+'"class="dd-item dd3-item outlinePageItem" data-id="'+ idCounter + '">';
-					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+idCounter+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +/*'<div id="commentSpot"></div>*/'</div><ol class="dd-list">';
-					idCounter++;
-
-				}			
-			}else{
-				if(groupMode && $(data).find("page").eq(i).parent().attr("type") != "group"){
-					groupMode = false;
-					indexString += '</ol></li>';
-				}
-			}
-			indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+idCounter+'">';
-			idCounter++;
-			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div></li>';
-			moduleIndexItem_arr.push("#" + thisID);
-		}
-		if(groupMode == true){
-			indexString += '</ol></li>';
-		}
-		indexItem_arr.push(moduleIndexItem_arr)
-		indexString += '</ol></li>';
-		return indexString;
-     }
-     
-     /*Quick function to check group association*/
-     function checkForGroup(_id){
-		var virgin = true;
-		for(var i = 0; i < indexGroupID_arr.length; i++){
-			if(indexGroupID_arr[i] == _id){
-				virgin = false;
-			}
-		}
-		if(virgin == true){
-			indexGroupID_arr.push(_id);
-		}
-		return virgin;
-	}
 	
-	var hoverSubNav = false;
 	/************************************************************************************************
 	Function: 		addOutlineRollovers
 	Param: 			myItem = The term to attach the rollover functionality to.
+					level = Whether it is a module or a page.
 	Description:	Called when a user rolls over an existing outline item.
+	The buttons listeners attach click actions for adding and removing content on the sub buttons.
 	************************************************************************************************/
 	function addOutlineRollovers(myItem, _level){
 		//ADD Program Level Buttons
 	    myItem.hover(
 	    	function () {
 	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd' title='Add a new module to your course.'></div><div id='outlineRemove' class='outlineModuleRemove' title='Remove this module from your course.'></div>");
+	            //ADD REMOVE NAV
 	            $("#outlineRemove").click(function(){
 	            	if(_level == "module"){
 	            		removeModuleFromCourse();
@@ -949,6 +1068,7 @@ function C_Outline(_myItem, _proj) {
 	                }
 	           });
 	           
+	           //ADD ADD NAV
 	           $("#outlineAdd").click(function(){
 	            	if(_level == "module"){
 	            		addModuleToCourse();
@@ -976,6 +1096,10 @@ function C_Outline(_myItem, _proj) {
 			});   
 	}
 	
+	
+	/*******************************************************************************
+	ADD and REMOVE FUNCTIONS
+	*******************************************************************************/
 	function addModuleToCourse(){
 		console.log("addModuleToCourse.");
 	}
