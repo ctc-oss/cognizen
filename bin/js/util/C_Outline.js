@@ -664,6 +664,12 @@ function C_Outline(_myItem, _proj) {
      * Display editable Module Preferences.
      ****************************************************************/
      function displayModuleData(_id){
+     	for(var i = 0; i < module_arr.length; i++){
+			if(_id == module_arr[i].id){
+				_id = i;
+				break;
+			}
+		}
      	$("#outlinePagePrefPane").empty();
      	var msg = "<div class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
      	msg += "<div><b>Details:</b></div>";
