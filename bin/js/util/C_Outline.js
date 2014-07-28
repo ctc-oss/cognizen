@@ -46,9 +46,7 @@ function C_Outline(_myItem, _proj) {
 
 	
 	////////////////////////////////////////////////   MOVING MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    var startParent;
     var startList;
-    var startLesson = null;
     var hoverSubNav = false;
     var startListJSON;
     var currentDragID;
@@ -209,7 +207,7 @@ function C_Outline(_myItem, _proj) {
 				console.log("onChange");
 			})
 			.on('start', function(e, _item){
-				startDrag(_item);
+				currentDragID = _item.attr('data-id');
 			})
 			.on('stop', function(e, _item){
 				updateOrder();
@@ -347,55 +345,6 @@ function C_Outline(_myItem, _proj) {
 			}
 	     }
      }
-
-     
-     /***************************************************************************************
-     startDrag
-     SET KEY VARIABLES FOR REPOSITIONING - SET START POINT VARIALBLES
-     ***************************************************************************************/
-     function startDrag(_item){
-       	currentDragID = _item.attr('data-id');
-		//check module level
-		for(var i = 0; i < startList[0].children.length; i++){
-			if(currentDragID == startList[0].children[i].id){
-				startChild = false;
-				startLesson = null;
-				startParent = "course";
-				startPoint = i;
-				console.log("startPoint = " + startPoint);
-				break;
-			}
-			//Check Page Level
-			if(startList[0].children[i].children){
-				var startIterator = 0;
-				for(var j = 0; j < startList[0].children[i].children.length; j++){
-					if(currentDragID == startList[0].children[i].children[j].id){
-						startChild = true;
-						startLesson = null;
-						startParent = i;
-						startPoint = startIterator;
-						console.log("startPoint = " + startPoint);
-						break;
-					}
-					startIterator++;
-					//Check sub-page level (lessons)
-					if(startList[0].children[i].children[j].children){
-						for (var k = 0; k < startList[0].children[i].children[j].children.length; k++){
-							if(currentDragID == startList[0].children[i].children[j].children[k].id){
-								startChild = true;
-								startLesson = j;
-								startParent = i;
-								startPoint = startIterator;
-								console.log("startPoint = " + startPoint);
-								break;
-							}
-							startIterator++;
-						}
-					}
-				}
-			}
-		}
-     }
      
      /******************************************************************
      Update module and page order and call appropriate XML SAVE Funcion
@@ -407,8 +356,7 @@ function C_Outline(_myItem, _proj) {
 		 var tmpList   = tmp.length ? tmp : $(tmp.target);
 		 var list = tmpList.nestable('serialize');
 		 var listJSON = window.JSON.stringify(list);
-		 console.log(startList);
-		 console.log(list);
+		 
 		 //If the list has changed, record that change.
 		 if(listJSON != startListJSON){
 			 var startNode = getNode(currentDragID);
@@ -439,8 +387,6 @@ function C_Outline(_myItem, _proj) {
 				 moveFrom.insertAfter(moveTo);
 			 }	
 			 
-			 console.log("startNodeLevel = " + startNodeLevel);
-			 console.log("endNodeLevel = " + endNodeLevel);
 			 //REORDERING MODULES			 	 
 			 if(endNodeLevel == "module" && startNodeLevel == "module"){
 				 updateCourseXML();
@@ -652,6 +598,7 @@ function C_Outline(_myItem, _proj) {
      * Display editable Module Preferences.
      ****************************************************************/
      function displayModuleData(_id){
+     	//Find which array item to push to....
      	for(var i = 0; i < module_arr.length; i++){
 			if(_id == module_arr[i].id){
 				_id = i;
@@ -924,7 +871,6 @@ function C_Outline(_myItem, _proj) {
      function updateCourseXML(){
 	    var myData = $(courseData);
 		var xmlString;
-		console.log(myData);
 		//IE being a beatch, as always - have handle xml differently.
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
@@ -951,7 +897,6 @@ function C_Outline(_myItem, _proj) {
      ****************************************************************/
      function updateModuleXML(_id, _commit){
 	 	var myData = $(module_arr[_id].xml);
-	 	console.log(myData);
 		var xmlString;
 		
 		//IE being a beatch, as always - have handle xml differently.
@@ -972,7 +917,6 @@ function C_Outline(_myItem, _proj) {
 		var xmlString  = pd.xml(xmlString);
 				
 		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
-		console.log("moduleXMLPath = " + moduleXMLPath);
 		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, user: user ,content: {
         	id: courseID,
             type: currentCourseType,
