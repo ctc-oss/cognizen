@@ -515,23 +515,11 @@ function C_Outline(_myItem, _proj) {
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 		msg += '<br/><div><b>Sequencing:</b></div>';
-		msg += '<div id="objGlobalRadio" title="Enable shared global objective information for the lifetime of the learner in the system.">objectivesGlobalToSystem: ';
-		msg += '<input type="radio" id="objGlobaltrue" name="objGlobalRadio" /><label for="objGlobaltrue" title="Shared global objective information will exist per learner for the lifetime of the learner in the system.">true </label>';
-		msg += '<input type="radio" id="objGlobalfalse" name="objGlobalRadio" /><label for="objGlobalfalse" title="The LMS will maintain and resolve shared global objective IDs scoped to only one attempt on the activity tree. Shared global objective information will exist per learner per attempt on the activity tree.">false</label>';
-		msg += '</div>';
+		msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
 		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
-		msg += '<div id="choiceRadio" title="Enable the table of contents for navigating among this activity’s children.">choice: ';
-		msg += '<input type="radio" id="choicetrue" name="choiceRadio" /><label for="choicetrue" title="Set choice to true.">true </label>';
-		msg += '<input type="radio" id="choicefalse" name="choiceRadio" /><label for="choicefalse" title="Set choice to false">false</label>';
-		msg += '</div>';
-		msg += '<div id="flowRadio" title="Enable previous and next buttons for navigating among this activity’s children.">flow: ';
-		msg += '<input type="radio" id="flowtrue" name="flowRadio" /><label for="flowtrue" title="Set flow to true.">true </label>';
-		msg += '<input type="radio" id="flowfalse" name="flowRadio" /><label for="flowfalse" title="Set flow to false">false</label>';
-		msg += '</div>';	
-		msg += '<div id="forwardOnlyRadio" title="Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.">forwardOnly: ';
-		msg += '<input type="radio" id="forwardOnlytrue" name="forwardOnlyRadio" /><label for="forwardOnlytrue" title="Set forwardOnly to true.">true </label>';
-		msg += '<input type="radio" id="forwardOnlyfalse" name="forwardOnlyRadio" /><label for="forwardOnlyfalse" title="Set forwardOnly to false">false</label>';
-		msg += '</div>';
+		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
+		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
+		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
 		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';					
 		//alert($(courseData).find('sequencing').attr("choice"));
 		//msg += "<label for='out_courseObjective'>course objective: </label>";
@@ -553,20 +541,20 @@ function C_Outline(_myItem, _proj) {
 		
 		//set objectivesGlobalToSystem based off value in xml
 		if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
-			$('#objGlobaltrue').prop('checked',true);
+			$('#objectivesGlobalToSystemtrue').prop('checked',true);
 		}
 		else{
-			$('#objGlobalfalse').prop('checked',true);
+			$('#objectivesGlobalToSystemfalse').prop('checked',true);
 		}
 
 		//update the xml when objectivesGlobalToSystem toggle is changed
-		$("#objGlobalRadio").on("change", function(){
-		   if($('#objGlobaltrue').prop('checked')){
+		$("#objectivesGlobalToSystemRadio").on("change", function(){
+		   if($('#objectivesGlobalToSystemtrue').prop('checked')){
 			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "true");
 		   } else{
 			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "false");
 		   }
-		   updateCourseXML(currentPageParentModule);
+		   updateCourseXML();
 		});
 
 		//set choice based off value in xml
@@ -584,7 +572,7 @@ function C_Outline(_myItem, _proj) {
 		   } else{
 			   $(courseData).find('sequencing').first().attr("choice", "false");
 		   }
-		   updateCourseXML(currentPageParentModule);
+		   updateCourseXML();
 		});
 
 		//set flow based off value in xml
@@ -602,7 +590,7 @@ function C_Outline(_myItem, _proj) {
 		   } else{
 			   $(courseData).find('sequencing').first().attr("flow", "false");
 		   }
-		   updateCourseXML(currentPageParentModule);
+		   updateCourseXML();
 		});
 
 		//set forwardOnly based off value in xml
@@ -620,7 +608,7 @@ function C_Outline(_myItem, _proj) {
 		   } else{
 			   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
 		   }
-		   updateCourseXML(currentPageParentModule);
+		   updateCourseXML();
 		});		
 
 		$("#out_courseTitle").on("change", function(){
@@ -628,7 +616,7 @@ function C_Outline(_myItem, _proj) {
 			var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
 			currentMenuItem.text(titleUpdate);
 			$(courseData).attr("name", titleUpdate);
-			updateCourseXML(currentPageParentModule);
+			updateCourseXML();
 			
 			var data = {
 	            content: {
@@ -738,38 +726,27 @@ function C_Outline(_myItem, _proj) {
      	msg += "</div>";
 		msg += '<br/><div><b>Sequencing:</b></div>';
 		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
-		msg += '<div id="choiceRadio" title="Enable the table of contents for navigating among this activity’s children.">choice: ';
-		msg += '<input type="radio" id="choicetrue" name="choiceRadio" /><label for="choicetrue" title="Set choice to true.">true </label>';
-		msg += '<input type="radio" id="choicefalse" name="choiceRadio" /><label for="choicefalse" title="Set choice to false">false</label>';
-		msg += '</div>';
-		msg += '<div id="flowRadio" title="Enable previous and next buttons for navigating among this activity’s children.">flow: ';
-		msg += '<input type="radio" id="flowtrue" name="flowRadio" /><label for="flowtrue" title="Set flow to true.">true </label>';
-		msg += '<input type="radio" id="flowfalse" name="flowRadio" /><label for="flowfalse" title="Set flow to false">false</label>';
-		msg += '</div>';	
-		msg += '<div id="forwardOnlyRadio" title="Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.">forwardOnly: ';
-		msg += '<input type="radio" id="forwardOnlytrue" name="forwardOnlyRadio" /><label for="forwardOnlytrue" title="Set forwardOnly to true.">true </label>';
-		msg += '<input type="radio" id="forwardOnlyfalse" name="forwardOnlyRadio" /><label for="forwardOnlyfalse" title="Set forwardOnly to false">false</label>';
-		msg += '</div>';
-		msg += '<div id="choiceExitRadio" title="Can the learner jump out of this activity using a choice request?">choiceExit: ';
-		msg += '<input type="radio" id="choiceExittrue" name="choiceExitRadio" /><label for="choiceExittrue" title="Set choiceExit to true.">true </label>';
-		msg += '<input type="radio" id="choiceExitfalse" name="choiceExitRadio" /><label for="choiceExitfalse" title="Set choiceExit to false">false</label>';
-		msg += '</div>';
+		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
+		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
+		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
+		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
 		msg += '<br/><div title="Indicates which navigational UI elements the LMS should hide when this activity is being delivered."><b>Hide LMS UI Values:</b></div>';		
-		msg += '<div id="previousRadio" title="Remove the previous button from the LMS navigation.">previous: ';
-		msg += '<input type="radio" id="previoustrue" name="previousRadio" /><label for="previoustrue" title="Set previous to true.">true </label>';
-		msg += '<input type="radio" id="previousfalse" name="previousRadio" /><label for="previousfalse" title="Set previous to false">false</label>';
-		msg += '</div>';	
-		msg += '<div id="continueRadio" title="Remove the continue button from the LMS navigation.">continue: ';
-		msg += '<input type="radio" id="continuetrue" name="continueRadio" /><label for="continuetrue" title="Set continue to true.">true </label>';
-		msg += '<input type="radio" id="continuefalse" name="continueRadio" /><label for="continuefalse" title="Set continue to false">false</label>';
-		msg += '</div>';	
-		msg += '<div id="exitRadio" title="Remove the exit button from the LMS navigation.">exit: ';
-		msg += '<input type="radio" id="exittrue" name="exitRadio" /><label for="exittrue" title="Set exit to true.">true </label>';
-		msg += '<input type="radio" id="exitfalse" name="exitRadio" /><label for="exitfalse" title="Set exit to false">false</label>';
-		msg += '</div>';					
+		msg += addToggle("previous", "Remove the previous button from the LMS navigation.");
+		msg += addToggle("continue", "Remove the continue button from the LMS navigation." );	
+		msg += addToggle("exit", "Remove the exit button (if present) from the LMS navigation.");	
+		msg += addToggle("exitAll", "Remove the exitAll button (if present) from the LMS navigation.");	
+		msg += addToggle("abandon", "Remove the abandon button (if present) from the LMS navigation.");	
+		msg += addToggle("abandonAll", "Remove the abandonAll button (if present) from the LMS navigation.");	
+		msg += addToggle("suspendAll", "Remove the suspendAll button (if present) from the LMS navigation.");
+		msg += '<br/><div title="Allow for non-communicative content to be delivered and sequenced."><b>Delivery Controls</b></div>';
+		msg += addToggle("tracked", "If false, no data is tracked for this activity.");
+		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
+		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
+		msg += '<br/><div title"Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
+		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup.");
+		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup.");
 
-		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';	     	
-
+		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';			
 	    $("#outlinePagePrefPane").append(msg);
 	   
 	    //Set module settings.
@@ -880,6 +857,15 @@ function C_Outline(_myItem, _proj) {
 		setToggle("previous", modIndex);
 		setToggle("continue", modIndex);
 		setToggle("exit", modIndex);
+		setToggle("exitAll", modIndex);
+		setToggle("abandon", modIndex);
+		setToggle("abandonAll", modIndex);
+		setToggle("suspendAll", modIndex);
+		setToggle("tracked", modIndex);
+		setToggle("completionSetByContent", modIndex);
+		setToggle("objectiveSetByContent", modIndex);
+		setToggle("rollupObjectiveStatisfied", modIndex);
+		setToggle("rollupProgressCompletion", modIndex);
 
 		//update the xml when toggles are changed
 		toggleChange("choice", modIndex);
@@ -889,11 +875,28 @@ function C_Outline(_myItem, _proj) {
 		toggleChange("previous", modIndex);
 		toggleChange("continue", modIndex);
 		toggleChange("exit", modIndex);
+		toggleChange("exitAll", modIndex);
+		toggleChange("abandon", modIndex);
+		toggleChange("abandonAll", modIndex);
+		toggleChange("suspendAll", modIndex);
+		toggleChange("tracked", modIndex);
+		toggleChange("completionSetByContent", modIndex);
+		toggleChange("objectiveSetByContent", modIndex);
+		toggleChange("rollupObjectiveStatisfied", modIndex);
+		toggleChange("rollupProgressCompletion", modIndex);
 
 		$(function () {
 			$("div[id$='Radio']").buttonset();
 		});					
 
+     }
+
+     function addToggle(_id, title){
+     	var msg = '<div id="' + _id + 'Radio" title="'+title+'">' + _id + ': ';
+		msg += '<input type="radio" id="' + _id + 'true" name="' + _id + 'Radio" /><label for="' + _id + 'true" title="Set ' + _id + ' to true.">true </label>';
+		msg += '<input type="radio" id="' + _id + 'false" name="' + _id + 'Radio" /><label for="' + _id + 'false" title="Set ' + _id + ' to false">false</label>';
+		msg += '</div>';
+		return msg;     	
      }
 
      function setToggle(_id, index){
