@@ -958,7 +958,7 @@ var SocketHandler = {
 					_this.logger.info("outliner updating " + contentPath) 
 					fs.outputFile(contentPath, data.myXML, function(err) {
 	                    //Refresh the index if successfully updating the content.xml
-	                    if (err == null){
+	                    if (err == null && data.commit == true){
 	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
                             	_this.logger.info("Outliner successfully updated xml")
                                 //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.

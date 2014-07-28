@@ -1,3 +1,14 @@
+/*
+ *  	C_Outline
+ *  	Requires jQuery v1.9 or later
+ *	
+ *      Houses functionality to create course structure and sequencing
+ *  	Version: 0.5
+ *		Date Created: 07/12/14
+ *		Created by: Philip Double
+ *		Date Updated: 07/28/14
+ *		Updated by: Philip Double
+ */
 function C_Outline(_myItem, _proj) {
 	
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -42,8 +53,6 @@ function C_Outline(_myItem, _proj) {
     var currentPageFamily;
     var currentMenuItem;
     var indexItem_arr;											//Array of moduleIndexItem_arr arrays which hold each button
-    var idCounter = 0;											//Give each menu item a unique numeric id 										----- MAY NOT NEED THIS NOW WITH FULL GUID SUPPORT
-
 	
 	////////////////////////////////////////////////   MOVING MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var startList;
@@ -172,7 +181,6 @@ function C_Outline(_myItem, _proj) {
      ************************************************************************************/     
      function buildOutlineInterface(){
      	var thisID;
-	 	var groupMode;
      	indexItem_arr = [];
 	 	
      	msg = '<div id="dialog-outline" title="Outline '+ myItem.find("span").first().text() + ':">';
@@ -181,12 +189,11 @@ function C_Outline(_myItem, _proj) {
 	    msg += '<div class="dd" id="C_Index">';
 	    msg += '<ol class="dd-list">';
 	    //COURSE LEVEL
-	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="idCounter">';
+	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="course">';
 		//msg += '<div class="dd-handle dd3-handle">Drag</div>';
 		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="'+ courseID+'">'+myItem.find("span").first().text() +'</div>';
 		msg += '<ol class="dd-list">';
 	    
-	    //idCounter++;
 	    //ADD MODULE and PAGES LEVEL  ----- Calls a separate function for cleanliness
 	    for(var i = 0; i < module_arr.length; i++){
 	     	msg += buildOutlineModule(i);
@@ -264,11 +271,9 @@ function C_Outline(_myItem, _proj) {
      function buildOutlineModule(_id){
 	     var data = module_arr[_id].xml;
 	     var thisID;
-		 var groupMode;
 		 var moduleIndexItem_arr = [];
 		 var totalPages = $(data).find('page').length;
-		 var indexString = '<li id="module'+ _id + 'Index" class="dd-item dd3-item outlineModuleItem" data-id="'+ module_arr[_id].id +'">';
-		 idCounter++;
+		 var indexString = '<li id="'+module_arr[_id].id+'" class="dd-item dd3-item outlineModuleItem" data-id="'+ module_arr[_id].id +'">';
 		 indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 		 indexString += '<div id="module'+ _id + 'IndexHotspot" class="dd3-content" data-id="'+ module_arr[_id].id +'">'+$(data).find("lessonTitle").attr("value") +'</div>';
 		 indexString += '<ol class="dd-list">';
@@ -279,7 +284,6 @@ function C_Outline(_myItem, _proj) {
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 			indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div>';
 			moduleIndexItem_arr.push("#" + thisID);
-		 	idCounter++;
 		 	if($(data).find("page").eq(i).find("page").length){
 		 		indexString += '<ol class="dd-list">';
 
@@ -287,7 +291,6 @@ function C_Outline(_myItem, _proj) {
 			 		thisID = "module"+ _id + "indexMenuItem" + i + "lessonItem" + j;
 			 		pageID = $(data).find("page").eq(i).find("page").eq(j).attr("id");
 			 		indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+pageID+'">';
-			 		idCounter++;
 			 		indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 			 		indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find("page").eq(j).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div></li>';
 					moduleIndexItem_arr.push("#" + thisID);
@@ -330,7 +333,7 @@ function C_Outline(_myItem, _proj) {
 	     for(var i = 0; i < indexItem_arr.length; i++){
 		     var tmp_arr = [];
 		     tmp_arr = indexItem_arr[i];
-		     for(var j = 0; j < tmp_arr[i].length; j++){
+		     for(var j = 0; j < tmp_arr.length; j++){
 			     $(tmp_arr[j]).click(function(){
 					//don't fire if click subNavButtons like add or remove.
 					if(hoverSubNav == false){
@@ -868,12 +871,17 @@ function C_Outline(_myItem, _proj) {
      }
      
      
-     function updateCourseXML(){
+     function updateCourseXML(_commit){
 	    var myData = $(courseData);
 		var xmlString;
 		//IE being a beatch, as always - have handle xml differently.
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
+		}
+		
+		var commit = true;
+		if(_commit == false){
+			commit = false;
 		}
 		
 		if(xmlString === undefined){
@@ -884,7 +892,7 @@ function C_Outline(_myItem, _proj) {
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 		var tmpPath = courseXMLPath.replace(new RegExp("%20", "g"), ' ');
-		socket.emit('updateCourseXML', { myXML: xmlString, courseXMLPath: tmpPath, user: user ,content: {
+		socket.emit('updateCourseXML', { myXML: xmlString, courseXMLPath: tmpPath, commit: commit, user: user ,content: {
         	id: courseID,
             type: currentCourseType,
             permission: currentCoursePermission
@@ -998,13 +1006,23 @@ function C_Outline(_myItem, _proj) {
 		//ADD Program Level Buttons
 	    myItem.hover(
 	    	function () {
-	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd' title='Add a new module to your course.'></div><div id='outlineRemove' class='outlineModuleRemove' title='Remove this module from your course.'></div>");
-	            //ADD REMOVE NAV
-	            $("#outlineRemove").click(function(){
+	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
+	            
+	            //ADD apropriate title attributes for the toolitp hints on rollovers...
+	            if(_level == "module"){
+		            $("#outlineAdd").attr("title", "Add a new lesson to your module.");
+		            $("#outlineRemove").attr("title", "Remove this module from your course.");
+	            }else if (_level == "page"){
+		            $("#outlineRemove").attr("title", "Remove this page from your module.");
+		            $("#outlineAdd").attr("title", "Add a new page to your module.");
+	            }
+	            
+	            //ADD ADD NAV
+	            $("#outlineAdd").click(function(){
 	            	if(_level == "module"){
-	            		removeModuleFromCourse();
+	            		addModuleToCourse(myItem.attr("data-id"));
 	            	}else{
-		            	removePageFromModule();
+		            	addPageToModule(myItem.attr("data-id"), myItem);
 	            	}
 		        }).hover(
 	            	function () {
@@ -1019,14 +1037,14 @@ function C_Outline(_myItem, _proj) {
 	                    effect: "fadeIn",
 	                    duration: 200
 	                }
-	           });
-	           
-	           //ADD ADD NAV
-	           $("#outlineAdd").click(function(){
+	            });
+	            
+	            //ADD REMOVE NAV
+	            $("#outlineRemove").click(function(){
 	            	if(_level == "module"){
-	            		addModuleToCourse();
+	            		removeModuleFromCourse(myItem.attr("data-id"));
 	            	}else{
-		            	addPageToModule();
+		            	removePageFromModule(myItem.attr("myID"), myItem);
 	            	}
 		        }).hover(
 	            	function () {
@@ -1053,24 +1071,114 @@ function C_Outline(_myItem, _proj) {
 	/*******************************************************************************
 	ADD and REMOVE FUNCTIONS
 	*******************************************************************************/
-	function addModuleToCourse(){
+	//ADD BUTTON FUNCTIONS
+	function addModuleToCourse(_id){
 		console.log("addModuleToCourse.");
 	}
-	
-	function removeModuleFromCourse(){
-		console.log("removeModuleFromCourse.");
-	}
-	
-	function addPageToModule(){
+		
+	function addPageToModule(_id){
 		console.log("addPageToModule.");
 	}
 	
-	function removePageFromModule(){
-		console.log("removePageFromModule");
+	//REMOVE BUTTON FUNCTIONS
+	function removeModuleFromCourse(_id){
+		var myID = _id;
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this lesson?"><p class="validateTips">Are you sure that you want to remove this module?</div>');
+	    
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+			   	 $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Yes: function(){
+	               $("#"+myID).remove();									//Remove the item from the menu
+	               $("#"+myID).remove();									//Have to call twice - not sure why...
+	               var myNode = getNode(myID);								//Find node in course.xml as object
+	               var myRemove = myNode.node;								//Define the actual node in course.xml
+	               myRemove.remove();										//Remove from xml
+	               updateCourseXML(false);									//Push xml without commit
+				   for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
+					   if (module_arr[i].id == myID){						
+						   module_arr.splice(i, 1);							//remove from module_arr	
+					   }
+				   }
+	               var content = {											//Create data to send to node server
+			            id: myID,
+			            type: "lesson",
+			            user: user
+			        };
+					
+			        socket.emit('removeContent', content);				//Call to server to remove content ------ must add to function to remove module from course.xml...
+			        $(this).dialog("close");
+                },
+                 No: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
 	}
-
+	
+	
+	/************************************************************************************
+     removePageFromModule(_id);
+     params: _id - id of the item to be removed.
+     -- Build a dialog to warn about the removal.
+     -- on Yes, find id in xml and then remove from xml and menu, then push update to server.
+     -- Check that there is at least one page left or disallow the removal.
+     ************************************************************************************/
+	function removePageFromModule(_id){
+		var myID = _id;
+		//Attach dialog ensureing that user wants to remove the page.
+		$("#stage").append("<div id='dialog-removePage' title='Remove Current Page'><p>Are you sure that you want to remove this page from your content?</p></div>");
+		//Build the dialog - utilzing jqueryui
+		$("#dialog-removePage").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("dialog-removePage").remove();
+			},
+			buttons: {
+				Yes: function(){
+					var myNode = getNode(myID);							//Return object representing this item.
+					var myRemove = myNode.node;							//Variable for the node id
+					var myModule = myNode.module;						//Parent module.
+					var myModuleID = module_arr[myNode.module].id;		//module ID in case needed ----- probably can remove - leaving for now...
+					var myNodeLevel = myNode.level;						//Level that the button resides on ("module", "page" so far)...
+					
+					//modules have to have at least 1 page... Ensure that you aren't deleting the last....
+					if($(module_arr[myModule].xml).find("page").length > 1){
+						myRemove.remove();									//remove the node from the xml
+						$("#"+myID).remove();								//Remove the item from the menu
+						updateModuleXML(myModule, true);					//update the xml
+						$(this).dialog("close");							//close the dialog
+					}else{
+						$(this).dialog("close");
+						//Launch a dialog warning that this page can't be removed because it is the last page left in content.xml
+						$("#stage").append("<div id='dialog-removePageError' title='Error Removing Page'><p>Your module must have at least one page.</p><p>If you would like to remove this page you must first add another page to this module and then you can remove it.</p></div>");
+						$("#dialog-removePageError").dialog({
+							modal: true,
+							width: 550,
+							close: function(event, ui){
+								$("dialog-removePageError").remove();
+							},
+							buttons: {
+								cancel: function(){
+									$(this).dialog("close");
+								}
+							}
+						});
+					}
+				},
+				No: function(){
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
     
-     /*****************************************************************************************************************************************************************************************************************
+    /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
