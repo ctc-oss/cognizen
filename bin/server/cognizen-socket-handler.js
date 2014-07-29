@@ -511,13 +511,47 @@ var SocketHandler = {
             callback(null);
         });
     },
+    
+    _copyCourseFiles: function (content, callback) {
+	    var _this = this;
+	    var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
+	    var newCourseXML = baseWritePath + "/course.xml";
+	    var tokenz = content.path.split("/");
+	    var programName = tokenz[0];
+	    var xmlPath = path.normalize('../course-files/xml/course.xml');
+	    var courseID = content._id;
+	    var courseName = content.name;
+	    
+	    fs.copy(xmlPath, newCourseXML, function(err){
+	    	if(err){
+				_this.logger.error("Error copying content.xml file " + err);
+				callback(err, null);
+            }
+            
+            _this.logger.info('course.xml file copied success');
+
+		    var data, etree;
+		    
+		    fs.readFile(newCourseXML, function(err, data){
+		    	data = data.toString();
+				etree = et.parse(data);
+				//set the name and id in the course.xml
+		        etree.find('./').set('name', courseName);
+		        etree.find('./').set('id', courseID);
+		        var xml = etree.write({'xml_decleration': false});
+		        fs.outputFile(newCourseXML, xml, function (err) {
+		        	if (err) callback(err, null);
+		         	callback(err);
+		        });
+		    });
+	    });
+    },
 
     _copyContentFiles: function (content, callback) {
         var _this = this;
         var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
         var tokenz = content.path.split("/");
         var programName = tokenz[0];
-
         var root = path.normalize('../core-files');
 
         FileUtils.rmdir(baseWritePath);
@@ -538,8 +572,36 @@ var SocketHandler = {
                     var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name.
                     etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                     etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
-                }, function(err) {
-                    callback(err);
+					
+                    var coursePath = baseWritePath;
+					coursePath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
+					coursePath = coursePath + "/course.xml";
+				    
+				    fs.readFile(coursePath, function(err, data){
+				    	var XML = et.XML;
+						var ElementTree = et.ElementTree;
+						var element = et.Element;
+						var subElement = et.SubElement;
+						var data, etree;
+						
+				    	data = data.toString();
+						etree = et.parse(data);
+
+						//set mode to production and scorm version in temp content.xml
+				        var root = etree.find('./');
+
+				        var item = subElement(root, 'item');
+				        item.set("name", content.name);
+				        item.set("id", content._id);
+				        var sequencing = subElement(item, "sequencing");
+				        etree = new ElementTree(root);
+				        var xml = etree.write({'xml_decleration': false});
+				        console.log(xml);
+				        fs.outputFile(coursePath, xml, function (err) {
+				        	if (err) callback(err, null);
+				         	callback(err);
+				        });
+				    });
                 });
             });
         });
@@ -597,20 +659,22 @@ var SocketHandler = {
                                 _this.logger.error(err);
                                 _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
                             } else {
-                                _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                                    _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
-                                        if (err) {
-                                            _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
-                                            _this.logger.error(err);
-                                        }
-                                        else {
-                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                        }
-                                    });
-                                }, function (message) {
-                                    _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
-                                    _this.logger.info("Error committing program content: " + message)
-                                });
+                            	 _this._copyCourseFiles(callbackData, function () {
+	                                _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+	                                    _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
+	                                        if (err) {
+	                                            _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+	                                            _this.logger.error(err);
+	                                        }
+	                                        else {
+	                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+	                                        }
+	                                    });
+	                                }, function (message) {
+	                                    _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+	                                    _this.logger.info("Error committing program content: " + message)
+	                                });
+	                            });
                             }
                         });
                     }

@@ -114,27 +114,31 @@ function C_Outline(_myItem, _proj) {
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
-	     //Construct Module Data Structure Model Array and store module_arr
-	     for (var i = 0; i < totalOutlineModules; i++){
-	     	for(var j = 0; j < proj.directories.length; j++){
-			    if(proj.directories[j].parent == courseID && proj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
-				    var moduleObj = new Object();
-				    moduleObj.name = proj.directories[j].name;
-				    moduleObj.id = proj.directories[j].id;
-				    moduleObj.parent = proj.directories[j].parent;
-				    moduleObj.parentDir = proj.directories[j].parentDir;
-				    moduleObj.parh = proj.directories[j].path;
-				    moduleObj.permission = proj.directories[j].permission;
-				    moduleObj.type = proj.directories[j].type;
-				    moduleObj.xml = null;
-				    moduleObj.xmlPath = ["/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
-				    module_arr.push(moduleObj);
-				    
-					var currentXML = [coursePath, "/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
-				    importModuleXML(currentXML);
-			    }
-			}
-	     }
+	     if(totalOutlineModules > 0){
+		     //Construct Module Data Structure Model Array and store module_arr
+		     for (var i = 0; i < totalOutlineModules; i++){
+		     	for(var j = 0; j < proj.directories.length; j++){
+				    if(proj.directories[j].parent == courseID && proj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
+					    var moduleObj = new Object();
+					    moduleObj.name = proj.directories[j].name;
+					    moduleObj.id = proj.directories[j].id;
+					    moduleObj.parent = proj.directories[j].parent;
+					    moduleObj.parentDir = proj.directories[j].parentDir;
+					    moduleObj.parh = proj.directories[j].path;
+					    moduleObj.permission = proj.directories[j].permission;
+					    moduleObj.type = proj.directories[j].type;
+					    moduleObj.xml = null;
+					    moduleObj.xmlPath = ["/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+					    module_arr.push(moduleObj);
+					    
+						var currentXML = [coursePath, "/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+					    importModuleXML(currentXML);
+				    }
+				}
+		     }
+		 }else{
+			 buildOutlineInterface();
+		 }
      }
      
      
@@ -208,6 +212,7 @@ function C_Outline(_myItem, _proj) {
         //ADD menu to stage
         $("#stage").append(msg);
         
+        
         //Apply nestable capabilities
         $('#C_Index').nestable({maxDepth: 4})
         	.on('change', function(e, _item){
@@ -252,7 +257,35 @@ function C_Outline(_myItem, _proj) {
 				currentMenuItem.addClass("dd3-selected");
 				displayCourseData($(this).attr("data-id"));
 	        }
-        });
+        }).hover(
+	    	function () {
+	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div>");
+	            
+	            //ADD apropriate title attributes for the toolitp hints on rollovers...
+	            $("#outlineAdd").attr("title", "Add a new module to your course.");
+	            
+	            //ADD ADD NAV
+	            $("#outlineAdd").click(function(){
+	            	addModuleToCourse(myItem.attr("data-id"));
+		        }).hover(
+	            	function () {
+	                	hoverSubNav = true;
+	                },
+					function () {
+	                	hoverSubNav = false;
+	                }
+	            ).tooltip({
+	            	show: {
+	                	delay: 1500,
+	                    effect: "fadeIn",
+	                    duration: 200
+	                }
+	            });
+	        },
+	        function () {
+				$("#outlineAdd").remove();
+			}   
+		);
         
         //START WITH COURSE SELECTED
         $("#courseIndexHotspot").click();
@@ -1020,7 +1053,7 @@ function C_Outline(_myItem, _proj) {
 	            //ADD ADD NAV
 	            $("#outlineAdd").click(function(){
 	            	if(_level == "module"){
-	            		addModuleToCourse(myItem.attr("data-id"));
+	            		addLessonToModule(myItem.attr("data-id"));
 	            	}else{
 		            	addPageToModule(myItem.attr("data-id"), myItem);
 	            	}
@@ -1067,20 +1100,70 @@ function C_Outline(_myItem, _proj) {
 			});   
 	}
 	
-	
 	/*******************************************************************************
 	ADD and REMOVE FUNCTIONS
 	*******************************************************************************/
 	//ADD BUTTON FUNCTIONS
 	function addModuleToCourse(_id){
 		console.log("addModuleToCourse.");
+		var  msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new module.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+		$("#stage").append(msg);
+		
+		$("#dialog-registerContent").dialog({
+        	modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-registerContent").remove();
+            }
+           /* buttons: {
+                Submit: function(){
+                	//ADD the module to the course XML
+                	
+                	//Build the module data object to submit to the server.
+                	
+                	//ADD the new item to the menu
+                	
+                	
+	               //$("#"+myID).remove();									//Remove the item from the menu
+	               //$("#"+myID).remove();									//Have to call twice - not sure why...
+	               //var myNode = getNode(myID);								//Find node in course.xml as object
+	               //var myRemove = myNode.node;								//Define the actual node in course.xml
+	               //myRemove.remove();										//Remove from xml
+	               //updateCourseXML(false);									//Push xml without commit
+				   //for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
+					//   if (module_arr[i].id == myID){						
+					//	   module_arr.splice(i, 1);							//remove from module_arr	
+					//   }
+				   //}
+	               //var content = {											//Create data to send to node server
+			       //     id: myID,
+			       //     type: "lesson",
+			       //     user: user
+			       // };
+					
+			       // socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
+			        $(this).dialog("close");								    //Close dialog.
+                },
+                Cancel: function () {
+                	$(this).dialog("close");
+                };
+            }*/
+        });
 	}
 		
 	function addPageToModule(_id){
 		console.log("addPageToModule.");
 	}
 	
-	//REMOVE BUTTON FUNCTIONS
+	/************************************************************************************
+     removeModuleFromCourse(_id);
+     params: _id - id of the item to be removed.
+     -- Build a dialog to warn about the removal.
+     -- on Yes, find id in xml and then remove from xml and menu, then push update to server.
+     -- update the course xml
+     -- update the module_arr - remove module and children.
+     -- Check that there is at least one page left or disallow the removal.
+     ************************************************************************************/
 	function removeModuleFromCourse(_id){
 		var myID = _id;
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this lesson?"><p class="validateTips">Are you sure that you want to remove this module?</div>');
@@ -1110,8 +1193,8 @@ function C_Outline(_myItem, _proj) {
 			            user: user
 			        };
 					
-			        socket.emit('removeContent', content);				//Call to server to remove content ------ must add to function to remove module from course.xml...
-			        $(this).dialog("close");
+			        socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
+			        $(this).dialog("close");								//Close dialog.
                 },
                  No: function () {
                     $(this).dialog("close");
