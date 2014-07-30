@@ -9,15 +9,15 @@
  *		Date Updated: 07/28/14
  *		Updated by: Philip Double
  */
-function C_Outline(_myItem, _proj) {
+function C_Outline(_myItem, _myProj) {
 	
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
 	var courseID = myItem.data('id');							//Course to check for modules
     var currentCourseType = myItem.data('type');				//Type to be passed to node server
     var currentCoursePermission = myItem.data('permission');	//Permission to be passed to node server
-	var proj = _proj;											//Data object holding course module data
-																/* proj.directories holds directories for all course content
+	var myProj = _myProj;											//Data object holding course module data
+																/* myProj.directories holds directories for all course content
 																id: "533edfe1cb89ab0000000001"
 																name: "z9"
 																parent: "531f3654c764a5609d000003"
@@ -70,9 +70,17 @@ function C_Outline(_myItem, _proj) {
 		receiveCoursePath(data); 
     });
     
-    socket.on('refreshOutliner', function (data){
+    socket.on('updateOutlineData', function (data){
+	   refreshOutlineData(data); 
+    });
+    
+    function refreshOutlineData(_data){
+	   myProj = _data;
 	   module_arr = [];
-	   console.log("refreshOutliner called");
+	   indexItem_arr = [];
+	   loadedOutlineModules = 0;
+	   console.log("refresh outliner");
+	   
 	   $.ajax({
 		    type: "GET",
 		    url: courseXMLPath,
@@ -82,8 +90,8 @@ function C_Outline(_myItem, _proj) {
 		    error: function(){
 			    alert("unable to load content data")
 		    }
-		}); 
-    });
+		});
+    }
     	
 	 /************************************************************************************
      initOutline()
@@ -129,24 +137,27 @@ function C_Outline(_myItem, _proj) {
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
+	     //debugger;
+	     console.log(_data);
+	     console.log(myProj);
 	     if(totalOutlineModules > 0){
 		     //Construct Module Data Structure Model Array and store module_arr
 		     for (var i = 0; i < totalOutlineModules; i++){
-		     	for(var j = 0; j < proj.directories.length; j++){
-				    if(proj.directories[j].parent == courseID && proj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
+		     	for(var j = 0; j < myProj.directories.length; j++){
+				    if(myProj.directories[j].parent == courseID && myProj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
 					    var moduleObj = new Object();
-					    moduleObj.name = proj.directories[j].name;
-					    moduleObj.id = proj.directories[j].id;
-					    moduleObj.parent = proj.directories[j].parent;
-					    moduleObj.parentDir = proj.directories[j].parentDir;
-					    moduleObj.parh = proj.directories[j].path;
-					    moduleObj.permission = proj.directories[j].permission;
-					    moduleObj.type = proj.directories[j].type;
+					    moduleObj.name = myProj.directories[j].name;
+					    moduleObj.id = myProj.directories[j].id;
+					    moduleObj.parent = myProj.directories[j].parent;
+					    moduleObj.parentDir = myProj.directories[j].parentDir;
+					    moduleObj.path = myProj.directories[j].path;
+					    moduleObj.permission = myProj.directories[j].permission;
+					    moduleObj.type = myProj.directories[j].type;
 					    moduleObj.xml = null;
-					    moduleObj.xmlPath = ["/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+					    moduleObj.xmlPath = ["/", encodeURIComponent(myProj.directories[j].name.trim()), "/xml/content.xml"].join("");
 					    module_arr.push(moduleObj);
 					    
-						var currentXML = [coursePath, "/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
+						var currentXML = [coursePath, "/", encodeURIComponent(myProj.directories[j].name.trim()), "/xml/content.xml"].join("");
 					    importModuleXML(currentXML);
 				    }
 				}
@@ -775,9 +786,9 @@ function C_Outline(_myItem, _proj) {
 			}
 			
 			var lessonMatchID;
-			for (var i=0; i < proj.directories.length; i++){
-				if(myItem.attr('id') == proj.directories[i].parent && currentMenuItem.text() == proj.directories[i].name){
-					lessonMatchID = proj.directories[i].id;
+			for (var i=0; i < myProj.directories.length; i++){
+				if(myItem.attr('id') == myProj.directories[i].parent && currentMenuItem.text() == myProj.directories[i].name){
+					lessonMatchID = myProj.directories[i].id;
 					break;
 				}
 			}
@@ -1140,7 +1151,6 @@ function C_Outline(_myItem, _proj) {
 	*******************************************************************************/
 	//ADD BUTTON FUNCTIONS
 	function addModuleToCourse(_id){
-		console.log("addModuleToCourse.");
 		var  msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new module.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
 		$("#stage").append(msg);
 		

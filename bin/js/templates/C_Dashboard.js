@@ -11,7 +11,7 @@
  * @author: Philip Double, doublep@ctc.com
  */
 function C_Dashboard(_type) {
-
+	var co;
     var type = _type;
     var proj;
     var hoverSubNav = false; //Boolean toggle to not launch project/lesson when adding a user.
@@ -44,8 +44,10 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
+            console.log("receiveProjectsFromDB");
             $("#preloadholder").remove();
             proj = data;
+
             buildTemplate();
         });
 
@@ -295,8 +297,8 @@ function C_Dashboard(_type) {
 	                }
                 }
 			 
-			 $("#myOutline").click(function () {
-				 	var co = new C_Outline(myItem, proj);
+			 /*$("#myOutline").click(function () {
+				 	co = new C_Outline(myItem, proj);
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -310,7 +312,7 @@ function C_Dashboard(_type) {
                             effect: "fadeIn",
                             duration: 200
                         }
-                    });
+                    });*/
 			 
 			 $("#myPref").click(function () {
                     doPrefs(myItem);

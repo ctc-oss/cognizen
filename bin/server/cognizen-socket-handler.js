@@ -596,7 +596,6 @@ var SocketHandler = {
 				        var sequencing = subElement(item, "sequencing");
 				        etree = new ElementTree(root);
 				        var xml = etree.write({'xml_decleration': false});
-				        console.log(xml);
 				        fs.outputFile(coursePath, xml, function (err) {
 				        	if (err) callback(err, null);
 				         	callback(err);
@@ -706,7 +705,7 @@ var SocketHandler = {
                                     }
                                     else {
                                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                        _this._socket.emit('refreshOutliner');
+                                        //_this._socket.emit('refreshOutliner');
                                     }
                                 });
                             }, function (message) {
