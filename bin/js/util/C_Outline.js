@@ -31,6 +31,7 @@ function C_Outline(_myItem, _myProj) {
     var coursePath;												//Path to the course
     var courseData;												//Variable to hold and manipulate course.xml - the xml is imported and held in courseData object.
     var courseXMLPath;											//Path to the course.xml
+    var refreshExpected = false;								//Toggle on refreshes coming in - true when needed.
     
     
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -70,27 +71,47 @@ function C_Outline(_myItem, _myProj) {
 		receiveCoursePath(data); 
     });
     
-    socket.on('updateOutlineData', function (data){
+    /*socket.on('updateOutlineData', function (data){
 	   refreshOutlineData(data); 
-    });
+    });*/
     
-    function refreshOutlineData(_data){
-	   myProj = _data;
-	   module_arr = [];
-	   indexItem_arr = [];
-	   loadedOutlineModules = 0;
-	   console.log("refresh outliner");
-	   
-	   $.ajax({
-		    type: "GET",
-		    url: courseXMLPath,
-		    dataType: "xml",
-		    async: false,
-		    success: importOutlineItems,
-		    error: function(){
-			    alert("unable to load content data")
-		    }
-		});
+    this.refreshOutlineData = function(_data){
+    //function refreshOutlineData(_data){
+	   if(refreshExpected == true){
+		   myProj = null;
+		   myProj = _data;
+		   console.log(myProj);
+		   module_arr = [];
+		   indexItem_arr = [];
+		   loadedOutlineModules = 0;
+		   console.log("refresh outliner");
+		   var myPause = setInterval (function(){
+		   								console.log(myProj); 
+		   								refreshExpected = false; 
+		   								clearInterval(myPause);
+		   								$.ajax({
+										    type: "GET",
+										    url: courseXMLPath,
+										    dataType: "xml",
+										    async: false,
+										    success: importOutlineItems,
+										    error: function(){
+											    alert("unable to load content data")
+										    }
+										});
+		   				  }, 1000);
+		   
+		   /*$.ajax({
+			    type: "GET",
+			    url: courseXMLPath,
+			    dataType: "xml",
+			    async: false,
+			    success: importOutlineItems,
+			    error: function(){
+				    alert("unable to load content data")
+			    }
+			});*/
+		}
     }
     	
 	 /************************************************************************************
@@ -138,8 +159,8 @@ function C_Outline(_myItem, _myProj) {
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
 	     //debugger;
-	     console.log(_data);
-	     console.log(myProj);
+	     //console.log(_data);
+	     //console.log(myProj);
 	     if(totalOutlineModules > 0){
 		     //Construct Module Data Structure Model Array and store module_arr
 		     for (var i = 0; i < totalOutlineModules; i++){
@@ -1163,6 +1184,7 @@ function C_Outline(_myItem, _myProj) {
             buttons: {
                 Submit: function(){
                 	//Build the module data object to submit to the server.
+                	refreshExpected = true;
                 	var nameString = $("#myName").val();
                 	var content = {
 			            name: nameString,
@@ -1207,6 +1229,7 @@ function C_Outline(_myItem, _myProj) {
             },
             buttons: {
                 Yes: function(){
+	               
 	               $("#"+myID).remove();									//Remove the item from the menu
 	               $("#"+myID).remove();									//Have to call twice - not sure why...
 	               var myNode = getNode(myID);								//Find node in course.xml as object

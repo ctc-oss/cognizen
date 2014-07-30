@@ -47,7 +47,7 @@ function C_Dashboard(_type) {
             console.log("receiveProjectsFromDB");
             $("#preloadholder").remove();
             proj = data;
-
+            try{co.refreshOutlineData(data);} catch(e){};
             buildTemplate();
         });
 
@@ -297,7 +297,7 @@ function C_Dashboard(_type) {
 	                }
                 }
 			 
-			 /*$("#myOutline").click(function () {
+			 $("#myOutline").click(function () {
 				 	co = new C_Outline(myItem, proj);
                 }).hover(
                     function () {
@@ -312,7 +312,7 @@ function C_Dashboard(_type) {
                             effect: "fadeIn",
                             duration: 200
                         }
-                    });*/
+                    });
 			 
 			 $("#myPref").click(function () {
                     doPrefs(myItem);
