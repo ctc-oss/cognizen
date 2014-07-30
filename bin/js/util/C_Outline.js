@@ -725,10 +725,12 @@ function C_Outline(_myItem, _proj) {
 		msg += addToggle("tracked", "If false, no data is tracked for this activity.");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
-		msg += '<br/><div title"Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
+		msg += '<br/><div title="Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
 		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup.");
+		msg += '<label for="rolluOobjectiveMeasureWeight" title="Assigns a weight to the score for this activity to be used in rollup.">rollupobjectiveMeasureWeight:  </label>';
+		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" />';
 		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup.");
-
+//type="number" min="0" max="1" step="0.01"
 		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';			
 	    $("#outlinePagePrefPane").append(msg);
 	   
@@ -848,6 +850,7 @@ function C_Outline(_myItem, _proj) {
 		setToggle("completionSetByContent", modIndex);
 		setToggle("objectiveSetByContent", modIndex);
 		setToggle("rollupObjectiveStatisfied", modIndex);
+		//$("#rollupobjectiveMeasureWeight").val($(courseData).find('sequencing').eq(modIndex).attr("rollupobjectiveMeasureWeight"));
 		setToggle("rollupProgressCompletion", modIndex);
 
 		//update the xml when toggles are changed
@@ -870,6 +873,22 @@ function C_Outline(_myItem, _proj) {
 
 		$(function () {
 			$("div[id$='Radio']").buttonset();
+
+			$("#rollupObjectiveMeasureWeight").spinner({
+				step: 0.01,
+				numberFormat: "n",
+				max: 1,
+				min: 0,
+				stop: function(event, ui){
+					$(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight", $("#rollupObjectiveMeasureWeight").val());
+					updateCourseXML();
+				}
+			}).val($(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight"));
+
+			//prevent user manual input in spinner
+			$("#rollupObjectiveMeasureWeight").bind("keydown", function (event){
+				event.preventDefault();
+			});
 		});					
 
      }
