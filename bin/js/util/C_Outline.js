@@ -13,7 +13,7 @@ function C_Outline(_myItem, _proj) {
 	
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
-	var courseID = myItem.data('id');					//Course to check for modules
+	var courseID = myItem.data('id');							//Course to check for modules
     var currentCourseType = myItem.data('type');				//Type to be passed to node server
     var currentCoursePermission = myItem.data('permission');	//Permission to be passed to node server
 	var proj = _proj;											//Data object holding course module data
@@ -68,6 +68,21 @@ function C_Outline(_myItem, _proj) {
     
     socket.on('receiveCoursePath', function (data){
 		receiveCoursePath(data); 
+    });
+    
+    socket.on('refreshOutliner', function (data){
+	   module_arr = [];
+	   console.log("refreshOutliner called");
+	   $.ajax({
+		    type: "GET",
+		    url: courseXMLPath,
+		    dataType: "xml",
+		    async: false,
+		    success: importOutlineItems,
+		    error: function(){
+			    alert("unable to load content data")
+		    }
+		}); 
     });
     	
 	 /************************************************************************************
@@ -184,6 +199,7 @@ function C_Outline(_myItem, _proj) {
      -- build menuing system and add functionalities
      ************************************************************************************/     
      function buildOutlineInterface(){
+     	try {$("#dialog-outline").dialog("close");} catch (e) {}
      	var thisID;
      	indexItem_arr = [];
 	 	
@@ -1133,40 +1149,26 @@ function C_Outline(_myItem, _proj) {
             width: 550,
             close: function (event, ui) {
                 $("#dialog-registerContent").remove();
-            }
-           /* buttons: {
+            },
+            buttons: {
                 Submit: function(){
-                	//ADD the module to the course XML
-                	
                 	//Build the module data object to submit to the server.
-                	
-                	//ADD the new item to the menu
-                	
-                	
-	               //$("#"+myID).remove();									//Remove the item from the menu
-	               //$("#"+myID).remove();									//Have to call twice - not sure why...
-	               //var myNode = getNode(myID);								//Find node in course.xml as object
-	               //var myRemove = myNode.node;								//Define the actual node in course.xml
-	               //myRemove.remove();										//Remove from xml
-	               //updateCourseXML(false);									//Push xml without commit
-				   //for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
-					//   if (module_arr[i].id == myID){						
-					//	   module_arr.splice(i, 1);							//remove from module_arr	
-					//   }
-				   //}
-	               //var content = {											//Create data to send to node server
-			       //     id: myID,
-			       //     type: "lesson",
-			       //     user: user
-			       // };
-					
-			       // socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
+                	var nameString = $("#myName").val();
+                	var content = {
+			            name: nameString,
+			            user: user,
+			            course: {
+			                id: courseID
+			            },
+			            parentName: myItem.find("span").first().text()
+			        };
+			        socket.emit("registerLesson", content);
 			        $(this).dialog("close");								    //Close dialog.
                 },
                 Cancel: function () {
                 	$(this).dialog("close");
-                };
-            }*/
+                }
+            }
         });
 	}
 		

@@ -706,6 +706,7 @@ var SocketHandler = {
                                     }
                                     else {
                                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                        _this._socket.emit('refreshOutliner');
                                     }
                                 });
                             }, function (message) {
