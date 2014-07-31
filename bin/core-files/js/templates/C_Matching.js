@@ -420,6 +420,7 @@ function C_Matching(_type) {
 					tempCorrect = false;
 					markingObject.isCorrect = false;		
 				}else{
+					tempCorrect = true;
 					markingObject.isCorrect = true;
 				}
 				markingObject.userInput = userInput;
@@ -449,7 +450,7 @@ function C_Matching(_type) {
 		POPULATE FEEDBACK STRING
 		************************************/
 		var msg = "";
-		
+		console.log(tempCorrect);
 		if(feedbackType == 'undifferentiated'){
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p>'+feedbackCorrectTitle +'</p><p> '+ feedback +'</p></div>';

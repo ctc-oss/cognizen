@@ -9,28 +9,18 @@
  *		Date Updated: 07/28/14
  *		Updated by: Philip Double
  */
-function C_Outline(_myItem, _proj) {
+function C_Outline(_myItem) {
 	
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
-	var courseID = myItem.data('id');					//Course to check for modules
+	var courseID = myItem.data('id');							//Course to check for modules
     var currentCourseType = myItem.data('type');				//Type to be passed to node server
     var currentCoursePermission = myItem.data('permission');	//Permission to be passed to node server
-	var proj = _proj;											//Data object holding course module data
-																/* proj.directories holds directories for all course content
-																id: "533edfe1cb89ab0000000001"
-																name: "z9"
-																parent: "531f3654c764a5609d000003"
-																parentDir: "Course 1"
-																path: "VA/Course 1/z9"
-																permission: "admin"
-																type: "lesson"
-																__proto__: Object
-																]*/		
-    
+
     var coursePath;												//Path to the course
     var courseData;												//Variable to hold and manipulate course.xml - the xml is imported and held in courseData object.
     var courseXMLPath;											//Path to the course.xml
+    var refreshExpected = false;								//Toggle on refreshes coming in - true when needed.
     
     
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -69,6 +59,26 @@ function C_Outline(_myItem, _proj) {
     socket.on('receiveCoursePath', function (data){
 		receiveCoursePath(data); 
     });
+    
+    this.refreshOutlineData = function(){
+	   if(refreshExpected == true){
+		   module_arr = [];
+		   indexItem_arr = [];
+		   loadedOutlineModules = 0;
+		   refreshExpected = false; 
+		   		
+		   $.ajax({
+			   type: "GET",
+			   url: courseXMLPath,
+			   dataType: "xml",
+			   async: false,
+			   success: importOutlineItems,
+			   error: function(){
+				   alert("unable to load content data")
+			   }
+			});
+		}
+    }
     	
 	 /************************************************************************************
      initOutline()
@@ -114,28 +124,23 @@ function C_Outline(_myItem, _proj) {
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
+
 	     if(totalOutlineModules > 0){
-		     //Construct Module Data Structure Model Array and store module_arr
-		     for (var i = 0; i < totalOutlineModules; i++){
-		     	for(var j = 0; j < proj.directories.length; j++){
-				    if(proj.directories[j].parent == courseID && proj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
-					    var moduleObj = new Object();
-					    moduleObj.name = proj.directories[j].name;
-					    moduleObj.id = proj.directories[j].id;
-					    moduleObj.parent = proj.directories[j].parent;
-					    moduleObj.parentDir = proj.directories[j].parentDir;
-					    moduleObj.parh = proj.directories[j].path;
-					    moduleObj.permission = proj.directories[j].permission;
-					    moduleObj.type = proj.directories[j].type;
-					    moduleObj.xml = null;
-					    moduleObj.xmlPath = ["/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
-					    module_arr.push(moduleObj);
+	     	for(var y = 0; y < totalOutlineModules; y++){
+	     		 var moduleObj = new Object();
+						
+		 		 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
+		 		 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
+		 		 moduleObj.parent = courseID;
+		 		 moduleObj.parentDir = coursePath;
+		 		 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
+		 		 moduleObj.xml = null;
+		 		 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
+		 		 module_arr.push(moduleObj);
 					    
-						var currentXML = [coursePath, "/", encodeURIComponent(proj.directories[j].name.trim()), "/xml/content.xml"].join("");
-					    importModuleXML(currentXML);
-				    }
-				}
-		     }
+		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+		 		 importModuleXML(currentXML);
+	     	}
 		 }else{
 			 buildOutlineInterface();
 		 }
@@ -184,6 +189,7 @@ function C_Outline(_myItem, _proj) {
      -- build menuing system and add functionalities
      ************************************************************************************/     
      function buildOutlineInterface(){
+     	try {$("#dialog-outline").dialog("close");} catch (e) {}
      	var thisID;
      	indexItem_arr = [];
 	 	
@@ -763,9 +769,9 @@ function C_Outline(_myItem, _proj) {
 			}
 			
 			var lessonMatchID;
-			for (var i=0; i < proj.directories.length; i++){
-				if(myItem.attr('id') == proj.directories[i].parent && currentMenuItem.text() == proj.directories[i].name){
-					lessonMatchID = proj.directories[i].id;
+			for (var i=0; i < totalOutlineModules; i++){
+				if(currentMenuItem.attr("id") == $(courseData).find("item").eq(i).attr("id")){
+					lessonMatchID = $(courseData).find("item").eq(i).attr("id");
 					break;
 				}
 			}
@@ -1153,7 +1159,6 @@ function C_Outline(_myItem, _proj) {
 	*******************************************************************************/
 	//ADD BUTTON FUNCTIONS
 	function addModuleToCourse(_id){
-		console.log("addModuleToCourse.");
 		var  msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new module.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
 		$("#stage").append(msg);
 		
@@ -1162,40 +1167,27 @@ function C_Outline(_myItem, _proj) {
             width: 550,
             close: function (event, ui) {
                 $("#dialog-registerContent").remove();
-            }
-           /* buttons: {
+            },
+            buttons: {
                 Submit: function(){
-                	//ADD the module to the course XML
-                	
                 	//Build the module data object to submit to the server.
-                	
-                	//ADD the new item to the menu
-                	
-                	
-	               //$("#"+myID).remove();									//Remove the item from the menu
-	               //$("#"+myID).remove();									//Have to call twice - not sure why...
-	               //var myNode = getNode(myID);								//Find node in course.xml as object
-	               //var myRemove = myNode.node;								//Define the actual node in course.xml
-	               //myRemove.remove();										//Remove from xml
-	               //updateCourseXML(false);									//Push xml without commit
-				   //for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
-					//   if (module_arr[i].id == myID){						
-					//	   module_arr.splice(i, 1);							//remove from module_arr	
-					//   }
-				   //}
-	               //var content = {											//Create data to send to node server
-			       //     id: myID,
-			       //     type: "lesson",
-			       //     user: user
-			       // };
-					
-			       // socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
+                	refreshExpected = true;
+                	var nameString = $("#myName").val();
+                	var content = {
+			            name: nameString,
+			            user: user,
+			            course: {
+			                id: courseID
+			            },
+			            parentName: myItem.find("span").first().text()
+			        };
+			        socket.emit("registerLesson", content);
 			        $(this).dialog("close");								    //Close dialog.
                 },
                 Cancel: function () {
                 	$(this).dialog("close");
-                };
-            }*/
+                }
+            }
         });
 	}
 		
@@ -1224,6 +1216,7 @@ function C_Outline(_myItem, _proj) {
             },
             buttons: {
                 Yes: function(){
+	               
 	               $("#"+myID).remove();									//Remove the item from the menu
 	               $("#"+myID).remove();									//Have to call twice - not sure why...
 	               var myNode = getNode(myID);								//Find node in course.xml as object

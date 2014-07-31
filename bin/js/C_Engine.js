@@ -212,7 +212,7 @@ function buildInterface(){
 		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
 		//console.log("saying is IE");
 	}else{
-		console.log("not IE");
+		//console.log("not IE");
 		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
 	}
 	//Simple listener checking connectivity

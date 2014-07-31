@@ -11,7 +11,7 @@
  * @author: Philip Double, doublep@ctc.com
  */
 function C_Dashboard(_type) {
-
+	var co;
     var type = _type;
     var proj;
     var hoverSubNav = false; //Boolean toggle to not launch project/lesson when adding a user.
@@ -46,6 +46,7 @@ function C_Dashboard(_type) {
         socket.on('receiveProjectsFromDB', function (data) {
             $("#preloadholder").remove();
             proj = data;
+            try{co.refreshOutlineData();} catch(e){};
             buildTemplate();
         });
 
@@ -296,7 +297,7 @@ function C_Dashboard(_type) {
                 }
 			 
 			 $("#myOutline").click(function () {
-				 	var co = new C_Outline(myItem, proj);
+				 	co = new C_Outline(myItem);
                 }).hover(
                     function () {
                         hoverSubNav = true;

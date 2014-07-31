@@ -242,6 +242,7 @@ var Content = {
                             }
                             else{
                                 socket.emit('receiveProjectsFromDB', data);
+                                //socket.emit('updateOutlineData', data);
                             }
                         });
                     });
