@@ -858,6 +858,7 @@ function createNewPageByType(_myType){
 			question_obj.graded = false;
 			question_obj.id = myID;
 			question_obj.userAnswer = userSelection_arr;
+			question_obj.textInputQuestions = [];
 			questionResponse_arr.push(question_obj);
 			
 			break;	

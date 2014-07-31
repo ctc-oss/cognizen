@@ -708,11 +708,6 @@ function C_Outline(_myItem, _proj) {
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "</div>";
 		msg += '<br/><div><b>Sequencing:</b></div>';
-		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
-		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
-		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
-		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
-		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
 		msg += '<br/><div title="Indicates which navigational UI elements the LMS should hide when this activity is being delivered."><b>Hide LMS UI Values:</b></div>';		
 		msg += addToggle("previous", "Remove the previous button from the LMS navigation.");
 		msg += addToggle("continue", "Remove the continue button from the LMS navigation." );	
@@ -721,15 +716,24 @@ function C_Outline(_myItem, _proj) {
 		msg += addToggle("abandon", "Remove the abandon button (if present) from the LMS navigation.");	
 		msg += addToggle("abandonAll", "Remove the abandonAll button (if present) from the LMS navigation.");	
 		msg += addToggle("suspendAll", "Remove the suspendAll button (if present) from the LMS navigation.");
+		msg += '<br/><br/><div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
+		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
+		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
+		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
+		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
+		msg += '<br/><div title="Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next."><b>Sequencing Rules: </b></div>';
+     	msg += '<label title="Hide the item in the TOC until it has been attempted.">Hide in table of contents until attempted : </label>';
+		msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" /><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';		
+		msg += '<br/><br/><div title="Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
+		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup.");
+		msg += '<label for="rolluOobjectiveMeasureWeight" title="Assigns a weight to the score for this activity to be used in rollup.">rollupobjectiveMeasureWeight:  </label>';
+		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" />';
+		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup.");		
 		msg += '<br/><div title="Allow for non-communicative content to be delivered and sequenced."><b>Delivery Controls</b></div>';
 		msg += addToggle("tracked", "If false, no data is tracked for this activity.");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
-		msg += '<br/><div title="Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
-		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup.");
-		msg += '<label for="rolluOobjectiveMeasureWeight" title="Assigns a weight to the score for this activity to be used in rollup.">rollupobjectiveMeasureWeight:  </label>';
-		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" />';
-		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup.");
+
 //type="number" min="0" max="1" step="0.01"
 		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';			
 	    $("#outlinePagePrefPane").append(msg);
@@ -850,8 +854,14 @@ function C_Outline(_myItem, _proj) {
 		setToggle("completionSetByContent", modIndex);
 		setToggle("objectiveSetByContent", modIndex);
 		setToggle("rollupObjectiveStatisfied", modIndex);
-		//$("#rollupobjectiveMeasureWeight").val($(courseData).find('sequencing').eq(modIndex).attr("rollupobjectiveMeasureWeight"));
 		setToggle("rollupProgressCompletion", modIndex);
+
+		if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value') === "true"){
+			$('#notAttemptHiddenCheckbox').prop('checked',true);
+		}
+		else{
+			$('#notAttemptHiddenCheckbox').prop('checked',false);
+		}  
 
 		//update the xml when toggles are changed
 		toggleChange("choice", modIndex);
@@ -871,9 +881,28 @@ function C_Outline(_myItem, _proj) {
 		toggleChange("rollupObjectiveStatisfied", modIndex);
 		toggleChange("rollupProgressCompletion", modIndex);
 
+		$('#notAttemptHiddenCheckbox').on("change", function(){
+			if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').length == 0){
+				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').append($('<notAttemptHidden>'));
+				var newSeqRule = new DOMParser().parseFromString('<notAttemptHidden></notAttemptHidden>',  "text/xml");
+				var seqRuleCDATA = newSeqRule.createCDATASection("");
+				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').append(seqRuleCDATA);
+				updateCourseXML();
+			}
+
+			if($('#notAttemptHiddenCheckbox').prop('checked')){
+			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value', "true");
+			} else{
+			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value', "false");
+			}
+			updateCourseXML();
+		});	
+
 		$(function () {
 			$("div[id$='Radio']").buttonset();
+			$("input[id$='Checkbox']").button();
 
+			//setup for rollupObjectiveMeasureWeight spinner
 			$("#rollupObjectiveMeasureWeight").spinner({
 				step: 0.01,
 				numberFormat: "n",
