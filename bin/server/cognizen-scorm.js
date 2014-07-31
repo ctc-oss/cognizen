@@ -1689,11 +1689,13 @@ var SCORM = {
 	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 	    var itemCount = etree.findall('./item').length;
 	    var mySeq;
+	    var mySeqRules;
 	    for (var i = 0; i < itemCount; i++) {
 	    	var myNode = etree.findall('./item')[i];
-	    	var itemName = myNode.get('name');
+	    	var itemName = myNode.get('name').replace(/\s+/g, '');
 	    	if(itemName === lessonNameTrim){
 	    		mySeq = myNode.find('.sequencing');
+	    		mySeqRules = myNode.find('.sequencing/sequencingRules');
 	    		break;
 	    	}
 	    }
@@ -1717,6 +1719,13 @@ var SCORM = {
 			completionSetByContent: (mySeq.get('completionSetByContent') === 'true'),
 			objectiveSetByContent: (mySeq.get('objectiveSetByContent') === 'true')
 		};
+
+		// if(mySeqRules.find('.notattempthidden') != undefined){
+		// 	itemSeq["notAttemptHidden"] = (mySeqRules.find('.notattempthidden').get('value') === 'true');
+		// }
+		// else{
+		// 	itemSeq["notAttemptHidden"] = false;
+		// }
 
 
         var item = "           <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\">\n"+
@@ -1762,7 +1771,7 @@ var SCORM = {
 
         //setting controle modes
         if(!itemSeq.choice || itemSeq.flow || itemSeq.forwardOnly || !itemSeq.choiceExit){
-        	item += "		                      <imsss:controlMode";
+        	item += "		           <imsss:controlMode";
         	 if(!itemSeq.choice){
         	 	item += " choice=\"false\"";
         	 }
@@ -1779,12 +1788,21 @@ var SCORM = {
         }
 
         //setting sequencing rules
-
+   //      if(itemSeq.notAttemptHidden){
+			// item +="        			   <imsss:sequencingRules>\n"+
+			// 		"	                    	<imsss:preConditionRule>\n"+
+			// 		"	                          	<imsss:ruleConditions conditionCombination=\"any\">\n"+
+			// 		"	                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
+			// 		"	                        	</imsss:ruleConditions>\n"+
+			// 		"	                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
+			// 		"	                    	</imsss:preConditionRule>\n"+
+			// 		"	                </imsss:sequencingRules> \n";        	
+   //      }
         //setting limitConditions
 
         //setting rollupRules
         if(!itemSeq.rollupObjectiveSatisfied || !itemSeq.rollupProgressCompletion || itemSeq.rollupObjectiveMeasureWeight != "1.0"){
-        	item += "		                      <imsss:rollupRules";
+        	item += "		            <imsss:rollupRules";
         	//rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1.0\"
         	if(!itemSeq.rollupObjectiveSatisfied){
         		item += " rollupObjectiveSatisfied=\"false\"";

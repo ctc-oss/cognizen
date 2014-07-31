@@ -240,8 +240,8 @@ blockquote
 	border-left-width: 1px;
 	padding-left: 8px;
 	padding-right: 8px;
-	height:28px;
 }
+
 
 .dialogInputCorrect{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
@@ -254,7 +254,6 @@ blockquote
 	border-left-width: 1px;
 	padding-left: 8px;
 	padding-right: 8px;	
-	height:28px;
 }
 
 .dialogInputIncorrect {
@@ -267,8 +266,7 @@ blockquote
 	border-left-style: inset; 
 	border-left-width: 1px;
 	padding-left: 8px;
-	padding-right: 8px;	
-	height:28px;	
+	padding-right: 8px;		
 }
 
 #toggleMode{

@@ -862,7 +862,7 @@ function C_Outline(_myItem) {
 		setToggle("rollupObjectiveStatisfied", modIndex);
 		setToggle("rollupProgressCompletion", modIndex);
 
-		if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value') === "true"){
+		if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value') === "true"){
 			$('#notAttemptHiddenCheckbox').prop('checked',true);
 		}
 		else{
