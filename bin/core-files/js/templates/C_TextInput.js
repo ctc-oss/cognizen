@@ -282,7 +282,7 @@ function C_TextInput(_type) {
 											}
 										}
 										if(qAttemptCount >= qMaxAttempt){
-											$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
+											//$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
 											$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
 										}
 										else{
