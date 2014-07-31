@@ -888,18 +888,14 @@ function C_Outline(_myItem) {
 		toggleChange("rollupProgressCompletion", modIndex);
 
 		$('#notAttemptHiddenCheckbox').on("change", function(){
-			if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').length == 0){
-				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').append($('<notAttemptHidden>'));
-				var newSeqRule = new DOMParser().parseFromString('<notAttemptHidden></notAttemptHidden>',  "text/xml");
-				var seqRuleCDATA = newSeqRule.createCDATASection("");
-				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').append(seqRuleCDATA);
-				updateCourseXML();
+			if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').length == 0){
+				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').append($('<notattempthidden/>', courseData));
 			}
 
 			if($('#notAttemptHiddenCheckbox').prop('checked')){
-			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value', "true");
+			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "true");
 			} else{
-			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notAttemptHidden').attr('value', "false");
+			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "false");
 			}
 			updateCourseXML();
 		});	
