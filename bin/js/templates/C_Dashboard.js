@@ -44,7 +44,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveProjectsFromDB', function (data) {
-            console.log("receiveProjectsFromDB");
             $("#preloadholder").remove();
             proj = data;
             try{co.refreshOutlineData(data);} catch(e){};
@@ -298,7 +297,7 @@ function C_Dashboard(_type) {
                 }
 			 
 			 $("#myOutline").click(function () {
-				 	co = new C_Outline(myItem, proj);
+				 	co = new C_Outline(myItem);
                 }).hover(
                     function () {
                         hoverSubNav = true;

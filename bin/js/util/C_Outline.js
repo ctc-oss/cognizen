@@ -9,25 +9,14 @@
  *		Date Updated: 07/28/14
  *		Updated by: Philip Double
  */
-function C_Outline(_myItem, _myProj) {
+function C_Outline(_myItem) {
 	
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
 	var courseID = myItem.data('id');							//Course to check for modules
     var currentCourseType = myItem.data('type');				//Type to be passed to node server
     var currentCoursePermission = myItem.data('permission');	//Permission to be passed to node server
-	var myProj = _myProj;											//Data object holding course module data
-																/* myProj.directories holds directories for all course content
-																id: "533edfe1cb89ab0000000001"
-																name: "z9"
-																parent: "531f3654c764a5609d000003"
-																parentDir: "Course 1"
-																path: "VA/Course 1/z9"
-																permission: "admin"
-																type: "lesson"
-																__proto__: Object
-																]*/		
-    
+
     var coursePath;												//Path to the course
     var courseData;												//Variable to hold and manipulate course.xml - the xml is imported and held in courseData object.
     var courseXMLPath;											//Path to the course.xml
@@ -76,41 +65,22 @@ function C_Outline(_myItem, _myProj) {
     });*/
     
     this.refreshOutlineData = function(_data){
-    //function refreshOutlineData(_data){
 	   if(refreshExpected == true){
-		   myProj = null;
-		   myProj = _data;
-		   console.log(myProj);
 		   module_arr = [];
 		   indexItem_arr = [];
 		   loadedOutlineModules = 0;
-		   console.log("refresh outliner");
-		   var myPause = setInterval (function(){
-		   								console.log(myProj); 
-		   								refreshExpected = false; 
-		   								clearInterval(myPause);
-		   								$.ajax({
-										    type: "GET",
-										    url: courseXMLPath,
-										    dataType: "xml",
-										    async: false,
-										    success: importOutlineItems,
-										    error: function(){
-											    alert("unable to load content data")
-										    }
-										});
-		   				  }, 1000);
-		   
-		   /*$.ajax({
-			    type: "GET",
-			    url: courseXMLPath,
-			    dataType: "xml",
-			    async: false,
-			    success: importOutlineItems,
-			    error: function(){
-				    alert("unable to load content data")
-			    }
-			});*/
+		   refreshExpected = false; 
+		   		
+		   $.ajax({
+			   type: "GET",
+			   url: courseXMLPath,
+			   dataType: "xml",
+			   async: false,
+			   success: importOutlineItems,
+			   error: function(){
+				   alert("unable to load content data")
+			   }
+			});
 		}
     }
     	
@@ -158,31 +128,23 @@ function C_Outline(_myItem, _myProj) {
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
-	     //debugger;
-	     //console.log(_data);
-	     //console.log(myProj);
+
 	     if(totalOutlineModules > 0){
-		     //Construct Module Data Structure Model Array and store module_arr
-		     for (var i = 0; i < totalOutlineModules; i++){
-		     	for(var j = 0; j < myProj.directories.length; j++){
-				    if(myProj.directories[j].parent == courseID && myProj.directories[j].name == $(courseData).find('item').eq(i).attr("name")){
-					    var moduleObj = new Object();
-					    moduleObj.name = myProj.directories[j].name;
-					    moduleObj.id = myProj.directories[j].id;
-					    moduleObj.parent = myProj.directories[j].parent;
-					    moduleObj.parentDir = myProj.directories[j].parentDir;
-					    moduleObj.path = myProj.directories[j].path;
-					    moduleObj.permission = myProj.directories[j].permission;
-					    moduleObj.type = myProj.directories[j].type;
-					    moduleObj.xml = null;
-					    moduleObj.xmlPath = ["/", encodeURIComponent(myProj.directories[j].name.trim()), "/xml/content.xml"].join("");
-					    module_arr.push(moduleObj);
+	     	for(var y = 0; y < totalOutlineModules; y++){
+	     		 var moduleObj = new Object();
+						
+		 		 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
+		 		 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
+		 		 moduleObj.parent = courseID;
+		 		 moduleObj.parentDir = coursePath;
+		 		 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
+		 		 moduleObj.xml = null;
+		 		 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
+		 		 module_arr.push(moduleObj);
 					    
-						var currentXML = [coursePath, "/", encodeURIComponent(myProj.directories[j].name.trim()), "/xml/content.xml"].join("");
-					    importModuleXML(currentXML);
-				    }
-				}
-		     }
+		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+		 		 importModuleXML(currentXML);
+	     	}
 		 }else{
 			 buildOutlineInterface();
 		 }
@@ -807,9 +769,9 @@ function C_Outline(_myItem, _myProj) {
 			}
 			
 			var lessonMatchID;
-			for (var i=0; i < myProj.directories.length; i++){
-				if(myItem.attr('id') == myProj.directories[i].parent && currentMenuItem.text() == myProj.directories[i].name){
-					lessonMatchID = myProj.directories[i].id;
+			for (var i=0; i < totalOutlineModules; i++){
+				if(currentMenuItem.attr("id") == $(courseData).find("item").eq(i).attr("id")){
+					lessonMatchID = $(courseData).find("item").eq(i).attr("id");
 					break;
 				}
 			}

@@ -573,6 +573,9 @@ var SocketHandler = {
                     etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                     etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
 					
+					var myID = FileUtils.guid();
+					etree.find('./pages/page').set('id', myID);
+					
                     var coursePath = baseWritePath;
 					coursePath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
 					coursePath = coursePath + "/course.xml";
@@ -594,6 +597,27 @@ var SocketHandler = {
 				        item.set("name", content.name);
 				        item.set("id", content._id);
 				        var sequencing = subElement(item, "sequencing");
+				        sequencing.set("choice", "true");
+				        sequencing.set("flow", "false");
+				        sequencing.set("forwardOnly", "false");
+				        sequencing.set("choiceExit", "true");
+				        sequencing.set("previous", "false");
+				        sequencing.set("continue", "false");
+				        sequencing.set("exit", "false");
+				        sequencing.set("exitAll", "false");
+				        sequencing.set("abandon", "false");
+				        sequencing.set("abandonAll", "false");
+				        sequencing.set("suspendAll", "false");
+				        sequencing.set("tracked", "true");
+				        sequencing.set("completionSetByContent", "false");
+				        sequencing.set("objectiveSetByContent", "false");
+				        sequencing.set("rollupObjectiveStatisfied", "true");
+				        sequencing.set("rollupProgressCompletion", "true");
+				        sequencing.set("rollupObjectiveMeasureWeight", "1.0");
+				       
+				        var objectives = subElement(sequencing, "objectives");
+				        var primaryObjective = subElement(objectives, "primaryObjective");
+				        var sequencingRules = subElement(sequencing, "sequencingRules");
 				        etree = new ElementTree(root);
 				        var xml = etree.write({'xml_decleration': false});
 				        fs.outputFile(coursePath, xml, function (err) {
