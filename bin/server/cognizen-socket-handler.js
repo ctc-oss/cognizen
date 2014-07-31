@@ -577,18 +577,21 @@ var SocketHandler = {
 					etree.find('./pages/page').set('id', myID);
 					
                     var coursePath = baseWritePath;
-					coursePath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
-					coursePath = coursePath + "/course.xml";
-				    
+                    var tempPath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
+                    if(tempPath === ""){
+                        tempPath = coursePath.substr(0, coursePath.lastIndexOf("\\"));
+                    }
+					coursePath = tempPath + "/course.xml";
+
 				    fs.readFile(coursePath, function(err, data){
 				    	var XML = et.XML;
 						var ElementTree = et.ElementTree;
 						var element = et.Element;
 						var subElement = et.SubElement;
-						var data, etree;
+						var _data, etree;
 						
-				    	data = data.toString();
-						etree = et.parse(data);
+				    	_data = data.toString();
+						etree = et.parse(_data);
 
 						//set mode to production and scorm version in temp content.xml
 				        var root = etree.find('./');
