@@ -60,11 +60,7 @@ function C_Outline(_myItem) {
 		receiveCoursePath(data); 
     });
     
-    /*socket.on('updateOutlineData', function (data){
-	   refreshOutlineData(data); 
-    });*/
-    
-    this.refreshOutlineData = function(_data){
+    this.refreshOutlineData = function(){
 	   if(refreshExpected == true){
 		   module_arr = [];
 		   indexItem_arr = [];

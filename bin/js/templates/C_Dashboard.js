@@ -46,7 +46,7 @@ function C_Dashboard(_type) {
         socket.on('receiveProjectsFromDB', function (data) {
             $("#preloadholder").remove();
             proj = data;
-            try{co.refreshOutlineData(data);} catch(e){};
+            try{co.refreshOutlineData();} catch(e){};
             buildTemplate();
         });
 
