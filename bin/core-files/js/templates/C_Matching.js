@@ -401,6 +401,7 @@ function C_Matching(_type) {
 		$("#dialog-attemptResponse").remove();
 		attemptsMade++;
 		marking_arr = [];
+		tempCorrect = true;
 		/*check for regular matching*/
 		if(type == "matching"){
 			for(var i=0; i < option_arr.length; i++){
@@ -420,7 +421,7 @@ function C_Matching(_type) {
 					tempCorrect = false;
 					markingObject.isCorrect = false;		
 				}else{
-					tempCorrect = true;
+					//tempCorrect = true;
 					markingObject.isCorrect = true;
 				}
 				markingObject.userInput = userInput;
