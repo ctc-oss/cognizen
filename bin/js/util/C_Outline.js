@@ -502,13 +502,13 @@ function C_Outline(_myItem) {
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
-		msg += '<br/><div><b>Sequencing:</b></div>';
+		msg += '<br/><div><b>SCORM 2004 Sequencing:</b></div>';
 		msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
-		msg += '<div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
+		msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
 		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
 		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
 		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
-		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';					
+		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';					
 		//alert($(courseData).find('sequencing').attr("choice"));
 		//msg += "<label for='out_courseObjective'>course objective: </label>";
 		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
@@ -529,15 +529,15 @@ function C_Outline(_myItem) {
 		
 		//set objectivesGlobalToSystem based off value in xml
 		if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
-			$('#objectivesGlobalToSystemtrue').prop('checked',true);
+			$('#objectivesGlobalToSystem').prop('checked',true);
 		}
 		else{
-			$('#objectivesGlobalToSystemfalse').prop('checked',true);
+			$('#objectivesGlobalToSystem').prop('checked',false);
 		}
 
 		//update the xml when objectivesGlobalToSystem toggle is changed
 		$("#objectivesGlobalToSystemRadio").on("change", function(){
-		   if($('#objectivesGlobalToSystemtrue').prop('checked')){
+		   if($('#objectivesGlobalToSystem').prop('checked')){
 			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "true");
 		   } else{
 			   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "false");
@@ -547,15 +547,15 @@ function C_Outline(_myItem) {
 
 		//set choice based off value in xml
 		if($(courseData).find('sequencing').first().attr("choice") === "true"){
-			$('#choicetrue').prop('checked',true);
+			$('#choice').prop('checked',true);
 		}
 		else{
-			$('#choicefalse').prop('checked',true);
+			$('#choice').prop('checked',false);
 		}
 
 		//update the xml when choice toggle is changed
 		$("#choiceRadio").on("change", function(){
-		   if($('#choicetrue').prop('checked')){
+		   if($('#choice').prop('checked')){
 			   $(courseData).find('sequencing').first().attr("choice", "true");
 		   } else{
 			   $(courseData).find('sequencing').first().attr("choice", "false");
@@ -565,15 +565,15 @@ function C_Outline(_myItem) {
 
 		//set flow based off value in xml
 		if($(courseData).find('sequencing').first().attr("flow") === "true"){
-			$('#flowtrue').prop('checked',true);
+			$('#flow').prop('checked',true);
 		}
 		else{
-			$('#flowfalse').prop('checked',true);
+			$('#flow').prop('checked',false);
 		}
 
 		//update the xml when flow toggle is changed
 		$("#flowRadio").on("change", function(){
-		   if($('#flowtrue').prop('checked')){
+		   if($('#flow').prop('checked')){
 			   $(courseData).find('sequencing').first().attr("flow", "true");
 		   } else{
 			   $(courseData).find('sequencing').first().attr("flow", "false");
@@ -583,15 +583,15 @@ function C_Outline(_myItem) {
 
 		//set forwardOnly based off value in xml
 		if($(courseData).find('sequencing').first().attr("forwardOnly") === "true"){
-			$('#forwardOnlytrue').prop('checked',true);
+			$('#forwardOnly').prop('checked',true);
 		}
 		else{
-			$('#forwardOnlyfalse').prop('checked',true);
+			$('#forwardOnly').prop('checked',false);
 		}
 
 		//update the xml when forwardOnly toggle is changed
 		$("#forwardOnlyRadio").on("change", function(){
-		   if($('#forwardOnlytrue').prop('checked')){
+		   if($('#forwardOnly').prop('checked')){
 			   $(courseData).find('sequencing').first().attr("forwardOnly", "true");
 		   } else{
 			   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
@@ -629,7 +629,7 @@ function C_Outline(_myItem) {
 		}).css({'width': '500px', 'color': '#3383bb;'});*/
 
 		$(function () {
-			$("div[id$='Radio']").buttonset();
+			//$("div[id$='Radio']").buttonset();
 			$( document ).tooltip();
 		});	
 
@@ -713,35 +713,36 @@ function C_Outline(_myItem) {
      	msg += "<label for='lockDuration'>duration for lock request (s): </label>";
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "</div>";
-		msg += '<br/><div><b>Sequencing:</b></div>';
-		msg += '<br/><div title="Indicates which navigational UI elements the LMS should hide when this activity is being delivered."><b>Hide LMS UI Values:</b></div>';		
-		msg += addToggle("previous", "Remove the previous button from the LMS navigation.");
-		msg += addToggle("continue", "Remove the continue button from the LMS navigation." );	
-		msg += addToggle("exit", "Remove the exit button (if present) from the LMS navigation.");	
-		msg += addToggle("exitAll", "Remove the exitAll button (if present) from the LMS navigation.");	
-		msg += addToggle("abandon", "Remove the abandon button (if present) from the LMS navigation.");	
-		msg += addToggle("abandonAll", "Remove the abandonAll button (if present) from the LMS navigation.");	
-		msg += addToggle("suspendAll", "Remove the suspendAll button (if present) from the LMS navigation.");
-		msg += '<br/><br/><div title="Determine what type of navigation is allowed by the user."><b>Control Modes:</b></div>';
-		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
-		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
-		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
+		msg += '<br/><div><b>SCORM 2004 Sequencing:</b></div>';
+		msg += '<br/><div id="hideLMSUIValues" title="" style="float:left;"><b>Indicates which navigational UI elements the LMS should hide when this activity is being delivered:</b></div>';		
+		msg += addToggle("previous", "Remove the previous button:");
+		msg += addToggle("continue", "Remove the continue button:" );	
+		msg += addToggle("exit", "Remove the exit button (if present):");	
+		msg += addToggle("exitAll", "Remove the exitAll button (if present):");	
+		msg += addToggle("abandon", "Remove the abandon button (if present):");	
+		msg += addToggle("abandonAll", "Remove the abandonAll button (if present):");	
+		msg += addToggle("suspendAll", "Remove the suspendAll button (if present):");
+		msg += '<br/><br/><div id="controlModes" title="" style="float:left;"><b>Determine what type of navigation is allowed by the user:</b></div>';
+		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children:");
+		msg += addToggle("flow", "Enable previous and next LMS navigation buttons for navigating among this activity’s children:");
+		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");	
 		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
-		msg += '<br/><div title="Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next."><b>Sequencing Rules: </b></div>';
-     	msg += '<label title="Hide the item in the TOC until it has been attempted.">Hide in table of contents until attempted : </label>';
-		msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" /><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';		
-		msg += '<br/><br/><div title="Determine which activities participate in status rollup and how their status is weighted in relation to other activities."><b>Rollup Controls</b></div>';
-		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup.");
-		msg += '<label for="rolluOobjectiveMeasureWeight" title="Assigns a weight to the score for this activity to be used in rollup.">rollupobjectiveMeasureWeight:  </label>';
-		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" />';
-		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup.");		
-		msg += '<br/><div title="Allow for non-communicative content to be delivered and sequenced."><b>Delivery Controls</b></div>';
-		msg += addToggle("tracked", "If false, no data is tracked for this activity.");
+		msg += '<br/><div id="sequencingRules" title="" style="float:left;"><b>Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next.: </b></div>';
+		msg += addToggle("notAttemptHidden", "Hide the item in the TOC until it has been attempted:");
+     	//msg += '<label title="Hide the item in the TOC until it has been attempted." style="width:350px; float:left;" >Hide in table of contents until attempted : </label>';
+		//msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" style="float:left;"/><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';		
+		msg += '<br/><br/><div id="rollupControls" title="" style="float:left;"><b>Determine which activities participate in status rollup and how their status is weighted in relation to other activities: </b></div>';
+		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup:");
+		msg += '<label for="rolluOobjectiveMeasureWeight" title="" style="float:left">Assign a weight to the score for this activity to be used in rollup.:  </label>';
+		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" style="width:350px; float:left;"/>';
+		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup:");		
+		msg += '<br/><div id="deliveryControls" title="" style="float:left;"><b>Allow for non-communicative content to be delivered and sequenced:</b></div>';
+		msg += addToggle("tracked", "Is data tracked for this activity:");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
 
 //type="number" min="0" max="1" step="0.01"
-		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank">Sequencing Definition Model</a>';			
+		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left;">Sequencing Definition Model</a>';			
 	    $("#outlinePagePrefPane").append(msg);
 	   
 	    //Set module settings.
@@ -863,10 +864,10 @@ function C_Outline(_myItem) {
 		setToggle("rollupProgressCompletion", modIndex);
 
 		if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value') === "true"){
-			$('#notAttemptHiddenCheckbox').prop('checked',true);
+			$('#notAttemptHidden').prop('checked',true);
 		}
 		else{
-			$('#notAttemptHiddenCheckbox').prop('checked',false);
+			$('#notAttemptHidden').prop('checked',false);
 		}  
 
 		//update the xml when toggles are changed
@@ -887,12 +888,12 @@ function C_Outline(_myItem) {
 		toggleChange("rollupObjectiveStatisfied", modIndex);
 		toggleChange("rollupProgressCompletion", modIndex);
 
-		$('#notAttemptHiddenCheckbox').on("change", function(){
+		$('#notAttemptHidden').on("change", function(){
 			if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').length == 0){
 				$(courseData).find('sequencing').eq(modIndex).find('sequencingRules').append($('<notattempthidden/>', courseData));
 			}
 
-			if($('#notAttemptHiddenCheckbox').prop('checked')){
+			if($('#notAttemptHidden').prop('checked')){
 			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "true");
 			} else{
 			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "false");
@@ -900,8 +901,9 @@ function C_Outline(_myItem) {
 			updateCourseXML();
 		});	
 
+		var currentROMWeight = $("#rollupObjectiveMeasureWeight").val();
 		$(function () {
-			$("div[id$='Radio']").buttonset();
+			//$("div[id$='Radio']").buttonset();
 			$("input[id$='Checkbox']").button();
 
 			//setup for rollupObjectiveMeasureWeight spinner
@@ -911,8 +913,11 @@ function C_Outline(_myItem) {
 				max: 1,
 				min: 0,
 				stop: function(event, ui){
-					$(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight", $("#rollupObjectiveMeasureWeight").val());
-					updateCourseXML();
+					if(currentROMWeight != $("#rollupObjectiveMeasureWeight").val()){
+						currentROMWeight = $("#rollupObjectiveMeasureWeight").val();
+						$(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight", $("#rollupObjectiveMeasureWeight").val());
+						updateCourseXML();
+					}
 				}
 			}).val($(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight"));
 
@@ -925,25 +930,34 @@ function C_Outline(_myItem) {
      }
 
      function addToggle(_id, title){
-     	var msg = '<div id="' + _id + 'Radio" title="'+title+'">' + _id + ': ';
-		msg += '<input type="radio" id="' + _id + 'true" name="' + _id + 'Radio" /><label for="' + _id + 'true" title="Set ' + _id + ' to true.">true </label>';
-		msg += '<input type="radio" id="' + _id + 'false" name="' + _id + 'Radio" /><label for="' + _id + 'false" title="Set ' + _id + ' to false">false</label>';
+     	var msg = '<div id="toggleWrapper" style="float: left;"><div id="' + _id + 'Text" style="width:400px; float: left; margin: 8px">' + title + '</div>'; 
+     	msg += '<div id="' + _id + 'Radio" title="'+title+'" style="float: left;">';
+		// msg += '<input type="radio" id="' + _id + 'true" name="' + _id + 'Radio" /><label for="' + _id + 'true" title="Set ' + _id + ' to true.">true </label>';
+		// msg += '<input type="radio" id="' + _id + 'false" name="' + _id + 'Radio" /><label for="' + _id + 'false" title="Set ' + _id + ' to false">false</label>';
+		//msg += '</div></div>';
+     	msg += '<div class="onoffswitch">';
+		msg += '	<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + _id + '" >';
+		msg += '	<label class="onoffswitch-label" for="' + _id + '">';
+		msg += '	    <span class="onoffswitch-inner"></span>';
+		msg += '	    <span class="onoffswitch-switch"></span>';
+		msg += '	</label>';
 		msg += '</div>';
+		msg += '</div></div>';		
 		return msg;     	
      }
 
      function setToggle(_id, index){
 		if($(courseData).find('sequencing').eq(index).attr(_id) === "true"){
-			$('#'+_id+'true').prop('checked',true);
+			$('#'+_id).prop('checked',true);
 		}
 		else{
-			$('#'+_id+'false').prop('checked',true);
+			$('#'+_id).prop('checked',false);
 		}     	
      }
 
      function toggleChange(_id, index){
 		$('#'+_id+'Radio').on("change", function(){
-		   if($('#'+_id+'true').prop('checked')){
+		   if($('#'+_id).prop('checked')){
 			   $(courseData).find('sequencing').eq(index).attr(_id, "true");
 		   } else{
 			   $(courseData).find('sequencing').eq(index).attr(_id, "false");
