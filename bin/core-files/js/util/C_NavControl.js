@@ -38,6 +38,8 @@ var backDisabled = false;
 var indexDisabled = false;
 var helpButton = false;
 var helpURL = "";
+var helpHeight = "750";
+var helpWidth = "800";
 var printButton = false;
 var referenceButton = false;
 var referenceURL = "";
@@ -68,10 +70,26 @@ function checkNav(){
 		// $(data).find("help").append(newHelp);		
 		$(data).find("help").attr("value", "false");
 		$(data).find("help").attr("url", "");
+		$(data).find("help").attr("width", helpWidth);
+		$(data).find("help").attr("height", helpHeight);
 		helpButton = false;
 	}
 	else{
 		helpButton = ($(data).find('help').attr('value') === 'true');
+		var tempWidth = $(data).find('help').attr('width');
+		if(tempWidth != undefined && tempWidth != 'undefined'){
+			helpWidth = tempWidth;
+		}
+		else{
+			$(data).find("help").attr("width", helpWidth);
+		}
+		var tempHeight = $(data).find('help').attr('height');
+		if(tempHeight != undefined && tempHeight != "undefined"){
+			helpHeight = tempHeight;
+		}
+		else{
+			$(data).find("help").attr("height", helpHeight);
+		}
 	}
 
 	checkHelp();
@@ -338,6 +356,10 @@ function launchPrefs(){
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";	
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
+	msg += "<label id='helpWidthLabel'>Help window width: </label>";
+	msg += "<input id='helpWidth' type='text' name='helpWidth' value='"+helpWidth+"' disabled='disabled' size='4'>";
+	msg += "<br/><label id='helpHeightLabel'>Help window height: </label>";
+	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";	
 	msg += "</div><br/>";
 	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
 	//Add the resources/docs checkbox.   -------TODO
@@ -407,8 +429,12 @@ function launchPrefs(){
 
 	if(helpButton == true){
 		$("#hasHelp").attr('checked', true);
+		$("#helpWidth").attr('disabled', false);
+		$("#helpHeight").attr('disabled', false);
 	} else{
 		$("#hasHelp").attr('checked', false);
+		$("#helpWidth").attr('disabled', true);
+		$("#helpHeight").attr('disabled', true);		
 	}
 
 	$("#hasHelp").click(function() {
@@ -543,6 +569,12 @@ function savePreferences(_pub){
 		updateNeeded = true;
 	}
 
+	helpWidth = $("#helpWidth").val();
+	$(data).find('help').attr('width', helpWidth);
+
+	helpHeight = $("#helpHeight").val();
+	$(data).find('help').attr('height', helpHeight);	
+
 	if(helpSelected){
 		helpButton = true;
 	}
@@ -632,7 +664,7 @@ function checkHelp(){
 		//grab URL of help file and attach click action
 		helpURL = $(data).find('help').attr('url');
 		$("#help").click(function() {
-			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width=807, height=750');
+			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});		
 	}
 	else{
