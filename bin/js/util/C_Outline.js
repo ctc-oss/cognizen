@@ -1203,7 +1203,210 @@ function C_Outline(_myItem) {
 		
 	function addPageToModule(_id){
 		console.log("addPageToModule.");
+		var opt_arr = ["analyze", "apply", "calculate", "classify", "evaluate", "remember", "solve", "synthesis", "understand"];
+		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
+
+		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete the form to create your new page.</p>';
+
+		var pages= [
+			{
+				"capability" : "textOnly", 
+				"opt" : ["understand","remember"], 
+				"content" : ["facts","concepts"]
+			},
+			{
+				"capability" : "graphicOnly", 
+				"opt" : ["understand","remember"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "top", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},			
+			{
+				"capability" : "left", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "right", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "bottom", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "sidebar", 
+				"opt" : ["understand","remember"], 
+				"content" : ["facts","concepts"]
+			},										
+			{
+				"capability" : "clickImage", 
+				"opt" : ["understand","remember", "analyze", "classify", "apply"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "tabsOnly", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "tabsLeft", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},				
+			{
+				"capability" : "revealRight", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "revealBottom", 
+				"opt" : ["understand","remember", "classify"], 
+				"content" : ["facts","concepts"]
+			},
+			{
+				"capability" : "revealLeft", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "flashcard", 
+				"opt" : ["understand","remember", "classify"], 
+				"content" : ["facts","concepts"]
+			},	
+			{
+				"capability" : "sequence", 
+				"opt" : ["understand","remember", "analyze"], 
+				"content" : ["procedures", "processes"]
+			},
+			{
+				"capability" : "multipleChoice", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "multipleChoiceMedia", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},	
+			{
+				"capability" : "matching", 
+				"opt" : ["understand","remember", "analyze", "apply"], 
+				"content" : ["facts","concepts", "procedures", "processes"]
+			},
+			{
+				"capability" : "questionBank", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},	
+			{
+				"capability" : "completion", 
+				"opt" : [], 
+				"content" : []
+			},
+			{
+				"capability" : "textInput", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "essayCompare", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			}																																			
+		];
+
+		//Add the objective performance type dropdown
+		msg += '<div><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
+		msg += '<option value=""></option>';
+		for(var i=0; i < opt_arr.length; i++){
+			msg += '<option value="' + opt_arr[i]+ '">' + opt_arr[i] + '</option>';
+		}
+		msg += '</select></div>';
+
+		//Add the content type dropdown
+		msg += '<div><label for="contentTypeList">Select a content type:</label><select id="contentTypeList" name="contentTypeList">';
+		msg += '<option value=""></option>';
+		for(var i=0; i < content_arr.length; i++){
+			msg += '<option value="' + content_arr[i]+ '">' + content_arr[i] + '</option>';
+		}
+		msg += '</select></div>';
+
+		//Add the page type dropdown
+		msg += '<div><label for="pageTypeList">Select a page type:</label><select id="pageTypeList" name="pageTypeList">';
+		for(var i=0; i < pages.length; i++){
+			msg += '<option value="' + pages[i].capability + '">' + pages[i].capability + '</option>';
+		}
+		msg += '</select></div>';
+
+
+
+		msg += '</div>';
+		$("#stage").append(msg);
+
+		
+		
+		$("#dialog-addPage").dialog({
+        	modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-addPage").remove();
+            },
+            buttons: {
+                Submit: function(){
+                	//TODO: add code that adds the page selected
+                	alert($("#pageTypeList").val());
+                	$(this).dialog("close");
+                },
+                Cancel: function () {
+                	$(this).dialog("close");
+                }
+            }
+        });		
+		$(function() {
+			$("#opTypeList").on("change", function() {
+				filterPageList(pages);
+			});
+			$("#contentTypeList").on("change", function() {
+				filterPageList(pages);
+			});		
+		});
 	}
+
+	function filterPageList(_pages){
+		var optPage_arr = [];
+		var contentPage_arr = [];
+		$("select#pageTypeList option").remove();
+		
+		for(var j=0; j < _pages.length; j++){
+
+			if($.inArray($("#opTypeList").val(), _pages[j].opt) != -1 || $("#opTypeList").val() == ""){
+				optPage_arr.push(_pages[j].capability);
+			}
+
+			if($.inArray($("#contentTypeList").val(), _pages[j].content) != -1 || $("#contentTypeList").val() == ""){
+				contentPage_arr.push(_pages[j].capability);
+			}
+
+		}
+
+		var finalPage_arr = [];		
+		for(var w=0; w < optPage_arr.length; w++){
+			if($.inArray(optPage_arr[w], contentPage_arr) != -1){
+				finalPage_arr.push(optPage_arr[w]);
+			}
+		}	
+
+		for(var t=0; t <finalPage_arr.length; t++){
+			$("#pageTypeList").append($("<option></option>").attr("value", finalPage_arr[t]).text(finalPage_arr[t]));
+		}	
+					
+	}	
 	
 	/************************************************************************************
      removeModuleFromCourse(_id);
