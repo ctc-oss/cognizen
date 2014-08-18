@@ -1126,6 +1126,8 @@ function updateTextInputQuestionResponse(_questionObj){
 ***utilizes currentPage variable, which is an int representing a node in content .xml*/
 //Function to load page content
 this.loadPage = function(){
+	try { $(".ui-tooltip").tooltip("destroy"); } catch (e) {}
+	try { $(".ui-tooltip").remove(); } catch (e) {}
 	if(isLinear == true){
 		updateTracking();
 	}
