@@ -1050,7 +1050,7 @@ var SocketHandler = {
 	                    //Refresh the index if successfully updating the content.xml
 	                    if (err == null && data.commit == true){
 	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
-                            	_this.logger.info("Outliner successfully updated xml")
+                            	_this.logger.info("Outliner successfully updated xml");
                                 //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                             }, function(err){
                             	_this.logger.error('_this.Git.commitProgramContent(): ' + err);
@@ -1086,6 +1086,10 @@ var SocketHandler = {
 	                    if (err == null && data.commit == true){
 	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
                             	_this.logger.info("Outliner successfully updated xml")
+                                if(data.refresh == true){
+	                                _this.logger.info("saying refresh dashboard, yo!");
+	                                _this._socket.emit('refreshDashboard');
+                                }
                                 //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                             }, function(err){
                             	_this.logger.error('_this.Git.commitProgramContent(): ' + err);
