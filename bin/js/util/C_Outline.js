@@ -246,7 +246,7 @@ function C_Outline(_myItem) {
         });
         
         //OPEN WITH ALL MENU ITEMS COLLAPSED
-        $('#C_Index').nestable('collapseAll');
+        //$('#C_Index').nestable('collapseAll');
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
@@ -1000,7 +1000,7 @@ function C_Outline(_myItem) {
      /****************************************************************
      * Serialize XML and send it to the server.
      ****************************************************************/
-     function updateModuleXML(_id, _commit){
+     function updateModuleXML(_id, _commit, _refresh){
 	 	var myData = $(module_arr[_id].xml);
 		var xmlString;
 		
@@ -1018,11 +1018,16 @@ function C_Outline(_myItem) {
 		if(_commit == false){
 			commit = false;
 		}
+		
+		var refresh = false;
+		if(_refresh == true){
+			refresh = true;
+		}
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 				
 		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
-		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, user: user ,content: {
+		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, refresh: refresh, user: user ,content: {
         	id: courseID,
             type: currentCourseType,
             permission: currentCoursePermission
@@ -1119,7 +1124,7 @@ function C_Outline(_myItem) {
 	            	if(_level == "module"){
 	            		addLessonToModule(myItem.attr("data-id"));
 	            	}else{
-		            	addPageToModule(myItem.attr("data-id"), myItem);
+		            	addPageToModule(myItem.attr("myID"));
 	            	}
 		        }).hover(
 	            	function () {
@@ -1167,7 +1172,12 @@ function C_Outline(_myItem) {
 	/*******************************************************************************
 	ADD and REMOVE FUNCTIONS
 	*******************************************************************************/
-	//ADD BUTTON FUNCTIONS
+	
+	/************************************************************************************************
+	Function: 		addModuleToCourse
+	Param: 			_id = ID of the course to be added to.
+	Description:	Creates a new module in the identified course.
+	************************************************************************************************/
 	function addModuleToCourse(_id){
 		var  msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new module.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
 		$("#stage").append(msg);
@@ -1200,9 +1210,24 @@ function C_Outline(_myItem) {
             }
         });
 	}
+	
+	/************************************************************************************************
+	Function: 		addLessonToModule
+	Param: 			_id = ID of the module to be added to.
+	Description:	Creates a new lesson in the identified module and a page inside the lesson.
+					Adds lesson to the end of the module.  Can then be dragged.
+	************************************************************************************************/
+	function addLessonToModule(_id){
 		
+	}
+	
+	/************************************************************************************************
+	Function: 		addPageToModule
+	Param: 			_id = ID of the module to be added to.
+	Description:	Creates a new page in the identified module. 
+					Creates the page after the page being added from.
+	************************************************************************************************/	
 	function addPageToModule(_id){
-		console.log("addPageToModule.");
 		var opt_arr = ["analyze", "apply", "calculate", "classify", "evaluate", "remember", "solve", "synthesis", "understand"];
 		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
 
@@ -1360,7 +1385,9 @@ function C_Outline(_myItem) {
             buttons: {
                 Submit: function(){
                 	//TODO: add code that adds the page selected
-                	alert($("#pageTypeList").val());
+                	//alert($("#pageTypeList").val());
+                	var newPageType = $("#pageTypeList").val();
+					createNewPageByType(newPageType, _id);
                 	$(this).dialog("close");
                 },
                 Cancel: function () {
@@ -1377,7 +1404,1133 @@ function C_Outline(_myItem) {
 			});		
 		});
 	}
+	
+	/************************************************************************************************
+	Function: 		createNewPageByType
+	Param: 			_myType = Identifier of page type - String.
+	Description:	Creates node and page data in the xml object.
+	************************************************************************************************/
+	function createNewPageByType(_myType, _id){
+		//Create a Unique ID for the page
+		var myID = guid();
+		var myNode = getNode(_id);
+		//Place a page element
+		var myAddAfter = myNode.node;							//Variable for the node id
+		var myModule = myNode.module;						//Parent module.
+		var myModuleID = module_arr[myNode.module].id;		//module ID in case needed ----- probably can remove - leaving for now...
+		var myNodeLevel = myNode.level;						//Level that the button resides on ("module", "page" so far)...
+		var myXML = module_arr[myNode.module].xml;
+		
+		//Find insert location
+		for (var i = 0; i < $(myXML).find("page").length; i++){
+			if(_id == $(myXML).find("page").eq(i).attr("id")){
+				var insertPoint = i;
+			}
+		}
+		
+		$(myXML).find("page").eq(insertPoint).after($('<page id="'+ myID +'" layout="'+_myType+'" audio="null" prevPage="null" nextPage="null"></page>'));
+		
+		var currentChildrenLength = $(myXML).find("page").eq(insertPoint).children("page").length;
+		var newPage = insertPoint + currentChildrenLength + 1;
+		$(myXML).find("page").eq(newPage).append($("<title>"));
+		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
+		var titleCDATA = newPageTitle.createCDATASection("New Page Title");
+		$(myXML).find("page").eq(newPage).find("title").append(titleCDATA);
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//ADD PAGE SPECIFIC ELEMENTS
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		switch (_myType) {
+			//Satic Layouts
+		case "group":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).attr("type", "group");
+			break;
+		case "completion":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).attr("graded", "true");
+			$(myXML).find("page").eq(newPage).attr("mandatory", "true");
+			$(myXML).find("page").eq(newPage).attr("type", "completion");
+			break;
+		case "textOnly":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "graphicOnly":
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
+			$(myXML).find("page").eq(newPage).attr("popcaps", "");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "top":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
+			$(myXML).find("page").eq(newPage).attr("popcaps", "");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "left":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
+			$(myXML).find("page").eq(newPage).attr("popcaps", "");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "right":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
+			$(myXML).find("page").eq(newPage).attr("popcaps", "");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "bottom":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
+			$(myXML).find("page").eq(newPage).attr("popcaps", "");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "sidebar":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			$(myXML).find("page").eq(newPage).append($("<sidebar>"));
+			var newSidebarContent = new DOMParser().parseFromString('<sidebar></sidebar>',  "text/xml");
+			var sidebarCDATA = newSidebarContent.createCDATASection("<p>New Page Sidebar</p>");
+			$(myXML).find("page").eq(newPage).find("sidebar").append(sidebarCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "tabsOnly":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
 
+			$(myXML).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
+			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
+
+			$(myXML).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));
+			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			var tabCDATA2 = newTabContent2.createCDATASection("New Tab Content");
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "tabsLeft":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+
+			$(myXML).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
+			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
+
+			$(myXML).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));
+			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			var tabCDATA2 = newTabContent2.createCDATASection("<p>New Tab Content</p>");
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
+
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("default caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "revealRight":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("w", "150");
+			$(myXML).find("page").eq(newPage).attr("h", "150");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+
+			break;
+		case "revealLeft":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("w", "150");
+			$(myXML).find("page").eq(newPage).attr("h", "150");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+
+			break;
+		case "revealTop":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("w", "150");
+			$(myXML).find("page").eq(newPage).attr("h", "150");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+
+			break;
+		case "revealBottom":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("w", "150");
+			$(myXML).find("page").eq(newPage).attr("h", "150");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+
+			break;
+		case "flashcard":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>Click on each of the images below to discover more information:</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
+			var newFront1 = new DOMParser().parseFromString('<term></term>',  "text/xml");
+			var newBack1 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
+			var frontCDATA1 = newFront1.createCDATASection("New Card Term");
+			var backCDATA1 = newBack1.createCDATASection("New Card Definition");
+			$(myXML).find("page").eq(newPage).find("card").eq(0).find("term").append(frontCDATA1);
+			$(myXML).find("page").eq(newPage).find("card").eq(0).find("definition").append(backCDATA1);
+			
+			$(myXML).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
+			var newFront2 = new DOMParser().parseFromString('<term></term>',  "text/xml");
+			var newBack2 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
+			var frontCDATA2 = newFront2.createCDATASection("New Card Term");
+			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
+			$(myXML).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
+			$(myXML).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("mandatory", false);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			
+			break;
+			
+		case "clickImage":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("w", "150");
+			$(myXML).find("page").eq(newPage).attr("h", "150");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+
+			break;
+			
+		case "questionBank":
+			//PREPOPULATE A QUESTION BANK WITH TWO QUESTIONS
+			//QUESTION 1
+			$(myXML).find("page").eq(newPage).append($("<bankitem>"));
+			var bankitem1 = new DOMParser().parseFromString('<bankitem></bankitem>',  "text/xml");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input question 1.</p>");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("True");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).attr("correct", "true");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("False");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("btnText", "Submit");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("randomize", false);
+			
+			//QUESTION 2
+			$(myXML).find("page").eq(newPage).append($("<bankitem>"));
+			var bankitem2 = new DOMParser().parseFromString('<bankitem></bankitem>',  "text/xml");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input question 2.</p>");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("True");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).attr("correct", "true");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("False");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("btnText", "Submit");
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("randomize", false);
+			
+			//PAGE LEVEL VARS
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			
+			//CURRENT VARS IN ACTIVE SESSION
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+		
+		case "multipleChoice":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("True");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("False");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+			
+		case "multipleChoiceMedia":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("True");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("False");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("default caption");
+			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
+
+			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+			
+		case "textInput":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("question").eq(0).attr("attempts", 1);
+			//content
+			$(myXML).find("page").eq(newPage).find("question").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var question1CDATA = content1.createCDATASection("<p>Input a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").eq(0).find("content").append(question1CDATA);
+			//acceptedresponse
+			$(myXML).find("page").eq(newPage).find("question").eq(0).append($("<acceptedresponse>"));
+			var acceptedResponse1 = new DOMParser().parseFromString('<acceptedresponse></acceptedresponse>', "text/xml");
+			var acceptedResponse1CDATA = acceptedResponse1.createCDATASection("Yes");
+			$(myXML).find("page").eq(newPage).find("question").eq(0).find("acceptedresponse").append(acceptedResponse1CDATA);
+			//diffeed
+			$(myXML).find("page").eq(newPage).find("question").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("question").eq(0).find("diffeed").append(difFeed1CDATA);
+			//correctresponse
+			$(myXML).find("page").eq(newPage).find("question").eq(0).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("question").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			// $(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			// var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			// var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			// $(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			// $(myXML).find("page").eq(newPage).append($("<feedback>"));
+			// var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			// var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			// $(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "differentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			//$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			question_obj.textInputQuestions = [];
+			questionResponse_arr.push(question_obj);
+			
+			break;	
+
+		case "matching":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Match the items on the left to the items on the right:</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			var option1CDATA = option1.createCDATASection("Option1");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "A");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			var option2CDATA = option2.createCDATASection("Option2");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
+			
+			$(myXML).find("page").eq(newPage).append($("<answer>"));
+			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var answer1CDATA = content1.createCDATASection("Answer 1");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).find("content").append(answer1CDATA);
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("img", "defaultReveal.png");
+			
+			$(myXML).find("page").eq(newPage).append($("<answer>"));
+			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var answer2CDATA = content2.createCDATASection("Answer 2");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).find("content").append(answer2CDATA);
+			var difFeed2CDATA = diffFeed2.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("img", "defaultReveal.png");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+			
+		case "categories":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Match the items on the left to the items on the right:</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("Category question 1");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "A");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("Option2");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
+			
+			$(myXML).find("page").eq(newPage).append($("<answer>"));
+			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var answer1CDATA = content1.createCDATASection("Answer 1");
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).find("content").append(answer1CDATA);
+			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
+			
+			$(myXML).find("page").eq(newPage).append($("<answer>"));
+			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var answer2CDATA = content2.createCDATASection("Answer 2");
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).find("content").append(answer2CDATA);
+			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("cycle", false);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+			
+		case "sequence":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Place the items below, into the proper order:</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("Sequence Item 1");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "1");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("Sequence Item 2");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "2");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option3 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).append($("<content>"));
+			var content3 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option3CDATA = content3.createCDATASection("Sequence Item 3");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).find("content").append(option3CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(2).append($("<diffeed>"));
+			var diffFeed3 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed3CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).find("diffeed").append(difFeed3CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(2).attr("correct", "3");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); $(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+
+		case "essayCompare":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+							
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("Expert response goes here...");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+					
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+		}
+		
+		refreshExpected = true;
+		updateModuleXML(myModule, true, true);
+	}
+	
+	/************************************************************************************************
+	Function: 		filterPageList
+	Param: 			_pages = pages to filter
+	Description:	Create suggestions for page types based on Objectives.
+	************************************************************************************************/
 	function filterPageList(_pages){
 		var optPage_arr = [];
 		var contentPage_arr = [];
@@ -1514,6 +2667,27 @@ function C_Outline(_myItem) {
 			}
 		});
 	}
+	
+	/************************************************************************************************
+	Function: 		s4
+	Description:	Create 4 random characters.
+					Used by guid()
+	************************************************************************************************/
+	function s4() {
+	  return Math.floor((1 + Math.random()) * 0x10000)
+	             .toString(16)
+	             .substring(1);
+	};
+	
+	/************************************************************************************************
+	Function: 		guid
+	Description:	Creates a random guid.
+	************************************************************************************************/
+	function guid() {
+	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	         s4() + '-' + s4() + s4() + s4();
+	}
+	/**********************************************************END RANDOM GUID GENERATION*/
     
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
