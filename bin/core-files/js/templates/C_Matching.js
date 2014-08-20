@@ -57,6 +57,7 @@ function C_Matching(_type) {
     var myObjItemId = "undefined";
 	var order_arr = [];
 	var scormVersion;
+	var pageId;
 
     
     //Defines a public method - notice the difference between the private definition below.
@@ -81,6 +82,7 @@ function C_Matching(_type) {
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
+		pageId = $(data).find("page").eq(currentPage).attr("id");
 		
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
@@ -142,7 +144,7 @@ function C_Matching(_type) {
 			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
 			//Add text input field if regular matching
 			if (type == "matching"){
-				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' /><div class='matchingText'>";
+				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' /><div id='myMatchingText' class='matchingText'>";
 			}
 			
 			matchString += $(this).text() + "</div>";
@@ -446,12 +448,23 @@ function C_Matching(_type) {
 			}
 		}
 		
-		
+		//record SCORM cmi.interaction data
+		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
+		var _learnerResponse = '';
+		for (var i = 0; i < marking_arr.length; i++) {
+			var matchingItem = marking_arr[i].myDrop.find($('div[id=myMatchingText]')).text();
+			_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].userInput;
+			if(i+1 != marking_arr.length){
+				_learnerResponse += "[,]";
+			}
+		};
+		setInteractions(pageId, "matching", _learnerResponse, tempCorrect, _title +":"+ $.trim($("#question").text()));
+				
 		/************************************
 		POPULATE FEEDBACK STRING
 		************************************/
 		var msg = "";
-		console.log(tempCorrect);
+		//console.log(tempCorrect);
 		if(feedbackType == 'undifferentiated'){
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p>'+feedbackCorrectTitle +'</p><p> '+ feedback +'</p></div>';
@@ -726,79 +739,90 @@ function C_Matching(_type) {
 				}
 				$("#questionEditDialog").remove();
 			},
-			buttons: {
-				AddOption: function(){
-					addOption(optionEdit_arr.length, true);	
+			buttons: [
+				{
+					text: "AddOption",
+					title: "Adds a new matching option.",
+					click: function(){
+						addOption(optionEdit_arr.length, true);
+					}
 				},
-				AddAnswer: function(){
-					addAnswer(answerEdit_arr.length, true);	
+				{
+					text: "AddAnswer",
+					title: "Adds a new matching answer.",
+					click: function(){
+						addAnswer(answerEdit_arr.length, true);	
+					}
 				},
-				Done: function(){
-					var tmpObj = new Object();
-					tmpObj.attempts = $("#inputAttempts").val();
-					tmpObj.objective = $("#inputObjective").val();
-					tmpObj.objItemId = $("#inputObjItemId").val();
-					
-					if($("#isGraded").prop("checked") == true){
-						$(data).find("page").eq(currentPage).attr("graded", "true");
-					}else{
-						$(data).find("page").eq(currentPage).attr("graded", "false");
-					}
-					if($("#isMandatory").prop("checked") == true){
-						$(data).find("page").eq(currentPage).attr("mandatory", "true");
-					}else{
-						$(data).find("page").eq(currentPage).attr("mandatory", "false");
-					}
-					
-					if($("#dragAndDrop").prop("checked") == true){
-						tmpObj.layout = "matchingDrag";
-					}else{
-						tmpObj.layout = "matching";
-					}
-					
-					
-//TURN BACK ON IF MATCHING GETS DIFFERENTIATED
-//							tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
-//							if(feedbackType == "undifferentiated"){
-					tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
-//							}
-					var tmpOptionArray = new Array();
-					for(var i = 0; i < optionEdit_arr.length; i++){
-						var tmpOptionObj = new Object();
-						tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
-						tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Match").val();
-//						if(feedbackType == "differentiated"){
-//							tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
-//						}
-						tmpOptionArray.push(tmpOptionObj);
-					}
-					tmpObj.option_arr = tmpOptionArray;
-							
-					var tmpAnswerArray = new Array();
-					for(var i = 0; i < answerEdit_arr.length; i++){
-						var tmpAnswerObj = new Object();
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						var tmpObj = new Object();
+						tmpObj.attempts = $("#inputAttempts").val();
+						tmpObj.objective = $("#inputObjective").val();
+						tmpObj.objItemId = $("#inputObjItemId").val();
 						
-						if(tmpObj.layout == "matchingDrag"){
-							tmpAnswerObj.answerText = $("#"+ answerEdit_arr[i]+"Text").val();
+						if($("#isGraded").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("graded", "true");
 						}else{
-							tmpAnswerObj.answerText = CKEDITOR.instances[answerEdit_arr[i]+"Text"].getData();
-						}	
-						tmpAnswerObj.answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
+							$(data).find("page").eq(currentPage).attr("graded", "false");
+						}
+						if($("#isMandatory").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("mandatory", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("mandatory", "false");
+						}
+						
+						if($("#dragAndDrop").prop("checked") == true){
+							tmpObj.layout = "matchingDrag";
+						}else{
+							tmpObj.layout = "matching";
+						}
+						
+						
+	//TURN BACK ON IF MATCHING GETS DIFFERENTIATED
+	//							tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
+	//							if(feedbackType == "undifferentiated"){
+						tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
+	//							}
+						var tmpOptionArray = new Array();
+						for(var i = 0; i < optionEdit_arr.length; i++){
+							var tmpOptionObj = new Object();
+							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
+							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Match").val();
+	//						if(feedbackType == "differentiated"){
+	//							tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
+	//						}
+							tmpOptionArray.push(tmpOptionObj);
+						}
+						tmpObj.option_arr = tmpOptionArray;
 								
-						tmpAnswerArray.push(tmpAnswerObj);
-					}
-					tmpObj.answer_arr = tmpAnswerArray;
+						var tmpAnswerArray = new Array();
+						for(var i = 0; i < answerEdit_arr.length; i++){
+							var tmpAnswerObj = new Object();
 							
-					saveQuestionEdit(tmpObj);
-					$("#questionEditDialog").dialog("close");
+							if(tmpObj.layout == "matchingDrag"){
+								tmpAnswerObj.answerText = $("#"+ answerEdit_arr[i]+"Text").val();
+							}else{
+								tmpAnswerObj.answerText = CKEDITOR.instances[answerEdit_arr[i]+"Text"].getData();
+							}	
+							tmpAnswerObj.answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
+									
+							tmpAnswerArray.push(tmpAnswerObj);
+						}
+						tmpObj.answer_arr = tmpAnswerArray;
+								
+						saveQuestionEdit(tmpObj);
+						$("#questionEditDialog").dialog("close");						
+					}
 				}
-			}
+			]
+
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Adds a new matching option.');
-	    $('button').eq(4).attr('title', 'Adds a new matching answer.');
-	    $('button').eq(5).attr('title', 'Closes the edit dialog.');
+
 	    $(function () {
 	        $(document).tooltip();
 	    });

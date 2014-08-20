@@ -51,6 +51,7 @@ function C_MultipleChoice(_type) {
     var graded = false;
     var mandatory = true;
     var randomize = false;
+    var pageId;
     
     var myObjective = "undefined";
     var myObjItemId = "undefined";
@@ -78,7 +79,8 @@ function C_MultipleChoice(_type) {
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
-		
+		pageId = $(data).find("page").eq(currentPage).attr("id");
+
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
@@ -160,9 +162,9 @@ function C_MultipleChoice(_type) {
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 			
 			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
 			
 			$("#" + myOption + "Check").click(function(){
@@ -324,6 +326,7 @@ function C_MultipleChoice(_type) {
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var tempCorrect = true;
 		attemptsMade++;
+		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');		
 		if(isMulti == false){
 			var selected = $("#answer input[type='radio']:checked");
 			if(selected.val() == "true"){
@@ -331,7 +334,22 @@ function C_MultipleChoice(_type) {
 			}else{
 				tempCorrect = false;
 			}
+			//add true/false SCORM interaction here
+			var label = $.trim($("label[for='"+ selected.attr('id') +"']").text().replace(/\s+/g, ''));
+			//ensure it is a true/false options
+			if(label.toLowerCase().indexOf("true") >= 0 || label.toLowerCase().indexOf("false") >= 0 ){
+				var _learnerResponse = "false";
+				if(label.toLowerCase().indexOf("true") >= 0){
+					_learnerResponse = "true";
+				}
+				setInteractions(pageId, "true-false", _learnerResponse, tempCorrect, _title + " : " + $.trim($("#question").text()));
+			}
+			else{
+				setInteractions(pageId, "choice", label, tempCorrect, _title + " : " + $.trim($("#question").text()));
+			}
+			
 		}else{
+			var _learnerResponse = [];
 			for(var i = 0; i < option_arr.length; i++){
 				if(option_arr[i].find('input').attr("value") == "true"){
 					if(option_arr[i].find("input").prop("checked") == false){
@@ -342,7 +360,28 @@ function C_MultipleChoice(_type) {
 						tempCorrect = false;
 					}
 				}
+				
+				//build learnerResponse array for SCORM interaction
+				//var label = $.trim($("label[for='"+ option_arr[i].find('input').attr('id') +"']").text().replace(/\s+/g, ''));
+				if(option_arr[i].find("input").prop("checked")){
+					_learnerResponse.push($.trim($("label[for='"+ option_arr[i].find("input").attr('id') +"']").text().replace(/\s+/g, '')));
+				}
+				
 			}
+
+			//add choice SCORM interaction here
+			var _first = true;
+			var _learnerResponseString = '';
+			for (var i = 0; i < _learnerResponse.length; i++) {
+				if(_first){
+					_first = false;
+					_learnerResponseString += _learnerResponse[i];
+				}
+				else{
+					_learnerResponseString += "[,]" + _learnerResponse[i];
+				}
+			};
+			setInteractions(pageId, "choice", _learnerResponseString, tempCorrect, _title + " : " + $.trim($("#question").text()) );
 		}
 		
 		//////////////////////////FEEDBACK\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -609,58 +648,61 @@ function C_MultipleChoice(_type) {
 			width: 800,
 			height: 650,
 			dialogClass: "no-close",
-			buttons: {
-				Add: function(){
-					addOption(optionEdit_arr.length, true);	
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new option.",
+					click: function(){
+						addOption(optionEdit_arr.length, true);	
+					}
 				},
-				Done: function(){
-					var tmpObj = new Object();
-					tmpObj.attempts = $("#inputAttempts").val();
-					tmpObj.objective = $("#inputObjective").val();
-					tmpObj.objItemId = $("#inputObjItemId").val();
-					if($("#isGraded").prop("checked") == true){
-						$(data).find("page").eq(currentPage).attr("graded", "true");
-					}else{
-						$(data).find("page").eq(currentPage).attr("graded", "false");
-					}
-					if($("#isMandatory").prop("checked") == true){
-						$(data).find("page").eq(currentPage).attr("mandatory", "true");
-					}else{
-						$(data).find("page").eq(currentPage).attr("mandatory", "false");
-					}
-					if($("#isRandom").prop("checked") == true){
-						$(data).find("page").eq(currentPage).attr("randomize", "true");
-					}else{
-						$(data).find("page").eq(currentPage).attr("randomize", "false");
-					}
-					tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
-					if(feedbackType == "undifferentiated"){
-						tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
-					}
-					var tmpOptionArray = new Array();
-					for(var i = 0; i < optionEdit_arr.length; i++){
-						var tmpOptionObj = new Object();
-						tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
-						tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Correct").prop("checked");
-						if(feedbackType == "differentiated"){
-							tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						var tmpObj = new Object();
+						tmpObj.attempts = $("#inputAttempts").val();
+						tmpObj.objective = $("#inputObjective").val();
+						tmpObj.objItemId = $("#inputObjItemId").val();
+						if($("#isGraded").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("graded", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("graded", "false");
 						}
-						tmpOptionArray.push(tmpOptionObj);
+						if($("#isMandatory").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("mandatory", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("mandatory", "false");
+						}
+						if($("#isRandom").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("randomize", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("randomize", "false");
+						}
+						tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
+						if(feedbackType == "undifferentiated"){
+							tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
+						}
+						var tmpOptionArray = new Array();
+						for(var i = 0; i < optionEdit_arr.length; i++){
+							var tmpOptionObj = new Object();
+							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
+							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Correct").prop("checked");
+							if(feedbackType == "differentiated"){
+								tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
+							}
+							tmpOptionArray.push(tmpOptionObj);
+						}
+						tmpObj.option_arr = tmpOptionArray;
+						saveQuestionEdit(tmpObj);
+						$("#questionEditDialog").dialog("close");						
 					}
-					tmpObj.option_arr = tmpOptionArray;
-					saveQuestionEdit(tmpObj);
-					$("#questionEditDialog").dialog("close");
-				}
-			},
-			close: function(){
-				$("#questionEditDialog").remove();
-			}
+				}	
+			]
+
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Cloes and cancels changes in the edit dialog.');
-	    $('button').eq(4).attr('title', 'Adds a new question option.');
-	    $('button').eq(5).attr('title', 'Saves and closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });

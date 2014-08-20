@@ -269,6 +269,18 @@ function setObjectiveSuccess(objId, success){
 
 }
 
+function setInteractions(_id, _type, _response, _result, _description){
+	if(doScorm()){
+		var num = parseInt(scorm.get("cmi.interactions._count"));
+		var result = (_result) ? "correct":"incorrect";
+
+		scorm.set("cmi.interactions." + num + ".id", _id);
+		scorm.set("cmi.interactions." + num + ".type", _type);
+		scorm.set("cmi.interactions." + num + ".learner_response", _response);
+		scorm.set("cmi.interactions." + num + ".result", result);
+		scorm.set("cmi.interactions." + num + ".description", _description);
+	}
+}
 
 /*******************************************************************************
 **
