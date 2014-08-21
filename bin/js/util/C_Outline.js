@@ -418,10 +418,12 @@ function C_Outline(_myItem) {
 			 }
 			 
 			 if(endNode == undefined){
+			 	endNode = getNode($('#' + currentDragID).parent().parent().attr("id"));
+			 	myInsert = "into";
 				 console.log("end node is not defined");
 				 //getParent($('#' + currentDragID).prev().attr("id"))
 				 //console.log($('#' + currentDragID).parent());
-				 console.log($('#' + currentDragID).parent().parent());
+				 console.log($('#' + currentDragID).parent().parent().attr("id"));
 				 console.log(listJSON);
 			 }
 			 console.log("endNode = " + endNode);
@@ -436,6 +438,8 @@ function C_Outline(_myItem) {
 				 moveFrom.insertBefore(moveTo);
 			 }else{
 				 moveFrom.insertAfter(moveTo);
+			 }else{
+				 moveTo.append(moveFrom);
 			 }	
 			 
 			 //REORDERING MODULES			 	 

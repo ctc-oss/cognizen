@@ -31,6 +31,7 @@ var stageH;
 
 var socket;
 
+
 var user = {};
 
 var mode = "prod";//mode can be set to production, edit and review.
