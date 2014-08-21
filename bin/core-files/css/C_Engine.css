@@ -103,7 +103,7 @@ blockquote
 	font-size : 150%;
 	/*font-weight: bold;*/
 	color:	#EEEEEE;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 #lessonTitle{
@@ -115,7 +115,7 @@ blockquote
 	font-size : 100%;
 	/*font-weight: bold;*/
 	color:	#3383BB;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .btn_edit_text{
@@ -163,7 +163,7 @@ blockquote
 	width: 100px;
 	height: 18px;
 	background-color: #9DA6AB;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #EEEEEE;
 	text-align: center;
 	-moz-border-radius: 8px; 
@@ -321,7 +321,7 @@ blockquote
 	width: 100%;
 	height: 350px;
 	color: #000000;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-radius: 8px; 
 	-webkit-border-radius: 8px; 
 	border-radius: 8px; 
@@ -337,7 +337,7 @@ blockquote
 	text-indent: 3px;
 	width: 95%;
 	color: #9DA6Ab;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
 	-webkit-border-bottom-right-radius: 8px; 
 	border-bottom-right-radius: 8px;
@@ -351,7 +351,7 @@ blockquote
 	text-indent: 3px;
 	width: 95%;
 	color: #3383BB;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
 	-webkit-border-bottom-right-radius: 8px; 
 	border-bottom-right-radius: 8px;
@@ -365,7 +365,7 @@ blockquote
 	text-indent: 3px;
 	width: 95%;
 	color: #EEEEEE;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-top-right-radius: 8px; 
 	-webkit-border-top-right-radius: 8px; 
 	border-top-right-radius: 8px;
@@ -379,7 +379,7 @@ blockquote
 	text-indent: 3px;
 	width: 95%;
 	color: #EEEEEE;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-top-right-radius: 8px; 
 	-webkit-border-top-right-radius: 8px; 
 	border-top-right-radius: 8px;
@@ -393,7 +393,7 @@ blockquote
 	width: 100%;
 	height: auto;
 	color: #000000;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	-moz-border-bottom-right-radius: 8px; 
 	-webkit-border-bottom-right-radius: 8px; 
 	border-bottom-right-radius: 8px;
@@ -415,7 +415,7 @@ blockquote
 	font-size : 175%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .lesson{
@@ -428,7 +428,7 @@ blockquote
 	font-size : 200%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .lessonCon{
@@ -441,7 +441,7 @@ blockquote
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 /* uncomment to hide close (X) button on KC feedback dialogs */
@@ -456,7 +456,7 @@ CONTENT TEXT LAYOUTS*/
 /**************************************************************************************/
 #content{
 	color: #000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
 	background: none; 
 	border-width: 0px;
@@ -470,7 +470,7 @@ CONTENT TEXT LAYOUTS*/
 .testTop{
 	position: absolute;
 	color: #000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
 	padding: 0px; 
 	background: none; 
@@ -553,11 +553,11 @@ CONTENT TEXT LAYOUTS*/
 
 #tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
-	font-family: Helvetica, Arial, sans-serif !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 }
 
 #tabs .ui-tabs-panel {
-	font-family: Helvetica, Arial, sans-serif !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 	font-size: 12pt !important;
 	border-width: 1px;
 	color: black;
@@ -576,11 +576,11 @@ CONTENT TEXT LAYOUTS*/
 
 #tabs .ui-tabs-nav li a {
 	font-size:10pt !important;
-	font-family: Helvetica, Arial, sans-serif !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 }
 
 #tabs .ui-tabs-panel {
-	font-family: Helvetica, Arial, sans-serif !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 	font-size: 12pt !important;
 	border-width: 1px;
 	color: black;
@@ -600,7 +600,7 @@ CONTENT TEXT LAYOUTS*/
 
 #contentEditText{
 	color: #000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
 }
 
@@ -673,7 +673,7 @@ caption{
 	font-size: 85%; 
 	text-align: center; 
 	color: #000000; 
-	font-family: Verdana, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	font-style: italic;
 }
 
@@ -912,7 +912,7 @@ ul.no-indent {
 .revealText{
 	position: relative;
 	overflow : auto;
-	font-family: "Helvetica", "Arial" !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 	font-size: 12pt !important;
 	color: #000000;
 	opacity: .1;
@@ -1037,7 +1037,7 @@ ul.no-indent {
 
 .clickImgText{
 	position: relative;
-	font-family: Helvetica, Arial;
+	font-family: Arial, Helvetica, sans-serif;
 	height: 190px;
 	margin-left: auto;
 	margin-right: auto;
@@ -1074,7 +1074,7 @@ ul.no-indent {
 	height: 400px;
 	text-align: center;
 	vertical-align:middle;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12pt;
 	font-weight: bold;
 	color: #9DA6AB;
@@ -1136,7 +1136,7 @@ SEQUENCING LAYOUTS
 	position: relative;
 	text-align: center;
 	vertical-align:middle;
-	font-family: "Helvetica", "Arial";
+	font-family: Arial, Helvetica, sans-serif;
 	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
@@ -1160,7 +1160,7 @@ SIDEBAR LAYOUTS
 **************************************************************************************/
 .sidebar {
 	color: #000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
 	background-color: #EEEEEE; 
 	border-width: 0px;
@@ -1320,7 +1320,7 @@ MEDIA LAYOUTS
 #publishLoaderText{
 	position: absolute;
 	text-align: center;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #333333;
 	top: 395px;
 }
@@ -1328,7 +1328,7 @@ MEDIA LAYOUTS
 #mediaLoaderText{
 	position: absolute;
 	text-align: center;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #3383bb;
 }
 
@@ -1353,7 +1353,7 @@ MEDIA LAYOUTS
 	text-shadow: 1px 1px 0 #fff; 
 	background: #f3f3f3;
 	color: #eeeeee; 
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif; 
 	font-size: 10pt;
 	top: 3px;
 }
@@ -1376,7 +1376,7 @@ MEDIA LAYOUTS
 	font-size: 75%; 
 	text-align: center; 
 	color: #000000; 
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -1394,7 +1394,7 @@ KNOWLEDGE CHECK TEXT LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .questionTop p{
@@ -1434,7 +1434,7 @@ MULTIPLE CHOICE LAYOUTS
 	overflow : auto;
 	width: 100%;
 	text-align: center;
-	font-family: Helvetica, Arial, sans-serif !important;
+	font-family: Arial, Helvetica, sans-serif !important;
 	font-size: 12pt !important;
 	color: #9DA6AB;
 	top: 5px;
@@ -1458,7 +1458,7 @@ MULTIPLE CHOICE LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	cursor: hand; 
 	cursor: pointer;
 	padding: 10px 35px 10px 4px;
@@ -1591,7 +1591,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	display: table;
 }
 
@@ -1601,7 +1601,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .matchingInput{
@@ -1612,7 +1612,7 @@ MATCHING LAYOUTS
 	text-transform:uppercase;
 	font-size: 100%;
 	font-weight: bold;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	display: table-cell;
 }
 
@@ -1644,7 +1644,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: bold;
 	color: red;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .inlineLeftFeedback{
@@ -1656,7 +1656,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	font-weight: bold;
 	color: red;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .markWrong{
@@ -1738,7 +1738,7 @@ MATCHING LAYOUTS
 	font-size : 100%;
 	color:	#3383bb;
 	text-align: center; 
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 
@@ -1771,7 +1771,7 @@ MATCHING LAYOUTS
 /*Styling for the tip text */
 .footnoteTip .ui-tooltip-content{
     border-radius: 20px;
-	font-family: Helvetica, Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 10px;
 }
 
@@ -1835,7 +1835,7 @@ MATCHING LAYOUTS
 .docPaneItemDescription{
 	font-size : 80%;
 	color:	#333333;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	padding: 5px;
 }
 
@@ -1991,7 +1991,7 @@ MATCHING LAYOUTS
  */
 
 .dd3-content { display: block; height: auto; margin: 5px 0; padding: 4px 10px 4px 40px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
     background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
@@ -2083,7 +2083,7 @@ MATCHING LAYOUTS
 	width: 350px;
 	height: 635px;
 	background-color: #EEEEEE;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #9DA6AB;
 	-moz-border-bottom-right-radius : 8px;
 	-webkit-border-bottom-right-radius : 8px;
@@ -2109,7 +2109,7 @@ MATCHING LAYOUTS
 	text-decoration: none; 
 	font-weight: bold; 
 	border: 1px solid #ccc;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
     background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
@@ -2492,7 +2492,7 @@ a.fancybox-expand {
 }
 
 .fancybox-title {
-    font: normal 14px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: normal 14px Arial, Helvetica, sans-serif;
     line-height: 1.5;
     position: relative;
     text-shadow: none;
@@ -2819,10 +2819,7 @@ a.fancybox-expand {
 		opacity : 1;
 		overflow : auto;
 		font-size : 175%;
-		/*font-weight: bold;*/
 		color:	#FFFFFF;
-		/*font-family: Verdana, Geneva, sans-serif;*/
-		/*font-family:"HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;*/
 		background-color: #b2b2b2;
 		text-align: center;
 	}
@@ -2835,10 +2832,7 @@ a.fancybox-expand {
 		opacity : 1;
 		overflow : auto;
 		font-size : 150%;
-		/*font-weight: bold;*/
 		color:	#3383BB;
-		/*font-family: Verdana, Geneva, sans-serif;*/
-		/*font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;*/
 		text-align: center;
 	}
 
@@ -2850,8 +2844,6 @@ a.fancybox-expand {
 		font-size : 125%;
 		font-weight: bold;
 		color:	#000000;
-		/*font-family: Verdana, Geneva, sans-serif;*/
-		/*font-family:"Helvetica", "Arial";*/
 	}
 
 	/* hide edit controls */
@@ -2896,11 +2888,11 @@ a.fancybox-expand {
 
 	#tabs .ui-tabs-nav li a {
 		font-size:10pt !important;
-		font-family: Helvetica, Arial, sans-serif !important;
+		font-family: Arial, Helvetica, sans-serif !important;
 	}
 
 	#tabs .ui-tabs-panel {
-		font-family: Helvetica, Arial, sans-serif !important;
+		font-family: Arial, Helvetica, sans-serif !important;
 		font-size: 12pt !important;
 		border-width: 1px;
 		color: black;
@@ -2949,7 +2941,7 @@ a.fancybox-expand {
 		height: 40%;
 		text-align: center;
 		vertical-align:middle;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 		font-size: 12pt;
 		font-weight: bold;
 		color: #9DA6AB;
@@ -3000,7 +2992,7 @@ a.fancybox-expand {
 	.sidebar {
 
 		color: #000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 		overflow: auto;
 		background-color: #EEEEEE; 
 		border-width: 0px;
@@ -3059,7 +3051,7 @@ a.fancybox-expand {
 
 	#contentEditText{
 		color: #000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 		overflow: auto;
 	}
 
@@ -3067,7 +3059,7 @@ a.fancybox-expand {
 		font-size: 75%; 
 		text-align: center; 
 		color: #000000; 
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 /*
@@ -3076,7 +3068,7 @@ a.fancybox-expand {
 		font-size : 100%;
 		font-weight: bold;
 		color:	#000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 */
 	#option{
@@ -3084,7 +3076,7 @@ a.fancybox-expand {
 		font-size : 100%;
 		font-weight: bold;
 		color:	#000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	/**************************************************************************************
@@ -3103,7 +3095,7 @@ a.fancybox-expand {
 		font-size : 150%;
 		font-weight: bold;
 		color:	#000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.questionRight{
@@ -3115,7 +3107,7 @@ a.fancybox-expand {
 		font-size : 150%;
 		font-weight: bold;
 		color:	#000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	/**************************************************************************************
@@ -3140,7 +3132,7 @@ a.fancybox-expand {
 		overflow : auto;
 		width: 100%;
 		text-align: center;
-		font-family: Helvetica, Arial, sans-serif !important;
+		font-family: Arial, Helvetica, sans-serif !important;
 		font-size: 12pt !important;
 		color: #9DA6AB;
 		top: 5px;
@@ -3166,7 +3158,7 @@ a.fancybox-expand {
 		font-size : 100%;
 		font-weight: bold;
 		color:	#000000;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 		cursor: hand; 
 		cursor: pointer;
 	}
@@ -3247,7 +3239,7 @@ a.fancybox-expand {
 		text-transform:uppercase;
 		font-size: 100%;
 		font-weight: bold;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 */
 
@@ -3268,7 +3260,7 @@ a.fancybox-expand {
 		font-size : 100%;
 		font-weight: bold;
 		color: red;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.inlineLeftFeedback{
@@ -3278,7 +3270,7 @@ a.fancybox-expand {
 		font-size : 100%;
 		font-weight: bold;
 		color: red;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.markWrong{
@@ -3377,7 +3369,7 @@ a.fancybox-expand {
 		color:	#ffffff;
 		text-align: center; 
 		line-height:3em;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 		background-color: #b2b2b2;
 	}
 
@@ -3416,7 +3408,7 @@ a.fancybox-expand {
 	.footnoteTip .ui-tooltip-content{
 		/*padding: 10px 20px;*/
 	    border-radius: 20px;
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	    font-size: 10px;
 	}
 
