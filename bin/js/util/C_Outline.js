@@ -1056,6 +1056,7 @@ function C_Outline(_myItem) {
 			     	$("#outlinePagePrefPane").empty();
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
+				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "<br/>";
 			     	msg += "<label for='out_pageTitle'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	msg += "<label for='out_pageObjective'>page objective: </label>";
@@ -1421,6 +1422,12 @@ function C_Outline(_myItem) {
 		//Create a Unique ID for the page
 		var myID = guid();
 		var myNode = getNode(_id);
+		var myTitle;
+		if (/\S/.test(_myTitle)) { 
+			myTitle = _myTitle;
+		}else{
+			myTitle = "new page";
+		}
 		//Place a page element
 		var myAddAfter = myNode.node;							//Variable for the node id
 		var myModule = myNode.module;						//Parent module.
@@ -1441,7 +1448,7 @@ function C_Outline(_myItem) {
 		var newPage = insertPoint + currentChildrenLength + 1;
 		$(myXML).find("page").eq(newPage).append($("<title>"));
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
-		var titleCDATA = newPageTitle.createCDATASection(_myTitle);
+		var titleCDATA = newPageTitle.createCDATASection(myTitle);
 		$(myXML).find("page").eq(newPage).find("title").append(titleCDATA);
 		
 		
