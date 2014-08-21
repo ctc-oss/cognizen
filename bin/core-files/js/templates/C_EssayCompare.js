@@ -212,7 +212,7 @@ function C_EssayCompare(_type) {
 	}	
 
 	function updateQuestionEditDialog(){
-		var msg = "<div id='questionEditDialog' title='Create Text Input Question'>";
+		var msg = "<div id='questionEditDialog' title='Create Essay Compare Question'>";
 		msg += "<label id='label'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
