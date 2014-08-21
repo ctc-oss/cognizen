@@ -420,7 +420,9 @@ function C_Outline(_myItem) {
 			 if(endNode == undefined){
 				 console.log("end node is not defined");
 				 //getParent($('#' + currentDragID).prev().attr("id"))
-				 cosnole.log(listJSON);
+				 //console.log($('#' + currentDragID).parent());
+				 console.log($('#' + currentDragID).parent().parent());
+				 console.log(listJSON);
 			 }
 			 console.log("endNode = " + endNode);
 			 
