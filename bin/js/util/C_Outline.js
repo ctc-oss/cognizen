@@ -398,7 +398,7 @@ function C_Outline(_myItem) {
 		 var tmpList   = tmp.length ? tmp : $(tmp.target);
 		 var list = tmpList.nestable('serialize');
 		 var listJSON = window.JSON.stringify(list);
-		 
+		 console.log("drop");
 		 //If the list has changed, record that change.
 		 if(listJSON != startListJSON){
 			 var startNode = getNode(currentDragID);
@@ -416,6 +416,13 @@ function C_Outline(_myItem) {
 				 endNode = getNode($('#' + currentDragID).prev().attr("id"));
 				 myInsert = "after";
 			 }
+			 
+			 if(endNode == undefined){
+				 console.log("end node is not defined");
+				 //getParent($('#' + currentDragID).prev().attr("id"))
+				 cosnole.log(listJSON);
+			 }
+			 console.log("endNode = " + endNode);
 			 
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
@@ -1988,18 +1995,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			
-			//CURRENT VARS IN ACTIVE SESSION
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = myID;
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
-			
+						
 			break;
 		
 		case "multipleChoice":
@@ -2065,14 +2061,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = myID;
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
 			
 			break;
 			
@@ -2147,15 +2135,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = myID;
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
-			
 			break;
 			
 		case "textInput":
@@ -2205,16 +2184,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = myID;
-			question_obj.userAnswer = userSelection_arr;
-			question_obj.textInputQuestions = [];
-			questionResponse_arr.push(question_obj);
 			
 			break;	
 
@@ -2294,16 +2263,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			var userSelection_arr = [];
-			
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
 			
 			break;
 			
@@ -2387,15 +2346,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
-			
 			break;
 			
 		case "sequence":
@@ -2472,16 +2422,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
-			var userSelection_arr = [];
-			
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
-			
 			break;
 
 		case "essayCompare":
@@ -2509,15 +2449,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			question_obj.graded = false;
-			question_obj.id = myID;
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
 			
 			break;
 		}
