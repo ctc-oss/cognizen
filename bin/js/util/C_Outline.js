@@ -436,7 +436,7 @@ function C_Outline(_myItem) {
 			 //MOVE from original position to updated position.
 			 if(myInsert == "before" || endNodeLevel == "module"){
 				 moveFrom.insertBefore(moveTo);
-			 }else{
+			 }else if (myInsert == "after"){
 				 moveFrom.insertAfter(moveTo);
 			 }else{
 				 moveTo.append(moveFrom);
