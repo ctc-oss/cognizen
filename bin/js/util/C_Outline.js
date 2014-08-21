@@ -398,7 +398,6 @@ function C_Outline(_myItem) {
 		 var tmpList   = tmp.length ? tmp : $(tmp.target);
 		 var list = tmpList.nestable('serialize');
 		 var listJSON = window.JSON.stringify(list);
-		 console.log("drop");
 		 //If the list has changed, record that change.
 		 if(listJSON != startListJSON){
 			 var startNode = getNode(currentDragID);
@@ -420,13 +419,7 @@ function C_Outline(_myItem) {
 			 if(endNode == undefined){
 			 	endNode = getNode($('#' + currentDragID).parent().parent().attr("id"));
 			 	myInsert = "into";
-				 console.log("end node is not defined");
-				 //getParent($('#' + currentDragID).prev().attr("id"))
-				 //console.log($('#' + currentDragID).parent());
-				 console.log($('#' + currentDragID).parent().parent().attr("id"));
-				 console.log(listJSON);
 			 }
-			 console.log("endNode = " + endNode);
 			 
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
@@ -1244,8 +1237,8 @@ function C_Outline(_myItem) {
 		var opt_arr = ["analyze", "apply", "calculate", "classify", "evaluate", "remember", "solve", "synthesis", "understand"];
 		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
 
-		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete the form to create your new page.</p>';
-
+		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete this form to create your new page.</p>';
+		msg += '<label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="new page" class="regText text ui-widget-content ui-corner-all" /><br/><br/>'
 		var pages= [
 			{
 				"capability" : "textOnly", 
@@ -1400,7 +1393,8 @@ function C_Outline(_myItem) {
                 	//TODO: add code that adds the page selected
                 	//alert($("#pageTypeList").val());
                 	var newPageType = $("#pageTypeList").val();
-					createNewPageByType(newPageType, _id);
+                	var newPageTitle = $("#myName").val();
+					createNewPageByType(newPageType, newPageTitle, _id);
                 	$(this).dialog("close");
                 },
                 Cancel: function () {
@@ -1423,7 +1417,7 @@ function C_Outline(_myItem) {
 	Param: 			_myType = Identifier of page type - String.
 	Description:	Creates node and page data in the xml object.
 	************************************************************************************************/
-	function createNewPageByType(_myType, _id){
+	function createNewPageByType(_myType, _myTitle, _id){
 		//Create a Unique ID for the page
 		var myID = guid();
 		var myNode = getNode(_id);
@@ -1447,7 +1441,7 @@ function C_Outline(_myItem) {
 		var newPage = insertPoint + currentChildrenLength + 1;
 		$(myXML).find("page").eq(newPage).append($("<title>"));
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
-		var titleCDATA = newPageTitle.createCDATASection("New Page Title");
+		var titleCDATA = newPageTitle.createCDATASection(_myTitle);
 		$(myXML).find("page").eq(newPage).find("title").append(titleCDATA);
 		
 		

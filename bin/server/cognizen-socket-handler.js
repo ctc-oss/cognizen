@@ -1087,7 +1087,6 @@ var SocketHandler = {
 	                        _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
                             	_this.logger.info("Outliner successfully updated xml")
                                 if(data.refresh == true){
-	                                _this.logger.info("saying refresh dashboard, yo!");
 	                                _this._socket.emit('refreshDashboard');
                                 }
                                 //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
