@@ -529,6 +529,10 @@ CONTENT TEXT LAYOUTS*/
 
 
 /* FOR TABBED CONTENT */
+#tabs p{
+	margin-top: 0px;
+}
+
 #tabs.tabTop{
 	position: relative;
 	background: transparent;
