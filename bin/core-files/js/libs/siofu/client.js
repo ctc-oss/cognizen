@@ -75,55 +75,60 @@ window.SocketIOFileUpload = function(socket){
 	var _loadOne = function(file, target){
 		// Dispatch an event to listeners and stop now if they don't want
 		// this file to be uploaded.
-		if(file.size < 30000000){
-			var evntResult = _dispatch("start", {
-				file: file
-			});
-			if(!evntResult) return;
-			
-			// Scope variables
-			var reader = new FileReader(),
-				transmitPos = 0,
-				id = uploadedFiles.length,
-				useText = self.useText,
-				newName;
-				uploadedFiles.push(file);
-			// Private function to handle transmission of file data
-			var transmitPart = function(loaded){
-				var content;
-				if(useText){
-					content = reader.result.slice(transmitPos, loaded);
-				}else{
-					try{
-						var uintArr = new Uint8Array(reader.result, transmitPos, loaded);
-	
-						// Support the transmission of serialized ArrayBuffers
-						// for experimental purposes, but default to encoding the
-						// transmission in Base 64.
-						if(self.serializedOctets){
-							content = uintArr;
-						}else{
-							content = _uint8ArrayToBase64(uintArr);
-						}
-					}catch(error){
-						socket.emit("siofu_done", {
-							id: id,
-							interrupt: true
-						});
-						return;
-					}
-				}
-				socket.emit("siofu_progress", {
-					id: id,
-					start: transmitPos,
-					end: loaded,
-					content: content,
-					base64: !self.serializedOctets
+		if(/\s/g.test(file.name)){
+			alert("We have detected that there are whitespaces in the file name.  Please remove all whitespaces from the file name and try again.");
+		}
+		else{
+			if(file.size < 30000000){
+				var evntResult = _dispatch("start", {
+					file: file
 				});
-				transmitPos = loaded;
-			};
-		}else{
-			alert("Files must be under 30MB to be uploaded in this manner.  Please upload this file using the git method instead.");
+				if(!evntResult) return;
+				
+				// Scope variables
+				var reader = new FileReader(),
+					transmitPos = 0,
+					id = uploadedFiles.length,
+					useText = self.useText,
+					newName;
+					uploadedFiles.push(file);
+				// Private function to handle transmission of file data
+				var transmitPart = function(loaded){
+					var content;
+					if(useText){
+						content = reader.result.slice(transmitPos, loaded);
+					}else{
+						try{
+							var uintArr = new Uint8Array(reader.result, transmitPos, loaded);
+		
+							// Support the transmission of serialized ArrayBuffers
+							// for experimental purposes, but default to encoding the
+							// transmission in Base 64.
+							if(self.serializedOctets){
+								content = uintArr;
+							}else{
+								content = _uint8ArrayToBase64(uintArr);
+							}
+						}catch(error){
+							socket.emit("siofu_done", {
+								id: id,
+								interrupt: true
+							});
+							return;
+						}
+					}
+					socket.emit("siofu_progress", {
+						id: id,
+						start: transmitPos,
+						end: loaded,
+						content: content,
+						base64: !self.serializedOctets
+					});
+					transmitPos = loaded;
+				};
+			}else{
+				alert("Files must be under 30MB to be uploaded in this manner.  Please upload this file using the git method instead.");
+			}
 		}
 
 		// Listen to the "progress" event.  Transmit parts of files

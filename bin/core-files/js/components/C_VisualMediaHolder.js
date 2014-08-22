@@ -488,10 +488,11 @@ function C_VisualMediaHolder(callback){
 					//if successful upload, else....
 					var myFile = event.file.name;
 					var myExt = getExtension(myFile);
-					debugger;
+					//debugger;
 				    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
 		            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
-		            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+		            //var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+		            var convertableTypes = convertableVideoTypes.concat(convertableVectorTypes, convertableAudioTypes);
 					if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
 						if(event.success == true){
 							saveImageEdit(myFile, true);
@@ -512,19 +513,19 @@ function C_VisualMediaHolder(callback){
 						$("#mediaLoaderText").empty();
 						$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
 						cognizenSocket.on('unzipComplete', unzipComplete);				
-					}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase()) >= 0){
-						$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
-						//Theres an error
-						//Style it to jQuery UI dialog
-						$("#uploadErrorDialog").dialog({
-					    	autoOpen: true,
-							modal: true,
-							width: 400,
-							height: 300,
-							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-						});
-						$("#mediaLoader").remove();			
-					}else{
+					// }else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase()) >= 0){
+					// 	$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
+					// 	//Theres an error
+					// 	//Style it to jQuery UI dialog
+					// 	$("#uploadErrorDialog").dialog({
+					//     	autoOpen: true,
+					// 		modal: true,
+					// 		width: 400,
+					// 		height: 300,
+					// 		buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+					// 	});
+					// 	$("#mediaLoader").remove();			
+					}else if(convertableTypes.indexOf(myExt.toLowerCase()) >= 0){
 						$("#mediaLoaderText").empty();
 						$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
 						$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
@@ -543,6 +544,19 @@ function C_VisualMediaHolder(callback){
 						cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
 						cognizenSocket.on('mediaInfo', mediaInfo);
 						cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+					}
+					else{
+						$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
+						//Theres an error
+						//Style it to jQuery UI dialog
+						$("#uploadErrorDialog").dialog({
+					    	autoOpen: true,
+							modal: true,
+							width: 400,
+							height: 300,
+							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+						});
+						$("#mediaLoader").remove();							
 					}
 				}
 			});

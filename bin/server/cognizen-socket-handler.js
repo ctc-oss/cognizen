@@ -80,25 +80,12 @@ var SocketHandler = {
                                     
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
-                                    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+                                    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
                                     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
                                     var convertableVectorTypes = ["eps"];
                                     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                                     var archiveTypes = ["zip"]; 
-                                    if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-                                        var stream = fs.createReadStream(event.file.pathName);
-                                        stream.pipe(fs.createWriteStream(contentPath));
-                                        var had_error = false;
-                                        stream.on('error', function(err){
-                                            had_error = true;
-                                        });
-
-                                        stream.on('close', function(){
-											_this.logger.info("wrote to location - now trying to delete file from tmp");
-                                            if (!had_error) fs.unlink(event.file.pathName);
-                                        });
-                                        //Git commit
-                                    } else if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                    if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
                                         //Convert files
                                         var convertedFileName;
                                         var convertedPathName;
@@ -171,6 +158,21 @@ var SocketHandler = {
 	                                    	_this._socket.emit('unzipComplete', convertedPath);
 	                                    });
                                     }
+                                    //if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+                                    else{    
+                                        var stream = fs.createReadStream(event.file.pathName);
+                                        stream.pipe(fs.createWriteStream(contentPath));
+                                        var had_error = false;
+                                        stream.on('error', function(err){
+                                            had_error = true;
+                                        });
+
+                                        stream.on('close', function(){
+                                            _this.logger.info("wrote to location - now trying to delete file from tmp");
+                                            if (!had_error) fs.unlink(event.file.pathName);
+                                        });
+                                        //Git commit
+                                    }                                     
                                 }
                             });
                         }

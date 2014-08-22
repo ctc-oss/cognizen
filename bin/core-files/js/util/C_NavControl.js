@@ -251,30 +251,34 @@ function launchMediaDrop(){
 			//if successful upload, else....
 			var myFile = event.file.name;
 			var myExt = getExtension(myFile);
-		    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "swf", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+		    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "swf", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+		    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
+		    var convertableVectorTypes = ["eps"];
+		    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+		    var convertableTypes = convertableVideoTypes.concat(convertableAudioTypes, convertableVectorTypes); 		    
         	$("#inputFeedback").empty();
-	        if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
-				if(event.success == true){
-					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
-				}else{
-					$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
-					//Theres an error
-					//Style it to jQuery UI dialog
-					$("#uploadErrorDialog").tooltip().dialog({
-				    	autoOpen: true,
-						modal: true,
-						width: 400,
-						height: 200,
-						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-					});
-				}
-			}
-			else if(myExt == "zip" || myExt == "ZIP"){
+	  //       if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
+			// 	if(event.success == true){
+			// 		$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
+			// 	}else{
+			// 		$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+			// 		//Theres an error
+			// 		//Style it to jQuery UI dialog
+			// 		$("#uploadErrorDialog").tooltip().dialog({
+			// 	    	autoOpen: true,
+			// 			modal: true,
+			// 			width: 400,
+			// 			height: 200,
+			// 			buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+			// 		});
+			// 	}
+			// }
+			if(myExt == "zip" || myExt == "ZIP"){
 				// $("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
 				cognizenSocket.on('unzipComplete', _unzipComplete);		
 				//$("#dialog-mediaDrop").remove();		
 			}
-			else{
+			else if (convertableTypes.indexOf(myExt.toLowerCase()) >= 0) {
 				$("#stage").append("<div id='uploadConversionDialog' title='Upload Coverting'>The file format that you uploaded can't be played in most browsers. We are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments. <br/><br/></div>");
 				$("#uploadConversionDialog").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 				$("#conversionProgress").progressbar({
@@ -301,6 +305,24 @@ function launchMediaDrop(){
 				cognizenSocket.on('mediaInfo', _mediaInfo);
 				cognizenSocket.on('mediaConversionComplete', _mediaConversionComplete);
 				$("#dialog-mediaDrop").remove();
+			}
+			else{
+				if(event.success == true){
+					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
+				}
+				else{
+					$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+					//Theres an error
+					//Style it to jQuery UI dialog
+					$("#uploadErrorDialog").tooltip().dialog({
+				    	autoOpen: true,
+						modal: true,
+						width: 400,
+						height: 200,
+						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+					});
+				}
+								
 			}				
 		}
 	});
