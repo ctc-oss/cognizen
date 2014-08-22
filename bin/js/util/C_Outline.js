@@ -504,17 +504,27 @@ function C_Outline(_myItem) {
      ****************************************************************/
      function displayCourseData(_id){
      	$("#outlinePagePrefPane").empty();
-	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + myItem.find("span").first().text() + "</b></div>";
+	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + myItem.find("span").first().text() + "</b></div><br/>";
+	    msg += "<div id='accordion'>";
+     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
+     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';	    
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
-		msg += '<br/><div><b>SCORM 2004 Sequencing:</b></div>';
+		//end div for general
+		msg += '</div>';
+     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
+		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';		
 		msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
 		msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
 		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
 		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
 		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
-		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';					
+		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';	
+		//end div for sequencing
+		msg += '</div>';
+		//end div for accordion
+		msg += '</div>';				
 		//alert($(courseData).find('sequencing').attr("choice"));
 		//msg += "<label for='out_courseObjective'>course objective: </label>";
 		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
@@ -637,6 +647,11 @@ function C_Outline(_myItem) {
 		$(function () {
 			//$("div[id$='Radio']").buttonset();
 			$( document ).tooltip();
+			//set up jquerui accordion
+			$("#accordion").accordion({
+				collapsible: true,
+				heightStyle: "content"
+			});			
 		});	
 
 
@@ -655,6 +670,9 @@ function C_Outline(_myItem) {
 		}
      	$("#outlinePagePrefPane").empty();
      	var msg = "<div class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
+     	msg += "<div id='accordion'>";
+     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
+     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
      	msg += "<div><b>Details:</b></div>";
      	msg += "<label for='lessonTitle'>lesson title: </label>";
         msg += '<input type="text" name="lessonTitle" id="lessonTitle" value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
@@ -719,7 +737,10 @@ function C_Outline(_myItem) {
      	msg += "<label for='lockDuration'>duration for lock request (s): </label>";
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "</div>";
-		msg += '<br/><div><b>SCORM 2004 Sequencing:</b></div>';
+     	//end general div
+     	msg += '</div>';
+     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
+		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
 		msg += '<br/><div id="hideLMSUIValues" title="" style="float:left;"><b>Indicates which navigational UI elements the LMS should hide when this activity is being delivered:</b></div>';		
 		msg += addToggle("previous", "Remove the previous button:");
 		msg += addToggle("continue", "Remove the continue button:" );	
@@ -746,9 +767,12 @@ function C_Outline(_myItem) {
 		msg += addToggle("tracked", "Is data tracked for this activity:");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
-
 //type="number" min="0" max="1" step="0.01"
-		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left;">Sequencing Definition Model</a>';			
+		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left;">Sequencing Definition Model</a>';
+		//end sequencing div
+		msg += '</div>';
+		//end accordion div
+		msg += '</div>';			
 	    $("#outlinePagePrefPane").append(msg);
 	   
 	    //Set module settings.
@@ -930,6 +954,12 @@ function C_Outline(_myItem) {
 			//prevent user manual input in spinner
 			$("#rollupObjectiveMeasureWeight").bind("keydown", function (event){
 				event.preventDefault();
+			});
+
+			//set up jquerui accordion
+			$("#accordion").accordion({
+				collapsible: true,
+				heightStyle: "content"
 			});
 		});					
 
