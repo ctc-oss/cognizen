@@ -350,7 +350,7 @@ function _mediaConversionComplete(data){
 	var splitType = splitPath[last-1].split(".");
 	var type = splitType[splitType.length-1];
 	if(type == "mp4"){
-		saveImageEdit(mediaPath, true);
+		try{ saveImageEdit(mediaPath, true); } catch(e){};
 	}
 
 }
