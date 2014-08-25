@@ -1712,7 +1712,7 @@ var SCORM = {
 			abandon: (mySeq.get('abandon') === 'true'),
 			abandonAll: (mySeq.get('abandonAll') === 'true'),
 			suspendAll: (mySeq.get('suspendAll') === 'true'),
-			rollupObjectiveStatisfied: (mySeq.get('rollupObjectiveStatisfied') === 'true'),
+			rollupObjectiveSatisfied: (mySeq.get('rollupObjectiveSatisfied') === 'true'),
 			rollupProgressCompletion: (mySeq.get('rollupProgressCompletion') === 'true'),
 			rollupObjectiveMeasureWeight: mySeq.get('rollupObjectiveMeasureWeight'),
 			tracked: (mySeq.get('tracked') === 'true'),
