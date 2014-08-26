@@ -537,8 +537,8 @@ function C_Outline(_myItem) {
 		msg += "<label for='mode'>set mode:</label>";
 		msg += "<select name='mode' id='mode'>";
 		msg += "<option>production</option>";
-		msg += "<option>edit</option>";
 		msg += "<option>review</option>";
+		msg += "<option>edit</option>";
 		msg += "</select><br/>"*/
 			
 		$("#outlinePagePrefPane").append(msg);
@@ -684,8 +684,8 @@ function C_Outline(_myItem) {
         msg += "<label for='mode'>set mode: </label>";
      	msg += "<select name='mode' id='mode'>";
      	msg += "<option>production</option>";
-     	msg += "<option>edit</option>";
      	msg += "<option>review</option>";
+     	msg += "<option>edit</option>";
      	msg += "</select><br/>"
 		msg += "<label id='label' for='hasGlossary'>Glossary: </label>";
 		msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/><br/><br/>";
