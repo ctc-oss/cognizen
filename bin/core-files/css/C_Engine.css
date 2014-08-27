@@ -2931,6 +2931,18 @@ a.fancybox-expand {
 		width:95%!important;
 	}
 
+	
+	/* FOR CLICKIMAGE CONTENT */
+	.clickImgTextHolder{
+		width: 100%;
+	}
+	
+	div#clickImgText.clickImgText{
+		margin-left: 10px;
+		width: 97%;
+	}
+	
+
 	/* FOR FLASHCARD CONTENT */
 	#flashcardHolder{
 		position: absolute;
