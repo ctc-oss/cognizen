@@ -525,22 +525,7 @@ function C_Outline(_myItem) {
 		msg += '</div>';
 		//end div for accordion
 		msg += '</div>';				
-		//alert($(courseData).find('sequencing').attr("choice"));
-		//msg += "<label for='out_courseObjective'>course objective: </label>";
-		//msg += '<input type="text" name="out_courseObjective" id="out_courseObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
-			
-		/*msg += "<div>"
-		msg += "<label for='lessonWidth'>width of lesson:</label>";
-		msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[i].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
-		msg += "<label for='lessonHeight'>height of lesson:</label>";
-		msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[i].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
-		msg += "<label for='mode'>set mode:</label>";
-		msg += "<select name='mode' id='mode'>";
-		msg += "<option>production</option>";
-		msg += "<option>review</option>";
-		msg += "<option>edit</option>";
-		msg += "</select><br/>"*/
-			
+		
 		$("#outlinePagePrefPane").append(msg);
 		
 		//set objectivesGlobalToSystem based off value in xml
@@ -1255,7 +1240,7 @@ function C_Outline(_myItem) {
 					Adds lesson to the end of the module.  Can then be dragged.
 	************************************************************************************************/
 	function addLessonToModule(_id){
-		
+		console.log("_id = " + _id);
 	}
 	
 	/************************************************************************************************

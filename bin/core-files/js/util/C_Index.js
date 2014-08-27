@@ -145,7 +145,55 @@ function addIndex(){
 	for(var i = 0; i < totalPages; i++){
 		thisID = "indexMenuItem" + i;
 		var pageID = $(data).find("page").eq(i).attr("id");
-		if($(data).find("page").eq(i).attr("type") == "group"){
+		var childLength = $(data).find("page").eq(i).find("page").length;
+		//var hasChildPages = false;
+		//if(childLength > 0){
+			//hasChildPages = true;
+		//}
+		
+		indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
+		
+		if(mode == "edit"){
+			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
+		}else if(mode == "review"){
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+		}else{
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+		}
+		indexItem_arr.push("#" + thisID);
+		if(childLength > 0){
+			
+			indexString += '<ol class="dd-list">';
+			for(var j = 0; j < childLength; j++){
+				i++;
+				var pageID = $(data).find("page").eq(i).attr("id");
+				thisID = "indexMenuItem" + i;
+
+				indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+i+'">';
+				
+				if(mode == "edit"){
+					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+				}else if(mode == "review"){
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+				}else{
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+				}
+				
+				indexItem_arr.push("#" + thisID);
+			}
+			indexString += '</ol></li>';
+		}
+		
+		
+		/******************************************
+		BELOW is old menu code - can be removed after the above is tested for a while.... (PD - 8/27)
+		******************************************/
+		
+		
+		//console.log("hasChildren == " + hasChildPages);
+		/*if($(data).find("page").eq(i).attr("type") == "group"){
 			//Resolves issue of group butting into group...
 			if(groupMode == true){
 				indexString += '</ol></li>';
@@ -181,8 +229,8 @@ function addIndex(){
 			}else{
 				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 			}
-		}
-		indexItem_arr.push("#" + thisID);
+		}*/
+		//indexItem_arr.push("#" + thisID);
 	}
 	
 	indexString += "</ol></div>";
@@ -261,7 +309,7 @@ function addIndex(){
 								isChild = true;
 								childParent = list[i].id;
 								newNodePos = iterator;
-								if($(data).find("page").eq(childParent).attr("type") == "group"){
+								if($(data).find("page").eq(childParent).find("page").length > 0){//attr("type") == "group"){
 									addToGroup = true;	
 								}else{
 									createNewGroup = true;
@@ -306,45 +354,49 @@ function addIndex(){
 					}
 				//create a new group if needed.
 				}else if (createNewGroup){
-					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
-					var secondID = $(data).find("page").eq(newNodePos).attr("id");
+					console.log("should be inside of create new group");
+					console.log("newNodePos = " + newNodePos);
+					console.log("oldNodePos = " + oldNodePos);
+					$(data).find("page").eq(newNodePos - 1).append($(data).find("page").eq(oldNodePos));
+					//$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
+					//var secondID = $(data).find("page").eq(newNodePos).attr("id");
 					//Create a Unique ID for the page
-					var myID = guid();
+					//var myID = guid();
 					//Place a page element
-					$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="textOnly" type="group"></page>'));
+					//$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="textOnly" type="group"></page>'));
 					
 					//Place the page title element
-					$(data).find("page").eq(childParent).append($("<title>"));
-					var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
-					var titleCDATA = newPageTitle.createCDATASection("New Group Title");
-					$(data).find("page").eq(childParent).find("title").append(titleCDATA);
-					$(data).find("page").eq(childParent).append($("<content>"));
-					var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-					var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-					$(data).find("page").eq(childParent).find("content").append(contentCDATA);
-					$(data).find("page").eq(childParent).attr("type", "group");
+					//$(data).find("page").eq(childParent).append($("<title>"));
+					///var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
+					//var titleCDATA = newPageTitle.createCDATASection("New Group Title");
+					//$(data).find("page").eq(childParent).find("title").append(titleCDATA);
+					//$(data).find("page").eq(childParent).append($("<content>"));
+					//var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+					//var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+					//$(data).find("page").eq(childParent).find("content").append(contentCDATA);
+					//$(data).find("page").eq(childParent).attr("type", "group");
 					
-					if(isLinear == true){
+					/*if(isLinear == true){
 						var page_obj = new Object();
 						page_obj.id = myID;
 						page_obj.complete = false;
 						tracking_arr.push(page_obj);
-					}
+					}*/
 					
-					for(var i = 0; i < $(data).find("page").length; i++){
+					/*for(var i = 0; i < $(data).find("page").length; i++){
 						if($(data).find("page").eq(i).attr("id") == myID){
 							var newGroupSpot = i;
 							var newSub = i+1;
 						}
-					}
-					$(data).find("page").eq(newSub).appendTo($(data).find("page").eq(newGroupSpot));
+					}*/
+					//$(data).find("page").eq(newSub).appendTo($(data).find("page").eq(childParent));
 					
-					for(var i = 0; i < $(data).find("page").length; i++){
+					/*for(var i = 0; i < $(data).find("page").length; i++){
 						if(secondID == $(data).find("page").eq(i).attr("id")){
 							var tmpID = i;
 						}
-					}
-					$(data).find("page").eq(tmpID).appendTo($(data).find("page").eq(newGroupSpot));
+					}*/
+					//$(data).find("page").eq(tmpID).appendTo($(data).find("page").eq(newGroupSpot));
 				//Move the page to a lower postion
 				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
