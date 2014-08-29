@@ -45,19 +45,33 @@ function checkIndex(){
 }
 
 
-
 function updateMenuItems(){
 	if(isLinear == true){
 		for(var i = 0; i < tracking_arr.length; i++){
 			var thisID = "indexMenuItem"+i;
 			if(tracking_arr[i].complete == true){
-				if(progressMode == "lockStep"){
-					$("#" + thisID).removeClass('ui-state-disabled');
-					$("#" + thisID).click(clickIndexItem);
+				var myParent = $("#" + thisID).parent().parent().parent().attr("id");
+				var lessonComplete = true;
+				if(myParent == "C_Index"){
+					var children = $(data).find("page").eq(i).find("page").length;
+					if(children > 0){
+						for(var j = 1; j <= children; j++){
+							if(tracking_arr[i+j].complete != true){
+								lessonComplete = false;
+							}
+						}
+					}
 				}
-				if(mode != "edit"){
-					$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
-					$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
+				
+				if($("#" + thisID).parent().parent().parent().attr("id") != "C_Index" || lessonComplete == true){
+					if(progressMode == "lockStep"){
+						$("#" + thisID).removeClass('ui-state-disabled');
+						$("#" + thisID).click(clickIndexItem);
+					}
+					if(mode != "edit"){
+						$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
+						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
+					}
 				}
 				
 			}else{
