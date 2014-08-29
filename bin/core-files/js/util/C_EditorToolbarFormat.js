@@ -41,7 +41,7 @@ var contentToolgroup = [
 **  PAGE TITLE EDITOR TOOLBARS
 ********************************************************************************************/
 var pageTitleToolbar = [
-	{ name: 'basicstyles', groups: [ 'basicstyles'], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+	{ name: 'basicstyles', groups: [ 'basicstyles'], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript','-', 'RemoveFormat'] },
 	{ name: 'colors', items: [ 'TextColor', 'BGColor' ] },
 	{ name: 'document', groups: [ 'mode'], items: [ 'Sourcedialog'] }
 ];
@@ -57,7 +57,7 @@ var pageTitleToolgroup = [
 **  CAPTION TEXT EDITOR TOOLBARS
 ********************************************************************************************/
 var captionToolbar = [
-	{ name: 'basicstyles', groups: [ 'basicstyles'], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+	{ name: 'basicstyles', groups: [ 'basicstyles'], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
 	{ name: 'links', items: [ 'Link', 'Unlink'/*, 'Anchor' */] },
 	{ name: 'document', groups: [ 'mode'], items: [ 'Sourcedialog'] }
 ];

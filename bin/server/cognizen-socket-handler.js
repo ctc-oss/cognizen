@@ -117,7 +117,6 @@ var SocketHandler = {
                                             	.toFormat('mp3')
 												.withAudioCodec('libmp3lame')
 												.withAudioChannels(2)
-
 												.onCodecData(function (codecinfo) {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
@@ -139,11 +138,12 @@ var SocketHandler = {
 											});
 											   
 											stream.on('close', function(){
-	                                        if (!had_error) fs.unlink(event.file.pathName);
-	                                        fs.unlink(convertedPathName, function (err) {
-                                            	_this._socket.emit('mediaConversionComplete', convertedPath);
-                                            });
-										})
+		                                        if (!had_error) fs.unlink(event.file.pathName);
+			                                    fs.unlink(convertedPathName, function (err) {
+			                                    	_this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
+		                                        	_this._socket.emit('mediaConversionComplete', convertedPath);
+		                                        });
+											})
 										});
                                     }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
                                     	var zip = new unzip(event.file.pathName);
