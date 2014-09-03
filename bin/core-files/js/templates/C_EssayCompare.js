@@ -75,7 +75,7 @@ function C_EssayCompare(_type) {
 
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
-		var question = myContent + '<div style="float:left"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
+		var question = myContent + '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
 
 		$("#essayCompareHolder").append(question);
 
@@ -92,7 +92,7 @@ function C_EssayCompare(_type) {
 		if(!isComplete){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-			$('#mcSubmit').css({"top": "300px"});
+			//$('#mcSubmit').css({"top": "300px"});
 			$("#mcSubmit").click(checkEssay);	
 		}
 		else{
@@ -189,7 +189,7 @@ function C_EssayCompare(_type) {
 
 	function _addExpertResponse(){
 		var correctResponse = $.trim($(data).find("page").eq(currentPage).find('correctresponse').text()).replace("<![CDATA[", "").replace("]]>", "").replace(/<br.*?>/g, "\u2028");
-		var expert = '<div style="float:left"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" readOnly="readonly">'+ correctResponse +'</textarea></div>';
+		var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" readOnly="readonly">'+ correctResponse +'</textarea></div>';
 		$("#essayCompareHolder").append(expert);		
 	}
 

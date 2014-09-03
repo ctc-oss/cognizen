@@ -370,8 +370,8 @@ function C_Completion(_type) {
 			}
 		}
 		else if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
-			$('<div id="completionButton">Continue</div>').insertAfter("#content");
-			$("#completionButton").css({"position": "relative", "width": "200px", "left": "700px","margin-left": "auto", "margin-right": "auto"});  //moved to css file
+			$('<div id="completionButton">Continue</div>').insertAfter("#scoreFeedback");
+			$("#completionButton").css({"width": "200px"});  //moved to css file
 			$("#completionButton").button().click(function(){
 				var _objIndex = findObjective(lessonTitle +"_satisfied");
 				if(isScored === "true"){
@@ -388,8 +388,8 @@ function C_Completion(_type) {
 			});
 		}
 		else if(scormVersion.indexOf('none') != -1){
-			$('<div id="completionButton">Return to Main Menu</div>').insertAfter("#content");
-			$("#completionButton").css({"position": "relative", "width": "260px", "left": "650px", "margin-left": "auto", "margin-right": "auto"});  //moved to css file
+			$('<div id="completionButton">Return to Main Menu</div>').insertAfter("#scoreFeedback");
+			$("#completionButton").css({"width": "260px"});  //moved to css file
 			$("#completionButton").button().click(function(){
 				parent.history.back();
 				return false;

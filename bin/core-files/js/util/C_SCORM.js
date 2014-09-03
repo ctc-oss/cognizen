@@ -31,7 +31,7 @@ function checkScorm(){
 	if(doScorm()){
 		isScorm = true;
 		scorm.VERSION = $(data).find('scormVersion').attr('value');
-		debugger;
+//		debugger;
 		lmsConnected = scorm.init();
 		if(!lmsConnected && scorm.VERSION.indexOf('USSOCOM') != -1){
 			scorm.connection.isActive = true;

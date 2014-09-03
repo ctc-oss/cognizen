@@ -9,6 +9,7 @@ body{
 	outline: 0px;
 	height: 100%;
 	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Style a bit the inline editables. */
@@ -1410,8 +1411,8 @@ MULTIPLE CHOICE LAYOUTS
 **************************************************************************************/
 #answerOptions{
 	position: relative;
-	left: 25px;
-	max-width: 890px;
+	left: 3%;
+	max-width: 94%;
 }
 
 #answerOptions.left{
@@ -1625,7 +1626,7 @@ MATCHING LAYOUTS
 	padding-left: 10px;
 }
 
-#mcSubmit{
+#mcSubmit, #completionButton{
 	position: relative; 
 	display: block !important;
 	width: 100px;
@@ -1633,6 +1634,7 @@ MATCHING LAYOUTS
 	margin-bottom: 20px;
 	margin-left: auto;
 	margin-right: auto;
+	clear: both;
 }
 
 #matchingSubmit{
@@ -1698,6 +1700,26 @@ MATCHING LAYOUTS
 	height: 30px;
 	background: url(images/correct.png) no-repeat;
 }
+/************************************************************** MATCHING LAYOUTS END *****/
+
+/**************************************************************************************
+ESSAY COMPARE LAYOUTS
+**************************************************************************************/
+#essayInputHolder, #expertResponseHolder{
+	float: left;
+	width: 48%;
+	margin-left: 1%;
+	margin-right: 1%;
+	margin-bottom: 2%;
+}
+
+#essayInput, #expertResponse{
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 100%;
+}
+/************************************************************** ESSAY COMPARE LAYOUTS END *****/
+
 /************************************************************** KNOWLEDGE CHECK END *****/
 
 #help{
