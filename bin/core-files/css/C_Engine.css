@@ -3375,7 +3375,7 @@ a.fancybox-expand {
 			width: 100% !important;
 		}
 		
-		#content{
+		#content, #essayCompareHolder{
 			padding-left: 3%;
 			padding-right: 3%;
 			width: 94% !important;
@@ -3424,7 +3424,11 @@ a.fancybox-expand {
 			width: 100%;
 		}
 
-		/*index pane specific*/
+		#essayInputHolder, #expertResponseHolder{
+			width: 97%;
+		}
+
+/*index pane specific*/
 		#indexPane{
 			left: -366px;
 		}
