@@ -119,16 +119,30 @@ function checkFF(){
 checkFF();
 
 /*****************************************************************
-Discover if we are on mobile
+MOBILE DETECTION
 *****************************************************************/
 // jquery.browser has been depricated.  Instead we will define mobile
-// as any screen too small for our standard 1024x768 size.
+// as any screen too small for our standard 1024x700 size.
 //var isMobile = jQuery.browser.mobile;
 var isMobile = false;
 
-if( (window.innerWidth < 1024) || (window.innerHeight < 768) ){
+if( (window.innerWidth < 1024) || (window.innerHeight < 700) ){
 	isMobile = true;
+	console.log("mobile device detected");
 }
+
+// Detect touch device
+// from http://www.stucox.com/blog/you-cant-detect-a-touchscreen/
+var hasTouch = false;
+window.addEventListener('touchstart', function setHasTouch () {
+    hasTouch = true;
+    console.log("touch device detected");
+    // Remove event listener once fired, otherwise it'll kill scrolling
+    // performance
+    window.removeEventListener('touchstart', setHasTouch);
+}, false);
+/**********************************************************END MOBILE DETECTION*/
+
 
 /*****************************************************************
 RANDOM GUID GENERATION
