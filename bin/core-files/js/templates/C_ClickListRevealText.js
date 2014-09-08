@@ -9,7 +9,7 @@
  * 
  * @author: Philip Double, doublep@ctc.com
  */
-function C_ClickImage(_type) {
+function C_ClickListRevealText(_type) {
 	var type = _type;
 	var revealCount//number of tabs.
 	var myContent;//Body
@@ -21,8 +21,8 @@ function C_ClickImage(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined"; 
-	    
-    //Defines a public method - notice the difference between the private definition below.
+    
+     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
@@ -31,8 +31,6 @@ function C_ClickImage(_type) {
 		//Set template variable values.
 		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").first().text();
-		mediaWidth = $(data).find("page").eq(currentPage).attr('w');		
-		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
 		interact = $(data).find("page").eq(currentPage).attr("interact");
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
@@ -47,12 +45,6 @@ function C_ClickImage(_type) {
 		buildTemplate();
 	}
 	
-	/*****************************************************************************************************************************************************************************************************************
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	Build Template
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	*****************************************************************************************************************************************************************************************************************/
-	//Defines a private method - notice the difference between the public definitions above.
 	function buildTemplate() {
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
@@ -66,18 +58,17 @@ function C_ClickImage(_type) {
 		}
 
         $("#content").append(myContent);
-		
-		$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
+        
+        $("<div id='listPalette' class='listPalette'></div>").insertAfter("#content");
 		
 		for(var i = 0; i < revealCount; i++){
-			var currentImg = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("img");
-			var currentAlt = $(data).find("page").eq(currentPage).find("reveal").eq(i).attr("alt");
+			var currentItem = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("title").text();
 			var tmpContent = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("content").text();
 			var tmpCaption = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("caption").text();
 			
 			var revID = "revID" + i;
 			
-			$("#imgPalette").append("<div id='"+ revID +"' class='clickImg' myContent='"+ tmpContent +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"'>"+currentItem+"</div>");
 			
 			if(interact == "click"){
 				$("#" + revID).click(function(){
@@ -88,73 +79,40 @@ function C_ClickImage(_type) {
 					updateRevealContent($(this));
 				});
 			}
-		}	
-		
-		//Figure out columns and rows if not enough space to fit all images...
-		//Need to find an exact width so that it centers properly...
-		//This ugliness allows designers not to have to have exactly divisible width to media width and padding to center properly...
-		var heightSpacer = $("#"+revID).height() + parseInt($("#"+revID).css('margin-top')) + parseInt($("#"+revID).css('margin-bottom'));
-		var totalWidth = revealCount * ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
-		var maxWidth = parseInt($("#imgPalette").css('max-width'));
-		var rows = 1;
-		
-		if(totalWidth > maxWidth){
-			rows = Math.ceil(totalWidth/maxWidth);
 		}
 		
-		if(rows > 1){
-			var itemsPerRow = 0;
-			var itemSpace = ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
-			for(var j = 0; j < revealCount; j++){
-				if(j * itemSpace <= maxWidth){
-					itemsPerRow = j;
-				}else{
-					break;
-				}
-			}
-			var rowWidth = itemsPerRow * itemSpace;
-			$("#imgPalette").width(rowWidth);
-		}else{
-			$("#imgPalette").width(totalWidth);
-		}
-		
-		$("#imgPalette").height(heightSpacer * rows);
-		
-		//Insert the Text Display area.
-		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div><br/><br/>").insertAfter("#imgPalette");
+		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div id='clickListText' class='clickListText antiscroll-inner'></div></div><br/><br/>").insertAfter("#listPalette");
 		if(isIE || isFF){
-			ieWidth = $("#clickImgTextHolder").width();
-			$("<br/><br/>").insertAfter(".clickImgTextHolder");
-		}		
+			ieWidth = $("#clickListTextHolder").width();
+			$("<br/><br/>").insertAfter(".clickListTextHolder");
+		}
+		
+		$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#listPalette").position().top+ audioHolder.getAudioShim() + 15));
+		$("#clickListTextHolder").height($("#stage").height() - ($("#scrollableContent").position().top + $("#listPalette").position().top+ audioHolder.getAudioShim() + 15));
+				
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		//Select the first one...
-		$("#revID0").click();						
+		$("#revID0").click();
 	}
 	
-	//Holders to set a static size for IE...
-	var ieWidth = null;
-	var ieHeight = null;
-	
 	function updateRevealContent(_myItem){
-		try { $(currentItem).removeClass("clickImgSelected"); } catch (e) {}
+		console.log(_myItem);
+		try { $(currentItem).removeClass("clickListSelected"); } catch (e) {}
 		currentItem = _myItem;
-		try { $(currentItem).addClass("clickImgSelected"); } catch (e) {}
-		$("#clickImgText").empty();
+		try { $(currentItem).addClass("clickListSelected"); } catch (e) {}
+		$("#clickListText").empty();
 		
-		$("#clickImgText").append(_myItem.attr("myContent"));
+		$("#clickListText").append(_myItem.attr("myContent"));
 		//BECAUSE IE FUCKING SUCKS!!!!
 		if(isIE || isFF){
 			if(ieHeight == null){
-				ieHeight = $("#clickImgText").height();// - 30;
-				ieWidth = $("#clickImgText").width() - 17;
+				ieHeight = $("#clickListText").height();// - 30;
+				ieWidth = $("#clickListText").width() - 17;
 			}
-			$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
-		}
-		
-		if(isIE || isFF){
+			$("#clickListText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
 			$("#contentHolder").height($("#contentHolder").height() - 17);
 			$("#contentHolder").width($("#contentHolder").width() - 17);
 		}
@@ -162,11 +120,6 @@ function C_ClickImage(_type) {
 		$('.antiscroll-wrap').antiscroll();
 	}
 	
-	/*****************************************************************************************************************************************************************************************************************
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	PAGE EDIT FUNCTIONALITY
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 		$(this).scrubContent();	
 		$('.antiscroll-wrap').antiscroll();	
@@ -196,7 +149,7 @@ function C_ClickImage(_type) {
 			});
 			
 			//Edit media and reveal content.
-			$("#imgPalette").prepend("<div id='conEdit' class='btn_edit_text' title='Edit Image Hotspots'></div>");
+			$("#clickListTextHolder").prepend("<div id='conEdit' class='btn_edit_text' title='Edit click list reveals'></div>");
 			
 			$("#conEdit").click(function(){
 				updateRevealDialog();
@@ -207,15 +160,7 @@ function C_ClickImage(_type) {
 	function updateRevealDialog(){
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
-		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
-		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
-		msg += "<label> <b>Reveal Image Width: </b></label>";
-		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
-		msg += "<label> <b>Reveal Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/><br/>";
+		var msg = "<div id='contentEditDialog' title='Update click list contents'>";
 		msg += "<label id='hover'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
@@ -315,19 +260,6 @@ function C_ClickImage(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
-		/*if($("#isMandatory").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("mandatory", "true");
-			tmpObj.mandatory = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("mandatory", "false");
-			tmpObj.mandatory = false;
-		}*/
-		
-		/*if($("#isRandom").prop("checked") == true){
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "true");
-		}else{
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "false");
-		}*/
 		
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
@@ -337,7 +269,6 @@ function C_ClickImage(_type) {
 	}
 	
 	function addReveal(_addID, _isNew){
-		console.log("add reveal started");
 		var revealID = "reveal" + _addID;
 		var revealLabel = parseInt(_addID) + 1;
 		
@@ -345,28 +276,25 @@ function C_ClickImage(_type) {
 		    var tmpLabel = parseInt(_addID) + 1;
 			$(data).find("page").eq(currentPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("New Term Item " + tmpLabel);
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("title").append(titleCDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text " + tmpLabel + "</p>");
+			var option1CDATA = content1.createCDATASection("<p>New Reveal Text " + tmpLabel + "</p>");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").append(option1CDATA);
-			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Caption Input");
-			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("caption").append(difFeed1CDATA);
-			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt", "Default alt text");
-			
 			currentEditBankMember = _addID;
 			revealCount++;
 		}
 		
-		var mediaString = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img");
+		var termString = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("title").text();
 		
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
-			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+			msg += "<label id='revealTerm'><br/><b>Term: </b></label>";
+			msg += "<input id='revealTermText' class='dialogInput' type='text' value='"+termString+"' defaultValue='"+termString+"' style='width:40%;'/>";
 					
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
@@ -386,8 +314,6 @@ function C_ClickImage(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-		
-		console.log("addReveal completed");
 	}
 			
 		

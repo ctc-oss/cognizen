@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText"];
 
 
 /************************************************************************************
@@ -503,6 +503,42 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
+			break;
+			
+		case "clickListRevealText":
+			$(data).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>Click each item in the list below to reveal information about each item.</p>");
+			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(data).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<title>"));
+			var title1 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title1CDATA = title1.createCDATASection("Item 1");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).find("title").append(title1CDATA);
+			
+			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			
+			$(data).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<title>"));
+			var title2 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title2CDATA = title1.createCDATASection("Item 2");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).find("title").append(title2CDATA);
+			
+			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("interact", "click");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
 			
 		case "questionBank":

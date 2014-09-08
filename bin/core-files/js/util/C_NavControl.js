@@ -1335,5 +1335,9 @@ this.loadPage = function(){
 			currentTemplate = new C_Unity3D(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "clickListRevealText":
+			currentTemplate = new C_ClickListRevealText(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 	}
 }
