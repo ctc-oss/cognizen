@@ -38,7 +38,10 @@ function checkIndex(){
 		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' title='click here to toggle content index'/></div>");
 		
 		//Set index tab action to open and close the index.
-		$('#indexTab').click(toggleIndex).tooltip();
+		$('#indexTab').click(toggleIndex);
+		if(!isMobile){
+			$('#indexTab').tooltip();  // don't attach tooltip on mobile devices
+		}
 		
 		addIndex();
 	}
