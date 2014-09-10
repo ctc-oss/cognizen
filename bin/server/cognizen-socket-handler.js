@@ -1098,7 +1098,7 @@ var SocketHandler = {
                             });
 	                    }
 	                    else{
-	                        logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update glossary for node");
+	                        _this.logger.debug("Houston, we have a problem - the content.xml update failed - attempting to update glossary for node");
 	                    }
 	                })
                 }
@@ -1410,7 +1410,6 @@ var SocketHandler = {
         //data.user.username
         //data.user.id
         var _this = this;
-
         if (data.content.type === 'program') {
             // Don't allow this, too volatile to change the git repo at this point.
             return;
@@ -1461,6 +1460,7 @@ var SocketHandler = {
                                             _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
                                                 _this.logger.info("rename commit went well.")
                                                 _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                                //_this._socket.emit('refreshDashboard');
                                             }, function(err){
                                                 _this.logger.error('_this.Git.commitProgramContent(): ' + err);
                                                 _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});

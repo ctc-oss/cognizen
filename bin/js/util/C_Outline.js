@@ -139,6 +139,7 @@ function C_Outline(_myItem) {
 		 		 module_arr.push(moduleObj);
 					    
 		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+		 		 console.log(currentXML);
 		 		 importModuleXML(currentXML);
 	     	}
 		 }else{
@@ -654,7 +655,7 @@ function C_Outline(_myItem) {
 			}
 		}
      	$("#outlinePagePrefPane").empty();
-     	var msg = "<div class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
+     	var msg = "<div id='header' class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
      	msg += "<div id='accordion'>";
      	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
      	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
@@ -770,15 +771,19 @@ function C_Outline(_myItem) {
 		}
 
 	    //Listeners for Module Settings
+	     //MODULE TITLE CHANGE
 	     $("#lessonTitle").on("change", function(){
-
+			//Updated module title in edit pane header
+			$("#header").html("<b>Module Preferences: " + $("#lessonTitle").val().trim() + "</b>");
+			//Update module name in module.xml
 			$(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
 			updateModuleXML(_id, false);
 			
+			//find and update module title in course.xml
 			for(var j = 0; j < $(courseData).find("item").length; j++){
 				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
 					$(courseData).find("item").eq(j).attr('name', $("#lessonTitle").val().trim());
-					updateCourseXML();
+					updateCourseXML(false);
 					break;
 				}
 				
@@ -786,17 +791,20 @@ function C_Outline(_myItem) {
 			
 			var lessonMatchID;
 			for (var i=0; i < totalOutlineModules; i++){
-				if(currentMenuItem.attr("id") == $(courseData).find("item").eq(i).attr("id")){
+				if(currentMenuItem.attr("data-id") == $(courseData).find("item").eq(i).attr("id")){
 					lessonMatchID = $(courseData).find("item").eq(i).attr("id");
 					break;
 				}
 			}
-			currentMenuItem.text($("#lessonTitle").val());
+			//Update title in menu
+			currentMenuItem.text($("#lessonTitle").val().trim());
+			
+			//Send to server for rename
 			var data = {
 	            content: {
 	                id: lessonMatchID,
 	                type: "lesson",
-	                name: $("#lessonTitle").val()
+	                name: $("#lessonTitle").val().trim()
 	            },
 	            user: {
 	                id: user._id,
@@ -806,6 +814,7 @@ function C_Outline(_myItem) {
 	
 	        socket.emit('renameContent', data);
 	    }).css({'width': '500px', 'color': '#3383bb;'});
+	    //END MODULE TITLE CHANGE
 	    
 	    $("#mode").on("change", function(){
 		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
