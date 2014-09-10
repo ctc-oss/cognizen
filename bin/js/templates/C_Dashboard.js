@@ -677,16 +677,16 @@ function C_Dashboard(_type) {
 	    var msg;
 	    if (currentLevel == "program") {
         	msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
-            msg += '<p class="validateTips">Customize your program preferences below:</p>';
+            msg += '<p class="validateTips">Customize your publish preferences below:</p>';
             msg += '<p>Functionalities to be added shortly.</p>';
             msg += '</div>';
 	    } else if (currentLevel == "course") {
-            msg = '<div id="dialog-updatePrefs" title="Update Course Prefs">';
-            msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
-            msg += '<p>';
-            msg += '<label for="myName" class="regField">name: </label>';
-            msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
-            msg += '</p>';
+            msg = '<div id="dialog-updatePrefs" title="Update Publish Prefs">';
+            msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
+            //msg += '<p>';
+            //msg += '<label for="myName" class="regField">name: </label>';
+            //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
+            //msg += '</p>';
             msg += "<br/><p>";
             msg += "<form id='scormform' title='Set SCORM Version'>";
             msg += "<label id='label'>SCORM Version: </label>";
@@ -701,12 +701,12 @@ function C_Dashboard(_type) {
             msg += '</div>';
             enableRenameContentKeyEvents()
 	    } else if (currentLevel == "lesson") {
-            msg = '<div id="dialog-updatePrefs" title="Update Lesson Prefs">';
-            msg += '<p class="validateTips">Customize your preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
-            msg += '<p>';
-            msg += '<label for="myName" class="regField">name: </label>';
-            msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
-            msg += '</p>';
+            msg = '<div id="dialog-updatePrefs" title="Publish Settings">';
+            msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
+            //msg += '<p>';
+            //msg += '<label for="myName" class="regField">name: </label>';
+            //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
+            //msg += '</p>';
             msg += "<br/><p>";
             msg += "<form id='scormform' title='Set SCORM Version'>";
             msg += "<label id='label'>SCORM Version: </label>";
@@ -739,18 +739,18 @@ function C_Dashboard(_type) {
             buttons: {
                 Cancel: function () {
                     $(this).dialog("close");
-                    $("#myName").remove();
+                    /*$("#myName").remove();*/
                     $("#myType").remove();
                     $("#dialog-updatePrefs").remove();
                 },
-                Submit: function(){
+                /*Submit: function(){
                 	submitPrefUpdate(myParent, currentLevel);
-                },
+                },*/
                 Publish: function(){
                     var selectedScorm = $('#scormVersion').find(':selected').text();
                     clickPublish(myParent, currentLevel, selectedScorm);
                     $(this).dialog("close");
-                    $("#myName").remove();
+                    /*$("#myName").remove();*/
                     $("#myType").remove();
                                        
                 }
@@ -868,7 +868,7 @@ function C_Dashboard(_type) {
     }
 
     
-    function submitPrefUpdate(_myParent, _myLevel){
+    /*function submitPrefUpdate(_myParent, _myLevel){
 		disableRenameContentKeyEvents()
         var data = {
             content: {
@@ -885,7 +885,7 @@ function C_Dashboard(_type) {
         socket.emit('renameContent', data);
 
 	    $("#dialog-updatePrefs").remove();
-    }
+    }*/
     
     /************************************************************************************END PREFS*/
     /************************************************************************************
