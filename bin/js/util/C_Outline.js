@@ -306,6 +306,7 @@ function C_Outline(_myItem) {
      /*****************************************************************
      buildOutlineModule - builds the index for the module.
      Retruns a string representing the module and it's pages.
+     Called for each module in buildOutlineInterface()
      *****************************************************************/
      function buildOutlineModule(_id){
 	     var data = module_arr[_id].xml;
@@ -1138,13 +1139,15 @@ function C_Outline(_myItem) {
 		//ADD Program Level Buttons
 	    myItem.hover(
 	    	function () {
-	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
+	    		//$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
 	            
 	            //ADD apropriate title attributes for the toolitp hints on rollovers...
 	            if(_level == "module"){
-		            $("#outlineAdd").attr("title", "Add a new lesson to your module.");
+		            $(this).append("<div id='outlineRemove' class='outlineModuleRemove'></div>");
+		            //$("#outlineAdd").attr("title", "Add a new lesson to your module.");
 		            $("#outlineRemove").attr("title", "Remove this module from your course.");
 	            }else if (_level == "page"){
+		            $(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
 		            $("#outlineRemove").attr("title", "Remove this page from your module.");
 		            $("#outlineAdd").attr("title", "Add a new page to your module.");
 	            }
