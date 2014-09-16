@@ -86,7 +86,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
-        	console.log("refresh dash called");
             socket.emit('getProjects', user);
         });
 		

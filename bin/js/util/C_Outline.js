@@ -139,7 +139,6 @@ function C_Outline(_myItem) {
 		 		 module_arr.push(moduleObj);
 					    
 		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
-		 		 console.log(currentXML);
 		 		 importModuleXML(currentXML);
 	     	}
 		 }else{
