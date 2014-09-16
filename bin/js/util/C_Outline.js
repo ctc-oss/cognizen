@@ -2172,6 +2172,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("question").eq(0).attr("attempts", 1);
+			$(data).find("page").eq(currentPage).find("question").eq(0).attr("autocomplete", false);
 			//content
 			$(myXML).find("page").eq(newPage).find("question").eq(0).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");

@@ -95,7 +95,7 @@ function C_TextInput(_type) {
 			input_arr.push(i);
 		}
 		//input_arr = shuffleArray(order_arr);
-
+		var autoComplete_arr = [];
 		var msg = "<div>";
 		for(var j = 0; j < input_arr.length; j++){
 
@@ -108,6 +108,13 @@ function C_TextInput(_type) {
 			trackFeedbackNum.push(new Array(myQuestion, 0));
 			correctResponses.push(new Array(myQuestion, myNode.find('correctresponse').text()));
 			attempts.push(new Array(myQuestion, myNode.attr("attempts")));
+
+			if(myNode.attr("autocomplete") == "true"){
+				autoComplete_arr.push(true);
+			}
+			else{
+				autoComplete_arr.push(false);
+			}
 			userAttempts.push(new Array(myQuestion, 0));
 			
 			var ars = [];
@@ -127,10 +134,12 @@ function C_TextInput(_type) {
 
 		//apply accepted answers to autocorrect
 		for(var w = 0; w < inputIds.length; w++){
-			$("#question"+w).autocomplete({
-				minLength: 2,
-				source: correctAnswers[w]
-			});
+			if(autoComplete_arr[w]){
+				$("#question"+w).autocomplete({
+					minLength: 2,
+					source: correctAnswers[w]
+				});
+			}
 		}
 
 		var textInputQuestion_obj = new Object();
@@ -155,7 +164,7 @@ function C_TextInput(_type) {
 
 									if(textInputQuestion_obj.userAttempts >= textInputQuestion_obj.maxAttempts){
 										var qAnswers = correctAnswers[j];
-										$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
+										//$("#"+textInputQuestion_obj.question).val('Correct, the answer is '+$.trim(qAnswers[0]).replace("<![CDATA[", "").replace("]]>", "").toLowerCase());
 										$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
 									}
 
@@ -346,6 +355,7 @@ function C_TextInput(_type) {
 		if(allComplete){					
 			updateScoring(selected_arr, allComplete, null, null);
 			mandatoryInteraction = false;
+			$("#mcSubmit").remove();		
 			checkNavButtons();
 		}
 
@@ -451,6 +461,12 @@ function C_TextInput(_type) {
 			questionMenu_arr.push(tmpID);
 
 		}
+
+		var autoCompleteValue = true;
+		var _autoCompleteString = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('autocomplete'); 
+		if(_autoCompleteString == "false" || _autoCompleteString == undefined){
+			autoCompleteValue = false;
+		}
 		msg += "</div><br/><br/>";
 		var labelNumber = parseInt(currentEditBankMember) + 1;
 		msg += "<div><b>Edit Question #" + labelNumber + ":</b></div>"; 
@@ -459,6 +475,8 @@ function C_TextInput(_type) {
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
 		msg += "<label id='label'>no. of attempts: </label>";
 		msg += "<input type='text' name='myName' id='inputAttempts' title='Increase the number of attempts.' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'>Autocomplete: </label>";
+		msg += "<input type='checkbox' name='autocomplete' id='inputAutoComplete' title='Enable autocomplete functionality.' class='radio' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputCRLabel'><b>Correct Response: </b></div>";
@@ -515,6 +533,13 @@ function C_TextInput(_type) {
 					updateQuestionEditDialog();
 				}).tooltip();
 			}
+		}
+
+		if(!autoCompleteValue){
+			$("#inputAutoComplete").removeAttr('checked');
+		}
+		else{
+			$("#inputAutoComplete").attr('checked', 'checked');
 		}
 
         if(!graded){
@@ -597,6 +622,14 @@ function C_TextInput(_type) {
 		tmpObj.objective = $("#inputObjective").val();
 		tmpObj.objItemId = $("#inputObjItemId").val();
 		tmpObj.attempts = $("#inputAttempts").val();
+		if($("#inputAutoComplete").prop("checked") == true){
+			//$(data).find("page").eq(currentPage).attr("graded", "true");
+			tmpObj.autoComplete= true;
+		}else{
+			//$(data).find("page").eq(currentPage).attr("graded", "false");
+			tmpObj.autoComplete = false;
+		}		
+
 		tmpObj.correctResponse = CKEDITOR.instances["inputCorrectResponse"].getData();
 		try{ CKEDITOR.instances["inputCorrectResponse"].destroy() } catch (e) {}
 
@@ -692,6 +725,7 @@ function C_TextInput(_type) {
 		$(data).find("page").eq(currentPage).append($("<question>"));
 		var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).attr("attempts", 1);
+		$(data).find("page").eq(currentPage).find("question").eq(_addID).attr("autocomplete", false);
 		//content
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).append($("<content>"));
 		var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
@@ -818,6 +852,7 @@ function C_TextInput(_type) {
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('content').append(questionCDATA);				
 
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr("attempts", _data.attempts);
+		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr("autocomplete", _data.autoComplete);
 
 		var correctResponseUpdate = _data.correctResponse;
 		var correctResponseDoc = new DOMParser().parseFromString('<correctresponse></correctresponse>', 'text/xml')
@@ -882,6 +917,7 @@ function C_TextInput(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("question").eq(i).remove();
 		}
+		clearTextInputQuestionResponse();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}	
