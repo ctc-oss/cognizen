@@ -61,7 +61,11 @@ function C_Outline(_myItem) {
     });
     
     this.refreshOutlineData = function(){
-	   if(refreshExpected == true){
+	   refreshOutlineData();
+    }
+    
+    function refreshOutlineData(){
+	    if(refreshExpected == true){
 		   module_arr = [];
 		   indexItem_arr = [];
 		   loadedOutlineModules = 0;
@@ -394,6 +398,7 @@ function C_Outline(_myItem) {
      Called on drop of menu item - does nothing if there is no change.
      ******************************************************************/
      function updateOrder(){
+     	 var legalMove = true;
    	     //Gather the current state of the list and assign to list...
    	     var tmp = $('#C_Index').data('output', $('#nestable-output'));
 		 var tmpList   = tmp.length ? tmp : $(tmp.target);
@@ -406,9 +411,10 @@ function C_Outline(_myItem) {
 			 var startModule = startNode.module;
 			 var startModuleID = module_arr[startNode.module].id;
 			 var startNodeLevel = startNode.level;
-			 
+			 console.log(startModuleID);
 			 var endNode;
 			 var myInsert;
+			 //Discern whether to put before or after - depending upon position change...
 			 if($('#' + currentDragID).next().attr("id")){
 			 	endNode = getNode($('#' + currentDragID).next().attr("id"));
 			 	myInsert = "before";
@@ -416,7 +422,7 @@ function C_Outline(_myItem) {
 				 endNode = getNode($('#' + currentDragID).prev().attr("id"));
 				 myInsert = "after";
 			 }
-			 
+			 //If being added as first page of lesson there will be no previous or next - this get's "into"
 			 if(endNode == undefined){
 			 	endNode = getNode($('#' + currentDragID).parent().parent().attr("id"));
 			 	myInsert = "into";
@@ -425,55 +431,82 @@ function C_Outline(_myItem) {
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
 			 var endModuleID = module_arr[endNode.module].id;
-			 var endNodeLevel = endNode.level;			 
+			 var endNodeLevel = endNode.level;
 			 
-			 //MOVE from original position to updated position.
-			 if(myInsert == "before" || endNodeLevel == "module"){
-				 moveFrom.insertBefore(moveTo);
-			 }else if (myInsert == "after"){
-				 moveFrom.insertAfter(moveTo);
-			 }else{
-				 moveTo.append(moveFrom);
+			 //Make sure that module levels are not changed.
+			 if(startNodeLevel == "module"){
+				 var levelChange = true;
+				 for(var i = 0; i < list[0].children.length; i++){
+					 if(startModuleID == list[0].children[i].id){
+						 levelChange = false;
+					 }
+				 }
+				 
+				 if(levelChange){
+					 legalMove = false;
+					 alert("That is an illegal move.  You cannot change the level of a module, just reorder them.")
+				 }
+			 }
+			 
+			 //console.log(startNode);
+			 //console.log(endNode);
+			 //Check for legal moves....
+			 if(startNodeLevel == "page" && endNodeLevel == "module"){
+				 legalMove = false;
+				 alert("That is an illegal move.  You cannot turn a page into a module.... yet...");
 			 }	
 			 
-			 //REORDERING MODULES			 	 
-			 if(endNodeLevel == "module" && startNodeLevel == "module"){
-				 updateCourseXML();
-			 }
-			 //MOVING A MODULE INTO ANOTHER MODULE
-			 	else if(startNodeLevel == "module" && endNodeLevel == "page"){
-				 var msg = '<div id="import-moduleDialog" title="Import alert!"></div>';
-				 $("#stage").append(msg);
-		         $("#dialog-outline").dialog({
-		            modal: true,
-		            width: 400,
-		            height: 300,
-		            resizable: false,
-		            close: function (event, ui) {
-		                //socket.emit("closeOutline");
-		                destroy();
-		            },
-		            open: function (event, ui) {
-		               
-		            }
-		         });
+			 if(!legalMove){
+			 	refreshExpected = true;
+			 	refreshOutlineData()
+			 }else{		 
+				 //MOVE from original position to updated position.
+				 if(myInsert == "before" || endNodeLevel == "module"){
+					 moveFrom.insertBefore(moveTo);
+				 }else if (myInsert == "after"){
+					 moveFrom.insertAfter(moveTo);
+				 }else{
+					 moveTo.append(moveFrom);
+				 }	
 				 
-			 }
-			 //REORDERING PAGES WITHIN MODULES
-			 	else if (startNodeLevel == "page" && endNodeLevel == "page"){ 
-			 	if(endModule != startModule){
-				 	updateModuleXML(startModule, false);
+				 //REORDERING MODULES			 	 
+				 if(endNodeLevel == "module" && startNodeLevel == "module"){
+					 updateCourseXML();
 				 }
-			 	 updateModuleXML(endModule, true);
+				 //MOVING A MODULE INTO ANOTHER MODULE
+				 	else if(startNodeLevel == "module" && endNodeLevel == "page"){
+					 var msg = '<div id="import-moduleDialog" title="Import alert!"></div>';
+					 $("#stage").append(msg);
+			         $("#dialog-outline").dialog({
+			            modal: true,
+			            width: 400,
+			            height: 300,
+			            resizable: false,
+			            close: function (event, ui) {
+			                //socket.emit("closeOutline");
+			                destroy();
+			            },
+			            open: function (event, ui) {
+			               
+			            }
+			         });
+					 
+				 }
+				 //REORDERING PAGES WITHIN MODULES
+				 	else if (startNodeLevel == "page" && endNodeLevel == "page"){ 
+				 	if(endModule != startModule){
+					 	updateModuleXML(startModule, false);
+					 }
+				 	 updateModuleXML(endModule, true);
+				 }
+				 
+				 //Update start list in case more than one change is made... 
+				 //Without this, you can only make one change and then stuff get's funky.
+				 var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
+				 var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
+				 startList = tmpStartList.nestable('serialize');
+				 startListJSON = window.JSON.stringify(startList);
 			 }
-			 
-			 //Update start list in case more than one change is made... 
-			 //Without this, you can only make one change and then stuff get's funky.
-			 var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
-			 var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
-			 startList = tmpStartList.nestable('serialize');
-			 startListJSON = window.JSON.stringify(startList);
-
 		}
      }
      
