@@ -109,7 +109,8 @@ function C_StaticContent(_type) {
             }        
         }else{
         	mediaHolder = new C_VisualMediaHolder();
-        	mediaHolder.loadVisualMedia(checkMode());
+        	mediaHolder.loadVisualMedia();
+        	checkMode();
         }
     }
 
