@@ -15,6 +15,7 @@ var Utils = require('./cognizen-utils'),
     ContentSocket = require('./content-socket'),
     scorm = require('./cognizen-scorm'),
     unzip = require('adm-zip');
+    util = require('util');
 var et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -1060,7 +1061,7 @@ var SocketHandler = {
                             });
 	                    }
 	                    else{
-	                        logger.debug("Houston, we have a problem - the course.xml update failed");
+	                        _this.logger.debug("Houston, we have a problem - the course.xml update failed");
 	                    }
 	                })
                 }
@@ -1109,7 +1110,7 @@ var SocketHandler = {
     startContentServer: function (data) {
         var _this = this;
         var contentType = _this.Content.objectType(data.content.type);
-
+		
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
@@ -1415,19 +1416,29 @@ var SocketHandler = {
             return;
         }
 
-//        _this.logger.info('Rename ' + data.content.type + '#' + data.content.id + '...');
+        _this.logger.info('Rename ' + data.content.type + '#' + data.content.id + '...');
         // First, find user and content.
         var contentType = _this.Content.objectType(data.content.type);
 
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
+                	var serverDetails = _this.Content.serverDetails(found);
+                   
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
                     var newDiskPath = _this.Content.diskPath(found.path);
+                    var parentDir = path.resolve(process.cwd(), newDiskPath);
+					var myxml = parentDir + '/xml/content.xml';
                     _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
-
+					
+					if(serverDetails.running == true){
+						//Code to update xmlPath on ContentSocket goes here...
+						ContentSocket.stop(myxml, serverDetails.port, parentDir, _this.logger);
+						serverDetails.running = false;
+					}
+					
                     var itemsToSave = [found];
 
                     found.getChildren(function(err, children) {
