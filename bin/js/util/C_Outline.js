@@ -1205,7 +1205,7 @@ function C_Outline(_myItem) {
 			     	$("#outlinePagePrefPane").empty();
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
-				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "<br/>";
+				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "  <button id='panePagePreview'>preview</button><br/>";
 			     	msg += "<label for='out_pageTitle'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	msg += "<label for='out_pageObjective'>page objective: </label>";
@@ -1226,6 +1226,10 @@ function C_Outline(_myItem) {
 			     	
      	
 				 	$("#outlinePagePrefPane").append(msg);
+				 	
+				 	$("#panePagePreview").button().click(function(){
+						clickPreview($(module_arr[i].xml).find('page').eq(j).attr("layout"));
+					});
 				 	
 				 	$("#out_pageTitle").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
@@ -1581,9 +1585,7 @@ function C_Outline(_myItem) {
 	Description:	Builds a popup example when button clicked.
 	************************************************************************************************/
 	function clickPreview(mediaType){
-		console.log("mediaType = " + mediaType);
 		var img_arr = [];
-		var tempCaption;
 		for(var i = 0; i < pageTypeExamples.length; i++){
 			if(pageTypeExamples[i].type == mediaType){
 				for(var j = 0; j < pageTypeExamples[i].images.length; j++){
@@ -1594,7 +1596,16 @@ function C_Outline(_myItem) {
 				}
 				
 				$.fancybox.open(img_arr, {
-			        padding : 0
+			        padding : 0,
+			        caption : {
+						type : 'inside'
+					},
+					openEffect  : 'elastic',
+					closeEffect : 'elastic',
+					nextEffect  : 'elastic',
+					prevEffect  : 'elastic',
+					maxHeight	: 1024,
+					maxWidth	: 768
 			    });
 			    
 			    return false;
@@ -1602,75 +1613,8 @@ function C_Outline(_myItem) {
 			    break;
 			}
 		}
-		//var mediaPopString = "<div id='myImgList' class='imglist'>"
-		//mediaPopString += "<a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
-		//mediaPopString += "";
 	}
-		//OLD EXAMPLE CODE TO BE DELETED
-		/*var tempItem;
-		var tempCaption;
-		if(largeImg != ""){
-			tempItem = "media/" + largeImg;
-			tempCaption = myCaption;
-		}else{
-			tempItem = "media/" + media_arr[0];
-			tempCaption = caption_arr[0];
-		}
-				
-		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
-					
-		if(media_arr.length > 0){
-			mediaPopString += "<span style='display:none;'>";
-			var startPoint;
-			if(largeImg == ""){
-				startPoint = 1;
-			}else{
-				startPoint = 0;
-			}
-			for(var i = startPoint; i < media_arr.length; i++){
-				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
-			}
-			mediaPopString += "</span>";
-		}
-				
-		mediaPopString += "</div>";
-				
-		$(mediaPopString).insertAfter("#loader");				 
-		$("[rel='mediaPop']").fancybox({
-			caption : {
-				type : 'inside'
-			},
-			openEffect  : 'elastic',
-			closeEffect : 'elastic',
-			nextEffect  : 'elastic',
-			prevEffect  : 'elastic',
-			maxHeight	: 1024,
-			maxWidth	: 768,
-			helpers : {
-				title : tempCaption,
-				thumbs: {
-					width  : 50,
-                  	height : 50
-				}
-			}
-		});
-				
-		if(mediaType = "swf"){
-			$("[rel='mediaPop']").fancybox({
-				width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
-				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
-			});
-		}
-		if(!hasTouch){
-			$("#myImgList").tooltip();
-		}
 		
-		$("#mediaPop").click(function(){
-			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
-			$(this).attr("title", tempCaption);
-		});
-	}*/
-	
 	/************************************************************************************************
 	Function: 		createNewPageByType
 	Param: 			_myType = Identifier of page type - String.
