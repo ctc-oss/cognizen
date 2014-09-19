@@ -50,6 +50,98 @@ function C_Outline(_myItem) {
     var startListJSON;
     var currentDragID;
     var currentDragItem;
+    
+    var pageTypeExamples = [
+		{
+			"type" : "textOnly",
+			"images" : ["ex_textOnly.png"]	
+		},
+		{
+			"type" : "graphicOnly",
+			"images" : ["ex_graphicOnly.png"]	
+		},
+		{
+			"type" : "top",
+			"images" : ["ex_top.png"]	
+		},
+		{
+			"type" : "left",
+			"images" : ["ex_left.png"]	
+		},
+		{
+			"type" : "right",
+			"images" : ["ex_right.png"]	
+		},
+		{
+			"type" : "bottom",
+			"images" : ["ex_bottom.png"]	
+		},
+		{
+			"type" : "sidebar",
+			"images" : ["ex_sidebar.png"]	
+		},
+		{
+			"type" : "clickImage",
+			"images" : ["ex_clickImage.png"]	
+		},
+		{
+			"type" : "tabsOnly",
+			"images" : ["ex_tabsOnly.png"]	
+		},
+		{
+			"type" : "tabsLeft",
+			"images" : ["ex_tabsLeft.png"]	
+		},
+		{
+			"type" : "revealRight",
+			"images" : ["ex_revealRight.png"]	
+		},
+		{
+			"type" : "revealLeft",
+			"images" : ["ex_revealLeft.png"]	
+		},
+		{
+			"type" : "revealBottom",
+			"images" : ["ex_revealBottom.png"]	
+		},
+		{
+			"type" : "flashcard",
+			"images" : ["ex_flashcard.png"]	
+		},
+		{
+			"type" : "sequence",
+			"images" : ["ex_sequence.png"]	
+		},
+		{
+			"type" : "multipleChoice",
+			"images" : ["ex_multipleChoice.png", "ex_multipleSelect.png"]	
+		},
+		{
+			"type" : "matching",
+			"images" : ["ex_matching.png"]	
+		},
+		{
+			"type" : "questionBank",
+			"images" : ["ex_questionBank.png"]	
+		},
+		{
+			"type" : "completion",
+			"images" : ["ex_completion.png"]	
+		},
+		{
+			"type" : "textInput",
+			"images" : ["ex_textInput.png"]	
+		},
+		{
+			"type" : "essayCompare",
+			"images" : ["ex_essayCompare.png"]	
+		},
+		{
+			"type" : "clickListRevealText",
+			"images" : ["ex_clickListRevealText.png"]	
+		}
+	];
+
 
     
     $(document).ready(function(){
@@ -1409,9 +1501,15 @@ function C_Outline(_myItem) {
 				"capability" : "essayCompare", 
 				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			}																																			
+			},
+			{
+				"capability" : "clickListRevealText", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			}																																				
 		];
-
+		
+		
 		//Add the objective performance type dropdown
 		msg += '<div><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
 		msg += '<option value=""></option>';
@@ -1433,11 +1531,12 @@ function C_Outline(_myItem) {
 		for(var i=0; i < pages.length; i++){
 			msg += '<option value="' + pages[i].capability + '">' + pages[i].capability + '</option>';
 		}
-		msg += '</select></div>';
+		msg += '</select>';
 
+		//ADD PREVIEW BUTTON
+		msg += '<button id="preview">preview</button>';
 
-
-		msg += '</div>';
+		msg += '</div></div>';
 		$("#stage").append(msg);
 
 		
@@ -1470,7 +1569,107 @@ function C_Outline(_myItem) {
 				filterPageList(pages);
 			});		
 		});
+		
+		$("#preview").button().click(function(){
+			clickPreview($("#pageTypeList").val());
+		});
 	}
+	
+	/************************************************************************************************
+	Function: 		setupGallery
+	Param: 			mediaType = Identifier of media type - String.
+	Description:	Builds a popup example when button clicked.
+	************************************************************************************************/
+	function clickPreview(mediaType){
+		console.log("mediaType = " + mediaType);
+		var img_arr = [];
+		var tempCaption;
+		for(var i = 0; i < pageTypeExamples.length; i++){
+			if(pageTypeExamples[i].type == mediaType){
+				for(var j = 0; j < pageTypeExamples[i].images.length; j++){
+					var tempObj = new Object();
+					tempObj.href = "media/examples/"+ pageTypeExamples[i].images[j];
+					tempObj.title = mediaType + " example";
+					img_arr.push(tempObj);
+				}
+				
+				$.fancybox.open(img_arr, {
+			        padding : 0
+			    });
+			    
+			    return false;
+			    
+			    break;
+			}
+		}
+		//var mediaPopString = "<div id='myImgList' class='imglist'>"
+		//mediaPopString += "<a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
+		//mediaPopString += "";
+	}
+		//OLD EXAMPLE CODE TO BE DELETED
+		/*var tempItem;
+		var tempCaption;
+		if(largeImg != ""){
+			tempItem = "media/" + largeImg;
+			tempCaption = myCaption;
+		}else{
+			tempItem = "media/" + media_arr[0];
+			tempCaption = caption_arr[0];
+		}
+				
+		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
+					
+		if(media_arr.length > 0){
+			mediaPopString += "<span style='display:none;'>";
+			var startPoint;
+			if(largeImg == ""){
+				startPoint = 1;
+			}else{
+				startPoint = 0;
+			}
+			for(var i = startPoint; i < media_arr.length; i++){
+				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+			}
+			mediaPopString += "</span>";
+		}
+				
+		mediaPopString += "</div>";
+				
+		$(mediaPopString).insertAfter("#loader");				 
+		$("[rel='mediaPop']").fancybox({
+			caption : {
+				type : 'inside'
+			},
+			openEffect  : 'elastic',
+			closeEffect : 'elastic',
+			nextEffect  : 'elastic',
+			prevEffect  : 'elastic',
+			maxHeight	: 1024,
+			maxWidth	: 768,
+			helpers : {
+				title : tempCaption,
+				thumbs: {
+					width  : 50,
+                  	height : 50
+				}
+			}
+		});
+				
+		if(mediaType = "swf"){
+			$("[rel='mediaPop']").fancybox({
+				width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
+				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
+			});
+		}
+		if(!hasTouch){
+			$("#myImgList").tooltip();
+		}
+		
+		$("#mediaPop").click(function(){
+			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
+			$(this).attr("title", tempCaption);
+		});
+	}*/
 	
 	/************************************************************************************************
 	Function: 		createNewPageByType
@@ -2518,8 +2717,43 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
 			break;
-		}
 		
+		case "clickListRevealText":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>Click each item in the list below to reveal information about each item.</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<title>"));
+			var title1 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title1CDATA = title1.createCDATASection("Item 1");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("title").append(title1CDATA);
+			
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<title>"));
+			var title2 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title2CDATA = title1.createCDATASection("Item 2");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("title").append(title2CDATA);
+			
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		}
 		refreshExpected = true;
 		updateModuleXML(myModule, true, true);
 	}

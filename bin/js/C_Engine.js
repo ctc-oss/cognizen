@@ -163,20 +163,25 @@ function initScripts(_data){
 	require([	//Already included in require.js
 				//Funtionality
 				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
-				"js/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
+				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 				"js/libs/socket.io-client/dist/socket.io.js",
 				"js/libs/underscore-min.js",
 				"js/libs/jquery.nestable.js",
-				"js/pretty-data.js", 
+				"js/libs/pretty-data.js", 
 				"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js", 
-				"js/jquery.treeview.js",
-				"js/listorder-min.js",
-				"js/jquery.corner.js"
+				"js/libs/jquery.treeview.js",
+				"js/libs/listorder-min.js",
+				"js/libs/jquery.corner.js",
+				//Lightbox for media popups and galleries.
+				"js/libs/fancybox/jquery.fancybox.js",
+				"js/libs/fancybox/jquery.fancybox-thumbs.js",
+				"js/libs/antiscroll.js",
+				"js/libs/jquery.mousewheel-3.0.6.pack.js"
 				], function($) {  
 	    //Once all of the external js has loaded, build the application.
 	    buildInterface();
