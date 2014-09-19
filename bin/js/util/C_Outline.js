@@ -142,7 +142,6 @@ function C_Outline(_myItem) {
 		}
 	];
 
-
     
     $(document).ready(function(){
     	initOutline();
@@ -192,7 +191,7 @@ function C_Outline(_myItem) {
      }
      
      /************************************************************************************
-     recieveCoursePath(data)
+     receiveCoursePath(data)
      -- recieve course path back from node in data object.
      -- use recieved path to load the course.xml file.
      ************************************************************************************/
@@ -286,6 +285,7 @@ function C_Outline(_myItem) {
      ************************************************************************************/     
      function buildOutlineInterface(){
      	try {$("#dialog-outline").dialog("close");} catch (e) {}
+     	
      	var thisID;
      	indexItem_arr = [];
 	 	
@@ -333,8 +333,9 @@ function C_Outline(_myItem) {
             height: 768,
             resizable: false,
             close: function (event, ui) {
+                socket.removeAllListeners('receiveCoursePath');
                 socket.emit("closeOutline");
-                destroy();
+                $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {
                
@@ -503,7 +504,7 @@ function C_Outline(_myItem) {
 			 var startModule = startNode.module;
 			 var startModuleID = module_arr[startNode.module].id;
 			 var startNodeLevel = startNode.level;
-			 console.log(startModuleID);
+			 
 			 var endNode;
 			 var myInsert;
 			 //Discern whether to put before or after - depending upon position change...
