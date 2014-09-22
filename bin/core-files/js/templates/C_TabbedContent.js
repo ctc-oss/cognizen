@@ -12,11 +12,14 @@
  */
 function C_TabbedContent(_type) {
 	var type = _type;
-	// var pageTitle;
-	// var mediaHolder;
-	// var audioHolder;
-	var myContent
-    var tabEdit_arr = [];
+	var revealCount//number of tabs.
+	var myContent;
+	var interact;
+	var currentEditBankMember = 0;
+	var revealMenu_arr = [];
+	var currentItem;
+	var myObjective = "undefined";
+    var myObjItemId = "undefined"; 
 	    
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -24,8 +27,15 @@ function C_TabbedContent(_type) {
 			$('#stage').css({'opacity':0});
 		}
 		
-		tabCount = $(data).find("page").eq(currentPage).find("tab").length;
+		revealCount = $(data).find("page").eq(currentPage).find("tab").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").text();		
+		if($(data).find("page").eq(currentPage).attr("interact") != undefined){
+			interact = $(data).find("page").eq(currentPage).attr("interact");
+		}else{
+			interact = "click";
+		}
+		pageTitle = new C_PageTitle();
+		audioHolder = new C_AudioHolder();
 		
 		buildTemplate();
 	}
@@ -36,24 +46,25 @@ function C_TabbedContent(_type) {
 	*****************************************/
 	function buildTemplate() {
 		//Add the divs for the page title and the content and divs.		
-		pageTitle = new C_PageTitle();
+		
 		
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div>');
 		
-		audioHolder = new C_AudioHolder();
+		
 		
 		$("#scrollableContent").addClass("tabsLeft");
 	    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		
 		var tabString = '<ul>';
 		
-		for(var i = 0; i < tabCount; i++){
+		for(var i = 0; i < revealCount; i++){
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
 			tabString += '<li><a href="#'+ tabID +'">'+ currentTab +'</a></li>';
 		}
 		tabString += '</ul>';
 		
-		for(var i = 0; i < tabCount; i++){
+		for(var i = 0; i < revealCount; i++){
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
 			var currentTabContent = $(data).find("page").eq(currentPage).find("tab").eq(i).text();
@@ -76,10 +87,6 @@ function C_TabbedContent(_type) {
 				var tabTop = $(".ui-tabs-nav").position().top;
 				var tabHeight = $(".ui-tabs-nav").height();
 				var audioHeight = 0;
-				
-//				var myTabSpace = stageH - (contentTop + tabTop + tabHeight + audioHolder.getAudioShim() + 45);
-//				$(".cognizenTabContent").css('max-height', myTabSpace+'px');
-//				$(".cognizenTabContent").css('overflow', 'auto');
 			}
 		});	
 		
@@ -99,59 +106,6 @@ function C_TabbedContent(_type) {
 		}
 	}
 		
-	function addTab(_addID, _isNew){
-		var tabID = "tab" + _addID;
-		var contentLabel = _addID + 1;
-		
-		if(_isNew == true){
-			$(data).find("page").eq(currentPage).append($("<tab id='"+ _addID + "' title='tab"+ contentLabel + "'>"));
-			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-			var tabCDATA1 = newTabContent1.createCDATASection("<p>New Tab Content</p>");
-			$(data).find("page").eq(currentPage).find("tab").eq(_addID).append(tabCDATA1);
-		}
-		
-		var myTabLabel = $(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title");
-		var myTabContent = $(data).find("page").eq(currentPage).find("tab").eq(_addID).text();
-			
-		var msg = "<div id='"+tabID+"Container' class='templateAddItem' value='"+_addID+"'>";
-		msg += "<div id='"+tabID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
-		msg += "<label>Tab " + contentLabel + " Title: </label>";
-		msg += "<input id='"+tabID+"TitleText' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
-					
-		msg += "<div>Tab " + contentLabel + " Content:</div> ";
-		msg += "<div name='"+tabID+"ContentText' id='"+tabID+"ContentText'  contenteditable='true' class='dialogInput'>" + myTabContent + "</div>";	
-		msg += "</div>";
-		
-		$("#contentEditDialog").append(msg);
-		
-		$("#" +tabID+"Remove").click(function(){
-			removeTab($(this).attr("value"));
-		});
-	            
-		CKEDITOR.inline( tabID+"ContentText", {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-		});				
-		tabEdit_arr.push(tabID);
-	}
-	
-	function removeTab(_id){
-		for(var i = 0; i < tabEdit_arr.length; i++){
-			if(_id == $("#"+tabEdit_arr[i]+"Container").attr("value")){
-				var arrIndex = i;
-				break;
-			}
-		}
-		$(data).find("pages").eq(currentPage).find("tab").eq(arrIndex).remove();
-		tabEdit_arr.splice(arrIndex, 1);
-		var myField = "tab"+_id+"ContentText";
-		//CKEDITOR.instances[myField].destroy();
-		$("#tab" + _id +"Container").remove();
-	}
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
@@ -162,10 +116,8 @@ function C_TabbedContent(_type) {
 		$('.antiscroll-wrap').antiscroll();
 		
 		if(mode == "edit"){
-			/***************************************************************************************************
-			EDIT CONTENT
-			***************************************************************************************************/
 			$("#content").attr('contenteditable', true);
+			CKEDITOR.disableAutoInline = true;
 			CKEDITOR.inline( 'content', {
 				on: {
 					blur: function (event){
@@ -195,47 +147,188 @@ function C_TabbedContent(_type) {
 			$('#tabs').prepend("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
 				
 			$("#conEdit").click(function(){					
-				//Create the Content Edit Dialog
-				var msg = "<div id='contentEditDialog' title='Input Page Content'></div>";
-				$("#stage").append(msg);	
-				//Cycle through the tabs from the xml
-				for(var i = 0; i < tabCount; i++){
-					addTab(i, false);
-				}
-					
-				//Style it to jQuery UI dialog
-				$("#contentEditDialog").dialog({ 	
-					autoOpen: true,
-					modal: true,
-					width: 875,
-					height: 650,
-					dialogClass: "no-close",
-					buttons: {
-						Add: function(){	
-							addTab(tabEdit_arr.length, true);	
-						},
-						Done: function(){
-							var tmpArray = new Array();
-							for(var i = 0; i < tabEdit_arr.length; i++){
-								var tmpObj = new Object();
-								tmpObj.title = $("#" + tabEdit_arr[i] +"TitleText").val();
-								var myTabText = tabEdit_arr[i]+"ContentText";
-								tmpObj.content = CKEDITOR.instances[myTabText].getData();
-								tmpArray.push(tmpObj);
-							}
-							saveTabEdit(tmpArray);
-							$( this ).dialog( "close" );
-						}	
-					},
-					close: function(){
-						$("#contentEditDialog").remove();
-					}
-				});
+				updateRevealDialog();
 			}).tooltip();
 		}
 		$(this).scrubContent();	
 	}
 	
+	function updateRevealDialog(){
+		try { $("#contentEditDialog").remove(); } catch (e) {}
+		//Create the Content Edit Dialog
+		var msg = "<div id='contentEditDialog' title='Update Tabs'>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
+		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find('page').eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
+		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
+		msg += "<label id='hover'><b>Hover: </b></label>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<br/>"
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
+		$("#stage").append(msg);
+		
+		updateRevealMenu();
+		
+		if(interact == "hover"){
+			$("#isHover").attr("checked", "checked");
+		}
+		
+		addReveal(currentEditBankMember, false);
+		
+		$("#contentEditDialog").dialog({ 	
+			modal: true,
+			width: 875,
+			height: 655,
+			resizable: false,
+			dialogClass: "no-close",
+			close: function(){
+				$("#contentEditDialog").remove();
+			},
+			buttons: {
+				Add: function(){
+					try { $("#revealContainer").remove(); } catch (e) {}
+					addReveal(revealCount, true);
+					updateRevealMenu();
+				},
+				Done: function(){
+					makeRevealDataStore();
+					saveRevealEdit();
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+	
+	
+	function updateRevealMenu(){
+		revealMenu_arr = [];
+		$(".questionBankItem").remove();
+		var msg = "";
+		for(var h = 0; h < revealCount; h++){
+			var label = parseInt(h + 1);
+			var tmpID = "revealItem"+h;
+			msg += "<div id='"+tmpID+"' class='questionBankItem";
+			if(currentEditBankMember == h){
+				msg += " selectedEditBankMember";
+			}else{
+				msg += " unselectedEditBankMember";
+			}
+			msg += "' style='";
+			
+			if(h < 100){
+				msg += "width:30px;";
+			}else if(h > 99){
+				msg += "width:45px;";
+			}
+			var cleanText = $(data).find("page").eq(currentPage).find("tab").eq(h).text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
+			
+			revealMenu_arr.push(tmpID);
+		}
+		
+		$("#questionMenu").append(msg);
+		
+		for(var j = 0; j < revealMenu_arr.length; j++){
+			if(currentEditBankMember != j){
+				var tmpID = "#" + revealMenu_arr[j];
+				$(tmpID).click(function(){
+					makeRevealDataStore();
+					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+					$("#contentEditDialog").remove();
+					currentEditBankMember = $(this).attr("data-myID");
+					console.log("currentEditBankMember = " + currentEditBankMember);
+					updateRevealDialog();
+				}).tooltip();
+			}
+		}
+	}
+	
+	function makeRevealDataStore(){
+		//myObjective = $("#inputObjective").val();
+		//myObjItemId = $("#inputObjItemId").val();
+		
+		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
+		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
+		
+		//$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
+		//$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
+		
+		if($("#isHover").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("interact", "hover");
+			interact = "hover";
+		}else{
+			$(data).find("page").eq(currentPage).attr("interact", "click");
+			interact = "click";
+		}
+		
+		var newRevealContent = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
+		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).empty();
+		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).append(revealCDATA);
+		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).attr("title", $("#revealTitleText").val());
+	}
+	
+	function addReveal(_addID, _isNew){
+		var revealLabel = parseInt(_addID) + 1;
+		
+		if(_isNew == true){
+			$(data).find("page").eq(currentPage).append($("<tab>"));
+			var option1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
+			//$(data).find("page").eq(currentPage).find("tab").eq(_addID).append($("<content>"));
+			//var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = option1.createCDATASection("<p>New Tab Text</p>");
+			$(data).find("page").eq(currentPage).find("tab").eq(_addID).append(option1CDATA);
+			$(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title", "new tab");
+			
+			currentEditBankMember = _addID;
+			revealCount++;
+		}
+		
+		var myTabLabel = $(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title");
+		var myTabContent = $(data).find("page").eq(currentPage).find("tab").eq(_addID).text();
+			
+		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
+		msg += "<label>Tab Title: </label>";
+		msg += "<input id='revealTitleText' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
+					
+		msg += "<div>Tab Content:</div> ";
+		msg += "<div id='revealContentText' class='dialogInput'>" + myTabContent + "</div>";	
+		msg += "</div>";
+		
+		$("#contentEditDialog").append(msg);
+		
+		$("#revealRemove").click(function(){
+			removeReveal();
+		});
+	    
+	    
+	    CKEDITOR.replace( "revealContentText", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
+		});
+	    			
+	}
+	
+	function removeReveal(){
+		if(revealCount > 1){
+			console.log("currentEditBankMember = " + currentEditBankMember);
+			$(data).find("pages").eq(currentPage).find("tab").eq(currentEditBankMember).remove();
+			console.log($(data).find("page").eq(currentPage).find("tab").length);
+			$("#revealContainer").remove();
+			revealCount--;
+			currentEditBankMember = 0;
+			updateRevealDialog();
+		}else{
+			alert("you must have at least one bank item.");
+		}
+	}
+
 			
 	 /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
@@ -251,19 +344,9 @@ function C_TabbedContent(_type) {
 	/**********************************************************************
 	**Save Tab Edit
 	**********************************************************************/
-	function saveTabEdit(_data){
-		for(var i = 0; i < tabEdit_arr.length; i++){
-			var tabLabel = _data[i].title;
-			var tabUpdate = _data[i].content;
-			var newTabContent = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-			var tabCDATA = newTabContent.createCDATASection(tabUpdate);
-			$(data).find("page").eq(currentPage).find("tab").eq(i).empty();
-			$(data).find("page").eq(currentPage).find("tab").eq(i).append(tabCDATA);
-			$(data).find("page").eq(currentPage).find("tab").eq(i).attr("title", tabLabel);
-		}
-		
+	function saveRevealEdit(_data){
 		var extra = $(data).find("page").eq(currentPage).find("tab").length;
-		var active = tabEdit_arr.length;
+		var active = revealCount;
 		var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("tab").eq(i).remove();
@@ -272,6 +355,7 @@ function C_TabbedContent(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
 	
 	/*****************************************************************************************************************************************************************************************************************
