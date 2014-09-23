@@ -144,14 +144,14 @@ function C_Matching(_type) {
 			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
 			//Add text input field if regular matching
 			if (type == "matching"){
-				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' /><div id='myMatchingText' class='matchingText'>";
+				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />";
 			}
 			
-			matchString += $(this).text() + "</div>";
+			matchString += "<div id='myMatchingText' class='matchingText'>"+ $(this).text() + "</div></div>";
 			
-			if(type == "matching"){
-				matchString += "</div>";
-			} 
+			// if(type == "matching"){
+			// 	matchString += "</div>";
+			// } 
 			
 			$("#matchingOptions").append(matchString);
 			$("#"+myOption).data("myMatch", $(this).attr("correct"));
@@ -404,6 +404,7 @@ function C_Matching(_type) {
 		attemptsMade++;
 		marking_arr = [];
 		tempCorrect = true;
+
 		/*check for regular matching*/
 		if(type == "matching"){
 			for(var i=0; i < option_arr.length; i++){
@@ -436,7 +437,7 @@ function C_Matching(_type) {
 				var tempDrop = $("#" + drop_arr[i].myDrop);
 				
 				var markingObject = new Object();
-				
+
 				if(tempDrag.data("myMatch") != tempDrop.data("matchID")){
 					tempCorrect = false;
 					markingObject.isCorrect = false;
@@ -444,20 +445,31 @@ function C_Matching(_type) {
 					markingObject.isCorrect = true;
 				}
 				markingObject.myDrop = tempDrop;
+				markingObject.myDrag = tempDrag;
 				marking_arr.push(markingObject);
 			}
 		}
 		
 		//record SCORM cmi.interaction data
 		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
-		var _learnerResponse = '';
+		var _learnerResponse = '';		
+
 		for (var i = 0; i < marking_arr.length; i++) {
-			var matchingItem = marking_arr[i].myDrop.find($('div[id=myMatchingText]')).text();
-			_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].userInput;
+			if(type == "matching"){
+				var matchingItem = marking_arr[i].myDrop.find($('div[id=myMatchingText]')).text();
+				_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].userInput;
+			}
+			else{
+				var matchingItem = marking_arr[i].myDrag.find($('div[id=myMatchingText]')).text();
+				_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].myDrop.data("matchID");				
+			}
+
 			if(i+1 != marking_arr.length){
 				_learnerResponse += "[,]";
 			}
 		};
+
+
 		setInteractions(pageId, "matching", _learnerResponse, tempCorrect, _title +":"+ $.trim($("#question").text()));
 				
 		/************************************
