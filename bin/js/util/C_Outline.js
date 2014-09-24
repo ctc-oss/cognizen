@@ -862,9 +862,9 @@ function C_Outline(_myItem) {
 		msg += addToggle("abandonAll", "Remove the abandonAll button (if present):");	
 		msg += addToggle("suspendAll", "Remove the suspendAll button (if present):");
 		msg += '<br/><br/><div id="controlModes" title="" style="float:left;"><b>Determine what type of navigation is allowed by the user:</b></div>';
-		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children:");
-		msg += addToggle("flow", "Enable previous and next LMS navigation buttons for navigating among this activity’s children:");
-		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");	
+		//msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children:");
+		//msg += addToggle("flow", "Enable previous and next LMS navigation buttons for navigating among this activity’s children:");
+		//msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");	
 		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
 		msg += '<br/><div id="sequencingRules" title="" style="float:left;"><b>Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next.: </b></div>';
 		msg += addToggle("notAttemptHidden", "Hide the item in the TOC until it has been attempted:");
@@ -996,9 +996,9 @@ function C_Outline(_myItem) {
 		}
 
 		//set sequencing toggles based off of xml
-		setToggle("choice", modIndex);
-		setToggle("flow", modIndex);
-		setToggle("forwardOnly", modIndex);
+		//setToggle("choice", modIndex);
+		//setToggle("flow", modIndex);
+		//setToggle("forwardOnly", modIndex);
 		setToggle("choiceExit", modIndex);
 		setToggle("previous", modIndex);
 		setToggle("continue", modIndex);
@@ -1021,9 +1021,9 @@ function C_Outline(_myItem) {
 		}  
 
 		//update the xml when toggles are changed
-		toggleChange("choice", modIndex);
-		toggleChange("flow", modIndex);
-		toggleChange("forwardOnly", modIndex);
+		//toggleChange("choice", modIndex);
+		//toggleChange("flow", modIndex);
+		//toggleChange("forwardOnly", modIndex);
 		toggleChange("choiceExit", modIndex);
 		toggleChange("previous", modIndex);
 		toggleChange("continue", modIndex);
