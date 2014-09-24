@@ -320,9 +320,7 @@ function C_TabbedContent(_type) {
 	
 	function removeReveal(){
 		if(revealCount > 1){
-			console.log("currentEditBankMember = " + currentEditBankMember);
-			$(data).find("pages").eq(currentPage).find("tab").eq(currentEditBankMember).remove();
-			console.log($(data).find("page").eq(currentPage).find("tab").length);
+			$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).remove();
 			$("#revealContainer").remove();
 			revealCount--;
 			currentEditBankMember = 0;

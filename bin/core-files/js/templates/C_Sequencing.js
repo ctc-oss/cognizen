@@ -45,7 +45,8 @@ function C_Sequencing(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined"; 
-  
+    
+    
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -388,9 +389,10 @@ function C_Sequencing(_type) {
 			CKEDITOR.remove(CKEDITOR.instances['optionText']);
 		}
 		if (CKEDITOR.instances['feedbackEditText']) {
-			CKEDITOR.remove(CKEDITOR.instances['optionText']);
+			CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
 		}
 		
+		try { $("#questionEditDialog").remove(); } catch (e) {}
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		var msg = "<div id='questionEditDialog' title='Create Sequencing Assessment'>";
 		msg += "<label id='label'><b>no. of attempts: </b></label>";
@@ -422,20 +424,18 @@ function C_Sequencing(_type) {
 			$("#isMandatory").attr('checked', 'checked');
 		}
 		
-		if(feedbackType == "undifferentiated"){
-			try { CKEDITOR.inline( "feedbackEditText", {
-				toolbar: contentToolbar,
-				toolbarGroups :contentToolgroup,
-				enterMode : CKEDITOR.ENTER_BR,
-				shiftEnterMode: CKEDITOR.ENTER_P,
-				extraPlugins: 'sourcedialog',
-			   	on: {
-			      instanceReady: function(event){
-			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
-			    	}
-			    }					
-			});} catch (e) {}			
-		}
+		try { CKEDITOR.inline( "feedbackEditText", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+		  		on: {
+					instanceReady: function(event){
+						$(event.editor.element.$).attr("title", "Click here to edit this feedback.");
+					}
+				}					
+		});} catch (e) {}			
 		
 		updateRevealMenu();
 		
@@ -458,17 +458,17 @@ function C_Sequencing(_type) {
 				Done: function(){
 					makeRevealDataStore();
 					saveRevealEdit();
-					$( this ).dialog( "close" );
+					$('#questionEditDialog').dialog( "close" );
 				}
 			},
 			close: function(){
-				$("#questionEditDialog").remove();
 				if (CKEDITOR.instances['optionText']) {
 		            CKEDITOR.remove(CKEDITOR.instances['optionText']);
 		        }
 		        if (CKEDITOR.instances['feedbackEditText']) {
-		            CKEDITOR.remove(CKEDITOR.instances['optionText']);
+		            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
 		        }
+				$("#questionEditDialog").remove();
 			}
 		});
 
@@ -564,7 +564,7 @@ function C_Sequencing(_type) {
 	
 	function removeOption(){
 		if(optionCount > 1){
-			$(data).find("pages").eq(currentPage).find("option").eq(currentEditBankMember).remove();
+			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			optionCount--;
 			currentEditBankMember = 0;
@@ -575,7 +575,7 @@ function C_Sequencing(_type) {
 	}
 	
 	function addOption(_addID, _isNew){
-		
+
 		var optionLabel = parseInt(_addID) + 1;
 		
 		if(_isNew == true){
@@ -609,7 +609,7 @@ function C_Sequencing(_type) {
 		$("#questionEditDialog").append(msg);
 		
 		$("#optionRemove").on('click', function(){
-			removeOption($(this).attr("value"));
+			removeOption();
 		});
 		
 		CKEDITOR.inline( "optionText", {

@@ -139,9 +139,7 @@ function C_Flashcard(_type) {
 				myIndex++;
 				
 				if(currentCard == 0){
-					if(mandatory == true){
-						
-					}
+					
 				}else{
 					currentCard--;
 					enableNextCard();
@@ -158,6 +156,9 @@ function C_Flashcard(_type) {
 	function checkMode(){
 		$('.antiscroll-wrap').antiscroll();
 		if(mode === "edit"){
+			try{if (CKEDITOR.instances['content']) {
+				CKEDITOR.remove(CKEDITOR.instances['content']);
+			}}catch (e) {}
 			$('#flashcardHolder').append("<div id='cardEdit' class='btn_edit_text' title='Edit Cards'></div>");
 			
 			$("#cardEdit").click(function(){
@@ -239,6 +240,7 @@ function C_Flashcard(_type) {
 			buttons: {
 				Add: function(){
 					try { $("#revealContainer").remove(); } catch (e) {}
+					makeRevealDataStore();
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
@@ -344,13 +346,11 @@ function C_Flashcard(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});	
-		
-		//cardEdit_arr.push(cardID);
 	}
 	
 	function removeReveal(){
 		if(revealCount > 1){
-			$(data).find("pages").eq(currentPage).find("card").eq(currentEditBankMember).remove();
+			$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).remove();
 			$("#revealContainer").remove();
 			revealCount--;
 			currentEditBankMember = 0;
