@@ -316,6 +316,9 @@ function C_Reveal(_type) {
 	}
 	
 	function updateRevealDialog(){
+		if (CKEDITOR.instances['revealContentText']) {
+			CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
+		}
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
@@ -361,6 +364,9 @@ function C_Reveal(_type) {
 			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
+				if (CKEDITOR.instances['revealContentText']) {
+		            CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
+		        }
 			},
 			buttons: {
 				Add: function(){
@@ -422,11 +428,6 @@ function C_Reveal(_type) {
 	}
 	
 	function makeRevealDataStore(){
-		//myObjective = $("#inputObjective").val();
-		//myObjItemId = $("#inputObjItemId").val();
-		
-		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
 		
 		$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
 		$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
@@ -438,19 +439,6 @@ function C_Reveal(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
-		/*if($("#isMandatory").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("mandatory", "true");
-			tmpObj.mandatory = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("mandatory", "false");
-			tmpObj.mandatory = false;
-		}*/
-		
-		/*if($("#isRandom").prop("checked") == true){
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "true");
-		}else{
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "false");
-		}*/
 		
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
