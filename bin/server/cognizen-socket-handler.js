@@ -16,6 +16,7 @@ var Utils = require('./cognizen-utils'),
     scorm = require('./cognizen-scorm'),
     unzip = require('adm-zip');
     util = require('util');
+var readdirp = require('readdirp');    
 var et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -506,13 +507,32 @@ var SocketHandler = {
         var root = path.normalize('../core-files/js');
 
         //FileUtils.rmdir(baseWritePath);
-
-        FileUtils.copyDir('../core-files/js', baseWritePath+"/js", null, function (err) {
-            if (err){ 
-                callback(err);
+        readdirp({
+                root: root,
+                directoryFilter: ['!*ckeditor'],
+                fileFilter: [ '!.DS_Store' ]
+            },
+            function(fileInfo) {
+                var localFile = fileInfo.path.replace(/\\/g,"/");
+                try{
+                    fs.copySync(root + '/' + localFile, baseWritePath+'/js/'+localFile);
+                }
+                catch(err){
+                    _this.logger.error("error copying js dir :" + err);
+                    callback(err);
+                }
+            },
+            function (err, res) {
+                callback(null);
             }
-            callback(null);
-        });
+        );
+
+        // FileUtils.copyDir('../core-files/js', baseWritePath+"/js", null, function (err) {
+        //     if (err){ 
+        //         callback(err);
+        //     }
+        //     callback(null);
+        // });
     },
     
     _copyCourseFiles: function (content, callback) {
@@ -1595,18 +1615,32 @@ var SocketHandler = {
 
     _removeJSArray: function(lessons, index, callback){
         var _this = this;
-        fs.remove(lessons[index], function(err){
-            if(err){
-                callback(err);
-            }
+        try{
+            fs.removeSync(lessons[index]);
+        }
+        catch(err){
+            callback(err);
+        }
 
-            if(index+1 != lessons.length){
-                _this._removeJSArray(lessons, index+1, callback);
-            }
-            else{
-                callback(null);
-            }
-        });
+        if(index+1 != lessons.length){
+            _this._removeJSArray(lessons, index+1, callback);
+        }
+        else{
+            callback(null);
+        }        
+
+        // fs.remove(lessons[index], function(err){
+        //     if(err){
+        //         callback(err);
+        //     }
+
+        //     if(index+1 != lessons.length){
+        //         _this._removeJSArray(lessons, index+1, callback);
+        //     }
+        //     else{
+        //         callback(null);
+        //     }
+        // });
     },    
 
     publishContent: function (data, callback){
@@ -1636,17 +1670,8 @@ var SocketHandler = {
 
                         //init SCORM (itemsToSave may need to be passed into init)
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
-
-                        //copies the js directory into each of the lessons
-                        var lessonJSPaths = [];
-                        for(var i=0; i<found.lessons.length; i++){
-                            var obj = found.lessons[i];
-                            var lessonPath = contentPath + "/" + obj.name;
-                            lessonJSPaths.push(lessonPath);
-                            //_this._copyJSFiles(lessonPath, function() {});                            
-                        }
-
-                        _this._copyJSArray(lessonJSPaths,0, function(err){
+                        _this.logger.info("program path " + programPath);
+                        _this._copyJSFiles(programPath +'/../', function (err) {    
                             if(err){
                                 _this.logger.error(err);
                             }
@@ -1663,34 +1688,29 @@ var SocketHandler = {
                                     
                                     callback(filepath);
                                 } 
-                                var lessonJStoRemove = [];    
-                                for(var i=0; i<found.lessons.length; i++){
-                                    lessonJStoRemove.push(lessonJSPaths[i] + "/js");
-                                    // var obj = found.lessons[i];
-                                    // var lessonPath = contentPath + "/" + obj.name;
-                                    // fs.remove(lessonPath + "/js", function(err){
-                                    //     if(err) return _this.logger.error(err);
-                                    // });                         
-                                }                                                   
-                                _this._removeJSArray(lessonJStoRemove, 0, function(err){
-                                    if(err){
-                                        _this.logger.error(err);
-                                    }
-                                    _this.logger.info("js directories removed from lessons after publishing");
-                                });                            
+
+                                try{
+                                    fs.removeSync(programPath + '/../js');
+                                }
+                                catch(err)
+                                {
+                                    _this.logger.error(err);
+                                    //_this.logger.info('js directory removed from lesson after publishing');
+                                }                                                          
                             });
                         });
                     }
                     else{
                         var scormPath = path.normalize('../core-files/scorm/');
                         var scormDir = path.resolve(process.cwd(), scormPath);
+                        _this.logger.info("werwrewr " + found.path);
                         var programPath = path.normalize('../programs/' + found.path + '/');
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
                         
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
                         
-                        _this._copyJSFiles(contentPath, function (err) {
+                        _this._copyJSFiles(programPath +'/../', function (err) {
                             if(err){
                                 _this.logger.error(err);
                             }
@@ -1700,7 +1720,8 @@ var SocketHandler = {
 
                                 if(err){
                                     _this.logger.error(err);
-                                    _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});                
+                                    _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});
+                                    callback('');                
                                 }
                                 else{
                                     _this.logger.info("publishLesson success.");
@@ -1709,10 +1730,14 @@ var SocketHandler = {
                                     callback(filepath);
                                 }
 
-                                fs.remove(contentPath + "/js", function(err){
-                                    if(err) return _this.logger.error(err);
-                                    _this.logger.info('js directory removed from lesson after publishing');
-                                });                            
+                                try{
+                                    fs.removeSync(programPath + '/../js');
+                                }
+                                catch(err)
+                                {
+                                    _this.logger.error(err);                                    
+                                }
+                           
                             });
                         });                            
                     }                                           

@@ -138,9 +138,13 @@ function initScripts(_data){
     else{
 
 		totalPages = $(data).find('page').length;
+		var ckpath = corePath + "js/libs/ckeditor/ckeditor.js";
+		var ckAdapath = corePath + "js/libs/ckeditor/adapters/jquery.js";
 		mode = $(data).find('mode').attr("value");
 		if(mode == "production" || mode == "Production" || mode == "prod"){
-			corePath = "";
+			corePath = "../";
+			ckpath = '';
+			ckAdapath = '';
 		}
 
 	    // This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
@@ -156,8 +160,8 @@ function initScripts(_data){
 					corePath +"js/libs/antiscroll.js",
 					corePath +"js/libs/overthrow.min.js",
 					corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
-					corePath +"js/libs/ckeditor/ckeditor.js",
-					corePath +"js/libs/ckeditor/adapters/jquery.js",
+					ckpath,
+					ckAdapath,
 					corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
 					corePath +"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
 					corePath +"js/libs/greensock/TweenMax.min.js", //Our animation library.

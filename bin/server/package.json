@@ -1,32 +1,32 @@
 {
-    "name": "cognizen",
-    "version": "0.0.1",
-    "engines": {
-        "node": "0.10.x",
-        "npm": "1.2.x"
-    },
-    "dependencies": {
-        "socket.io": "0.9.x",
-        "http-proxy": "0.10.x",
-        "git-server": "0.1.x",
-        "nodemailer": "0.4.x",
-        "underscore": "1.4.x",
-        "underscore.string": "2.3.x",
-        "fs-extra": "0.6.x",
-        "winston": "0.7.x",
-        "mongoose": "3.6.x",
-        "mongoose-schema-extend": "0.1.x",
-        "bcrypt-nodejs": "0.0.3",
-	    "socketio-file-upload": "0.2.x",
-        "ncp": "0.4.x",
-        "fluent-ffmpeg": "1.5.x",
-        "elementtree": "0.1.x",
-        "express": "3.x",
-        "cookie": "0.1.x",
-        "connect": "2.8.x",
-	    "optimist": "0.6.x",
-        "readdirp": "0.3.x",
-        "archiver": "0.4.x",
-        "adm-zip": "0.4.x"
-    }
+  "name": "cognizen",
+  "version": "0.0.1",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "dependencies": {
+    "socket.io": "0.9.x",
+    "http-proxy": "0.10.x",
+    "git-server": "0.1.x",
+    "nodemailer": "0.4.x",
+    "underscore": "1.4.x",
+    "underscore.string": "2.3.x",
+    "fs-extra": "0.8.x",
+    "winston": "0.7.x",
+    "mongoose": "3.6.x",
+    "mongoose-schema-extend": "0.1.x",
+    "bcrypt-nodejs": "0.0.3",
+    "socketio-file-upload": "0.2.x",
+    "ncp": "0.4.x",
+    "fluent-ffmpeg": "1.5.x",
+    "elementtree": "0.1.x",
+    "express": "3.x",
+    "cookie": "0.1.x",
+    "connect": "2.8.x",
+    "optimist": "0.6.x",
+    "readdirp": "0.3.x",
+    "archiver": "0.4.x",
+    "adm-zip": "0.4.x"
+  }
 }

@@ -262,9 +262,12 @@ function fadeComplete() {
   	try { $("#diffeedEdit").remove(); } catch(e) {}
   	try { $("#essayCompareHolder").remove(); } catch (e) {}
 
-	for(name in CKEDITOR.instances){
-		try { CKEDITOR.instances[name].destroy(); } catch (e) {}
+	try{
+		for(name in CKEDITOR.instances){
+			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
+		}
 	}
+	catch(e){}
 
 	loadPage();
 
