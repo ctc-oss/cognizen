@@ -420,7 +420,6 @@ function C_Reveal(_type) {
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 					$("#contentEditDialog").remove();
 					currentEditBankMember = $(this).attr("data-myID");
-					console.log("currentEditBankMember = " + currentEditBankMember);
 					updateRevealDialog();
 				}).tooltip();
 			}

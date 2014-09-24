@@ -346,8 +346,6 @@ function C_Flashcard(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});	
-		
-		//cardEdit_arr.push(cardID);
 	}
 	
 	function removeReveal(){
