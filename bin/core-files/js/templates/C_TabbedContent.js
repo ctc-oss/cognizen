@@ -154,6 +154,9 @@ function C_TabbedContent(_type) {
 	}
 	
 	function updateRevealDialog(){
+		if (CKEDITOR.instances['revealContentText']) {
+			CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
+		}
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Tabs'>";
@@ -183,6 +186,9 @@ function C_TabbedContent(_type) {
 			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
+				if (CKEDITOR.instances['revealContentText']) {
+					CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
+				}
 			},
 			buttons: {
 				Add: function(){
@@ -250,9 +256,6 @@ function C_TabbedContent(_type) {
 		
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-		
-		//$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
-		//$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
 		
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");

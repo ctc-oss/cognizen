@@ -194,6 +194,12 @@ function C_Flashcard(_type) {
 	}
 	
 	function updateRevealDialog(){
+		if (CKEDITOR.instances['cardFrontText']) {
+			CKEDITOR.remove(CKEDITOR.instances['cardFrontText']);
+		}
+		if (CKEDITOR.instances['cardBackText']) {
+			CKEDITOR.remove(CKEDITOR.instances['cardBackText']);
+		}
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
@@ -223,6 +229,12 @@ function C_Flashcard(_type) {
 			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
+				if (CKEDITOR.instances['cardFrontText']) {
+					CKEDITOR.remove(CKEDITOR.instances['cardFrontText']);
+				}
+				if (CKEDITOR.instances['cardBackText']) {
+					CKEDITOR.remove(CKEDITOR.instances['cardBackText']);
+				}
 			},
 			buttons: {
 				Add: function(){
@@ -354,9 +366,6 @@ function C_Flashcard(_type) {
 		
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-		
-		//$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
-		//$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
 		
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");
