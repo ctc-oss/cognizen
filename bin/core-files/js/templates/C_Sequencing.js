@@ -46,6 +46,7 @@ function C_Sequencing(_type) {
 	var myObjective = "undefined";
     var myObjItemId = "undefined"; 
     
+    
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		buildTemplate();
