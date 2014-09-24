@@ -1670,7 +1670,7 @@ var SocketHandler = {
 
                         //init SCORM (itemsToSave may need to be passed into init)
                         scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
-                        _this.logger.info("program path " + programPath);
+
                         _this._copyJSFiles(programPath +'/../', function (err) {    
                             if(err){
                                 _this.logger.error(err);
