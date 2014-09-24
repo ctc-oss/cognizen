@@ -460,7 +460,6 @@ function C_Reveal(_type) {
 	}
 	
 	function addReveal(_addID, _isNew){
-		var revealID = "reveal" + _addID;
 		var revealLabel = parseInt(_addID) + 1;
 		
 		if(_isNew == true){

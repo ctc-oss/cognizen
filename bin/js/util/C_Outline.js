@@ -50,6 +50,97 @@ function C_Outline(_myItem) {
     var startListJSON;
     var currentDragID;
     var currentDragItem;
+    
+    var pageTypeExamples = [
+		{
+			"type" : "textOnly",
+			"images" : ["ex_textOnly.png"]	
+		},
+		{
+			"type" : "graphicOnly",
+			"images" : ["ex_graphicOnly.png"]	
+		},
+		{
+			"type" : "top",
+			"images" : ["ex_top.png"]	
+		},
+		{
+			"type" : "left",
+			"images" : ["ex_left.png"]	
+		},
+		{
+			"type" : "right",
+			"images" : ["ex_right.png"]	
+		},
+		{
+			"type" : "bottom",
+			"images" : ["ex_bottom.png"]	
+		},
+		{
+			"type" : "sidebar",
+			"images" : ["ex_sidebar.png"]	
+		},
+		{
+			"type" : "clickImage",
+			"images" : ["ex_clickImage.png"]	
+		},
+		{
+			"type" : "tabsOnly",
+			"images" : ["ex_tabsOnly.png"]	
+		},
+		{
+			"type" : "tabsLeft",
+			"images" : ["ex_tabsLeft.png"]	
+		},
+		{
+			"type" : "revealRight",
+			"images" : ["ex_revealRight.png"]	
+		},
+		{
+			"type" : "revealLeft",
+			"images" : ["ex_revealLeft.png"]	
+		},
+		{
+			"type" : "revealBottom",
+			"images" : ["ex_revealBottom.png"]	
+		},
+		{
+			"type" : "flashcard",
+			"images" : ["ex_flashcard.png"]	
+		},
+		{
+			"type" : "sequence",
+			"images" : ["ex_sequence.png"]	
+		},
+		{
+			"type" : "multipleChoice",
+			"images" : ["ex_multipleChoice.png", "ex_multipleSelect.png"]	
+		},
+		{
+			"type" : "matching",
+			"images" : ["ex_matching.png"]	
+		},
+		{
+			"type" : "questionBank",
+			"images" : ["ex_questionBank.png"]	
+		},
+		{
+			"type" : "completion",
+			"images" : ["ex_completion.png"]	
+		},
+		{
+			"type" : "textInput",
+			"images" : ["ex_textInput.png"]	
+		},
+		{
+			"type" : "essayCompare",
+			"images" : ["ex_essayCompare.png"]	
+		},
+		{
+			"type" : "clickListRevealText",
+			"images" : ["ex_clickListRevealText.png"]	
+		}
+	];
 
     
     $(document).ready(function(){
@@ -100,7 +191,7 @@ function C_Outline(_myItem) {
      }
      
      /************************************************************************************
-     recieveCoursePath(data)
+     receiveCoursePath(data)
      -- recieve course path back from node in data object.
      -- use recieved path to load the course.xml file.
      ************************************************************************************/
@@ -194,6 +285,7 @@ function C_Outline(_myItem) {
      ************************************************************************************/     
      function buildOutlineInterface(){
      	try {$("#dialog-outline").dialog("close");} catch (e) {}
+     	
      	var thisID;
      	indexItem_arr = [];
 	 	
@@ -241,8 +333,9 @@ function C_Outline(_myItem) {
             height: 768,
             resizable: false,
             close: function (event, ui) {
+                socket.removeAllListeners('receiveCoursePath');
                 socket.emit("closeOutline");
-                destroy();
+                $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {
                
@@ -411,7 +504,7 @@ function C_Outline(_myItem) {
 			 var startModule = startNode.module;
 			 var startModuleID = module_arr[startNode.module].id;
 			 var startNodeLevel = startNode.level;
-			 console.log(startModuleID);
+			 
 			 var endNode;
 			 var myInsert;
 			 //Discern whether to put before or after - depending upon position change...
@@ -1113,7 +1206,7 @@ function C_Outline(_myItem) {
 			     	$("#outlinePagePrefPane").empty();
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
-				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "<br/>";
+				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "  <button id='panePagePreview'>preview</button><br/>";
 			     	msg += "<label for='out_pageTitle'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	msg += "<label for='out_pageObjective'>page objective: </label>";
@@ -1134,6 +1227,10 @@ function C_Outline(_myItem) {
 			     	
      	
 				 	$("#outlinePagePrefPane").append(msg);
+				 	
+				 	$("#panePagePreview").button().click(function(){
+						clickPreview($(module_arr[i].xml).find('page').eq(j).attr("layout"));
+					});
 				 	
 				 	$("#out_pageTitle").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
@@ -1409,9 +1506,15 @@ function C_Outline(_myItem) {
 				"capability" : "essayCompare", 
 				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			}																																			
+			},
+			{
+				"capability" : "clickListRevealText", 
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			}																																				
 		];
-
+		
+		
 		//Add the objective performance type dropdown
 		msg += '<div><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
 		msg += '<option value=""></option>';
@@ -1433,11 +1536,12 @@ function C_Outline(_myItem) {
 		for(var i=0; i < pages.length; i++){
 			msg += '<option value="' + pages[i].capability + '">' + pages[i].capability + '</option>';
 		}
-		msg += '</select></div>';
+		msg += '</select>';
 
+		//ADD PREVIEW BUTTON
+		msg += '<button id="preview">preview</button>';
 
-
-		msg += '</div>';
+		msg += '</div></div>';
 		$("#stage").append(msg);
 
 		
@@ -1470,8 +1574,48 @@ function C_Outline(_myItem) {
 				filterPageList(pages);
 			});		
 		});
+		
+		$("#preview").button().click(function(){
+			clickPreview($("#pageTypeList").val());
+		});
 	}
 	
+	/************************************************************************************************
+	Function: 		setupGallery
+	Param: 			mediaType = Identifier of media type - String.
+	Description:	Builds a popup example when button clicked.
+	************************************************************************************************/
+	function clickPreview(mediaType){
+		var img_arr = [];
+		for(var i = 0; i < pageTypeExamples.length; i++){
+			if(pageTypeExamples[i].type == mediaType){
+				for(var j = 0; j < pageTypeExamples[i].images.length; j++){
+					var tempObj = new Object();
+					tempObj.href = "media/examples/"+ pageTypeExamples[i].images[j];
+					tempObj.title = mediaType + " example";
+					img_arr.push(tempObj);
+				}
+				
+				$.fancybox.open(img_arr, {
+			        padding : 0,
+			        caption : {
+						type : 'inside'
+					},
+					openEffect  : 'elastic',
+					closeEffect : 'elastic',
+					nextEffect  : 'elastic',
+					prevEffect  : 'elastic',
+					maxHeight	: 1024,
+					maxWidth	: 768
+			    });
+			    
+			    return false;
+			    
+			    break;
+			}
+		}
+	}
+		
 	/************************************************************************************************
 	Function: 		createNewPageByType
 	Param: 			_myType = Identifier of page type - String.
@@ -2518,8 +2662,43 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
 			
 			break;
-		}
 		
+		case "clickListRevealText":
+			$(myXML).find("page").eq(newPage).append($("<content>"));
+			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+			var contentCDATA = newPageContent.createCDATASection("<p>Click each item in the list below to reveal information about each item.</p>");
+			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<title>"));
+			var title1 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title1CDATA = title1.createCDATASection("Item 1");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("title").append(title1CDATA);
+			
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<reveal>"));
+			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<title>"));
+			var title2 = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var title2CDATA = title1.createCDATASection("Item 2");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("title").append(title2CDATA);
+			
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("interact", "click");
+			$(myXML).find("page").eq(newPage).attr("type", "static");
+			break;
+		}
 		refreshExpected = true;
 		updateModuleXML(myModule, true, true);
 	}
