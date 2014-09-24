@@ -499,9 +499,7 @@ function C_Reveal(_type) {
 		
 	function removeReveal(){
 		if(revealCount > 1){
-			console.log("currentEditBankMember = " + currentEditBankMember);
-			$(data).find("pages").eq(currentPage).find("reveal").eq(currentEditBankMember).remove();
-			console.log($(data).find("page").eq(currentPage).find("reveal").length);
+			$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).remove();
 			$("#revealContainer").remove();
 			revealCount--;
 			currentEditBankMember = 0;

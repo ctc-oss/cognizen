@@ -458,7 +458,7 @@ function C_Sequencing(_type) {
 				Done: function(){
 					makeRevealDataStore();
 					saveRevealEdit();
-					$( this ).dialog( "close" );
+					$('#questionEditDialog').dialog( "close" );
 				}
 			},
 			close: function(){
@@ -564,7 +564,7 @@ function C_Sequencing(_type) {
 	
 	function removeOption(){
 		if(optionCount > 1){
-			$(data).find("pages").eq(currentPage).find("option").eq(currentEditBankMember).remove();
+			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			optionCount--;
 			currentEditBankMember = 0;
