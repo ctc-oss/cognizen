@@ -36,7 +36,7 @@ var SCORM = {
         _this.objectives_arr = [];
 
         //clear js arr
-        _this.jsResouces_arr;
+        _this.jsResouces_arr = [];
 
         //add js directory to root of package
         readdirp(
