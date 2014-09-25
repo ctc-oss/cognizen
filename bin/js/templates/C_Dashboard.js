@@ -71,7 +71,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerStarted', function (details) {
-            console.log(details);
             var url = [window.location.protocol, '//', window.location.host, '/programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
             openProject(url, details.myWidth, details.myHeight);
         });

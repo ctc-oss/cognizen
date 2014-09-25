@@ -343,7 +343,7 @@ function C_Outline(_myItem) {
         });
         
         //OPEN WITH ALL MENU ITEMS COLLAPSED
-        //$('#C_Index').nestable('collapseAll');
+        $('#C_Index').nestable('collapseAll');
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
@@ -507,25 +507,42 @@ function C_Outline(_myItem) {
 			 
 			 var endNode;
 			 var myInsert;
+			 
 			 //Discern whether to put before or after - depending upon position change...
-			 if($('#' + currentDragID).next().attr("id")){
-			 	endNode = getNode($('#' + currentDragID).next().attr("id"));
-			 	myInsert = "before";
+			 if(startNodeLevel == "module"){
+				 var tmpID = $('#' + currentDragID).attr("id");
+				 var moduleList = $(tmpList).find("#courseIndex").find(".dd-list").first().children();
+				 for(var i = 0; i < moduleList.length; i++){
+					 if($(moduleList[i]).attr("id") == tmpID){
+						 if($(moduleList[i + 1]).attr("id")){
+							 endNode = getNode($(moduleList[i + 1]).attr("id"));
+							 myInsert = "before";
+						 }else{
+							 endNode = getNode($(moduleList[i - 1]).attr("id"));
+							 myInsert = "after";
+						 }
+					 }
+				 }
 			 }else{
-				 endNode = getNode($('#' + currentDragID).prev().attr("id"));
-				 myInsert = "after";
-			 }
-			 //If being added as first page of lesson there will be no previous or next - this get's "into"
-			 if(endNode == undefined){
-			 	endNode = getNode($('#' + currentDragID).parent().parent().attr("id"));
-			 	myInsert = "into";
-			 }
+				 if($('#' + currentDragID).next().attr("id")){
+				 	endNode = getNode($('#' + currentDragID).next().attr("id"));
+				 	myInsert = "before";
+				 }else{
+					 endNode = getNode($('#' + currentDragID).prev().attr("id"));
+					 myInsert = "after";
+				 }
+				 //If being added as first page of lesson there will be no previous or next - this get's "into"
+				 if(endNode == undefined){
+				 	endNode = getNode($('#' + currentDragID).parent().parent().attr("id"));
+				 	myInsert = "into";
+				 }
+			}
 			 
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
 			 var endModuleID = module_arr[endNode.module].id;
 			 var endNodeLevel = endNode.level;
-			 
+
 			 //Make sure that module levels are not changed.
 			 if(startNodeLevel == "module"){
 				 var levelChange = true;
@@ -541,8 +558,6 @@ function C_Outline(_myItem) {
 				 }
 			 }
 			 
-			 //console.log(startNode);
-			 //console.log(endNode);
 			 //Check for legal moves....
 			 if(startNodeLevel == "page" && endNodeLevel == "module"){
 				 legalMove = false;
@@ -554,7 +569,7 @@ function C_Outline(_myItem) {
 			 	refreshOutlineData()
 			 }else{		 
 				 //MOVE from original position to updated position.
-				 if(myInsert == "before" || endNodeLevel == "module"){
+				 if(myInsert == "before"){
 					 moveFrom.insertBefore(moveTo);
 				 }else if (myInsert == "after"){
 					 moveFrom.insertAfter(moveTo);
@@ -607,7 +622,7 @@ function C_Outline(_myItem) {
          var nodeData = new Object();
 	     for(var i = 0; i < module_arr.length; i++){
 		     if(module_arr[i].id == _nodeID){
-			     nodeData.node = $(courseData).find('item[name="' +module_arr[i].name+ '"]');
+			     nodeData.node = $(courseData).find('item[id="' +_nodeID+ '"]');
 			     nodeData.module = i;
 			     nodeData.level = "module";
 			     return nodeData; 
