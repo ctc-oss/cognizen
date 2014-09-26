@@ -890,50 +890,20 @@ var SocketHandler = {
                                 var oldPath = _this.Content.diskPath(content.path);
                                 var newPath = trashFolder + content.name + _this._fullDeletedSuffix();
 								
-								
-								//var data, etree;
-								var coursePath = oldPath;
-			                    var tempPath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
-			                    if(tempPath === ""){
-			                        tempPath = coursePath.substr(0, coursePath.lastIndexOf("\\"));
-			                    }
-								coursePath = tempPath + "/course.xml";
-								//console.log("COURSE PATH = " + coursePath);
-								fs.readFile(coursePath, function(err, data){
-							    	var XML = et.XML;
-									var ElementTree = et.ElementTree;
-									var element = et.Element;
-									var subElement = et.SubElement;
-							    	
-							    	var _data, etree;
-						
-									_data = data.toString();
-									etree = et.parse(_data);
-							    	var stringID = content.id.toString();
-							    	var myitem = etree.find('./item/[@id="'+stringID+'"]');
-							    	console.log(myitem);
-							    	et.remove(myitem);
-							    	
-							        //etree = new ElementTree(root);
-							        var xml = etree.write({'xml_decleration': false});
-							        fs.outputFile(coursePath, xml, function (err) {
-							        	if (err) callback(err, null);
-							         	 _this.logger.info('From ' + oldPath + ' to ' + newPath);
-		                                 fs.rename(oldPath, newPath, function(err) {
-		                                    if (err) {
-		                                        callback(err);
-		                                    }
-		                                    else {
-		                                        // Commit the program so that the files are in the trash now.
-		                                        _this.Git.commitProgramContent(program, user, function(){
-		                                            callback();
-		                                        }, function(err){
-		                                            callback(err);
-		                                        });
-		                                    }
-		                                });
-							        });
-							    });								
+                                _this.logger.info('From ' + oldPath + ' to ' + newPath);
+                                fs.rename(oldPath, newPath, function(err) {
+                                    if (err) {
+                                        callback(err);
+                                    }
+                                    else {
+                                        // Commit the program so that the files are in the trash now.
+                                        _this.Git.commitProgramContent(program, user, function(){
+                                            callback();
+                                        }, function(err){
+                                            callback(err);
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
