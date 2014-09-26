@@ -910,9 +910,11 @@ var SocketHandler = {
 									_data = data.toString();
 									etree = et.parse(_data);
 							    	var stringID = content.id.toString();
-							    	console.log(etree.find('./item/[@id="'+stringID+'"]'));
+							    	//console.log(etree.find('./item/[@id="'+stringID+'"]'));
 							    	var myitem = etree.find('./item/[@id="'+stringID+'"]');
-							    	etree.remove(myitem);
+							    	console.log(myItem);
+							    	console.log(myItem.parent());
+							    	et.remove(myitem);
 							    	
 							        //etree = new ElementTree(root);
 							        var xml = etree.write({'xml_decleration': false});
