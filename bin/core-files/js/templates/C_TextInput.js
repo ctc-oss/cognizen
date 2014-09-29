@@ -479,7 +479,7 @@ function C_TextInput(_type) {
 		msg += "<input type='checkbox' name='autocomplete' id='inputAutoComplete' title='Enable autocomplete functionality.' class='radio' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
-		msg += "<div id='inputCRLabel'><b>Correct Response: </b></div>";
+		msg += "<div id='inputCRLabel'><b>Correct Response Feedback: </b></div>";
 		msg += "<div id='inputCorrectResponse' class='dialogInput' contenteditable='true'></div>";	
 		msg += "</div><br/>"
 		msg += "<div id='acceptedResponseEdit'/>";
@@ -513,7 +513,7 @@ function C_TextInput(_type) {
 			extraPlugins: 'sourcedialog',
 		   	on: {
 		      instanceReady: function(event){
-		         $(event.editor.element.$).attr("title", "Click here to edit the correct response.");
+		         $(event.editor.element.$).attr("title", "Click here to edit the feedback given when the question is answered correctly.");
 		    	}
 		    }			
 		});
@@ -586,7 +586,7 @@ function C_TextInput(_type) {
 				},
 				{
 					text: "Add Accepted Response",
-					title: "Adds a new acceptec response phrase.",
+					title: "Adds a new accepted response phrase.",
 					click: function(){
 						addAcceptedResponse(acceptedResponseEdit_arr.length, true);
 					}
@@ -813,7 +813,7 @@ function C_TextInput(_type) {
 			var diffeedContent = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("diffeed").eq(_addID).text();
 			var msg = "<div id='"+diffeedID+"Container' class='templateAddItem' value='"+_addID+"'>";
 			msg += "<div id='"+diffeedID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this feedback'/>";
-			msg += "<div id='"+diffeedID+"Input' style='padding-bottom:5px;'><b>Feedback " + diffeedLabel + ":</b></div>";
+			msg += "<div id='"+diffeedID+"Input' style='padding-bottom:5px;'><b>Incorrect Feedback " + diffeedLabel + ":</b></div>";
 			msg += "<div id='"+diffeedID+"Text' contenteditable='true' class='dialogInput'>" + diffeedContent + "</div>";	
 			msg += "</div>";
 					
