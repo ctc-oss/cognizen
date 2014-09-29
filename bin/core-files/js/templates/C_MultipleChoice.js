@@ -57,6 +57,12 @@ function C_MultipleChoice(_type) {
     var myObjItemId = "undefined";
     var order_arr = [];
     var scormVersion;
+    
+    var currentEditBankMember = 0;
+    var revealMenu_arr;
+    var currentEditBankMember = 0;
+	var revealMenu_arr = [];
+	var currentItem;
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -558,13 +564,28 @@ function C_MultipleChoice(_type) {
 			$('#answerOptions').prepend("<div id='questionEdit' class='btn_edit_text' title='Edit Text Question'></div>");
 						
 			$("#questionEdit").click(function(){
-				updateQuestionEditDialog();
+				updateOptionDialog();
 			}).tooltip();
 		}
 	}
 	
 	
-	function updateQuestionEditDialog(){
+	function updateOptionDialog(){
+		if (CKEDITOR.instances['optionText']) {
+            CKEDITOR.remove(CKEDITOR.instances['optionText']);
+        }
+        if (CKEDITOR.instances['feedbackEditText']) {
+            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
+        }
+        
+        if (CKEDITOR.instances['optionDifFeedText']) {
+            CKEDITOR.remove(CKEDITOR.instances['optionDifFeedText']);
+        }
+		
+		try { $("#questionEditDialog").remove(); } catch (e) {}
+		
+		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
+		
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
 		msg += "<label id='label'><b>no. of attempts: </b></label>";
 		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -573,11 +594,11 @@ function C_MultipleChoice(_type) {
 		msg += "<label id='label'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>randomize options: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this page.'/><br/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this page.'/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/>";
 		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";		
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 390px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";		
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized' title='Standard feedback is used.'>standardized  </input>";
@@ -589,6 +610,8 @@ function C_MultipleChoice(_type) {
 			msg += "<div id='feedbackLabel'><b>Input your feedback:</b></div>";
 			msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		}
+		
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
 		
@@ -633,13 +656,12 @@ function C_MultipleChoice(_type) {
 			feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
 			$("#questionEditDialog").remove();
 			optionEdit_arr = [];
-			updateQuestionEditDialog();
+			updateOptionDialog();
 		});
 		
-		//find every option in the xml - place them on the screen.
-		for (var i = 0; i < optionCount; i++){
-			addOption(i, false);
-		};
+		updateRevealMenu();
+		
+		addOption(currentEditBankMember, false);
 				
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
@@ -653,49 +675,30 @@ function C_MultipleChoice(_type) {
 					text: "Add",
 					title: "Add a new option.",
 					click: function(){
-						addOption(optionEdit_arr.length, true);	
+						try { $("#optionContainer").remove(); } catch (e) {}
+						addOption(optionCount, true);
+						updateRevealMenu();		
 					}
 				},
 				{
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
-						var tmpObj = new Object();
-						tmpObj.attempts = $("#inputAttempts").val();
-						tmpObj.objective = $("#inputObjective").val();
-						tmpObj.objItemId = $("#inputObjItemId").val();
-						if($("#isGraded").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("graded", "true");
-						}else{
-							$(data).find("page").eq(currentPage).attr("graded", "false");
-						}
-						if($("#isMandatory").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("mandatory", "true");
-						}else{
-							$(data).find("page").eq(currentPage).attr("mandatory", "false");
-						}
-						if($("#isRandom").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("randomize", "true");
-						}else{
-							$(data).find("page").eq(currentPage).attr("randomize", "false");
-						}
-						tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
-						if(feedbackType == "undifferentiated"){
-							tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
-						}
-						var tmpOptionArray = new Array();
-						for(var i = 0; i < optionEdit_arr.length; i++){
-							var tmpOptionObj = new Object();
-							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
-							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Correct").prop("checked");
-							if(feedbackType == "differentiated"){
-								tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
-							}
-							tmpOptionArray.push(tmpOptionObj);
-						}
-						tmpObj.option_arr = tmpOptionArray;
-						saveQuestionEdit(tmpObj);
-						$("#questionEditDialog").dialog("close");						
+						
+				        makeRevealDataStore();
+						saveQuestionEdit();
+						if (CKEDITOR.instances['optionText']) {
+				            CKEDITOR.remove(CKEDITOR.instances['optionText']);
+				        }
+				        if (CKEDITOR.instances['feedbackEditText']) {
+				            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
+				        }
+				        
+				        if (CKEDITOR.instances['optionDifFeedText']) {
+				            CKEDITOR.remove(CKEDITOR.instances['optionDifFeedText']);
+				        }
+						$("#questionEditDialog").dialog("close");
+						$("#questionEditDialog").remove();					
 					}
 				}	
 			]
@@ -708,30 +711,122 @@ function C_MultipleChoice(_type) {
 	    });
 	}
 	
-	function removeOption(_id){
-		for(var i = 0; i < optionEdit_arr.length; i++){
-			if(_id == $("#"+optionEdit_arr[i]+"Container").attr("value")){
-				var arrIndex = i;
-				break;
+	function makeRevealDataStore(){
+		myObjective = $("#inputObjective").val();
+		myObjItemId = $("#inputObjItemId").val();
+		
+		attemptsAllowed = $("#inputAttempts").val();
+		$(data).find("page").eq(currentPage).attr("attempts", attemptsAllowed);
+		$(data).find("page").eq(currentPage).attr('objective', myObjective);
+		$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
+		
+		if($("#isMandatory").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("mandatory", "true");
+			mandatory = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("mandatory", "false");
+			mandatory = false;
+		}
+		
+		if($("#isGraded").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("graded", "true");
+			graded = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("graded", "false");
+			graded = false;
+		}
+		
+		if($("#isRandom").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("randomize", "true");
+		}else{
+			$(data).find("page").eq(currentPage).attr("randomize", "false");
+		}
+				
+		
+		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");
+		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).find("content").empty();
+		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).find("content").append(revealCDATA);
+		if(feedbackType == "undifferentiated"){
+			var newFeedbackContent = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var feedbackCDATA = newFeedbackContent.createCDATASection(CKEDITOR.instances["feedbackEditText"].getData());
+			$(data).find("page").eq(currentPage).find("feedback").empty();
+			$(data).find("page").eq(currentPage).find("feedback").append(feedbackCDATA);
+		}else if(feedbackType == "differentiated"){
+			var newFeedbackContent = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var feedbackCDATA = newFeedbackContent.createCDATASection(CKEDITOR.instances["optionDifFeedText"].getData());
+			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).find("diffeed").empty();
+			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).find("diffeed").append(feedbackCDATA);
+		}
+		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").prop("checked"));
+		$(data).find("page").eq(currentPage).attr("feedbacktype", feedbackType);
+	}
+	
+	function updateRevealMenu(){
+		revealMenu_arr = [];
+		$(".questionBankItem").remove();
+		var msg = "";
+		for(var h = 0; h < optionCount; h++){
+			var label = parseInt(h + 1);
+			var tmpID = "revealItem"+h;
+			msg += "<div id='"+tmpID+"' class='questionBankItem";
+			if(currentEditBankMember == h){
+				msg += " selectedEditBankMember";
+			}else{
+				msg += " unselectedEditBankMember";
+			}
+			msg += "' style='";
+			
+			if(h < 100){
+				msg += "width:30px;";
+			}else if(h > 99){
+				msg += "width:45px;";
+			}
+			var cleanText = $(data).find("page").eq(currentPage).find("option").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			//console.log("cleanText = " + cleanText);
+			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
+			
+			revealMenu_arr.push(tmpID);
+		}
+		
+		$("#questionMenu").append(msg);
+		
+		for(var j = 0; j < revealMenu_arr.length; j++){
+			if(currentEditBankMember != j){
+				var tmpID = "#" + revealMenu_arr[j];
+				$(tmpID).click(function(){
+					makeRevealDataStore();
+					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+					$("#questionEditDialog").remove();
+					currentEditBankMember = $(this).attr("data-myID");
+					updateOptionDialog();
+				}).tooltip();
 			}
 		}
-		$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
-		optionEdit_arr.splice(arrIndex, 1);
-		$("#option" + _id +"Container").remove();
-		
-		
+	}
+	
+	function removeOption(){
+		if(optionCount > 1){
+			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
+			$("#optionContainer").remove();
+			optionCount--;
+			currentEditBankMember = 0;
+			updateOptionDialog();
+		}else{
+			alert("you must have at least one bank item.");
+		}
 	}
 	
 	function addOption(_addID, _isNew){
-		var optionID = "option" + _addID;
-		var optionLabel = _addID + 1;
+		var optionLabel = parseInt(_addID) + 1;
 		
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("True");
+			var option1CDATA = content1.createCDATASection("New Option");
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").append(option1CDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).append($("<diffeed>"));
 			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
@@ -739,35 +834,37 @@ function C_MultipleChoice(_type) {
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct", "false");
 			
+			currentEditBankMember = _addID;
+			optionCount++;
 		}
 					
 		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();				
-		var msg = "<div id='"+optionID+"Container' class='templateAddItem' value='"+_addID+"'>";
-		msg += "<div id='"+optionID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer option'/>";
-		msg += "<div id='"+optionID+"Input' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
-		msg += "<div id='"+optionID+"Text' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
+		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer option'/>";
+		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
+		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label'><b>correct:</b></label>";
 		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){	
-			msg += "<input id='"+optionID + "Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
+			msg += "<input id='optionCorrect' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}else{
-			msg += "<input id='"+optionID + "Correct' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
+			msg += "<input id='optionCorrect' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}
 		
 		if(feedbackType == "differentiated"){
 			msg += "<br/>"
 			var difFeedContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").text();
 			msg += "<label id='label'><b>Option " + optionLabel + " Differentiated Feedback:</b></label>";
-			msg += "<div id='"+optionID+"DifFeedText' contenteditable='true' class='dialogInput'>" + difFeedContent + "</div>";
+			msg += "<div id='optionDifFeedText' contenteditable='true' class='dialogInput'>" + difFeedContent + "</div>";
 		}
 		msg += "</div>";
 				
 		$("#questionEditDialog").append(msg);
 		
-		$("#" +optionID+"Remove").on('click', function(){
-			removeOption($(this).attr("value"));
+		$("#optionRemove").on('click', function(){
+			removeOption();
 		});
 		
-		CKEDITOR.inline( optionID+"Text", {
+		CKEDITOR.inline( "optionText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
@@ -781,7 +878,7 @@ function C_MultipleChoice(_type) {
 		});	
 		
 		if(feedbackType == "differentiated"){
-			CKEDITOR.inline( optionID+"DifFeedText", {
+			CKEDITOR.inline( "optionDifFeedText", {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
@@ -794,7 +891,6 @@ function C_MultipleChoice(_type) {
 			    }				
 			});	
 		}																	
-		optionEdit_arr.push(optionID);
 	}
 	
 	/**********************************************************************
@@ -812,48 +908,9 @@ function C_MultipleChoice(_type) {
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
 	function saveQuestionEdit(_data){
-		if(_data.feedbackType == "undifferentiated"){
-			var feedbackUpdate = _data.feedbackUpdate;//$("#feedbackEditText").getCode();
-			var feedDoc = new DOMParser().parseFromString('<feedback></feedback>', 'application/xml');
-			var feedCDATA = feedDoc.createCDATASection(feedbackUpdate);
-			$(data).find("page").eq(currentPage).find("feedback").empty();
-			$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
-		}
-		
-		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
-		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
-		for(var j = 0; j < questionResponse_arr.length; j++){
-			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
-				questionResponse_arr[j].graded = _data.graded;
-				questionResponse_arr[j].objective = _data.objective;
-				questionResponse_arr[j].objItemId = _data.objItemId;
-			}
-		}
-		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
-		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
-		$(data).find("page").eq(currentPage).attr("feedbacktype", _data.feedbackType);
-		for(var i = 0; i < optionEdit_arr.length; i++){
-		var correctOptions = 0;
-			var optionText = _data.option_arr[i].optionText;
-			var optionCorrect = _data.option_arr[i].optionCorrect;
-			var newOption = new DOMParser().parseFromString('<option></option>',  "text/xml");
-			var optionCDATA = newOption.createCDATASection(optionText);
-			$(data).find("page").eq(currentPage).find("option").eq(i).find('content').empty();
-			$(data).find("page").eq(currentPage).find("option").eq(i).find('content').append(optionCDATA);
-			if(_data.feedbackType == "differentiated"){
-				var optionDifFeedText = _data.option_arr[i].difText;
-				var optionDifFeedCDATA = newOption.createCDATASection(optionDifFeedText);
-				$(data).find("page").eq(currentPage).find("option").eq(i).find('diffeed').empty();
-				$(data).find("page").eq(currentPage).find("option").eq(i).find('diffeed').append(optionDifFeedCDATA);
-			}
-			$(data).find("page").eq(currentPage).find("option").eq(i).attr("correct", optionCorrect);
-			
-		}
-		
 		var extra = $(data).find("page").eq(currentPage).find("option").length;
-		var active = optionEdit_arr.length;
-		var removed = extra - active;
+		var active = optionCount;
+		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}

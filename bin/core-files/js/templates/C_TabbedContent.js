@@ -294,7 +294,7 @@ function C_TabbedContent(_type) {
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
 		msg += "<label>Tab Title: </label>";
-		msg += "<input id='revealTitleText' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
+		msg += "<input id='revealTitleText' class='dialogInput' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
 					
 		msg += "<div>Tab Content:</div> ";
 		msg += "<div id='revealContentText' class='dialogInput'>" + myTabContent + "</div>";	
