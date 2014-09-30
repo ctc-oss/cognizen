@@ -205,7 +205,7 @@ function C_Flashcard(_type) {
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
 
-		msg += "<label id='label'><b>randomize options: </b></label>";
+		msg += "<label id='label'><b>randomize cards: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>"
