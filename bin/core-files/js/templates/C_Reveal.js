@@ -316,9 +316,7 @@ function C_Reveal(_type) {
 	}
 	
 	function updateRevealDialog(){
-		if (CKEDITOR.instances['revealContentText']) {
-			CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
-		}
+		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
@@ -370,12 +368,15 @@ function C_Reveal(_type) {
 			},
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					clearCKInstances();
 					try { $("#revealContainer").remove(); } catch (e) {}
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -497,7 +498,12 @@ function C_Reveal(_type) {
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
 	}
-			
+	
+	function clearCKInstances(){
+		/*if (CKEDITOR.instances['revealContentText']) {
+            CKEDITOR.instances.revealContentText.destroy();            
+        }*/
+	}
 		
 	function removeReveal(){
 		if(revealCount > 1){

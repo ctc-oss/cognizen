@@ -385,12 +385,7 @@ function C_Sequencing(_type) {
 	}
 	
 	function updateOptionDialog(){
-		if (CKEDITOR.instances['optionText']) {
-			CKEDITOR.remove(CKEDITOR.instances['optionText']);
-		}
-		if (CKEDITOR.instances['feedbackEditText']) {
-			CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
-		}
+		clearCKInstances();
 		
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
@@ -450,23 +445,23 @@ function C_Sequencing(_type) {
 			dialogClass: "no-close",
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					//clearCKInstances();
+					if (CKEDITOR.instances['optionText']) {
+			            CKEDITOR.instances.optionText.destroy();            
+			        }
 					try { $("#optionContainer").remove(); } catch (e) {}
 					addOption(optionCount, true);
 					updateRevealMenu();	
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$('#questionEditDialog').dialog( "close" );
 				}
 			},
 			close: function(){
-				if (CKEDITOR.instances['optionText']) {
-		            CKEDITOR.remove(CKEDITOR.instances['optionText']);
-		        }
-		        if (CKEDITOR.instances['feedbackEditText']) {
-		            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
-		        }
 				$("#questionEditDialog").remove();
 			}
 		});
@@ -623,6 +618,15 @@ function C_Sequencing(_type) {
 		    	}
 		    }			
 		});	
+	}
+	
+	function clearCKInstances(){
+		if (CKEDITOR.instances['optionText']) {
+            CKEDITOR.instances.optionText.destroy();            
+        }
+        if (CKEDITOR.instances['feedbackEditText']) {
+            CKEDITOR.instances.feedbackEditText.destroy();            
+        }
 	}
 		
 	/**********************************************************************
