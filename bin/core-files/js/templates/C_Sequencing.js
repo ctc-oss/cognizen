@@ -351,8 +351,8 @@ function C_Sequencing(_type) {
 		/***************************************************************************************************
 		EDIT QUESTION
 		***************************************************************************************************/
-		$("#question").attr('contenteditable', true);
-		CKEDITOR.inline( 'question', {
+			$("#question").attr('contenteditable', true);
+			CKEDITOR.inline( 'question', {
 				on: {
 					blur: function (event){
 						if(cachedTextPreEdit != event.editor.getData()){
@@ -439,7 +439,6 @@ function C_Sequencing(_type) {
 		
 		updateRevealMenu();
 		
-		//find every option in the xml - place them on the screen.
 		addOption(currentEditBankMember, false);
 				
 		//Style it to jQuery UI dialog
@@ -501,7 +500,8 @@ function C_Sequencing(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).find("option").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			console.log("cleanText = " + cleanText);
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 			
 			revealMenu_arr.push(tmpID);
@@ -522,7 +522,6 @@ function C_Sequencing(_type) {
 				}).tooltip();
 			}
 		}
-		console.log("ended");
 	}
 	
 	function makeRevealDataStore(){
@@ -644,11 +643,11 @@ function C_Sequencing(_type) {
 	* Sends the updated content to node.
 	*/
 	function saveRevealEdit(){
-		var extra = $(data).find("page").eq(currentPage).find("reveal").length;
+		var extra = $(data).find("page").eq(currentPage).find("option").length;
 		var active = optionCount;
 		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
-			$(data).find("page").eq(currentPage).find("reveal").eq(i).remove();
+			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
 		sendUpdateWithRefresh();
 		fadeComplete();
