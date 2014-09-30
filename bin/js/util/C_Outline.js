@@ -343,7 +343,7 @@ function C_Outline(_myItem) {
         });
         
         //OPEN WITH ALL MENU ITEMS COLLAPSED
-        $('#C_Index').nestable('collapseAll');
+        //$('#C_Index').nestable('collapseAll');
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
@@ -2789,7 +2789,8 @@ function C_Outline(_myItem) {
 	               var content = {											//Create data to send to node server
 			            id: myID,
 			            type: "lesson",
-			            user: user
+			            user: user,
+			            loc: 'outliner'
 			        };
 					
 			        socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...

@@ -624,7 +624,8 @@ function C_Dashboard(_type) {
         var content = {
             id: currentParent.attr('id'),
             type: currentLevel,
-            user: user
+            user: user,
+            loc: 'dashboard'
         };
 
         socket.emit('removeContent', content);

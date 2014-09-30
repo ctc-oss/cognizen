@@ -773,7 +773,7 @@ var SocketHandler = {
 
     removeContent: function(data) {
         var _this = this;
-        _this.logger.info(JSON.stringify(data));
+        //_this.logger.info(JSON.stringify(data));
         if (!data.user) {
             data.user = 'unknown';
         }
@@ -781,10 +781,14 @@ var SocketHandler = {
         // Then, drill down through all its children and children's children, and mark them as well.
         // For now, retain the files on the disk.
         var contentType = _this.Content.objectType(data.type);
-		
+        //_this.logger.info("ID " + data.id + " TYPE " + data.type + " loc " + data.loc);
+		var _dataId = data.id;
+        var _dataType = data.type;
+        var _orgLoc = data.loc;
         if (contentType) {
             contentType.findAndPopulate(data.id, function (err, found) {
                 if (found instanceof Program) {
+                    _this.logger.info("DELETEPROGRAM");
                     _this._deleteProgram(found, function(err){
                         if (err) {
                             _this.logger.error(err);
@@ -796,6 +800,42 @@ var SocketHandler = {
                     });
                 }
                 else {
+                    //if data.type == lesson remove from course.xml
+                    if(_dataType == "lesson" && _orgLoc == 'dashboard'){
+                        var courseXml = path.normalize('../programs/' + found.path + '/../course.xml');
+                        var courseXmlPath = path.resolve(process.cwd(), courseXml); 
+                        var _data, etree;
+
+                        try{
+                            _data = fs.readFileSync(courseXmlPath).toString();
+                        }
+                        catch(err){
+                            _this.logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when reading course.xml file.'});                            
+                        }
+                        etree = et.parse(_data);
+
+                        var itemCount = etree.findall('./item').length;
+                        var courseNode = etree.getroot();
+                        for (var i = 0; i < itemCount; i++) {
+                            var myNode = etree.findall('./item')[i];
+                            var nodeId = myNode.get('id');
+                            if(nodeId == _dataId){
+                                courseNode.remove(myNode);
+                            }
+                        };
+
+                        var xml = etree.write({'xml_decleration': false});
+
+                        try{
+                            fs.outputFileSync(courseXmlPath, xml);
+                        }
+                        catch(err){
+                            _this.logger.error(err);
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when writing course.xml file.'});                               
+                        }
+
+                    }
                     _this._deleteContent(found, data.user, function(err){
                         if (err) {
                             _this.logger.error(err);
@@ -1703,7 +1743,7 @@ var SocketHandler = {
                     else{
                         var scormPath = path.normalize('../core-files/scorm/');
                         var scormDir = path.resolve(process.cwd(), scormPath);
-                        _this.logger.info("werwrewr " + found.path);
+                        //_this.logger.info("werwrewr " + found.path);
                         var programPath = path.normalize('../programs/' + found.path + '/');
                         var contentPath = path.resolve(process.cwd(), programPath);                    
                         var xmlContentFile = contentPath + '/xml/content.xml';
