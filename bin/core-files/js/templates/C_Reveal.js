@@ -359,7 +359,7 @@ function C_Reveal(_type) {
 		$("#contentEditDialog").dialog({ 	
 			modal: true,
 			width: 875,
-			height: 655,
+			height: 675,
 			resizable: false,
 			dialogClass: "no-close",
 			close: function(){
@@ -444,6 +444,7 @@ function C_Reveal(_type) {
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("img", $("#revealImageText").val());
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("alt", $("#revealAltText").val());
 	}
 	
 	function addReveal(_addID, _isNew){
@@ -473,8 +474,10 @@ function C_Reveal(_type) {
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
 			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
-					
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
+		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
+			msg += "<label id='label'>ALT text: </label>";
+			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";		
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
 			msg += "<div id='revealContentText' class='dialogInput'>" + myRevealContent + "</div>";
