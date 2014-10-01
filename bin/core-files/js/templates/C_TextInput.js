@@ -572,9 +572,6 @@ function C_TextInput(_type) {
 			width: 875,
 			height: 650,
 			buttons: [
-				// Cancel: function(){
-				// 	$("#questionEditDialog").remove();	
-				// },
 				{
 					text: "Add Question",
 					title: "Adds a new question.",
@@ -605,6 +602,7 @@ function C_TextInput(_type) {
 						var tmpObj = makeQuestionDataStore();
 						saveBankEdit(tmpObj);
 						$("#questionEditDialog").dialog("close");
+						$("#questionEditDialog").remove();
 					}
 				}
 			]

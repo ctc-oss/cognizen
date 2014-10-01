@@ -239,22 +239,35 @@ function C_ClickImage(_type) {
 			close: function(){
 				$("#contentEditDialog").remove();
 			},
-			buttons: {
-				Add: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					try { $("#revealContainer").remove(); } catch (e) {}
-					addReveal(revealCount, true);
-					updateRevealMenu();
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new clickable image.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						try { $("#revealContainer").remove(); } catch (e) {}
+						addReveal(revealCount, true);
+						updateRevealMenu();
+					}
 				},
-				Done: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					saveRevealEdit();
-					$( this ).dialog( "close" );
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						saveRevealEdit();
+						$( this ).dialog( "close" );
+					}
 				}
-			}
+			]
 		});
+		
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
 	}
 	
 	function updateRevealMenu(){
@@ -357,7 +370,7 @@ function C_ClickImage(_type) {
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
 			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' title='Input your image name.' style='width:40%;'/><br/>";
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
 			msg += "<label id='label'><b>ALT text:</b> </label>";
 			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";			
@@ -377,6 +390,11 @@ function C_ClickImage(_type) {
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
+			on: {
+            	instanceReady: function(event){
+                	$(event.editor.element.$).attr("title", "Click here to edit the question.");
+                }
+            },
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
 	}
