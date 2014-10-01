@@ -20,6 +20,7 @@ function C_Dashboard(_type) {
     var currentLevel;
     var parentString = "";
     var assignParent;
+    var myTimer;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -71,6 +72,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerStarted', function (details) {
+            window.clearInterval(myTimer);
             var url = [window.location.protocol, '//', window.location.host, '/programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
             openProject(url, details.myWidth, details.myHeight);
         });
@@ -412,22 +414,30 @@ function C_Dashboard(_type) {
                                 permission: myItem.data('permission')
                             }
                         });
+                        myTimer = setInterval(function () {startlaunchtimer()}, 8000);
                     }
                 }
             }
         );
     }
 	
+    function startlaunchtimer(){
+        alert("You timed out");
+        window.clearInterval(myTimer);
+    }
+
 	var moduleLessonWindow;
     /****************************************************************************************************************************END OF ROLLOVERS FOR TREE ITEMS*/
     //////OPEN A PROJECT\\\\\\
     function openProject(projectPath, w, h) {
+        console.log("open project called");
         var myPath = projectPath.replace(/\s/g, "%20");
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
         
         moduleLessonWindow.focus();
+        console.log("open project end");
     }
     
 	//If closing the dashboard, close the lesson....
