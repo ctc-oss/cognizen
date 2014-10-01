@@ -205,6 +205,7 @@ function C_ClickImage(_type) {
 	}
 	
 	function updateRevealDialog(){
+		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
@@ -240,12 +241,15 @@ function C_ClickImage(_type) {
 			},
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					clearCKInstances();
 					try { $("#revealContainer").remove(); } catch (e) {}
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -315,19 +319,6 @@ function C_ClickImage(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
-		/*if($("#isMandatory").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("mandatory", "true");
-			tmpObj.mandatory = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("mandatory", "false");
-			tmpObj.mandatory = false;
-		}*/
-		
-		/*if($("#isRandom").prop("checked") == true){
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "true");
-		}else{
-			$(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr("randomize", "false");
-		}*/
 		
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
@@ -338,7 +329,6 @@ function C_ClickImage(_type) {
 	}
 	
 	function addReveal(_addID, _isNew){
-		console.log("add reveal started");
 		var revealID = "reveal" + _addID;
 		var revealLabel = parseInt(_addID) + 1;
 		
@@ -369,7 +359,7 @@ function C_ClickImage(_type) {
 			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
 			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
-			msg += "<label id='label'>ALT text: </label>";
+			msg += "<label id='label'><b>ALT text:</b> </label>";
 			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";			
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
@@ -389,8 +379,13 @@ function C_ClickImage(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-		
-		console.log("addReveal completed");
+	}
+	
+	function clearCKInstances(){
+		console.log(CKEDITOR.instances);
+		if (CKEDITOR.instances['revealContentText']) {
+            CKEDITOR.instances.revealContentText.destroy();            
+        }
 	}
 			
 		

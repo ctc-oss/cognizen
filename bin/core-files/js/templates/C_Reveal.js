@@ -316,9 +316,7 @@ function C_Reveal(_type) {
 	}
 	
 	function updateRevealDialog(){
-		if (CKEDITOR.instances['revealContentText']) {
-			CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
-		}
+		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
@@ -370,12 +368,15 @@ function C_Reveal(_type) {
 			},
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					clearCKInstances();
 					try { $("#revealContainer").remove(); } catch (e) {}
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -476,7 +477,7 @@ function C_Reveal(_type) {
 			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
 			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
-			msg += "<label id='label'>ALT text: </label>";
+			msg += "<label id='label'><b>ALT text:</b> </label>";
 			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";		
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
@@ -497,7 +498,12 @@ function C_Reveal(_type) {
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
 	}
-			
+	
+	function clearCKInstances(){
+		/*if (CKEDITOR.instances['revealContentText']) {
+            CKEDITOR.instances.revealContentText.destroy();            
+        }*/
+	}
 		
 	function removeReveal(){
 		if(revealCount > 1){

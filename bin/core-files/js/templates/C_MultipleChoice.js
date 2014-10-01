@@ -571,16 +571,7 @@ function C_MultipleChoice(_type) {
 	
 	
 	function updateOptionDialog(){
-		if (CKEDITOR.instances['optionText']) {
-            CKEDITOR.remove(CKEDITOR.instances['optionText']);
-        }
-        if (CKEDITOR.instances['feedbackEditText']) {
-            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
-        }
-        
-        if (CKEDITOR.instances['optionDifFeedText']) {
-            CKEDITOR.remove(CKEDITOR.instances['optionDifFeedText']);
-        }
+		clearCKInstances();
 		
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 		
@@ -634,6 +625,7 @@ function C_MultipleChoice(_type) {
 		}
 
 		if(feedbackType == "undifferentiated"){
+			console.log("making feedbackEditText");
 			CKEDITOR.inline( "feedbackEditText", {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
@@ -675,6 +667,14 @@ function C_MultipleChoice(_type) {
 					text: "Add",
 					title: "Add a new option.",
 					click: function(){
+						makeRevealDataStore();
+						//Need to do these outside because blows up regular feedback...
+						if (CKEDITOR.instances['optionText']) {
+				            CKEDITOR.instances.optionText.destroy();            
+				        }
+				        if (CKEDITOR.instances['optionDifFeedText']) {
+				            CKEDITOR.instances.optionDifFeedText.destroy();            
+				        }
 						try { $("#optionContainer").remove(); } catch (e) {}
 						addOption(optionCount, true);
 						updateRevealMenu();		
@@ -684,21 +684,11 @@ function C_MultipleChoice(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
-						
 				        makeRevealDataStore();
+				        clearCKInstances();
 						saveQuestionEdit();
-						if (CKEDITOR.instances['optionText']) {
-				            CKEDITOR.remove(CKEDITOR.instances['optionText']);
-				        }
-				        if (CKEDITOR.instances['feedbackEditText']) {
-				            CKEDITOR.remove(CKEDITOR.instances['feedbackEditText']);
-				        }
-				        
-				        if (CKEDITOR.instances['optionDifFeedText']) {
-				            CKEDITOR.remove(CKEDITOR.instances['optionDifFeedText']);
-				        }
 						$("#questionEditDialog").dialog("close");
-						$("#questionEditDialog").remove();					
+						$("#questionEditDialog").remove();				
 					}
 				}	
 			]
@@ -709,6 +699,20 @@ function C_MultipleChoice(_type) {
 	    $(function () {
 	        $(document).tooltip();
 	    });
+	}
+	
+	function clearCKInstances(){
+		if (CKEDITOR.instances['optionText']) {
+            CKEDITOR.instances.optionText.destroy();            
+        }
+        if (CKEDITOR.instances['feedbackEditText']) {
+            console.log("destroying feedbackEditText");
+            CKEDITOR.instances.feedbackEditText.destroy();            
+        }
+        
+        if (CKEDITOR.instances['optionDifFeedText']) {
+            CKEDITOR.instances.optionDifFeedText.destroy();            
+        }
 	}
 	
 	function makeRevealDataStore(){
@@ -796,6 +800,7 @@ function C_MultipleChoice(_type) {
 				var tmpID = "#" + revealMenu_arr[j];
 				$(tmpID).click(function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 					$("#questionEditDialog").remove();

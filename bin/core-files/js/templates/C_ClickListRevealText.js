@@ -158,6 +158,7 @@ function C_ClickListRevealText(_type) {
 	}
 	
 	function updateRevealDialog(){
+		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update click list contents'>";
@@ -185,12 +186,15 @@ function C_ClickListRevealText(_type) {
 			},
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					clearCKInstances();
 					try { $("#revealContainer").remove(); } catch (e) {}
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -240,7 +244,6 @@ function C_ClickListRevealText(_type) {
 				}).tooltip();
 			}
 		}
-		console.log("updateRevealMenu completed");
 	}
 	
 	function makeRevealDataStore(){
@@ -314,6 +317,12 @@ function C_ClickListRevealText(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
+	}
+	
+	function clearCKInstances(){
+		if (CKEDITOR.instances['revealContentText']) {
+            CKEDITOR.instances.revealContentText.destroy();            
+        }
 	}
 			
 		

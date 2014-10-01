@@ -195,17 +195,12 @@ function C_Flashcard(_type) {
 	}
 	
 	function updateRevealDialog(){
-		if (CKEDITOR.instances['cardFrontText']) {
-			CKEDITOR.remove(CKEDITOR.instances['cardFrontText']);
-		}
-		if (CKEDITOR.instances['cardBackText']) {
-			CKEDITOR.remove(CKEDITOR.instances['cardBackText']);
-		}
+		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
 
-		msg += "<label id='label'><b>randomize options: </b></label>";
+		msg += "<label id='label'><b>randomize cards: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>"
@@ -230,22 +225,18 @@ function C_Flashcard(_type) {
 			dialogClass: "no-close",
 			close: function(){
 				$("#contentEditDialog").remove();
-				if (CKEDITOR.instances['cardFrontText']) {
-					CKEDITOR.remove(CKEDITOR.instances['cardFrontText']);
-				}
-				if (CKEDITOR.instances['cardBackText']) {
-					CKEDITOR.remove(CKEDITOR.instances['cardBackText']);
-				}
 			},
 			buttons: {
 				Add: function(){
 					try { $("#revealContainer").remove(); } catch (e) {}
 					makeRevealDataStore();
+					clearCKInstances();
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -348,6 +339,15 @@ function C_Flashcard(_type) {
 		});	
 	}
 	
+	function clearCKInstances(){
+		if (CKEDITOR.instances['cardFrontText']) {
+            CKEDITOR.instances.cardFrontText.destroy();            
+        }
+        if (CKEDITOR.instances['cardBackText']) {
+            CKEDITOR.instances.cardBackText.destroy();            
+        }
+	}
+	
 	function removeReveal(){
 		if(revealCount > 1){
 			$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).remove();
@@ -367,12 +367,12 @@ function C_Flashcard(_type) {
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
 		
-		if($("#isHover").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("interact", "hover");
-			interact = "hover";
+		if($("#isRandom").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("randomize", "true");
+			randomize = true;
 		}else{
-			$(data).find("page").eq(currentPage).attr("interact", "click");
-			interact = "click";
+			$(data).find("page").eq(currentPage).attr("randomize", "false");
+			randomize = false;
 		}
 		
 		var newRevealContent = new DOMParser().parseFromString('<card></card>',  "text/xml");

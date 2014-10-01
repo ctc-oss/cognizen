@@ -192,12 +192,15 @@ function C_TabbedContent(_type) {
 			},
 			buttons: {
 				Add: function(){
+					makeRevealDataStore();
+					clearCKInstances();
 					try { $("#revealContainer").remove(); } catch (e) {}
 					addReveal(revealCount, true);
 					updateRevealMenu();
 				},
 				Done: function(){
 					makeRevealDataStore();
+					clearCKInstances();
 					saveRevealEdit();
 					$( this ).dialog( "close" );
 				}
@@ -316,6 +319,12 @@ function C_TabbedContent(_type) {
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
 	    			
+	}
+	
+	function clearCKInstances(){
+		if (CKEDITOR.instances['revealContentText']) {
+            CKEDITOR.instances.revealContentText.destroy();            
+        }
 	}
 	
 	function removeReveal(){
