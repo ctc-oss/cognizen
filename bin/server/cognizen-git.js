@@ -3,16 +3,19 @@ var GitServer = require('git-server'),
     fs = require('fs-extra'),
     path = require('path'),
     Program = require('./content-model').Program;
+var Padlock = require("padlock").Padlock;
 
 var Git = {
     logger: {},
     Ports: {},
     Content: {},
     Program: {},
+    lock: {},
     init: function(logger, Ports, Content) {
         this.Ports = Ports;
         this.logger = logger;
         this.Content = Content;
+        this.lock = new Padlock();
         return this;
     },
 
@@ -40,42 +43,52 @@ var Git = {
             error("The program's folder is not a git repository");
         }
         else {
-            var exec = require('child_process').exec;
 
-            var commands = [];
-            if (init) {
-                commands.push('git init');
-            }
+                var exec = require('child_process').exec;
 
-            commands.push(Utils.rmCommand() + ' ' + this.indexLockFile());
-            commands.push('git add -A .');
-            commands.push('git commit -q -a -m "' + commitMessage + '"');
-            commands.push('git push -f origin master');
-
-            var command = commands.join(Utils.chainCommands());
-
-            _this.logger.info('Git Commit: ' + command);
-            exec(command, {cwd: path}, function (err, stdout, stderr) {
-                if (stdout) _this.logger.error('STDOUT: ' + stdout);
-                if (stderr) _this.logger.error('STDERR: ' + stderr);
-
-                var nothingToCommit = stdout && stdout.toLowerCase().indexOf('nothing to commit') > -1;
-                var stderrError = stderr && stderr.toLowerCase().indexOf('error:') > -1;
-
-                if (nothingToCommit) {
-                    success();
+                var commands = [];
+                if (init) {
+                    commands.push('git init');
                 }
-                else if (err) {
-                    _this.logger.error('ERR: ' + err);
-                    error(err);
-                }
-                else if (stderrError) {
-                    error(stderr);
-                }
-                else {
-                    success();
-                }
-            });
+
+                commands.push(Utils.rmCommand() + ' ' + _this.indexLockFile());
+                commands.push('git add -A .');
+                commands.push('git commit -q -a -m "' + commitMessage + '"');
+                commands.push('git push -f origin master');
+
+                var command = commands.join(Utils.chainCommands());
+
+                _this.logger.info('Git Commit: ' + command);
+             _this.logger.info("before runwithlock _gitCommit");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Runwithlock start _gitCommit"); 
+                exec(command, {cwd: path}, function (err, stdout, stderr) {
+                   
+                    if (stdout) _this.logger.error('STDOUT: ' + stdout);
+                    if (stderr) _this.logger.error('STDERR: ' + stderr);
+
+                    var nothingToCommit = stdout && stdout.toLowerCase().indexOf('nothing to commit') > -1;
+                    var stderrError = stderr && stderr.toLowerCase().indexOf('error:') > -1;
+
+                    if (nothingToCommit) {
+                        success();
+                    }
+                    else if (err) {
+                        _this.logger.error('ERR: ' + err);
+                        error(err);
+                    }
+                    else if (stderrError) {
+                        error(stderr);
+                    }
+                    else {
+                        success();
+                    }
+                _this.logger.info("Before release _gitCommit");                
+                _this.lock.release();
+                _this.logger.info("after release _gitCommit");
+            });                    
+                });
+
         }
     },
 
@@ -88,33 +101,47 @@ var Git = {
             callback("The program's folder is not a git repository");
         }
         else {
-            var exec = require('child_process').exec;
 
-            var commands = [];
-            commands.push(Utils.rmCommand() + ' ' + this.indexLockFile());
-            commands.push('git add .');
-            commands.push('git fetch --all');
-            commands.push('git reset --hard origin/master');
+                var exec = require('child_process').exec;
 
-            var command = commands.join(Utils.chainCommands());
-            _this.logger.info('Git Update: ' + command);
+                var commands = [];
+                commands.push('echo 1');
+                commands.push(Utils.rmCommand() + ' ' + _this.indexLockFile());
+                commands.push('echo 2');
+                commands.push('git add . 2>&1');
+                commands.push('echo 3');
+                commands.push('git fetch --all 2>&1');
+                commands.push('echo 4');
+                commands.push('git reset --hard origin/master 2>&1');
+                commands.push('echo 5');
 
-            exec(command, {cwd: path}, function (err, stdout, stderr) {
-                if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
-                if (stderr) _this.logger.error('Git-STDERR: ' + stderr);
+                var command = commands.join(Utils.chainCommands());
+                _this.logger.info('Git Update: ' + command);
+            _this.logger.info("before runwithlock _gitUpdateLocal");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Runwithlock start _gitUpdateLocal"); 
+                exec(command, {cwd: path}, function (err, stdout, stderr) {
+                   
+                    if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
+                    if (stderr) _this.logger.error('Git-STDERR: ' + stderr);
 
-                if (err) {
-                    _this.logger.error('Git-ERR: ' + err);
-                    callback(err);
-                }
-                else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
-                    callback(stderr);
-                }
-                else {
-                    _this.logger.info('Local Git Content is up to date.');
-                    callback();
-                }
-            });
+                    if (err) {
+                        _this.logger.error('Git-ERR: ' + err);
+                        callback(err);
+                    }
+                    else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+                        callback(stderr);
+                    }
+                    else {
+                        _this.logger.info('Local Git Content is up to date.');
+                        callback();
+                    }
+                _this.logger.info("Before release _gitUpdateLocal");                
+                _this.lock.release();
+                _this.logger.info("after release _gitUpdateLocal");
+            });                      
+                });
+          
         }
     },
 
@@ -227,31 +254,40 @@ var Git = {
             callback("The program's folder is not a git repository");
         }
         else {
-            var exec = require('child_process').exec;
 
-            var commands = [];
-            commands.push(Utils.rmCommand() + ' ' + this.indexFile());
-            commands.push('git add .');
+                var exec = require('child_process').exec;
 
-            var command = commands.join(Utils.chainCommands());
-            _this.logger.info('Git Fix Small Index File: ' + command);
+                var commands = [];
+                commands.push(Utils.rmCommand() + ' ' + _this.indexFile());
+                commands.push('git add .');
 
-            exec(command, {cwd: path}, function (err, stdout, stderr) {
-                if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
-                if (stderr) _this.logger.error('Git-STDERR: ' + stderr);
+                var command = commands.join(Utils.chainCommands());
+                _this.logger.info('Git Fix Small Index File: ' + command);
+            _this.logger.info("before runwithlock fixSmallIndexIssue");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Start runwithlock fixSmallIndexIssue");   
+                exec(command, {cwd: path}, function (err, stdout, stderr) {
+                 
+                    if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
+                    if (stderr) _this.logger.error('Git-STDERR: ' + stderr);
 
-                if (err) {
-                    _this.logger.error('Git-ERR: ' + err);
-                    callback(err);
-                }
-                else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
-                    callback(stderr);
-                }
-                else {
-                    _this.logger.info('Index file removed and content readded');
-                    callback();
-                }
-            });
+                    if (err) {
+                        _this.logger.error('Git-ERR: ' + err);
+                        callback(err);
+                    }
+                    else if (stderr && stderr.toLowerCase().indexOf('error:') > -1) {
+                        callback(stderr);
+                    }
+                    else {
+                        _this.logger.info('Index file removed and content readded');
+                        callback();
+                    }
+                _this.logger.info("Before release fixSmallIndexIssue");
+                _this.lock.release();
+                _this.logger.info("after release in fixSmallIndexIssue");
+            });                     
+                });
+           
         }
     }
 };
