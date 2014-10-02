@@ -165,7 +165,7 @@ function C_TabbedContent(_type) {
 		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
 		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
 		msg += "<label id='hover'><b>Hover: </b></label>";
-		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' title='Define whether users click or hover over tabs.'/>";
 		msg += "<br/>"
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
@@ -190,22 +190,34 @@ function C_TabbedContent(_type) {
 					CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
 				}
 			},
-			buttons: {
-				Add: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					try { $("#revealContainer").remove(); } catch (e) {}
-					addReveal(revealCount, true);
-					updateRevealMenu();
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new reveal.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						try { $("#revealContainer").remove(); } catch (e) {}
+						addReveal(revealCount, true);
+						updateRevealMenu();
+					}
 				},
-				Done: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					saveRevealEdit();
-					$( this ).dialog( "close" );
+				{
+					text: "Done",
+					title: "Close this dialog.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						saveRevealEdit();
+						$( this ).dialog( "close" );
+					}
 				}
-			}
+			]
 		});
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
 	}
 	
 	
@@ -297,10 +309,10 @@ function C_TabbedContent(_type) {
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
 		msg += "<label>Tab Title: </label>";
-		msg += "<input id='revealTitleText' class='dialogInput' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
+		msg += "<input id='revealTitleText' class='dialogInput' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;' title='Input tab title text.'/>";
 					
 		msg += "<div>Tab Content:</div> ";
-		msg += "<div id='revealContentText' class='dialogInput'>" + myTabContent + "</div>";	
+		msg += "<div id='revealContentText' class='dialogInput' title='Input tab content.'>" + myTabContent + "</div>";	
 		msg += "</div>";
 		
 		$("#contentEditDialog").append(msg);

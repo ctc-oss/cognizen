@@ -325,16 +325,16 @@ function C_Reveal(_type) {
 		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
 		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
 		msg += "<label> <b>Reveal Image Width: </b></label>";
-		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;' title='Set width for images.'/>";
 		msg += "<label> <b>Reveal Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/><br/>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;' title='Set height for images.'/><br/>";
 		msg += "<div id='revealTypeGroup'>";
 		msg += "<label id='hover'><b>Hover: </b></label>";
-		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' title='Set whether users click or hover to reveal.'/>";
 		msg += "<label id='label'>           <b>Reveal Direction: </b></label>";
-		msg += "<input id='revealRight' type='radio' name='manageRevealType' value='revealRight'>open right  </input>";
-		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft'>open left  </input>";
-		msg += "<input id='revealBottom' type='radio' name='manageRevealType' value='revealBottom'>open down  </input>";
+		msg += "<input id='revealRight' type='radio' name='manageRevealType' value='revealRight' title='Set reveals to open from left to right.'>open right  </input>";
+		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft' title='Set reveals to open from right to left.'>open left  </input>";
+		msg += "<input id='revealBottom' type='radio' name='manageRevealType' value='revealBottom' title='Set reveals to open from top to bottom.'>open down  </input>";
 		msg += "</div><br/>"
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
@@ -366,22 +366,35 @@ function C_Reveal(_type) {
 		            CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
 		        }
 			},
-			buttons: {
-				Add: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					try { $("#revealContainer").remove(); } catch (e) {}
-					addReveal(revealCount, true);
-					updateRevealMenu();
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new option.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						try { $("#revealContainer").remove(); } catch (e) {}
+						addReveal(revealCount, true);
+						updateRevealMenu();
+					}
 				},
-				Done: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					saveRevealEdit();
-					$( this ).dialog( "close" );
+				{
+					text: "Done",
+					title: "Close this dialog.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						saveRevealEdit();
+						$( this ).dialog( "close" );
+					}
 				}
-			}
+			]
 		});
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
+
 	}
 	
 	function updateRevealMenu(){
@@ -475,10 +488,10 @@ function C_Reveal(_type) {
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
 			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;' title='Input the image name.'/><br/>";
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
 			msg += "<label id='label'><b>ALT text:</b> </label>";
-			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";		
+			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%' title='Input a description of the image.'/>";		
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
 			msg += "<div><b>Content:</b></div>";
 			msg += "<div id='revealContentText' class='dialogInput'>" + myRevealContent + "</div>";

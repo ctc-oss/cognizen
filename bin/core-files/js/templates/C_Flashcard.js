@@ -201,7 +201,7 @@ function C_Flashcard(_type) {
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
 
 		msg += "<label id='label'><b>randomize cards: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Randomize card order.'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>"
 		
@@ -226,22 +226,34 @@ function C_Flashcard(_type) {
 			close: function(){
 				$("#contentEditDialog").remove();
 			},
-			buttons: {
-				Add: function(){
-					try { $("#revealContainer").remove(); } catch (e) {}
-					makeRevealDataStore();
-					clearCKInstances();
-					addReveal(revealCount, true);
-					updateRevealMenu();
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new card.",
+					click: function(){
+						try { $("#revealContainer").remove(); } catch (e) {}
+						makeRevealDataStore();
+						clearCKInstances();
+						addReveal(revealCount, true);
+						updateRevealMenu();
+					}
 				},
-				Done: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					saveRevealEdit();
-					$( this ).dialog( "close" );
+				{
+					text: "Done",
+					title: "Close this dialog.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						saveRevealEdit();
+						$( this ).dialog( "close" );
+					}
 				}
-			}
+			]
 		});
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
 	}
 	
 	
@@ -309,9 +321,9 @@ function C_Flashcard(_type) {
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='removeCard' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
 		msg += "<div id='cardFront'><b>Card " + revealLabel + " Front:</b></div>";
-		msg += "<div id='cardFrontText' contenteditable='true' class='dialogInput'>" + myCardFront + "</div>";
+		msg += "<div id='cardFrontText' contenteditable='true' class='dialogInput' title='Input text for card front.'>" + myCardFront + "</div>";
 		msg += "<div id='cardBack'><b>Card " + revealLabel + " Back:</b></div>";
-		msg += "<div id='cardBackText' contenteditable='true' class='dialogInput'>" + myCardBack + "</div><br/>";
+		msg += "<div id='cardBackText' contenteditable='true' class='dialogInput' title='Input text for card back.'>" + myCardBack + "</div><br/>";
 		msg += "</div>";
 		
 		$("#contentEditDialog").append(msg);

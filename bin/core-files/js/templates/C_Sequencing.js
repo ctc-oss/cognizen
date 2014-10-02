@@ -443,24 +443,32 @@ function C_Sequencing(_type) {
 			width: 800,
 			height: 650,
 			dialogClass: "no-close",
-			buttons: {
-				Add: function(){
-					makeRevealDataStore();
-					//clearCKInstances();
-					if (CKEDITOR.instances['optionText']) {
-			            CKEDITOR.instances.optionText.destroy();            
-			        }
-					try { $("#optionContainer").remove(); } catch (e) {}
-					addOption(optionCount, true);
-					updateRevealMenu();	
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new sequencing item.",
+					click: function(){
+						makeRevealDataStore();
+						//clearCKInstances();
+						if (CKEDITOR.instances['optionText']) {
+				            CKEDITOR.instances.optionText.destroy();            
+				        }
+						try { $("#optionContainer").remove(); } catch (e) {}
+						addOption(optionCount, true);
+						updateRevealMenu();	
+					}
 				},
-				Done: function(){
-					makeRevealDataStore();
-					clearCKInstances();
-					saveRevealEdit();
-					$('#questionEditDialog').dialog( "close" );
+				{
+					text:"Done",
+					title: "Close this dialog.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						saveRevealEdit();
+						$('#questionEditDialog').dialog( "close" );
+					}
 				}
-			},
+			],
 			close: function(){
 				$("#questionEditDialog").remove();
 			}
