@@ -72,17 +72,21 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerStarted', function (details) {
+            $("#preloadholder").remove();
             window.clearInterval(myTimer);
             var url = [window.location.protocol, '//', window.location.host, '/programs/', details.path, '/index.html?id=', details.id, '&type=', details.type, '&u=', user._id].join('');
             openProject(url, details.myWidth, details.myHeight);
         });
 
         socket.on('contentServerDidNotStart', function (details) {
+             $("#preloadholder").remove();
+            window.clearInterval(myTimer);
             doError('Error Loading Content', details.message);
         });
 
         socket.on('generalError', function(details) {
             $("#preloadholder").remove();
+            window.clearInterval(myTimer);
             doError(details.title, details.message);
         });
 
@@ -415,6 +419,8 @@ function C_Dashboard(_type) {
                             }
                         });
                         myTimer = setInterval(function () {startlaunchtimer()}, 8000);
+                        $("#stage").append('<div id="preloadholder"></div>');
+						$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     }
                 }
             }
@@ -422,6 +428,7 @@ function C_Dashboard(_type) {
     }
 	
     function startlaunchtimer(){
+        $("#preloadholder").remove();
         alert("You timed out");
         window.clearInterval(myTimer);
     }
@@ -430,14 +437,12 @@ function C_Dashboard(_type) {
     /****************************************************************************************************************************END OF ROLLOVERS FOR TREE ITEMS*/
     //////OPEN A PROJECT\\\\\\
     function openProject(projectPath, w, h) {
-        console.log("open project called");
         var myPath = projectPath.replace(/\s/g, "%20");
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
         
         moduleLessonWindow.focus();
-        console.log("open project end");
     }
     
 	//If closing the dashboard, close the lesson....
