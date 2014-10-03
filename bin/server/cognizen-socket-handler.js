@@ -1076,7 +1076,7 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                	console.log(found);
+                	//console.log(found);
                 	var program = found.getProgram();
                 	 _this.Git.updateLocalContent(program, function(err){
                 	 	if (err) {
@@ -1292,32 +1292,49 @@ var SocketHandler = {
     allowOutline: function (data){
 		var _this = this;
 		var allow = true;
-		var user_arr = [];
+		var moduleUser_arr = [];
+		var activeOutlineEditor = null;
 		for(var i = 0; i < activeEdit_arr.length; i++){
 			if(data == activeEdit_arr[i].courseID){
 				if(activeEdit_arr[i].isEditor == true){
 					allow = false;
-					user_arr.push(activeEdit_arr[i].user);
+					moduleUser_arr.push(activeEdit_arr[i].user);
 				}
 			}
 		}
 		for(var j = 0; j < activeOutline_arr.length; j++){
-			if(data == activeOutline_arr[i]){
+			if(data == activeOutline_arr[i].courseID){
 				allow = false;
+				activeOutlineEditor = activeOutline_arr[i].username;
 			}
 		}
-		
+
 		if(allow == false){
-			_this._socket.emit('generalError', {title: 'OutlinerLocked', message: 'This course is currently being edited.'});
+			var myMessage;
+		
+			if(activeOutlineEditor != null){
+				myMessage = activeOutlineEditor + ' is currently using the outliner on this course. Please contact them to request control or try again later.';
+			}else{
+				myMessage = "This course currently has modules being edited by the following people:<br/>";
+				for(var i = 0; i < moduleUser_arr.length; i++){
+					myMessage += moduleUser_arr[i] + '<br/>';
+				}
+				myMessage += "Either contact them all and request that they step out of their lessons or try again later.";
+			}
+			_this._socket.emit('generalError', {title: 'OutlinerLocked', message: myMessage});
 		}else{
-			activeOutline_arr.push(data);
+			var tmpObj = new Object();
+			tmpObj.courseID = data;
+			var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+			tmpObj.username = _this.SocketSessions.socketUsers[sessionId].username;
+			activeOutline_arr.push(tmpObj);
 			_this._socket.emit('allowOutlineLaunch');
 		}    
     },
     
     closeOutline: function (data){
 		for(var i = 0; i < activeOutline_arr.length; i++){
-			if(data == activeOutline_arr[i]){
+			if(data == activeOutline_arr[i].courseID){
 				activeOutline_arr.splice(i, 1);
 			}
 		}
@@ -1360,6 +1377,12 @@ var SocketHandler = {
 					tmpObj.newEditor = null;
 					tmpObj.lessonID = disconnectingLessonID;
 					_this._socket.broadcast.emit('updateActiveEditor', tmpObj);
+				}
+			}
+			
+			for(var i = 0; i < activeOutline_arr.length; i++){
+				if(activeOutline_arr[i].username == user.username && disconnectingLessonID == null){
+					activeOutline_arr.splice(i, 1);
 				}
 			}
 	    }
@@ -1406,9 +1429,9 @@ var SocketHandler = {
 		}
 		
 		for (var j = 0; j < activeOutline_arr.length; j++){
-			if(activeOutline_arr[j] == currentCourse){
+			if(activeOutline_arr[j].courseID == currentCourse){
 				courseOutlineBeingEdited = true;
-				_this._socket.emit('outlineActiveError', {title: 'Course Outline Being Edited', message: 'Sorry, the course outline is currently being edited by an admin.  You cannot edit at this time.'});
+				_this._socket.emit('outlineActiveError', {title: 'Course Outline Being Edited', message: 'Sorry, the course outline is currently being edited by '+activeOutline_arr[j].username+' at this time.  Please contact them or try again later.'});
 			}
 		}
 		
