@@ -46,9 +46,7 @@ function C_VisualMediaHolder(callback){
 	
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
-    }
-    console.log("largeImg = " + largeImg);
-    
+    }    
         //Check for popups...
     if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
         hasPop = true;
@@ -788,7 +786,6 @@ function C_VisualMediaHolder(callback){
 		media_arr.splice(arrIndex,1);
 		caption_arr.splice(arrIndex, 1);
 		alt_arr.splice(arrIndex, 1);
-		console.log(captionEditText_arr[arrIndex]);
 		captionEditText_arr.splice(arrIndex, 1);
 		altEditText_arr.splice(arrIndex, 1);
 		var myItem = "#galleryItem" + _removeID;

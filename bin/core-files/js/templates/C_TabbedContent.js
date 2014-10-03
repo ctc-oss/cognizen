@@ -167,7 +167,7 @@ function C_TabbedContent(_type) {
 		msg += "<label id='hover'  title='Define whether users click or hover over tabs.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
 		msg += "<br/>"
-		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
 		
 		updateRevealMenu();
@@ -258,7 +258,6 @@ function C_TabbedContent(_type) {
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 					$("#contentEditDialog").remove();
 					currentEditBankMember = $(this).attr("data-myID");
-					console.log("currentEditBankMember = " + currentEditBankMember);
 					updateRevealDialog();
 				}).tooltip();
 			}
