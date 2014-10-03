@@ -21,6 +21,7 @@ function C_Dashboard(_type) {
     var parentString = "";
     var assignParent;
     var myTimer;
+    var outlineLaunchItem;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -36,6 +37,10 @@ function C_Dashboard(_type) {
             userRoster = data;
         });
         
+        socket.on('allowOutlineLaunch', function(data){
+	       co = new C_Outline(outlineLaunchItem); 
+        });
+        
         /*socket.on('receiveCoursePath', function (data){
 	    	receiveCoursePath(data); 
         });*/
@@ -49,6 +54,13 @@ function C_Dashboard(_type) {
             proj = data;
             try{co.refreshOutlineData();} catch(e){};
             buildTemplate();
+        });
+        
+        socket.on('updateActiveEditor', function(data){
+	        console.log(data);
+	        if(data.newEditor != null){
+		        //$("#"+data.courseID).find('span').first().append("nono");
+	        }
         });
 
         //Message sent from the server when they try to register an already registered e-mail account.
@@ -302,7 +314,12 @@ function C_Dashboard(_type) {
                 }
 			 
 			 $("#myOutline").click(function () {
-				 	co = new C_Outline(myItem);
+				 	//INSERT CODE HERE TO CHECK IF OUTLINE IS ALREADY OPEN OR IF LESSONS ARE BEING EDITED...
+				 	//THEN CALL co = new C_Outline(myItem) if both come back clean.
+				 	//co = new C_Outline(myItem);
+				 	outlineLaunchItem = myItem;
+				 	console.log(myItem.data('id'));
+				 	socket.emit('allowOutline', myItem.data('id'));
                 }).hover(
                     function () {
                         hoverSubNav = true;

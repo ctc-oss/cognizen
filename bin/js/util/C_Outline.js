@@ -334,7 +334,7 @@ function C_Outline(_myItem) {
             resizable: false,
             close: function (event, ui) {
                 socket.removeAllListeners('receiveCoursePath');
-                socket.emit("closeOutline");
+                socket.emit("closeOutline", courseID);
                 $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {

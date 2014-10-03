@@ -14,10 +14,10 @@ var Utils = require('./cognizen-utils'),
     SocketIOFileUploadServer = require('socketio-file-upload'),
     ContentSocket = require('./content-socket'),
     scorm = require('./cognizen-scorm'),
-    unzip = require('adm-zip');
-    util = require('util');
-var readdirp = require('readdirp');    
-var et = require('elementtree');
+    unzip = require('adm-zip'),
+    util = require('util'),
+	readdirp = require('readdirp'),    
+	et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -25,6 +25,7 @@ _.str.include('Underscore.string', 'string'); // => true
 
 
 var activeEdit_arr = [];
+var activeOutline_arr = [];
 
 var SocketHandler = {
     config: {},
@@ -1075,6 +1076,7 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
+                	console.log(found);
                 	var program = found.getProgram();
                 	 _this.Git.updateLocalContent(program, function(err){
                 	 	if (err) {
@@ -1094,7 +1096,7 @@ var SocketHandler = {
             });
         }    
     },
-    
+        
 	updateCourseXML: function (data){
 		var _this = this;
 		var contentType = _this.Content.objectType(data.content.type);	
@@ -1170,160 +1172,156 @@ var SocketHandler = {
     startContentServer: function (data) {
         var _this = this;
         var contentType = _this.Content.objectType(data.content.type);
-
-            if (contentType) {
-                contentType.findAndPopulate(data.content.id, function (err, found) {
-                    if (found) {
-                        var program = found.getProgram();
-                        _this.Git.updateLocalContent(program, function(err){
-                            var gitFail = false;
-                            if (err) {
-                                _this.logger.error("NWE FRANK : " + err);
-        // _this.logger.info("Before runwithlock in startContentServer");
-        // _this.Git.lock.runwithlock(function () {
-        //     _this.logger.info("in runwithlock in startContentServer");                                
-        //                     	gitFail = true;
-        //                         var errorMessage = JSON.stringify(err);
-        //                         _this.logger.error("errorMessage = " + errorMessage);
-        //                         if (errorMessage.indexOf('index.lock') >= -1 || err.code == 128) {
-        //                             //ATTEMPT TO CLEAN UP GIT INDEX ISSUE - PD - 5/17/14
-        //                             var util = require('util');
-    				// 				var spawn = require('child_process').spawn;
-    				// 				var child;
-    				// 				var commands = [];
-    				// 				var myPath = _this.Content.diskPath(program.path);
-    				// 				var gitPath = myPath + '/.git';
-    				// 				var gitIndexPath = myPath + '/.git/index';
-    				// 				if (!fs.existsSync(gitPath)) {
-    				// 					_this.logger.error("The program's folder is not a git repository");
-    				// 				}else{
-    				// 					var terminal = require('child_process').spawn('bash');
-    									
-    				// 					try {fs.remove(gitIndexPath, function(err){
-    				// 						if (err) return console.error(err);
-    										
-    				// 						terminal.on('exit', function(code){
-    				// 							_this.logger.info('terminal exited with code = ' + code);
-    				// 							if(code == 0){
-    				// 								//Try to start content again - after successfully fixing it...
-    				// 								_this.startContentServer(data);
-    				// 							}else{
-    				// 								_this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. Returning an error: '});
-    				// 							}
-    				// 						});
-    										
-    				// 						terminal.stdin.write('cd ' + myPath + '\n');
-    				// 						terminal.stdin.write('git add .\n');
-    				// 						terminal.stdin.end();
-    				// 					});} catch(e){
-    				// 							_this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time. Returning an error: ' + e});
-    				// 						}
-    				// 				}
-        //                         }
-        //     _this.logger.info("before release in startContentServer");
-        //     _this.Git.lock.release();
-        //     _this.logger.info("after release in startContentServer");
-        // });                                
-                            }
-
-                            else {
-                            	_this.logger.info("into the launch code ====================================================================================");
-                                var serverDetails = _this.Content.serverDetails(found);
-    							var permission = data.content.permission;
-    							var xmlPath = path.normalize('../programs/' + found.path + '/xml/content.xml');
-    							var conWidth = 1024;
-    							var conHeight = 768;
-    							fs.exists(xmlPath, function(exists) {
-    					            if (exists) {
-    					                var xmldata = fs.readFileSync(xmlPath).toString();
-    					                var etree = et.parse(xmldata);
-    					                try { conWidth = etree.find('./courseInfo/preferences/lessonWidth').get('value'); } catch(e) {}
-    					                try { conHeight = etree.find('./courseInfo/preferences/lessonHeight').get('value'); } catch(e) {}
-    					                if (serverDetails.running) {
-    		                                _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
-    		                                _this._socket.emit('contentServerStarted', {
-    		                                    id: found.id,
-    		                                    path: found.path,
-    		                                    myWidth: conWidth,
-    		                                    myHeight: conHeight,
-    		                                    type: data.content.type
-    		                                });  
-    		                            }
-    		                            else {
-    		                                var scormPath = path.normalize('../core-files/scorm/');
-    		                                var scormDir = path.resolve(process.cwd(), scormPath);
-    		                                var programPath = path.normalize('../programs/' + found.path + '/');
-    		                                var parentDir = path.resolve(process.cwd(), programPath);
-    		                                
-    		                                
-    		                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
-    		                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
-    		                                    if (error) {
-    		                                        _this.logger.error(error);
-    		                                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
-    		                                        serverDetails.running = false;
-    		                                    }
-    		                                    else {
-    		                                       _this._socket.emit('contentServerStarted', {
-    		                                       		id: found.id,
-    		                                            path: encodeURIComponent(found.path),
-    		                                            myWidth: conWidth,
-    													myHeight: conHeight,
-    		                                            type: data.content.type
-    		                                        });
-    		                                        
-    		                                       serverDetails.running = true;
-    		                                    }
-    		                                });
-    		                            }
-    		                            
-    		                            //Setting up array to track whether a lesson is locked due to another editor already in....
-    		                            if(permission == "admin" || permission == "editor"){
-    		                            	var alreadyIn = false;
-    		                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
-    										var user = _this.SocketSessions.socketUsers[sessionId];
-    										
-    										//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
-    		                            	for(var i = 0; i < activeEdit_arr.length; i++){
-    		                            		if(activeEdit_arr[i].user == user.username){
-    			                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
-    			                            		alreadyIn = true;
-    			                            		activeEdit_arr[i].lessonID = found.id;
-    			                            		activeEdit_arr[i].permission = permission;
-    			                            		activeEdit_arr[i].rejectEdit = false;
-    			                            		activeEdit_arr[i].isEditor = false;
-    			                            		activeEdit_arr[i].isActive = false;
-    			                            		activeEdit_arr[i].socketID = _this._socket.id;
-    			                            		activeEdit_arr[i].socket = _this._socket;
-    			                            		activeEdit_arr[i].sessionID = sessionId;
-    			                            		activeEdit_arr[i].user = user.username;
-    		                            		}
-    		                            	}
-    		                            	
-    		                            	if(!alreadyIn){
-    			                            	var tmpObject = new Object();
-    			                            	tmpObject.lessonID = found.id;
-    			                            	tmpObject.permission = permission;
-    			                            	tmpObject.rejectEdit = false;
-    			                            	tmpObject.isEditor = false;
-    			                            	tmpObject.isActive = false;
-    			                            	tmpObject.socketID = _this._socket.id;
-    			                            	tmpObject.socket = _this._socket;
-    											tmpObject.sessionID = sessionId;
-    											tmpObject.user = user.username;
-    			                            	activeEdit_arr.push(tmpObject);
-    			                            }
-    		                            }
-    					            }
-    					        });
-                            }
-                        });
-                    }
-                });
-            }
-         
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    var program = found.getProgram();
+                    _this.Git.updateLocalContent(program, function(err){
+                        var gitFail = false;
+                        if (err) {
+                            _this.logger.error("NWE FRANK : " + err);
+							// _this.Git.lock.runwithlock(function () {           
+                        }
+                        else {
+                        	_this.logger.info("into the launch code ====================================================================================");
+                            var serverDetails = _this.Content.serverDetails(found);
+							var permission = data.content.permission;
+							var xmlPath = path.normalize('../programs/' + found.path + '/xml/content.xml');
+							var conWidth = 1024;
+							var conHeight = 768;
+							fs.exists(xmlPath, function(exists) {
+					            if (exists) {
+					                var xmldata = fs.readFileSync(xmlPath).toString();
+					                var etree = et.parse(xmldata);
+					                try { conWidth = etree.find('./courseInfo/preferences/lessonWidth').get('value'); } catch(e) {}
+					                try { conHeight = etree.find('./courseInfo/preferences/lessonHeight').get('value'); } catch(e) {}
+					                if (serverDetails.running) {
+		                                _this.logger.info('Content server for ' + found.path + ' already running on port ' + serverDetails.port);
+		                                _this._socket.emit('contentServerStarted', {
+		                                    id: found.id,
+		                                    path: found.path,
+		                                    myWidth: conWidth,
+		                                    myHeight: conHeight,
+		                                    type: data.content.type
+		                                });  
+		                            }
+		                            else {
+		                                var scormPath = path.normalize('../core-files/scorm/');
+		                                var scormDir = path.resolve(process.cwd(), scormPath);
+		                                var programPath = path.normalize('../programs/' + found.path + '/');
+		                                var parentDir = path.resolve(process.cwd(), programPath);
+		                                
+		                                
+		                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
+		                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
+		                                    if (error) {
+		                                        _this.logger.error(error);
+		                                        _this._socket.emit('generalError', {title: 'Content Error', message: 'Could not start the content at this time.(1)'});
+		                                        serverDetails.running = false;
+		                                    }
+		                                    else {
+		                                       _this.logger.info("socket ID that contentServerStarted is being sent to:");
+		                                       _this.logger.info(_this._socket.id);
+		                                       _this._socket.emit('contentServerStarted', {
+		                                       		id: found.id,
+		                                            path: encodeURIComponent(found.path),
+		                                            myWidth: conWidth,
+													myHeight: conHeight,
+		                                            type: data.content.type
+		                                        });
+		                                        
+		                                       serverDetails.running = true;
+		                                    }
+		                                });
+		                            }
+		                            
+		                            //Setting up array to track whether a lesson is locked due to another editor already in....
+		                            if(permission == "admin" || permission == "editor"){
+		                            	var alreadyIn = false;
+		                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
+										var user = _this.SocketSessions.socketUsers[sessionId];
+										/*
+										console.log(found);
+										_this.logger.info("----------------------------------------------------");
+										_this.logger.info(found.course.id);
+										_this.logger.info("----------------------------------------------------");
+										_this.logger.info(found.id);
+										*/
+										//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
+		                            	for(var i = 0; i < activeEdit_arr.length; i++){
+		                            		if(activeEdit_arr[i].user == user.username){
+			                            		_this.logger.info("USER WAS ALREADY IN+++++++++++++++++++++++++++++++++++++++++++++");
+			                            		alreadyIn = true;
+			                            		activeEdit_arr[i].courseID = found.course.id;
+			                            		activeEdit_arr[i].lessonID = found.id;
+			                            		activeEdit_arr[i].permission = permission;
+			                            		activeEdit_arr[i].rejectEdit = false;
+			                            		activeEdit_arr[i].isEditor = false;
+			                            		activeEdit_arr[i].isActive = false;
+			                            		activeEdit_arr[i].socketID = _this._socket.id;
+			                            		activeEdit_arr[i].socket = _this._socket;
+			                            		activeEdit_arr[i].sessionID = sessionId;
+			                            		activeEdit_arr[i].user = user.username;
+		                            		}
+		                            	}
+		                            	
+		                            	if(!alreadyIn){
+			                            	var tmpObject = new Object();
+			                            	tmpObject.courseID = found.course.id;
+			                            	tmpObject.lessonID = found.id;
+			                            	tmpObject.permission = permission;
+			                            	tmpObject.rejectEdit = false;
+			                            	tmpObject.isEditor = false;
+			                            	tmpObject.isActive = false;
+			                            	tmpObject.socketID = _this._socket.id;
+			                            	tmpObject.socket = _this._socket;
+											tmpObject.sessionID = sessionId;
+											tmpObject.user = user.username;
+			                            	activeEdit_arr.push(tmpObject);
+										}
+									}
+								}
+							});
+						}
+					});
+				}
+			});
+		}
     },
     
+    allowOutline: function (data){
+		var _this = this;
+		var allow = true;
+		var user_arr = [];
+		for(var i = 0; i < activeEdit_arr.length; i++){
+			if(data == activeEdit_arr[i].courseID){
+				if(activeEdit_arr[i].isEditor == true){
+					allow = false;
+					user_arr.push(activeEdit_arr[i].user);
+				}
+			}
+		}
+		for(var j = 0; j < activeOutline_arr.length; j++){
+			if(data == activeOutline_arr[i]){
+				allow = false;
+			}
+		}
+		
+		if(allow == false){
+			_this._socket.emit('generalError', {title: 'OutlinerLocked', message: 'This course is currently being edited.'});
+		}else{
+			activeOutline_arr.push(data);
+			_this._socket.emit('allowOutlineLaunch');
+		}    
+    },
+    
+    closeOutline: function (data){
+		for(var i = 0; i < activeOutline_arr.length; i++){
+			if(data == activeOutline_arr[i]){
+				activeOutline_arr.splice(i, 1);
+			}
+		}
+    },
 	
 	disconnect: function (socket) {
 	    var _this = this;
@@ -1397,41 +1395,54 @@ var SocketHandler = {
     requestLock: function (data){
 		var _this = this;
 		var currentLesson = null;
+		var currentCourse = null;
+		var courseOutlineBeingEdited = false;
 		for (var i = 0; i < activeEdit_arr.length; i++){
 			if(activeEdit_arr[i].user == data.me){
 				currentLesson = activeEdit_arr[i].lessonID;
+				currentCourse = activeEdit_arr[i].courseID
 				break;
 			}
 		}
 		
-		if(currentLesson != null){
-			var isSent = false;
-			for(var i = 0; i < activeEdit_arr.length; i++){
-				if(activeEdit_arr[i].isEditor == true && activeEdit_arr[i].lessonID == currentLesson){
-					var tmpData = new Object();
-					tmpData.requester = data.me;
-					tmpData.requestee = activeEdit_arr[i].user;
-					isSent = true;
-					_this._socket.broadcast.emit('lockRequest', tmpData);
-				}
-			} 
-			
-			//If there is no active editor then take the lock...
-			if (!isSent){
+		for (var j = 0; j < activeOutline_arr.length; j++){
+			if(activeOutline_arr[j] == currentCourse){
+				courseOutlineBeingEdited = true;
+				_this._socket.emit('outlineActiveError', {title: 'Course Outline Being Edited', message: 'Sorry, the course outline is currently being edited by an admin.  You cannot edit at this time.'});
+			}
+		}
+		
+		if(!courseOutlineBeingEdited){
+			if(currentLesson != null){
+				var isSent = false;
 				for(var i = 0; i < activeEdit_arr.length; i++){
-				    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
-					    activeEdit_arr[i].rejectEdit = false;
-					    activeEdit_arr[i].isEditor = true;
-					    var tmpObj = new Object();
-					    tmpObj.lessonID = activeEdit_arr[i].lessonID;
-					    tmpObj.newEditor = data.me;
-					    _this._socket.broadcast.emit('updateActiveEditor', tmpObj);
-					    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
-					    break;
-				    }
-			    }
+					if(activeEdit_arr[i].isEditor == true && activeEdit_arr[i].lessonID == currentLesson){
+						var tmpData = new Object();
+						tmpData.requester = data.me;
+						tmpData.requestee = activeEdit_arr[i].user;
+						isSent = true;
+						_this._socket.broadcast.emit('lockRequest', tmpData);
+					}
+				} 
 				
-			}  
+				//If there is no active editor then take the lock...
+				if (!isSent){
+					for(var i = 0; i < activeEdit_arr.length; i++){
+					    if(activeEdit_arr[i].user == data.me && activeEdit_arr[i].isActive == true){
+						    activeEdit_arr[i].rejectEdit = false;
+						    activeEdit_arr[i].isEditor = true;
+						    var tmpObj = new Object();
+						    tmpObj.courseID = activeEdit_arr[i].courseID;
+						    tmpObj.lessonID = activeEdit_arr[i].lessonID;
+						    tmpObj.newEditor = data.me;
+						    _this._socket.broadcast.emit('updateActiveEditor', tmpObj);
+						    _this._socket.emit('lockRequestAccepted', {requester: data.me, me: "No One"});
+						    break;
+					    }
+				    }
+					
+				}  
+			}
 		} 
     },
     
@@ -1792,8 +1803,7 @@ var SocketHandler = {
                     }                                           
                 }
             });
-        }             
-  
+        }              
     }};
 
 module.exports = SocketHandler;

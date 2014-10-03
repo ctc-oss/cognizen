@@ -446,6 +446,10 @@ var Content = {
 				SocketHandler.socket(socket).disconnect(socket);
 			});
 			
+			socket.on('allowOutline', function(data){
+				SocketHandler.socket(socket).allowOutline(data);
+			});
+			
 			socket.on('passLock', function (data){
 	           SocketHandler.socket(socket).passLock(data); 
             });
@@ -543,6 +547,7 @@ var Content = {
             });
             
             socket.on('closeOutline', function(data){
+	           SocketHandler.socket(socket).closeOutline(data);
 	           io.sockets.emit('refreshDashboard'); 
             });
 

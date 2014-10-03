@@ -43,6 +43,22 @@ function checkFileApi(){
     }
 }
 
+function doError(title, msg) {
+	$("#stage").append('<div id="dialog-error"><p>' + msg + '</p></div>');
+
+    $("#dialog-error").dialog({
+    	modal: true,
+		width: 520,
+        title: title,
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $("#dialog-error").remove();
+            }
+        }
+    });
+}
+
 checkFileApi() 
  
 var queryStringParameters = function() {
