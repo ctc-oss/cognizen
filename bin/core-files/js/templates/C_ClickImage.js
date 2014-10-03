@@ -205,7 +205,6 @@ function C_ClickImage(_type) {
 	}
 	
 	function updateRevealDialog(){
-		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
@@ -213,12 +212,12 @@ function C_ClickImage(_type) {
 		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
 		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
 		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
-		msg += "<label> <b>Reveal Image Width: </b></label>";
-		msg += "<input id='imageWidth'  class='dialogInput' title='Update width for reveal images.' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
-		msg += "<label> <b>Reveal Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' title='Update height for reveal images.' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/>  ";
-		msg += "<label id='hover'><b>Hover: </b></label>";
-		msg += "<input id='isHover' type='checkbox' name='hover' title='Define whether users click or hover over images.' class='radio' value='true'/><br/><br/>";
+		msg += "<label title='Input width of images to be used.'> <b>Reveal Image Width: </b></label>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
+		msg += "<label title='Input height of images to be used.'> <b>Reveal Image Height: </b></label>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/>  ";
+		msg += "<label id='hover' title='Define whether users click or hover over images.'><b>Hover: </b></label>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
 		
@@ -245,7 +244,6 @@ function C_ClickImage(_type) {
 					title: "Add a new clickable image.",
 					click: function(){
 						makeRevealDataStore();
-						clearCKInstances();
 						try { $("#revealContainer").remove(); } catch (e) {}
 						addReveal(revealCount, true);
 						updateRevealMenu();
@@ -256,7 +254,6 @@ function C_ClickImage(_type) {
 					title: "Saves and closes the edit dialog.",
 					click: function(){
 						makeRevealDataStore();
-						clearCKInstances();
 						saveRevealEdit();
 						$( this ).dialog( "close" );
 					}
@@ -369,14 +366,14 @@ function C_ClickImage(_type) {
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
-			msg += "<label id='revealImage'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' title='Input your image name.' style='width:40%;'/><br/>";
+			msg += "<label id='revealImage' title='Input your image name.'><br/><b>Image: </b></label>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");	
-			msg += "<label id='label'><b>ALT text:</b> </label>";
-			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' title='Input descriptive text for your image.' style='width:70%'/>";			
+			msg += "<label id='label' title='Input descriptive text for your image.'><b>ALT text:</b> </label>";
+			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";			
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
-			msg += "<div><b>Content:</b></div>";
-			msg += "<div id='revealContentText' class='dialogInput' title='Input text to be revealed when image clicked.'>" + myRevealContent + "</div>";
+			msg += "<div title='Input text to be revealed when image clicked.'><b>Content:</b></div>";
+			msg += "<div id='revealContentText' class='dialogInput' >" + myRevealContent + "</div>";
 			msg += "</div>";
 		$("#contentEditDialog").append(msg);
 					
@@ -397,13 +394,6 @@ function C_ClickImage(_type) {
             },*/
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-	}
-	
-	function clearCKInstances(){
-		console.log(CKEDITOR.instances);
-		if (CKEDITOR.instances['revealContentText']) {
-            CKEDITOR.instances.revealContentText.destroy();            
-        }
 	}
 			
 		

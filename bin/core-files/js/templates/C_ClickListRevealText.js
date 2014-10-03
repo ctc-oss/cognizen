@@ -158,12 +158,11 @@ function C_ClickListRevealText(_type) {
 	}
 	
 	function updateRevealDialog(){
-		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update click list contents'>";
-		msg += "<label id='hover'><b>Hover: </b></label>";
-		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' title='Define whether users click or hover over the items.'/><br/><br/>";
+		msg += "<label id='hover' title='Define whether users click or hover over the items.'><b>Hover: </b></label>";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
 		
@@ -190,7 +189,6 @@ function C_ClickListRevealText(_type) {
 					title: "Click to add a new reveal option.",
 					click: function(){
 						makeRevealDataStore();
-						clearCKInstances();
 						try { $("#revealContainer").remove(); } catch (e) {}
 						addReveal(revealCount, true);
 						updateRevealMenu();
@@ -201,7 +199,6 @@ function C_ClickListRevealText(_type) {
 					title: "Click to close this dialog.",
 					click: function(){
 						makeRevealDataStore();
-						clearCKInstances();
 						saveRevealEdit();
 						$( this ).dialog( "close" );
 					}
@@ -310,12 +307,12 @@ function C_ClickListRevealText(_type) {
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
-			msg += "<label id='revealTerm'><br/><b>Term: </b></label>";
-			msg += "<input id='revealTermText' class='dialogInput' type='text' value='"+termString+"' defaultValue='"+termString+"' style='width:40%;' title='Input reveal term.'/>";
+			msg += "<label id='revealTerm' title='Input reveal term.'><br/><b>Term: </b></label>";
+			msg += "<input id='revealTermText' class='dialogInput' type='text' value='"+termString+"' defaultValue='"+termString+"' style='width:40%;' />";
 					
 		var myRevealContent = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("content").text();	
-			msg += "<div><b>Content:</b></div>";
-			msg += "<div id='revealContentText' class='dialogInput' title='Input reveal item definition.'>" + myRevealContent + "</div>";
+			msg += "<div title='Input reveal item definition.'><b>Content:</b></div>";
+			msg += "<div id='revealContentText' class='dialogInput'>" + myRevealContent + "</div>";
 			msg += "</div>";
 		$("#contentEditDialog").append(msg);
 					
@@ -331,14 +328,7 @@ function C_ClickListRevealText(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-	}
-	
-	function clearCKInstances(){
-		if (CKEDITOR.instances['revealContentText']) {
-            CKEDITOR.instances.revealContentText.destroy();            
-        }
-	}
-			
+	}	
 		
 	function removeReveal(){
 		if(revealCount > 1){

@@ -390,17 +390,17 @@ function C_Sequencing(_type) {
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		var msg = "<div id='questionEditDialog' title='Create Sequencing Assessment'>";
-		msg += "<label id='label'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/><br/>";
-		msg += "<label>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/>";
-		msg += "<label>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 400px;' title='Name of the modules or lesson the objective is mapped to.'/><br/>";
-		msg += "<div id='feedbackLabel'><b>Input your feedback:</b></div>";
+		msg += "<label id='label' title='Increase the number of attempts'><b>no. of attempts: </b></label>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label' title='Mandatory means that interactives on this page must be completed before proceeding. (disabled in edit mode).'><b>mandatory: </b></label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/>";
+		msg += "<label title='Unique description of the objective.'>question objective: </label>";
+		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/>";
+		msg += "<label title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";
+		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 400px;'/><br/>";
+		msg += "<div id='feedbackLabel' title='Feedback that will be displayed to users upon completing the sequence.'><b>Input your feedback:</b></div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";		
 		msg += "</div>";
@@ -602,9 +602,8 @@ function C_Sequencing(_type) {
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
-		msg += "<label id='label'><b>correct:</b></label>";
-		msg += "<label id='label'>Option " + optionLabel + " Order #: </label>";
-		msg += "<input type='text' name='myMatch' id='optionCorrect' value='"+ $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") +"' class='dialogInput' style='width:35px; text-align:center;' title='Indicates the order of the option.'/><br/>";
+		msg += "<label id='label' title='Indicates the correct position of the option in the sequence order.'><b>Correct position in sequence:</b> </label>";
+		msg += "<input type='text' name='myMatch' id='optionCorrect' value='"+ $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") +"' class='dialogInput' style='width:35px; text-align:center;'/><br/>";
 		
 		msg += "</div>";
 				

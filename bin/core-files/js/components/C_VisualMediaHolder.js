@@ -365,14 +365,14 @@ function C_VisualMediaHolder(callback){
 			//Establish it's functionality
 			$("#imgEdit").click(function(){
 				var msg = "<div id='imgDialog' title='Input Media Path'>";
-				msg += "<label id='label'>file name: </label>";
-				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+				msg += "<label id='label' title='input file name - must include file extension.'>file name: </label>";
+				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/><br/>";
+				msg += "<label id='label' title='Input a description of the media for visually impaired users.'>ALT text: </label>";
+            	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
 				msg += "<br/>";
-				msg += "<label id='label'>large version: </label>";
+				msg += "<label id='label' title='Include a large version.  Will place an enlarge icon below your media which when clicked will expand the window.'>large version: </label>";
 				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
 				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
-            	msg += "<label id='label'>ALT text: </label>";
-            	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
             	msg += "<br/><br/></div>";
             	$("#stage").append(msg);
                 	
@@ -609,7 +609,7 @@ function C_VisualMediaHolder(callback){
 				}
 				
 				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
-				captionString += CKEDITOR.instances[captionEditText_arr[i]].getData();
+				captionString += $("#"+captionEditText_arr[i]).val();//.getData();
 				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val();
 				virgin = false;
 			}	
@@ -788,6 +788,7 @@ function C_VisualMediaHolder(callback){
 		media_arr.splice(arrIndex,1);
 		caption_arr.splice(arrIndex, 1);
 		alt_arr.splice(arrIndex, 1);
+		console.log(captionEditText_arr[arrIndex]);
 		captionEditText_arr.splice(arrIndex, 1);
 		altEditText_arr.splice(arrIndex, 1);
 		var myItem = "#galleryItem" + _removeID;
@@ -829,7 +830,7 @@ function C_VisualMediaHolder(callback){
 		msg += "<div id='"+removeID+"' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
 		msg += "<label id='label'><b>Gallery Item: </b><br/></label>";
 		msg += "<label id='label'>Media: </label><input id='imgPath" + _addID + "' class='dialogInput' type='text' value='"+media_arr[_addID]+"' defaultValue='"+media_arr[_addID]+"' style='width:80%;'/><br/>";
-		msg += "<div>Caption:</div><div id='"+captionTextID+"' type='text' contenteditable='true' class='dialogInput'>"+caption_arr[_addID]+"</div>";
+		msg += "<label id='label'>Caption:</label><input id='"+captionTextID+"' type='text' class='dialogInput' value='"+caption_arr[_addID]+"' defaultValue='"+caption_arr[_addID]+"'  style='width:80%;'/><br/>";
 		msg += "<label id='label'>ALT text: </label>";
 		msg += "<input id='"+altTextID+"' class='dialogInput' type='text' value='"+alt_arr[_addID]+"' defaultValue='"+alt_arr[_addID]+"' style='width:70%'/>";
 		msg += "</div>"
@@ -839,14 +840,14 @@ function C_VisualMediaHolder(callback){
 			removeGalleryItem($(this).attr("value"));	
 		});
 		
-		CKEDITOR.inline( captionTextID, {
+		/*CKEDITOR.inline( captionTextID, {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
 			enterMode : CKEDITOR.ENTER_BR,
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
-		});							
+		});*/							
 						
 		galleryEdit_arr.push(galleryItemID);
 	}

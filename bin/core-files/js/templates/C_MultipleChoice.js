@@ -625,7 +625,6 @@ function C_MultipleChoice(_type) {
 		}
 
 		if(feedbackType == "undifferentiated"){
-			console.log("making feedbackEditText");
 			CKEDITOR.inline( "feedbackEditText", {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
@@ -706,7 +705,6 @@ function C_MultipleChoice(_type) {
             CKEDITOR.instances.optionText.destroy();            
         }
         if (CKEDITOR.instances['feedbackEditText']) {
-            console.log("destroying feedbackEditText");
             CKEDITOR.instances.feedbackEditText.destroy();            
         }
         

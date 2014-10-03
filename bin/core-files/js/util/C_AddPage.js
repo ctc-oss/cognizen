@@ -227,12 +227,12 @@ function createNewPageByType(_myType){
 
 			$(data).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
 			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
+			var tabCDATA1 = newTabContent1.createCDATASection("<p>New Tab Content</p>");
 			$(data).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
 
 			$(data).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));
 			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-			var tabCDATA2 = newTabContent2.createCDATASection("New Tab Content");
+			var tabCDATA2 = newTabContent2.createCDATASection("<p>New Tab Content</p>");
 			$(data).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
@@ -247,7 +247,7 @@ function createNewPageByType(_myType){
 
 			$(data).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
 			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
-			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
+			var tabCDATA1 = newTabContent1.createCDATASection("<p>New Tab Content</p>");
 			$(data).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
 
 			$(data).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));

@@ -200,8 +200,8 @@ function C_Flashcard(_type) {
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
 
-		msg += "<label id='label'><b>randomize cards: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Randomize card order.'/><br/><br/>";
+		msg += "<label id='label' title='Randomize card order.'><b>randomize cards: </b></label>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>"
 		
@@ -277,7 +277,7 @@ function C_Flashcard(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("card").eq(h).text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).find("card").eq(h).find("term").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 			
 			revealMenu_arr.push(tmpID);
@@ -320,10 +320,10 @@ function C_Flashcard(_type) {
 		
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='removeCard' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
-		msg += "<div id='cardFront'><b>Card " + revealLabel + " Front:</b></div>";
-		msg += "<div id='cardFrontText' contenteditable='true' class='dialogInput' title='Input text for card front.'>" + myCardFront + "</div>";
-		msg += "<div id='cardBack'><b>Card " + revealLabel + " Back:</b></div>";
-		msg += "<div id='cardBackText' contenteditable='true' class='dialogInput' title='Input text for card back.'>" + myCardBack + "</div><br/>";
+		msg += "<div id='cardFront' title='Input text for card front.'><b>Card " + revealLabel + " Front:</b></div>";
+		msg += "<div id='cardFrontText' contenteditable='true' class='dialogInput'>" + myCardFront + "</div>";
+		msg += "<div id='cardBack' title='Input text for card back.'><b>Card " + revealLabel + " Back:</b></div>";
+		msg += "<div id='cardBackText' contenteditable='true' class='dialogInput'>" + myCardBack + "</div><br/>";
 		msg += "</div>";
 		
 		$("#contentEditDialog").append(msg);
