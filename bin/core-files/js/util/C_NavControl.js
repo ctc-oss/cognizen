@@ -1215,6 +1215,16 @@ this.loadPage = function(){
 			scorm.save();
 		}
 	}
+	
+	if(mode == "edit"){
+		//clear the page comments from last page
+		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" || currentTemplateType == "left" || currentTemplateType == "bottom" || currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia"){
+			$("#mediaDrop").css({opacity: 0});
+	    }
+		else{
+			$("#mediaDrop").css({opacity: 1});
+		}
+	}
 
 	switch (currentTemplateType) {
 		//Satic Layouts
