@@ -1218,7 +1218,7 @@ this.loadPage = function(){
 	
 	if(mode == "edit"){
 		//clear the page comments from last page
-		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" || currentTemplateType == "left" || currentTemplateType == "bottom" || currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia"){
+		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" || currentTemplateType == "left" || currentTemplateType == "bottom" || currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" || currentTemplateType == "tabsLeft"){
 			$("#mediaDrop").css({opacity: 0});
 	    }
 		else{
