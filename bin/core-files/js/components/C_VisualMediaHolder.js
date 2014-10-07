@@ -34,6 +34,8 @@ function C_VisualMediaHolder(callback){
     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
     var convertableVectorTypes = ["eps"];
     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
+
+	var oldIE = false;
    
     //Populate Key Variables
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
@@ -168,21 +170,53 @@ function C_VisualMediaHolder(callback){
 
             $("#loader").append(vidHTMLString);
             
-            $('video').mediaelementplayer({
-                success: function(player, node) {
-                    //If autoNext then move to next page upon completion.
-                    if(autoNext == true){
-                        player.addEventListener('ended', function(e) {
-                            hasEnded();
-                        }, false);
-                    }
+			// Prefer Flash or Silverlight on IE 8, 9, 10 to enable true fullscreen
+			(function ($) {
+				"use strict";
+				// Detecting IE
+				if ($('html').is('.ie8, .ie9, .ie10')) {
+					oldIE = true;
+				}
+			}(jQuery));
+
+			if (oldIE) {
+				// IE 8, 9 or 10 - prefer Flash or Silverlight
+				$('video').mediaelementplayer({
+					mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
+					enablePluginSmoothing: true,
+					success: function(player, node) {
+						//If autoNext then move to next page upon completion.
+						if(autoNext == true){
+							player.addEventListener('ended', function(e) {
+								hasEnded();
+							}, false);
+						}
 					
-                    //If autoplay - cick off the vid
-                    if(autoPlay == true){
-                        $('.mejs-overlay-button').trigger('click');
-                    }
-                }
-            });
+						//If autoplay - cick off the vid
+						if(autoPlay == true){
+							$('.mejs-overlay-button').trigger('click');
+						}
+					}
+				});
+			}else{
+				// decent browser - prefer HTML5 video
+				$('video').mediaelementplayer({
+					enablePluginSmoothing: true,
+					success: function(player, node) {
+						//If autoNext then move to next page upon completion.
+						if(autoNext == true){
+							player.addEventListener('ended', function(e) {
+								hasEnded();
+							}, false);
+						}
+					
+						//If autoplay - cick off the vid
+						if(autoPlay == true){
+							$('.mejs-overlay-button').trigger('click');
+						}
+					}
+				});
+			}
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
             
