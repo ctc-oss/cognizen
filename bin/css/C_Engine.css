@@ -1,6 +1,6 @@
 body{
 	position: static;
-	background-color:#FEFEFE;
+	background-color:#1A508C;
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
@@ -263,7 +263,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 102px;
 	right: 460px;
-	color: #9DA6AB;
+	color: #ffffff;
 	font-weight: normal;
 	font-size: 34pt;
 	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
