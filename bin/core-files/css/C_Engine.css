@@ -3572,6 +3572,44 @@ a.fancybox-expand {
 
 	}
 
+
+	@media screen and (max-device-width: 384px) {
+
+		/*index pane specific*/
+		#indexPane{
+			left: -323px;
+		}
+
+		#indexTab{
+			left: 329px;
+			width: 42px;
+		}
+
+		#indexContent{
+			width: 316px;
+		}
+
+		.dd3-content{
+			margin: 2px 0;
+		}
+		
+		/*glossary pane specific*/
+/*		#glossaryPane{
+			left: -283px;
+		}
+
+		#glossaryTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#glossaryContent{
+			width: 276px;
+		}
+*/
+	}
+
+
 	@media screen and (max-device-width: 320px) {
 
 		/*index pane specific*/
