@@ -273,7 +273,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #009DDF
+	color: #ffffff;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -286,11 +286,11 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #009DDF
+	color: #eeeeee;
 }
 
 #logout a:hover{
-	color: #9DA6AB;
+	color: #999999;
 }
 
 #adminAddProgram{
