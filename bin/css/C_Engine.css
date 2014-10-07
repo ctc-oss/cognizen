@@ -1,6 +1,6 @@
 body{
 	position: static;
-	background-color:#1A508C;
+	background-color:#FEFEFE;
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
@@ -263,7 +263,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 102px;
 	right: 460px;
-	color: #ffffff;
+	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 34pt;
 	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
@@ -273,7 +273,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #ffffff;
+	color: #009DDF
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -286,11 +286,11 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #eeeeee;
+	color: #009DDF
 }
 
 #logout a:hover{
-	color: #999999;
+	color: #9DA6AB;
 }
 
 #adminAddProgram{
@@ -321,7 +321,6 @@ TREE MENU STYLES
 	right: 65px;
 	width: 550px;
 	height: 500px;
-	background: rgba(255,255,255, .5); 
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 3px;
