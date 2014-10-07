@@ -321,6 +321,7 @@ TREE MENU STYLES
 	right: 65px;
 	width: 550px;
 	height: 500px;
+	background: rgba(255,255,255, .5); 
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 3px;
