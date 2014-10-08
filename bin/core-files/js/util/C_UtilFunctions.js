@@ -142,10 +142,18 @@ MOBILE DETECTION
 //var isMobile = jQuery.browser.mobile;
 var isMobile = false;
 
-if( (window.innerWidth < 1024) || (window.innerHeight < 700) ){
+if( (windowWidth < 1024) || (windowHeight < 700) ){
 	isMobile = true;
 	console.log("mobile device detected");
 }
+
+var isMobilePhone = false;
+
+if( (windowWidth < 800) || (windowHeight < 480) ){
+	isMobilePhone = true;
+	console.log("mobile phone detected");
+}
+
 
 // Detect touch device
 // from http://www.stucox.com/blog/you-cant-detect-a-touchscreen/
