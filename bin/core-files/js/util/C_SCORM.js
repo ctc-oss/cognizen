@@ -231,7 +231,7 @@ function getObjectives(){
     	var objectivesObj = new Object();
     	var setId = scorm.get("cmi.objectives." + i + ".id").split(".");
     	if(setId.length > 1){
-	    	objectivesObj.id = setId[2].replace(/_/g, ' ');
+	    	objectivesObj.id = encodeURIComponent(setId[2].replace(/_/g, ' '));
 	    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
 	    	objectivesObj.objItemId = setId[setId.length - 1].replace(/_/g, ' ').replace(/:/g, '');
 	    	objectives_arr.push(objectivesObj);
@@ -298,9 +298,9 @@ function findObjective(objId)
 {
     var num = parseInt(scorm.get("cmi.objectives._count"));
     var objIndex = -1;
-
+    var encodedObjId = encodeURIComponent(objId);
     for (var i=0; i < num; ++i) {
-        if (scorm.get("cmi.objectives." + i + ".id") == objId) {
+        if (scorm.get("cmi.objectives." + i + ".id") == encodedObjId) {
             objIndex = i;
             break;
         }
@@ -310,7 +310,7 @@ function findObjective(objId)
         //message("Objective " + objId + " not found.");
         objIndex = num;
         //message("Creating new objective at index " + objIndex);
-        scorm.set("cmi.objectives." + objIndex + ".id", objId);
+        scorm.set("cmi.objectives." + objIndex + ".id", encodedObjId);
     }
     return objIndex;
 }
