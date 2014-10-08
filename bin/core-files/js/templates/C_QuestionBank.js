@@ -58,6 +58,7 @@ function C_QuestionBank(_type) {
     var randomize = false;
     var currentEditBankMember = 0;
     var scormVersion;
+    var pageId;
         
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -94,6 +95,7 @@ function C_QuestionBank(_type) {
 		feedbackIncorrectAttempt = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('attemptresponse').text();
 		feedback = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
+		pageId = $(data).find("page").eq(currentPage).attr("id");
 
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
@@ -164,9 +166,9 @@ function C_QuestionBank(_type) {
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 			
 			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
 			
 			$("#" + myOption + "Check").click(function(){
@@ -297,6 +299,7 @@ function C_QuestionBank(_type) {
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var tempCorrect = true;
 		attemptsMade++;
+		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');				
 		if(isMulti == false){
 			var selected = $("#answer input[type='radio']:checked");
 			if(selected.val() == "true"){
@@ -304,7 +307,24 @@ function C_QuestionBank(_type) {
 			}else{
 				tempCorrect = false;
 			}
+			//add true/false SCORM interaction here
+			////////////////////////////////////////////////
+			var label = $.trim($("label[for='"+ selected.attr('id') +"']").text().replace(/\s+/g, ''));
+			//ensure it is a true/false options
+			if(label.toLowerCase().indexOf("true") >= 0 || label.toLowerCase().indexOf("false") >= 0 ){
+				var _learnerResponse = "false";
+				if(label.toLowerCase().indexOf("true") >= 0){
+					_learnerResponse = "true";
+				}
+				setInteractions(pageId, "true-false", _learnerResponse, tempCorrect, _title + " : " + $.trim($("#question").text()));
+			}
+			else{
+				setInteractions(pageId, "choice", label, tempCorrect, _title + " : " + $.trim($("#question").text()));
+			}
+			////////////////////////////////////////////////
+
 		}else{
+			var _learnerResponse = [];
 			for(var i = 0; i < option_arr.length; i++){
 				if(option_arr[i].find('input').attr("value") == "true"){
 					if(option_arr[i].find("input").prop("checked") == false){
@@ -315,7 +335,29 @@ function C_QuestionBank(_type) {
 						tempCorrect = false;
 					}
 				}
+
+				//build learnerResponse array for SCORM interaction
+				if(option_arr[i].find("input").prop("checked")){
+					_learnerResponse.push($.trim($("label[for='"+ option_arr[i].find("input").attr('id') +"']").text().replace(/\s+/g, '')));
+				}
+
 			}
+
+			//add choice SCORM interaction here
+			//////////////////////////////////////////
+			var _first = true;
+			var _learnerResponseString = '';
+			for (var i = 0; i < _learnerResponse.length; i++) {
+				if(_first){
+					_first = false;
+					_learnerResponseString += _learnerResponse[i];
+				}
+				else{
+					_learnerResponseString += "[,]" + _learnerResponse[i];
+				}
+			};
+			setInteractions(pageId, "choice", _learnerResponseString, tempCorrect, _title + " : " + $.trim($("#question").text()) );
+			//////////////////////////////////////////
 		}
 
 		//set SCORM objectives
