@@ -82,22 +82,7 @@ var SCORM = {
 				        	_this.logger.error("Error reading temp content xml file : " + err);
 				        	callback(err,null);
 				        }		            	
-		            	// fs.copy(_this.xmlContentFile, _this.tempXmlContentFile, function(err){
-		            	// 	if(err){
-		            	// 		_this.logger.error("Error copying content.xml file " + err);
-		            	// 		callback(err, null);
-		            	// 	}
-		            	// 	_this.logger.info('content.xml file copied success');
 
-					        
-
-					        // fs.readFile(_this.tempXmlContentFile, function(err, data){
-					        // 	if(err){
-					        // 		_this.logger.error("Error reading temp content.xml file " + err);
-		           //  				callback(err, null);
-					        // 	}
-
-					        // 	data = data.toString();
 				        etree = et.parse(data);
 
 				        //set mode to production and scorm version in temp content.xml
@@ -126,7 +111,7 @@ var SCORM = {
 						    		//console.log(i + " : " + pageObj);
 						 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 						 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
-						 						pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+						 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
 						 						pageObj.replace(/\s+/g, '_');
 
 						    	}
@@ -137,7 +122,7 @@ var SCORM = {
 						    		}
 						    		else{
 							 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
-						 						pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+						 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
 						 						pageObjId.replace(/\s+/g, '_');						    			
 						    		}
 						    	}
@@ -213,10 +198,6 @@ var SCORM = {
 			                	});
 			                }
 		                });			                			        	
-					        //});
-
-
-		            	// });
 
 		            }
 		        );
@@ -653,7 +634,7 @@ var SCORM = {
 
 			//if(exists){
 		_this.courseXmlExists = true;
-		console.log("EXISTS");
+		//console.log("EXISTS");
         //add js directory to root of package
         readdirp(
             { root: _this.contentPath + '/../js',
@@ -720,12 +701,6 @@ var SCORM = {
             	//_this.tempXmlContentFile = _this.packageFolder +count+'content.xml';
             	var tempContentFile = _this.packageFolder +count+'content.xml';
 
-            	// fs.copy(lessonXmlContentFile, _this.tempXmlContentFile, function(err){
-            	// 	if(err){
-            	// 		_this.logger.error("Error copying content.xml file " + err);
-            	// 		callback(err, null);
-            	// 	}
-            	//	_this.logger.info('content.xml file copied success');	
 				data = fs.readFileSync(tempContentFile).toString();
 		        etree = et.parse(data);
 
@@ -761,7 +736,7 @@ var SCORM = {
 				    		//console.log(i + " : " + pageObj);
 				 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 				 			tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
-				 						pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')+"."+
+				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
 				 						pageObj.replace(/\s+/g, '_').replace(/:/g, '');
 
 				    	}
@@ -772,7 +747,7 @@ var SCORM = {
 				    		}
 				    		else{
 					 			tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
-				 						pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')+"."+
+				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
 				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '');						    			
 				    		}
 				    	}
@@ -1369,9 +1344,9 @@ var SCORM = {
 
         //setting objectives	
         //any objectives stuff goes here - objectivesGenerator
-        // if(_this.objectives_arr.length > 0){
-        // 	seq += _this._objectivesGenerator();
-        // }
+        if(_this.objectives_arr.length > 0){
+        	item += _this._objectivesGenerator();
+        }
 
         //setting delivery controls
         if(!itemSeq.tracked || itemSeq.completionSetByContent || itemSeq.objectiveSetByContent){
