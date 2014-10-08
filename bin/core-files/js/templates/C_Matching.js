@@ -113,7 +113,11 @@ function C_Matching(_type) {
 		
 		$('#stage').append(msg);
 		
-		if(type == "matching"){
+		if(type == "matchingDrag" && isMobilePhone){
+			type = "matchingDragPhone";
+		}
+
+		if(type == "matching" || type == "matchingDragPhone"){
 			$("#matchingOptions").addClass("matchingOptions");
 			$("#matchingAnswers").addClass("matchingAnswers");
 		}else if(type == "matchingDrag"){
@@ -143,7 +147,7 @@ function C_Matching(_type) {
 						
 			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
 			//Add text input field if regular matching
-			if (type == "matching"){
+			if (type == "matching" || type == "matchingDragPhone"){
 				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />";
 			}
 			
@@ -205,7 +209,11 @@ function C_Matching(_type) {
 			var myLabel = String.fromCharCode(j % 26 + 65);
 			if(type == "matching" || myImg == undefined){
 				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " + myContent + "</div>");
-			}else if(type == "matchingDrag"){
+			}
+			else if(type == "matchingDragPhone"){
+				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + ">"  + myLabel + ". " +"<img id='funk' src='media/"  + myImg + "'></img></div>");
+			}
+			else if(type == "matchingDrag"){
 				$("#matchingAnswers").append("<div class='matchingAnswer' id="+ myAnswer + "><img id='funk' src='media/"  + myImg + "'></img></div>");
 				$("#funk").load(function(){
 					var greaterHeight = 0;
@@ -296,7 +304,7 @@ function C_Matching(_type) {
 	
 	
 	function placematchingSubmit(){
-		if(type == "matching"){
+		if(type == "matching" || type == "matchingDragPhone"){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 			$("#mcSubmit").click(checkAnswer);
@@ -312,7 +320,7 @@ function C_Matching(_type) {
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
-					if(type == "matching"){
+					if(type == "matching" || type == "matchingDragPhone"){
 						option_arr[k].find("input").val(temp_arr[k]);
 						//Map the user input to the matchID - needed since randomizing
 						var userInput = option_arr[k].find('input').val().toUpperCase()
@@ -406,7 +414,7 @@ function C_Matching(_type) {
 		tempCorrect = true;
 
 		/*check for regular matching*/
-		if(type == "matching"){
+		if(type == "matching" || type == "matchingDragPhone"){
 			for(var i=0; i < option_arr.length; i++){
 				var markingObject = new Object();
 				
@@ -455,7 +463,7 @@ function C_Matching(_type) {
 		var _learnerResponse = '';		
 
 		for (var i = 0; i < marking_arr.length; i++) {
-			if(type == "matching"){
+			if(type == "matching" || type == "matchingDragPhone"){
 				var matchingItem = marking_arr[i].myDrop.find($('div[id=myMatchingText]')).text();
 				_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].userInput;
 			}
@@ -505,7 +513,7 @@ function C_Matching(_type) {
 		
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			var selected_arr = [];
-			if(type == "matching"){
+			if(type == "matching" || type == "matchingDragPhone"){
 				for(var i = 0; i < option_arr.length; i++){
 					selected_arr.push(option_arr[i].find("input").val().toUpperCase());
 				}
