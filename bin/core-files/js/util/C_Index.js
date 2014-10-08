@@ -179,6 +179,7 @@ function addIndex(){
 			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}
 		indexItem_arr.push("#" + thisID);
+		
 		if(childLength > 0){
 			
 			indexString += '<ol class="dd-list">';
@@ -202,52 +203,6 @@ function addIndex(){
 			}
 			indexString += '</ol></li>';
 		}
-		
-		
-		/******************************************
-		BELOW is old menu code - can be removed after the above is tested for a while.... (PD - 8/27)
-		******************************************/
-		
-		
-		//console.log("hasChildren == " + hasChildPages);
-		/*if($(data).find("page").eq(i).attr("type") == "group"){
-			//Resolves issue of group butting into group...
-			if(groupMode == true){
-				indexString += '</ol></li>';
-			}
-			groupMode = true;
-			
-			var isVirgin = checkForGroup(thisID);
-			if(isVirgin){
-				indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
-				if(mode == "edit"){
-					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div><ol class="dd-list">';
-				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div><ol class="dd-list">';
-				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div><ol class="dd-list">';
-				}
-			}
-		}else{
-			if($(data).find("page").eq(i).parent().attr("type") != "group"){
-				if(groupMode == true){
-					groupMode = false;
-					indexString += '</ol></li>';
-				}
-			}
-			indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+i+'">';
-			//If edit mode attach drag spot - otherwise don't....
-			if(mode == "edit"){
-				indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
-			}else if(mode == "review"){
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
-			}else{
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
-			}
-		}*/
-		//indexItem_arr.push("#" + thisID);
 	}
 	
 	indexString += "</ol></div>";
@@ -371,49 +326,7 @@ function addIndex(){
 					}
 				//create a new group if needed.
 				}else if (createNewGroup){
-					console.log("should be inside of create new group");
-					console.log("newNodePos = " + newNodePos);
-					console.log("oldNodePos = " + oldNodePos);
 					$(data).find("page").eq(newNodePos - 1).append($(data).find("page").eq(oldNodePos));
-					//$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
-					//var secondID = $(data).find("page").eq(newNodePos).attr("id");
-					//Create a Unique ID for the page
-					//var myID = guid();
-					//Place a page element
-					//$(data).find("page").eq(childParent).before($('<page id="'+ myID +'" layout="textOnly" type="group"></page>'));
-					
-					//Place the page title element
-					//$(data).find("page").eq(childParent).append($("<title>"));
-					///var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
-					//var titleCDATA = newPageTitle.createCDATASection("New Group Title");
-					//$(data).find("page").eq(childParent).find("title").append(titleCDATA);
-					//$(data).find("page").eq(childParent).append($("<content>"));
-					//var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-					//var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-					//$(data).find("page").eq(childParent).find("content").append(contentCDATA);
-					//$(data).find("page").eq(childParent).attr("type", "group");
-					
-					/*if(isLinear == true){
-						var page_obj = new Object();
-						page_obj.id = myID;
-						page_obj.complete = false;
-						tracking_arr.push(page_obj);
-					}*/
-					
-					/*for(var i = 0; i < $(data).find("page").length; i++){
-						if($(data).find("page").eq(i).attr("id") == myID){
-							var newGroupSpot = i;
-							var newSub = i+1;
-						}
-					}*/
-					//$(data).find("page").eq(newSub).appendTo($(data).find("page").eq(childParent));
-					
-					/*for(var i = 0; i < $(data).find("page").length; i++){
-						if(secondID == $(data).find("page").eq(i).attr("id")){
-							var tmpID = i;
-						}
-					}*/
-					//$(data).find("page").eq(tmpID).appendTo($(data).find("page").eq(newGroupSpot));
 				//Move the page to a lower postion
 				}else if(newNodePos < oldNodePos && moveUp == false || isSub){
 					$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos));
@@ -452,7 +365,12 @@ function addIndex(){
 			addRollovers($(indexItem_arr[i]));
 		}
 		$(indexItem_arr[i]).click(clickIndexItem);
+		//Adding new for accessibility 10/7/14 PD
+		globalAccess_arr.push($(indexItem_arr[i]));
 	}
+	//Adding new for accessibility 10/7/14 PD
+	globalAccess_arr.push($("#courseTitle"));
+	globalAccess_arr.push($("#lessonTitle"));
 
 	if(pushedUpdate == true){
 		fadeComplete();

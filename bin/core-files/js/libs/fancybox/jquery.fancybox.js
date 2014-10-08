@@ -305,7 +305,7 @@
 			F.opts = $.extend(true, {}, F.defaults, options);
 
 			F.populate( items );
-
+			console.log("open");
 			if (F.group.length) {
 				F._start( F.opts.index );
 			}
@@ -892,7 +892,7 @@
 		_start: function( index ) {
 			var coming,
 				type;
-
+			console.log("F.opts.loop = " + F.opts.loop);
 			// Check index and get object from the groups
 			if (F.opts.loop) {
 				if (index < 0) {
@@ -2253,6 +2253,7 @@
 		},
 
 		init : function() {
+			console.log("init");
 			var that = this;
 
 			if (F.inner && F.touch) {

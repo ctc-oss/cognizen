@@ -1451,16 +1451,6 @@ MEDIA LAYOUTS
 	margin-right: auto;
 }
 
-/* mediaelement overrides */
-/* Some web servers are not configured with SVG mime types, which causes player controls to not display.  Use PNG instead */
-.mejs-overlay-button {
-	background: url(mediaElement/bigplay.png) no-repeat;
-}
-
-.mejs-controls .mejs-button button {
-	background: transparent url(mediaElement/controls.png) no-repeat;
-}
-/* end mediaelement overrides */
 
 /************************************************************** MEDIA LAYOUTS END *****/
 

@@ -2,7 +2,7 @@
  *  	C_UtilFunctions
  *  	Requires jQuery v1.9 or later
  *	
- *      Houses index functionality for cognizen
+ *      Houses random utility functions used accross templates.
  *  	Version: 0.5
  *		Date Created: 10/19/13
  *		Created by: Philip Double
@@ -294,5 +294,4 @@ function fadeComplete() {
 	catch(e){}
 
 	loadPage();
-
 }

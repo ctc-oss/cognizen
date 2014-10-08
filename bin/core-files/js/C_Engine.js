@@ -38,6 +38,10 @@ var audioPlayer;
 var pageTitle;
 var mediaHolder;
 var audioHolder;
+
+//Accessibility control arrays.
+var pageAccess_arr = [];
+var globalAccess_arr = [];
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/
@@ -196,6 +200,7 @@ function initScripts(_data){
 					corePath +"js/components/C_VisualMediaHolder.js",
 					corePath +"js/components/C_AudioHolder.js",
 			//Import Cognizen Utilities
+					corePath +"js/util/C_Access.js",
 					corePath +"js/util/C_AddPage.js",
 					corePath +"js/util/C_API.js",
 					corePath +"js/util/C_Comment.js",
