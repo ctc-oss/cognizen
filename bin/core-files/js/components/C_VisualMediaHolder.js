@@ -231,9 +231,9 @@ function C_VisualMediaHolder(callback){
             $(img).bind('error', function() {
 				alert("Your media was not found and is being replaced by a default image.")
 				
-				if(type == "top" || type == "bottom"){
+				if(type == "top" || type == "bottom" || type == "graphicOnly"){
 	            	myImage = "media/defaultTop.png";
-	            }else if(type == "left" || type == "right"){
+	            }else if(type == "left" || type == "right" || type == "multipleChoiceMedia" || type == "tabsLeft"){
 		            myImage = "media/defaultLeft.png";
 	            }
 				
