@@ -378,7 +378,7 @@ function C_ClickImage(_type) {
 		$("#contentEditDialog").append(msg);
 					
 		$("#revealRemove").click(function(){
-			removeReveal();
+			areYouSure();
 		});
 					
 		CKEDITOR.replace( "revealContentText", {
@@ -394,6 +394,30 @@ function C_ClickImage(_type) {
             },*/
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
+	}
+	
+	/**********************************************************************
+    ** areYouSure? - Make sure that the user wants to remove before removing
+    **********************************************************************/
+    function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+	    
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeReveal();
+	                $(this).dialog("close");
+                }
+            }
+        }); 
 	}
 			
 		

@@ -99,7 +99,6 @@ function C_ClickListRevealText(_type) {
 	}
 	
 	function updateRevealContent(_myItem){
-		console.log(_myItem);
 		try { $(currentItem).removeClass("clickListSelected"); } catch (e) {}
 		currentItem = _myItem;
 		try { $(currentItem).addClass("clickListSelected"); } catch (e) {}
@@ -264,8 +263,8 @@ function C_ClickListRevealText(_type) {
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
 		
-		$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
-		$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
+		//$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
+		//$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
 		
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");
@@ -276,10 +275,13 @@ function C_ClickListRevealText(_type) {
 		}
 		
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		var revealItemCDATA = newRevealContent.createCDATASection($("#revealTermText").val());
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").empty();
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").append(revealItemCDATA);
+		console.log(revealItemCDATA);
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
-		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("img", $("#revealImageText").val());
 	}
 	
 	function addReveal(_addID, _isNew){
@@ -317,7 +319,7 @@ function C_ClickListRevealText(_type) {
 		$("#contentEditDialog").append(msg);
 					
 		$("#revealRemove").click(function(){
-			removeReveal();
+			areYouSure();
 		});
 					
 		CKEDITOR.replace( "revealContentText", {
@@ -329,6 +331,30 @@ function C_ClickListRevealText(_type) {
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
 	}	
+	
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+	    
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeReveal();
+	                $(this).dialog("close");
+                }
+            }
+        }); 
+	}
 		
 	function removeReveal(){
 		if(revealCount > 1){

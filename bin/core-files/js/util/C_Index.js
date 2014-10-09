@@ -172,11 +172,11 @@ function addIndex(){
 		
 		if(mode == "edit"){
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}else{
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}
 		indexItem_arr.push("#" + thisID);
 		
@@ -192,11 +192,11 @@ function addIndex(){
 				
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
 				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 				}
 				
 				indexItem_arr.push("#" + thisID);
@@ -208,7 +208,9 @@ function addIndex(){
 	indexString += "</ol></div>";
 	
 	$("#indexContent").append(indexString);
-	
+	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' href='#courseTitle'>Click to skip navigation index.</a></div>");
+	//$("<a id='skipIndex' class='hidden' href='#courseTitle>Skip navigation index.</a>").insertBefore($("#C_Index"));
+	globalAccess_arr.push($("#skipIndex"));
 	var oldNodePos;
 	var newNodePos;
 	var oldParent;
@@ -364,7 +366,11 @@ function addIndex(){
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
-		$(indexItem_arr[i]).click(clickIndexItem);
+		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(e) {
+			if(e.which == 13) {
+				$(this).click();
+			}
+		});//.attr('role', 'index navigation');//attr("alt", "Click to open: "+$(data).find('page').eq(i).find('title').first().text());
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}

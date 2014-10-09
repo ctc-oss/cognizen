@@ -915,7 +915,7 @@ function C_TextInput(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("question").eq(i).remove();
 		}
-		clearTextInputQuestionResponse();
+		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}	

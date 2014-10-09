@@ -1027,6 +1027,7 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
 		}
 		
+		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}	

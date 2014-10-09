@@ -499,7 +499,7 @@ function C_Reveal(_type) {
 		$("#contentEditDialog").append(msg);
 					
 		$("#revealRemove").click(function(){
-			removeReveal();
+			areYouSure();
 		});
 					
 		CKEDITOR.replace( "revealContentText", {
@@ -516,6 +516,30 @@ function C_Reveal(_type) {
 		/*if (CKEDITOR.instances['revealContentText']) {
             CKEDITOR.instances.revealContentText.destroy();            
         }*/
+	}
+	
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+	    
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeReveal();
+	                $(this).dialog("close");
+                }
+            }
+        }); 
 	}
 		
 	function removeReveal(){

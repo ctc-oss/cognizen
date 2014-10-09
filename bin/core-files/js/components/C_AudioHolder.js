@@ -217,9 +217,9 @@ else{
             }
         });
 		
-        
-        pageAccess_arr.push($(".mejs-play"));
-        pageAccess_arr.push($(".mejs-mute"));
+        pageAccess_arr.push($(".mejs-play").find('button'));
+        pageAccess_arr.push($(".mejs-mute").find('button'));
+        pageAccess_arr.push($(".mejs-duration"));
 		
         if(type == "textOnly" || type == "sidebar"){
 			doAccess(pageAccess_arr);
@@ -275,10 +275,10 @@ else{
 						saveAudioEdit();
 					}
 				}
-			]
-			// close: function(){
-			// 	$(this).remove();
-			// }
+			],
+			close: function(){
+				$(this).remove();
+			}
 		});
 		//adds tooltips to the edit dialog buttons
 	    $(function () {
@@ -298,8 +298,8 @@ else{
 	   	var last = parts.length;
 
 	   	var fileType = (parts[last - 1]);
-	   	if(fileType.toLowerCase() == "mp3"){
-            if(audioPath == "yourFile.mp3" || audioPath == "" || audioPath == "null" || audioPath == " "){
+	   	if(fileType.toLowerCase() == "mp3" || audioPath == "" || audioPath == "null" || audioPath == " "){
+            if(audioPath == "yourFile.mp3"){
                 $(data).find("page").eq(currentPage).attr("audio", "null");
 			}else{
                 $(data).find("page").eq(currentPage).attr("audio", audioPath);
@@ -330,6 +330,7 @@ else{
 			}
 			
 			$("#audioEditDialog").dialog("close");
+			
 			sendUpdateWithRefresh();
 			currentTemplate.fadeComplete();
 		}else{

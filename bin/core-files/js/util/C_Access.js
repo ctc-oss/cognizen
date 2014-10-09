@@ -25,13 +25,13 @@ function doAccess(items){
 	var tabIndex = 1;
 	//Add page specific order
 	for(var i = 0; i < items.length; i++){
-		console.log($(items[i]));
+		//console.log($(items[i]));
 		$(items[i]).attr("tabindex", tabIndex);
 		tabIndex++;
 	}
 	//Pick up with shell items after page items (index/next/back/page/course/module).
 	for(var j = 0; j < globalAccess_arr.length; j++){
-		console.log(globalAccess_arr[j]);
+		//console.log(globalAccess_arr[j]);
 		globalAccess_arr[j].attr("tabindex", tabIndex);
 		tabIndex++;
 	}

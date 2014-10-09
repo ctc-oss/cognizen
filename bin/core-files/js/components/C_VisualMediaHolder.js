@@ -170,7 +170,8 @@ function C_VisualMediaHolder(callback){
 			vidHTMLString += "</video>";
 
             $("#loader").append(vidHTMLString);
-            pageAccess_arr.push($("#videoplayer"));
+            
+            //pageAccess_arr.push($("#videoplayer"));
 			// Prefer Flash or Silverlight on IE 8, 9, 10 to enable true fullscreen
 			(function ($) {
 				"use strict";
@@ -218,6 +219,12 @@ function C_VisualMediaHolder(callback){
 					}
 				});
 			}
+			console.log("set page array items for vids");
+			pageAccess_arr.push($('.mejs-overlay-button'));
+			//pageAccess_arr.push($(".mejs-play").find('button'));
+			//pageAccess_arr.push($(".mejs-mute").find('button'));
+			//pageAccess_arr.push($(".mejs-duration"));
+			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
             

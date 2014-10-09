@@ -809,6 +809,30 @@ function C_MultipleChoice(_type) {
 		}
 	}
 	
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+	    
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeOption();
+	                $(this).dialog("close");
+                }
+            }
+        }); 
+	}
+	
 	function removeOption(){
 		if(optionCount > 1){
 			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
@@ -864,7 +888,7 @@ function C_MultipleChoice(_type) {
 		$("#questionEditDialog").append(msg);
 		
 		$("#optionRemove").on('click', function(){
-			removeOption();
+			areYouSure();
 		});
 		
 		CKEDITOR.inline( "optionText", {
@@ -918,6 +942,7 @@ function C_MultipleChoice(_type) {
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
 		
+		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
