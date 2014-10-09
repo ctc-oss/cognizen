@@ -1739,92 +1739,159 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                    if(data.content.type === 'course'){
-                        var scormPath = path.normalize('../core-files/scorm/');
-                        var scormDir = path.resolve(process.cwd(), scormPath);
-                        var programPath = path.normalize('../programs/' + found.path + '/');
-                        var contentPath = path.resolve(process.cwd(), programPath);                    
-                        var xmlContentFile = contentPath + '/xml/content.xml';
-                        
-                        //creates the packages directory under the course dir
-                        fs.mkdirs(contentPath + "/packages", function(err){
-                            if(err) return _this.logger.error(err);
-                            _this.logger.info("created packages directory");
-                        });    
+                    _this.logger.info("Before runwithlock in publishContent");
+                    _this.Git.lock.runwithlock(function () {
+                        _this.logger.info("in runwithlock in publishContent");                     
+                        if(data.content.type === 'course'){
+                            var scormPath = path.normalize('../core-files/scorm/');
+                            var scormDir = path.resolve(process.cwd(), scormPath);
+                            var programPath = path.normalize('../programs/' + found.path + '/');
+                            var contentPath = path.resolve(process.cwd(), programPath);                    
+                            var xmlContentFile = contentPath + '/xml/content.xml';
+                            
+                            //creates the packages directory under the course dir
+                            fs.mkdirs(contentPath + "/packages", function(err){
+                                if(err) return _this.logger.error(err);
+                                _this.logger.info("created packages directory");
+                            });    
 
-                        //init SCORM (itemsToSave may need to be passed into init)
-                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
+                            //init SCORM (itemsToSave may need to be passed into init)
+                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
 
-                        _this._copyJSFiles(programPath +'/../', function (err) {    
-                            if(err){
-                                _this.logger.error(err);
-                            }
-
-                            scorm.generateSCORMCourse(function(err, filepath){
-
+                            _this._copyJSFiles(programPath +'/../', function (err) {    
                                 if(err){
                                     _this.logger.error(err);
-                                    _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});                
+                                    _this.logger.info("before release in publishContent 1764");
+                                    _this.Git.lock.release();
+                                    _this.logger.info("after release in publishContent  1766");                                    
                                 }
-                                else{
-                                    _this.logger.info("publish Course success.");
-                                    _this.logger.info("---------- filepath = " + filepath);
-                                    
-                                    callback(filepath);
-                                } 
 
-                                try{
-                                    fs.removeSync(programPath + '/../js');
-                                }
-                                catch(err)
-                                {
-                                    _this.logger.error(err);
-                                    //_this.logger.info('js directory removed from lesson after publishing');
-                                }                                                          
+                                scorm.generateSCORMCourse(function(err, filepath){
+
+                                    if(err){
+                                        _this.logger.error(err);
+                                        _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'}); 
+
+                                        _this.logger.info("before release in publishContent 1775");
+                                        _this.Git.lock.release();
+                                        _this.logger.info("after release in publishContent  1777");
+                                        callback('');    
+
+                                    }
+                                    else{
+
+                                        _this.logger.info("publish Course success.");
+                                        _this.logger.info("---------- filepath = " + filepath);
+                                        _this.logger.info("before release in publishContent 1784");
+                                        _this.Git.lock.release();
+                                        _this.logger.info("after release in publishContent  1786");                                         
+                                        callback(filepath);
+                                    } 
+
+                                    try{
+                                        fs.removeSync(programPath + '/../js');
+                                    }
+                                    catch(err)
+                                    {
+                                        _this.logger.error(err);
+                                        // _this.logger.info("before release in publishContent 1796");
+                                        // _this.Git.lock.release();
+                                        // _this.logger.info("after release in publishContent  1798");                                         
+                                        //_this.logger.info('js directory removed from lesson after publishing');
+
+                                    }                                                          
+                                });
                             });
-                        });
-                    }
-                    else{
-                        var scormPath = path.normalize('../core-files/scorm/');
-                        var scormDir = path.resolve(process.cwd(), scormPath);
-                        //_this.logger.info("werwrewr " + found.path);
-                        var programPath = path.normalize('../programs/' + found.path + '/');
-                        var contentPath = path.resolve(process.cwd(), programPath);                    
-                        var xmlContentFile = contentPath + '/xml/content.xml';
-                        
-                        scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
-                        
-                        _this._copyJSFiles(programPath +'/../', function (err) {
-                            if(err){
-                                _this.logger.error(err);
-                            }
-
-                            //calls the generateSCORMLesson function in congizen-scorm.js
-                            scorm.generateSCORMLesson(function(err, filepath){
-
+                        }
+                        else{
+                            var scormPath = path.normalize('../core-files/scorm/');
+                            var scormDir = path.resolve(process.cwd(), scormPath);
+                            //_this.logger.info("werwrewr " + found.path);
+                            var programPath = path.normalize('../programs/' + found.path + '/');
+                            var contentPath = path.resolve(process.cwd(), programPath);                    
+                            var xmlContentFile = contentPath + '/xml/content.xml';
+                            
+                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
+                            
+                            _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){
                                     _this.logger.error(err);
-                                    _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});
-                                    callback('');                
-                                }
-                                else{
-                                    _this.logger.info("publishLesson success.");
-                                    _this.logger.info("---------- filepath = " + filepath);
-
-                                    callback(filepath);
+                                    _this.logger.info("before release in publishContent 1818");
+                                    _this.Git.lock.release();
+                                    _this.logger.info("after release in publishContent  1820");                                     
                                 }
 
-                                try{
-                                    fs.removeSync(programPath + '/../js');
-                                }
-                                catch(err)
-                                {
-                                    _this.logger.error(err);                                    
-                                }
-                           
-                            });
-                        });                            
-                    }                                           
+                                //calls the generateSCORMLesson function in congizen-scorm.js
+                                scorm.generateSCORMLesson(function(err, filepath){
+
+                                    if(err){
+                                        _this.logger.error(err);
+                                        _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});
+                                        callback(''); 
+                                        _this.logger.info("before release in publishContent 1830");
+                                        _this.Git.lock.release();
+                                        _this.logger.info("after release in publishContent  1832");                                                        
+                                    }
+                                    else{
+                                        // _this.logger.info("programmmmmmm " + found.getProgram());
+                                        // User.findById(data.user.id).exec(function (err, user) {
+                                        //     if (user) {
+                                        //         _this.logger.info(user);
+                                        //         // _this.Git.commitProgramContent(found.getProgram(), user, function() {
+                                        //         //     // Success, do nothing.
+                                        //         // }, function(message) {
+                                        //         //     _this._socket.emit('generalError', {title: 'Repository Saving Error', message: 'Error occurred when saving repository content.'});
+                                        //         //     _this.logger.error("Error when committing to the Git Repo: " + message);
+                                        //         // });
+                                        //     }
+                                        // });                                        
+                                        // _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
+                                        //     if (err) {
+                                        //         _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                        //         _this.logger.error(err);
+                                        //     }
+                                        //     else {
+                                        //         _this._copyContentFiles(callbackData, function () {
+                                        //             _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+                                        //                 _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', function (err) {
+                                        //                     if (err) {
+                                        //                         _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                        //                         _this.logger.error(err);
+                                        //                     }
+                                        //                     else {
+                                        //                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                        //                     }
+                                        //                 });
+                                        //             }, function (message) {
+                                        //                 _this.logger.info("Error committing program content: " + message)
+                                        //                 _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                        //             });
+                                        //         });
+                                        //     }
+                                        // });
+
+                                        _this.logger.info("publishLesson success.");
+                                        _this.logger.info("---------- filepath = " + filepath);
+                                        _this.logger.info("before release in publishContent 1837");
+                                        _this.Git.lock.release();
+                                        _this.logger.info("after release in publishContent  1839"); 
+                                        callback(filepath);
+                                    }
+
+                                    try{
+                                        fs.removeSync(programPath + '/../js');
+                                    }
+                                    catch(err)
+                                    {
+                                        _this.logger.error(err);                                    
+                                    }
+                               
+                                });
+                            });                            
+                        } 
+
+                    /////////end lock
+                    });                                           
                 }
             });
         }              
