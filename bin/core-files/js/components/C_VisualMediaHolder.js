@@ -80,7 +80,8 @@ function C_VisualMediaHolder(callback){
     }
     var tempID = "#loader";
     
-    //loadVisualMedia();
+    console.log("push loader!!!!!!!!!!!!");
+    pageAccess_arr.push($("#loader"));
 
     this.loadVisualMedia = function() {
 		
@@ -169,7 +170,7 @@ function C_VisualMediaHolder(callback){
 			vidHTMLString += "</video>";
 
             $("#loader").append(vidHTMLString);
-            
+            pageAccess_arr.push($("#videoplayer"));
 			// Prefer Flash or Silverlight on IE 8, 9, 10 to enable true fullscreen
 			(function ($) {
 				"use strict";
@@ -284,7 +285,7 @@ function C_VisualMediaHolder(callback){
 			tempCaption = caption_arr[0];
 		}
 				
-		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='' /></a>";
+		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='css/images/img-enlarge.gif' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
 					
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";
@@ -302,7 +303,8 @@ function C_VisualMediaHolder(callback){
 				
 		mediaPopString += "</div>";
 				
-		$(mediaPopString).insertAfter("#loader");				 
+		$(mediaPopString).insertAfter("#loader");
+		//pageAccess_arr.push($("#mediaPop"));				 
 		$("[rel='mediaPop']").fancybox({
 			caption : {
 				type : 'inside'
@@ -311,19 +313,24 @@ function C_VisualMediaHolder(callback){
 			closeEffect : 'elastic',
 			nextEffect  : 'elastic',
 			prevEffect  : 'elastic',
+			loop		: true,
 			maxHeight	: 1024,
 			maxWidth	: 768,
 			helpers : {
 				title : tempCaption,
 				thumbs: {
 					width  : 50,
-                  	height : 50
+                  	height : 50,
+                  	source  : function(current) {
+	                    return $(current.element).data('thumbnail');
+	                }
 				}
 			}
 		});
 				
-		if(mediaType = "swf"){
+		if(mediaType == "swf"){
 			$("[rel='mediaPop']").fancybox({
+				loop	:	true,
 				width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
 				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
 			});
@@ -336,6 +343,7 @@ function C_VisualMediaHolder(callback){
 			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 			$(this).attr("title", tempCaption);
 		});
+		pageAccess_arr.push($("#mediaPop"));
 	}
 	
 	function setCaption(){
@@ -347,6 +355,8 @@ function C_VisualMediaHolder(callback){
 	    }else{
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#loader");
 	    }
+	    
+	    pageAccess_arr.push($("#caption"));
        
 		/***********************************************************
 		CREATES A TOOLTIP on .tooltip class members.
@@ -439,6 +449,7 @@ function C_VisualMediaHolder(callback){
 						$("#imgDialog").remove();
 					}
 				});
+				
 			}).tooltip();
 			
 			/*******************************************************
@@ -544,6 +555,7 @@ function C_VisualMediaHolder(callback){
 				}
 			});
         }
+        doAccess(pageAccess_arr);
         callback;
     }
     

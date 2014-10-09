@@ -36,6 +36,9 @@ function C_StaticContent(_type) {
             mySidebar = $(data).find("page").eq(currentPage).find("sidebar").first().text();
         }
         
+        //Clear accessibility on page load.
+        pageAccess_arr = [];
+        
         buildTemplate();
     }
 
@@ -78,7 +81,8 @@ function C_StaticContent(_type) {
 			// So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		   	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			$("#content").width($("#contentHolder").width()-15);
-		   	$("#content").append(myContent); 
+		   	$("#content").append(myContent);
+		   	pageAccess_arr.push($("#content")); 
 	    }
         
         /*Attach Media*/
@@ -87,6 +91,7 @@ function C_StaticContent(_type) {
             if(transition == true){
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
             }
+            doAccess(pageAccess_arr);
         }else if(type == "sidebar"){
         	if(isMobile){
         		$('#content').prepend('<div id="sidebarHolder"><div id="sidebar" class="sidebar"></div></div>');
@@ -102,11 +107,13 @@ function C_StaticContent(_type) {
 				}
 			
 				$('#sidebar').height($('#sidebarHolder').height());
+				pageAccess_arr.push($("#sidebar"));
 			}
             checkMode();
             if(transition == true){
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-            }        
+            }
+            doAccess(pageAccess_arr);      
         }else{
         	mediaHolder = new C_VisualMediaHolder();
         	mediaHolder.loadVisualMedia();
@@ -135,7 +142,7 @@ function C_StaticContent(_type) {
     *****************************************************************************************************************************************************************************************************************/
     function checkMode(){
     	$(this).scrubContent();
-
+		
      	if(type != "graphicOnly"){
 			$('.antiscroll-wrap').antiscroll();
 		}
@@ -224,26 +231,6 @@ function C_StaticContent(_type) {
 	   	$(data).find("page").eq(currentPage).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
-
-    /*****************************************************************************************************************************************************************************************************************
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    ACESSIBILITY/508 FUNCTIONALITY
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    *****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-		var tabindex = 1;
-
-	   	$("#pageTitle").attr("tabindex", tabindex);
-	   	tabindex++;
-	   	/*for(var i = 0; i < buttonArray.length; i++){
-		   	$(buttonArray[i]).attr("tabindex", tabindex);
-		   	tabindex++;
-		}*/
-		$("#contentHolder").attr("tabindex", tabindex);
-		tabindex++;
-		$("#loader").attr("tabindex", tabindex);
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

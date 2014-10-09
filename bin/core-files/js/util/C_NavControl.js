@@ -50,6 +50,9 @@ function checkNav(){
 	if(nextBack == "true"){
 		nextBack = true;
 		$("#myCanvas").append("<button id='back'>back</button><button id='next'>next</button>");
+		//Adding new for accessibility 10/7/14 PD
+		globalAccess_arr.push($("#next"));
+		globalAccess_arr.push($("#back"));
 	}
 
 	//Check if we are using page counter - if so, set it up.
@@ -59,6 +62,8 @@ function checkNav(){
 		pageCount = true;
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
+		//Adding new for accessibility 10/7/14 PD
+		globalAccess_arr.push($("#pageCount"));
 	}
 
 	//Check if we are using help button - if so, set it up.
