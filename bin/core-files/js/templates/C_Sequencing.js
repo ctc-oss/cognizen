@@ -279,7 +279,7 @@ function C_Sequencing(_type) {
 		
 		$("#stage").append(msg);
 		//all mobile content will use the pop display
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			feedbackDisplay = "pop";
 		}
 		if(feedbackDisplay == "pop"){

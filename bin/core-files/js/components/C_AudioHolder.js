@@ -183,7 +183,7 @@ else{
 
         $("#audioCon").append(audioString);
 
-        if(windowWidth <= mobileWidth){
+        if(isMobile){
             $('#audioPlayer').css({'width':stageW-1, 'height': 20});
         }
         else{

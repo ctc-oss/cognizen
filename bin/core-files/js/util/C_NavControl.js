@@ -988,7 +988,7 @@ function checkNavButtons(){
 *************************************************************/
 function updatePageCount(){
 	var tempPage = currentPage + 1;
-	if(windowWidth <= mobileWidth){
+	if(isMobilePhone){
 		$('#pageCount').text(tempPage + " of " + totalPages);
 	}
 	else{

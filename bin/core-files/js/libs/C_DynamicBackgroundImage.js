@@ -41,7 +41,7 @@
         
          // If no background image is set then return
          if(backgroundImageUrl == null){
-            if(windowWidth <= mobileWidth){
+            if(isMobile){
                $this.css("width", windowWidth+"px")
                  .css("height", windowHeight+"px");
             }

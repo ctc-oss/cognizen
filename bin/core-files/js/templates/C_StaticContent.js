@@ -127,7 +127,7 @@ function C_StaticContent(_type) {
      **mobileWidth is set in C_Engine.js
      **********************************************************************/
     function resizeForMobile(){
-        if(windowWidth <= mobileWidth){
+        if(isMobile){
             if(imageWidth > windowWidth){
                 imageHeight = (imageHeight / imageWidth) * windowWidth;
                 imageWidth = windowWidth-1;

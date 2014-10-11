@@ -542,7 +542,7 @@ function C_Matching(_type) {
 		
 		$("#matching").prepend(msg);
 		//all mobile content will use the pop display
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			feedbackDisplay = "pop";
 		}
 		if(feedbackDisplay == "pop"){

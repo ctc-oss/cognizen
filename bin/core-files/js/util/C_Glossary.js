@@ -28,7 +28,7 @@ Description:	Check's to see if this app has glossary turned on - if yes then bui
 function checkGlossary(){
 	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
 		}
 		else{
@@ -416,7 +416,7 @@ function toggleGlossary(){
 		glossaryState = true;
 
 		gimmeGlosPos();
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:0}, ease:transitionType});
 		}
 		else{
@@ -425,7 +425,7 @@ function toggleGlossary(){
 	}
 	else{
 		glossaryState = false;
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:glossaryClosePosMobile}, ease:transitionType});
 		}
 		else{

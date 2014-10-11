@@ -20,9 +20,16 @@ var stageW;
 var username;
 var mode = "production";//mode can be set to production, edit and review.
 
-var mobileWidth = 1023; //value should match the value set in C_Engine.css (@media all and (max-width: 600px) )
 var windowWidth = $('body').width();
-windowHeight = $(window).height();
+windowHeight = $(window).height();  //this can be inaccurate and probably needs to go
+
+var oldIE = false;
+var isIE = false;
+var isFF = false;
+var isMobile = false;
+var isMobilePhone = false;
+var hasTouch = false;
+
 var urlParams;
 
 var dragFile = false;
@@ -239,9 +246,68 @@ function startEngine(){
 ******************************** STEP 3 - BUILD SHELL
 ****************************************************/
 //Place all permanent items in the UI - background - title - nav
+
+// Discover if we are dealing with IE....
+function isOldIE() {
+    "use strict";
+   
+    if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
+        oldIE = true;
+    }
+        
+    if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
+        isIE = true;
+    }
+    
+    if (Function('/*@cc_on return document.documentMode===10@*/')()) {
+	    isIE = true;
+	}
+}
+
+
+function checkFF(){
+	isFF = typeof InstallTrigger !== 'undefined';
+}
+
+
+// MOBILE DETECTION
+function checkMobile(){
+	if(!oldIE){
+		if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
+			isMobile = true;
+			console.log("mobile device detected");
+		}
+
+		if(window.matchMedia("screen and (max-device-width: 568px)").matches) {
+			isMobilePhone = true;
+			console.log("mobile phone detected");
+		}
+
+		// Detect touch device
+		// from http://www.stucox.com/blog/you-cant-detect-a-touchscreen/
+		window.addEventListener('touchstart', function setHasTouch () {
+			hasTouch = true;
+			console.log("touch device detected");
+			// Remove event listener once fired, otherwise it'll kill scrolling
+			// performance
+			window.removeEventListener('touchstart', setHasTouch);
+		}, false);
+	}
+}
+
+
 function buildInterface(){
+	isOldIE();
+	checkFF();
+	checkMobile();
 	$('body').empty();
-	$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div></div></div>");
+		if (isMobile) {
+			console.log("mobile site");
+			$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
+		}else{
+			console.log("desktop site");
+			$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div></div></div>");
+		}
 
 	//Set variables consumed by templates.
 	stageX = $("#stage").position().left;

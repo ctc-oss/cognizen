@@ -128,7 +128,7 @@ function C_Unity3D(_type) {
 		imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
 		imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 		
-		if(windowWidth <= mobileWidth){
+		if(isMobile){
 			if(imageWidth > windowWidth){
 				imageHeight = (imageHeight / imageWidth) * windowWidth;
 				imageWidth = windowWidth;

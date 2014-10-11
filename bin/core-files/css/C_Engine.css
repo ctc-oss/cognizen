@@ -1462,7 +1462,6 @@ MEDIA LAYOUTS
 	margin-right: auto;
 }
 
-
 /************************************************************** MEDIA LAYOUTS END *****/
 
 
@@ -2887,9 +2886,9 @@ a.fancybox-expand {
 		padding: 0px;
 		left: 0px;
 		top: 0px;
-		/*margin-left: -512px;
-		margin-top: -384px;*/
-		position: relative;
+		bottom: 0px;
+		height: auto;
+		position: fixed;
 		overflow: hidden;
 		background: transparent;
 	}
@@ -2906,11 +2905,12 @@ a.fancybox-expand {
 
 	#stage {
 		overflow: hidden;
-		position: absolute;
-		top:60px;
-		left:0px;
-		/*height:85%;*/
-		width:100%;
+		position: fixed;
+		top: 60px;
+		left: 0px;
+		bottom: 50px;
+		height: auto;
+		width: 100%;
 	}
 
 	#courseTitle{
@@ -3378,8 +3378,9 @@ a.fancybox-expand {
 		position: fixed;
 		/*top:-645px;
 		left:0px;*/
-		top:0px;
-		left:-406px;		
+		top: 0px;
+		bottom: 0px;
+		left: -406px;		
 	}
 
 	#indexTab{
@@ -3404,7 +3405,7 @@ a.fancybox-expand {
 		left:0px;
 		top:0px;
 		width: 400px;
-		height: 500px; /* need to determine this dynamically or adjust for various devices */
+		height: 100%;
 		box-shadow: -3px 2px 10px 1px;
 	}
 
