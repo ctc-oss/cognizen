@@ -323,7 +323,7 @@ function buildInterface(){
 	
 	//This call positions the background graphic - funciton is in C_DynamicBackgroundImage       /*************************Note: Will make this optional - allow them to use css background instead*/
 	//Image can be updated in css/C_Engine.css and resides in css/images/ folder.
-	$("#myCanvas").fitToBackgroundImage();
+//	$("#myCanvas").fitToBackgroundImage();
 
 	//Place the course title.																	 /*************************Note: Will make this optional*/
 	var courseTitle = $(data).find("courseTitle").attr("value");
