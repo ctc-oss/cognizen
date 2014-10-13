@@ -9,6 +9,7 @@ function C_VisualMediaHolder(callback){
     var mediaWidth = 0;
     var mediaHeight = 0;
     var mediaLinkType;
+    var popLoop = true;
     
     var mediaType = "";
 	var hasPop = false;
@@ -56,6 +57,10 @@ function C_VisualMediaHolder(callback){
         caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");
 		alt_arr = $(data).find("page").eq(currentPage).attr('popalt').split("!!!");	
     }
+    
+    if($(data).find("page").eq(currentPage).attr('poploop') == "false"){
+		popLoop = false;
+	}
 	
 	altText = $(data).find("page").eq(currentPage).attr('alt');
 	
@@ -320,7 +325,7 @@ function C_VisualMediaHolder(callback){
 			closeEffect : 'elastic',
 			nextEffect  : 'elastic',
 			prevEffect  : 'elastic',
-			loop		: true,
+			loop		: popLoop,
 			maxHeight	: 1024,
 			maxWidth	: 768,
 			helpers : {
@@ -422,6 +427,8 @@ function C_VisualMediaHolder(callback){
 				msg += "<label id='label' title='Include a large version.  Will place an enlarge icon below your media which when clicked will expand the window.'>large version: </label>";
 				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
 				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
+				msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
+				msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
             	msg += "<br/><br/></div>";
             	$("#stage").append(msg);
                 	
@@ -429,6 +436,12 @@ function C_VisualMediaHolder(callback){
 					$("#isEnlargeable").removeAttr('checked');
 				}else{
 					$("#isEnlargeable").attr('checked', 'checked');
+				}
+				
+				if(popLoop){
+					$("#isLoop").attr('checked', 'checked');
+				}else{
+					$("#isLoop").removeAttr('checked');
 				}
 				
 				for(var i = 0; i < media_arr.length; i++){	
@@ -643,6 +656,12 @@ function C_VisualMediaHolder(callback){
 			$(data).find("page").eq(currentPage).attr("enlarge", $("#lrgImgPath").val());
 		}else{
 			$(data).find("page").eq(currentPage).attr("enlarge", "");
+		}
+		
+		if($("#isLoop").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("poploop", "true");
+		}else{
+			$(data).find("page").eq(currentPage).attr("poploop", "false");
 		}
 		
 		//Check if there is a gallery attached AND that the media wasn't dropped.

@@ -1711,7 +1711,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -1730,7 +1730,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -1749,7 +1749,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -1768,7 +1768,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -1787,7 +1787,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -1846,7 +1846,7 @@ function C_Outline(_myItem) {
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("default caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
@@ -2272,7 +2272,7 @@ function C_Outline(_myItem) {
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
@@ -2346,7 +2346,7 @@ function C_Outline(_myItem) {
 
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");

@@ -124,7 +124,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
@@ -143,7 +143,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
@@ -162,7 +162,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
@@ -181,7 +181,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
@@ -200,7 +200,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("popcaps", "");
 			$(data).find("page").eq(newPage).attr("enlarge", "");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
@@ -259,7 +259,7 @@ function createNewPageByType(_myType){
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("default caption");
 			$(data).find("page").eq(newPage).find("caption").append(captionCDATA);
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("img", "defaultLeft.png");
@@ -739,7 +739,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(data).find("page").eq(newPage).attr("audio", "null");
 			$(data).find("page").eq(newPage).attr("btnText", "Submit");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("attempts", 2);
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
@@ -814,7 +814,7 @@ function createNewPageByType(_myType){
 
 			$(data).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
-			
+			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
