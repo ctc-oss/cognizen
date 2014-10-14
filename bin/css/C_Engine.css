@@ -273,7 +273,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #009DDF
+	color: #009DDF;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -357,7 +357,7 @@ TREE MENU STYLES
 
 .treeview li {
 	font-weight: normal;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial";
 	margin: 0px;
 	padding: 14px 0pt 0px 0px;
 }
@@ -1163,7 +1163,7 @@ a.fancybox-expand {
   box-shadow: 0 0 1px #fff;
   position: absolute;
   opacity: 0;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   -webkit-transition: linear 300ms opacity;
   -moz-transition: linear 300ms opacity;
   -o-transition: linear 300ms opacity;
@@ -1171,7 +1171,7 @@ a.fancybox-expand {
 
 .antiscroll-scrollbar-shown {
   opacity: 1;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
 .antiscroll-scrollbar-horizontal {

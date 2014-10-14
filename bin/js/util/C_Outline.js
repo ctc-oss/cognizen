@@ -398,6 +398,8 @@ function C_Outline(_myItem) {
         		
 		//Pages
 		addPageClicks();
+		
+		try{$("#preloadholder").remove();} catch(e){};
      }
      
      /*****************************************************************

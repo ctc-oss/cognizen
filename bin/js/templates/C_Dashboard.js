@@ -38,6 +38,7 @@ function C_Dashboard(_type) {
         });
         
         socket.on('allowOutlineLaunch', function(data){
+	       window.clearInterval(myTimer);
 	       co = new C_Outline(outlineLaunchItem); 
         });
         
@@ -91,7 +92,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('contentServerDidNotStart', function (details) {
-             $("#preloadholder").remove();
+            $("#preloadholder").remove();
             window.clearInterval(myTimer);
             doError('Error Loading Content', details.message);
         });
@@ -314,11 +315,12 @@ function C_Dashboard(_type) {
                 }
 			 
 			 $("#myOutline").click(function () {
-				 	//INSERT CODE HERE TO CHECK IF OUTLINE IS ALREADY OPEN OR IF LESSONS ARE BEING EDITED...
-				 	//THEN CALL co = new C_Outline(myItem) if both come back clean.
-				 	//co = new C_Outline(myItem);
+				 	//Add preloader
+				 	myTimer = setInterval(function () {startlaunchtimer()}, 14000);
+                    $("#stage").append('<div id="preloadholder"></div>');
+					$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
 				 	outlineLaunchItem = myItem;
-				 	console.log(myItem.data('id'));
+				 	//Check if outline is available...
 				 	socket.emit('allowOutline', myItem.data('id'));
                 }).hover(
                     function () {
@@ -435,7 +437,7 @@ function C_Dashboard(_type) {
                                 permission: myItem.data('permission')
                             }
                         });
-                        myTimer = setInterval(function () {startlaunchtimer()}, 8000);
+                        myTimer = setInterval(function () {startlaunchtimer()}, 14000);
                         $("#stage").append('<div id="preloadholder"></div>');
 						$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     }
@@ -446,7 +448,7 @@ function C_Dashboard(_type) {
 	
     function startlaunchtimer(){
         $("#preloadholder").remove();
-        alert("You timed out");
+        alert("Your request timed out.");
         window.clearInterval(myTimer);
     }
 
