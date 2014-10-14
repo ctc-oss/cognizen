@@ -342,7 +342,14 @@ function addIndex(){
 						if(childParent != undefined){
 							$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
 						}else{
-							$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos + 1));
+							/*console.log("-----------------------------------------------------------------------------");
+							console.log("SHOULD BE THIS ONE");
+							console.log("# of pages = " + $(data).find("page").length);*/
+							if(newNodePos == $(data).find("page").length - 1){
+								$(data).find("page").eq(oldNodePos).insertAfter($(data).find("page").eq(newNodePos));
+							}else{
+								$(data).find("page").eq(oldNodePos).insertBefore($(data).find("page").eq(newNodePos + 1));
+							}
 						}
 					}
 				}else{

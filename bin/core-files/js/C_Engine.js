@@ -71,7 +71,7 @@ $(document).ready(function(){
 ****************************************************/
 function initScripts(_data){
 	data = _data;
-	//console.log(data);
+	////console.log(data);
 
 	// Create new ieUserAgent object
 	var ieUserAgent = {
@@ -275,19 +275,19 @@ function checkMobile(){
 	if(!oldIE){
 		if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
 			isMobile = true;
-			console.log("mobile device detected");
+			//console.log("mobile device detected");
 		}
 
 		if(window.matchMedia("screen and (max-device-width: 568px)").matches) {
 			isMobilePhone = true;
-			console.log("mobile phone detected");
+			//console.log("mobile phone detected");
 		}
 
 		// Detect touch device
 		// from http://www.stucox.com/blog/you-cant-detect-a-touchscreen/
 		window.addEventListener('touchstart', function setHasTouch () {
 			hasTouch = true;
-			console.log("touch device detected");
+			//console.log("touch device detected");
 			// Remove event listener once fired, otherwise it'll kill scrolling
 			// performance
 			window.removeEventListener('touchstart', setHasTouch);
@@ -302,10 +302,10 @@ function buildInterface(){
 	checkMobile();
 	$('body').empty();
 		if (isMobile) {
-			console.log("mobile site");
+			//console.log("mobile site");
 			$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
 		}else{
-			console.log("desktop site");
+			//console.log("desktop site");
 			$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div></div></div>");
 		}
 

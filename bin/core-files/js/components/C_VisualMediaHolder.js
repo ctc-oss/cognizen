@@ -85,7 +85,6 @@ function C_VisualMediaHolder(callback){
     }
     var tempID = "#loader";
     
-    console.log("push loader!!!!!!!!!!!!");
     pageAccess_arr.push($("#loader"));
 
     this.loadVisualMedia = function() {
@@ -224,7 +223,7 @@ function C_VisualMediaHolder(callback){
 					}
 				});
 			}
-			console.log("set page array items for vids");
+			
 			pageAccess_arr.push($('.mejs-overlay-button'));
 			//pageAccess_arr.push($(".mejs-play").find('button'));
 			//pageAccess_arr.push($(".mejs-mute").find('button'));
