@@ -249,9 +249,9 @@ function C_VisualMediaHolder(callback){
 	                $("#mediaHolder").css({'width': imageWidth});
 	                $("#loader").css({'width': imageWidth, 'height': imageHeight});
 	                
-					if(hasPop == true || largeImg != ""){
+					/*if(hasPop == true || largeImg != ""){
 						setupGallery(mediaType);
-					}
+					}*/
 	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
 			});
             
