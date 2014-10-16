@@ -3065,7 +3065,7 @@ a.fancybox-expand {
 	/**************************************************************************************
 	/*MEDIA LAYOUTS*/
 	/**************************************************************************************/
-	img, #mediaHolder, #loader, #videoplayer, .mejs-video{ 
+	#mediaHolder, #loader, #loader img, #videoplayer, .mejs-video{ 
 		max-width: 100%;
 		max-height: 100%;
 	}
@@ -3579,7 +3579,7 @@ a.fancybox-expand {
 	}
 
 
-	@media screen and (max-device-width: 384px) {
+	@media screen and (max-device-width: 414px) {
 
 		/*index pane specific*/
 		#indexPane{
@@ -3611,6 +3611,18 @@ a.fancybox-expand {
 			height: auto;
 		}
 
+		/* FOR REVEAL CONTENT - needs work */
+/*		.revealImg{
+			padding: 4px;
+			margin: 0px 4px 10px 4px;
+		}
+	
+		.revealImg img{
+			max-width: 90px;
+			max-height: auto !important;
+			height: auto;
+		}
+*/
 	}
 
 
