@@ -2888,8 +2888,8 @@ a.fancybox-expand {
 		right: 0px;
 		top: 0px;
 		bottom: 0px;
-		width: auto;
-		height: auto;
+		width: auto !important;
+		height: auto !important;
 		position: fixed;
 		overflow: hidden;
 		background: transparent;
@@ -2911,7 +2911,7 @@ a.fancybox-expand {
 		top: 60px;
 		left: 0px;
 		bottom: 50px;
-		height: auto;
+		height: auto !important;
 		width: 100%;
 	}
 
@@ -3599,20 +3599,18 @@ a.fancybox-expand {
 			margin: 2px 0;
 		}
 		
-		/*glossary pane specific*/
-/*		#glossaryPane{
-			left: -283px;
+		/* FOR CLICKIMAGE CONTENT */
+		.clickImg{
+			padding: 4px;
+			margin: 0px 4px;
+		}
+	
+		.clickImg img{
+			max-width: 90px;
+			max-height: auto !important;
+			height: auto;
 		}
 
-		#glossaryTab{
-			left: 289px;
-			width: 42px;
-		}
-
-		#glossaryContent{
-			width: 276px;
-		}
-*/
 	}
 
 
@@ -3648,40 +3646,4 @@ a.fancybox-expand {
 
 	}
 
-/*
-	@media screen and (max-device-width: 320px) and (orientation: landscape) {
-		#indexPane{
-			left: -283px;
-		}
-
-		#indexTab{
-			left: 289px;
-			width: 42px;
-		}
-
-		#indexContent{
-			position: fixed;
-			width: 276px;
-			height: auto;
-			top: 0px;
-			bottom: 0px;
-		}
-	}
-*/
-
-/*	@media screen and (max-device-height: 640px) {*/
-		/*index pane specific*/
-/*		#indexPane{
-			left: -366px;
-		}
-
-		#indexTab{
-			left: 369px;
-	    
-		}
-
-		#indexContent{
-			height: 400px;
-		}
-	}	*/
 }
