@@ -3611,13 +3611,17 @@ a.fancybox-expand {
 			height: auto;
 		}
 
-		/* FOR REVEAL CONTENT - needs work */
-/*		.revealImg{
+		/* FOR REVEAL CONTENT */
+		.revealLeft{
+			right: 0px;
+		}
+		
+		.revealImg{
 			padding: 4px;
 			margin: 0px 4px 10px 4px;
 		}
 	
-		.revealImg img{
+/*		.revealImg img{
 			max-width: 90px;
 			max-height: auto !important;
 			height: auto;
