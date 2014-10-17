@@ -37,7 +37,7 @@ var Git = {
     _gitCommit: function (program, user, init, commitMessage, success, error) {
         var _this = this;
         var path = _this.Content.diskPath(program.path);
-
+        //_this.logger.info("program " + program + " user " + user);
         // Make sure path is a git repo.
         if (!init && !fs.existsSync(path + '/.git')) {
             error("The program's folder is not a git repository");

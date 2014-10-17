@@ -30,6 +30,8 @@ function C_Completion(_type) {
     var stringQR_arr = [];
     var lessonTitle = '';
 	var remediationObjectives = [];    //array used to track objectives for duplicates
+	var lms = '';
+	var testReview = '';
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -50,8 +52,11 @@ function C_Completion(_type) {
 		}		
 		//evaluate score
 		isScored = $(data).find('scored').attr('value');
+		lms = $(courseData).find("course").attr("lms");
 
-		if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+		testReview = $(courseData).find('item[name="'+$(data).find('lessonTitle').attr('value')+'"]').find('sequencing').attr('testReview');
+
+		if(doScorm() && lms == "JKO"){
 			if(scorm.get("cmi.entry") == "resume"){
 				var suspend_data = scorm.get("cmi.suspend_data");
 				if(suspend_data.length != 0){
@@ -89,7 +94,7 @@ function C_Completion(_type) {
 			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
 			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%. </p>';
 			//check attempt for USSOCOM publish, using SCORM objectives
-			if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+			if(doScorm() && lms == "JKO"){
 				//convert score_obj to score_arr
 				score_arr.push(score_obj.passed);
 				score_arr.push(score_obj.minScore);
@@ -144,7 +149,7 @@ function C_Completion(_type) {
 									
 								// }
 								// else{
-									displayRemedObj += "<li class='completionText'>"+tmpObject.id+"</li>";
+									displayRemedObj += "<li class='completionText'>"+decodeURIComponent(tmpObject.id)+"</li>";
 								//}							
 							}
 						}
@@ -161,7 +166,7 @@ function C_Completion(_type) {
 									// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+split[0]+"</a></li>";
 									// }
 									// else{
-										displayRemedObj += "<li class='completionText'>"+split[0]+"</li>";
+										displayRemedObj += "<li class='completionText'>"+decodeURIComponent(split[0])+"</li>";
 									//}
 								}
 							}				
@@ -185,7 +190,7 @@ function C_Completion(_type) {
 							//check for duplicates
 							if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
 								remediationObjectives.push(questionResponse_arr[i].objective);
-								if(scormVersion.indexOf('USSOCOM') != -1){
+								if(doScorm() && lms == "JKO"){
 									stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
 								}
 								else{
@@ -203,7 +208,7 @@ function C_Completion(_type) {
 								//check for duplicates
 								if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
 									remediationObjectives.push(questionResponse_arr[i].objItemId);
-									if(scormVersion.indexOf('USSOCOM') != -1){
+									if(doScorm() && lms == "JKO"){
 										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
 									}
 									else{
@@ -218,7 +223,7 @@ function C_Completion(_type) {
 				}
 			}
 
-			if(scormVersion.indexOf('USSOCOM') != -1){
+			if(lms == "JKO"){
 				var stringQR_arr_string = stringQR_arr.join();
 				for (var i = 0; i < stringQR_arr.length; i++) {
 					trackedObjectives = true;
@@ -289,16 +294,16 @@ function C_Completion(_type) {
 				}
 
 			}			
-			else if(scormVersion.indexOf('USSOCOM') != -1 && finalLesson === "true"){
+			else if(lms == "JKO" && testReview == "true"){
 				$("#content").append("<br/><br/>Use the list below to review any missed objectives and press the <b>Next Lesson</b> button in the header to access the review page.");
 			}
-			else if(scormVersion.indexOf('USSOCOM') != -1){
+			else if(lms == "JKO"){
 				$("#content").append("<br/><br/>Press the <b>Next Lesson</b> button in the header to access the next module.<br/><br/>");
 			}
 
 		}
 
-		if(doScorm() && scormVersion.indexOf('USSOCOM') != -1){
+		if(doScorm() && lms == "JKO"){
 			var _objIndex = findObjective(lessonTitle +"_satisfied");
 			if(isScored === "true"){
 
@@ -369,7 +374,7 @@ function C_Completion(_type) {
 				//scorm.API.getHandle().Terminate("");					
 			}
 		}
-		else if(doScorm() && scormVersion.indexOf('USSOCOM') == -1){
+		else if(doScorm() && lms != "JKO"){
 			$('<div id="completionButton">Continue</div>').insertAfter("#scoreFeedback");
 			$("#completionButton").css({"width": "200px"});  //moved to css file
 			$("#completionButton").button().click(function(){

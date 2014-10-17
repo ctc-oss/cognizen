@@ -185,37 +185,36 @@ function C_Sequencing(_type) {
 		}
 
 		//set SCORM objectives
-		if(scormVersion.indexOf('USSOCOM') == -1){
-			var _objId = "";
-	    	if(myObjective != undefined && myObjective !== "undefined"){
-	    		//console.log(i + " : " + pageObj);
-	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+		var _objId = "";
+    	if(myObjective != undefined && myObjective !== "undefined"){
+    		//console.log(i + " : " + pageObj);
+ 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+ 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+ 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+ 						myObjective.replace(/\s+/g, '_');
+
+    	}
+
+    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+    		if(_objId.length > 0){
+    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+    		}
+    		else{
 	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
-	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
-	 						myObjective.replace(/\s+/g, '_');
+ 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+ 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+    		}
+    	}
 
-	    	}
-
-	    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-	    		if(_objId.length > 0){
-	    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-	    		}
-	    		else{
-		 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
-	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
-	 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-	    		}
-	    	}
-
-			if(_objId.length > 0){	
-				if(tempCorrect && graded){
-					setObjectiveSuccess(_objId, true);
-				}
-				else if(!tempCorrect && graded){
-					setObjectiveSuccess(_objId, false);
-				}
+		if(_objId.length > 0){	
+			if(tempCorrect && graded){
+				setObjectiveSuccess(_objId, true);
+			}
+			else if(!tempCorrect && graded){
+				setObjectiveSuccess(_objId, false);
 			}
 		}
+
 
 		$(".sequenceInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });

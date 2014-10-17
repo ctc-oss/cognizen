@@ -49,11 +49,27 @@ var audioHolder;
 //Accessibility control arrays.
 var pageAccess_arr = [];
 var globalAccess_arr = [];
+var courseData;
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/
 //LOAD THE XML AS SOON AS THE DOCUMENT IS READY
 $(document).ready(function(){
+	$.ajax({
+		type: "GET",
+		url: "../course.xml",
+		dataType: "xml",
+		async: false,
+		success: loadContentXML,
+		error: function(){
+			alert("unable to load course.xml")
+		}
+	});
+});
+
+
+function loadContentXML(_data){
+	courseData = _data;
 	$.ajax({
 		type: "GET",
 		url: "xml/content.xml",
@@ -64,7 +80,8 @@ $(document).ready(function(){
 			alert("unable to load content.xml")
 		}
 	});
-});
+}
+
 
 /****************************************************
 **************************** STEP 2 - LOAD JS Modules
@@ -323,7 +340,7 @@ function buildInterface(){
 	
 	//This call positions the background graphic - funciton is in C_DynamicBackgroundImage       /*************************Note: Will make this optional - allow them to use css background instead*/
 	//Image can be updated in css/C_Engine.css and resides in css/images/ folder.
-//	$("#myCanvas").fitToBackgroundImage();
+	$("#myCanvas").fitToBackgroundImage();
 
 	//Place the course title.																	 /*************************Note: Will make this optional*/
 	var courseTitle = $(data).find("courseTitle").attr("value");

@@ -19,6 +19,7 @@ var lessonStatus;//holds the status of the SCORM lesson
 var lmsConnected = false;//indicates if connected to the LMS
 var scorm;//Set after script is initialized. = pipwerks.SCORM;//var for SCORM API wrapper
 var markResume = false; //had to use this for JKO since it doesn't call terminate() successfully
+var lmsObjectives_arr = [];
 
 /*************************************************************
 ** SCORM Funcitonality
@@ -33,12 +34,18 @@ function checkScorm(){
 		scorm.VERSION = $(data).find('scormVersion').attr('value');
 //		debugger;
 		lmsConnected = scorm.init();
-		if(!lmsConnected && scorm.VERSION.indexOf('USSOCOM') != -1){
+
+		if(!lmsConnected && $(courseData).find("course").attr("lms") == "JKO"){
 			scorm.connection.isActive = true;
 				// scorm.API.getHandle().Terminate("");
 				// lmsConnected = scorm.init();	
 		}
 		lessonStatus = scorm.status("get");
+
+		//pop local objectives var to be used in findObjective
+		if(lmsObjectives_arr.length == 0){
+			populateObjectivesArr();
+		}
 
 		var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
 		var _objIndex = findObjective(_lessonTitle+"_satisfied");
@@ -296,21 +303,44 @@ function setInteractions(_id, _type, _response, _result, _description){
 *******************************************************************************/
 function findObjective(objId) 
 {
-    var num = parseInt(scorm.get("cmi.objectives._count"));
+
     var objIndex = -1;
     var encodedObjId = encodeURIComponent(objId);
-    for (var i=0; i < num; ++i) {
-        if (scorm.get("cmi.objectives." + i + ".id") == encodedObjId) {
-            objIndex = i;
-            break;
-        }
-    }
 
-    if (objIndex == -1) {
-        //message("Objective " + objId + " not found.");
-        objIndex = num;
-        //message("Creating new objective at index " + objIndex);
-        scorm.set("cmi.objectives." + objIndex + ".id", encodedObjId);
-    }
+	if(lmsObjectives_arr.length != 0){
+		for (var i = 0; i < lmsObjectives_arr.length; i++) {
+			if(lmsObjectives_arr[i].id == encodedObjId){
+				objIndex = lmsObjectives_arr[i].index;
+				break;
+			}
+		}
+	}
+
+	if(objIndex == -1){
+
+	    var num = parseInt(scorm.get("cmi.objectives._count"));
+
+	    for (var i=0; i < num; ++i) {
+	        if (scorm.get("cmi.objectives." + i + ".id") == encodedObjId) {
+	            objIndex = i;
+	            break;
+	        }
+	    }
+
+	    if (objIndex == -1) {
+	        objIndex = num;
+	        scorm.set("cmi.objectives." + objIndex + ".id", encodedObjId);
+	    }
+	}
     return objIndex;
+}
+
+function populateObjectivesArr()
+{
+	var num = parseInt(scorm.get("cmi.objectives._count"));
+
+    for (var i=0; i < num; ++i) {
+    	var _obj = {id : encodeURIComponent(scorm.get("cmi.objectives." + i + ".id")), index : i };
+    	lmsObjectives_arr.push(_obj);
+    }
 }

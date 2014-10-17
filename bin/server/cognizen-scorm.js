@@ -19,6 +19,7 @@ var SCORM = {
     courseXmlExists: false,
     courseData:'',
     jsResouces_arr: [],
+    reviewLines: '',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -566,6 +567,7 @@ var SCORM = {
         var lessonsName = [];
         //clear js resources array
         _this.jsResouces_arr = [];
+        _this.reviewLines = '';
 
         for(var i=0; i<_this.found.lessons.length; i++){
             var obj = _this.found.lessons[i];
@@ -597,7 +599,8 @@ var SCORM = {
 	    }
 
        	try{
-        	_this.courseData = fs.readFileSync(tempCourseXmlFile).toString();
+       		var _courseData = fs.readFileSync(tempCourseXmlFile).toString();
+        	_this.courseData = et.parse(_courseData);
         }
         catch(err){
         	_this.logger.error("Error reading temp course xml file : " + err);
@@ -722,8 +725,7 @@ var SCORM = {
 	                lessonsName.push(_lessonTitle);
 
 				    //find the objectives in the pages.
-				    //except for USSOCOM publishes
-				    //if(_this.scormVersion.indexOf('USSOCOM') == -1 ){
+				    //////////////////////////////////////////////////
 				    var pageCount = etree.findall('./pages/page').length;
 
 				    for (var i = 0; i < pageCount; i++) {
@@ -762,28 +764,33 @@ var SCORM = {
 				    		}						    		
 				    	}
 				    }
-					//}
+				    ///////////////////////////////////////////////////
 
-				    var reviewLines = '';
+
 					//set up the final test item structure for review
-					if(_this.scormVersion.indexOf('USSOCOM') != -1 && count + 1 == lArray.length)
+					var courseObj = _this._parseCourseItem(_lessonTitle.replace(/\s+/g, ''));
+
+					if(courseObj.sequencing.get("testReview") === 'true')
 					{
-						manifestFile += _this._addUSSOCOMFinalTest(lessonsName[count]);
 
-				        reviewLines = _this._addResources(res, 'Review-files/')
+						if(_this.reviewLines == ''){
+					        _this.reviewLines = _this._addResources(res, 'Review-files/')
 
-				        res.files.forEach(function(file) {
-				            var localFile = file.path.replace(/\\/g,"/");
-				            if(localFile.indexOf('content.xml') == -1 ){
-				            	var inputFile = _lessonPath + '/' + localFile;
-				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/Review-files/'+localFile });
-				        	}
-				        });								
-
+					        res.files.forEach(function(file) {
+					            var localFile = file.path.replace(/\\/g,"/");
+					            if(localFile.indexOf('content.xml') == -1 ){
+					            	var inputFile = _lessonPath + '/' + localFile;
+					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/Review-files/'+localFile });
+					        	}
+					        });	
+					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/Review-files/index.html'});								
+						}
+							
 					}
+
 				    //do not need to do scorm files if publishing to "none"
-    				else if(_this.scormVersion != "none"){
-	                	manifestFile += _this._add2004Item(lessonsName[count], count, lArray.length);
+    				if(_this.scormVersion != "none"){
+	                	manifestFile += _this._add2004Item(lessonsName[count], count, lArray.length, res);
 	            	}
 
 	                //add resources
@@ -802,10 +809,19 @@ var SCORM = {
 
 	                if(count+1 == lArray.length){
 				        if(manifestFile != ''){
-					        //sequencing rules for the course go here
+					        
+					        var courseAttr = _this._parseCourseAttr();
+
 					        var completionLines = '';
-					        if(_this.scormVersion.indexOf('USSOCOM') != -1){
+
+					        //if(_this.scormVersion.indexOf('USSOCOM') != -1){
+					        if(courseAttr.lms === "JKO"){	
 						        //add completion  and survey files
+						        if(courseAttr.survey === "true"){
+					                manifestFile += _this._addUSSOCOMExtra('survey');
+					                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});						        	
+						        }
+
 						        readdirp({
 						                root: _this.scormPath + '/completion/',
 						                directoryFilter: ['*']
@@ -817,23 +833,25 @@ var SCORM = {
 						                    var inputFile = _this.scormPath + '/completion/' + localFile;
 						                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
 						                });
-						                manifestFile += _this._addUSSOCOMExtra('survey');
-						                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});
-						                manifestFile += _this._addUSSOCOMExtra('completion');
-						                completionLines = _this._addResources(res, 'completion-files/')
-						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, reviewLines, completionLines);
+
+						                if(courseAttr.certificate === "true"){
+						                	manifestFile += _this._addUSSOCOMExtra('completion');
+						                	completionLines = _this._addResources(res, 'completion-files/');
+						            	}
+
+						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
 						                if(_this.scormVersion != "none"){
 						                	//this needs to be moved to a function
 					        				///////////////////////////////////////////////
 									        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
 
-									        //USSOCOM publishing uses 2004 4th edition SCORM files
-									        if(_this.scormVersion === '2004_4th_USSOCOM'){
-									        	scormBasePath = _this.scormPath + '/2004_4th/'; 
-									        }
-									        else if(_this.scormVersion === '2004_3rd_USSOCOM'){
-									        	scormBasePath = _this.scormPath + '/2004_3rd/';
-									        }
+									        // //USSOCOM publishing uses 2004 4th edition SCORM files
+									        // if(_this.scormVersion === '2004_4th_USSOCOM'){
+									        // 	scormBasePath = _this.scormPath + '/2004_4th/'; 
+									        // }
+									        // else if(_this.scormVersion === '2004_3rd_USSOCOM'){
+									        // 	scormBasePath = _this.scormPath + '/2004_3rd/';
+									        // }
 									        
 									        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
@@ -869,13 +887,16 @@ var SCORM = {
 											        //add imsmanifest.xml file
 											        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
+											        //add course.xml file
+											        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+
 								        			//adds temp content.xml file to zip
 								        			for(var j=0; j<lArray.length; j++){
 								        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
 								        			}
 
 								        			//add review content.xml file to zip
-								        			if(reviewLines != ''){
+								        			if(_this.reviewLines != ''){
 								        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});							        				
 								        			}
 
@@ -909,19 +930,19 @@ var SCORM = {
 						        );	
 					        }
 					        else{
-					        	manifestFile += _this._finalizeManifest(lessonsName, resourceLines, reviewLines, completionLines);
+					        	manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
 					        	if(_this.scormVersion != "none"){
 					        		//this needs to be moved to a function
 					        		///////////////////////////////////////////////
 							        var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
 
-							        //USSOCOM publishing uses 2004 4th edition SCORM files
-							        if(_this.scormVersion === '2004_4th_USSOCOM'){
-							        	scormBasePath = _this.scormPath + '/2004_4th/'; 
-							        }
-							        else if(_this.scormVersion === '2004_3rd_USSOCOM'){
-							        	scormBasePath = _this.scormPath + '/2004_3rd/';
-							        }
+							        // //USSOCOM publishing uses 2004 4th edition SCORM files
+							        // if(_this.scormVersion === '2004_4th_USSOCOM'){
+							        // 	scormBasePath = _this.scormPath + '/2004_4th/'; 
+							        // }
+							        // else if(_this.scormVersion === '2004_3rd_USSOCOM'){
+							        // 	scormBasePath = _this.scormPath + '/2004_3rd/';
+							        // }
 							        
 							        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
@@ -957,13 +978,16 @@ var SCORM = {
 									        //add imsmanifest.xml file
 									        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
+									        //add course.xml file
+									        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );									        
+
 						        			//adds temp content.xml file to zip
 						        			for(var j=0; j<lArray.length; j++){
 						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
 						        			}
 
 						        			//add review content.xml file to zip
-						        			if(reviewLines != ''){
+						        			if(_this.reviewLines != ''){
 						        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});							        				
 						        			}
 									        
@@ -1024,10 +1048,21 @@ var SCORM = {
 
 		        				archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
 
+						        //add course.xml file
+						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );				        				
+
 								//add js directory to root of package
 						        for (var i = 0; i < _this.jsResouces_arr.length; i++) {	
 						             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResouces_arr[i]), { name: _this.binDir+'/js/'+_this.jsResouces_arr[i] });
 						        };  
+
+			        			//remove temp course.xml
+			        			try{
+			        				fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
+			        			}
+			        			catch(err){
+			        				_this.logger.error("Error deleting tempCourse.xml file :" + err );
+			        			}
 
 						        //remove temp content.xml files
 						        _this._removeTempFiles(lArray);
@@ -1061,24 +1096,24 @@ var SCORM = {
 
 	},	
 
-	_finalizeManifest: function(ilessonsName, iresourceLines, ireviewLines, icompletionLines){
+	_finalizeManifest: function(ilessonsName, iresourceLines, icompletionLines){
 		var _this = this;
         
         var data, etree;
-//        data = fs.readFileSync(_this.contentPath.replace(/\s+/g, '%20') + "/course.xml").toString();
-        etree = et.parse(_this.courseData);
+
+        etree = _this.courseData;
 
 	    var choice = etree.find('.sequencing').get('choice');
 	    var flow = etree.find('.sequencing').get('flow');
 	    var forwardOnly = etree.find('.sequencing').get('forwardOnly');
 
 		var _manifestFile = '';
-		        //USSOCOM uses flow and choice control mode
-        if(_this.scormVersion.indexOf('USSOCOM') != -1){
-	        _manifestFile += "          <imsss:sequencing>\n";
-			_manifestFile += "		    	<imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
-			_manifestFile += "		    </imsss:sequencing>\n"; 						        	
-        }
+		 //        //USSOCOM uses flow and choice control mode
+   //      if(_this.scormVersion.indexOf('USSOCOM') != -1){
+	  //       _manifestFile += "          <imsss:sequencing>\n";
+			// _manifestFile += "		    	<imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
+			// _manifestFile += "		    </imsss:sequencing>\n"; 						        	
+   //      }
 		//TODO: might have to not allow to set choice and flow both to false...
         if(choice === "false" || flow === "true" || forwardOnly === "true"){
         	_manifestFile += "          <imsss:sequencing>\n";
@@ -1108,9 +1143,9 @@ var SCORM = {
 		}
 
 		//add resource for review res
-		if(ireviewLines != ''){
+		if(_this.reviewLines != ''){
 			_manifestFile += "      <resource identifier=\"RES-Review-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/Review-files/index.html\">\n";
-			_manifestFile += ireviewLines;
+			_manifestFile += _this.reviewLines;
 			_manifestFile += '      </resource>\n';										
 		}
 
@@ -1120,9 +1155,12 @@ var SCORM = {
 			_manifestFile += icompletionLines;
 			_manifestFile += '      </resource>\n';									
 		}
-
+		
+		var courseAttr = _this._parseCourseAttr();
 		//temp add survey SCO to ussocom
-		if(_this.scormVersion.indexOf('USSOCOM') != -1){
+		//if(_this.scormVersion.indexOf('USSOCOM') != -1){
+        if(courseAttr.lms === "JKO" && courseAttr.survey === "true"){	
+	        //add completion  and survey files		
 			_manifestFile += "      <resource identifier=\"RES-survey-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/survey/survey.html\">\n";
 			_manifestFile += "			<file href=\""+_this.binDir+"/survey/survey.html\"/>\n";
 			_manifestFile += '      </resource>\n';				
@@ -1152,7 +1190,7 @@ var SCORM = {
 		var _this = this;
         var data, etree;
         // data = fs.readFileSync(_courseXmlFile).toString();
-        etree = et.parse(_this.courseData);
+        etree = _this.courseData;
 
 	    var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 
@@ -1207,24 +1245,9 @@ var SCORM = {
 		var _this = this;
 		var lessonNameTrim = lessonName.replace(/\s+/g, '');
 
-        var data, etree;
-        //data = fs.readFileSync(path.normalize(_this.contentPath + "/course.xml")).toString();
-        etree = et.parse(_this.courseData);
-
-	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
-	    var itemCount = etree.findall('./item').length;
-	    var mySeq;
-	    var mySeqRules;
-	    for (var i = 0; i < itemCount; i++) {
-	    	var myNode = etree.findall('./item')[i];
-	    	var itemName = myNode.get('name').replace(/\s+/g, '');
-	    	if(itemName === lessonNameTrim){
-	    		mySeq = myNode.find('.sequencing');
-	    		mySeqRules = myNode.find('.sequencing/sequencingRules');
-	    		break;
-	    	}
-	    }
-
+	    var courseObj = _this._parseCourseItem(lessonNameTrim);
+	    var mySeq = courseObj.sequencing;
+	    var mySeqRules = courseObj.sequencingRules;
 	    var itemSeq = {
 			//choice: (mySeq.get('choice') === 'true'),
 			//flow: (mySeq.get('flow') === 'true'),
@@ -1242,7 +1265,8 @@ var SCORM = {
 			rollupObjectiveMeasureWeight: mySeq.get('rollupObjectiveMeasureWeight'),
 			tracked: (mySeq.get('tracked') === 'true'),
 			completionSetByContent: (mySeq.get('completionSetByContent') === 'true'),
-			objectiveSetByContent: (mySeq.get('objectiveSetByContent') === 'true')
+			objectiveSetByContent: (mySeq.get('objectiveSetByContent') === 'true'),
+			testReview: (mySeq.get("testReview") === 'true')
 		};
 
 		if(mySeqRules.findall('.notattempthidden').length != 0){
@@ -1289,10 +1313,7 @@ var SCORM = {
 		            "               </adlnav:presentation>\n";
          }   
 
-        //item += _this._add2004ItemSeq(lessonNameTrim, lessonCount, totalLessons);   
-
 		item += "               <imsss:sequencing>\n";
-
 
         //setting controle modes
         //if(!itemSeq.choice || itemSeq.flow || itemSeq.forwardOnly || !itemSeq.choiceExit){
@@ -1369,314 +1390,98 @@ var SCORM = {
 		item += "	        	  </imsss:sequencing>\n";	
         item += "           </item>\n";
 
+        if(itemSeq.testReview){
+			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-Review-files\">\n"+// isvisible=\"false\">\n"+
+			"                 <title>"+lessonName+" Review</title>\n"+
+			"                 <adlnav:presentation>\n"+
+			"                     <adlnav:navigationInterface>\n"+
+			"                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
+			"                         <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
+			"                     </adlnav:navigationInterface>\n"+
+			"                 </adlnav:presentation>\n"+
+			"                 <imsss:sequencing>\n"+
+			"					 <imsss:sequencingRules>\n"+
+		    "                    	<imsss:preConditionRule>\n"+
+		    "                          	<imsss:ruleConditions conditionCombination=\"any\">\n"+
+		    "                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
+		    "                        	</imsss:ruleConditions>\n"+
+		    "                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
+		    "                    	</imsss:preConditionRule>\n";		
+			// "                    	 <imsss:preConditionRule>\n"+
+			// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
+			// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
+			// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
+			// "                         	</imsss:ruleConditions>\n"+
+			// "                         	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
+			// "                     	</imsss:preConditionRule>\n"+
+			// "                    	 <imsss:preConditionRule>\n"+
+			// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
+			// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" condition=\"satisfied\"/>\n"+
+			// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
+			// "                         	</imsss:ruleConditions>\n"+
+			// "                         	<imsss:ruleAction action=\"skip\"/>\n"+
+			// "                     	</imsss:preConditionRule>\n"+				
+			item +="                     </imsss:sequencingRules>\n"+
+			"  	          		  <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+				
+			"                     <imsss:objectives>\n"+
+			"                         <imsss:primaryObjective />\n"+
+			"                     	  <imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
+			"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '') + "." + lessonNameTrim + "_satisfied\"\n"+
+			"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+			"                     	  </imsss:objective>\n";		
+			// "			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
+			// "		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim+ "_satisfied\"\n"+
+			// "	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
+			// "	            		</imsss:objective>\n";			
+	        //any objectives stuff goes here - secondaryObjectivesGenerator
+	        if(_this.objectives_arr.length > 0){
+	        	item += _this._secondaryObjectivesGenerator();
+	        }					
+			item += "	          		 </imsss:objectives>\n"+
+			"  	          		  <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+			
+			"                 </imsss:sequencing>\n"+
+			"             </item>\n";        	
+
+        }
+
         return item;
 
 	},
 
-	_add2004ItemSeq: function(lessonId, lessonCount, totalLessons){
-		var _this = this;
-		var seq = "";
-		var courseNameTrim = _this.courseName.replace(/\s+/g, ''); 
-		// //any objectives stuff goes here - objectivesGenerator
+	_parseCourseItem: function(lessonNameTrim){
+        var _this = this;
+        etree = _this.courseData;
 
-		//seq rules for USSOCOM
-		//if(_this.scormVersion === '2004_3rd_USSOCOM' || _this.scormVersion === '2004_4th_USSOCOM'){
-		if(_this.scormVersion.indexOf('USSOCOM') != -1){	
-			//all of the items except the last one (post test) get IDRef to sequencingCollection "scampidl"
-			if(lessonCount + 1 == totalLessons){
-				//sequencing elements for the post test
-				seq +="		                 <imsss:sequencing>\n"+
-				"		                      <imsss:controlMode choiceExit=\"false\" />\n"+
-				"		                      <imsss:sequencingRules>\n"+
-				"		                        <imsss:preConditionRule>\n"+
-				"		                              <imsss:ruleConditions conditionCombination=\"any\">\n"+
-				"		                              <imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
-				"		                            </imsss:ruleConditions>\n"+
-				"		                            <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-				"		                        </imsss:preConditionRule>\n"+
-				"		                        <imsss:preConditionRule>\n"+
-				"		                              <imsss:ruleConditions conditionCombination=\"any\">\n"+
-				"		                              <imsss:ruleCondition condition=\"attemptLimitExceeded\"/>\n"+
-				"		                            </imsss:ruleConditions>\n"+
-				"		                            <imsss:ruleAction action=\"disabled\"/>\n"+
-				"		                        </imsss:preConditionRule>\n"+
-				"		                        <imsss:preConditionRule>\n"+
-				"		                            <imsss:ruleConditions>\n"+
-				"		                                <imsss:ruleCondition condition=\"satisfied\"/>\n"+
-				"		                            </imsss:ruleConditions>\n"+
-				"		                            <imsss:ruleAction action=\"skip\"/>\n"+
-				"		                        </imsss:preConditionRule>\n"+
-				"		                          <imsss:postConditionRule>\n"+
-				"		                            <imsss:ruleConditions conditionCombination=\"all\">\n"+
-				"		                                <imsss:ruleCondition operator=\"not\" condition=\"completed\"/>\n"+
-				"		                            </imsss:ruleConditions>\n"+
-				"		                            <imsss:ruleAction action=\"retry\"/>\n"+
-				"		                        </imsss:postConditionRule>  \n"+                 
-				"		                      </imsss:sequencingRules>\n"+
-				"		                      <imsss:limitConditions attemptLimit=\"2\"/>   \n"+                   
-				"		                      <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1.0\"></imsss:rollupRules>  \n"+                 
-				"		                      <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-				"		  	        	  </imsss:sequencing>\n";				
-				// seq += "               <imsss:sequencing>\n"+
-				// 	"                	<imsss:controlMode choiceExit=\"false\" />\n"+				
-				// 	"        			<imsss:sequencingRules>\n"+
-				// 	"	            		<imsss:preConditionRule>\n"+
-				// 	"		   	                <imsss:ruleConditions conditionCombination=\"any\">\n"+
-				// 	"	                			<imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-				// 	"	                			<imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-				// 	"			                </imsss:ruleConditions>\n"+
-				// 	"	              			<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-				// 	"			            </imsss:preConditionRule>\n"+
-				// 	"		            </imsss:sequencingRules>\n"+
-				// 	//handles the score from the post test to be the only activity that counts towards rollup so that the course (these defaults and don't have to be included)					          
-				// 	"	          		<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
-				// 	"	   	            <imsss:objectives>\n"+
-				// 	"			            <imsss:primaryObjective objectiveID=\"" + lessonId + "_satisfied\" />\n"+
-				// 	"			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
-				// 	"		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
-				// 	"	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-				// 	"	            		</imsss:objective>\n";
-			 //        //any objectives stuff goes here - secondaryObjectivesGenerator
-			 //        if(_this.objectives_arr.length > 0){
-			 //        	seq += _this._secondaryObjectivesGenerator();
-			 //        }					
-				// 	seq += "	          		</imsss:objectives>\n"+
-				// 	"	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-				// 	"	        	</imsss:sequencing>\n";				
-			}
-			else{
-				seq += "               <imsss:sequencing IDRef = \"scampidl\">\n";
-				//first SCO, there is not preivous SCO to track
-				if(lessonCount == 0){
-					seq += "				<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules> \n"+
-					"	   	            <imsss:objectives>\n"+
-					"			            <imsss:primaryObjective />\n"+
-					"			            <imsss:objective objectiveID=\"" + lessonId + "_satisfied\">\n"+
-					"		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonId + "_satisfied\" readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-					"	            		</imsss:objective>\n"+					
-					"	          		</imsss:objectives>\n"+	
-					" 					<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+					
-					"	        	</imsss:sequencing>\n";										
-				}
-				else{
-					seq +="        			<imsss:sequencingRules>\n"+
-					"	                    	<imsss:preConditionRule>\n"+
-					"	                          	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-					"	                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
-					"	                        	</imsss:ruleConditions>\n"+
-					"	                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-					"	                    	</imsss:preConditionRule>\n"+
-					"	                  	</imsss:sequencingRules> \n"+
-					"						<imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules> \n"+
-					"	   	            	<imsss:objectives>\n"+
-					"			            	<imsss:primaryObjective />\n"+
-					"			            	<imsss:objective objectiveID=\"" + lessonId + "_satisfied\">\n"+
-					"		                		<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonId + "_satisfied\" readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-					"	            			</imsss:objective>\n"+					
-					"	          			</imsss:objectives>\n"+	
-					" 						<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+									
-					"		        	</imsss:sequencing>\n";					
-					// "	            		<imsss:preConditionRule>\n"+
-					// "		   	                <imsss:ruleConditions conditionCombination=\"any\">\n"+
-					// "	                			<imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-					// "	                			<imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-					// "			                </imsss:ruleConditions>\n"+
-					// "	              			<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-					// "			            </imsss:preConditionRule>\n"+
-					// "		            </imsss:sequencingRules>\n"+
-					// "	   	            <imsss:objectives>\n"+
-					// "			            <imsss:primaryObjective objectiveID=\"" + lessonId + "_satisfied\">\n"+	
-					// "		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonId + "_satisfied\"\n"+
-					// "	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-					// "	            		</imsss:primaryObjective>\n"+	
-					// "			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
-					// "		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
-					// "	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-					// "	            		</imsss:objective>\n"+	
-					// "	          		</imsss:objectives>\n"+	
-					// "	        	</imsss:sequencing>\n";																		
+	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
+	    var itemCount = etree.findall('./item').length;
+	    var mySeq;
+	    var mySeqRules;
+	    for (var i = 0; i < itemCount; i++) {
+	    	var myNode = etree.findall('./item')[i];
+	    	var itemName = myNode.get('name').replace(/\s+/g, '');
+	    	if(itemName === lessonNameTrim){
+	    		mySeq = myNode.find('.sequencing');
+	    		mySeqRules = myNode.find('.sequencing/sequencingRules');
+	    		break;
+	    	}
+	    }
+	    //var itemElements = {sequencing: mySeq, sequencingRules: mySeqRules};
+	    return {sequencing: mySeq, sequencingRules: mySeqRules};
 
-				}
-			}
-
-		}
-		//default
-		else{
-			seq += "               <imsss:sequencing>\n";
-	        //any objectives stuff goes here - objectivesGenerator
-	        if(_this.objectives_arr.length > 0){
-	        	seq += _this._objectivesGenerator();
-	        }					
-			seq += "	          		<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-			"	        	  </imsss:sequencing>\n";					
-		}
-		_this.previousLesson = lessonId;
-		return seq;
 	},
 
-	_addUSSOCOMFinalTest: function(lessonName){
+	_parseCourseAttr: function(){
 		var _this = this;
-		var seq = "";
-		var courseNameTrim = _this.courseName.replace(/\s+/g, '');
-		var lessonNameTrim = lessonName.replace(/\s+/g, ''); 
-		//seq +="           <item identifier=\""+lessonNameTrim+"Parent\" >\n"+
-		//"             <title>"+lessonName+"</title>\n"+
-		// seq += "             <item identifier=\""+lessonNameTrim+"Before_id\" identifierref=\"RES-Review-files\">\n"+ //isvisible=\"false\">\n"+
-		// "                 <title>"+lessonName+" Before Review</title>\n"+
-		// "                 <adlnav:presentation>\n"+
-		// "                     <adlnav:navigationInterface>\n"+
-		// "                         <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
-		// "                         <adlnav:hideLMSUI>previous</adlnav:hideLMSUI>\n"+
-		// "                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
-		// "                         <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
-		// "                         <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n"+
-		// "                     </adlnav:navigationInterface>\n"+
-		// "                 </adlnav:presentation>\n"+
-		// "                 <imsss:sequencing IDRef = \"scampidl\">\n"+
-		// "                     <imsss:sequencingRules>\n"+
-		// "                         <imsss:preConditionRule>\n"+
-		// "                             <imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// //"                                 <imsss:ruleCondition referencedObjective=\"next_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                                 <imsss:ruleCondition condition=\"always\"/>\n"+
-		// "                             </imsss:ruleConditions>\n"+
-		// "                             <imsss:ruleAction action=\"skip\"/>\n"+
-		// "                         </imsss:preConditionRule>\n"+
-		// "                    	 <imsss:preConditionRule>\n"+
-		// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                         	</imsss:ruleConditions>\n"+
-		// "                         	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		// "                     	</imsss:preConditionRule>\n"+		
-		// "                     </imsss:sequencingRules>\n"+
-		// "                     <imsss:objectives>\n"+
-		// "                         <imsss:primaryObjective />\n"+
-		// "                         <imsss:objective objectiveID=\"next_sco_satisfied\">\n"+
-		// "                             <imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
-		// "                                           readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-		// "                         </imsss:objective>\n"+//;
-		// "                     <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
-		// "                         <imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
-		// "                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-		// "                     </imsss:objective>\n";		
-  //       //any objectives stuff goes here - secondaryObjectivesGenerator
-  //       if(_this.objectives_arr.length > 0){
-  //       	seq += _this._secondaryObjectivesGenerator();
-  //       }					
-		// seq += "	          		 </imsss:objectives>\n"+		
-		// "                 </imsss:sequencing>\n"+
-		// "             </item>\n"+
-		seq +="             <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\">\n"+// isvisible=\"false\">\n"+             
-		"                 <title>"+lessonName+"</title>\n"+
-		"                 <adlnav:presentation>\n"+
-		"                     <adlnav:navigationInterface>\n"+
-		"                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
-		"                         <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
-		"                     </adlnav:navigationInterface>\n"+
-		"                 </adlnav:presentation>\n"+
-		"                 <imsss:sequencing>\n"+
-		"                     <imsss:controlMode choiceExit=\"false\"/>\n"+
-		"					  <imsss:sequencingRules>\n"+
-	    "                    	<imsss:preConditionRule>\n"+
-	    "                          	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-	    "                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
-	    "                        	</imsss:ruleConditions>\n"+
-	    "                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-	    "                    	</imsss:preConditionRule>\n";					
-		// "                    	 <imsss:preConditionRule>\n"+
-		// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                         	</imsss:ruleConditions>\n"+
-		// "                         	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		// "                     	</imsss:preConditionRule>\n"+		
-		seq +="                     </imsss:sequencingRules>\n"+		
-		"  	          		  <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"1\"></imsss:rollupRules>\n"+
-		"  	   	              <imsss:objectives>\n"+
-		"  			              <imsss:primaryObjective />\n"+
-		"                     	  <imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
-		"							<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
-		"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-		"                     	  </imsss:objective>\n";		
-        //any objectives stuff goes here - secondaryObjectivesGenerator
-        if(_this.objectives_arr.length > 0){
-        	seq += _this._secondaryObjectivesGenerator();
-        }					
-		seq += "	          		 </imsss:objectives>\n"+		
-		"  	          		  <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
-		"  	        	  </imsss:sequencing>\n"+
-		"             </item>\n"+
-		"             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-Review-files\">\n"+// isvisible=\"false\">\n"+
-		"                 <title>Test Review</title>\n"+
-		"                 <adlnav:presentation>\n"+
-		"                     <adlnav:navigationInterface>\n"+
-		"                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
-		"                         <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
-		"                     </adlnav:navigationInterface>\n"+
-		"                 </adlnav:presentation>\n"+
-		"                 <imsss:sequencing IDRef = \"scampidl\">\n"+
-		"					 <imsss:sequencingRules>\n"+
-	    "                    	<imsss:preConditionRule>\n"+
-	    "                          	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-	    "                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
-	    "                        	</imsss:ruleConditions>\n"+
-	    "                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-	    "                    	</imsss:preConditionRule>\n";		
-		// "                    	 <imsss:preConditionRule>\n"+
-		// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                         	</imsss:ruleConditions>\n"+
-		// "                         	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		// "                     	</imsss:preConditionRule>\n"+
-		// "                    	 <imsss:preConditionRule>\n"+
-		// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" condition=\"satisfied\"/>\n"+
-		// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                         	</imsss:ruleConditions>\n"+
-		// "                         	<imsss:ruleAction action=\"skip\"/>\n"+
-		// "                     	</imsss:preConditionRule>\n"+				
-		seq +="                     </imsss:sequencingRules>\n"+
-		"  	          		  <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+				
-		"                     <imsss:objectives>\n"+
-		"                         <imsss:primaryObjective />\n"+
-		"                     	  <imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
-		"							<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
-		"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-		"                     	  </imsss:objective>\n";		
-		// "			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
-		// "		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim+ "_satisfied\"\n"+
-		// "	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-		// "	            		</imsss:objective>\n";			
-        //any objectives stuff goes here - secondaryObjectivesGenerator
-        if(_this.objectives_arr.length > 0){
-        	seq += _this._secondaryObjectivesGenerator();
-        }					
-		seq += "	          		 </imsss:objectives>\n"+
-		"  	          		  <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+		
-		"                 </imsss:sequencing>\n"+
-		"             </item>\n";//+
-		// "             <imsss:sequencing>\n"+
-		// "                 <imsss:controlMode flow=\"true\"/>\n"+
-		// "                 <imsss:sequencingRules>\n"+
-		// "                     <imsss:preConditionRule>\n"+
-		// "                         <imsss:ruleConditions conditionCombination=\"any\">\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
-		// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
-		// "                         </imsss:ruleConditions>\n"+
-		// "                         <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		// "                     </imsss:preConditionRule>\n"+
-		// "                 </imsss:sequencingRules>\n"+
-		// "                 <imsss:objectives>\n"+
-		// "                     <imsss:primaryObjective/>\n"+
-		// "                     <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
-		// "                         <imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
-		// "                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-		// "                     </imsss:objective>\n"+
-		// "                 </imsss:objectives>\n"+              
-		// "             </imsss:sequencing>\n"+             
-		// "         </item>\n";
-		return seq;
+		var myNode = _this.courseData.getroot();
+		var courseAttr = {
+			id : myNode.get('id'),
+			name : myNode.get('name'),
+			lms : myNode.get('lms'),
+			survey : myNode.get('survey'),
+			certificate : myNode.get('certificate')
+		};
+
+		return courseAttr; 
 	},
 
 	_addUSSOCOMExtra: function(lessonName){
@@ -1695,7 +1500,7 @@ var SCORM = {
             "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
         	"                   </adlnav:navigationInterface>\n"+
             "               </adlnav:presentation>\n"+         
-			"				<imsss:sequencing IDRef = \"scampidl\">\n"+
+			"				<imsss:sequencing>\n"+
 		    "                  <imsss:sequencingRules>\n"+
 		    "                    <imsss:preConditionRule>\n"+
 		    "                          <imsss:ruleConditions conditionCombination=\"any\">\n"+
@@ -1703,7 +1508,9 @@ var SCORM = {
 		    "                        </imsss:ruleConditions>\n"+
 		    "                        <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
 		    "                    </imsss:preConditionRule>\n"+
-		    "                  </imsss:sequencingRules>	\n"+			
+		    "                  </imsss:sequencingRules>	\n"+
+			'				   <imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n'+
+			' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+		    			
 			"		  	   </imsss:sequencing>\n";	
    //      	"		            <imsss:sequencingRules>\n"+
 			// "                     <imsss:preConditionRule>\n"+
@@ -1768,7 +1575,9 @@ var SCORM = {
 			
 		for (var i = 0; i < _this.jsResouces_arr.length; i++) {		        	
 		    resource += "				<file href=\""+_prefix+"js/"+_this.jsResouces_arr[i]+"\"/>\n";    	
-		};  
+		};
+		//added course.xml file here, figured it would cover it
+		resource += "				<file href=\""+_prefix+"course.xml\"/>\n"; 		  
         resource += "		</resource>\n";
         //_this.logger.info(resource);                
         return resource;		      

@@ -658,7 +658,7 @@ function C_Outline(_myItem) {
 		//end div for general
 		msg += '</div>';
      	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
-		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';		
+		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';				
 		msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
 		msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
 		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
@@ -667,6 +667,15 @@ function C_Outline(_myItem) {
 		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';	
 		//end div for sequencing
 		msg += '</div>';
+    	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>LMS Options</h3>";
+     	msg += '<div id="lmsAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';	    
+     	msg += "<label for='lms'>Set preferred LMS: </label>";
+     	msg += "<select name='lms' id='lms' title='Set the preferred LMS to be used for deployment.'>";
+     	msg += "<option>none</option>";
+     	msg += "<option>JKO</option>";
+     	msg += "</select> ";
+		//end div for lmsAccord
+		msg += '</div>';			
 		//end div for accordion
 		msg += '</div>';				
 		
@@ -765,7 +774,21 @@ function C_Outline(_myItem) {
 	
 	        socket.emit('renameContent', data);
 		}).css({'width': '500px', 'color': '#3383bb;'});
-		
+
+		//set lms based off value in xml
+		if($(courseData).find("course").attr("lms")){
+			$("#lms").val($(courseData).find("course").attr("lms"));
+		}
+
+
+
+		// update the xml when the lms drop is changed
+	    $("#lms").on("change", function(){
+		    $(courseData).find("course").attr("lms", $("#lms").val());		    
+		    setLmsAccord();
+		    updateCourseXML();
+	    }); 		
+
 		/*$("#out_courseObjective").on("change", function(){
 		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 		 	var titleUpdate = $("#out_pageObjective").val().trim();
@@ -781,10 +804,34 @@ function C_Outline(_myItem) {
 				collapsible: true,
 				heightStyle: "content"
 			});			
+			//sets up lmsAccord div based off of lms identified
+			setLmsAccord();			
 		});	
 
 
      }
+
+	function setLmsAccord(){
+		if($("#lms").val() == "JKO"){
+			//append to accordon for course...
+			var jkoData = addToggle("survey", "Adds the JKO survey to the end of the course.");
+			jkoData += addToggle("certificate", "Adds the JKO certificate to the end of the course.");
+			$("#lmsAccord").append(jkoData);
+			setToggle("survey", -1);
+			setToggle("certificate", -1);
+			toggleChange("survey", -1);	
+			toggleChange("certificate", -1);  
+			$( document ).tooltip();
+			$("#accordion").accordion("refresh");	  	
+		}
+		else if($("#lms").val() == "none"){
+			$(courseData).find("course").attr("survey", "false");
+			$(courseData).find("course").attr("certificate", "false");
+			$("#surveyText").parent().remove();
+			$("#certificateText").parent().remove();
+		}
+
+	}
      
      /****************************************************************
      * Display editable Module Preferences.
@@ -888,7 +935,7 @@ function C_Outline(_myItem) {
      	//msg += '<label title="Hide the item in the TOC until it has been attempted." style="width:350px; float:left;" >Hide in table of contents until attempted : </label>';
 		//msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" style="float:left;"/><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';		
 		msg += '<br/><br/><div id="rollupControls" title="" style="float:left;"><b>Determine which activities participate in status rollup and how their status is weighted in relation to other activities: </b></div>';
-		msg += addToggle("rollupObjectiveStatisfied", "Specifies whether this activity should count towards satisfaction rollup:");
+		msg += addToggle("rollupObjectiveSatisfied", "Specifies whether this activity should count towards satisfaction rollup:");
 		msg += '<label for="rolluOobjectiveMeasureWeight" title="" style="float:left">Assign a weight to the score for this activity to be used in rollup.:  </label>';
 		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" style="width:350px; float:left;"/>';
 		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup:");		
@@ -896,8 +943,12 @@ function C_Outline(_myItem) {
 		msg += addToggle("tracked", "Is data tracked for this activity:");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
-//type="number" min="0" max="1" step="0.01"
-		msg += 	'<br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left;">Sequencing Definition Model</a>';
+		msg += '<br/><div id="reviewModule" title="If this is a test module, a test review module can be added that displays all of the missed objectives from the test.'
+		+' This adds the module at publish time to the final SCORM package." style="float:left;"><b>Add test review module after this module:</b></div>';
+		msg += addToggle("testReview", "Specifies if a test module should proceed this module:");	
+		msg += 	'<br/><div style="float:left;"><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" >Sequencing Definition Model</a></div>';
+	
+
 		//end sequencing div
 		msg += '</div>';
 		//end accordion div
@@ -1027,8 +1078,9 @@ function C_Outline(_myItem) {
 		setToggle("tracked", modIndex);
 		setToggle("completionSetByContent", modIndex);
 		setToggle("objectiveSetByContent", modIndex);
-		setToggle("rollupObjectiveStatisfied", modIndex);
+		setToggle("rollupObjectiveSatisfied", modIndex);
 		setToggle("rollupProgressCompletion", modIndex);
+		setToggle("testReview", modIndex);
 
 		if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value') === "true"){
 			$('#notAttemptHidden').prop('checked',true);
@@ -1052,8 +1104,9 @@ function C_Outline(_myItem) {
 		toggleChange("tracked", modIndex);
 		toggleChange("completionSetByContent", modIndex);
 		toggleChange("objectiveSetByContent", modIndex);
-		toggleChange("rollupObjectiveStatisfied", modIndex);
+		toggleChange("rollupObjectiveSatisfied", modIndex);
 		toggleChange("rollupProgressCompletion", modIndex);
+		toggleChange("testReview", modIndex);
 
 		$('#notAttemptHidden').on("change", function(){
 			if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').length == 0){
@@ -1120,24 +1173,46 @@ function C_Outline(_myItem) {
      }
 
      function setToggle(_id, index){
-		if($(courseData).find('sequencing').eq(index).attr(_id) === "true"){
-			$('#'+_id).prop('checked',true);
-		}
-		else{
-			$('#'+_id).prop('checked',false);
-		}     	
+     	if(index == -1){
+			if($(courseData).find("course").attr(_id) === "true"){
+				$('#'+_id).prop('checked',true);
+			}
+			else{
+				$('#'+_id).prop('checked',false);
+			}  
+     	}
+     	else{
+			if($(courseData).find('sequencing').eq(index).attr(_id) === "true"){
+				$('#'+_id).prop('checked',true);
+			}
+			else{
+				$('#'+_id).prop('checked',false);
+			}      		
+     	}
+    	
      }
 
      function toggleChange(_id, index){
-		$('#'+_id+'Radio').on("change", function(){
-		   if($('#'+_id).prop('checked')){
-			   $(courseData).find('sequencing').eq(index).attr(_id, "true");
-		   } else{
-			   $(courseData).find('sequencing').eq(index).attr(_id, "false");
-		   }
-		   updateCourseXML();
-		});	     	
-
+     	if(index == -1){
+			$('#'+_id+'Radio').on("change", function(){
+			   if($('#'+_id).prop('checked')){
+				   $(courseData).find("course").attr(_id, "true");
+			   } else{
+				   $(courseData).find("course").attr(_id, "false");
+			   }
+			   updateCourseXML();
+			});	
+     	}
+     	else{
+			$('#'+_id+'Radio').on("change", function(){
+			   if($('#'+_id).prop('checked')){
+				   $(courseData).find('sequencing').eq(index).attr(_id, "true");
+			   } else{
+				   $(courseData).find('sequencing').eq(index).attr(_id, "false");
+			   }
+			   updateCourseXML();
+			});	      		
+     	}
      }
      
      
