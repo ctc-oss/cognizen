@@ -66,6 +66,12 @@ function C_Reveal(_type) {
 	
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
+		//resize images for mobile phone
+		if(isMobilePhone){
+			mediaWidth = mediaWidth * 0.6;
+			mediaHeight = mediaHeight * 0.6;
+		}
+	
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
 		$("#scrollableContent").addClass("top");
 		
