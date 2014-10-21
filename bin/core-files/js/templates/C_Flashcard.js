@@ -86,7 +86,15 @@ function C_Flashcard(_type) {
 			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
 			
 			//Position the card.
-			$("#" + tempID).css({'left': 69 + i*4});
+			var leftPos = 6.7;
+			if(!oldIE){
+				if(window.matchMedia("screen and (max-device-width: 736px)").matches){
+					leftPos = 0;
+				}
+			}
+
+//			$("#" + tempID).css({'left': 69 + i*4});
+			$("#" + tempID).css({'left': leftPos + i*0.4 + '%'});
 			//Postion the text within the card.
 			$("#" + tempTextID).css({'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
 			
@@ -127,13 +135,20 @@ function C_Flashcard(_type) {
 			}).click(function(){
 				$(this).unbind('mouseenter mouseleave click');
 				$(this).removeClass("flashcardHover");
-				TweenMax.to($(this), .2, {rotationY:90, left: $(this).position().left + $(this).width() + 25, zIndex: myIndex, onComplete:function(target){
+
+				var cardHolderWidth = $("#flashcardHolder").width();
+				// calculate new left position in percent
+				var initialPos = $(this).position().left;
+				var initialPosPercent = initialPos / cardHolderWidth * 100 + "%"; 
+
+				TweenMax.to($(this), .2, {rotationY:90, left:'50%', zIndex: myIndex, onComplete:function(target){
 					target.empty();
 					tempID = "cardBackText" + myIndex;
 					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</dev>");
 					$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
 					target.addClass("flashcardBack");
-					TweenMax.to(target, .2, {rotationY:0, left: target.position().left});
+					target.css('left', 'auto');
+					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					
 				}, onCompleteParams:[$(this)]});
 				myIndex++;

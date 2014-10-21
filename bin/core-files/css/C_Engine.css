@@ -3446,6 +3446,17 @@ a.fancybox-expand {
 	.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 100%;}
 
 
+	@media screen and (max-device-width: 639px) {
+
+		.flashcard{
+			width: 270px;
+			height: 360px;
+			font-weight: normal;
+		}
+
+	}
+
+
 	@media screen and (max-device-width: 568px) {
 
 		#stage{
@@ -3576,6 +3587,26 @@ a.fancybox-expand {
 			left: 2%;
 		}
 
+		#flashcardHolder{
+			margin-left: 2%;
+			margin-right: 2%;
+		}
+		
+		.flashcard{
+			width: 240px;
+			height: 320px;
+			font-size: 11pt;
+		}
+
+	}
+
+
+	@media screen and (max-device-width: 512px) {
+		
+		.flashcard{
+			width: 220px;
+		}
+
 	}
 
 
@@ -3627,6 +3658,11 @@ a.fancybox-expand {
 			height: auto;
 		}
 */
+		.flashcard{
+			width: 190px;
+			font-size: 10pt;
+		}
+
 	}
 
 
