@@ -852,6 +852,8 @@ function C_Outline(_myItem) {
      	msg += "<div><b>Details:</b></div>";
      	msg += "<label for='lessonTitle'>lesson title: </label>";
         msg += '<input type="text" name="lessonTitle" id="lessonTitle" value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+     	msg += "<br/><label for='tlo'>tlo: </label>";
+        msg += '<input type="text" name="tlo" id="tlo" value="'+ $(module_arr[_id].xml).find('tlo').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<div>"
      	msg += "<label for='lessonWidth'>width of lesson: </label>";
         msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[_id].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
@@ -964,6 +966,51 @@ function C_Outline(_myItem) {
 			$('#hasGlossary').prop('checked',true);
 		}
 
+	    //set tlo to default if not set
+	    if(!$(module_arr[_id].xml).find('tlo').attr('value')){
+	    	//forloop coursedata to find item....
+			for(var j = 0; j < $(courseData).find("item").length; j++){
+				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+					if(!$(courseData).find("item").eq(j).attr('tlo')){
+						$(module_arr[_id].xml).find("preferences").append($('<tlo>',module_arr[_id].xml));
+						$(module_arr[_id].xml).find('tlo').attr('value', 'undefined');
+						$(courseData).find("item").eq(j).attr('tlo', 'undefined');
+						updateModuleXML(_id);
+						updateCourseXML(false);
+						$('#tlo').val('undefined');
+						break;
+					}
+					else{
+						$(module_arr[_id].xml).find("preferences").append($('<tlo>', module_arr[_id].xml));
+						$(module_arr[_id].xml).find('tlo').attr('value', $(courseData).find("item").eq(j).attr('tlo'));
+						updateModuleXML(_id);
+						$('#tlo').val($(courseData).find("item").eq(j).attr('tlo'));
+					}
+				}
+				
+			}	    	
+	    }
+	    else{
+	    	$('#tlo').val($(module_arr[_id].xml).find('tlo').attr('value'));
+	    }
+
+	    //moved to here so it could be used in setting of id in module.xml
+		var lessonMatchID;
+		for (var i=0; i < totalOutlineModules; i++){
+			if(currentMenuItem.attr("data-id") == $(courseData).find("item").eq(i).attr("id")){
+				lessonMatchID = $(courseData).find("item").eq(i).attr("id");
+				break;
+			}
+		}
+
+	    //set lesson id on module.xml if doesn't exist
+	    ///TODONOT WORKING
+	    if(!$(module_arr[_id].xml).find('id').attr('value')){
+	    	$(module_arr[_id].xml).find("preferences").append($('<id>', module_arr[_id].xml));
+	    	$(module_arr[_id].xml).find('id').attr('value', lessonMatchID);
+	    	updateModuleXML(_id);
+	    }
+
 	    //Listeners for Module Settings
 	     //MODULE TITLE CHANGE
 	     $("#lessonTitle").on("change", function(){
@@ -983,13 +1030,7 @@ function C_Outline(_myItem) {
 				
 			}
 			
-			var lessonMatchID;
-			for (var i=0; i < totalOutlineModules; i++){
-				if(currentMenuItem.attr("data-id") == $(courseData).find("item").eq(i).attr("id")){
-					lessonMatchID = $(courseData).find("item").eq(i).attr("id");
-					break;
-				}
-			}
+
 			//Update title in menu
 			currentMenuItem.text($("#lessonTitle").val().trim());
 			
@@ -1010,6 +1051,24 @@ function C_Outline(_myItem) {
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 	    //END MODULE TITLE CHANGE
 	    
+	    //module tlo change
+	    $("#tlo").on("change", function(){
+			$(module_arr[_id].xml).find('tlo').attr('value', $('#tlo').val().trim());
+			updateModuleXML(_id);
+
+			//find and update module tlo in course.xml
+			for(var j = 0; j < $(courseData).find("item").length; j++){
+				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+					$(courseData).find("item").eq(j).attr('tlo', $('#tlo').val().trim());
+					updateCourseXML(false);
+					break;
+				}
+				
+			}
+				
+	    });
+
+
 	    $("#mode").on("change", function(){
 		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
 		    updateModuleXML(_id);
@@ -1024,6 +1083,7 @@ function C_Outline(_myItem) {
 				$(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
 		    }
 		    updateModuleXML(_id);
+
 	    });
 	    
 	    $("#transitionDuration").on("change", function(){
@@ -1434,7 +1494,14 @@ function C_Outline(_myItem) {
 	Description:	Creates a new module in the identified course.
 	************************************************************************************************/
 	function addModuleToCourse(_id){
-		var  msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new module.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+		var  msg = '<div id="dialog-registerContent" title="Add New Lesson">';
+		msg += '<p class="validateTips">You are adding a new module to the ' + myItem.find("span").first().text() + ' course.</p>';
+		msg += '<p>Fill in the details below for your new module.</p>';
+		msg += '<label for="myName" class="regField">name: </label>';
+		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+		msg += '<label for="tlo" class="regField">tlo: </label>';
+		msg += '<input type="text" name="tlo" id="tlo" value="" class="regText text ui-widget-content ui-corner-all" />';		
+		msg += '</div>';
 		$("#stage").append(msg);
 		
 		$("#dialog-registerContent").dialog({
@@ -1448,8 +1515,10 @@ function C_Outline(_myItem) {
                 	//Build the module data object to submit to the server.
                 	refreshExpected = true;
                 	var nameString = $("#myName").val();
+                	var tloString = $('#tlo').val();
                 	var content = {
 			            name: nameString,
+			            tlo: tloString,
 			            user: user,
 			            course: {
 			                id: courseID
@@ -1487,7 +1556,8 @@ function C_Outline(_myItem) {
 		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
 
 		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete this form to create your new page.</p>';
-		msg += '<label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="new page" class="regText text ui-widget-content ui-corner-all" /><br/><br/>'
+		msg += '<label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="new page" class="regText text ui-widget-content ui-corner-all" /><br/><br/>';
+		msg += '<label for="elo" class="regField">elo: </label><input type="text" name="elo" id="elo" value="undefined" class="regText text ui-widget-content ui-corner-all" /><br/><br/>';
 		var pages= [
 			{
 				"capability" : "textOnly", 

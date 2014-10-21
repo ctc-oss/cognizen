@@ -597,7 +597,14 @@ var SocketHandler = {
                     var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name.
                     etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                     etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
-					
+
+                    var tloValue = "undefined"
+                    if(content.tlo != ""){
+                        tloValue = content.tlo;
+                    }
+                    etree.find('./courseInfo/preferences/tlo').set('value', tloValue);
+                    etree.find('./courseInfo/preferences/id').set('value', content._id);
+
 					var myID = FileUtils.guid();
 					etree.find('./pages/page').set('id', myID);
 					
@@ -618,12 +625,12 @@ var SocketHandler = {
 				    	_data = data.toString();
 						etree = et.parse(_data);
 
-						//set mode to production and scorm version in temp content.xml
 				        var root = etree.find('./');
 
 				        var item = subElement(root, 'item');
 				        item.set("name", content.name);
 				        item.set("id", content._id);
+                        item.set("tlo", tloValue);
 				        var sequencing = subElement(item, "sequencing");
 				        sequencing.set("choice", "true");
 				        sequencing.set("flow", "false");
@@ -1570,6 +1577,7 @@ var SocketHandler = {
                                             var parent = content.getParent();
                                             etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
                                             etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+                                            etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
                                         }, function() {
                                             // Need to git commit the program, then let the user know it is done.
                                             _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
