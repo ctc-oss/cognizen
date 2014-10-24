@@ -6,8 +6,8 @@
  * CREATION DATE: 2013-01-16
  * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 
@@ -49,6 +49,7 @@ var audioHolder;
 //Accessibility control arrays.
 var pageAccess_arr = [];
 var globalAccess_arr = [];
+var audioAccess_arr = [];
 var courseData;
 /****************************************************
 *********************************** STEP 1 - LOAD XML
@@ -96,16 +97,16 @@ function initScripts(_data){
 	        // Get the user agent string
 	        var ua = navigator.userAgent;
 	        this.compatibilityMode = false;
-	        
+
 	        // Detect whether or not the browser is IE
 	        var ieRegex = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
 	        if (ieRegex.exec(ua) == null)
 	            this.exception = "The user agent detected does not contain Internet Explorer.";
-	 
+
 	        // Get the current "emulated" version of IE
 	        this.renderVersion = parseFloat(RegExp.$1);
 	        this.version = this.renderVersion;
-	 
+
 	        // Check the browser version with the rest of the agent string to detect compatibility mode
 	        if(document.documentMode == 5 || document.documentMode == 6 || document.documentMode == 7){
 	        	this.compatibilityMode = true;
@@ -117,7 +118,7 @@ function initScripts(_data){
 	                this.version = 10;                  // IE 10
 	            }
 	        }
-	        else if (ua.indexOf("Trident/5.0") > -1) {      
+	        else if (ua.indexOf("Trident/5.0") > -1) {
 	            if (ua.indexOf("MSIE 7.0") > -1) {
 	                this.compatibilityMode = true;
 	                this.version = 9;                   // IE 9
@@ -133,15 +134,15 @@ function initScripts(_data){
 	            this.version = 7;                       // IE 7
 	            this.compatibilityMode = true;     //not truly compatibilityMode IE7 is not supported
 	        }
-	        
+
 	        else{
 	        	this.compatibilityMode = false;
-	            this.version = -1;                       // IE 6	        	
+	            this.version = -1;                       // IE 6
 	        }
 
 	    }
 	};
-	 
+
 	// Initialize the ieUserAgent object
 	ieUserAgent.init();
 
@@ -180,7 +181,7 @@ function initScripts(_data){
 	        waitSeconds: 0
 	    });
 		//GATHERING AND LOADING ALL OF THE ENGINE PARTS
-		require([		
+		require([
 			//Funtionality/utilities
 					corePath +"js/libs/jqueryui/jquery-ui.min.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
@@ -205,7 +206,7 @@ function initScripts(_data){
 					corePath +"js/templates/C_Categories.js",
 					corePath +"js/templates/C_ClickImage.js",
 					corePath +"js/templates/C_ClickListRevealText.js",
-					corePath +"js/templates/C_Completion.js", 
+					corePath +"js/templates/C_Completion.js",
 					corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
 					corePath +"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
 					corePath +"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
@@ -254,7 +255,7 @@ function startEngine(){
 		_allowInteraction: function(event) {
 			return !!$(event.target).closest(".cke_dialog").length || this._super(event);
 		}
-	});	
+	});
 	//Function found in C_Socket.js
 	initializeSockets();
 }
@@ -267,15 +268,15 @@ function startEngine(){
 // Discover if we are dealing with IE....
 function isOldIE() {
     "use strict";
-   
+
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
-        
+
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
         isIE = true;
     }
-    
+
     if (Function('/*@cc_on return document.documentMode===10@*/')()) {
 	    isIE = true;
 	}
@@ -323,7 +324,7 @@ function buildInterface(){
 			$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
 		}else{
 			//console.log("desktop site");
-			$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div></div></div>");
+			$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle' role='heading'></div><div id='lessonTitle' role='heading'></div><div id='panes'></div></div></div></div>");
 		}
 
 	//Set variables consumed by templates.
@@ -331,46 +332,48 @@ function buildInterface(){
 	stageY = $("#stage").position().top;
 	stageW = $("#stage").width();
 	stageH = $("#stage").height();
-	
+
 	if(forcedReviewer == true && justRelinquishedLock == false){
 		forcedReviewAlert();
 	}
-	
+
 	justRelinquishedLock  = false;
-	
+
 	//This call positions the background graphic - funciton is in C_DynamicBackgroundImage       /*************************Note: Will make this optional - allow them to use css background instead*/
 	//Image can be updated in css/C_Engine.css and resides in css/images/ folder.
 	$("#myCanvas").fitToBackgroundImage();
 
 	//Place the course title.																	 /*************************Note: Will make this optional*/
 	var courseTitle = $(data).find("courseTitle").attr("value");
-	$("#courseTitle").append(courseTitle);
 
+	$("#courseTitle").append(courseTitle);
+	$("#courseTitle").attr("aria-label", courseTitle);
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle = $(data).find("lessonTitle").attr("value");
+
 	$("#lessonTitle").append(lessonTitle);
-	
-	checkNav(); 
+	$("#lessonTitle").attr("aria-label", lessonTitle);
+	checkNav();
 	if(mode == "edit"){
 		addEditNav();
 		addMediaDrop();
 	}
-	
+
 	if(mode == "edit" || mode == "review"){
 		checkComment();
 		checkLockMode();
 	}
-	
+
 	checkIndex();
 	checkGlossary();
 	checkDocs();
 
 	checkScorm();
 	loadPage();
-	
+
 	if(mode == "edit" || mode == "review"){
 		connected = socket.socket.connected;
-		
+
 		if(!connected){
 			fireConnectionError();
 		}
@@ -383,7 +386,7 @@ function buildInterface(){
 */
 function sendUpdateWithRefresh(_type){
 	connected = socket.socket.connected;
-	
+
 	if(connected){
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
@@ -393,15 +396,15 @@ function sendUpdateWithRefresh(_type){
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
 		}
-		
+
 		if(xmlString === undefined){
 			var oSerializer = new XMLSerializer();
 			xmlString = oSerializer.serializeToString(myData[0]);
 		}
-		
+
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
-		
+
 		if(_type == undefined){
 			socket.emit('updateXMLWithRefresh', { my: xmlString });
 		}else if(_type == 'glossary'){
@@ -419,7 +422,7 @@ function sendUpdateWithRefresh(_type){
 
 function sendUpdate(){
 	connected = socket.socket.connected;
-	
+
 	if(connected){
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
@@ -429,12 +432,12 @@ function sendUpdate(){
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
 		}
-		
+
 		if(xmlString === undefined){
 			var oSerializer = new XMLSerializer();
 			xmlString = oSerializer.serializeToString(myData[0]);
 		}
-		
+
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 		socket.emit('updateXML', { my: xmlString });
@@ -448,10 +451,10 @@ function fireConnectionError(){
 	msg += '<p>Your socket connection to the server has been compromised.</p>';
 	msg += '<p>You must close this lesson (by clicking "OK" below) and relaunch it.</p>';
 	msg += '</div>';
-			
+
 	//Add to stage.
 	$("#stage").append(msg);
-	
+
 	//Make it a dialog
 	$("#dialog-connectionLost").dialog({
 		dialogClass: "no-close",

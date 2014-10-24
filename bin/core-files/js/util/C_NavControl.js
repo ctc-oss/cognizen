@@ -1,7 +1,7 @@
 /*
  *  	C_NavControl
  *  	Requires jQuery v1.9 or later
- *	
+ *
  *      Houses index functionality for cognizen
  *  	Version: 0.5
  *		Date Created: 10/19/13
@@ -63,6 +63,7 @@ function checkNav(){
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
 		//Adding new for accessibility 10/7/14 PD
+		$("#pageCount").attr("role", "presentation");
 		globalAccess_arr.push($("#pageCount"));
 	}
 
@@ -72,7 +73,7 @@ function checkNav(){
 	if(helpButton == undefined || helpButton == "undefined"){
 		$(data).find("preferences").append($('<help>'));
 		// var newHelp = new DOMParser().parseFromString('<help></help>',  "text/xml");
-		// $(data).find("help").append(newHelp);		
+		// $(data).find("help").append(newHelp);
 		$(data).find("help").attr("value", "false");
 		$(data).find("help").attr("url", "");
 		$(data).find("help").attr("width", helpWidth);
@@ -162,7 +163,7 @@ function checkNav(){
 		transitionType = $(data).find('transitionType').attr('value');
 		transitionLength = $(data).find('transitionLength').attr('value');
 	 }
-	 
+
 	 if(nextBack){
 		 //Style the Back Button and give it its listener
 		 $("#back").button({
@@ -170,7 +171,7 @@ function checkNav(){
 				primary: 'ui-icon-circle-triangle-w'
 			}
 		});
-	
+
 		//Style the Next Button and give it its listener
 		$("#next").button({
 			icons:{
@@ -184,7 +185,7 @@ function addEditNav(){
 	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
 	$("#preferences").tooltip().click(function(){
 		connected = socket.socket.connected;
-	
+
 		if(connected){
 			launchPrefs();
 		}else{
@@ -197,7 +198,7 @@ function addMediaDrop(){
 	$("#myCanvas").append("<div id='mediaDrop' class='btn_mediaDrop' title='Add files to the media directory.'></div>");
 
 	$("#mediaDrop").click(function(){
-		launchMediaDrop();	
+		launchMediaDrop();
 	});
 
 	$("#mediaDrop").tooltip();
@@ -213,7 +214,7 @@ function launchMediaDrop(){
 	msg += "<div id='inputFeedback' />";
 	msg += "<br/>";
 	msg += "</div></div>";
-	
+
 	$("#stage").append(msg);
 
 	//Make it a dialog
@@ -221,7 +222,7 @@ function launchMediaDrop(){
 		dialogClass: "no-close",
 		modal: true,
 		width: 550,
-		buttons: [       
+		buttons: [
             {
 	            text: "Done",
 	            title: "Saves and closes the media drop dialog.",
@@ -236,7 +237,7 @@ function launchMediaDrop(){
 	//adds tooltips to the edit dialog buttons
     $(function () {
         $(document).tooltip();
-    });		
+    });
 
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 
@@ -244,13 +245,13 @@ function launchMediaDrop(){
 	$("#inputMedia").find('*').attr('data-content', contentId);
 
 	$("#inputMedia").click(function(){
-		siofu.prompt($("#inputMedia").attr('data-content'));	
+		siofu.prompt($("#inputMedia").attr('data-content'));
 	});
 
 	siofu.listenOnDrop(document.getElementById("inputMedia"));
 
 	siofu.addEventListener("complete", function(event){
-		if($('#dialog-mediaDrop').length > 0){	
+		if($('#dialog-mediaDrop').length > 0){
 			siofu.removeEventListener("complete");
 			siofu.removeEventListener("load");
 			//if successful upload, else....
@@ -260,7 +261,7 @@ function launchMediaDrop(){
 		    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
 		    var convertableVectorTypes = ["eps"];
 		    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
-		    var convertableTypes = convertableVideoTypes.concat(convertableAudioTypes, convertableVectorTypes); 		    
+		    var convertableTypes = convertableVideoTypes.concat(convertableAudioTypes, convertableVectorTypes);
         	$("#inputFeedback").empty();
 	  //       if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			// 	if(event.success == true){
@@ -280,8 +281,8 @@ function launchMediaDrop(){
 			// }
 			if(myExt == "zip" || myExt == "ZIP"){
 				// $("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
-				cognizenSocket.on('unzipComplete', _unzipComplete);		
-				//$("#dialog-mediaDrop").remove();		
+				cognizenSocket.on('unzipComplete', _unzipComplete);
+				//$("#dialog-mediaDrop").remove();
 			}
 			else if (convertableTypes.indexOf(myExt.toLowerCase()) >= 0) {
 				$("#stage").append("<div id='uploadConversionDialog' title='Upload Coverting'>The file format that you uploaded can't be played in most browsers. We are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments. <br/><br/></div>");
@@ -295,7 +296,7 @@ function launchMediaDrop(){
 						$(".progress-label").text("Complete!");
 					}
 				});
-							
+
 				$("#conversionProgress > div").css({ 'background': '#3383bb'});
 
 				$("#uploadConversionDialog").tooltip().dialog({
@@ -304,9 +305,9 @@ function launchMediaDrop(){
 					width: 400,
 					height: 350,
 					buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-				});			
-															
-				cognizenSocket.on('mediaConversionProgress', _mediaConversionProgress);								
+				});
+
+				cognizenSocket.on('mediaConversionProgress', _mediaConversionProgress);
 				cognizenSocket.on('mediaInfo', _mediaInfo);
 				cognizenSocket.on('mediaConversionComplete', _mediaConversionComplete);
 				$("#dialog-mediaDrop").remove();
@@ -327,8 +328,8 @@ function launchMediaDrop(){
 						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 					});
 				}
-								
-			}				
+
+			}
 		}
 	});
 
@@ -380,20 +381,20 @@ function launchPrefs(){
 	msg += "</div><br/>";
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
-	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";	
+	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
 	msg += "<label id='helpWidthLabel'>Help window width: </label>";
 	msg += "<input id='helpWidth' type='text' name='helpWidth' value='"+helpWidth+"' disabled='disabled' size='4'>";
 	msg += "<br/><label id='helpHeightLabel'>Help window height: </label>";
-	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";	
+	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";
 	msg += "</div><br/>";
 	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
-	
+
 	$("#stage").append(msg);
-	
+
 
 
 	//Make it a dialog
@@ -421,7 +422,7 @@ function launchPrefs(){
 		            savePreferences(true);
 		            $(this).dialog("close");
 	            }
-            },            
+            },
             {
 	            text: "Done",
 	            title: "Saves and closes the preferences dialog.",
@@ -435,15 +436,15 @@ function launchPrefs(){
 	//adds tooltips to the edit dialog buttons
     $(function () {
         $(document).tooltip();
-    });	
-	
+    });
+
 	$("#clearLessonComments").button().click(function(){
 		openCommentKillerDialog();
 		//cognizenSocket.emit("clearLessonComments", {lesson: urlParams['id']})
 	});
-	
+
 	$("#scormform").tooltip();
-	
+
 	if(glossary == true){
 		$("#hasGlossary").attr('checked', true);
 	} else{
@@ -461,7 +462,7 @@ function launchPrefs(){
 	} else{
 		$("#hasHelp").attr('checked', false);
 		$("#helpWidth").attr('disabled', true);
-		$("#helpHeight").attr('disabled', true);		
+		$("#helpHeight").attr('disabled', true);
 	}
 
 	$("#hasHelp").click(function() {
@@ -469,7 +470,7 @@ function launchPrefs(){
 	});
 
 	$("#inputHelp").click(function(){
-		siofu.prompt($("#inputHelp").attr('data-content'));	
+		siofu.prompt($("#inputHelp").attr('data-content'));
 	});
 
 	siofu.listenOnDrop(document.getElementById("inputHelp"));
@@ -503,12 +504,12 @@ function launchPrefs(){
 		// 	// $("#mediaLoaderText").empty();
 		// 	// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
 		// 	cognizenSocket.on('unzipComplete', _unzipComplete);
-		// 	$("#dialog-lessonPrefs").remove();				
-		// }		
+		// 	$("#dialog-lessonPrefs").remove();
+		// }
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
-	
+
 	$("#hasGlossaryDialog").tooltip();
 	$("#helpDialog").tooltip();
 
@@ -521,10 +522,10 @@ function _unzipComplete(){
 	msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. Ex. myFolder/myMedia.mp4</p>";
 	msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  Ex. myImage.png, myImage2.png and myImage3.png</p>"
 	// msg += "</div>";
-							
+
 	// $("#stage").append(msg);
 	$("#inputFeedback").append(msg);
-	
+
 	// //Style it to jQuery UI dialog
 	// $("#zipUploadCompleteDialog").dialog({
 	// 	autoOpen: true,
@@ -547,12 +548,12 @@ function openCommentKillerDialog(){
 	var msg = '<div id="dialog-removeComments" title="Remove ALL Lesson Comments"><p class="validateTips">Do you want to remove all lesson comments?</p>';
 	//Add the scorm form
 	msg += "<p>Be 100% sure that this is what you want to do before pressing yes.  This will remove all comments for this lesson and they are recoverable.</p>";
-	
+
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
-	
+
 	$("#stage").append(msg);
-	
+
 	//Make it a dialog
 	$("#dialog-removeComments").dialog({
 		modal: true,
@@ -577,12 +578,12 @@ function savePreferences(_pub){
 	//check if glossary changed.
 	var glossarySelected = $("#hasGlossary").is(':checked');
 	var updateNeeded = false;
-	
+
 	if(glossary != glossarySelected){
 		$(data).find('glossary').attr('value', glossarySelected);
 		updateNeeded = true;
 	}
-	
+
 	var selectedScorm = $('#scormVersion').find(':selected').text();
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	if(scormVersion != myScormVersion){
@@ -600,13 +601,13 @@ function savePreferences(_pub){
 	$(data).find('help').attr('width', helpWidth);
 
 	helpHeight = $("#helpHeight").val();
-	$(data).find('help').attr('height', helpHeight);	
+	$(data).find('help').attr('height', helpHeight);
 
 	if(helpSelected){
 		helpButton = true;
 	}
 	else{ helpButton = false; }
-	 
+
 	if(updateNeeded == true && _pub != true){
 		sendUpdateWithRefresh("updatePrefs");
 		$("#dialog-lessonPrefs").dialog("close");
@@ -692,7 +693,7 @@ function checkHelp(){
 		helpURL = $(data).find('help').attr('url');
 		$("#help").click(function() {
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
-		});		
+		});
 	}
 	else{
 		$("#help").remove();
@@ -708,16 +709,16 @@ function checkLockMode(){
 	}
 	$("#passLock").tooltip().click(function(){
 		//Relinquish Edit Control
-		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer); 
+		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer);
 		connected = socket.socket.connected;
-	
+
 		if(connected){
 			if(!forcedReviewer){
 				var msg = '<div id="dialog-relinquishEdit" title="Relinquish Edit Control"><p class="validateTips">Do you want to relinquish edit control of the lesson?</p></div>';
-				
+
 				//Add to stage.
 				$("#stage").append(msg);
-					
+
 				//Make it a dialog
 				$("#dialog-relinquishEdit").dialog({
 					dialogClass: "no-close",
@@ -751,10 +752,10 @@ function checkLockMode(){
 				}else{
 					var msg = '<div id="dialog-requestEdit" title="Request Edit Control"><p class="validateTips">Ask '+ activeEditor +' to permit you to take editing controls.</p><p>Would you like to send this request?</p></div>';
 				}
-				
+
 				//Add to stage.
 				$("#stage").append(msg);
-					
+
 				//Make it a dialog
 				$("#dialog-requestEdit").dialog({
 					dialogClass: "no-close",
@@ -788,7 +789,7 @@ if($(data).find('scored').attr("value") == 'true'){
 		restartOnFail = true;
 	}
 	passScore = $(data).find('minScore').attr("value") / 100;
-}	
+}
 
 function updateTotalGradedQuestions(){
 	totalGradedQuestions = 0;
@@ -800,7 +801,7 @@ function updateTotalGradedQuestions(){
 }
 
 updateTotalGradedQuestions();
-	
+
 questionResponse_arr = [];
 
 for(var i = 0; i < totalPages; i++){
@@ -820,7 +821,7 @@ for(var i = 0; i < totalPages; i++){
 		}else{
 			question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
 		}
-		
+
 		if($(data).find("page").eq(i).attr('graded') == 'true'){
 			question_obj.graded = true;
 		}else{
@@ -838,7 +839,7 @@ for(var i = 0; i < totalPages; i++){
 	}
 }
 //END OF SCORING SET UP.
-	
+
 //If the course is linear - must complete page by page - setup a page completion tracking array.
 if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
 	buildTrackingArray();
@@ -858,7 +859,7 @@ function buildTrackingArray(){
 }
 
 
- 
+
 /*************************************************************
 ** Next/Back/Home Button Funcitonality
 *************************************************************/
@@ -889,12 +890,14 @@ function clickHome(){
 }
 
 function disableBack(){
+	$('#back').attr('aria-disabled', 'true');
 	$('#back').addClass('disabled');
 	$('#back').off('click');
 	backDisabled = true;
 }
 
 function enableBack(){
+	$('#back').attr('aria-disabled', 'false');
 	$('#back').removeClass('disabled');
 	//ensure all click events are off on "#back
 	$('#back').off('click');
@@ -903,12 +906,14 @@ function enableBack(){
 }
 
 function disableNext(){
+	$('#next').attr('aria-diabled', 'true');
 	$('#next').addClass('disabled');
 	$('#next').off('click');
 	nextDisabled = true;
 }
 
 function enableNext(){
+	$('#back').attr('aria-diabled', 'false');
 	$('#next').removeClass('disabled');
 	$("#next").click(clickNext);
 	nextDisabled = false;
@@ -993,9 +998,10 @@ function updatePageCount(){
 	}
 	else{
 		$('#pageCount').text("Page " + tempPage + " of " + totalPages);
+		$('#pageCount').attr('aria-label', "Page " + tempPage + " of " + totalPages);
 	}
 }
- 
+
 /****************************************************
 ********************************** TRACKING
 *****************************************************/
@@ -1011,7 +1017,7 @@ function rejoinTracking(_location){
 		{
 			tracking_arr[i].complete = true;
 		}
-		
+
 	}
 	updateMenuItems();
 }
@@ -1045,7 +1051,7 @@ function updateScoring(_userSelection, _correct, _order, _bankID){
 			break;
 		}
 	}
-	
+
 	if(restartOnFail == true){
 		checkForRestart();
 	}
@@ -1053,15 +1059,15 @@ function updateScoring(_userSelection, _correct, _order, _bankID){
 
 function checkForRestart(){
 	var allowedMisses = Math.ceil(totalGradedQuestions - (totalGradedQuestions * passScore));
-	
+
 	var misses = 0;
-	
+
 	for (var i = 0; i < questionResponse_arr.length; i++){
 		if(questionResponse_arr[i].correct == false && questionResponse_arr[i].graded){
 			misses++
-		} 
+		}
 	}
-	
+
 	if(misses == allowedMisses){
 		sendRestartOnFail();
 	}
@@ -1069,7 +1075,7 @@ function checkForRestart(){
 
 function sendRestartOnFail(){
 	$("#stage").append('<div id="dialog-failedTraining" title="Failed"><p class="validateTips">You have missed too many questions to pass this training.</p><p>You must start this training over. Please click <b>Restart</b> below to restart the training. Close your browser window to quit.</p></div>');
-	
+
 	//Make it a dialog
 	$("#dialog-failedTraining").dialog({
 		modal: true,
@@ -1081,7 +1087,7 @@ function sendRestartOnFail(){
 		buttons: {
 			Restart: function () {
                     $(this).dialog("close");
-                    
+
 			}
 		}
 	});
@@ -1139,7 +1145,7 @@ function updateTextInputQuestionResponse(_questionObj){
 			}
 
 		}
-	}	
+	}
 }
 
 function markIncomplete(){
@@ -1157,7 +1163,7 @@ function markIncomplete(){
 			}*/
 
 		}
-	}	
+	}
 }
 
 /////////////////////////////////////////////////////END SCORING FUNCTIONALITY
@@ -1188,7 +1194,7 @@ this.loadPage = function(){
 		mandatoryInteraction = false;
 		assessment = false;
 	}
-	
+
 	if(mode == "edit" || mode == "review"){
 		//clear the page comments from last page
 		if(pageComments && pageComments.length > 0){
@@ -1220,7 +1226,7 @@ this.loadPage = function(){
 			scorm.save();
 		}
 	}
-	
+
 	if(mode == "edit"){
 		//clear the page comments from last page
 		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" || currentTemplateType == "left" || currentTemplateType == "bottom" || currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" || currentTemplateType == "tabsLeft"){
@@ -1354,11 +1360,11 @@ this.loadPage = function(){
 		case "textInput":
 			currentTemplate = new C_TextInput(currentTemplateType);
 			currentTemplate.initialize();
-			break;		
+			break;
 		case "essayCompare":
 			currentTemplate = new C_EssayCompare(currentTemplateType);
 			currentTemplate.initialize();
-			break;		
+			break;
 		//UNITY SWF Layouts
 		case "unity":
 			currentTemplate = new C_Unity3D(currentTemplateType);

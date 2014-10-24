@@ -6,8 +6,8 @@
  * DATE: 2013-05-10
  * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 function C_StaticContent(_type) {
@@ -17,7 +17,7 @@ function C_StaticContent(_type) {
     var mySidebar;
     var myContent;//Body
     // var audioHolder;
-   
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -28,31 +28,32 @@ function C_StaticContent(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-        
+
         //Position the page text
         myContent = $(data).find("page").eq(currentPage).find("content").first().text();
 
         if(type == "sidebar"){
             mySidebar = $(data).find("page").eq(currentPage).find("sidebar").first().text();
         }
-        
+
         //Clear accessibility on page load.
         pageAccess_arr = [];
-        
+        audioAccess_arr = [];
+
         buildTemplate();
     }
 
     //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
         pageTitle = new C_PageTitle();
-		
+
         //Add classes for page layouts - updatable in css
 		if(type != "graphicOnly"){
 			$('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>').insertAfter("#pageTitle");
 		}
-		
+
 		audioHolder = new C_AudioHolder();
-				
+
         if(type == "left"){
             $("#scrollableContent").addClass("left");
         }else if(type == "sidebar"){
@@ -67,7 +68,7 @@ function C_StaticContent(_type) {
         }else if(type == "graphicOnly"){
             $("#contentHolder").addClass("graphic");
         }
-        
+
 		if(isMobile){
 			titleBarHeight = $("#courseTitle").height();
 			navBarHeight = $("#pageCount").height();
@@ -82,9 +83,11 @@ function C_StaticContent(_type) {
 		   	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			$("#content").width($("#contentHolder").width()-15);
 		   	$("#content").append(myContent);
-		   	pageAccess_arr.push($("#content")); 
+		   	$("#content").attr("role", "main");
+		   	$("#content").attr("aria-label", $("#content").text());
+		   	pageAccess_arr.push($("#content"));
 	    }
-        
+
         /*Attach Media*/
         if(type == "textOnly"){
             checkMode();
@@ -99,21 +102,23 @@ function C_StaticContent(_type) {
         	}else{
 				$('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div id="sidebar" class="sidebar antiscroll-inner"></div></div>');
 				$('#sidebar').append(mySidebar);
-			
+
 				if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
 					$(".sidebar").height(stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40));
 				}else{
 					$(".sidebar").height($('#sidebar').height());
 				}
-			
+
 				$('#sidebar').height($('#sidebarHolder').height());
+				$('#sidebar').attr('role', 'complementary');
+				$('#sidebar').attr('aria-label', $('#sidebar').text());
 				pageAccess_arr.push($("#sidebar"));
 			}
             checkMode();
             if(transition == true){
                 TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
             }
-            doAccess(pageAccess_arr);      
+            doAccess(pageAccess_arr);
         }else{
         	mediaHolder = new C_VisualMediaHolder();
         	mediaHolder.loadVisualMedia();
@@ -134,7 +139,7 @@ function C_StaticContent(_type) {
             }
         }
     }
-        
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     PAGE EDIT FUNCTIONALITY
@@ -142,14 +147,14 @@ function C_StaticContent(_type) {
     *****************************************************************************************************************************************************************************************************************/
     function checkMode(){
     	$(this).scrubContent();
-		
+
      	if(type != "graphicOnly"){
 			$('.antiscroll-wrap').antiscroll();
 		}
-		
+
 		try { $("#sidebar").width($("#sidebar").width() + 10); } catch (e) {}
-		
-     	if(mode == "edit"){	
+
+     	if(mode == "edit"){
             /*******************************************************
 			* Edit Sidebar
 			********************************************************/
@@ -176,7 +181,7 @@ function C_StaticContent(_type) {
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
 					allowedContent: true
-				}); 
+				});
 			}
 
 			/*******************************************************
@@ -205,11 +210,11 @@ function C_StaticContent(_type) {
 					toolbarGroups :contentToolgroup,
 					extraPlugins: 'sourcedialog',
 					allowedContent: true
-				}); 
+				});
 			}
 		}
 	}
-	
+
     /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -244,7 +249,7 @@ function C_StaticContent(_type) {
             fadeComplete();
 		}
 	}
-	
+
 	//Allow fadeComplete to be called from external...
 	this.fadeComplete = function(){
         	fadeComplete();
