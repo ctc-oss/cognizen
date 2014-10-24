@@ -319,7 +319,11 @@ function buildInterface(){
 	checkFF();
 	checkMobile();
 	$('body').empty();
-		if (isMobile) {
+		if (isMobilePhone){
+			// add div that hides content in landscape orientation
+			$('body').append("<div id='landscape'></div>");
+		}
+		if (isMobile){
 			//console.log("mobile site");
 			$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
 		}else{

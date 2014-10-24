@@ -617,7 +617,7 @@
 	background: -o-linear-gradient(top, rgba(50,50,50,0.7), rgba(0,0,0,0.7));
 	background: -ms-linear-gradient(top, rgba(50,50,50,0.7), rgba(0,0,0,0.7));
 	background: linear-gradient(rgba(50,50,50,0.7), rgba(0,0,0,0.7)); 
-	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#323232,endColorstr=#000000);		
+	filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#323232,endColorstr=#000000)";		
 	overflow: hidden;
 	border: 0;
 }
@@ -645,7 +645,7 @@
 	background: -o-linear-gradient(top, rgba(102,102,102,0.7), rgba(50,50,50,0.6));
 	background: -ms-linear-gradient(top, rgba(102,102,102,0.7), rgba(50,50,50,0.6));
 	background: linear-gradient(rgba(102,102,102,0.7), rgba(50,50,50,0.6));
-	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#666666,endColorstr=#323232);		
+	filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0, startColorstr=#666666,endColorstr=#323232)";		
 }
 
 .mejs-chapters .mejs-chapter .mejs-chapter-block .ch-title {
