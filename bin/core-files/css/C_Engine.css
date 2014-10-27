@@ -1061,6 +1061,7 @@ ul.no-indent {
 	width: 95%;
 	margin-right: -17px;
 	padding-right: 34px;
+	max-height: none !important;
 }
 
 .clickImgTextHolder{
