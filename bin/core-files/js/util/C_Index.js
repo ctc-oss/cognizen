@@ -376,7 +376,7 @@ function addIndex(){
 			if(e.which == 13) {
 				$(this).click();
 			}
-		}).attr('aria-label', $(indexItem_arr[i]).text());//.attr('role', 'index navigation');//attr("alt", "Click to open: "+$(data).find('page').eq(i).find('title').first().text());
+		}).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}
