@@ -1060,7 +1060,7 @@ ul.no-indent {
 	color: #000000;
 	width: 95%;
 	margin-right: -17px;
-	padding-right: 17px;
+	padding-right: 34px;
 }
 
 .clickImgTextHolder{
@@ -2345,7 +2345,8 @@ ESSAY COMPARE LAYOUTS
 }
 
 .antiscroll-inner {
-  overflow: scroll;
+  overflow-x: visible;
+  overflow-y: scroll;
 }
 
 /** A bug in Chrome 25 on Lion requires each selector to have their own
