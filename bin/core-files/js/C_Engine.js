@@ -58,27 +58,30 @@ var courseData;
 $(document).ready(function(){
 	$.ajax({
 		type: "GET",
-		url: "../course.xml",
+		url: "xml/content.xml",
 		dataType: "xml",
 		async: false,
-		success: loadContentXML,
+		success: loadCourseXML,
 		error: function(){
-			alert("unable to load course.xml")
+			alert("unable to load content.xml")
 		}
 	});
 });
 
 
-function loadContentXML(_data){
-	courseData = _data;
+function loadCourseXML(_data){
+	data = _data;
+	var loc = window.location.pathname;
+	var dir = loc.substring(0, loc.lastIndexOf('/'));
+	var courseXMLPath = unescape(dir + '/../course.xml');
 	$.ajax({
 		type: "GET",
-		url: "xml/content.xml",
+		url: courseXMLPath,
 		dataType: "xml",
 		async: false,
 		success: initScripts,
 		error: function(){
-			alert("unable to load content.xml")
+			alert("unable to load course.xml")
 		}
 	});
 }
@@ -88,7 +91,7 @@ function loadContentXML(_data){
 **************************** STEP 2 - LOAD JS Modules
 ****************************************************/
 function initScripts(_data){
-	data = _data;
+	courseData = _data;
 	////console.log(data);
 
 	// Create new ieUserAgent object
