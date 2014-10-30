@@ -737,7 +737,7 @@ var SocketHandler = {
 		                callback(null);
 		            }
 		        );
-                callback(null);
+                //callback(null);
             }
         );
     },
@@ -1801,6 +1801,7 @@ var SocketHandler = {
 
     publishContent: function (data, callback){
         var _this = this;
+        console.log("publishContent");
         if (data.content.type === 'program') {
             // Don't allow this, too volatile to change the git repo at this point.
             return;
@@ -1841,7 +1842,7 @@ var SocketHandler = {
                                     	_this.logger.error(err);
 										_this.Git.lock.release();
                                 	}
-
+                                    console.log("pub generateSCORMCourse");
 	                                scorm.generateSCORMCourse(function(err, filepath){
 
 	                                    if(err){

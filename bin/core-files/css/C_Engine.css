@@ -230,6 +230,17 @@ blockquote
 	cursor: pointer;
 }
 
+.btn_objedit{
+	position:absolute;
+	bottom :8px; 
+	left: 150px;
+	width: 30px;
+	height: 30px;
+	background: url(images/upload.png) no-repeat;
+	cursor: hand; 
+	cursor: pointer;
+}
+
 .dialogInput{
 	background-color:#ffffff; 
 	-moz-border-radius: 8px; 

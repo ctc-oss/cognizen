@@ -119,14 +119,24 @@ var SCORM = {
 
 								    for (var i = 0; i < pageCount; i++) {
 								    	var myNode = etree.findall('./pages/page')[i];
-								    	var pageObj = myNode.get('objective');
-								    	var pageObjId = myNode.get('objItemId');
-								    	var pageTitle = myNode.findtext('title');
+								    	var pageObj = myNode.get('objective').replace('.', '');
+								    	var pageObjId = myNode.get('objItemId').replace('.', '');
+								    	var pageTitle = myNode.findtext('title').replace('.', '');
+
+								    	var lessonIndictor = 'undefined';
+								    	if(myNode.findtext('tlo')){
+								    		lessonIndictor = myNode.findtext('tlo').replace('.', '').replace(/\s+/g, '');
+								    	}
+								    	else{
+								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
+								    	}
+
+
 								    	var tmpObjId = '';
 								    	if(pageObj != undefined && pageObj !== "undefined"){
 								    		//console.log(i + " : " + pageObj);
 								 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-								 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
+								 			tmpObjId = lessonIndictor +"."+
 								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
 								 						pageObj.replace(/\s+/g, '_');
 
@@ -137,7 +147,7 @@ var SCORM = {
 								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_');
 								    		}
 								    		else{
-									 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
+									 			tmpObjId = lessonIndictor+"."+
 								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
 								 						pageObjId.replace(/\s+/g, '_');
 								    		}
@@ -300,7 +310,7 @@ var SCORM = {
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
 	       	if(_this.objectives_arr.length > 0){
-	        	manifest += _this._objectivesGenerator();
+	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, ''));
 	        }
 
 	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
@@ -348,7 +358,7 @@ var SCORM = {
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
 	        if(_this.objectives_arr.length > 0){
-	        	manifest += _this._objectivesGenerator();
+	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, ''));
 	        }
 
 	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
@@ -610,10 +620,12 @@ var SCORM = {
 
 	},
 
-	_objectivesGenerator: function(){
+	_objectivesGenerator: function(lessonTitle){
 		var _this = this;
 		var objectives = "                    <imsss:objectives>\n"+
-        "                       <imsss:primaryObjective />\n";
+        "                       <imsss:primaryObjective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
+        "							<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+        "						</imsss:primaryObjective>\n";        
         objectives += _this._secondaryObjectivesGenerator();
         objectives += "                    </imsss:objectives>\n";
 
@@ -732,14 +744,14 @@ var SCORM = {
 
 			//if(exists){
 		_this.courseXmlExists = true;
-		//console.log("EXISTS");
+
         //add js directory to root of package
 		readdirp(
             { root: _this.contentPath + '/css',
                 directoryFilter: [ '!.git'],
                 fileFilter: [ '!.*' ] }
             , function(fileInfo) {
-                //console.log("---------------------------------------------------------" + fileInfo);
+                //console.log("/css-------------------------------------------------------" + fileInfo);
             }
             , function (err, res) {
                 res.files.forEach(function(file) {
@@ -747,42 +759,8 @@ var SCORM = {
                     //console.log(localFile);
                     _this.cssCourseResources_arr.push(localFile);
                 });
-                readdirp(
-		            { root: _this.contentPath + '/../css',
-		                directoryFilter: [ '!.git'],
-		                fileFilter: [ '!.*' ] }
-		            , function(fileInfo) {
-		                //console.log("---------------------------------------------------------" + fileInfo);
-		            }
-		            , function (err, res) {
-		                res.files.forEach(function(file) {
-		                    var localFile = file.path.replace(/\\/g,"/")
-		                    //console.log(localFile);
-		                    _this.cssResources_arr.push(localFile);
-		                });
-				        readdirp(
-				            { root: _this.contentPath + '/../js',
-				                directoryFilter: [ '!.git'],
-				                fileFilter: [ '!.*' ] }
-				            , function(fileInfo) {
-				                //console.log("---------------------------------------------------------" + fileInfo);
-				            }
-				            , function (err, res) {
-				                res.files.forEach(function(file) {
-				                    var localFile = file.path.replace(/\\/g,"/")
-				                    //console.log(localFile);
-				                    _this.jsResources_arr.push(localFile);
-				                });
-							    //do not need to do scorm files if publishing to "none"
-								if(_this.scormVersion != "none"){
-							    	manifestFile = _this._startManifest();
-							    }
+                _this._exploreCoreCssDir(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
 
-								_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
-							}
-						)
-					}
-				)
 			}
 		);
 			// }
@@ -807,6 +785,51 @@ var SCORM = {
 
 
     //end of generateSCORMCourse
+	},
+
+	_exploreCoreCssDir: function(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
+		var _this = this;
+        readdirp(
+            { root: _this.contentPath + '/../css',
+                directoryFilter: [ '!.git'],
+                fileFilter: [ '!.*' ] }
+            , function(fileInfo) {
+                //console.log("/../css------------------------------------------------------" + fileInfo);
+            }
+            , function (err, res) {
+                res.files.forEach(function(file) {
+                    var localFile = file.path.replace(/\\/g,"/")
+                    //console.log(localFile);
+                    _this.cssResources_arr.push(localFile);
+                });
+                _this._exploreJsDir(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+
+			}
+		)
+	},
+
+	_exploreJsDir: function(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
+		var _this = this;
+        readdirp(
+            { root: _this.contentPath + '/../js',
+                directoryFilter: [ '!.git'],
+                fileFilter: [ '!.*' ] }
+            , function(fileInfo) {
+                //console.log("/../js---------------------------------------------------------" + fileInfo);
+            }
+            , function (err, res) {
+                res.files.forEach(function(file) {
+                    var localFile = file.path.replace(/\\/g,"/")
+                    //console.log(localFile);
+                    _this.jsResources_arr.push(localFile);
+                });
+			    //do not need to do scorm files if publishing to "none"
+				if(_this.scormVersion != "none"){
+			    	manifestFile = _this._startManifest();
+			    }
+				_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+			}
+		)
 	},
 
 	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
@@ -858,11 +881,20 @@ var SCORM = {
 				    	var pageObj = myNode.get('objective');
 				    	var pageObjId = myNode.get('objItemId');
 				    	var pageTitle = myNode.findtext('title');
+
+				    	var lessonIndictor = 'undefined';
+				    	if(myNode.findtext('tlo')){
+				    		lessonIndictor = myNode.findtext('tlo').replace('.', '').replace(/\s+/g, '');
+				    	}
+				    	else{
+				    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
+				    	}
+
 				    	var tmpObjId = '';
 				    	if(pageObj != undefined && pageObj !== "undefined"){
 				    		//console.log(i + " : " + pageObj);
 				 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-				 			tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
+				 			tmpObjId = lessonIndictor +"."+
 				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
 				 						pageObj.replace(/\s+/g, '_').replace(/:/g, '');
 
@@ -873,7 +905,7 @@ var SCORM = {
 				    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
 				    		}
 				    		else{
-					 			tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
+					 			tmpObjId = lessonIndictor +"."+
 				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
 				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
 				    		}
@@ -1515,7 +1547,7 @@ var SCORM = {
         //setting objectives
         //any objectives stuff goes here - objectivesGenerator
         if(_this.objectives_arr.length > 0){
-        	item += _this._objectivesGenerator();
+        	item += _this._objectivesGenerator(lessonNameTrim);
         }
 
         //setting delivery controls

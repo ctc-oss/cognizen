@@ -1802,7 +1802,7 @@ function C_Outline(_myItem) {
                 	//alert($("#pageTypeList").val());
                 	var newPageType = $("#pageTypeList").val();
                 	var newPageTitle = $("#myName").val();
-					createNewPageByType(newPageType, newPageTitle, _id);
+					createNewPageByType(newPageType, newPageTitle, $('#elo').val(), _id);
                 	$(this).dialog("close");
                 },
                 Cancel: function () {
@@ -1865,7 +1865,7 @@ function C_Outline(_myItem) {
 	Param: 			_myType = Identifier of page type - String.
 	Description:	Creates node and page data in the xml object.
 	************************************************************************************************/
-	function createNewPageByType(_myType, _myTitle, _id){
+	function createNewPageByType(_myType, _myTitle, elo, _id){
 		//Create a Unique ID for the page
 		var myID = guid();
 		var myNode = getNode(_id);
@@ -1897,7 +1897,7 @@ function C_Outline(_myItem) {
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
 		var titleCDATA = newPageTitle.createCDATASection(myTitle);
 		$(myXML).find("page").eq(newPage).find("title").append(titleCDATA);
-		
+		$(myXML).find("page").eq(newPage).attr("eo", elo);
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//ADD PAGE SPECIFIC ELEMENTS
