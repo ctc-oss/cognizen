@@ -81,7 +81,7 @@ var SCORM = {
 
 				            	//copy content.xml file to temp location
 				            	_this.packageFolder = _this.contentPath + '/packages/';
-				            	_this.tempXmlContentFile = _this.tempXmlContentFile + 'content.xml';
+				            	_this.tempXmlContentFile = _this.PackageFolder + 'content.xml';
 						        try{
 							        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
 							    }
@@ -153,68 +153,102 @@ var SCORM = {
 								    	}
 								    }
 
-								    var imsManifestFilePath = '';
-								    //do not need to do scorm files if publishing to "none"
-			        				if(_this.scormVersion != "none"){
-						                var manifestFile = _this._populateManifest(res);
+							        var courseXmlFile = path.normalize(_this.contentPath + "/../course.xml");
+							        var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
+							        try{
+					                    fs.copySync(courseXmlFile, tempCourseXmlFile);//, function(err){
+					                }
+					                catch(err){
+				                        _this.logger.error("Copy course xml file error : " + err);
+				                        callback(err, null);
+					                }
 
-						                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+						            try{
+				                        var _courseData = fs.readFileSync(tempCourseXmlFile).toString();
+							            _this.courseData = et.parse(_courseData);
+							        }
+							        catch(err){
+							            _this.logger.error("Error reading temp course xml file : " + err);
+							            callback(err,null);
+							        }
 
-						                if(_this.scormVersion === '1.2_CTCU'){
-						                	scormBasePath = _this.scormPath + '/1.2/';
+							        //set all testReview attributes to false
+								    var itemCount = _this.courseData.findall('./item').length;
+
+								    for (var i = 0; i < itemCount; i++) {
+								    	var myNode = _this.courseData.findall('./item')[i];
+								    	var mySeq = myNode.find('.sequencing');
+								    	mySeq.set('testReview', 'false');
+								    }
+					                
+					                var xmlCourse = _this.courseData.write({'xml_decleration': false});
+					                fs.outputFile(tempCourseXmlFile, xmlCourse, function (err) {
+					                    if (err) callback(err, null);
+
+									    var imsManifestFilePath = '';
+									    //do not need to do scorm files if publishing to "none"
+				        				if(_this.scormVersion != "none"){
+							                var manifestFile = _this._populateManifest(res);
+
+							                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+
+							                if(_this.scormVersion === '1.2_CTCU'){
+							                	scormBasePath = _this.scormPath + '/1.2/';
+							                }
+
+							                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+
+							                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+							                    if(err) {
+							                        _this.logger.error("Write file error" + err);
+							                        callback(err, null);
+							                    }
+							                    else {
+							                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+							                    		if(err){
+							                    			callback(err, null);
+							                    		}
+
+														fs.remove(_this.tempXmlContentFile, function(err){
+															if(err){
+																_this.logger.error(err);
+																callback(err, null);
+															}
+															_this.logger.info('temp content.xml file removed.');
+												            _this.logger.debug("packageFolder = " + _this.packageFolder);
+												            //tells the engine that it is done writing the zip file
+												            callback(null, output);
+														});
+
+							                    	});
+
+							                    }
+
+
+							                });
 						                }
+						                else{
+						                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+					                    		if(err){
+					                    			callback(err, null);
+					                    		}
 
-						                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
-
-						                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
-						                    if(err) {
-						                        _this.logger.error("Write file error" + err);
-						                        callback(err, null);
-						                    }
-						                    else {
-						                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-						                    		if(err){
-						                    			callback(err, null);
-						                    		}
-
-													fs.remove(_this.tempXmlContentFile, function(err){
-														if(err){
-															_this.logger.error(err);
-															callback(err, null);
-														}
-														_this.logger.info('temp content.xml file removed.');
-											            _this.logger.debug("packageFolder = " + _this.packageFolder);
-											            //tells the engine that it is done writing the zip file
-											            callback(null, output);
-													});
-
-						                    	});
-
-						                    }
-
-
-						                });
-					                }
-					                else{
-					                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-				                    		if(err){
-				                    			callback(err, null);
-				                    		}
-
-											fs.remove(_this.tempXmlContentFile, function(err){
-												if(err){
-													_this.logger.error(err);
-													callback(err, null);
-												}
-												_this.logger.info('temp content.xml file removed.');
-									            _this.logger.debug("packageFolder = " + _this.packageFolder);
-									            //tells the engine that it is done writing the zip file
-									            callback(null, output);
-											});
-					                	});
-					                }
+												fs.remove(_this.tempXmlContentFile, function(err){
+													if(err){
+														_this.logger.error(err);
+														callback(err, null);
+													}
+													_this.logger.info('temp content.xml file removed.');
+										            _this.logger.debug("packageFolder = " + _this.packageFolder);
+										            //tells the engine that it is done writing the zip file
+										            callback(null, output);
+												});
+						                	});
+						                }
+						            //close of tempcourse write function    
+						            });
+				                //close of temp countent write function
 				                });
-
 				            }
 				        );
 		            }
@@ -450,6 +484,10 @@ var SCORM = {
         //adds temp content.xml file to zip
         archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: _this.binDir+'/xml/content.xml'});
 
+		//add course.xml file
+        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+
+
         //do not need to do scorm files if publishing to "none"
         if(_this.scormVersion != "none")
         {
@@ -529,10 +567,44 @@ var SCORM = {
 	    	}
 
 			_this.logger.info('imsmanifest.xml file removed.');
+
+			// //remove temp content.xml
+			// try{
+			// 	fs.removeSync(_this.tempXmlContentFile);
+			// }
+			// catch(err){
+			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
+			// }
+
+			// //remove temp course.xml
+			// try{
+			// 	fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
+			// }
+			// catch(err){
+			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
+			// }
+
+			
 	        archive.finalize();
 
     	}
     	else{
+
+			// //remove temp content.xml
+			// try{
+			// 	fs.removeSync(_this.tempXmlContentFile);
+			// }
+			// catch(err){
+			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
+			// }
+
+			// //remove temp course.xml
+			// try{
+			// 	fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
+			// }
+			// catch(err){
+			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
+			// }    		
 	        archive.finalize();
     	}
 
