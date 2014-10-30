@@ -43,12 +43,21 @@
 				var jqueryuiPath = unescape(dir + '/../css/CourseCSS/jqueryui/jquery-ui.min.css');
 				var courseOverridePath =  unescape(dir + '/../css/CourseCSS/CourseOverride.css');
 				var programOverridePath = unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css');
-				document.write('<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link><link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/><link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link><link href="'+ jqueryuiPath +'" rel="stylesheet"></link><link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link><link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link><script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>');
+				var editPaths = '<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/>';
+					editPaths += '<link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
+					editPaths += '<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script>';
+					editPaths += '<script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>';
+				document.write(editPaths);
 			}
 		</script>
 
 		<script type="text/javascript">
 			window.jQuery || writeAuthoringPath();
+
 			window.onunload = function(){
 				if(window.top.opener){
 					window.top.opener.lessonComplete();
