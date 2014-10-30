@@ -655,6 +655,8 @@ function C_Outline(_myItem) {
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += "<label for='instructionalGoal'>instructional goal: </label>";
+		msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
 		//end div for general
 		msg += '</div>';
      	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
@@ -780,14 +782,23 @@ function C_Outline(_myItem) {
 			$("#lms").val($(courseData).find("course").attr("lms"));
 		}
 
-
-
 		// update the xml when the lms drop is changed
 	    $("#lms").on("change", function(){
 		    $(courseData).find("course").attr("lms", $("#lms").val());		    
 		    setLmsAccord();
 		    updateCourseXML();
-	    }); 		
+	    }); 
+
+		//set instructional goal based off value in xml
+		if($(courseData).find("course").attr("instructionalgoal")){
+			$("#instructionalGoal").val($(courseData).find("course").attr("instructionalgoal"));
+		}
+
+		// update the xml when the instructional goal is changed
+	    $("#instructionalGoal").on("change", function(){
+		    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());		    
+		    updateCourseXML();
+	    }).css({'width': '500px', 'color': '#3383bb;'}); 	    		
 
 		/*$("#out_courseObjective").on("change", function(){
 		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
@@ -851,14 +862,14 @@ function C_Outline(_myItem) {
      	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
      	msg += "<div><b>Details:</b></div>";
      	msg += "<label for='lessonTitle'>lesson title: </label>";
-        msg += '<input type="text" name="lessonTitle" id="lessonTitle" value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
-     	msg += "<br/><label for='tlo'>tlo: </label>";
-        msg += '<input type="text" name="tlo" id="tlo" value="'+ $(module_arr[_id].xml).find('tlo').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += '<input type="text" name="lessonTitle" id="lessonTitle" title="Update the lesson title." value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+     	msg += "<br/><label for='tlo'>terminal objective: </label>";
+        msg += '<input type="text" name="tlo" id="tlo" title="Update the course terminal objective." value="'+ $(module_arr[_id].xml).find('tlo').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<div>"
      	msg += "<label for='lessonWidth'>width of lesson: </label>";
-        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[_id].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += '<input type="text" name="lessonWidth" id="lessonWidth" title="Update the width of the lesson." value="'+ $(module_arr[_id].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
         msg += "<label for='lessonHeight'>height of lesson: </label>";
-        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[_id].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
+        msg += '<input type="text" name="lessonHeight" id="lessonHeight" title="Update the height of the lesson." value="'+ $(module_arr[_id].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
         msg += "<label for='mode'>set mode: </label>";
      	msg += "<select name='mode' id='mode'>";
      	msg += "<option>production</option>";
@@ -914,6 +925,12 @@ function C_Outline(_myItem) {
      	msg += "<div><b>Lock:</b></div>";
      	msg += "<label for='lockDuration'>duration for lock request (s): </label>";
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
+     	msg += "<div><b>minScore:</b></div>";
+     	msg += "<label for='minScore'>minimal passing score: </label>";
+        msg += '<input type="text" name="minScore" id="minScore" value="'+ $(module_arr[_id].xml).find('minScore').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';  
+     	msg += "<div><b>restartOnFail</b></div>";
+		msg += "<label id='label' for='restartOnFail'>restartOnFail: </label>";
+		msg += "<input id='restartOnFail' type='checkbox' name='restartOnFail' class='radio'/><br/><br/>";     	  	
      	msg += "</div>";
      	//end general div
      	msg += '</div>';
@@ -966,6 +983,11 @@ function C_Outline(_myItem) {
 			$('#hasGlossary').prop('checked',true);
 		}
 
+		//set restartOnFail
+		if($(module_arr[_id].xml).find('restartOnFail').attr("value") === "true"){
+			$('restartOnFail').prop('checked', true);
+		}
+
 	    //set tlo to default if not set
 	    if(!$(module_arr[_id].xml).find('tlo').attr('value')){
 	    	//forloop coursedata to find item....
@@ -1004,7 +1026,6 @@ function C_Outline(_myItem) {
 		}
 
 	    //set lesson id on module.xml if doesn't exist
-	    ///TODONOT WORKING
 	    if(!$(module_arr[_id].xml).find('id').attr('value')){
 	    	$(module_arr[_id].xml).find("preferences").append($('<id>', module_arr[_id].xml));
 	    	$(module_arr[_id].xml).find('id').attr('value', lessonMatchID);
@@ -1066,7 +1087,7 @@ function C_Outline(_myItem) {
 				
 			}
 				
-	    });
+	    }).css({'width': '500px', 'color': '#3383bb;'});
 
 
 	    $("#mode").on("change", function(){
@@ -1114,6 +1135,20 @@ function C_Outline(_myItem) {
 		   }
 		   updateModuleXML(_id);
 	    });
+
+	    $("#minScore").on("change", function(){
+			$(module_arr[_id].xml).find('minScore').attr("value", $("#minScore").val());
+			updateModuleXML(_id);
+	    }).css({'width': '50px', 'color': '#3383bb;'});
+
+	    $("#restartOnFail").on("change", function(){
+		   if($('#restartOnFail').prop('checked')){
+			   $(module_arr[_id].xml).find('restartOnFail').attr("value", "true");
+		   } else{
+			   $(module_arr[_id].xml).find('restartOnFail').attr("value", "false");
+		   }
+		   updateModuleXML(_id);
+	    });	    
 
 	    //find the index number for the item
 	    var modIndex = 0;
@@ -1359,30 +1394,77 @@ function C_Outline(_myItem) {
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
 				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "  <button id='panePagePreview'>preview</button><br/>";
-			     	msg += "<label for='out_pageTitle'>page title: </label>";
+			     	msg += "<label for='out_pageTitle' title='Update the page title.'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
-			     	msg += "<label for='out_pageObjective'>page objective: </label>";
-			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective" value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
-			     	
-			     	/*msg += "<div>"
-			     	msg += "<label for='lessonWidth'>width of lesson:</label>";
-			        msg += '<input type="text" name="lessonWidth" id="lessonWidth" value="'+ $(module_arr[i].xml).find('lessonWidth').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
-			        msg += "<label for='lessonHeight'>height of lesson:</label>";
-			        msg += '<input type="text" name="lessonHeight" id="lessonHeight" value="'+ $(module_arr[i].xml).find('lessonHeight').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/>';
-			        msg += "<label for='mode'>set mode:</label>";
-			     	msg += "<select name='mode' id='mode'>";
-			     	msg += "<option>production</option>";
-			     	msg += "<option>edit</option>";
-			     	msg += "<option>review</option>";
-			     	msg += "</select><br/>"*/
-			     	
-			     	
-     	
+			        //display tlo
+			        msg += '<b>terminal objective: </b>' + $(module_arr[i].xml).find('tlo').attr('value') + '<br/>';	
+					//enter elo
+			     	msg += "<label for='eo' title='Update the enabling objective.'>enabling objective: </label>";
+			        msg += '<input type="text" name="eo" id="eo"  value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';							     	
+			     	msg += "<label for='out_pageObjective'";
+			     	msg += 'title="Update the learner friendly objective description or reference to this page in the lesson. This value is used on completion pages to show missed objectives to students.">objective description: </label>';
+			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective"'; 
+
+			        msg += 'value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+
+					//enter tlo referenced for assessments	
+			        if($(module_arr[i].xml).find('page').eq(j).attr("type") == "kc"){
+						msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";				     			     	
+				     	msg += "<select name='objItemId' id='objItemId'>";
+				     	//for loop through items in course.xml
+						for(var k = 0; k < $(courseData).find("item").length; k++){
+							var itemId = $(courseData).find("item").eq(k).attr('id');
+							var itemName = $(courseData).find("item").eq(k).attr('name');
+							var itemTLO = $(courseData).find("item").eq(k).attr('tlo');
+							msg += '<option value ="'+itemId+'"';
+							if(itemId == $(module_arr[i].xml).find('id').attr('value')){
+								msg += ' selected';
+							}
+							msg += '>'+itemName+' : '+itemTLO+'</option>';
+						}			     	
+				     	msg += "</select><br/>";
+			     	}			     	     	
+
 				 	$("#outlinePagePrefPane").append(msg);
 				 	
+			     	//if objItemId not set set to current in xml
+					if($(module_arr[i].xml).find('page').eq(j).attr("type") == "kc"){
+						if($(module_arr[i].xml).find('page').eq(j).attr("objItemId")){
+							if($(module_arr[i].xml).find('page').eq(j).attr("objItemId") == 'undefined'){
+								$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
+								updateModuleXML(currentPageParentModule);								
+							}
+							else{
+								$('#objItemId select').val($(module_arr[i].xml).find('page').eq(j).attr("objItemId"));
+							}
+
+						}
+						else{
+							$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
+							updateModuleXML(currentPageParentModule);
+						}
+					}     	
+
+			     	//add .on change for objItemId
+			     	$('#objItemId').on("change", function(){
+						$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
+						updateModuleXML(currentPageParentModule);			     		
+			     	});
+
 				 	$("#panePagePreview").button().click(function(){
 						clickPreview($(module_arr[i].xml).find('page').eq(j).attr("layout"));
 					});
+
+					//set enabling based off value in xml
+					if($(module_arr[i].xml).find('page').eq(j).attr("eo")){
+						$("#eo").val($(module_arr[i].xml).find('page').eq(j).attr("eo"));
+					}
+
+					// update the xml when the enabling is changed
+				    $("#eo").on("change", function(){
+					    $(module_arr[i].xml).find('page').eq(j).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());		    
+					    updateModuleXML(currentPageParentModule);
+				    }).css({'width': '500px', 'color': '#3383bb;'}); 					
 				 	
 				 	$("#out_pageTitle").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------

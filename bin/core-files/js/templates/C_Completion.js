@@ -18,7 +18,7 @@ function C_Completion(_type) {
     var completed = true;
     var scoreText = '';
     var score_obj = new Object();;
-    var isScored;
+    var isScored = "false";
     var scormVersion;
     var finalLesson;
     var HTMLString;
@@ -51,7 +51,15 @@ function C_Completion(_type) {
 			review = $(data).find("page").eq(currentPage).attr('review');
 		}		
 		//evaluate score
-		isScored = $(data).find('scored').attr('value');
+		for(var k = 0; k < $(data).find("page").length; k++){
+			if($(data).find("page").eq(k).attr('graded') === "true" &&
+				$(data).find("page").eq(k).attr('type') === "kc"){
+				isScored = "true";
+				break;
+			}
+		}
+
+		//isScored = $(data).find('scored').attr('value');
 		lms = $(courseData).find("course").attr("lms");
 
 		testReview = $(courseData).find('item[name="'+$(data).find('lessonTitle').attr('value')+'"]').find('sequencing').attr('testReview');
@@ -234,7 +242,7 @@ function C_Completion(_type) {
 			}
 		}
 		
-		if(trackedObjectives && remediationObjectives.length != 0){
+		if(isScored === "true" && trackedObjectives && remediationObjectives.length != 0){
 			var scoreTextAlt = scoreText;
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';

@@ -229,6 +229,65 @@ function choiceValid(lesson){
 	return false;
 }
 
+function setPageObjective(_correct, _graded){
+	if(doScorm()){
+		var _objId = "";
+		var myObjective = 'undefined';
+		var myObjItemId = 'undefined';
+		var eo = '';
+		var _pgTitle = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace('.', '');
+
+		if($(data).find("page").eq(currentPage).attr('eo')){
+			eo = $(data).find("page").eq(currentPage).attr('eo').replace('.', '');
+		}
+
+		if($(data).find("page").eq(currentPage).attr('objective')){
+			myObjective = $(data).find("page").eq(currentPage).attr('objective').replace('.', '');
+		}
+
+		if($(data).find("page").eq(currentPage).attr('objItemId')){
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId').replace('.', '');
+		}	
+
+		var lessonIndicator = 'undefined';
+		if($(data).find("tlo").attr("value")){
+			lessonIndicator = $(data).find("tlo").attr("value").replace(/\s+/g, '').replace('.', '');
+		}
+		else{
+			lessonIndicator = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '').replace('.', '');
+		}
+
+		if(myObjective != undefined && myObjective !== "undefined"){
+			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+			_objId = lessonIndicator +"."+
+				_pgTitle+"."+
+				myObjective.replace(/\s+/g, '_');
+
+		}
+
+		if(myObjItemId != undefined && myObjItemId !== "undefined"){
+			if(_objId.length > 0){
+				_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+			}
+			else{
+	 			_objId = lessonIndicator +"."+
+					_pgTitle+"."+
+					myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+			}
+		}
+
+		if(_objId.length > 0){	
+			_objId += "_id";
+			if(_correct && _graded){
+				setObjectiveSuccess(_objId, true, eo);
+			}
+			else if(!_correct && _graded){
+				setObjectiveSuccess(_objId, false, eo);
+			}
+		}	
+	}
+}
+
 function getObjectives(){
 
 	var objectives_arr = [];
@@ -260,7 +319,7 @@ function getAttemptObjectivesCount(){
     return attemptCount;
 }
 
-function setObjectiveSuccess(objId, success){
+function setObjectiveSuccess(objId, success, eo){
 	if(doScorm()){
 
 		var objIndex = findObjective(objId);
@@ -271,6 +330,7 @@ function setObjectiveSuccess(objId, success){
 
 		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
 		scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
+		scorm.set("cmi.objectives." + objIndex + ".description", eo);
 
 	}
 

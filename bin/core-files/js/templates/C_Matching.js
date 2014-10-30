@@ -53,8 +53,8 @@ function C_Matching(_type) {
     var isComplete = false;
     var graded = false;
     var mandatory = true;
-    var myObjective = "undefined";
-    var myObjItemId = "undefined";
+    // var myObjective = "undefined";
+    // var myObjItemId = "undefined";
 	var order_arr = [];
 	var scormVersion;
 	var pageId;
@@ -84,13 +84,14 @@ function C_Matching(_type) {
 		scormVersion = $(data).find('scormVersion').attr('value');
 		pageId = $(data).find("page").eq(currentPage).attr("id");
 		
-		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective');
-		}
+		// if($(data).find("page").eq(currentPage).attr('objective')){
+		// 	//updated to use eo attribute
+		// 	myObjective = $(data).find("page").eq(currentPage).attr('eo');
+		// }
 
-		if($(data).find("page").eq(currentPage).attr('objItemId')){
-			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
-		}		
+		// if($(data).find("page").eq(currentPage).attr('objItemId')){
+		// 	myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		// }		
 		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
@@ -365,37 +366,38 @@ function C_Matching(_type) {
 			}
 		}
 
-		//set SCORM objectives
-		var _objId = "";
-    	if(myObjective != undefined && myObjective !== "undefined"){
-    		//console.log(i + " : " + pageObj);
- 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
- 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjective.replace(/\s+/g, '_');
+		//set SCORM objective for page - C_SCORM.js
+		setPageObjective(tempCorrect, graded);
+		// var _objId = "";
+  //   	if(myObjective != undefined && myObjective !== "undefined"){
+  //   		//console.log(i + " : " + pageObj);
+ 	// 		//check for duplicates; manipulate objective name if so (this may not work!!!!)
+ 	// 		_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+ 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+ 	// 					myObjective.replace(/\s+/g, '_');
 
-    	}
+  //   	}
 
-    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-    		if(_objId.length > 0){
-    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-    		}
-    		else{
-	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-    		}
-    	}
+  //   	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+  //   		if(_objId.length > 0){
+  //   			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+  //   		}
+  //   		else{
+	 // 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+ 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+ 	// 					myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+  //   		}
+  //   	}
 
-		if(_objId.length > 0){	
-			_objId += "_id";
-			if(tempCorrect && graded){
-				setObjectiveSuccess(_objId, true);
-			}
-			else if(!tempCorrect && graded){
-				setObjectiveSuccess(_objId, false);
-			}
-		}
+		// if(_objId.length > 0){	
+		// 	_objId += "_id";
+		// 	if(tempCorrect && graded){
+		// 		setObjectiveSuccess(_objId, true);
+		// 	}
+		// 	else if(!tempCorrect && graded){
+		// 		setObjectiveSuccess(_objId, false);
+		// 	}
+		// }
 
 
 		$(".matchingInput").prop('disabled', true);
@@ -675,10 +677,6 @@ function C_Matching(_type) {
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         msg += "<label id='label'>drag and drop: </label>";
 		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true' title='Check for drag and drop functionality.'/><br/><br/>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";	
 		msg += "<div id='feedbackLabel'>Input your feedback:</div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
@@ -779,13 +777,13 @@ function C_Matching(_type) {
 					click: function(){
 						var tmpObj = new Object();
 						tmpObj.attempts = $("#inputAttempts").val();
-						tmpObj.objective = $("#inputObjective").val();
-						tmpObj.objItemId = $("#inputObjItemId").val();
 						
 						if($("#isGraded").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("graded", "true");
+							tmpObj.graded = true;
 						}else{
 							$(data).find("page").eq(currentPage).attr("graded", "false");
+							tmpObj.graded = false;
 						}
 						if($("#isMandatory").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("mandatory", "true");
@@ -981,13 +979,13 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
-		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
+		// $(data).find("page").eq(currentPage).attr("objective", _data.objective);
+		// $(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
-				questionResponse_arr[j].objective = _data.objective;
-				questionResponse_arr[j].objItemId = _data.objItemId;
+				// questionResponse_arr[j].objective = _data.objective;
+				// questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);

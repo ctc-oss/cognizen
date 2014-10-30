@@ -354,6 +354,7 @@ function buildInterface(){
 	if(mode == "edit"){
 		addEditNav();
 		addMediaDrop();
+		addObjEdit();
 	}
 	
 	if(mode == "edit" || mode == "review"){
