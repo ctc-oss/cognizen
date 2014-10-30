@@ -18,6 +18,10 @@
 		<link href="../css/CoreCSS/C_Engine.css" rel="stylesheet" type="text/css"/>
 		<!--CSS for the program layer - get's moved at publish time... -->
 		<link href="../css/ProgramCSS/ProgramOverride.css" rel="stylesheet" type="text/css"></link>
+		<!--CSS in place in both authorign and published. -->
+		<link href="../css/CourseCSS/jqueryui/jquery-ui.min.css" rel="stylesheet"></link>
+		<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>
+		<link href="../css/CourseCSS/CourseOverride.css" rel="stylesheet" type="text/css"></link>
 		<!------------------------------  LOAD SCRIPTS  ------------------------------>
 		<!-- Detect IE10 and add class to html element -->
 		<script>
@@ -30,19 +34,27 @@
 		<!-- Load everything else - what's loading can be found in C_Engine.js - Step 2. -->
 		<script data-main="../js/C_Engine" src="../js/libs/require.js"></script>
 
+
 		<!--  This loads the proper scripts if this is running INSIDE of the authoring environment -->
-		<script>
-			window.jQuery || document.write('<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link><link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/><link href="../../core-prog/ProgramCSS/ProgramOverride.css" rel="stylesheet" type="text/css"></link><script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>');
+		<script type="text/javascript">
+			function writeAuthoringPath(){
+				var loc = window.location.pathname;
+				var dir = loc.substring(0, loc.lastIndexOf('/'));
+				var jqueryuiPath = unescape(dir + '/../css/CourseCSS/jqueryui/jquery-ui.min.css');
+				var courseOverridePath =  unescape(dir + '/../css/CourseCSS/CourseOverride.css');
+				var programOverridePath = unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css');
+				document.write('<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link><link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/><link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link><link href="'+ jqueryuiPath +'" rel="stylesheet"></link><link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link><link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link><script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>');
+			}
+		</script>
+
+		<script type="text/javascript">
+			window.jQuery || writeAuthoringPath();
 			window.onunload = function(){
 				if(window.top.opener){
 					window.top.opener.lessonComplete();
 				}
 			}
 		</script>
-		<!--CSS in place in both authorign and published. -->
-		<link href="../css/CourseCSS/jqueryui/jquery-ui.min.css" rel="stylesheet"></link>
-		<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>
-		<link href="../css/CourseCSS/CourseOverride.css" rel="stylesheet" type="text/css"></link>
 	</head>
 	<body>
 	</body>
