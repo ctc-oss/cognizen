@@ -18,7 +18,9 @@ var SCORM = {
     objectives_arr: [],
     courseXmlExists: false,
     courseData:'',
-    jsResouces_arr: [],
+    jsResources_arr: [],
+    cssResources_arr: [],
+    cssCourseResources_arr: [],
     reviewLines: '',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
@@ -35,13 +37,12 @@ var SCORM = {
 
         //clear objectives_arr
         _this.objectives_arr = [];
-
+		_this.cssResources_arr = [];
         //clear js arr
-        _this.jsResouces_arr = [];
+        _this.jsResources_arr = [];
 
-        //add js directory to root of package
-        readdirp(
-            { root: _this.contentPath + '/../js',
+		readdirp(
+            { root: _this.contentPath + '/../css',
                 directoryFilter: [ '!.git'],
                 fileFilter: [ '!.*' ] }
             , function(fileInfo) {
@@ -51,113 +52,151 @@ var SCORM = {
                 res.files.forEach(function(file) {
                     var localFile = file.path.replace(/\\/g,"/")
                     //console.log(localFile);
-                    _this.jsResouces_arr.push(localFile);
+                    _this.cssResources_arr.push(localFile);
                 });
-
-        		//console.log(_this.scormVersion);
+		        //add js directory to root of package
 		        readdirp(
-		            { root: _this.contentPath,
-		                directoryFilter: [ '!server', '!scorm', '!.git', '!js'],
+		            { root: _this.contentPath + '/../js',
+		                directoryFilter: [ '!.git'],
 		                fileFilter: [ '!.*' ] }
 		            , function(fileInfo) {
 		                //console.log("---------------------------------------------------------" + fileInfo);
 		            }
 		            , function (err, res) {
+		                res.files.forEach(function(file) {
+		                    var localFile = file.path.replace(/\\/g,"/")
+		                    //console.log(localFile);
+		                    _this.jsResources_arr.push(localFile);
+		                });
 
-		            	//copy content.xml file to temp location
-		            	_this.packageFolder = _this.contentPath + '/packages/';
-		            	_this.tempXmlContentFile = _this.tempXmlContentFile + 'content.xml';
-				        try{
-					        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
-					    }
-					    catch(err){
-					    	_this.logger.error("Copy content xml file error : " + err);
-					    	callback(err, null);
-					    }
+		        		//console.log(_this.scormVersion);
+				        readdirp(
+				            { root: _this.contentPath,
+				                directoryFilter: [ '!server', '!scorm', '!.git', '!js', '!CoreCSS'],
+				                fileFilter: [ '!.*' ] }
+				            , function(fileInfo) {
+				                //console.log("---------------------------------------------------------" + fileInfo);
+				            }
+				            , function (err, res) {
 
-						var data, etree;
-				       	try{
-				        	data = fs.readFileSync(_this.tempXmlContentFile).toString();
-				        }
-				        catch(err){
-				        	_this.logger.error("Error reading temp content xml file : " + err);
-				        	callback(err,null);
-				        }		            	
+				            	//copy content.xml file to temp location
+				            	_this.packageFolder = _this.contentPath + '/packages/';
+				            	_this.tempXmlContentFile = _this.tempXmlContentFile + 'content.xml';
+						        try{
+							        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
+							    }
+							    catch(err){
+							    	_this.logger.error("Copy content xml file error : " + err);
+							    	callback(err, null);
+							    }
 
-				        etree = et.parse(data);
+								var data, etree;
+						       	try{
+						        	data = fs.readFileSync(_this.tempXmlContentFile).toString();
+						        }
+						        catch(err){
+						        	_this.logger.error("Error reading temp content xml file : " + err);
+						        	callback(err,null);
+						        }
 
-				        //set mode to production and scorm version in temp content.xml
-		                etree.find('./courseInfo/preferences/mode').set('value','production');
-		                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);	
-		                etree.find('./courseInfo/preferences/finalLesson').set('value','true');
-		                if(_this.scormVersion === 'none'){
-		                	etree.find('./courseInfo/preferences/scorm').set('value','false');
-		                }
-		                var xml = etree.write({'xml_decleration': false});
-		                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
-		                    if (err) callback(err, null);
-					    
-						    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-						    
-						    //find the objectives in the pages. 
-						    var pageCount = etree.findall('./pages/page').length;
+						        etree = et.parse(data);
 
-						    for (var i = 0; i < pageCount; i++) {
-						    	var myNode = etree.findall('./pages/page')[i];
-						    	var pageObj = myNode.get('objective');
-						    	var pageObjId = myNode.get('objItemId');
-						    	var pageTitle = myNode.findtext('title');
-						    	var tmpObjId = '';
-						    	if(pageObj != undefined && pageObj !== "undefined"){
-						    		//console.log(i + " : " + pageObj);
-						 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-						 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
-						 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
-						 						pageObj.replace(/\s+/g, '_');
-
-						    	}
-
-						    	if(pageObjId != undefined && pageObjId !== "undefined"){
-						    		if(tmpObjId.length > 0){
-						    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_');
-						    		}
-						    		else{
-							 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
-						 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
-						 						pageObjId.replace(/\s+/g, '_');						    			
-						    		}
-						    	}
-
-						    	if(tmpObjId.length > 0 ){
-						    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
-						    			_this.objectives_arr.push(tmpObjId);	
-						    		}
-						    		else{
-						    			_this.objectives_arr.push(tmpObjId+i);						    			
-						    		}						    		
-						    	}
-						    }
-
-						    var imsManifestFilePath = '';
-						    //do not need to do scorm files if publishing to "none"						    
-	        				if(_this.scormVersion != "none"){
-				                var manifestFile = _this._populateManifest(res);
-
-				                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
-
-				                if(_this.scormVersion === '1.2_CTCU'){
-				                	scormBasePath = _this.scormPath + '/1.2/';
+						        //set mode to production and scorm version in temp content.xml
+				                etree.find('./courseInfo/preferences/mode').set('value','production');
+				                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+				                etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+				                if(_this.scormVersion === 'none'){
+				                	etree.find('./courseInfo/preferences/scorm').set('value','false');
 				                }
+				                var xml = etree.write({'xml_decleration': false});
+				                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
+				                    if (err) callback(err, null);
 
-				                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+								    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 
-				                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
-				                    if(err) {
-				                        _this.logger.error("Write file error" + err);
-				                        callback(err, null);
-				                    }
-				                    else {
-				                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+								    //find the objectives in the pages.
+								    var pageCount = etree.findall('./pages/page').length;
+
+								    for (var i = 0; i < pageCount; i++) {
+								    	var myNode = etree.findall('./pages/page')[i];
+								    	var pageObj = myNode.get('objective');
+								    	var pageObjId = myNode.get('objItemId');
+								    	var pageTitle = myNode.findtext('title');
+								    	var tmpObjId = '';
+								    	if(pageObj != undefined && pageObj !== "undefined"){
+								    		//console.log(i + " : " + pageObj);
+								 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+								 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
+								 						pageObj.replace(/\s+/g, '_');
+
+								    	}
+
+								    	if(pageObjId != undefined && pageObjId !== "undefined"){
+								    		if(tmpObjId.length > 0){
+								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_');
+								    		}
+								    		else{
+									 			tmpObjId = _this.courseName.replace(/\s+/g, '') +"."+
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
+								 						pageObjId.replace(/\s+/g, '_');
+								    		}
+								    	}
+
+								    	if(tmpObjId.length > 0 ){
+								    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
+								    			_this.objectives_arr.push(tmpObjId);
+								    		}
+								    		else{
+								    			_this.objectives_arr.push(tmpObjId+i);
+								    		}
+								    	}
+								    }
+
+								    var imsManifestFilePath = '';
+								    //do not need to do scorm files if publishing to "none"
+			        				if(_this.scormVersion != "none"){
+						                var manifestFile = _this._populateManifest(res);
+
+						                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+
+						                if(_this.scormVersion === '1.2_CTCU'){
+						                	scormBasePath = _this.scormPath + '/1.2/';
+						                }
+
+						                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+
+						                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+						                    if(err) {
+						                        _this.logger.error("Write file error" + err);
+						                        callback(err, null);
+						                    }
+						                    else {
+						                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+						                    		if(err){
+						                    			callback(err, null);
+						                    		}
+
+													fs.remove(_this.tempXmlContentFile, function(err){
+														if(err){
+															_this.logger.error(err);
+															callback(err, null);
+														}
+														_this.logger.info('temp content.xml file removed.');
+											            _this.logger.debug("packageFolder = " + _this.packageFolder);
+											            //tells the engine that it is done writing the zip file
+											            callback(null, output);
+													});
+
+						                    	});
+
+						                    }
+
+
+						                });
+					                }
+					                else{
+					                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
 				                    		if(err){
 				                    			callback(err, null);
 				                    		}
@@ -168,42 +207,20 @@ var SCORM = {
 													callback(err, null);
 												}
 												_this.logger.info('temp content.xml file removed.');
-									            _this.logger.debug("packageFolder = " + _this.packageFolder);        
+									            _this.logger.debug("packageFolder = " + _this.packageFolder);
 									            //tells the engine that it is done writing the zip file
-									            callback(null, output);															
-											});												
-                    		
-				                    	});
-
-				                    }
-
-
+									            callback(null, output);
+											});
+					                	});
+					                }
 				                });
-			                }
-			                else{
-			                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-		                    		if(err){
-		                    			callback(err, null);
-		                    		}			                		
 
-									fs.remove(_this.tempXmlContentFile, function(err){
-										if(err){
-											_this.logger.error(err);
-											callback(err, null);
-										}
-										_this.logger.info('temp content.xml file removed.');
-							            _this.logger.debug("packageFolder = " + _this.packageFolder);        
-							            //tells the engine that it is done writing the zip file
-							            callback(null, output);															
-									});	
-			                	});
-			                }
-		                });			                			        	
-
+				            }
+				        );
 		            }
 		        );
-            }   
-        );
+	        }
+	    );
 	//end of generateSCORMLesson
 	},
 
@@ -259,7 +276,7 @@ var SCORM = {
 	        manifest += "       </organization>\n";
 	        manifest += "    </organizations>\n";
 	        manifest += "   <resources>\n";
-	        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	  	        
+	        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";
 	    }
 	    else if(_this.scormVersion == "2004_4th"){
 	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
@@ -299,7 +316,7 @@ var SCORM = {
 	        if(_this.objectives_arr.length > 0){
 	        	manifest += _this._objectivesGenerator();
 	        }
-	        
+
 	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
 	        manifest += "               </imsss:sequencing>\n";
 	        manifest += "           </item>\n";
@@ -307,7 +324,7 @@ var SCORM = {
 	        manifest += "       </organization>\n";
 	        manifest += "    </organizations>\n";
         	manifest += "   <resources>\n";
-        	manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	  	        
+        	manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";
 	    }
 	    //SCORM 1.2
 	    else{
@@ -315,16 +332,16 @@ var SCORM = {
 	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"\n'+
 	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"\n'+
 	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n';
-	        if (_this.scormVersion === '1.2_CTCU'){    
+	        if (_this.scormVersion === '1.2_CTCU'){
 	        	manifest += '    xmlns:c2lcp="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1"';
-	        }        
+	        }
 	        manifest += '    xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd\n'+
 	            '                         http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd\n'+
 	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd';
-	        if (_this.scormVersion === '1.2_CTCU'){      
-	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';   
-	        } 
-	        manifest += '\">\n';    
+	        if (_this.scormVersion === '1.2_CTCU'){
+	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';
+	        }
+	        manifest += '\">\n';
 	        manifest +='<metadata>\n'+
 	            '   <schema>ADL SCORM</schema>\n'+
 	            '   <schemaversion>1.2</schemaversion>\n'+
@@ -339,14 +356,14 @@ var SCORM = {
 	            '</organizations>\n';
 	        manifest += "   <resources>\n";
 	        if(_this.scormVersion === '1.2_CTCU'){
-				manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"index.html\">\n";	
+				manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"index.html\">\n";
 				manifest += "         <file href=\"index.html\"/>\n";
 	        }
 	        else{
-        		manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";	      
+        		manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";
         	}
 	    }
-	    //resources go here - resourcesgenerator  
+	    //resources go here - resourcesgenerator
 	    var resources = _this._resourcesGenerator(res, '');
 	    for (var i = 0; i < resources.length; i++) {
 	    	manifest += resources[i];
@@ -354,8 +371,8 @@ var SCORM = {
 	    manifest += '      </resource>\n';
 	    manifest += _this._jsResourceGenerator('');
 	    manifest += '   </resources>\n';
-	   
-	    if (_this.scormVersion === '1.2_CTCU'){  
+
+	    if (_this.scormVersion === '1.2_CTCU'){
 	    	manifest += '   	<c2lcp:ItemDataExtra>\n'+
 						'			<c2lcp:ItemData Type=\"Course\">\n'+
 						'	 			<c2lcp:ItemSpecificData>\n'+
@@ -384,11 +401,11 @@ var SCORM = {
 						'			</c2lcp:ItemData>\n'+
 						'		</c2lcp:ItemDataExtra>\n';
 	    }
-	   
-	    manifest += '</manifest>';	
 
-	    return manifest;	
-	},	
+	    manifest += '</manifest>';
+
+	    return manifest;
+	},
 
 	_zipScormPackage: function(res, scormBasePath, imsManifestFilePath, callback) {
 		var _this = this;
@@ -418,10 +435,14 @@ var SCORM = {
         	}
         });
 
+		 for (var i = 0; i < _this.cssResources_arr.length; i++) {
+             archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/../css/'+_this.cssResources_arr[i] });
+        };
+
 		//add js directory to root of package
-        for (var i = 0; i < _this.jsResouces_arr.length; i++) {	
-             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResouces_arr[i]), { name: _this.binDir+'/../js/'+_this.jsResouces_arr[i] });
-        };     
+        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/../js/'+_this.jsResources_arr[i] });
+        };
 
         //add index.html from server incase changes were made after the course was created
         archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/index.html'});
@@ -451,7 +472,7 @@ var SCORM = {
 	        );
 
 	        //add sumtotal xsd files for CTC publish
-	        if (_this.scormVersion === '1.2_CTCU'){  
+	        if (_this.scormVersion === '1.2_CTCU'){
 		        readdirp({
 		                root: _this.scormPath + '/1.2_sumtotal/',
 		                directoryFilter: ['*'],
@@ -467,7 +488,7 @@ var SCORM = {
 		                });
 
 		            }
-		        );	        	
+		        );
 
 		        //add a index.html file that launches the cognizen/index.html file to work in SumTotal
                 var indexLaunchFile = _this._buildLaunchFile();
@@ -478,20 +499,20 @@ var SCORM = {
                         _this.logger.error("Write file error" + err);
                         callback(err, null);
                     }
-                    else {     
-                    	archive.append(fs.createReadStream(indexFilePath), { name: 'index.html' });  
+                    else {
+                    	archive.append(fs.createReadStream(indexFilePath), { name: 'index.html' });
 				        fs.remove(indexFilePath, function(err){
-							if(err){ 
+							if(err){
 								_this.logger.error(err);
 								callback(err, null);
 							}
 							_this.logger.info('index.html launch file removed.');
-					    });                        	
+					    });
                     }
 
-                }); 
+                });
 
-                    	
+
 
 	        }
 
@@ -504,7 +525,7 @@ var SCORM = {
 	    	}
 	    	catch(err){
 				_this.logger.error("Error removing imsManifestFile :" + err);
-				callback(err, null);	    		
+				callback(err, null);
 	    	}
 
 			_this.logger.info('imsmanifest.xml file removed.');
@@ -512,10 +533,10 @@ var SCORM = {
 
     	}
     	else{
-	        archive.finalize();	    		
+	        archive.finalize();
     	}
 
-	}, 
+	},
 
 	_objectivesGenerator: function(){
 		var _this = this;
@@ -533,7 +554,7 @@ var SCORM = {
         for (var i = 0; i < _this.objectives_arr.length; i++) {
         	secondaryObjectives += "						<imsss:objective objectiveID=\""+_this.objectives_arr[i]+"\">\n"+
             "							<imsss:mapInfo targetObjectiveID=\""+_this.objectives_arr[i]+"\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-            "						</imsss:objective>\n";	            	
+            "						</imsss:objective>\n";
         };
 
         return secondaryObjectives;
@@ -545,11 +566,11 @@ var SCORM = {
 					'<html>\n'+
 					'	<head>\n'+
 					'		<title>'+_this.courseName+'</title>\n'+
-					'		<!-- launch the lesson window -->\n'+ 
+					'		<!-- launch the lesson window -->\n'+
 					'		<script type="text/javascript">\n'+
 					'			window.open("cognizen/index.html", "lessonWindow", "width=1024, height=768");\n'+
 					'			function lessonComplete(){window.top.close();}\n'+
-					'		</script>\n'+	
+					'		</script>\n'+
 					'	</head>\n'+
 					'	<body>\n'+
 					'		<p>Close this window to record your progress and exit.</p>\n'+
@@ -566,13 +587,15 @@ var SCORM = {
         var lessonsArray = [];
         var lessonsName = [];
         //clear js resources array
-        _this.jsResouces_arr = [];
+        _this.jsResources_arr = [];
+        _this.cssResources_arr = [];
+        _this.cssCourseResources_arr = [];
         _this.reviewLines = '';
 
         for(var i=0; i<_this.found.lessons.length; i++){
             var obj = _this.found.lessons[i];
             var lessonPath = _this.contentPath + "/" + obj.name;
-            lessonsArray.push(lessonPath); 
+            lessonsArray.push(lessonPath);
 	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
         	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
 
@@ -581,11 +604,11 @@ var SCORM = {
         	}
         	catch(err){
     			_this.logger.error("Error copying content.xml file " + err);
-    			callback(err, null);        		
+    			callback(err, null);
         	}
         	// 	_this.logger.info('content.xml file copied success');
-         	                            
-        } 
+
+        }
 
 
         var courseXmlFile = path.normalize(_this.contentPath + "/course.xml");
@@ -639,8 +662,8 @@ var SCORM = {
 		_this.courseXmlExists = true;
 		//console.log("EXISTS");
         //add js directory to root of package
-        readdirp(
-            { root: _this.contentPath + '/../js',
+		readdirp(
+            { root: _this.contentPath + '/css',
                 directoryFilter: [ '!.git'],
                 fileFilter: [ '!.*' ] }
             , function(fileInfo) {
@@ -650,29 +673,59 @@ var SCORM = {
                 res.files.forEach(function(file) {
                     var localFile = file.path.replace(/\\/g,"/")
                     //console.log(localFile);
-                    _this.jsResouces_arr.push(localFile);
+                    _this.cssCourseResources_arr.push(localFile);
                 });
-			    //do not need to do scorm files if publishing to "none"
-				if(_this.scormVersion != "none"){
-			    	manifestFile = _this._startManifest();				    	
-			    }
+                readdirp(
+		            { root: _this.contentPath + '/../css',
+		                directoryFilter: [ '!.git'],
+		                fileFilter: [ '!.*' ] }
+		            , function(fileInfo) {
+		                //console.log("---------------------------------------------------------" + fileInfo);
+		            }
+		            , function (err, res) {
+		                res.files.forEach(function(file) {
+		                    var localFile = file.path.replace(/\\/g,"/")
+		                    //console.log(localFile);
+		                    _this.cssResources_arr.push(localFile);
+		                });
+				        readdirp(
+				            { root: _this.contentPath + '/../js',
+				                directoryFilter: [ '!.git'],
+				                fileFilter: [ '!.*' ] }
+				            , function(fileInfo) {
+				                //console.log("---------------------------------------------------------" + fileInfo);
+				            }
+				            , function (err, res) {
+				                res.files.forEach(function(file) {
+				                    var localFile = file.path.replace(/\\/g,"/")
+				                    //console.log(localFile);
+				                    _this.jsResources_arr.push(localFile);
+				                });
+							    //do not need to do scorm files if publishing to "none"
+								if(_this.scormVersion != "none"){
+							    	manifestFile = _this._startManifest();
+							    }
 
-				_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+								_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+							}
+						)
+					}
+				)
 			}
 		);
-			// } 
+			// }
 			// else{
 			// 	//old stuff that will not be needed once course.xml files are created for all existing courses
 			// 	//will only throw error call back here if course.xml file doesn't exist
 
 			//     //do not need to do scorm files if publishing to "none"
 			// 	if(_this.scormVersion != "none"){
-			//     	manifestFile = _this._startManifestOld();				    	
+			//     	manifestFile = _this._startManifestOld();
 			//     }
 
 			// 	_this._recurseLessonsOld(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
-			// }     	
-        //});       		
+			// }
+        //});
         // 	}
         // });
 
@@ -681,7 +734,7 @@ var SCORM = {
 
 
 
-    //end of generateSCORMCourse    
+    //end of generateSCORMCourse
 	},
 
 	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
@@ -714,7 +767,7 @@ var SCORM = {
                 	etree.find('./courseInfo/preferences/scorm').set('value','false');
                 }
                 if(count+1 == lArray.length){
-                	etree.find('./courseInfo/preferences/finalLesson').set('value','true');	
+                	etree.find('./courseInfo/preferences/finalLesson').set('value','true');
                 }
                 var xml = etree.write({'xml_decleration': false});
                 fs.outputFile(tempContentFile, xml, function (err) {
@@ -750,18 +803,18 @@ var SCORM = {
 				    		else{
 					 			tmpObjId = _lessonTitle.replace(/\s+/g, '') +"."+
 				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
-				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
 				    		}
 				    	}
 
 				    	if(tmpObjId.length > 0 ){
 				    		tmpObjId += "_id";
 				    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
-				    			_this.objectives_arr.push(tmpObjId);	
+				    			_this.objectives_arr.push(tmpObjId);
 				    		}
 				    		else{
-				    			_this.objectives_arr.push(tmpObjId+i);						    			
-				    		}						    		
+				    			_this.objectives_arr.push(tmpObjId+i);
+				    		}
 				    	}
 				    }
 				    ///////////////////////////////////////////////////
@@ -782,10 +835,10 @@ var SCORM = {
 					            	var inputFile = _lessonPath + '/' + localFile;
 					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/Review-files/'+localFile });
 					        	}
-					        });	
-					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/Review-files/index.html'});								
+					        });
+					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/Review-files/index.html'});
 						}
-							
+
 					}
 
 				    //do not need to do scorm files if publishing to "none"
@@ -805,21 +858,21 @@ var SCORM = {
 			        });
 
 			        //add index.html from server incase changes were made after the course was created
-			        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});	
+			        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});
 
 	                if(count+1 == lArray.length){
 				        if(manifestFile != ''){
-					        
+
 					        var courseAttr = _this._parseCourseAttr();
 
 					        var completionLines = '';
 
 					        //if(_this.scormVersion.indexOf('USSOCOM') != -1){
-					        if(courseAttr.lms === "JKO"){	
+					        if(courseAttr.lms === "JKO"){
 						        //add completion  and survey files
 						        if(courseAttr.survey === "true"){
 					                manifestFile += _this._addUSSOCOMExtra('survey');
-					                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});						        	
+					                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});
 						        }
 
 						        readdirp({
@@ -847,12 +900,12 @@ var SCORM = {
 
 									        // //USSOCOM publishing uses 2004 4th edition SCORM files
 									        // if(_this.scormVersion === '2004_4th_USSOCOM'){
-									        // 	scormBasePath = _this.scormPath + '/2004_4th/'; 
+									        // 	scormBasePath = _this.scormPath + '/2004_4th/';
 									        // }
 									        // else if(_this.scormVersion === '2004_3rd_USSOCOM'){
 									        // 	scormBasePath = _this.scormPath + '/2004_3rd/';
 									        // }
-									        
+
 									        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 									        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -861,7 +914,7 @@ var SCORM = {
 									                callback(err, null);
 									            }
 									            else {
-							            	
+
 											        //add SCORM files
 											        readdirp({
 											                root: scormBasePath,
@@ -880,9 +933,17 @@ var SCORM = {
 											        );
 
 													//add js directory to root of package
-											        for (var i = 0; i < _this.jsResouces_arr.length; i++) {	
-											             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResouces_arr[i]), { name: _this.binDir+'/js/'+_this.jsResouces_arr[i] });
-											        };     										           
+											        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+											             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+											        };
+
+											        for (var i = 0; i < _this.cssResources_arr.length; i++) {
+											             archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+											        };
+
+											        for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
+											             archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+											        };
 
 											        //add imsmanifest.xml file
 											        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
@@ -892,12 +953,12 @@ var SCORM = {
 
 								        			//adds temp content.xml file to zip
 								        			for(var j=0; j<lArray.length; j++){
-								        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
+								        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
 								        			}
 
 								        			//add review content.xml file to zip
 								        			if(_this.reviewLines != ''){
-								        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});							        				
+								        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
 								        			}
 
 								        			//remove temp course.xml
@@ -907,27 +968,27 @@ var SCORM = {
 								        			catch(err){
 								        				_this.logger.error("Error deleting tempCourse.xml file :" + err );
 								        			}
-											        
+
 								        			//remove temp content.xml files
 								        			_this._removeTempFiles(lArray);
 
 										            fs.remove(imsManifestFilePath, function(err){
-														if(err){ 
+														if(err){
 															_this.logger.error(err);
 															callback(err, null);
 														}
 														_this.logger.info('imsmanifest.xml file removed.');
 												        archive.finalize();
-												        											
-													});									        
+
+													});
 
 									            }
 
 									        });
-									        ///////////////////////////////////////////////								                	
+									        ///////////////////////////////////////////////
 						                }
 						            }
-						        );	
+						        );
 					        }
 					        else{
 					        	manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -938,12 +999,12 @@ var SCORM = {
 
 							        // //USSOCOM publishing uses 2004 4th edition SCORM files
 							        // if(_this.scormVersion === '2004_4th_USSOCOM'){
-							        // 	scormBasePath = _this.scormPath + '/2004_4th/'; 
+							        // 	scormBasePath = _this.scormPath + '/2004_4th/';
 							        // }
 							        // else if(_this.scormVersion === '2004_3rd_USSOCOM'){
 							        // 	scormBasePath = _this.scormPath + '/2004_3rd/';
 							        // }
-							        
+
 							        var imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
 							        fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
@@ -952,7 +1013,7 @@ var SCORM = {
 							                callback(err, null);
 							            }
 							            else {
-					            	
+
 									        //add SCORM files
 									        readdirp({
 									                root: scormBasePath,
@@ -971,26 +1032,34 @@ var SCORM = {
 									        );
 
 											//add js directory to root of package
-									        for (var i = 0; i < _this.jsResouces_arr.length; i++) {	
-									             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResouces_arr[i]), { name: _this.binDir+'/js/'+_this.jsResouces_arr[i] });
-									        };     
+									        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+									             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+									        };
+
+									        for (var i = 0; i < _this.cssResources_arr.length; i++) {
+											    archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+											};
+
+											for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
+											    archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+											};
 
 									        //add imsmanifest.xml file
 									        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
 									        //add course.xml file
-									        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );									        
+									        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
 						        			//adds temp content.xml file to zip
 						        			for(var j=0; j<lArray.length; j++){
-						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
+						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
 						        			}
 
 						        			//add review content.xml file to zip
 						        			if(_this.reviewLines != ''){
-						        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});							        				
+						        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
 						        			}
-									        
+
 						        			//remove temp course.xml
 						        			try{
 						        				fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
@@ -1003,20 +1072,20 @@ var SCORM = {
 						        			_this._removeTempFiles(lArray);
 
 								            fs.remove(imsManifestFilePath, function(err){
-												if(err){ 
+												if(err){
 													_this.logger.error(err);
 													callback(err, null);
 												}
 												_this.logger.info('imsmanifest.xml file removed.');
-										        
-										        archive.finalize();	
-										        											
-											});									        
+
+										        archive.finalize();
+
+											});
 
 							            }
 
-							        });	
-							        ///////////////////////////////////////////////						        	 	
+							        });
+							        ///////////////////////////////////////////////
 					        	}
 					        }
 
@@ -1024,10 +1093,10 @@ var SCORM = {
 				        }
 				        else if(_this.scormVersion != "none"){
 				        	callback("no manifestFile", null);
-				        }                	
+				        }
 
 					    //do not need to do scorm files if publishing to "none"
-	    				if(_this.scormVersion != "none"){	
+	    				if(_this.scormVersion != "none"){
 
 	    					//code moved above
 						}
@@ -1035,9 +1104,9 @@ var SCORM = {
 
 		        			//adds temp content.xml file to zip
 		        			for(var j=0; j<lArray.length; j++){
-		        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});	
+		        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
 		        			}
-					        
+
 		        			//create index.html file to place at the root of the package
 		        			var tempNoneIndex = _this.packageFolder + '/index.html';
 					        fs.writeFile(tempNoneIndex, _this._createNoneIndex(lArray, lessonsName), function(err) {
@@ -1049,12 +1118,20 @@ var SCORM = {
 		        				archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
 
 						        //add course.xml file
-						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );				        				
+						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
 								//add js directory to root of package
-						        for (var i = 0; i < _this.jsResouces_arr.length; i++) {	
-						             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResouces_arr[i]), { name: _this.binDir+'/js/'+_this.jsResouces_arr[i] });
-						        };  
+						        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+						             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+						        };
+
+						        for (var i = 0; i < _this.cssResources_arr.length; i++) {
+									archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+								};
+
+								for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
+									archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+								};
 
 			        			//remove temp course.xml
 			        			try{
@@ -1076,12 +1153,12 @@ var SCORM = {
 						        }
 
 								_this.logger.info('temp index.html file removed.');
-						        
-						        archive.finalize();						           
+
+						        archive.finalize();
 		        			});
 
 
-						
+
 						}
 
 	                }
@@ -1089,16 +1166,16 @@ var SCORM = {
 		    			_this._recurseLessons(callback, count+1, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
 	                }
 
-	            });					
-   		            			        
-            }
-        ); 
+	            });
 
-	},	
+            }
+        );
+
+	},
 
 	_finalizeManifest: function(ilessonsName, iresourceLines, icompletionLines){
 		var _this = this;
-        
+
         var data, etree;
 
         etree = _this.courseData;
@@ -1112,7 +1189,7 @@ var SCORM = {
    //      if(_this.scormVersion.indexOf('USSOCOM') != -1){
 	  //       _manifestFile += "          <imsss:sequencing>\n";
 			// _manifestFile += "		    	<imsss:controlMode choice=\"true\" flow=\"true\"/>\n";
-			// _manifestFile += "		    </imsss:sequencing>\n"; 						        	
+			// _manifestFile += "		    </imsss:sequencing>\n";
    //      }
 		//TODO: might have to not allow to set choice and flow both to false...
         if(choice === "false" || flow === "true" || forwardOnly === "true"){
@@ -1146,32 +1223,32 @@ var SCORM = {
 		if(_this.reviewLines != ''){
 			_manifestFile += "      <resource identifier=\"RES-Review-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/Review-files/index.html\">\n";
 			_manifestFile += _this.reviewLines;
-			_manifestFile += '      </resource>\n';										
+			_manifestFile += '      </resource>\n';
 		}
 
 		//add resource for completion res
 		if(icompletionLines != ''){
 			_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/wrapper.html\">\n";
 			_manifestFile += icompletionLines;
-			_manifestFile += '      </resource>\n';									
+			_manifestFile += '      </resource>\n';
 		}
-		
+
 		var courseAttr = _this._parseCourseAttr();
 		//temp add survey SCO to ussocom
 		//if(_this.scormVersion.indexOf('USSOCOM') != -1){
-        if(courseAttr.lms === "JKO" && courseAttr.survey === "true"){	
-	        //add completion  and survey files		
+        if(courseAttr.lms === "JKO" && courseAttr.survey === "true"){
+	        //add completion  and survey files
 			_manifestFile += "      <resource identifier=\"RES-survey-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/survey/survey.html\">\n";
 			_manifestFile += "			<file href=\""+_this.binDir+"/survey/survey.html\"/>\n";
-			_manifestFile += '      </resource>\n';				
+			_manifestFile += '      </resource>\n';
 		}
 
-		_manifestFile += _this._jsResourceGenerator('cognizen/');				    
+		_manifestFile += _this._jsResourceGenerator('cognizen/');
 	    _manifestFile += '   </resources>\n';
-		
+
 		//Any sequencingCollections go here
 
-		// //sequencingCollection for USSOCOM 
+		// //sequencingCollection for USSOCOM
 		// if(_this.scormVersion.indexOf('USSOCOM') != -1){
 		// 	_manifestFile += ' 	<imsss:sequencingCollection>\n';
 		// 	_manifestFile += ' 		<imsss:sequencing ID = \"scampidl\">\n';
@@ -1179,10 +1256,10 @@ var SCORM = {
 		// 	_manifestFile += ' 			<imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n';
 		// 	_manifestFile += ' 			<imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n';
 		// 	_manifestFile += ' 		</imsss:sequencing>\n';
-		// 	_manifestFile += ' 	</imsss:sequencingCollection>\n';  
+		// 	_manifestFile += ' 	</imsss:sequencingCollection>\n';
 		// }
 
-    	_manifestFile += '</manifest>';	
+    	_manifestFile += '</manifest>';
     	return _manifestFile;
 	},
 
@@ -1208,7 +1285,7 @@ var SCORM = {
 			"							http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
 			"							http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\n"+
 			"							http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
-			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\">\n";	    
+			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\">\n";
 
 	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_USSOCOM'){
 	        manifest += "   <metadata>\n"+
@@ -1234,9 +1311,9 @@ var SCORM = {
         }
         else{
         	manifest += "adlseq:objectivesGlobalToSystem=\"false\">\n";
-        }    
+        }
 
-        manifest += "           <title>"+_this.courseName+"</title>\n";	    	    
+        manifest += "           <title>"+_this.courseName+"</title>\n";
 
 	    return manifest;
 	},
@@ -1252,7 +1329,7 @@ var SCORM = {
 			//choice: (mySeq.get('choice') === 'true'),
 			//flow: (mySeq.get('flow') === 'true'),
 			//forwardOnly: (mySeq.get('forwardOnly') === 'true'),
-			choiceExit: (mySeq.get('choiceExit') === 'true'),	    	
+			choiceExit: (mySeq.get('choiceExit') === 'true'),
 	    	previous: (mySeq.get('previous') === 'true'),
 			continue: (mySeq.get('continue') === 'true'),
 			exit: (mySeq.get('exit') === 'true'),
@@ -1281,8 +1358,8 @@ var SCORM = {
             "               <title>"+lessonName+"</title>\n";
 
         //setting LMS UI hide controls
-         if(itemSeq.previous || itemSeq.continue || itemSeq.exit || itemSeq.exitAll || 
-         	itemSeq.abandon || itemSeq.abandonAll || itemSeq.suspendAll ){         	
+         if(itemSeq.previous || itemSeq.continue || itemSeq.exit || itemSeq.exitAll ||
+         	itemSeq.abandon || itemSeq.abandonAll || itemSeq.suspendAll ){
 
          	item += "               <adlnav:presentation>\n"+
             		"                   <adlnav:navigationInterface>\n";
@@ -1307,24 +1384,24 @@ var SCORM = {
             }
             if(itemSeq.suspendAll){
             	item += "                       <adlnav:hideLMSUI>suspendAll</adlnav:hideLMSUI>\n";
-            }	
+            }
 
 	        item += "                   </adlnav:navigationInterface>\n"+
 		            "               </adlnav:presentation>\n";
-         }   
+         }
 
 		item += "               <imsss:sequencing>\n";
 
         //setting controle modes
         //if(!itemSeq.choice || itemSeq.flow || itemSeq.forwardOnly || !itemSeq.choiceExit){
-        if(!itemSeq.choicExit){	
+        if(!itemSeq.choicExit){
         	item += "		          <imsss:controlMode";
         	 // if(!itemSeq.choice){
         	 // 	item += " choice=\"false\"";
         	 // }
         	 // if(itemSeq.flow){
         	 // 	item += " flow=\"true\"";
-        	 // } 
+        	 // }
         	 // if(itemSeq.forwardOnly){
         	 // 	item += " forwardOnly=\"true\"";
         	 // }
@@ -1343,7 +1420,7 @@ var SCORM = {
 					"	                        </imsss:ruleConditions>\n"+
 					"	                        <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
 					"	                    </imsss:preConditionRule>\n"+
-					"	              </imsss:sequencingRules> \n";        	
+					"	              </imsss:sequencingRules> \n";
         }
         //setting limitConditions
 
@@ -1361,9 +1438,9 @@ var SCORM = {
         	}
         	item += " ></imsss:rollupRules>\n";
         }
-        
 
-        //setting objectives	
+
+        //setting objectives
         //any objectives stuff goes here - objectivesGenerator
         if(_this.objectives_arr.length > 0){
         	item += _this._objectivesGenerator();
@@ -1383,11 +1460,11 @@ var SCORM = {
         		item += " objectiveSetByContent=\"true\"";
         	}
         	item += " />\n";
-        }				
-		
-		
+        }
 
-		item += "	        	  </imsss:sequencing>\n";	
+
+
+		item += "	        	  </imsss:sequencing>\n";
         item += "           </item>\n";
 
         if(itemSeq.testReview){
@@ -1406,7 +1483,7 @@ var SCORM = {
 		    "                          		<imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
 		    "                        	</imsss:ruleConditions>\n"+
 		    "                        	<imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		    "                    	</imsss:preConditionRule>\n";		
+		    "                    	</imsss:preConditionRule>\n";
 			// "                    	 <imsss:preConditionRule>\n"+
 			// "                         	<imsss:ruleConditions conditionCombination=\"any\">\n"+
 			// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"satisfied\"/>\n"+
@@ -1420,27 +1497,27 @@ var SCORM = {
 			// //"                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
 			// "                         	</imsss:ruleConditions>\n"+
 			// "                         	<imsss:ruleAction action=\"skip\"/>\n"+
-			// "                     	</imsss:preConditionRule>\n"+				
+			// "                     	</imsss:preConditionRule>\n"+
 			item +="                     </imsss:sequencingRules>\n"+
-			"  	          		  <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+				
+			"  	          		  <imsss:rollupRules rollupObjectiveSatisfied=\"true\" rollupProgressCompletion=\"true\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n"+
 			"                     <imsss:objectives>\n"+
 			"                         <imsss:primaryObjective />\n"+
 			"                     	  <imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
 			"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '') + "." + lessonNameTrim + "_satisfied\"\n"+
 			"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-			"                     	  </imsss:objective>\n";		
+			"                     	  </imsss:objective>\n";
 			// "			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
 			// "		                	<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim+ "_satisfied\"\n"+
 			// "	                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
-			// "	            		</imsss:objective>\n";			
+			// "	            		</imsss:objective>\n";
 	        //any objectives stuff goes here - secondaryObjectivesGenerator
 	        if(_this.objectives_arr.length > 0){
 	        	item += _this._secondaryObjectivesGenerator();
-	        }					
+	        }
 			item += "	          		 </imsss:objectives>\n"+
-			"  	          		  <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+			
+			"  	          		  <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n"+
 			"                 </imsss:sequencing>\n"+
-			"             </item>\n";        	
+			"             </item>\n";
 
         }
 
@@ -1481,7 +1558,7 @@ var SCORM = {
 			certificate : myNode.get('certificate')
 		};
 
-		return courseAttr; 
+		return courseAttr;
 	},
 
 	_addUSSOCOMExtra: function(lessonName){
@@ -1499,7 +1576,7 @@ var SCORM = {
             "                       <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
             "                       <adlnav:hideLMSUI>abandonAll</adlnav:hideLMSUI>\n"+
         	"                   </adlnav:navigationInterface>\n"+
-            "               </adlnav:presentation>\n"+         
+            "               </adlnav:presentation>\n"+
 			"				<imsss:sequencing>\n"+
 		    "                  <imsss:sequencingRules>\n"+
 		    "                    <imsss:preConditionRule>\n"+
@@ -1510,8 +1587,8 @@ var SCORM = {
 		    "                    </imsss:preConditionRule>\n"+
 		    "                  </imsss:sequencingRules>	\n"+
 			'				   <imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n'+
-			' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+		    			
-			"		  	   </imsss:sequencing>\n";	
+			' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+
+			"		  	   </imsss:sequencing>\n";
    //      	"		            <imsss:sequencingRules>\n"+
 			// "                     <imsss:preConditionRule>\n"+
 			// "                         <imsss:ruleConditions conditionCombination=\"any\">\n"+
@@ -1519,7 +1596,7 @@ var SCORM = {
 			// "                             <imsss:ruleCondition referencedObjective=\"previous_sco_satisfied\" operator=\"not\" condition=\"objectiveStatusKnown\"/>\n"+
 			// "                         </imsss:ruleConditions>\n"+
 			// "                         <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-			// "                     </imsss:preConditionRule>\n"+        	
+			// "                     </imsss:preConditionRule>\n"+
    //          "		   	        	<imsss:postConditionRule>\n"+
    //          "	         		    	<imsss:ruleConditions conditionCombination=\"all\">\n"+
 			// "								<imsss:ruleCondition operator=\"not\" condition=\"completed\"/>\n"+
@@ -1533,8 +1610,8 @@ var SCORM = {
 			// "                         <imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + _this.previousLesson + "_satisfied\"\n"+
 			// "                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"false\"/>\n"+
 			// "                     </imsss:objective>\n"+
-			// "                 </imsss:objectives>\n"+             
-           	//item += "		  	   </imsss:sequencing>\n"+   
+			// "                 </imsss:objectives>\n"+
+           	//item += "		  	   </imsss:sequencing>\n"+
         	item +="           </item>\n";
         return item;
 	},
@@ -1564,23 +1641,23 @@ var SCORM = {
 	    });
 
 		resources.push("         <dependency identifierref=\"RES-js-files\"/>\n");
-	    return resources;		
+	    return resources;
 	},
 
 	_jsResourceGenerator : function(_prefix){
 		var _this = this;
-		var resource =  "      <resource identifier=\"RES-js-files\" type=\"webcontent\" adlcp:scormType=\"asset\">\n";	
+		var resource =  "      <resource identifier=\"RES-js-files\" type=\"webcontent\" adlcp:scormType=\"asset\">\n";
         //add js directory to resources
         _this.logger.info("CONTENTPATH " + _this.contentPath);
-			
-		for (var i = 0; i < _this.jsResouces_arr.length; i++) {		        	
-		    resource += "				<file href=\""+_prefix+"js/"+_this.jsResouces_arr[i]+"\"/>\n";    	
+
+		for (var i = 0; i < _this.jsResources_arr.length; i++) {
+		    resource += "				<file href=\""+_prefix+"js/"+_this.jsResources_arr[i]+"\"/>\n";
 		};
 		//added course.xml file here, figured it would cover it
-		resource += "				<file href=\""+_prefix+"course.xml\"/>\n"; 		  
+		resource += "				<file href=\""+_prefix+"course.xml\"/>\n";
         resource += "		</resource>\n";
-        //_this.logger.info(resource);                
-        return resource;		      
+        //_this.logger.info(resource);
+        return resource;
 	},
 
 	_removeTempFiles: function(lArray){
@@ -1588,7 +1665,7 @@ var SCORM = {
 		var contentFiles = [];
 		for (var i = 0; i < lArray.length; i++) {
 			contentFiles.push(_this.packageFolder +i+'content.xml');
-		};		
+		};
 		for (var i = 0; i < contentFiles.length; i++) {
 			try
 			{
@@ -1600,7 +1677,7 @@ var SCORM = {
 			}
 		};
 		// fs.remove(contentFiles[index], function(err){
-		// 	if(err){ 
+		// 	if(err){
 		// 		_this.logger.error(err);
 		// 		callback(err);
 		// 	}
@@ -1611,7 +1688,7 @@ var SCORM = {
 		// 	else{
 		// 		callback(null);
 		// 	}
-		// });		
+		// });
 	},
 	_createNoneIndex: function(lArray, lessonsName){
 		var _this = this;
@@ -1628,7 +1705,7 @@ var SCORM = {
 		'		<h2>'+_this.courseName+'</h2>\n'+
 		'		<ul>\n';
 		for(var j=0; j<lArray.length; j++){
-			index += '<li><a href=\"'+lessonsName[j]+'/index.html\">'+lessonsName[j]+'</a></li>\n';	
+			index += '<li><a href=\"'+lessonsName[j]+'/index.html\">'+lessonsName[j]+'</a></li>\n';
 		}
 		index += '		</ul>\n'+
 		'	</body>\n'+
@@ -1636,8 +1713,8 @@ var SCORM = {
 
 		return index;
 
-	}	
- 
+	}
+
 
 };
 

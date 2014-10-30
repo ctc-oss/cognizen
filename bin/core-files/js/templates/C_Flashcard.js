@@ -56,7 +56,11 @@ function C_Flashcard(_type) {
 		$("#scrollableContent").addClass("top");
 		
         $("#content").addClass("top");
-        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
+		// So we do it twice to get the right value  -- Dingman's famous quantum variable!
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+//        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		$("#content").append(myContent);
 		
 		shuffle();		
@@ -148,6 +152,11 @@ function C_Flashcard(_type) {
 					$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
 					target.addClass("flashcardBack");
 					target.css('left', 'auto');
+					if(isMobilePhone){
+						target.click(function(){
+							this.remove();
+						});
+					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					
 				}, onCompleteParams:[$(this)]});

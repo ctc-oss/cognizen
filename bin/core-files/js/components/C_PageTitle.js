@@ -2,18 +2,19 @@ function C_PageTitle(){
 	 var myPageTitle;//Title of this page.
 	 //Page title value from content.xml
      myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
-     
+
      //Add the divs for the page title adn the content divs.
-     $('#stage').append('<div id="pageTitle"></div>');
+     $('#stage').append('<div id="pageTitle" role="heading"></div>');
      $("#pageTitle").append(myPageTitle);
+     $("#pageTitle").attr('aria-label', $("#pageTitle").text());
      pageAccess_arr.push($("#pageTitle"));
-     if(mode == "edit"){	
+     if(mode == "edit"){
         /*******************************************************
 		* Edit Title
 		********************************************************/
 		$("#pageTitle").attr('contenteditable', true);
         CKEDITOR.disableAutoInline = true;
-        
+
 		CKEDITOR.inline( 'pageTitle', {
 			on: {
 				blur: function (event){
@@ -37,7 +38,7 @@ function C_PageTitle(){
 			allowedContent: true
 		});
 	}
-	
+
 	/**********************************************************************
      **Save Title Edit - save updated page title text to content.xml
      **********************************************************************/
@@ -49,12 +50,12 @@ function C_PageTitle(){
 	   	$(data).find("page").eq(currentPage).find("title").first().append(newCDATA);
 	   	sendUpdateWithRefresh();
 	};
-	
+
 	//get myPageTitle
 	this.getPageTitle = function (){
 		return myPageTitle;
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM

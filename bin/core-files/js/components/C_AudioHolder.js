@@ -1,6 +1,6 @@
 function C_AudioHolder(){
 	var type = $(data).find("page").eq(currentPage).attr('layout');
-	var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.  
+	var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.
     var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.
 	var hasSubs = false;
 	var subLinks = "";
@@ -18,22 +18,22 @@ function C_AudioHolder(){
     }else{
     	myAudio = "null";
     }
-    
+
      //Populate Key Variables
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
 		autoNext = true;
 	}
-		
+
 	if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 		autoPlay = true;
 	}
-    
+
     //check the xml for audio / if so, kick off audio code.
 	if(hasAudio == true){
 		$('#stage').append('<div id="audioCon"></div>');
         loadAudio();
 	}
-		
+
 	if(mode == "edit"){
         /*******************************************************
 		* Edit Audio
@@ -46,18 +46,18 @@ function C_AudioHolder(){
      		}else{
 	     		$("#audioDrop").css({'position':'absolute', 'bottom':0, 'right': 20});
      		}
-     		
+
      		$("#audioDrop").attr('data-content', contentId);
 	 		$("#audioDrop").find('*').attr('data-content', contentId);
-	 		
+
 	 		$("#audioDrop").click(function(){
 				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
 				siofu.prompt($("#audioDrop").attr('data-content'));
 			}).tooltip();
-			
+
 			siofu.listenOnDrop(document.getElementById("audioDrop"));
-     	} 
-		
+     	}
+
 		$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
 		//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
 		if(hasAudio == true){
@@ -65,8 +65,8 @@ function C_AudioHolder(){
 		}else{
       		$("#audioEdit").css({'position':'absolute', 'z-index': 5000, 'bottom':0, 'right': 0});
 		}
-		
-		
+
+
 		//Add Audio Edit
 		$("#audioEdit").click(function(){
 			//Create the Content Edit Dialog
@@ -78,20 +78,20 @@ function C_AudioHolder(){
 			}
 			launchAudioDialog(audioText, false);
 		}).tooltip();
-		
+
 		siofu.addEventListener("complete", function(event){
-			//checks to make sure the lessons prefs dialog or mediaDrop dialog are not open.  
+			//checks to make sure the lessons prefs dialog or mediaDrop dialog are not open.
 			//help files are uploaded through the lessons prefs dialog
-			if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){		
+			if($('#dialog-lessonPrefs').length == 0 && $('#dialog-mediaDrop').length == 0){
 				siofu.removeEventListener("complete");
 				siofu.removeEventListener("load");
 				//if successful upload, else....
-							
+
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
 			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
 	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){
 					if(event.success == true){
 						if(myExt == "mp3" || myExt == "MP3"){
 							launchAudioDialog(myFile, true)
@@ -116,7 +116,7 @@ function C_AudioHolder(){
 				}else if(myExt == "zip" || myExt == "ZIP"){
 					//$("#mediaLoaderText").empty();
 					//$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-					//cognizenSocket.on('unzipComplete', unzipComplete);			
+					//cognizenSocket.on('unzipComplete', unzipComplete);
 				}else{
 					$("#mediaLoaderText").empty();
 					$("#mediaLoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
@@ -130,16 +130,16 @@ function C_AudioHolder(){
 							$(".progress-label").text("Complete!");
 						}
 					});
-								
+
 					$("#conversionProgress > div").css({ 'background': '#3383bb'});
-																
-					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+
+					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);
 					cognizenSocket.on('mediaInfo', mediaInfo);
 					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 				}
 			}
 		});
-		
+
 		siofu.addEventListener("start", function(event){
 			var myFile = event.file.name;
 			var myExt = getExtension(myFile);
@@ -153,13 +153,13 @@ else{
 				$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
 				$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
 				$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
-				
+
 				try { $("#loader").tooltip("destroy"); } catch (e) {}
 			}
 */
 		});
     }
-	
+
 	/**********************************************************************
      **Load Audio Content from Link  -  creates audio player instance at bottom of stage.
      **********************************************************************/
@@ -189,7 +189,7 @@ else{
         else{
             $('#audioPlayer').css({'width':stageW, 'height': 20});
         }
-        
+
 
         $('#audioPlayer').mediaelementplayer({
             success: function(player, node) {
@@ -204,7 +204,7 @@ else{
                 	audioVolume = player.volume;
                 	audioMute = player.muted;
                 }, false);
-                    
+
 
                 if(autoNext == true){
                     player.addEventListener('ended', function(e) {
@@ -216,17 +216,15 @@ else{
                 }
             }
         });
-		
-        pageAccess_arr.push($(".mejs-play").find('button'));
-        pageAccess_arr.push($(".mejs-mute").find('button'));
-        pageAccess_arr.push($(".mejs-duration"));
-		
-        if(type == "textOnly" || type == "sidebar"){
-			doAccess(pageAccess_arr);
-		}
+
+        audioAccess_arr.push($(".mejs-play").find('button'));
+        audioAccess_arr.push($(".mejs-mute").find('button'));
+        audioAccess_arr.push($(".mejs-duration"));
+
+		doAccess(pageAccess_arr);
     }
     ////////////END of loadAudio
-    
+
     function launchAudioDialog(audioText, dragged){
 		var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
 		msg += "<label id='label'>file name: </label>";
@@ -238,21 +236,21 @@ else{
 		msg += "<label id='label'>subtitle:</label>";
 		msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true' title='Add/Remove Subtitle Functionality.'/></input>";
 		msg += "</div>";
-							
+
 		$("#stage").append(msg);
-	
+
 		if(hasSubs == true){
 			$("#subs").attr("checked", "checked");
 		}
-							
+
 		if(autoPlay == true){
 			$("#autoplay").attr("checked", "checked");
 		}
-							
+
 		if(autoNext == true){
 			$("#autonext").attr("checked", "checked");
 		}
-		
+
 		//Style it to jQuery UI dialog
 		$("#audioEditDialog").dialog({
 			autoOpen: true,
@@ -283,9 +281,9 @@ else{
 		//adds tooltips to the edit dialog buttons
 	    $(function () {
 	        $(document).tooltip();
-	    });		
+	    });
 	}
-	
+
 	/**********************************************************************
 	**Save Audio Edit
 	**********************************************************************/
@@ -304,33 +302,33 @@ else{
 			}else{
                 $(data).find("page").eq(currentPage).attr("audio", audioPath);
 			}
-			
+
 			var strippedPath = "";
-			
+
 			for(var i = 0; i < last-1; i++){
 				strippedPath += parts[i];
 			}
-			
+
 			if($("#subs").prop("checked") == true){
 				$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
 			}else{
 				$(data).find("page").eq(currentPage).attr("subs", "null");
 			}
-			
+
 			if($("#autoplay").prop("checked") == true){
 				$(data).find("page").eq(currentPage).attr("autoplay", "true");
 			}else{
 				$(data).find("page").eq(currentPage).attr("autoplay", "false");
 			}
-						
+
 			if($("#autonext").prop("checked") == true){
 				$(data).find("page").eq(currentPage).attr("autonext", "true");
 			}else{
 				$(data).find("page").eq(currentPage).attr("autonext", "false");
 			}
-			
+
 			$("#audioEditDialog").dialog("close");
-			
+
 			sendUpdateWithRefresh();
 			currentTemplate.fadeComplete();
 		}else{
@@ -342,11 +340,11 @@ else{
     function hasEnded(){
         $('#next').click();
     }
-    
+
     function mediaConversionProgress(data){
 	    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
 	}
-	
+
 	function mediaInfo(data){
 		if(data.video != ""){
 			var splitDim = data.video_details[2].split("x");
@@ -354,7 +352,7 @@ else{
 			mediaHeight = splitDim[1];
 		}
 	}
-    
+
     function mediaConversionComplete(data){
 		var splitPath = data.split("/");
 		var last = splitPath.length;
@@ -366,16 +364,16 @@ else{
 		}
 		$("#mediaLoader").remove();
 	}
-	
-	
+
+
 	this.getHasAudio = function(){
 		return hasAudio;
 	}
-	
+
 	this.getAudioShim = function(){
 		return audioShim;
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
@@ -386,14 +384,14 @@ else{
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
-		
+
 		try { $("#audioDrop").unbind(); } catch (e) {}
 		try { $("#loader").unbind(); } catch (e) {}
-			
+
 		try { $("#audioEdit").remove(); } catch (e) {}
 		try { $("#audioDialog").remove(); } catch (e) {}
 		try { $("#audioDrop").remove(); } catch (e) {}
-		
+
 		try { $('#audioCon').remove(); } catch (e) {}
 		try { $('#player').remove();} catch (e) {}
 	}

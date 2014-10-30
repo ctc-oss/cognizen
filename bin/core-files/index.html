@@ -8,23 +8,20 @@
 		<meta name="HandheldFriendly" content="true" />
 		<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		
-		<title>Cognizen Dev Index</title>
-		
-		<!------------------------------  LOAD STYLES  ------------------------------>
-		
-		<!-- Feel free to create your own custom theme at: http://jqueryui.com/themeroller/
-		   - Drop the resulting theme into the css/jqueryui folder and update the link below.
-		   - Wa-la - new theme.
-		   -->
-   
-		<link href="css/jqueryui/cognizen-content/jquery-ui.min.css" rel="stylesheet"></link>
-		<!--CSS for the media player. -->
-		<link href="css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link> 
-		<!--CSS for the text editor controls. -->
-		<!--link href="css/redactor.css" rel="stylesheet" type="text/css"></link--> 
-		<link href="css/C_Engine.css" rel="stylesheet" type="text/css"/>
 
+		<title>Cognizen Dev Index</title>
+
+		<!------------------------------  LOAD STYLES THAT LOCATION CHANGE AT PUBLISH  ------------------------------>
+		<!--CSS for the media player. -->
+		<link href="../css/CoreCSS/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>
+		<!--cognizen base CSS - DO NOT CHANGE!!!! EDIT ProgramOverride.css, CourseOverride.css or ModuleOverride.css depending on level of change. -->
+		<link href="../css/CoreCSS/C_Engine.css" rel="stylesheet" type="text/css"/>
+		<!--CSS for the program layer - get's moved at publish time... -->
+		<link href="../css/ProgramCSS/ProgramOverride.css" rel="stylesheet" type="text/css"></link>
+		<!--CSS in place in both authorign and published. -->
+		<link href="../css/CourseCSS/jqueryui/jquery-ui.min.css" rel="stylesheet"></link>
+		<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>
+		<link href="../css/CourseCSS/CourseOverride.css" rel="stylesheet" type="text/css"></link>
 		<!------------------------------  LOAD SCRIPTS  ------------------------------>
 		<!-- Detect IE10 and add class to html element -->
 		<script>
@@ -33,20 +30,40 @@
 			}
 		</script>
 
-		<script type="text/javascript" src="../js/libs/jquery.min.js"></script>	
+		<script type="text/javascript" src="../js/libs/jquery.min.js"></script>
 		<!-- Load everything else - what's loading can be found in C_Engine.js - Step 2. -->
 		<script data-main="../js/C_Engine" src="../js/libs/require.js"></script>
-		
-		<!--  This loads the proper scripts if this is running outside of the authoring environment --> 
-		<script>
-			window.jQuery || document.write('<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script><script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>');
+
+
+		<!--  This loads the proper scripts if this is running INSIDE of the authoring environment -->
+		<script type="text/javascript">
+			function writeAuthoringPath(){
+				var loc = window.location.pathname;
+				var dir = loc.substring(0, loc.lastIndexOf('/'));
+				var jqueryuiPath = unescape(dir + '/../css/CourseCSS/jqueryui/jquery-ui.min.css');
+				var courseOverridePath =  unescape(dir + '/../css/CourseCSS/CourseOverride.css');
+				var programOverridePath = unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css');
+				var editPaths = '<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/>';
+					editPaths += '<link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
+					editPaths += '<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script>';
+					editPaths += '<script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>';
+				document.write(editPaths);
+			}
+		</script>
+
+		<script type="text/javascript">
+			window.jQuery || writeAuthoringPath();
+
 			window.onunload = function(){
 				if(window.top.opener){
 					window.top.opener.lessonComplete();
 				}
 			}
-			
-		</script>	
+		</script>
 	</head>
 	<body>
 	</body>

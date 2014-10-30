@@ -1,7 +1,7 @@
 /*
  *  	C_Index
  *  	Requires jQuery v1.9 or later
- *	
+ *
  *      Houses index functionality for cognizen
  *  	Version: 0.5
  *		Date Created: 10/19/13
@@ -12,7 +12,7 @@
  *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
  *				- Optimize code.
  */
- 
+
 var masterIndex = false;
 var indexState = false;
 var indexClosePos = 0;
@@ -36,13 +36,13 @@ function checkIndex(){
 			isLinear = true;
 		}
 		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' title='click here to toggle content index'/></div>");
-		
+
 		//Set index tab action to open and close the index.
 		$('#indexTab').click(toggleIndex);
 		if(!isMobile){
 			$('#indexTab').tooltip();  // don't attach tooltip on mobile devices
 		}
-		
+
 		addIndex();
 	}
 }
@@ -65,7 +65,7 @@ function updateMenuItems(){
 						}
 					}
 				}
-				
+
 				if($("#" + thisID).parent().parent().parent().attr("id") != "C_Index" || lessonComplete == true){
 					if(progressMode == "lockStep"){
 						$("#" + thisID).removeClass('ui-state-disabled');
@@ -76,7 +76,7 @@ function updateMenuItems(){
 						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
 					}
 				}
-				
+
 			}else{
 				//IF mode == production AND progressMode == "lockStep" lock users from jumping around course.
 				if(mode != "edit" && mode != "review"){
@@ -134,7 +134,7 @@ function addIndex(){
 	indexItem_arr = [];
 	totalPages = $(data).find('page').length;
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
-	
+
 	if(mode == "edit"){
 		$("#indexContent").addClass('indexContentEdit');
 		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");
@@ -144,7 +144,7 @@ function addIndex(){
 			}
 		}).click(function(){
 			connected = socket.socket.connected;
-		
+
 			if(connected){
 				addPage();
 			}else{
@@ -157,7 +157,7 @@ function addIndex(){
 	var thisID;
 	var groupMode;
 	indexGroupID_arr = [];
-	
+
 	var indexString = '<div class="dd" id="C_Index"><ol class="dd-list">';
 	for(var i = 0; i < totalPages; i++){
 		thisID = "indexMenuItem" + i;
@@ -167,21 +167,21 @@ function addIndex(){
 		//if(childLength > 0){
 			//hasChildPages = true;
 		//}
-		
+
 		indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
-		
+
 		if(mode == "edit"){
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}else{
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}
 		indexItem_arr.push("#" + thisID);
-		
+
 		if(childLength > 0){
-			
+
 			indexString += '<ol class="dd-list">';
 			for(var j = 0; j < childLength; j++){
 				i++;
@@ -189,27 +189,26 @@ function addIndex(){
 				thisID = "indexMenuItem" + i;
 
 				indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+i+'">';
-				
+
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
 				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'"><span style="height: 1px; width: 1px; position: absolute; overflow: hidden; left: -100px;">Link </span>'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="menuitem">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 				}
-				
+
 				indexItem_arr.push("#" + thisID);
 			}
 			indexString += '</ol></li>';
 		}
 	}
-	
+
 	indexString += "</ol></div>";
-	
+
 	$("#indexContent").append(indexString);
-	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' href='#courseTitle'>Click to skip navigation index.</a></div>");
-	//$("<a id='skipIndex' class='hidden' href='#courseTitle>Skip navigation index.</a>").insertBefore($("#C_Index"));
+	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' aria-disabled='false' href='#courseTitle'>Click to skip navigation index.</a></div>");
 	globalAccess_arr.push($("#skipIndex"));
 	var oldNodePos;
 	var newNodePos;
@@ -218,7 +217,7 @@ function addIndex(){
 	var startChild = false; //If dragged object started as a child or root
 	var startParent; //If dragged object started as a child - what was it's parent.
 	var startChildrenLength; //Used to calculate top
-	
+
 	$('#C_Index').nestable({maxDepth: 2})
 		.on('change', function(){
 			//console.log("onChange");
@@ -256,11 +255,11 @@ function addIndex(){
 			var isSub = false;
 			var createNewGroup = false;
 			var addToGroup = false;
-			
+
 			//FIRST: See if anything actually changed - if yes then find what - if no - skip.
 			if(listJSON != startListJSON){
 				var iterator = 0;
-				
+
 				for(var i = 0; i < list.length; i++){
 					//IS A ROOT NODE
 					if(oldNodePos == list[i].id){
@@ -284,7 +283,7 @@ function addIndex(){
 								childParent = list[i].id;
 								newNodePos = iterator;
 								if($(data).find("page").eq(childParent).find("page").length > 0){//attr("type") == "group"){
-									addToGroup = true;	
+									addToGroup = true;
 								}else{
 									createNewGroup = true;
 								}
@@ -294,7 +293,7 @@ function addIndex(){
 						}
 					}
 				}
-				
+
 				/*console.log("listJSON:       " + listJSON);
 				console.log("newNodePos:     " + newNodePos);
 				console.log("oldNodePos:     " + oldNodePos);
@@ -304,14 +303,14 @@ function addIndex(){
 				console.log("addToGroup:     " + addToGroup);
 				console.log("createNewGroup: " + createNewGroup);
 				console.log("isSub:          " + isSub);*/
-				
+
 				/*************************************************************************************
 				******* UPDATE THE XML FOR THE NEW POSITION
 				*************************************************************************************/
 				//Move it to a group
 				if(addToGroup){
 					var total = $(data).find("page").eq(childParent).children("page").length + childParent;
-					
+
 					if(oldNodePos >= newNodePos){
 						var groupLength = Number($(data).find("page").eq(childParent).children("page").length);
 						if(newNodePos == total + 1){
@@ -358,16 +357,16 @@ function addIndex(){
 				sendUpdateWithRefresh();
 			}
 		});
-		
+
 	var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
 	var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
 	var startList = tmpStartList.nestable('serialize');
 	var startListJSON = window.JSON.stringify(startList);
 	//Start with all closed...
-	if(mode != "edit"){	
+	if(mode != "edit"){
 		$('#C_Index').nestable('collapseAll');
 	}
-	
+
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
 		if(mode == "edit"){
@@ -377,7 +376,7 @@ function addIndex(){
 			if(e.which == 13) {
 				$(this).click();
 			}
-		});//.attr('role', 'index navigation');//attr("alt", "Click to open: "+$(data).find('page').eq(i).find('title').first().text());
+		}).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}
@@ -389,11 +388,11 @@ function addIndex(){
 		fadeComplete();
 		pushedUpdate = false;
 	}
-	
+
 	if(mode == "edit" || mode == "review"){
 		updateIndexCommentFlags();
 	}
-	
+
 	updatePageCount();
 	if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
 		buildTrackingArray();
@@ -478,7 +477,7 @@ function addRollovers(myItem){
         },
         function () {
 			$("#myRemove").remove();
-	});   
+	});
 }
 
 /*************************************************************

@@ -16,7 +16,7 @@ var Utils = require('./cognizen-utils'),
     scorm = require('./cognizen-scorm'),
     unzip = require('adm-zip'),
     util = require('util'),
-	readdirp = require('readdirp'),    
+	readdirp = require('readdirp'),
 	et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -81,14 +81,14 @@ var SocketHandler = {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
                                     var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + event.file.name);
-                                    
+
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
                                     //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
                                     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
                                     var convertableVectorTypes = ["eps"];
                                     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
-                                    var archiveTypes = ["zip"]; 
+                                    var archiveTypes = ["zip"];
                                     if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
                                         //Convert files
                                         var convertedFileName;
@@ -110,8 +110,8 @@ var SocketHandler = {
                                                 	_this.logger.info(codecinfo);
 													_this._socket.emit('mediaInfo', codecinfo);
 												})
-                                           //used for ffmpeg on windows machine         
-                                           //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')    
+                                           //used for ffmpeg on windows machine
+                                           //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
 
 										}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
 											convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
@@ -132,15 +132,15 @@ var SocketHandler = {
 										.saveToFile(convertedPathName, function (stdout, stderr) {
                                         	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
                                             if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
-											   
+
 											var stream = fs.createReadStream(convertedPathName);
                                             stream.pipe(fs.createWriteStream(convertedPath));
-											   
+
 											var had_error = false;
 											stream.on('error', function(err){
 												had_error = true;
 											});
-											   
+
 											stream.on('close', function(){
 		                                        if (!had_error) fs.unlink(event.file.pathName);
 			                                    fs.unlink(convertedPathName, function (err) {
@@ -152,18 +152,18 @@ var SocketHandler = {
                                     }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
                                     	var zip = new unzip(event.file.pathName);
                                     	var zipEntries = zip.getEntries();
-                                    	
+
                                     	zipEntries.forEach(function(entry) {
 										    var entryName = entry.entryName;
-										    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true); 
+										    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true);
 										});
-										
+
 										fs.unlink(event.file.pathName, function (err) {
 	                                    	_this._socket.emit('unzipComplete', convertedPath);
 	                                    });
                                     }
                                     //if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
-                                    else{    
+                                    else{
                                         var stream = fs.createReadStream(event.file.pathName);
                                         stream.pipe(fs.createWriteStream(contentPath));
                                         var had_error = false;
@@ -176,7 +176,7 @@ var SocketHandler = {
                                             if (!had_error) fs.unlink(event.file.pathName);
                                         });
                                         //Git commit
-                                    }                                     
+                                    }
                                 }
                             });
                         }
@@ -192,7 +192,7 @@ var SocketHandler = {
         status.user = this.SocketSessions.socketUsers[sessionId];
         this._socket.emit('loadDashboardPage', status);
     },
-    
+
     objectType: function (typeName) {
         return eval(_.str.capitalize(typeName.toLowerCase()));
     },
@@ -244,7 +244,7 @@ var SocketHandler = {
 
     attemptLogin: function (data) {
         var _this = this;
-       
+
         User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
@@ -420,14 +420,14 @@ var SocketHandler = {
             });
         }
     },
-    
+
     setUsername: function(){
 	    var _this = this;
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 		var user = _this.SocketSessions.socketUsers[sessionId];
 		_this._socket.emit('setUsername', {username: user});
 		//Complete the handshake to show that user is connected and clean the isActive == false....
-		
+
 		if(user){
 			_this.logger.info("user.username = " + user.username);
 			for(var i = 0; i < activeEdit_arr.length; i++){
@@ -453,7 +453,7 @@ var SocketHandler = {
 				break;
 			}
 		}
-		
+
 		if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
@@ -494,16 +494,163 @@ var SocketHandler = {
         FileUtils.rmdir(baseWritePath);
 
         FileUtils.copyDir(root, baseWritePath, function (path) {
-            return (path.endsWith('core-files') || path.contains("css") || path.contains("media") || path.endsWith('index.html'));
+            return (path.endsWith('core-files') || path.contains("media") || path.contains("ProgramCSS") || path.endsWith('index.html'));
         }, function (err) {
-            callback(err);
+            FileUtils.copyDir(root + '/css/jqueryui', baseWritePath + '/jqueryui', function (path) {
+	            return (path.endsWith('jqueryui') || path.contains("images") || path.endsWith('jquery-ui.min.css'));
+	        }, function (err) {
+	            callback(err);
+	        });
         });
     },
-    
+
+    _copyCourseFiles: function (content, callback) {
+	    var _this = this;
+	    var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
+	    var newCourseXML = baseWritePath + "/course.xml";
+	    var tokenz = content.path.split("/");
+	    var programName = tokenz[0];
+	    var xmlPath = path.normalize('../course-files/xml/course.xml');
+	    var courseID = content._id;
+	    var courseName = content.name;
+
+        var root = path.normalize('../core-files');
+
+        FileUtils.copyDir(root, baseWritePath + '/css', function (path) {
+            return (path.endsWith('core-files') || path.contains('CourseCSS'));
+        }, function (err) {
+	        //add program css here...
+        	FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog/jqueryui"), baseWritePath + '/css/CourseCSS/jqueryui', function (path) {
+	            return (path.endsWith('jqueryui') || path.contains('images') || path.endsWith('jquery-ui.min.css'));
+	        }, function (err) {
+				fs.copy(xmlPath, newCourseXML, function(err){
+			    	if(err){
+						_this.logger.error("Error copying content.xml file " + err);
+						callback(err, null);
+		            }
+
+		            _this.logger.info('course.xml file copied success');
+
+				    var data, etree;
+
+				    fs.readFile(newCourseXML, function(err, data){
+				    	data = data.toString();
+						etree = et.parse(data);
+						//set the name and id in the course.xml
+				        etree.find('./').set('name', courseName);
+				        etree.find('./').set('id', courseID);
+				        var xml = etree.write({'xml_decleration': false});
+				        fs.outputFile(newCourseXML, xml, function (err) {
+				        	if (err) callback(err, null);
+				         	callback(err);
+				        });
+				    });
+			    });
+	        });
+        });
+    },
+
+    _copyContentFiles: function (content, callback) {
+        var _this = this;
+        var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
+        var tokenz = content.path.split("/");
+        var programName = tokenz[0];
+        var root = path.normalize('../core-files');
+
+        FileUtils.rmdir(baseWritePath);
+
+        FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog"), baseWritePath, function (path) {
+			return (path.endsWith('core-prog') || path.contains('media') || path.endsWith('index.html'));
+		}, function (err) {
+            FileUtils.copyDir(root, baseWritePath, function (path) {
+                return (path.endsWith('core-files') || path.contains("xml") || path.contains("packages"));
+            }, function (err) {
+	             FileUtils.copyDir(root, baseWritePath + '/css', function (path) {
+	                return (path.endsWith('core-files') || path.contains("ModuleCSS"));
+	            }, function (err) {
+	                //Set the lesson and course names in the xml.
+	                //Once xml is copied to new lesson location -
+	                //   - import it
+	                //   - parse it
+	                //   - set values
+	                //   - write it to the doc
+	                _this.Content.updateContentXml(content, function(content, etree) {
+	                    var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name.
+	                    etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+	                    etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+
+	                    var tloValue = "undefined"
+	                    if(content.tlo != ""){
+	                        tloValue = content.tlo;
+	                    }
+	                    etree.find('./courseInfo/preferences/tlo').set('value', tloValue);
+	                    etree.find('./courseInfo/preferences/id').set('value', content._id);
+
+						var myID = FileUtils.guid();
+						etree.find('./pages/page').set('id', myID);
+
+	                    var coursePath = baseWritePath;
+	                    var tempPath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
+	                    if(tempPath === ""){
+	                        tempPath = coursePath.substr(0, coursePath.lastIndexOf("\\"));
+	                    }
+						coursePath = tempPath + "/course.xml";
+
+					    fs.readFile(coursePath, function(err, data){
+					    	var XML = et.XML;
+							var ElementTree = et.ElementTree;
+							var element = et.Element;
+							var subElement = et.SubElement;
+							var _data, etree;
+
+					    	_data = data.toString();
+							etree = et.parse(_data);
+
+					        var root = etree.find('./');
+
+					        var item = subElement(root, 'item');
+					        item.set("name", content.name);
+					        item.set("id", content._id);
+	                        item.set("tlo", tloValue);
+					        var sequencing = subElement(item, "sequencing");
+					        sequencing.set("choice", "true");
+					        sequencing.set("flow", "false");
+					        sequencing.set("forwardOnly", "false");
+					        sequencing.set("choiceExit", "true");
+					        sequencing.set("previous", "false");
+					        sequencing.set("continue", "false");
+					        sequencing.set("exit", "false");
+					        sequencing.set("exitAll", "false");
+					        sequencing.set("abandon", "false");
+					        sequencing.set("abandonAll", "false");
+					        sequencing.set("suspendAll", "false");
+					        sequencing.set("tracked", "true");
+					        sequencing.set("completionSetByContent", "false");
+					        sequencing.set("objectiveSetByContent", "false");
+					        sequencing.set("rollupObjectiveStatisfied", "true");
+					        sequencing.set("rollupProgressCompletion", "true");
+					        sequencing.set("rollupObjectiveMeasureWeight", "1.0");
+
+					        var objectives = subElement(sequencing, "objectives");
+					        var primaryObjective = subElement(objectives, "primaryObjective");
+					        var sequencingRules = subElement(sequencing, "sequencingRules");
+					        etree = new ElementTree(root);
+					        var xml = etree.write({'xml_decleration': false});
+					        fs.outputFile(coursePath, xml, function (err) {
+					        	if (err) callback(err, null);
+					         	callback(err);
+					        });
+					    });
+					});
+                });
+            });
+        });
+    },
+
     _copyJSFiles: function (content, callback) {
         var _this = this;
         var baseWritePath = path.normalize(content);
-        
+
 		_this.logger.info("baseWritePath = " + baseWritePath);
 		_this.logger.info("content = " + content);
         var root = path.normalize('../core-files/js');
@@ -528,141 +675,71 @@ var SocketHandler = {
                 callback(null);
             }
         );
-
-        // FileUtils.copyDir('../core-files/js', baseWritePath+"/js", null, function (err) {
-        //     if (err){ 
-        //         callback(err);
-        //     }
-        //     callback(null);
-        // });
-    },
-    
-    _copyCourseFiles: function (content, callback) {
-	    var _this = this;
-	    var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
-	    var newCourseXML = baseWritePath + "/course.xml";
-	    var tokenz = content.path.split("/");
-	    var programName = tokenz[0];
-	    var xmlPath = path.normalize('../course-files/xml/course.xml');
-	    var courseID = content._id;
-	    var courseName = content.name;
-	    
-	    fs.copy(xmlPath, newCourseXML, function(err){
-	    	if(err){
-				_this.logger.error("Error copying content.xml file " + err);
-				callback(err, null);
-            }
-            
-            _this.logger.info('course.xml file copied success');
-
-		    var data, etree;
-		    
-		    fs.readFile(newCourseXML, function(err, data){
-		    	data = data.toString();
-				etree = et.parse(data);
-				//set the name and id in the course.xml
-		        etree.find('./').set('name', courseName);
-		        etree.find('./').set('id', courseID);
-		        var xml = etree.write({'xml_decleration': false});
-		        fs.outputFile(newCourseXML, xml, function (err) {
-		        	if (err) callback(err, null);
-		         	callback(err);
-		        });
-		    });
-	    });
     },
 
-    _copyContentFiles: function (content, callback) {
+    _copyCSSFiles: function (content, isCourse, callback) {
         var _this = this;
-        var baseWritePath = path.normalize(_this.Content.diskPath(content.path));
-        var tokenz = content.path.split("/");
-        var programName = tokenz[0];
-        var root = path.normalize('../core-files');
+        var baseWritePath = path.normalize(content);
 
-        FileUtils.rmdir(baseWritePath);
+		_this.logger.info("baseWritePath = " + baseWritePath);
+		_this.logger.info("content = " + content);
+        var root = path.normalize('../core-files/css');
+		if(isCourse){
+			var programCSSPath = baseWritePath + 'core-prog/ProgramCSS';
 
-        FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog"), baseWritePath, null, function (err) {
-            if (err) callback(err);
-
-            FileUtils.copyDir(root, baseWritePath, function (path) {
-                return (path.endsWith('core-files') || /*path.contains("js") ||*/ path.contains("server") || path.contains("xml") || path.contains("packages"));
-            }, function (err) {
-                //Set the lesson and course names in the xml.
-                //Once xml is copied to new lesson location -
-                //   - import it
-                //   - parse it
-                //   - set values
-                //   - write it to the doc
-                _this.Content.updateContentXml(content, function(content, etree) {
-                    var parentName = content.parentName ? content.parentName : ''; // Default this to blank if there is no parent name.
-                    etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
-                    etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
-
-                    var tloValue = "undefined"
-                    if(content.tlo != ""){
-                        tloValue = content.tlo;
-                    }
-                    etree.find('./courseInfo/preferences/tlo').set('value', tloValue);
-                    etree.find('./courseInfo/preferences/id').set('value', content._id);
-
-					var myID = FileUtils.guid();
-					etree.find('./pages/page').set('id', myID);
-					
-                    var coursePath = baseWritePath;
-                    var tempPath = coursePath.substr(0, coursePath.lastIndexOf("\/"));
-                    if(tempPath === ""){
-                        tempPath = coursePath.substr(0, coursePath.lastIndexOf("\\"));
-                    }
-					coursePath = tempPath + "/course.xml";
-
-				    fs.readFile(coursePath, function(err, data){
-				    	var XML = et.XML;
-						var ElementTree = et.ElementTree;
-						var element = et.Element;
-						var subElement = et.SubElement;
-						var _data, etree;
-						
-				    	_data = data.toString();
-						etree = et.parse(_data);
-
-				        var root = etree.find('./');
-
-				        var item = subElement(root, 'item');
-				        item.set("name", content.name);
-				        item.set("id", content._id);
-                        item.set("tlo", tloValue);
-				        var sequencing = subElement(item, "sequencing");
-				        sequencing.set("choice", "true");
-				        sequencing.set("flow", "false");
-				        sequencing.set("forwardOnly", "false");
-				        sequencing.set("choiceExit", "true");
-				        sequencing.set("previous", "false");
-				        sequencing.set("continue", "false");
-				        sequencing.set("exit", "false");
-				        sequencing.set("exitAll", "false");
-				        sequencing.set("abandon", "false");
-				        sequencing.set("abandonAll", "false");
-				        sequencing.set("suspendAll", "false");
-				        sequencing.set("tracked", "true");
-				        sequencing.set("completionSetByContent", "false");
-				        sequencing.set("objectiveSetByContent", "false");
-				        sequencing.set("rollupObjectiveStatisfied", "true");
-				        sequencing.set("rollupProgressCompletion", "true");
-				        sequencing.set("rollupObjectiveMeasureWeight", "1.0");
-				       
-				        var objectives = subElement(sequencing, "objectives");
-				        var primaryObjective = subElement(objectives, "primaryObjective");
-				        var sequencingRules = subElement(sequencing, "sequencingRules");
-				        etree = new ElementTree(root);
-				        var xml = etree.write({'xml_decleration': false});
-				        fs.outputFile(coursePath, xml, function (err) {
-				        	if (err) callback(err, null);
-				         	callback(err);
-				        });
-				    });
+		}else{
+			var programCSSPath = baseWritePath + '../core-prog/ProgramCSS';
+		}
+		console.log("-----------------------------------------------------");
+		console.log("programCSSPath = " + programCSSPath);
+		console.log("-----------------------------------------------------");
+        readdirp({
+                root: root,
+                directoryFilter: ['!*ckeditor'],
+                fileFilter: [ '!.DS_Store' ]
+            },
+            function(fileInfo) {
+                //Left blank on purpose...
+            },
+            function (err, res) {
+                res.files.forEach(function(file) {
+                    var localFile = file.path.replace(/\\/g,"/");
+                    try{
+	                    fs.copySync(root + '/' + localFile, baseWritePath+'/css/CoreCSS/'+localFile);
+	                }
+	                catch(err){
+	                    _this.logger.error("error copying css dir :" + err);
+	                    callback(err);
+	                }
                 });
-            });
-        });
+
+                readdirp({
+		                root: programCSSPath,
+		                directoryFilter: ['!*ckeditor'],
+		                fileFilter: [ '!.DS_Store' ]
+		            },
+		            function(fileInfo) {
+		              //Left blank on purpose...
+		            },
+		            function (err, res) {
+		                console.log("baseWritePath = " + baseWritePath);
+		                res.files.forEach(function(file) {
+		                    var localFile = file.path.replace(/\\/g,"/");
+		                    console.log("localFile = " + localFile);
+		                    try{
+			                    fs.copySync(programCSSPath + '/' + localFile, baseWritePath+'/css/ProgramCSS/'+localFile);
+			                }
+			                catch(err){
+			                    _this.logger.error("error copying css dir :" + err);
+			                    callback(err);
+			                }
+		                });
+		                callback(null);
+		            }
+		        );
+                callback(null);
+            }
+        );
     },
 
     registerProgram: function (data) {
@@ -812,7 +889,7 @@ var SocketHandler = {
                     //if data.type == lesson remove from course.xml
                     if(_dataType == "lesson" && _orgLoc == 'dashboard'){
                         var courseXml = path.normalize('../programs/' + found.path + '/../course.xml');
-                        var courseXmlPath = path.resolve(process.cwd(), courseXml); 
+                        var courseXmlPath = path.resolve(process.cwd(), courseXml);
                         var _data, etree;
 
                         try{
@@ -820,7 +897,7 @@ var SocketHandler = {
                         }
                         catch(err){
                             _this.logger.error(err);
-                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when reading course.xml file.'});                            
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when reading course.xml file.'});
                         }
                         etree = et.parse(_data);
 
@@ -841,7 +918,7 @@ var SocketHandler = {
                         }
                         catch(err){
                             _this.logger.error(err);
-                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when writing course.xml file.'});                               
+                            _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when writing course.xml file.'});
                         }
 
                     }
@@ -938,7 +1015,7 @@ var SocketHandler = {
                                 // Move this content folder to the trash folder
                                 var oldPath = _this.Content.diskPath(content.path);
                                 var newPath = trashFolder + content.name + _this._fullDeletedSuffix();
-								
+
                                 _this.logger.info('From ' + oldPath + ' to ' + newPath);
                                 fs.rename(oldPath, newPath, function(err) {
                                     if (err) {
@@ -1029,14 +1106,14 @@ var SocketHandler = {
                                 var foundPermissionIndex = -1;
                                 for (var i = 0; i < user.permissions.length; i++) {
                                     var permission = user.permissions[i];
-									
+
                                     if (permission.contentId == data.content.id) {
                                         foundPermissionIndex = i;
                                     }
                                 }
 
                                 if (foundPermissionIndex >= 0) {
-                                    
+
                                     user.permissions.splice(foundPermissionIndex, 1);
                                 }
                             }
@@ -1054,7 +1131,7 @@ var SocketHandler = {
                                     contentId: data.content.id,
                                     permission: user.permission
                                 });
-                                
+
                                 dbUser.permissions.push(permission);
                                 permissionsToSave.push(permission);
                             }
@@ -1076,7 +1153,7 @@ var SocketHandler = {
     getContentServerUrl: function (data) {
         this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
     },
-    
+
     getCoursePath: function (data){
 		var _this = this;
         var contentType = _this.Content.objectType(data.content.type);
@@ -1102,12 +1179,12 @@ var SocketHandler = {
                 	 });
                 }
             });
-        }    
+        }
     },
-        
+
 	updateCourseXML: function (data){
 		var _this = this;
-		var contentType = _this.Content.objectType(data.content.type);	
+		var contentType = _this.Content.objectType(data.content.type);
 		if (contentType) {
 			_this.logger.info("content.id = " + data.content.id)
             contentType.findAndPopulate(data.content.id, function (err, found) {
@@ -1117,8 +1194,8 @@ var SocketHandler = {
 					var permission = data.content.permission;
 					var xmlPath = path.normalize(found.path);
 					var programPath = path.normalize('../programs/' + found.path + '/course.xml');
-					var contentPath = path.resolve(process.cwd(), programPath); 
-					_this.logger.info("outliner updating " + contentPath) 
+					var contentPath = path.resolve(process.cwd(), programPath);
+					_this.logger.info("outliner updating " + contentPath)
 					fs.outputFile(contentPath, data.myXML, function(err) {
 	                    //Refresh the index if successfully updating the content.xml
 	                    if (err == null && data.commit == true){
@@ -1136,13 +1213,13 @@ var SocketHandler = {
 	                })
                 }
             });
-        } 
+        }
 	},
-    
+
     updateModuleXML: function (data){
 		var _this = this;
 		_this.logger.info("contentType = " + data.content.type);
-		var contentType = _this.Content.objectType(data.content.type);	
+		var contentType = _this.Content.objectType(data.content.type);
 		if (contentType) {
 			_this.logger.info("content.id = " + data.content.id)
             contentType.findAndPopulate(data.content.id, function (err, found) {
@@ -1152,8 +1229,8 @@ var SocketHandler = {
 					var permission = data.content.permission;
 					var xmlPath = path.normalize(found.path);
 					var programPath = path.normalize('../programs/' + found.path + '/' + data.moduleXMLPath);
-					var contentPath = path.resolve(process.cwd(), programPath); 
-					_this.logger.info("outliner updating " + contentPath) 
+					var contentPath = path.resolve(process.cwd(), programPath);
+					_this.logger.info("outliner updating " + contentPath)
 					fs.outputFile(contentPath, data.myXML, function(err) {
 	                    //Refresh the index if successfully updating the content.xml
 	                    if (err == null && data.commit == true){
@@ -1174,7 +1251,7 @@ var SocketHandler = {
 	                })
                 }
             });
-        } 
+        }
     },
 
     startContentServer: function (data) {
@@ -1188,7 +1265,7 @@ var SocketHandler = {
                         var gitFail = false;
                         if (err) {
                             _this.logger.error("NWE FRANK : " + err);
-							// _this.Git.lock.runwithlock(function () {           
+							// _this.Git.lock.runwithlock(function () {
                         }
                         else {
                         	_this.logger.info("into the launch code ====================================================================================");
@@ -1211,15 +1288,15 @@ var SocketHandler = {
 		                                    myWidth: conWidth,
 		                                    myHeight: conHeight,
 		                                    type: data.content.type
-		                                });  
+		                                });
 		                            }
 		                            else {
 		                                var scormPath = path.normalize('../core-files/scorm/');
 		                                var scormDir = path.resolve(process.cwd(), scormPath);
 		                                var programPath = path.normalize('../programs/' + found.path + '/');
 		                                var parentDir = path.resolve(process.cwd(), programPath);
-		                                
-		                                
+
+
 		                                _this.logger.info('Spawning Content Server from ' + parentDir + ' on port ' + serverDetails.port);
 		                                ContentSocket.start(serverDetails.port, found.id, parentDir, scormDir, _this.logger, function(error){
 		                                    if (error) {
@@ -1237,12 +1314,12 @@ var SocketHandler = {
 													myHeight: conHeight,
 		                                            type: data.content.type
 		                                        });
-		                                        
+
 		                                       serverDetails.running = true;
 		                                    }
 		                                });
 		                            }
-		                            
+
 		                            //Setting up array to track whether a lesson is locked due to another editor already in....
 		                            if(permission == "admin" || permission == "editor"){
 		                            	var alreadyIn = false;
@@ -1272,7 +1349,7 @@ var SocketHandler = {
 			                            		activeEdit_arr[i].user = user.username;
 		                            		}
 		                            	}
-		                            	
+
 		                            	if(!alreadyIn){
 			                            	var tmpObject = new Object();
 			                            	tmpObject.courseID = found.course.id;
@@ -1296,7 +1373,7 @@ var SocketHandler = {
 			});
 		}
     },
-    
+
     allowOutline: function (data){
 		var _this = this;
 		var allow = true;
@@ -1319,7 +1396,7 @@ var SocketHandler = {
 
 		if(allow == false){
 			var myMessage;
-		
+
 			if(activeOutlineEditor != null){
 				myMessage = activeOutlineEditor + ' is currently using the outliner on this course. Please contact them to request control or try again later.';
 			}else{
@@ -1337,9 +1414,9 @@ var SocketHandler = {
 			tmpObj.username = _this.SocketSessions.socketUsers[sessionId].username;
 			activeOutline_arr.push(tmpObj);
 			_this._socket.emit('allowOutlineLaunch');
-		}    
+		}
     },
-    
+
     closeOutline: function (data){
 		for(var i = 0; i < activeOutline_arr.length; i++){
 			if(data == activeOutline_arr[i].courseID){
@@ -1347,7 +1424,7 @@ var SocketHandler = {
 			}
 		}
     },
-	
+
 	disconnect: function (socket) {
 	    var _this = this;
 	    var disconnectingLessonID = null;
@@ -1371,12 +1448,12 @@ var SocketHandler = {
 					break;
 				}
 			}
-			
+
 			_this.logger.info("number of active users after = " + activeEdit_arr.length + " These users still remain:");
 			for(var i = 0; i < activeEdit_arr.length; i++){
 				_this.logger.info(activeEdit_arr[i].user + " is still in the activeEdit_arr and assigned to lessonID = " + activeEdit_arr[i].lessonID);
 			}
-			
+
 			//If the disconnecting user was the editor, try to pass the lock to the next user.
 			if(wasEditor){
 				if(disconnectingLessonID != null){
@@ -1387,7 +1464,7 @@ var SocketHandler = {
 					_this._socket.broadcast.emit('updateActiveEditor', tmpObj);
 				}
 			}
-			
+
 			for(var i = 0; i < activeOutline_arr.length; i++){
 				if(activeOutline_arr[i].username == user.username && disconnectingLessonID == null){
 					activeOutline_arr.splice(i, 1);
@@ -1395,9 +1472,9 @@ var SocketHandler = {
 			}
 	    }
     },
-    
-   
-    
+
+
+
     passLock: function (data){
 	    var lessonID = null;
 	    var _this = this;
@@ -1414,15 +1491,15 @@ var SocketHandler = {
 		    }
 	    }
     },
-    
+
     editModeAccepted: function (data){
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 	    	if(data.me == activeEdit_arr[i].user  && activeEdit_arr[i].isActive == true){
 	    		activeEdit_arr[i].isEditor = true;
 	    	}
-	    }	
+	    }
     },
-    
+
     requestLock: function (data){
 		var _this = this;
 		var currentLesson = null;
@@ -1435,14 +1512,14 @@ var SocketHandler = {
 				break;
 			}
 		}
-		
+
 		for (var j = 0; j < activeOutline_arr.length; j++){
 			if(activeOutline_arr[j].courseID == currentCourse){
 				courseOutlineBeingEdited = true;
 				_this._socket.emit('outlineActiveError', {title: 'Course Outline Being Edited', message: 'Sorry, the course outline is currently being edited by '+activeOutline_arr[j].username+' at this time.  Please contact them or try again later.'});
 			}
 		}
-		
+
 		if(!courseOutlineBeingEdited){
 			if(currentLesson != null){
 				var isSent = false;
@@ -1454,8 +1531,8 @@ var SocketHandler = {
 						isSent = true;
 						_this._socket.broadcast.emit('lockRequest', tmpData);
 					}
-				} 
-				
+				}
+
 				//If there is no active editor then take the lock...
 				if (!isSent){
 					for(var i = 0; i < activeEdit_arr.length; i++){
@@ -1471,12 +1548,12 @@ var SocketHandler = {
 						    break;
 					    }
 				    }
-					
-				}  
+
+				}
 			}
-		} 
+		}
     },
-    
+
     approveLockRequest: function (data){
 	    var _this = this;
 	    var currentLesson = null;
@@ -1486,7 +1563,7 @@ var SocketHandler = {
 				break;
 			}
 		}
-		
+
 	    for(var i = 0; i < activeEdit_arr.length; i++){
 	    	if(activeEdit_arr[i].isEditor == true){
 	    		activeEdit_arr[i].isEditor = false;
@@ -1494,7 +1571,7 @@ var SocketHandler = {
 	    		break;
 	    	}
 	    }
-	    
+
 	    if(currentLesson != null){
 		    for(var i = 0; i < activeEdit_arr.length; i++){
 			    if(activeEdit_arr[i].user == data.requester && activeEdit_arr[i].isActive == true){
@@ -1509,12 +1586,12 @@ var SocketHandler = {
 		    }
 		}
     },
-    
+
     refuseLockRequest: function (data){
 	    var _this = this;
 	    _this._socket.broadcast.emit('lockRequestRefused', data);
     },
-	
+
     renameContent: function(data) {
         //data.content.type
         //data.content.id
@@ -1535,7 +1612,7 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                 	var serverDetails = _this.Content.serverDetails(found);
-                   
+
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
@@ -1543,13 +1620,13 @@ var SocketHandler = {
                     var parentDir = path.resolve(process.cwd(), newDiskPath);
 					var myxml = parentDir + '/xml/content.xml';
                     _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
-					
+
 					if(serverDetails.running == true){
 						//Code to update xmlPath on ContentSocket goes here...
 						ContentSocket.stop(myxml, serverDetails.port, parentDir, _this.logger);
 						serverDetails.running = false;
 					}
-					
+
                     var itemsToSave = [found];
 
                     found.getChildren(function(err, children) {
@@ -1598,7 +1675,7 @@ var SocketHandler = {
             });
         }
     },
-    
+
     clearLessonComments: function (lesson){
     	ContentComment.find({contentId: lesson.lesson}).remove()
     },
@@ -1645,7 +1722,7 @@ var SocketHandler = {
             });
         }
     },
-   
+
     closeComment: function (comment) {
         //comment.id
 
@@ -1719,21 +1796,8 @@ var SocketHandler = {
         }
         else{
             callback(null);
-        }        
-
-        // fs.remove(lessons[index], function(err){
-        //     if(err){
-        //         callback(err);
-        //     }
-
-        //     if(index+1 != lessons.length){
-        //         _this._removeJSArray(lessons, index+1, callback);
-        //     }
-        //     else{
-        //         callback(null);
-        //     }
-        // });
-    },    
+        }
+    },
 
     publishContent: function (data, callback){
         var _this = this;
@@ -1749,160 +1813,149 @@ var SocketHandler = {
                 if (found) {
                     _this.logger.info("Before runwithlock in publishContent");
                     _this.Git.lock.runwithlock(function () {
-                        _this.logger.info("in runwithlock in publishContent");                     
+                        _this.logger.info("in runwithlock in publishContent");
                         if(data.content.type === 'course'){
                             var scormPath = path.normalize('../core-files/scorm/');
                             var scormDir = path.resolve(process.cwd(), scormPath);
                             var programPath = path.normalize('../programs/' + found.path + '/');
-                            var contentPath = path.resolve(process.cwd(), programPath);                    
+                            var contentPath = path.resolve(process.cwd(), programPath);
                             var xmlContentFile = contentPath + '/xml/content.xml';
-                            
+
                             //creates the packages directory under the course dir
                             fs.mkdirs(contentPath + "/packages", function(err){
                                 if(err) return _this.logger.error(err);
                                 _this.logger.info("created packages directory");
-                            });    
+                            });
 
                             //init SCORM (itemsToSave may need to be passed into init)
                             scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version );
 
-                            _this._copyJSFiles(programPath +'/../', function (err) {    
+                            _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){
                                     _this.logger.error(err);
-                                    _this.logger.info("before release in publishContent 1764");
                                     _this.Git.lock.release();
-                                    _this.logger.info("after release in publishContent  1766");                                    
                                 }
 
-                                scorm.generateSCORMCourse(function(err, filepath){
+                                _this._copyCSSFiles(programPath +'/../', true, function (err) {
+                                	if(err){
+                                    	_this.logger.error(err);
+										_this.Git.lock.release();
+                                	}
 
-                                    if(err){
-                                        _this.logger.error(err);
-                                        _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'}); 
+	                                scorm.generateSCORMCourse(function(err, filepath){
 
-                                        _this.logger.info("before release in publishContent 1775");
-                                        _this.Git.lock.release();
-                                        _this.logger.info("after release in publishContent  1777");
-                                        callback('');    
+	                                    if(err){
+	                                        _this.logger.error(err);
+	                                        _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});
 
-                                    }
-                                    else{
+	                                        _this.Git.lock.release();
+	                                        callback('');
 
-                                        _this.logger.info("publish Course success.");
-                                        _this.logger.info("---------- filepath = " + filepath);
-                                        _this.logger.info("before release in publishContent 1784");
-                                        _this.Git.lock.release();
-                                        _this.logger.info("after release in publishContent  1786");                                         
-                                        callback(filepath);
-                                    } 
+	                                    }
+	                                    else{
 
-                                    try{
-                                        fs.removeSync(programPath + '/../js');
-                                    }
-                                    catch(err)
-                                    {
-                                        _this.logger.error(err);
-                                        // _this.logger.info("before release in publishContent 1796");
-                                        // _this.Git.lock.release();
-                                        // _this.logger.info("after release in publishContent  1798");                                         
-                                        //_this.logger.info('js directory removed from lesson after publishing');
+	                                        _this.logger.info("publish Course success.");
+	                                        _this.logger.info("---------- filepath = " + filepath);
+	                                        _this.Git.lock.release();
+	                                        callback(filepath);
+	                                    }
 
-                                    }                                                          
-                                });
+	                                    try{
+	                                        fs.removeSync(programPath + '/../js');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
+
+	                                    try{
+	                                        fs.removeSync(programPath + '/../css/CoreCSS');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
+
+	                                    try{
+	                                        fs.removeSync(programPath + '/../css/ProgramCSS');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
+	                                });
+	                            });
                             });
                         }
                         else{
                             var scormPath = path.normalize('../core-files/scorm/');
                             var scormDir = path.resolve(process.cwd(), scormPath);
-                            //_this.logger.info("werwrewr " + found.path);
                             var programPath = path.normalize('../programs/' + found.path + '/');
-                            var contentPath = path.resolve(process.cwd(), programPath);                    
+                            var contentPath = path.resolve(process.cwd(), programPath);
                             var xmlContentFile = contentPath + '/xml/content.xml';
-                            
+
                             scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version );
-                            
+
                             _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){
                                     _this.logger.error(err);
-                                    _this.logger.info("before release in publishContent 1818");
                                     _this.Git.lock.release();
-                                    _this.logger.info("after release in publishContent  1820");                                     
                                 }
 
-                                //calls the generateSCORMLesson function in congizen-scorm.js
-                                scorm.generateSCORMLesson(function(err, filepath){
+                                _this._copyCSSFiles(programPath +'/../', false, function (err) {
+                                	if(err){
+                                    	_this.logger.error(err);
+										_this.Git.lock.release();
+                                	}
 
-                                    if(err){
-                                        _this.logger.error(err);
-                                        _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});
-                                        callback(''); 
-                                        _this.logger.info("before release in publishContent 1830");
-                                        _this.Git.lock.release();
-                                        _this.logger.info("after release in publishContent  1832");                                                        
-                                    }
-                                    else{
-                                        // _this.logger.info("programmmmmmm " + found.getProgram());
-                                        // User.findById(data.user.id).exec(function (err, user) {
-                                        //     if (user) {
-                                        //         _this.logger.info(user);
-                                        //         // _this.Git.commitProgramContent(found.getProgram(), user, function() {
-                                        //         //     // Success, do nothing.
-                                        //         // }, function(message) {
-                                        //         //     _this._socket.emit('generalError', {title: 'Repository Saving Error', message: 'Error occurred when saving repository content.'});
-                                        //         //     _this.logger.error("Error when committing to the Git Repo: " + message);
-                                        //         // });
-                                        //     }
-                                        // });                                        
-                                        // _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
-                                        //     if (err) {
-                                        //         _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
-                                        //         _this.logger.error(err);
-                                        //     }
-                                        //     else {
-                                        //         _this._copyContentFiles(callbackData, function () {
-                                        //             _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                                        //                 _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', function (err) {
-                                        //                     if (err) {
-                                        //                         _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
-                                        //                         _this.logger.error(err);
-                                        //                     }
-                                        //                     else {
-                                        //                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                        //                     }
-                                        //                 });
-                                        //             }, function (message) {
-                                        //                 _this.logger.info("Error committing program content: " + message)
-                                        //                 _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
-                                        //             });
-                                        //         });
-                                        //     }
-                                        // });
+	                                //calls the generateSCORMLesson function in congizen-scorm.js
+	                                scorm.generateSCORMLesson(function(err, filepath){
 
-                                        _this.logger.info("publishLesson success.");
-                                        _this.logger.info("---------- filepath = " + filepath);
-                                        _this.logger.info("before release in publishContent 1837");
-                                        _this.Git.lock.release();
-                                        _this.logger.info("after release in publishContent  1839"); 
-                                        callback(filepath);
-                                    }
+	                                    if(err){
+	                                        _this._socket.emit('generalError', {title: 'Generating SCORM Lesson', message: 'TODO: generating scorm error'});
+	                                        callback('');
+	                                        _this.Git.lock.release();
+	                                    }
+	                                    else{
+	                                        _this.logger.info("publishLesson success.");
+	                                        _this.logger.info("---------- filepath = " + filepath);
+	                                        _this.Git.lock.release();
+	                                        callback(filepath);
+	                                    }
 
-                                    try{
-                                        fs.removeSync(programPath + '/../js');
-                                    }
-                                    catch(err)
-                                    {
-                                        _this.logger.error(err);                                    
-                                    }
-                               
-                                });
-                            });                            
-                        } 
+	                                    try{
+	                                        fs.removeSync(programPath + '/../js');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
 
+	                                    try{
+	                                        fs.removeSync(programPath + '/../css/CoreCSS');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
+
+	                                    try{
+	                                        fs.removeSync(programPath + '/../css/ProgramCSS');
+	                                    }
+	                                    catch(err)
+	                                    {
+	                                        _this.logger.error(err);
+	                                    }
+
+	                                });
+	                            });
+                            });
+                        }
                     /////////end lock
-                    });                                           
+                    });
                 }
             });
-        }              
+        }
     }};
 
 module.exports = SocketHandler;
