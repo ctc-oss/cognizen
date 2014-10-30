@@ -9,7 +9,6 @@ body{
 	outline: 0px;
 	height: 100%;
 	width: 100%;
-	font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Style a bit the inline editables. */
@@ -82,7 +81,7 @@ blockquote
 	margin: auto;
 	position: relative;
 	overflow: hidden;
-	background-image: url(images/background.png);
+	background-image: url(images/background_va.png);
 }
 
 
@@ -103,7 +102,7 @@ blockquote
 	overflow : auto;
 	font-size : 150%;
 	/*font-weight: bold;*/
-	color:	#EEEEEE;
+	color:	#333333;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -541,10 +540,6 @@ CONTENT TEXT LAYOUTS*/
 
 
 /* FOR TABBED CONTENT */
-#tabs p{
-	margin-top: 0px;
-}
-
 #tabs.tabTop{
 	position: relative;
 	background: transparent;
@@ -750,7 +745,7 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	-moz-border-radius-topleft:8px;
-	-moz-border-radius-topright: 8px;  
+	-moz-border-radius-topright: : 8px;  
 	-webkit-border-radius: 8px; 
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
@@ -766,7 +761,7 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	-moz-border-radius-bottomleft:8px;
-	-moz-border-radius-bottomright: 8px; 
+	-moz-border-radius-bottomright: : 8px; 
 	-webkit-border-radius: 8px; 
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 8px;
@@ -1054,14 +1049,13 @@ ul.no-indent {
 .clickImgText{
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
-	height: auto !important;
+	height: 190px;
 	margin-left: auto;
 	margin-right: auto;
 	color: #000000;
 	width: 95%;
 	margin-right: -17px;
-	padding-right: 34px;
-	max-height: none !important;
+	padding-right: 17px;
 }
 
 .clickImgTextHolder{
@@ -1143,6 +1137,7 @@ ul.no-indent {
 	border-top-right-radius: 8px;
 	font-family: Arial, Helvetica, sans-serif;
 }
+
 /* FOR FLASHCARD CONTENT */
 #flashcardHolder{
 	position: relative;
@@ -1488,8 +1483,8 @@ MULTIPLE CHOICE LAYOUTS
 **************************************************************************************/
 #answerOptions{
 	position: relative;
-	left: 3%;
-	max-width: 94%;
+	left: 25px;
+	max-width: 890px;
 }
 
 #answerOptions.left{
@@ -1703,7 +1698,7 @@ MATCHING LAYOUTS
 	padding-left: 10px;
 }
 
-#mcSubmit, #completionButton{
+#mcSubmit{
 	position: relative; 
 	display: block !important;
 	width: 100px;
@@ -1711,7 +1706,6 @@ MATCHING LAYOUTS
 	margin-bottom: 20px;
 	margin-left: auto;
 	margin-right: auto;
-	clear: both;
 }
 
 #matchingSubmit{
@@ -1777,26 +1771,6 @@ MATCHING LAYOUTS
 	height: 30px;
 	background: url(images/correct.png) no-repeat;
 }
-/************************************************************** MATCHING LAYOUTS END *****/
-
-/**************************************************************************************
-ESSAY COMPARE LAYOUTS
-**************************************************************************************/
-#essayInputHolder, #expertResponseHolder{
-	float: left;
-	width: 48%;
-	margin-left: 1%;
-	margin-right: 1%;
-	margin-bottom: 2%;
-}
-
-#essayInput, #expertResponse{
-	width: 100%;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 100%;
-}
-/************************************************************** ESSAY COMPARE LAYOUTS END *****/
-
 /************************************************************** KNOWLEDGE CHECK END *****/
 
 #help{
@@ -2320,7 +2294,7 @@ ESSAY COMPARE LAYOUTS
   box-shadow: 0 0 1px #fff;
   position: absolute;
   opacity: 0;
-  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   -webkit-transition: linear 300ms opacity;
   -moz-transition: linear 300ms opacity;
   -o-transition: linear 300ms opacity;
@@ -2328,7 +2302,7 @@ ESSAY COMPARE LAYOUTS
 
 .antiscroll-scrollbar-shown {
   opacity: 1;
-  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 }
 
 .antiscroll-scrollbar-horizontal {
@@ -2346,8 +2320,7 @@ ESSAY COMPARE LAYOUTS
 }
 
 .antiscroll-inner {
-  overflow-x: visible;
-  overflow-y: scroll;
+  overflow: scroll;
 }
 
 /** A bug in Chrome 25 on Lion requires each selector to have their own
@@ -2869,30 +2842,6 @@ a.fancybox-expand {
 /*FANCY BOX END*/
 
 
-/* landscape div covers content on mobile phone in landscape orientation */
-#landscape{
-	visibility: hidden;
-	background-color: #000000;
-	background-image: url('images/landscape.png'); 
-	background-repeat: no-repeat; 
-	background-position: center center; 
-	position: fixed;
-	left: 0px;
-	right: 0px;
-	top: 0px;
-	bottom: 0px;
-	z-index: 1;
-} 
-
-
-@media only screen and (orientation:landscape) {
-	/* show rotate device message on phones in landscape orientation */
-	#landscape{
-		visibility: visible;
-	} 
-}
-
-
 @media screen and (max-device-width: 1023px) {
    /* css for small screens */
 
@@ -2911,12 +2860,10 @@ a.fancybox-expand {
 		margin: 0px auto;
 		padding: 0px;
 		left: 0px;
-		right: 0px;
 		top: 0px;
-		bottom: 0px;
-		width: auto !important;
-		height: auto !important;
-		position: fixed;
+		/*margin-left: -512px;
+		margin-top: -384px;*/
+		position: relative;
 		overflow: hidden;
 		background: transparent;
 	}
@@ -2933,12 +2880,11 @@ a.fancybox-expand {
 
 	#stage {
 		overflow: hidden;
-		position: fixed;
-		top: 60px;
-		left: 0px;
-		bottom: 50px;
-		/*height: auto !important;*/
-		width: 100%;
+		position: absolute;
+		top:60px;
+		left:0px;
+		/*height:85%;*/
+		width:100%;
 	}
 
 	#courseTitle{
@@ -2994,6 +2940,7 @@ a.fancybox-expand {
 		width: 97% !important;
 		left: 0px !important;
 		margin-left: 15px;
+		/*margin-right: 15px;*/
 	}
 	
 	#contentHolder{
@@ -3054,22 +3001,63 @@ a.fancybox-expand {
 	}
 
 	.ui-dialog{
-		max-width: 95% !important;
-		position: fixed !important;
-		top: 20% !important;
+		width:95%!important;
 	}
 
-	
-	/* FOR CLICKIMAGE CONTENT */
-	.clickImgTextHolder{
+	/* FOR FLASHCARD CONTENT */
+	#flashcardHolder{
+		position: absolute;
+		overflow: hidden;
 		width: 100%;
 	}
-	
-	div#clickImgText.clickImgText{
-		margin-left: 10px;
-		width: 97%;
+
+	.flashcard{
+		position: absolute;
+		overflow: auto;
+		width: 30%;
+		height: 40%;
+		text-align: center;
+		vertical-align:middle;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		color: #9DA6AB;
+		background-color: #EEEEEE;
+		-moz-border-radius: 8px; 
+		-webkit-border-radius: 8px; 
+		border-radius: 8px; 
+		border: solid #9DA6AB;
+		border-width: 2px;
+		cursor: hand; 
+		cursor: pointer;
 	}
-	
+
+	.flashcardHover{
+		background-color: #cccccc;
+	}
+
+	.flashcardBack{
+		background-color: #9DA6AB;
+		color: #EEEEEE;
+		border: solid #EEEEEE;
+	}
+
+	#flashcardReshuffle{
+		position:absolute;
+		bottom: 10px;
+		width: 200px;
+		right: 80px;
+		margin-left: 0 auto;
+		margin-right: 0 auto;
+	}
+
+	.cardText{
+		position: relative !important;
+		text-align: center;
+		top:0px !important;
+		font-size: 80%;
+
+	}
 
 	/****************************************************** CONTENT TEXT LAYOUTS END *****/
 
@@ -3077,7 +3065,22 @@ a.fancybox-expand {
 	/**************************************************************************************
 	SIDEBAR LAYOUTS
 	**************************************************************************************/
+/*
+	.sidebar {
 
+		color: #000000;
+		font-family: Arial, Helvetica, sans-serif;
+		overflow: auto;
+		background-color: #EEEEEE; 
+		border-width: 0px;
+
+		overflow: auto;
+		-moz-border-radius: 8px; 
+		-webkit-border-radius: 8px; 
+		border-radius: 8px; 
+		padding: 10px;
+	}	
+*/
 	#sidebarHolder {
 		right: 0px;
 		max-width: 100%;
@@ -3090,7 +3093,7 @@ a.fancybox-expand {
 	/**************************************************************************************
 	/*MEDIA LAYOUTS*/
 	/**************************************************************************************/
-	#mediaHolder, #loader, #loader img, #videoplayer, .mejs-video{ 
+	img{ 
 		max-width: 100%;
 		max-height: 100%;
 	}
@@ -3188,12 +3191,108 @@ a.fancybox-expand {
 	MULTIPLE CHOICE LAYOUTS
 	**************************************************************************************/
 
-	#answerOptions.left{
-		max-width: 55%;
+	#answerOptions{
+		left: 5%;
+		width: 90%;
 	}
 
-	/*************************************************** MULTIPLE CHOICE LAYOUTS END *****/
+	#answerOptionsImage{
+		top: 50% !important;
+		left: 10px !important;
+		overflow: auto;
+		width:95%;
+		height: 50%;
+	}
 
+	.multipleChoiceImageLabel{
+		position: absolute;
+		overflow : auto;
+		width: 100%;
+		text-align: center;
+		font-family: Arial, Helvetica, sans-serif !important;
+		font-size: 12pt !important;
+		color: #9DA6AB;
+		top: 5px;
+		background-color: rgb(238, 238, 238) transparent; /* default fallback */
+		background-color: rgba(238, 238, 238, 50);
+	}
+
+	.multipleChoiceOptionImage{
+		overflow: hidden;
+		background-color: #EEEEEE;
+		-moz-border-radius: 8px; 
+		-webkit-border-radius: 8px; 
+		border-radius: 8px; 
+		cursor: hand; 
+		cursor: pointer;
+		position: relative !important;
+		left: 0px !important;
+	}
+/*
+	.option{
+		position: absolute;
+		overflow: visible;
+		font-size : 100%;
+		font-weight: bold;
+		color:	#000000;
+		font-family: Arial, Helvetica, sans-serif;
+		cursor: hand; 
+		cursor: pointer;
+	}
+*/
+	.multipleChoiceImageHover{
+		background-color: #9DA6AB;
+		
+	}
+/*
+	.optionHover{
+		color: #3383bb;
+		background-color: #eeeeee;
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		padding: 4px;
+		cursor: hand; 
+		cursor: pointer;
+	}
+
+	.optionSelected{
+		color: #3383bb;
+		background-color: #999999;
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		padding: 4px;
+		cursor: hand; 
+		cursor: pointer;
+	}
+	
+	.optionCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	padding: 4px;
+	padding-right: 35px
+}
+
+.optionIncorrect{
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px; 
+	border-radius: 8px;
+	padding: 4px;
+	padding-right: 35px
+}
+*/
+	.optionLabel{
+		position: absolute;
+		top: 0px;
+		left: 30px;
+		width: 889px;
+		cursor: hand; 
+		cursor: pointer;
+	}
+
+	/************************************************************** MULTIPLE CHOICE LAYOUTS END *****/
 
 	/**************************************************************************************
 	MATCHING LAYOUTS
@@ -3207,6 +3306,19 @@ a.fancybox-expand {
 		right: 0;
 		width: 48%;
 	}
+
+/* same as CSS above
+	.matchingInput{
+		background-color: #eeeeee;
+		color: #3383bb;
+		width: 15px;
+		height: 15px; 
+		text-transform:uppercase;
+		font-size: 100%;
+		font-weight: bold;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+*/
 
 	#mcSubmit{
 		margin-top: 15px;
@@ -3407,9 +3519,8 @@ a.fancybox-expand {
 		position: fixed;
 		/*top:-645px;
 		left:0px;*/
-		top: 0px;
-		bottom: 0px;
-		left: -406px;		
+		top:0px;
+		left:-406px;		
 	}
 
 	#indexTab{
@@ -3434,7 +3545,7 @@ a.fancybox-expand {
 		left:0px;
 		top:0px;
 		width: 400px;
-		height: 100%;
+		height: 500px; /* need to determine this dynamically or adjust for various devices */
 		box-shadow: -3px 2px 10px 1px;
 	}
 
@@ -3469,311 +3580,163 @@ a.fancybox-expand {
 	.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
 	.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 	.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 100%;}
-}
-
-@media screen and (max-device-width: 639px) {
-
-	.flashcard{
-		width: 270px;
-		height: 360px;
-		font-weight: normal;
-	}
-
-}
 
 
-@media screen and (max-device-width: 568px) {
+	@media screen and (max-device-width: 568px) {
 
-	#stage{
-		top: 40px;
-	}
+		#stage{
+			top: 40px;
+		}
+		
+		#scrollableContent{
+			margin-left: 10px;
+		}
+
+		#courseTitle{
+			height: 40px;
+			font-size : 90%;
+		}
+
+		#lessonTitle{
+			top : 16px;
+			font-size : 120%;
+		}
+
+		#pageTitle{
+			margin: 5px 10px 5px 10px;
+			font-size : 100%;
+		}
+
+		#back{
+			height: 40px;
+		}
+
+		#next{
+			height: 40px;
+		}
+
+		#pageCount{
+			height: 40px;
+			line-height: 2.6em;
+		}
+		
+		#mediaHolder.graphic{
+			max-height: 88%;
+			overflow: scroll;
+		}
+		
+		#matching{
+			height: auto !important;
+		}
+		
+		#matchingOptions, #matchingAnswers{
+			left: 0px;
+			float: none;
+			width: 100%;
+		}
+
+		/*index pane specific*/
+		#indexPane{
+			left: -366px;
+		}
+
+		#indexTab{
+			left: 369px;
+	    	height: 40px;
+		}
+
+		#indexContent{
+			width: 360px;
+		}
+
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -366px;
+		}
+
+		#glossaryTab{
+			left: 369px;
+	    	height: 40px;
+		}
+
+		#glossaryContent{
+			width: 360px;
+		}
+
+		#addPage{
+			width: 100%;
+		}
+
+		#removePage{
+			width: 150px;
+		}		
+
+		#tabs.left{
+			width: 98%;
+			max-width: 98%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
 	
-	#scrollableContent{
-		margin-left: 0px;
-		width: 100% !important;
-	}
-	
-	#content, #essayCompareHolder{
-		padding-left: 3%;
-		padding-right: 3%;
-		width: 94% !important;
+		#mediaHolder.tabsRight{
+			max-width: 98%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
 	}
 
-	#courseTitle{
-		height: 40px;
-		font-size : 90%;
+	@media screen and (max-device-width: 320px) {
+
+		/*index pane specific*/
+		#indexPane{
+			left: -283px;
+		}
+
+		#indexTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#indexContent{
+			width: 276px;
+		}
+
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -283px;
+		}
+
+		#glossaryTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#glossaryContent{
+			width: 276px;
+		}
+
 	}
 
-	#lessonTitle{
-		top : 16px;
-		font-size : 120%;
-	}
+/*	@media screen and (max-device-height: 640px) {*/
+		/*index pane specific*/
+/*		#indexPane{
+			left: -366px;
+		}
 
-	#pageTitle{
-		margin: 5px 10px 5px 10px;
-		font-size : 100%;
-	}
+		#indexTab{
+			left: 369px;
+	    
+		}
 
-	#back{
-		height: 40px;
-	}
-
-	#next{
-		height: 40px;
-	}
-
-	#pageCount{
-		height: 40px;
-		line-height: 2.6em;
-	}
-	
-	#mediaHolder.graphic{
-		max-height: 88%;
-		overflow: scroll;
-	}
-	
-	#matching{
-		height: auto !important;
-	}
-	
-	#matchingOptions, #matchingAnswers{
-		left: 0px;
-		float: none;
-		width: 100%;
-	}
-
-	#essayInputHolder, #expertResponseHolder{
-		width: 97%;
-	}
-
-/*index pane specific*/
-	#indexPane{
-		left: -366px;
-	}
-
-	#indexTab{
-		left: 369px;
-		height: 40px;
-	}
-
-	#indexContent{
-		width: 360px;
-	}
-
-	/*glossary pane specific*/
-	#glossaryPane{
-		left: -366px;
-	}
-
-	#glossaryTab{
-		left: 369px;
-		height: 40px;
-	}
-
-	#glossaryContent{
-		width: 360px;
-	}
-
-	#addPage{
-		width: 100%;
-	}
-
-	#removePage{
-		width: 150px;
-	}		
-
-	#tabs.left{
-		width: 98%;
-		max-width: 98%;
-		float: none;
-		left: auto;
-		right: auto;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.questionTop{
-		padding-left: 3%;
-		padding-right: 3%;
-		width: 94% !important;
-	}
-
-	#mediaHolder.tabsRight{
-		max-width: 100%;
-		float: none;
-		left: auto;
-		right: auto;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	#answerOptions.left{
-		max-width: 96%;
-		left: 2%;
-	}
-
-	#flashcardHolder{
-		margin-left: 3%;
-		margin-right: 3%;
-	}
-/*		
-	.flashcard{
-		width: 240px;
-		font-size: 11pt;
-	}
-*/
+		#indexContent{
+			height: 400px;
+		}
+	}	*/
 }
-
-
-/* LG Optimus LTE, Optimus 4X HD */
-@media screen and (max-device-width: 424px) {
-
-	#flashcardHolder{
-		margin-left: 9.8%;
-		margin-right: 9.8%;
-	}
-
-	.flashcard{
-		width: 330px;
-		height: 440px;
-	}
-
-}
-
-
-/* iPhone 6 Plus */
-@media screen and (max-device-width: 414px) {
-
-	/*index pane specific*/
-	#indexPane{
-		left: -323px;
-	}
-
-	#indexTab{
-		left: 329px;
-		width: 42px;
-	}
-
-	#indexContent{
-		width: 316px;
-	}
-
-	.dd3-content{
-		margin: 2px 0;
-	}
-	
-	/* FOR CLICKIMAGE CONTENT */
-	.clickImg{
-		padding: 4px;
-		margin: 0px 4px;
-	}
-
-	.clickImg img{
-		max-width: 90px;
-		max-height: auto !important;
-		height: auto;
-	}
-
-	/* FOR REVEAL CONTENT */
-	.revealLeft{
-		right: 0px;
-	}
-	
-	.revealImg{
-		padding: 4px;
-		margin: 0px 4px 10px 4px;
-	}
-
-/*		.revealImg img{
-		max-width: 90px;
-		max-height: auto !important;
-		height: auto;
-	}
-*/
-	.flashcard{
-		width: 325px;
-		height: 400px;
-	}
-
-}
-
-
-/* BlackBerry Z10, LG Optimus G */
-@media screen and (max-device-width: 384px) {
-
-	.flashcard{
-		width: 300px;
-		height: 380px;
-	}
-
-}
-
-
-/* iPhone 6 */
-@media screen and (max-device-width: 375px) {
-
-	#flashcardHolder{
-		margin-left: 8.8%;
-		margin-right: 8.8%;
-	}
-
-}
-
-
-/* Galaxy Note II, S III and newer */
-@media screen and (max-device-width: 360px) {
-
-	#flashcardHolder{
-		margin-left: 7.5%;
-		margin-right: 7.5%;
-	}
-
-}
-
-
-/* iPhone 5s and earlier */
-@media screen and (max-device-width: 320px) {
-
-	/*index pane specific*/
-	#indexPane{
-		left: -283px;
-	}
-
-	#indexTab{
-		left: 289px;
-		width: 42px;
-	}
-
-	#indexContent{
-		width: 276px;
-	}
-
-	/*glossary pane specific*/
-	#glossaryPane{
-		left: -283px;
-	}
-
-	#glossaryTab{
-		left: 289px;
-		width: 42px;
-	}
-
-	#glossaryContent{
-		width: 276px;
-	}
-
-	#flashcardHolder{
-		margin-left: 5%;
-		margin-right: 5%;
-	}
-
-	.flashcard{
-		width: 280px;
-		height: 310px;
-		font-size: 11pt;
-	}
-
-}
-
-
-
