@@ -168,13 +168,15 @@ function C_Completion(_type) {
 								//check for duplicates
 								if($.inArray(tmpObject.id, remediationObjectives) == -1){
 									remediationObjectives.push(tmpObject.objItemId);
-									var split = tmpObject.objItemId.split("id");
+									var split = tmpObject.objItemId.split("_id");
 									//  if(choiceValid(tmpObject.objItemId)){
 									// 	//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+split[0]+"</a></li>";
 									// 	displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+split[0]+"\",\""+score_arr+"\", "+attemptCount+")'>"+split[0]+"</a></li>";
 									// }
 									// else{
-										displayRemedObj += "<li class='completionText'>"+decodeURIComponent(split[0])+"</li>";
+									var itemName = $(courseData).find('item[id="'+decodeURIComponent(split[0])+'"]').attr('name');	
+									var itemTlo = $(courseData).find('item[id="'+decodeURIComponent(split[0])+'"]').attr('tlo');									
+										displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
 									//}
 								}
 							}				
@@ -220,7 +222,9 @@ function C_Completion(_type) {
 										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
 									}
 									else{
-										displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+									var itemName = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('name');	
+									var itemTlo = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('tlo');									
+										displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";										
 									}
 									//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
 									//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);

@@ -258,7 +258,7 @@ function launchObjEdit(){
 				//updateModuleXML(currentPageParentModule);								
 			}
 			else{
-				$('#objItemId select').val($(data).find('page').eq(currentPage).attr("objItemId"));
+				$('#objItemId').val($(data).find('page').eq(currentPage).attr("objItemId"));
 			}
 
 		}

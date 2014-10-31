@@ -119,13 +119,13 @@ var SCORM = {
 
 								    for (var i = 0; i < pageCount; i++) {
 								    	var myNode = etree.findall('./pages/page')[i];
-								    	var pageObj = myNode.get('objective').replace('.', '');
-								    	var pageObjId = myNode.get('objItemId').replace('.', '');
-								    	var pageTitle = myNode.findtext('title').replace('.', '');
+								    	var pageObj = myNode.get('objective');
+								    	var pageObjId = myNode.get('objItemId');
+								    	var pageTitle = myNode.findtext('title');
 
 								    	var lessonIndictor = 'undefined';
 								    	if(myNode.findtext('tlo')){
-								    		lessonIndictor = myNode.findtext('tlo').replace('.', '').replace(/\s+/g, '');
+								    		lessonIndictor = myNode.findtext('tlo').replace(/\s+/g, '').replace('.', '');
 								    	}
 								    	else{
 								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
@@ -137,19 +137,19 @@ var SCORM = {
 								    		//console.log(i + " : " + pageObj);
 								 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 								 			tmpObjId = lessonIndictor +"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
-								 						pageObj.replace(/\s+/g, '_');
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')).replace('.', '')+"."+
+								 						pageObj.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
 
 								    	}
 
 								    	if(pageObjId != undefined && pageObjId !== "undefined"){
 								    		if(tmpObjId.length > 0){
-								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_');
+								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
 								    		}
 								    		else{
 									 			tmpObjId = lessonIndictor+"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, ''))+"."+
-								 						pageObjId.replace(/\s+/g, '_');
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')).replace('.', '')+"."+
+								 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
 								    		}
 								    	}
 
@@ -895,8 +895,8 @@ var SCORM = {
 				    		//console.log(i + " : " + pageObj);
 				 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 				 			tmpObjId = lessonIndictor +"."+
-				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
-				 						pageObj.replace(/\s+/g, '_').replace(/:/g, '');
+				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+				 						pageObj.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
 
 				    	}
 
@@ -906,8 +906,8 @@ var SCORM = {
 				    		}
 				    		else{
 					 			tmpObjId = lessonIndictor +"."+
-				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, ''))+"."+
-				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
+				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
 				    		}
 				    	}
 

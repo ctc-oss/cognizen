@@ -1435,7 +1435,7 @@ function C_Outline(_myItem) {
 								updateModuleXML(currentPageParentModule);								
 							}
 							else{
-								$('#objItemId select').val($(module_arr[i].xml).find('page').eq(j).attr("objItemId"));
+								$('#objItemId').val($(module_arr[i].xml).find('page').eq(j).attr("objItemId"));
 							}
 
 						}

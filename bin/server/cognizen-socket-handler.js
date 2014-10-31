@@ -627,7 +627,7 @@ var SocketHandler = {
 					        sequencing.set("tracked", "true");
 					        sequencing.set("completionSetByContent", "false");
 					        sequencing.set("objectiveSetByContent", "false");
-					        sequencing.set("rollupObjectiveStatisfied", "true");
+					        sequencing.set("rollupObjectiveSatisfied", "true");
 					        sequencing.set("rollupProgressCompletion", "true");
 					        sequencing.set("rollupObjectiveMeasureWeight", "1.0");
 
