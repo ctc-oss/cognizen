@@ -19,8 +19,6 @@ function C_TextInput(_type) {
     var questionCount = 0;
     var graded = false;
     var mandatory = true;
-    var myObjective = "undefined";
-    var myObjItemId = "undefined";
     var input_arr = [];
     var inputIds = [];
     var trackFeedbackNum = [];
@@ -60,14 +58,6 @@ function C_TextInput(_type) {
 			mandatory = false;
 		}
 		
-		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective');
-		}
-		
-		if($(data).find("page").eq(currentPage).attr('objItemId')){
-			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
-		}	
-
 		pageTitle = new C_PageTitle();
 
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap text">';
@@ -318,37 +308,8 @@ function C_TextInput(_type) {
 		}		
 
 
-		//set SCORM objectives
-		var _objId = "";
-    	if(myObjective != undefined && myObjective !== "undefined"){
-    		//console.log(i + " : " + pageObj);
- 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
- 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjective.replace(/\s+/g, '_');
-
-    	}
-
-    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-    		if(_objId.length > 0){
-    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-    		}
-    		else{
-	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-    		}
-    	}
-
-		if(_objId.length > 0){	
-			_objId += "_id";
-			if(allComplete && graded){
-				setObjectiveSuccess(_objId, true);
-			}
-			else if(!allComplete && graded){
-				setObjectiveSuccess(_objId, false);
-			}
-		}	
+		//set SCORM objective for page - C_SCORM.js
+		setPageObjective(allComplete, graded);
 
 		if(allComplete){					
 			updateScoring(selected_arr, allComplete, null, null);
@@ -431,10 +392,6 @@ function C_TextInput(_type) {
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Mandatory means that this page must be completed before proceeding.(disabled in edit mode)'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</br>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;' title='Unique description of the objective.'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/><br/>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;' title='Name of the modules or lesson to which the objective is mapped.'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;'/><br/><br/>";		
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";	
 		var questionMenu_arr = [];
 		for (var i = 0; i < questionCount; i++) {
@@ -615,8 +572,6 @@ function C_TextInput(_type) {
 
 	function makeQuestionDataStore(){
 		var tmpObj = new Object();
-		tmpObj.objective = $("#inputObjective").val();
-		tmpObj.objItemId = $("#inputObjItemId").val();
 		tmpObj.attempts = $("#inputAttempts").val();
 		if($("#inputAutoComplete").prop("checked") == true){
 			//$(data).find("page").eq(currentPage).attr("graded", "true");
@@ -856,13 +811,9 @@ function C_TextInput(_type) {
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').eq(0).empty();
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find('correctresponse').eq(0).append(correctResponseCDATA);
 
-		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
-				questionResponse_arr[j].objective = _data.objective;
-				questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);

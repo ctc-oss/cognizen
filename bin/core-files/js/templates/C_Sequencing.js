@@ -43,10 +43,6 @@ function C_Sequencing(_type) {
     var currentEditBankMember = 0;
 	var revealMenu_arr = [];
 	var currentItem;
-	var myObjective = "undefined";
-    var myObjItemId = "undefined"; 
-    
-    
     
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -76,14 +72,6 @@ function C_Sequencing(_type) {
 		}
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false" || $(data).find("page").eq(currentPage).attr('mandatory') == undefined){
 			mandatory = false;
-		}
-		
-		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective');
-		}
-		
-		if($(data).find("page").eq(currentPage).attr('objItemId')){
-			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
 		}
 		
 		pageTitle = new C_PageTitle();
@@ -184,37 +172,8 @@ function C_Sequencing(_type) {
 			}
 		}
 
-		//set SCORM objectives
-		var _objId = "";
-    	if(myObjective != undefined && myObjective !== "undefined"){
-    		//console.log(i + " : " + pageObj);
- 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
- 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjective.replace(/\s+/g, '_');
-
-    	}
-
-    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-    		if(_objId.length > 0){
-    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-    		}
-    		else{
-	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-    		}
-    	}
-
-		if(_objId.length > 0){	
-			if(tempCorrect && graded){
-				setObjectiveSuccess(_objId, true);
-			}
-			else if(!tempCorrect && graded){
-				setObjectiveSuccess(_objId, false);
-			}
-		}
-
+		//set SCORM objective for page - C_SCORM.js
+		setPageObjective(tempCorrect, graded
 
 		$(".sequenceInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
@@ -395,10 +354,6 @@ function C_Sequencing(_type) {
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Mandatory means that interactives on this page must be completed before proceeding. (disabled in edit mode).'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/>";
-		msg += "<label title='Unique description of the objective.'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;'/><br/>";
-		msg += "<label title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 400px;'/><br/>";
 		msg += "<div id='feedbackLabel' title='Feedback that will be displayed to users upon completing the sequence.'><b>Input your feedback:</b></div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";		
@@ -526,14 +481,9 @@ function C_Sequencing(_type) {
 		}
 	}
 	
-	function makeRevealDataStore(){
-		myObjective = $("#inputObjective").val();
-		myObjItemId = $("#inputObjItemId").val();
-		
+	function makeRevealDataStore(){	
 		attemptsAllowed = $("#inputAttempts").val();
 		$(data).find("page").eq(currentPage).attr("attempts", attemptsAllowed);
-		$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
 		
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");

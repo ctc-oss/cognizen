@@ -495,7 +495,7 @@ var SCORM = {
         archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: _this.binDir+'/xml/content.xml'});
 
 		//add course.xml file
-        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/../'+'course.xml'}  );
 
 
         //do not need to do scorm files if publishing to "none"

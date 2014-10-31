@@ -150,6 +150,7 @@ function C_Completion(_type) {
 							//check for duplicates
 							if($.inArray(tmpObject.id, remediationObjectives) == -1){
 								remediationObjectives.push(tmpObject.id);
+								var split = tmpObject.id.split("%20id");
 								// if(tmpObject.objItemId != "undefined" && choiceValid(tmpObject.objItemId)){
 								// 	var split = tmpObject.objItemId.split("id");
 								// 	//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='choice(\""+split[0]+"\")'>"+tmpObject.id+"</a></li>";
@@ -157,7 +158,14 @@ function C_Completion(_type) {
 									
 								// }
 								// else{
+								if($(courseData).find('item[id="'+decodeURIComponent(split[0])+'"]').attr('name') != undefined){
+									var itemName = $(courseData).find('item[id="'+decodeURIComponent(split[0])+'"]').attr('name');	
+									var itemTlo = $(courseData).find('item[id="'+decodeURIComponent(split[0])+'"]').attr('tlo');									
+									displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
+								}	
+								else{
 									displayRemedObj += "<li class='completionText'>"+decodeURIComponent(tmpObject.id)+"</li>";
+								}
 								//}							
 							}
 						}

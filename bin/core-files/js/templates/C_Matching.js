@@ -53,8 +53,6 @@ function C_Matching(_type) {
     var isComplete = false;
     var graded = false;
     var mandatory = true;
-    // var myObjective = "undefined";
-    // var myObjItemId = "undefined";
 	var order_arr = [];
 	var scormVersion;
 	var pageId;
@@ -83,15 +81,6 @@ function C_Matching(_type) {
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
 		pageId = $(data).find("page").eq(currentPage).attr("id");
-		
-		// if($(data).find("page").eq(currentPage).attr('objective')){
-		// 	//updated to use eo attribute
-		// 	myObjective = $(data).find("page").eq(currentPage).attr('eo');
-		// }
-
-		// if($(data).find("page").eq(currentPage).attr('objItemId')){
-		// 	myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
-		// }		
 		
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
@@ -368,37 +357,6 @@ function C_Matching(_type) {
 
 		//set SCORM objective for page - C_SCORM.js
 		setPageObjective(tempCorrect, graded);
-		// var _objId = "";
-  //   	if(myObjective != undefined && myObjective !== "undefined"){
-  //   		//console.log(i + " : " + pageObj);
- 	// 		//check for duplicates; manipulate objective name if so (this may not work!!!!)
- 	// 		_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 	// 					myObjective.replace(/\s+/g, '_');
-
-  //   	}
-
-  //   	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-  //   		if(_objId.length > 0){
-  //   			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-  //   		}
-  //   		else{
-	 // 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
- 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
- 	// 					myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-  //   		}
-  //   	}
-
-		// if(_objId.length > 0){	
-		// 	_objId += "_id";
-		// 	if(tempCorrect && graded){
-		// 		setObjectiveSuccess(_objId, true);
-		// 	}
-		// 	else if(!tempCorrect && graded){
-		// 		setObjectiveSuccess(_objId, false);
-		// 	}
-		// }
-
 
 		$(".matchingInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
@@ -979,13 +937,10 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
 		$(data).find("page").eq(currentPage).attr("attempts", _data.attempts);
-		// $(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		// $(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
+
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
-				// questionResponse_arr[j].objective = _data.objective;
-				// questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
