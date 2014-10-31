@@ -653,7 +653,7 @@ p.completionText{
 	font-weight: bold;
 }
 
-#content table, #tabs table{
+#content table, #tabs table, #sidebar table{
 	border: 1px solid black;
 	border-collapse: collapse;
 	margin-top: 4px;
