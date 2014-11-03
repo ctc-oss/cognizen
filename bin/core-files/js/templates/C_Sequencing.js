@@ -6,10 +6,10 @@
  * DATE: 2014-2-25
  * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2014, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
- * 
+ *
  * This function allows for multiple parameters including:
  * 		1. Number of attempts: defaults to 1
  *		2. Undifferentiated Feedback
@@ -22,7 +22,7 @@ function C_Sequencing(_type) {
     var attemptsMade = 0;
     var optionLabeling = "a"; //"a" for alphabetic - "n" for numeric
     var option_arr = [];
-	
+
     var feedbackType = "undifferentiated";
     var feedbackDisplay;
     var feedbackCorrectTitle;
@@ -32,31 +32,31 @@ function C_Sequencing(_type) {
     var optionCount = 0;
 	var marking_arr;
 	var tempCorrect = true;
-    
+
     var optionStatementY = 0;
     var isComplete = false;
     var graded = false;
     var mandatory = true;
     var order_arr = [];
     var scormVersion;
-    
+
     var currentEditBankMember = 0;
 	var revealMenu_arr = [];
 	var currentItem;
-    
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		buildTemplate();
 	}
-		
+
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
 		isComplete = checkQuestionComplete();
-		
+
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbacktype');
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackdisplay');
@@ -66,40 +66,40 @@ function C_Sequencing(_type) {
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
 		scormVersion = $(data).find('scormVersion').attr('value');
-		
+
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false" || $(data).find("page").eq(currentPage).attr('mandatory') == undefined){
 			mandatory = false;
 		}
-		
+
 		pageTitle = new C_PageTitle();
-		
+
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
 		msg += '<div id="sequenceHolder" class="sequenceHolder">';
 		msg += '</div></div></div>';
-		
+
 		try { audioHolder.destroy(); } catch (e) {}
 		audioHolder = new C_AudioHolder();
-		
+
 		$('#stage').append(msg);
-		
+
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-		
+
 		placeOptions();
 	}
-	
-	
-	
+
+
+
 	function placeOptions(){
 		////Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
-		
+
 		if(isComplete/* && mode != "edit"*/){
 			for(var k=0; k<questionResponse_arr.length; k++){
 				if(currentPageID == questionResponse_arr[k].id){
@@ -114,10 +114,10 @@ function C_Sequencing(_type) {
 			}
 			order_arr = shuffleArray(order_arr);
 		}
-		
-		
+
+
 		var msg = "<div id='sortable' style='list-style-type: none;'>";
-		for(var j = 0; j < order_arr.length; j++){	
+		for(var j = 0; j < order_arr.length; j++){
 			var myNode = $(data).find("page").eq(currentPage).find("option").eq(order_arr[j]);
 			//Create unique class name for each option
 			var myOption = "option" + j;
@@ -129,9 +129,9 @@ function C_Sequencing(_type) {
 		$('#sequenceHolder').append(msg);
 		$( "#sortable" ).sortable();
 		$( "#sortable" ).disableSelection();
-		
+
 		placematchingSubmit();
-		
+
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		//
         checkMode();
@@ -141,17 +141,17 @@ function C_Sequencing(_type) {
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
-		
+
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 	}
-	
-	
+
+
 	function placematchingSubmit(){
 		$("#contentHolder").append('<div id="mcSubmit"></div>');
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-		$("#mcSubmit").click(checkAnswer);	
+		$("#mcSubmit").click(checkAnswer);
 	}
 
 
@@ -173,7 +173,7 @@ function C_Sequencing(_type) {
 		}
 
 		//set SCORM objective for page - C_SCORM.js
-		setPageObjective(tempCorrect, graded
+		setPageObjective(tempCorrect, graded);
 
 		$(".sequenceInput").prop('disabled', true);
 		$("#mcSubmit").button({ disabled: true });
@@ -181,16 +181,16 @@ function C_Sequencing(_type) {
 		checkNavButtons();
 	}
 
-	
+
 	function checkAnswer(){
 		$("#dialog-attemptResponse").remove();
 		attemptsMade++;
 		marking_arr = [];
 		tempCorrect = true;
-		
+
 		for(var i = 0; i < $("#sequenceHolder").find(".sequenceOption").length; i++){
 			var markingObject = new Object();
-			
+
 			if(parseInt($("#sequenceHolder").find(".sequenceOption").eq(i).attr("value")) != i + 1){
 				tempCorrect = false;
 				markingObject.isCorrect = false;
@@ -199,14 +199,14 @@ function C_Sequencing(_type) {
 			}
 			marking_arr.push(markingObject);
 		}
-		
+
 		///************************************
 		//POPULATE FEEDBACK STRING
 		//************************************/
 		var msg = "";
-		
+
 		if(feedbackType == 'undifferentiated'){
-		    
+
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p>'+feedbackCorrectTitle +'</p><p> '+ feedback +'</p></div>';
 			}else{
@@ -215,26 +215,26 @@ function C_Sequencing(_type) {
 					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectTitle +'</p><p> '+ feedback +'</p></div>';
 				}else{
 					//try again.
-					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';	
+					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';
 				}
 			}
 		}
-		
+
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			var selected_arr = [];
-			
+
 			for(var j = 0; j < $("#sequenceHolder").find(".sequenceOption").length; j++){
 				selected_arr.push(parseInt($("#sequenceHolder").find(".sequenceOption").eq(j).attr("value")));
 			}
-			
+
 			updateScoring(selected_arr, tempCorrect);
 			showUserAnswer();
 		}
-		
+
 		///************************************
 		//PLACE THE FEEDBACK
 		//************************************/
-		
+
 		$("#stage").append(msg);
 		//all mobile content will use the pop display
 		if(isMobile){
@@ -260,7 +260,7 @@ function C_Sequencing(_type) {
 							$( this ).dialog( "close" );
 							if(isLinear == true){
 								updateTracking();
-							}	
+							}
 							$("#next").click();
 						}
 					},
@@ -292,16 +292,16 @@ function C_Sequencing(_type) {
 					}
 				});
 			}
-		}else if(feedbackDisplay == "inline"){			
-			
+		}else if(feedbackDisplay == "inline"){
+
 			if(type == "matchingDrag"){
 				$( "#dialog-attemptResponse" ).addClass("inlineLeftFeedback");
 			}else if(type == "matching"){
 				$( "#dialog-attemptResponse" ).addClass("inlineBottomFeedback");
-			}		
+			}
 		}
 	}
-	
+
 	function checkMode(){
 		$('.antiscroll-wrap').antiscroll();
 		//
@@ -328,9 +328,9 @@ function C_Sequencing(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog'
-			}); 
-			
-			
+			});
+
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -341,10 +341,10 @@ function C_Sequencing(_type) {
 			}).tooltip();
 		}
 	}
-	
+
 	function updateOptionDialog(){
 		clearCKInstances();
-		
+
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		var msg = "<div id='questionEditDialog' title='Create Sequencing Assessment'>";
@@ -356,11 +356,11 @@ function C_Sequencing(_type) {
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/><br/>";
 		msg += "<div id='feedbackLabel' title='Feedback that will be displayed to users upon completing the sequence.'><b>Input your feedback:</b></div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
-		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";		
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
-		
+
 		$("#stage").append(msg);
-		
+
         if(!graded){
 			$("#isGraded").removeAttr('checked');
 		}else{
@@ -372,7 +372,7 @@ function C_Sequencing(_type) {
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		try { CKEDITOR.inline( "feedbackEditText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -383,13 +383,13 @@ function C_Sequencing(_type) {
 					instanceReady: function(event){
 						$(event.editor.element.$).attr("title", "Click here to edit this feedback.");
 					}
-				}					
-		});} catch (e) {}			
-		
+				}
+		});} catch (e) {}
+
 		updateRevealMenu();
-		
+
 		addOption(currentEditBankMember, false);
-				
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
@@ -405,11 +405,11 @@ function C_Sequencing(_type) {
 						makeRevealDataStore();
 						//clearCKInstances();
 						if (CKEDITOR.instances['optionText']) {
-				            CKEDITOR.instances.optionText.destroy();            
+				            CKEDITOR.instances.optionText.destroy();
 				        }
 						try { $("#optionContainer").remove(); } catch (e) {}
 						addOption(optionCount, true);
-						updateRevealMenu();	
+						updateRevealMenu();
 					}
 				},
 				{
@@ -435,7 +435,7 @@ function C_Sequencing(_type) {
 	        $(document).tooltip();
 	    });
 	}
-	
+
 	function updateRevealMenu(){
 		console.log("started");
 		revealMenu_arr = [];
@@ -451,7 +451,7 @@ function C_Sequencing(_type) {
 				msg += " unselectedEditBankMember";
 			}
 			msg += "' style='";
-			
+
 			if(h < 100){
 				msg += "width:30px;";
 			}else if(h > 99){
@@ -460,12 +460,12 @@ function C_Sequencing(_type) {
 			var cleanText = $(data).find("page").eq(currentPage).find("option").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			console.log("cleanText = " + cleanText);
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
-			
+
 			revealMenu_arr.push(tmpID);
 		}
-		
+
 		$("#questionMenu").append(msg);
-		
+
 		for(var j = 0; j < revealMenu_arr.length; j++){
 			if(currentEditBankMember != j){
 				var tmpID = "#" + revealMenu_arr[j];
@@ -480,11 +480,11 @@ function C_Sequencing(_type) {
 			}
 		}
 	}
-	
-	function makeRevealDataStore(){	
+
+	function makeRevealDataStore(){
 		attemptsAllowed = $("#inputAttempts").val();
 		$(data).find("page").eq(currentPage).attr("attempts", attemptsAllowed);
-		
+
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
 			mandatory = true;
@@ -492,7 +492,7 @@ function C_Sequencing(_type) {
 			$(data).find("page").eq(currentPage).attr("mandatory", "false");
 			mandatory = false;
 		}
-		
+
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
 			graded = true;
@@ -500,7 +500,7 @@ function C_Sequencing(_type) {
 			$(data).find("page").eq(currentPage).attr("graded", "false");
 			graded = false;
 		}
-				
+
 		var newFeedbackContent = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
@@ -512,13 +512,13 @@ function C_Sequencing(_type) {
 		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").val());
 		//$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").val());
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
 	function areYouSure(){
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -534,9 +534,9 @@ function C_Sequencing(_type) {
 	                $(this).dialog("close");
                 }
             }
-        }); 
+        });
 	}
-	
+
 	function removeOption(){
 		if(optionCount > 1){
 			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
@@ -548,11 +548,11 @@ function C_Sequencing(_type) {
 			alert("you must have at least one bank item.");
 		}
 	}
-	
+
 	function addOption(_addID, _isNew){
 
 		var optionLabel = parseInt(_addID) + 1;
-		
+
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
@@ -565,27 +565,27 @@ function C_Sequencing(_type) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct", _addID + 1);
-			
+
 			currentEditBankMember = _addID;
 			optionCount++;
 		}
-					
-		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();				
+
+		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label' title='Indicates the correct position of the option in the sequence order.'><b>Correct position in sequence:</b> </label>";
 		msg += "<input type='text' name='myMatch' id='optionCorrect' value='"+ $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") +"' class='dialogInput' style='width:35px; text-align:center;'/><br/>";
-		
+
 		msg += "</div>";
-				
+
 		$("#questionEditDialog").append(msg);
-		
+
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-		
+
 		CKEDITOR.inline( "optionText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -596,19 +596,19 @@ function C_Sequencing(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
 		    	}
-		    }			
-		});	
+		    }
+		});
 	}
-	
+
 	function clearCKInstances(){
 		if (CKEDITOR.instances['optionText']) {
-            CKEDITOR.instances.optionText.destroy();            
+            CKEDITOR.instances.optionText.destroy();
         }
         if (CKEDITOR.instances['feedbackEditText']) {
-            CKEDITOR.instances.feedbackEditText.destroy();            
+            CKEDITOR.instances.feedbackEditText.destroy();
         }
 	}
-		
+
 	/**********************************************************************
     **Save Content Edit - save updated content text to content.xml
     **********************************************************************/
@@ -619,7 +619,7 @@ function C_Sequencing(_type) {
         $(data).find("page").eq(currentPage).find("question").first().append(newCDATA);
         sendUpdateWithRefresh();
     };
-	
+
 	/**********************************************************************
 	**Save Reveal Edit
 	**********************************************************************/
@@ -633,18 +633,18 @@ function C_Sequencing(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
-		
+
 		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
 
-	
-	
+
+
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
-    
+
     this.fadeComplete = function(){
         	fadeComplete();
 	}
