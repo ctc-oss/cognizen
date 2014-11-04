@@ -6,8 +6,8 @@
  * DATE: 2013-04-26
  * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 function C_Dashboard(_type) {
@@ -36,16 +36,16 @@ function C_Dashboard(_type) {
         socket.on('receiveUserList', function (data) {
             userRoster = data;
         });
-        
+
         socket.on('allowOutlineLaunch', function(data){
 	       window.clearInterval(myTimer);
-	       co = new C_Outline(outlineLaunchItem); 
+	       co = new C_Outline(outlineLaunchItem);
         });
-        
+
         /*socket.on('receiveCoursePath', function (data){
-	    	receiveCoursePath(data); 
+	    	receiveCoursePath(data);
         });*/
-        
+
         socket.on('contentPermissions', function(data){
 	        assignUser(data);
         });
@@ -56,7 +56,7 @@ function C_Dashboard(_type) {
             try{co.refreshOutlineData();} catch(e){};
             buildTemplate();
         });
-        
+
         socket.on('updateActiveEditor', function(data){
 	        console.log(data);
 	        if(data.newEditor != null){
@@ -106,7 +106,7 @@ function C_Dashboard(_type) {
         socket.on('refreshDashboard', function() {
             socket.emit('getProjects', user);
         });
-		
+
         //Call the Server (C_Server.js) to get list of projects associated to the user.
         socket.emit('getProjects', user);
     }
@@ -115,7 +115,7 @@ function C_Dashboard(_type) {
     function idIfyPath(path) {
         return path.replace('/', '_');
     }
-    
+
 
     /*****************************************************************************
      buildTemplate()
@@ -149,7 +149,7 @@ function C_Dashboard(_type) {
         $stage.html('');
 
         $stage.append("<div id='projListHeader'>projects:</div>");
-        
+
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
 
         /*****************************************************************************
@@ -160,13 +160,13 @@ function C_Dashboard(_type) {
         var tree_arr = [];
         //Cycle through the proj object
         for (var i = 0; i < proj.directories.length; i++) {
-            
+
             var project = proj.directories[i];
             var $project = $("#" + project.id);
             var idIfiedPath = idIfyPath(proj.directories[i].id);
-			
+
 			project.permission = proj.directories[i].permission;
-	        
+
             //MAKE SURE THE USER'S SUPPOSED TO SEE IT - IF SO - ADD IT
             if(project.permission != 'undefined'){
             	//Check if partent or child.
@@ -181,7 +181,7 @@ function C_Dashboard(_type) {
 	                //Take the last item of the array - that is the title of the folder to put in the tree.
 	                var parentName = result.pop();
 	                for (var j = 0; j < proj.directories.length; j++) {
-	                    
+
 	                    if (proj.directories[j].name == parentName && proj.directories[j].id == proj.directories[i].parent) {
 	                        var parent = proj.directories[j].id;
 	                        break;
@@ -206,8 +206,8 @@ function C_Dashboard(_type) {
 
         //$("#projList").listorder();//Alphabetize root.
 		$("ul").listorder();
-		
-		
+
+
         //ONCE the UL is created add specific funcitionalities related to whether Program, Course, Project or Lesson.
         for (var i = 0; i < tree_arr.length; i++) {
             var content = tree_arr[i];
@@ -216,7 +216,7 @@ function C_Dashboard(_type) {
             $content.data('type', content.type);
             $content.data('path', content.path);
             $content.data('permission', content.permission);
-            
+
 	        addRollovers($content);
         };
 
@@ -232,7 +232,7 @@ function C_Dashboard(_type) {
          *****************************************************************************/
 
         var programAdmin = false;
-        
+
         if (!admin) {
             // Check if user is a program admin
             for (var i = 0; i < user.permissions.length; i++) {
@@ -313,7 +313,7 @@ function C_Dashboard(_type) {
 	                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                }
                 }
-			 
+
 			 $("#myOutline").click(function () {
 				 	//Add preloader
 				 	myTimer = setInterval(function () {startlaunchtimer()}, 14000);
@@ -336,7 +336,7 @@ function C_Dashboard(_type) {
                             duration: 200
                         }
                     });
-			 
+
 			 $("#myPref").click(function () {
                     doPrefs(myItem);
                 }).hover(
@@ -353,7 +353,7 @@ function C_Dashboard(_type) {
                             duration: 200
                         }
                     });
-			 
+
                 $("#myAdd").click(function () {
                     if (myItem.data('type') == "program") {
                         registerContent($(this).parent().parent(), "project");
@@ -374,7 +374,7 @@ function C_Dashboard(_type) {
                             duration: 200
                         }
                     });
-                    
+
                 $("#myRemove").click(function(){
 		            removeContent(myItem);
                 }).hover(
@@ -445,7 +445,7 @@ function C_Dashboard(_type) {
             }
         );
     }
-	
+
     function startlaunchtimer(){
         $("#preloadholder").remove();
         alert("Your request timed out.");
@@ -460,10 +460,10 @@ function C_Dashboard(_type) {
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
-        
+
         moduleLessonWindow.focus();
     }
-    
+
 	//If closing the dashboard, close the lesson....
     function myUnloadHandler(evt)
     {
@@ -495,7 +495,7 @@ function C_Dashboard(_type) {
      ASSIGN USER TO CONTENT
      ************************************************************************************/
     function assignUser(data) {
-    	
+
     	var userData = data;
     	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
     	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
@@ -504,17 +504,17 @@ function C_Dashboard(_type) {
 	    	var editorChecked = data[i].permission == 'editor' ? ' checked' : '';
 	    	var reviewerChecked = data[i].permission == 'reviewer' ? ' checked' : '';
 	    	var noneChecked = data[i].permission == null ? ' checked' : '';
-			
+
 		    msg += '<tr><td id="user'+ i+ '" class="assignUserName" title="'+data[i].username +'">' + data[i].firstName + ' ' + data[i].lastName + '</td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" ' + adminChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" ' + editorChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" ' + reviewerChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" ' + noneChecked + '></td></tr>';
     	}
-    	
+
     	msg += '</table></div>';
     	$("#stage").append(msg);
-    	
+
     	for(var i = 0; i < data.length; i++){
 	    	$("#user"+i).tooltip();
     	}
@@ -533,7 +533,7 @@ function C_Dashboard(_type) {
                     $(this).dialog("close");
                     $("#dialog-assignUser").remove();
                 },
-                
+
                 Assign: function () {
                     var user_arr = [];
                     var rightsPropogation_arr = [];
@@ -546,8 +546,8 @@ function C_Dashboard(_type) {
 	                    user_arr.push(tmpObj)
 	                    //console.log(tmpObj);
                     }
-                    
-                    
+
+
                     socket.emit('assignContentToUsers', {
                         content: {
                             type: assignParent.data('type'),
@@ -608,7 +608,7 @@ function C_Dashboard(_type) {
             submitRegisterNewContent(currentParent, currentLevel);
         }
     }
-    
+
     function submitRegisterNewContent() {
         var myType = "course";
         var nameString = $("#myName").val();
@@ -653,7 +653,7 @@ function C_Dashboard(_type) {
         $("#myType").remove();
         $("#dialog-registerContent").remove();
     }
-    
+
     function submitRemoveContent() {
         var content = {
             id: currentParent.attr('id'),
@@ -698,8 +698,8 @@ function C_Dashboard(_type) {
             $("#dialog-registerUser").remove();
         }
     }
-	
-	
+
+
 	 /************************************************************************************
      REGISTER NEW CONTENT
      ************************************************************************************/
@@ -726,11 +726,11 @@ function C_Dashboard(_type) {
             msg += "<select id='scormVersion'>";
             msg += "<option>2004_4th</option>";
             msg += "<option>2004_3rd</option>";
-            msg += "<option>2004_4th_USSOCOM</option>"; 
-            msg += "<option>2004_3rd_USSOCOM</option>";                           
+            msg += "<option>2004_4th_USSOCOM</option>";
+            msg += "<option>2004_3rd_USSOCOM</option>";
             msg += "<option>none</option>";
             msg += "</select></form>";
-            msg += "</p>";              
+            msg += "</p>";
             msg += '</div>';
             enableRenameContentKeyEvents()
 	    } else if (currentLevel == "lesson") {
@@ -754,10 +754,10 @@ function C_Dashboard(_type) {
             msg += '</div>';
             enableRenameContentKeyEvents()
         }
-        
+
          //Append the string to the stage
         $("#stage").append(msg);
-        
+
         $("#dialog-updatePrefs").dialog({
             modal: true,
             width: 550,
@@ -785,17 +785,17 @@ function C_Dashboard(_type) {
                     $(this).dialog("close");
                     /*$("#myName").remove();*/
                     $("#myType").remove();
-                                       
+
                 }
             }
         });
 
-        $("#scormform").tooltip();     
+        $("#scormform").tooltip();
     }
 
     function clickPublish(parent, level, selectedScorm){
 
-        
+
         if(level === 'course'){
             $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
             disableRenameContentKeyEvents()
@@ -835,9 +835,9 @@ function C_Dashboard(_type) {
 
         socket.emit('publishContent', data, function(fdata){
             if(fdata == ''){
-                $("#dialog-updatePrefs").remove(); 
+                $("#dialog-updatePrefs").remove();
 
-                $('#publishLoader').remove();                
+                $('#publishLoader').remove();
             }
             else{
                 fdata = fdata.replace(/\\/g, '/');
@@ -849,7 +849,7 @@ function C_Dashboard(_type) {
                     if(splitPath[i] == "programs"){
                         notYet = false;
                     }
-                    
+
                     if(notYet == false){
     					if(first == false){
     						dlPath += "/";
@@ -858,23 +858,23 @@ function C_Dashboard(_type) {
     					}
     					dlPath += splitPath[i];
     				}
-                }    
-                dlPath = dlPath.replace(/\s+/g, '%20');        
+                }
+                dlPath = dlPath.replace(/\s+/g, '%20');
 
                 socket.emit('sendPackageMail', {
                     user: user._id,
                     path: dlPath
                 });
-                
-                $("#dialog-updatePrefs").remove(); 
+
+                $("#dialog-updatePrefs").remove();
 
                 $('#publishLoader').remove();
 
                 var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+dlPath+' target="_blank">GET PACKAGE</a></p></div>';
-                
+
                 //Add to stage.
                 $("#stage").append(msg);
-            
+
                 //Make it a dialog
                 $("#dialog-dlPackage").dialog({
                     modal: true,
@@ -888,11 +888,11 @@ function C_Dashboard(_type) {
                         }
                     }
                 });
-            }      
-            socket.emit('refreshDashboard');                  
-        });        
+            }
+            socket.emit('refreshDashboard');
+        });
     }
-    
+
     function enableRenameContentKeyEvents() {
         $("#myName").bind("keyup", keyUpSubmitRenameContent);
     }
@@ -907,7 +907,7 @@ function C_Dashboard(_type) {
         }
     }
 
-    
+
     /*function submitPrefUpdate(_myParent, _myLevel){
 		disableRenameContentKeyEvents()
         var data = {
@@ -926,7 +926,7 @@ function C_Dashboard(_type) {
 
 	    $("#dialog-updatePrefs").remove();
     }*/
-    
+
     /************************************************************************************END PREFS*/
     /************************************************************************************
      REGISTER NEW CONTENT
@@ -949,6 +949,7 @@ function C_Dashboard(_type) {
 	   if(myParent != "root"){
 	  	 parentString = myParent.find("span").first().text();
 	   }
+	   	$("#myName").alphanum();
         //Append the string to the stage
         $("#stage").append(msg);
         //Convert string to dialog
@@ -979,7 +980,7 @@ function C_Dashboard(_type) {
             }]
         });
     }
-    
+
     /************************************************************************************
     REMOVE CONTENT
     ************************************************************************************/
@@ -987,7 +988,7 @@ function C_Dashboard(_type) {
         currentParent = myParent;
         currentLevel = myParent.data('type');
 	    $("#stage").append('<div id="dialog-removeContent" title="Remove this '+currentLevel+'"><p class="validateTips">Are you sure that you want to remove '+myParent.find("span").first().text()+'?</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -1006,14 +1007,31 @@ function C_Dashboard(_type) {
                 },
                 Remove: submitRemoveContent
             }
-        }); 
+        });
     }
     /************************************************************************************
     REGISTER NEW USERS
     ************************************************************************************/
     //Launch Register USER Dialog
     function registerUser() {
-        $("#stage").append('<div id="dialog-registerUser" title="Add New User"><p class="validateTips">Add the new users details below.</p><label for="firstName" class="regField">first name: </label><input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="lastName" class="regField">last name: </label><input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regEmail" class="regField">email: </label><input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regPassword" class="regField">password: </label><input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="regPasswordVer" class="regField">verify password: </label><input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>');
+        var registerString = '<div id="dialog-registerUser" title="Add New User">';
+        	registerString += '<p class="validateTips">Add the new users details below.</p>';
+        	registerString += '<label for="firstName" class="regField">first name: </label>';
+        	registerString += '<input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+        	registerString += '<label for="lastName" class="regField">last name: </label>';
+        	registerString += '<input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+        	registerString += '<label for="regEmail" class="regField">email: </label>';
+        	registerString += '<input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+        	registerString += '<label for="regPassword" class="regField">password: </label>';
+        	registerString += '<input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+        	registerString += '<label for="regPasswordVer" class="regField">verify password: </label>';
+        	registerString += '<input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+
+        $("#stage").append(registerString);
+
+        $("#firstName").alpha();
+        $("#lastName").alpha();
+
         $("#dialog-registerUser").dialog({
             modal: true,
             width: 550,

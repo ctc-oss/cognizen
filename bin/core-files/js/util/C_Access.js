@@ -22,12 +22,12 @@ ACESSIBILITY/508 FUNCTIONALITY
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *****************************************************************************************************************************************************************************************************************/
 function doAccess(items){
+	var body = document.getElementsByTagName("body")[0];
+	body.setAttribute('role', 'application');
 	var tabIndex = 1;
 	//Add page specific order
 	for(var i = 0; i < items.length; i++){
-		//console.log($(items[i]));
 		$(items[i]).attr("tabindex", tabIndex);
-		//$(items[i]).attr("aria-label", $(items[i]).text());
 		tabIndex++;
 	}
 
@@ -38,12 +38,10 @@ function doAccess(items){
 	}
 	//Pick up with shell items after page items (index/next/back/page/course/module).
 	for(var j = 0; j < globalAccess_arr.length; j++){
-		//console.log(globalAccess_arr[j]);
-		//globalAccess_arr[j].attr('aria-label', globalAccess_arr[j].text());
 		globalAccess_arr[j].attr("tabindex", tabIndex);
 		tabIndex++;
 	}
 
 	items[0].focus();
-	items[0].blur();
+	//items[0].blur();
 }

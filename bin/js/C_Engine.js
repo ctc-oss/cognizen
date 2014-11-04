@@ -6,8 +6,8 @@
  * CREATION DATE: 2013-01-16
  * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 
@@ -60,7 +60,7 @@ if (typeof console === "undefined" || typeof console.log === "undefined") {
 ****************************************************/
 //LOAD THE XML AS SOON AS THE DOCUMENT IS READY
 $(document).ready(function(){
-  
+
   $.ajax({
     type: "GET",
     url: "xml/content.xml",
@@ -84,12 +84,12 @@ function initScripts(_data){
 	        // Get the user agent string
 	        var ua = navigator.userAgent;
 	        this.compatibilityMode = false;
-	        
+
 	        // Detect whether or not the browser is IE
 	        var ieRegex = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
 	        if (ieRegex.exec(ua) == null)
 	            this.exception = "The user agent detected does not contain Internet Explorer.";
-	 
+
 	        // Get the current "emulated" version of IE
 	        this.renderVersion = parseFloat(RegExp.$1);
 	        this.version = this.renderVersion;
@@ -105,7 +105,7 @@ function initScripts(_data){
 	                this.version = 10;                  // IE 10
 	            }
 	        }
-	        else if (ua.indexOf("Trident/5.0") > -1) {      
+	        else if (ua.indexOf("Trident/5.0") > -1) {
 	            if (ua.indexOf("MSIE 7.0") > -1 ||
 	            	ua.indexOf("MSIE 8.0") > -1) {
 	                this.compatibilityMode = true;
@@ -121,15 +121,15 @@ function initScripts(_data){
 	            this.version = 7;                       // IE 7
 	            this.compatibilityMode = true;     //not truly compatibilityMode IE7 is not supported
 	        }
-	        
+
 	        else{
 	        	this.compatibilityMode = false;
-	            this.version = -1;                       // IE 6	        	
+	            this.version = -1;                       // IE 6
 	        }
 
 	    }
 	};
-	 
+
 	// Initialize the ieUserAgent object
 	ieUserAgent.init();
 
@@ -151,10 +151,10 @@ function initScripts(_data){
 			"<li>Uncheck \"Display all websites in compatibility view\" if it is checked.</li>"+
 			"<li>Click on \"Close\". You are now done. Please refresh the page.</li></ol></div>");
     }
-    else{	
+    else{
 	totalPages = $(data).find('page').length;
 	mode = $(data).find('mode').attr("value");
-	
+
 	// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
     require.config({
         waitSeconds: 0
@@ -167,13 +167,14 @@ function initScripts(_data){
 				"js/libs/socket.io-client/dist/socket.io.js",
 				"js/libs/underscore-min.js",
 				"js/libs/jquery.nestable.js",
-				"js/libs/pretty-data.js", 
+				"js/libs/pretty-data.js",
+				"js/libs/jquery.alphanum.js",
 				"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
 				"js/libs/jquery.cookie.js",
-				"js/util/C_Outline.js", 
+				"js/util/C_Outline.js",
 				"js/libs/jquery.treeview.js",
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",
@@ -182,10 +183,10 @@ function initScripts(_data){
 				"js/libs/fancybox/jquery.fancybox-thumbs.js",
 				"js/libs/antiscroll.js",
 				"js/libs/jquery.mousewheel-3.0.6.pack.js"
-				], function($) {  
+				], function($) {
 	    //Once all of the external js has loaded, build the application.
 	    buildInterface();
-	   
+
 	});
 	}
 }
@@ -196,7 +197,7 @@ function isOldIE() {
     "use strict";
 
     // Detecting IE
-   
+
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
@@ -208,12 +209,12 @@ function isOldIE() {
 ****************************************************/
 //Place all permanent items in the UI - background - title - nav
 function buildInterface(){
-	
+
 //	var url = cognizenServerUrl();
 	//var xhr = true;
 	//socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
                      //io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
-	
+
 	if (isOldIE()){
 		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
 		//console.log("saying is IE");
@@ -236,10 +237,10 @@ function buildInterface(){
         }
         currentTemplate.initialize();
     });
-	
-	
+
+
 	$('body').append("<div id='myCanvas'><div id='bg'></div><div id='stage'></div></div>");
-	
+
 	$("#bg").fitToBackgroundImage();
 	//Utilized in many of the templates for positioning and autoScrolling
 	//DO NOT REMOVE
@@ -247,9 +248,9 @@ function buildInterface(){
 	stageY = $("#stage").position().top;
 	stageW = $("#stage").width();
 	stageH = $("#stage").height();
-			
+
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
-	//if so, set them up. 
+	//if so, set them up.
 	transition = $(data).find('transition').attr('value');
 	if(transition == "true"){
 		transition = true;

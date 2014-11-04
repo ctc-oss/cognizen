@@ -83,7 +83,7 @@ function C_StaticContent(_type) {
 		   	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			$("#content").width($("#contentHolder").width()-15);
 		   	$("#content").append(myContent);
-		   	$("#content").attr("role", "main");
+		   	//$("#content").attr("role", "main");
 		   	$("#content").attr("aria-label", $("#content").text());
 		   	pageAccess_arr.push($("#content"));
 	    }
@@ -110,7 +110,7 @@ function C_StaticContent(_type) {
 				}
 
 				$('#sidebar').height($('#sidebarHolder').height());
-				$('#sidebar').attr('role', 'complementary');
+				//$('#sidebar').attr('role', 'complementary');
 				$('#sidebar').attr('aria-label', $('#sidebar').text());
 				pageAccess_arr.push($("#sidebar"));
 			}

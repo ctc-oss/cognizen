@@ -204,6 +204,7 @@ function initScripts(_data){
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
 					corePath +"js/libs/pretty-data.js",
+					corePath +"js/libs/libs/jquery.alphanum.js",
 			//Import Cognizen layout templates
 					//corePath +"js/templates/C_LessonTitle.js",
 					corePath +"js/templates/C_Categories.js",

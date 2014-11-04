@@ -1,7 +1,7 @@
 /*
  *  	C_Outline
  *  	Requires jQuery v1.9 or later
- *	
+ *
  *      Houses functionality to create course structure and sequencing
  *  	Version: 0.5
  *		Date Created: 07/12/14
@@ -10,7 +10,7 @@
  *		Updated by: Philip Double
  */
 function C_Outline(_myItem) {
-	
+
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
 	var courseID = myItem.data('id');							//Course to check for modules
@@ -21,8 +21,8 @@ function C_Outline(_myItem) {
     var courseData;												//Variable to hold and manipulate course.xml - the xml is imported and held in courseData object.
     var courseXMLPath;											//Path to the course.xml
     var refreshExpected = false;								//Toggle on refreshes coming in - true when needed.
-    
-    
+
+
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
@@ -34,134 +34,134 @@ function C_Outline(_myItem) {
 																path: "VA/Course 1/z9"
 																permission: "admin"
 																type: "lesson"*/
-       
+
     ////////////////////////////////////////////////   PAGE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    
+
     ////////////////////////////////////////////////   MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var currentPageParentModule;
     var currentPage;
     var currentPageFamily;
     var currentMenuItem;
     var indexItem_arr;											//Array of moduleIndexItem_arr arrays which hold each button
-	
+
 	////////////////////////////////////////////////   MOVING MENU ITEMS VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var startList;
     var hoverSubNav = false;
     var startListJSON;
     var currentDragID;
     var currentDragItem;
-    
+
     var pageTypeExamples = [
 		{
 			"type" : "textOnly",
-			"images" : ["ex_textOnly.png"]	
+			"images" : ["ex_textOnly.png"]
 		},
 		{
 			"type" : "graphicOnly",
-			"images" : ["ex_graphicOnly.png"]	
+			"images" : ["ex_graphicOnly.png"]
 		},
 		{
 			"type" : "top",
-			"images" : ["ex_top.png"]	
+			"images" : ["ex_top.png"]
 		},
 		{
 			"type" : "left",
-			"images" : ["ex_left.png"]	
+			"images" : ["ex_left.png"]
 		},
 		{
 			"type" : "right",
-			"images" : ["ex_right.png"]	
+			"images" : ["ex_right.png"]
 		},
 		{
 			"type" : "bottom",
-			"images" : ["ex_bottom.png"]	
+			"images" : ["ex_bottom.png"]
 		},
 		{
 			"type" : "sidebar",
-			"images" : ["ex_sidebar.png"]	
+			"images" : ["ex_sidebar.png"]
 		},
 		{
 			"type" : "clickImage",
-			"images" : ["ex_clickImage.png"]	
+			"images" : ["ex_clickImage.png"]
 		},
 		{
 			"type" : "tabsOnly",
-			"images" : ["ex_tabsOnly.png"]	
+			"images" : ["ex_tabsOnly.png"]
 		},
 		{
 			"type" : "tabsLeft",
-			"images" : ["ex_tabsLeft.png"]	
+			"images" : ["ex_tabsLeft.png"]
 		},
 		{
 			"type" : "revealRight",
-			"images" : ["ex_revealRight.png"]	
+			"images" : ["ex_revealRight.png"]
 		},
 		{
 			"type" : "revealLeft",
-			"images" : ["ex_revealLeft.png"]	
+			"images" : ["ex_revealLeft.png"]
 		},
 		{
 			"type" : "revealBottom",
-			"images" : ["ex_revealBottom.png"]	
+			"images" : ["ex_revealBottom.png"]
 		},
 		{
 			"type" : "flashcard",
-			"images" : ["ex_flashcard.png"]	
+			"images" : ["ex_flashcard.png"]
 		},
 		{
 			"type" : "sequence",
-			"images" : ["ex_sequence.png"]	
+			"images" : ["ex_sequence.png"]
 		},
 		{
 			"type" : "multipleChoice",
-			"images" : ["ex_multipleChoice.png", "ex_multipleSelect.png"]	
+			"images" : ["ex_multipleChoice.png", "ex_multipleSelect.png"]
 		},
 		{
 			"type" : "matching",
-			"images" : ["ex_matching.png"]	
+			"images" : ["ex_matching.png"]
 		},
 		{
 			"type" : "questionBank",
-			"images" : ["ex_questionBank.png"]	
+			"images" : ["ex_questionBank.png"]
 		},
 		{
 			"type" : "completion",
-			"images" : ["ex_completion.png"]	
+			"images" : ["ex_completion.png"]
 		},
 		{
 			"type" : "textInput",
-			"images" : ["ex_textInput.png"]	
+			"images" : ["ex_textInput.png"]
 		},
 		{
 			"type" : "essayCompare",
-			"images" : ["ex_essayCompare.png"]	
+			"images" : ["ex_essayCompare.png"]
 		},
 		{
 			"type" : "clickListRevealText",
-			"images" : ["ex_clickListRevealText.png"]	
+			"images" : ["ex_clickListRevealText.png"]
 		}
 	];
 
-    
+
     $(document).ready(function(){
     	initOutline();
     });
-    
+
     socket.on('receiveCoursePath', function (data){
-		receiveCoursePath(data); 
+		receiveCoursePath(data);
     });
-    
+
     this.refreshOutlineData = function(){
 	   refreshOutlineData();
     }
-    
+
     function refreshOutlineData(){
 	    if(refreshExpected == true){
 		   module_arr = [];
 		   indexItem_arr = [];
 		   loadedOutlineModules = 0;
-		   refreshExpected = false; 
-		   		
+		   refreshExpected = false;
+
 		   $.ajax({
 			   type: "GET",
 			   url: courseXMLPath,
@@ -174,7 +174,7 @@ function C_Outline(_myItem) {
 			});
 		}
     }
-    	
+
 	 /************************************************************************************
      initOutline()
      -- reach out to the node server and get the path to the course.
@@ -189,7 +189,7 @@ function C_Outline(_myItem) {
              }
 		});
      }
-     
+
      /************************************************************************************
      receiveCoursePath(data)
      -- recieve course path back from node in data object.
@@ -210,7 +210,7 @@ function C_Outline(_myItem) {
 		    }
 		});
      }
-     
+
      /************************************************************************************
      importModuleItems(_data);
      -- store the course.xml in courseData variable to read and manipulate as needed.
@@ -223,7 +223,7 @@ function C_Outline(_myItem) {
 	     if(totalOutlineModules > 0){
 	     	for(var y = 0; y < totalOutlineModules; y++){
 	     		 var moduleObj = new Object();
-						
+
 		 		 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
 		 		 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
 		 		 moduleObj.parent = courseID;
@@ -232,7 +232,7 @@ function C_Outline(_myItem) {
 		 		 moduleObj.xml = null;
 		 		 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
 		 		 module_arr.push(moduleObj);
-					    
+
 		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
 		 		 importModuleXML(currentXML);
 	     	}
@@ -240,8 +240,8 @@ function C_Outline(_myItem) {
 			 buildOutlineInterface();
 		 }
      }
-     
-     
+
+
      /************************************************************************************
      importModuleXML(_path)
      -- download content.xml for each module
@@ -259,8 +259,8 @@ function C_Outline(_myItem) {
 		    }
 		});
      }
-     
-     
+
+
      /************************************************************************************
      importOutlineModuleItemComplete(_data);
      -- attach module content.xml to appropriate module_arr item
@@ -277,18 +277,18 @@ function C_Outline(_myItem) {
 		     buildOutlineInterface();
 	     }
      }
-     
-     
+
+
      /************************************************************************************
 	 buildOutlineInterface()
      -- build menuing system and add functionalities
-     ************************************************************************************/     
+     ************************************************************************************/
      function buildOutlineInterface(){
      	try {$("#dialog-outline").dialog("close");} catch (e) {}
-     	
+
      	var thisID;
      	indexItem_arr = [];
-	 	
+
      	msg = '<div id="dialog-outline" title="Outline '+ myItem.find("span").first().text() + ':">';
 	    msg += '<div id="outlinePane" class="pane">'
 	    msg += '<div id="outlineIndexPane" class="paneContent">';
@@ -299,7 +299,7 @@ function C_Outline(_myItem) {
 		//msg += '<div class="dd-handle dd3-handle">Drag</div>';
 		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="'+ courseID+'">'+myItem.find("span").first().text() +'</div>';
 		msg += '<ol class="dd-list">';
-	    
+
 	    //ADD MODULE and PAGES LEVEL  ----- Calls a separate function for cleanliness
 	    for(var i = 0; i < module_arr.length; i++){
 	     	msg += buildOutlineModule(i);
@@ -313,8 +313,8 @@ function C_Outline(_myItem) {
 	    msg += '</div>';//close the dialog
         //ADD menu to stage
         $("#stage").append(msg);
-        
-        
+
+
         //Apply nestable capabilities
         $('#C_Index').nestable({maxDepth: 4})
         	.on('change', function(e, _item){
@@ -338,10 +338,10 @@ function C_Outline(_myItem) {
                 $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {
-               
+
             }
         });
-        
+
         //OPEN WITH ALL MENU ITEMS COLLAPSED
         //$('#C_Index').nestable('collapseAll');
 
@@ -350,7 +350,7 @@ function C_Outline(_myItem) {
 		var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
 		startList = tmpStartList.nestable('serialize');
         startListJSON = window.JSON.stringify(startList);
-		
+
         //Add button listeners
         //COURSE BUTTON LISTENER
         $("#courseIndexHotspot").click(function(){
@@ -363,10 +363,10 @@ function C_Outline(_myItem) {
         }).hover(
 	    	function () {
 	    		$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div>");
-	            
+
 	            //ADD apropriate title attributes for the toolitp hints on rollovers...
 	            $("#outlineAdd").attr("title", "Add a new module to your course.");
-	            
+
 	            //ADD ADD NAV
 	            $("#outlineAdd").click(function(){
 	            	addModuleToCourse(myItem.attr("data-id"));
@@ -387,21 +387,21 @@ function C_Outline(_myItem) {
 	        },
 	        function () {
 				$("#outlineAdd").remove();
-			}   
+			}
 		);
-        
+
         //START WITH COURSE SELECTED
         $("#courseIndexHotspot").click();
-        
+
         //MODULE BUTTON LISTENERS
         addModuleClicks();
-        		
+
 		//Pages
 		addPageClicks();
-		
+
 		try{$("#preloadholder").remove();} catch(e){};
      }
-     
+
      /*****************************************************************
      buildOutlineModule - builds the index for the module.
      Retruns a string representing the module and it's pages.
@@ -437,14 +437,14 @@ function C_Outline(_myItem) {
 		 		i = i + j;
 		 		indexString += "</ol>"
 		 	}
-		 	
+
 		 	indexString += "</li>";
 		}
 		indexItem_arr.push(moduleIndexItem_arr)
 		indexString += '</ol></li>';
 		return indexString;
      }
-     
+
      /************************************************************************************
      addModuleClicks()
      -- Add listeners to the menu times for the course module buttons
@@ -463,7 +463,7 @@ function C_Outline(_myItem) {
 			addOutlineRollovers($("#module"+j+"IndexHotspot"), "module");
 		}
      }
-     
+
      /************************************************************************************
      addPageClicks()
      -- Add listeners to the menu times for the course page buttons
@@ -487,7 +487,7 @@ function C_Outline(_myItem) {
 			}
 	     }
      }
-     
+
      /******************************************************************
      Update module and page order and call appropriate XML SAVE Funcion
      Called on drop of menu item - does nothing if there is no change.
@@ -506,10 +506,10 @@ function C_Outline(_myItem) {
 			 var startModule = startNode.module;
 			 var startModuleID = module_arr[startNode.module].id;
 			 var startNodeLevel = startNode.level;
-			 
+
 			 var endNode;
 			 var myInsert;
-			 
+
 			 //Discern whether to put before or after - depending upon position change...
 			 if(startNodeLevel == "module"){
 				 var tmpID = $('#' + currentDragID).attr("id");
@@ -539,7 +539,7 @@ function C_Outline(_myItem) {
 				 	myInsert = "into";
 				 }
 			}
-			 
+
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
 			 var endModuleID = module_arr[endNode.module].id;
@@ -553,23 +553,23 @@ function C_Outline(_myItem) {
 						 levelChange = false;
 					 }
 				 }
-				 
+
 				 if(levelChange){
 					 legalMove = false;
 					 alert("That is an illegal move.  You cannot change the level of a module, just reorder them.")
 				 }
 			 }
-			 
+
 			 //Check for legal moves....
 			 if(startNodeLevel == "page" && endNodeLevel == "module"){
 				 legalMove = false;
 				 alert("That is an illegal move.  You cannot turn a page into a module.... yet...");
-			 }	
-			 
+			 }
+
 			 if(!legalMove){
 			 	refreshExpected = true;
 			 	refreshOutlineData()
-			 }else{		 
+			 }else{
 				 //MOVE from original position to updated position.
 				 if(myInsert == "before"){
 					 moveFrom.insertBefore(moveTo);
@@ -577,9 +577,9 @@ function C_Outline(_myItem) {
 					 moveFrom.insertAfter(moveTo);
 				 }else{
 					 moveTo.append(moveFrom);
-				 }	
-				 
-				 //REORDERING MODULES			 	 
+				 }
+
+				 //REORDERING MODULES
 				 if(endNodeLevel == "module" && startNodeLevel == "module"){
 					 updateCourseXML();
 				 }
@@ -597,20 +597,20 @@ function C_Outline(_myItem) {
 			                destroy();
 			            },
 			            open: function (event, ui) {
-			               
+
 			            }
 			         });
-					 
+
 				 }
 				 //REORDERING PAGES WITHIN MODULES
-				 	else if (startNodeLevel == "page" && endNodeLevel == "page"){ 
+				 	else if (startNodeLevel == "page" && endNodeLevel == "page"){
 				 	if(endModule != startModule){
 					 	updateModuleXML(startModule, false);
 					 }
 				 	 updateModuleXML(endModule, true);
 				 }
-				 
-				 //Update start list in case more than one change is made... 
+
+				 //Update start list in case more than one change is made...
 				 //Without this, you can only make one change and then stuff get's funky.
 				 var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
 				 var tmpStartList   = tmpStart.length ? tmpStart : $(tmpStart.target);
@@ -619,7 +619,7 @@ function C_Outline(_myItem) {
 			 }
 		}
      }
-     
+
      function getNode(_nodeID){
          var nodeData = new Object();
 	     for(var i = 0; i < module_arr.length; i++){
@@ -627,11 +627,11 @@ function C_Outline(_myItem) {
 			     nodeData.node = $(courseData).find('item[id="' +_nodeID+ '"]');
 			     nodeData.module = i;
 			     nodeData.level = "module";
-			     return nodeData; 
+			     return nodeData;
 			     break;
 		     }else{
 			     var $xml = $(module_arr[i].xml)
-			     
+
 			     if($xml.find('page[id="'+_nodeID+'"]').length > 0){
 			     	 nodeData.node = $xml.find('page[id="'+_nodeID+'"]');
 			     	 nodeData.module = i;
@@ -642,7 +642,7 @@ function C_Outline(_myItem) {
 			 }
 	     }
      }
-     
+
      /****************************************************************
      * Display editable Course Preferences.
      ****************************************************************/
@@ -651,38 +651,38 @@ function C_Outline(_myItem) {
 	    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + myItem.find("span").first().text() + "</b></div><br/>";
 	    msg += "<div id='accordion'>";
      	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
-     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';	    
+     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 		msg += "<label for='instructionalGoal'>instructional goal: </label>";
-		msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
+		msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
 		//end div for general
 		msg += '</div>';
      	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
-		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';				
+		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
 		msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
 		msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
 		msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
 		msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
-		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");	
-		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';	
+		msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");
+		msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';
 		//end div for sequencing
 		msg += '</div>';
     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>LMS Options</h3>";
-     	msg += '<div id="lmsAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';	    
+     	msg += '<div id="lmsAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';
      	msg += "<label for='lms'>Set preferred LMS: </label>";
      	msg += "<select name='lms' id='lms' title='Set the preferred LMS to be used for deployment.'>";
      	msg += "<option>none</option>";
      	msg += "<option>JKO</option>";
      	msg += "</select> ";
 		//end div for lmsAccord
-		msg += '</div>';			
+		msg += '</div>';
 		//end div for accordion
-		msg += '</div>';				
-		
+		msg += '</div>';
+
 		$("#outlinePagePrefPane").append(msg);
-		
+		$("#out_courseTitle").alphanum();
 		//set objectivesGlobalToSystem based off value in xml
 		if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
 			$('#objectivesGlobalToSystem').prop('checked',true);
@@ -753,7 +753,7 @@ function C_Outline(_myItem) {
 			   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
 		   }
 		   updateCourseXML();
-		});		
+		});
 
 		$("#out_courseTitle").on("change", function(){
 			//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
@@ -761,7 +761,7 @@ function C_Outline(_myItem) {
 			currentMenuItem.text(titleUpdate);
 			$(courseData).attr("name", titleUpdate);
 			updateCourseXML();
-			
+
 			var data = {
 	            content: {
 	                id: courseID,
@@ -773,7 +773,7 @@ function C_Outline(_myItem) {
 	                username: user.username
 	            }
 	        };
-	
+
 	        socket.emit('renameContent', data);
 		}).css({'width': '500px', 'color': '#3383bb;'});
 
@@ -784,10 +784,10 @@ function C_Outline(_myItem) {
 
 		// update the xml when the lms drop is changed
 	    $("#lms").on("change", function(){
-		    $(courseData).find("course").attr("lms", $("#lms").val());		    
+		    $(courseData).find("course").attr("lms", $("#lms").val());
 		    setLmsAccord();
 		    updateCourseXML();
-	    }); 
+	    });
 
 		//set instructional goal based off value in xml
 		if($(courseData).find("course").attr("instructionalgoal")){
@@ -796,9 +796,9 @@ function C_Outline(_myItem) {
 
 		// update the xml when the instructional goal is changed
 	    $("#instructionalGoal").on("change", function(){
-		    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());		    
+		    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());
 		    updateCourseXML();
-	    }).css({'width': '500px', 'color': '#3383bb;'}); 	    		
+	    }).css({'width': '500px', 'color': '#3383bb;'});
 
 		/*$("#out_courseObjective").on("change", function(){
 		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
@@ -814,10 +814,10 @@ function C_Outline(_myItem) {
 			$("#accordion").accordion({
 				collapsible: true,
 				heightStyle: "content"
-			});			
+			});
 			//sets up lmsAccord div based off of lms identified
-			setLmsAccord();			
-		});	
+			setLmsAccord();
+		});
 
 
      }
@@ -830,10 +830,10 @@ function C_Outline(_myItem) {
 			$("#lmsAccord").append(jkoData);
 			setToggle("survey", -1);
 			setToggle("certificate", -1);
-			toggleChange("survey", -1);	
-			toggleChange("certificate", -1);  
+			toggleChange("survey", -1);
+			toggleChange("certificate", -1);
 			$( document ).tooltip();
-			$("#accordion").accordion("refresh");	  	
+			$("#accordion").accordion("refresh");
 		}
 		else if($("#lms").val() == "none"){
 			$(courseData).find("course").attr("survey", "false");
@@ -843,7 +843,7 @@ function C_Outline(_myItem) {
 		}
 
 	}
-     
+
      /****************************************************************
      * Display editable Module Preferences.
      ****************************************************************/
@@ -927,58 +927,58 @@ function C_Outline(_myItem) {
         msg += '<input type="text" name="lockDuration" id="lockDuration" value="'+ $(module_arr[_id].xml).find('lockRequestDuration').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "<div><b>minScore:</b></div>";
      	msg += "<label for='minScore'>minimal passing score: </label>";
-        msg += '<input type="text" name="minScore" id="minScore" value="'+ $(module_arr[_id].xml).find('minScore').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';  
+        msg += '<input type="text" name="minScore" id="minScore" value="'+ $(module_arr[_id].xml).find('minScore').attr("value") + '" class="text ui-widget-content ui-corner-all" /><br/> ';
      	msg += "<div><b>restartOnFail</b></div>";
 		msg += "<label id='label' for='restartOnFail'>restartOnFail: </label>";
-		msg += "<input id='restartOnFail' type='checkbox' name='restartOnFail' class='radio'/><br/><br/>";     	  	
+		msg += "<input id='restartOnFail' type='checkbox' name='restartOnFail' class='radio'/><br/><br/>";
      	msg += "</div>";
      	//end general div
      	msg += '</div>';
      	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
 		msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
-		msg += '<br/><div id="hideLMSUIValues" title="" style="float:left;"><b>Indicates which navigational UI elements the LMS should hide when this activity is being delivered:</b></div>';		
+		msg += '<br/><div id="hideLMSUIValues" title="" style="float:left;"><b>Indicates which navigational UI elements the LMS should hide when this activity is being delivered:</b></div>';
 		msg += addToggle("previous", "Remove the previous button:");
-		msg += addToggle("continue", "Remove the continue button:" );	
-		msg += addToggle("exit", "Remove the exit button (if present):");	
-		msg += addToggle("exitAll", "Remove the exitAll button (if present):");	
-		msg += addToggle("abandon", "Remove the abandon button (if present):");	
-		msg += addToggle("abandonAll", "Remove the abandonAll button (if present):");	
+		msg += addToggle("continue", "Remove the continue button:" );
+		msg += addToggle("exit", "Remove the exit button (if present):");
+		msg += addToggle("exitAll", "Remove the exitAll button (if present):");
+		msg += addToggle("abandon", "Remove the abandon button (if present):");
+		msg += addToggle("abandonAll", "Remove the abandonAll button (if present):");
 		msg += addToggle("suspendAll", "Remove the suspendAll button (if present):");
 		msg += '<br/><br/><div id="controlModes" title="" style="float:left;"><b>Determine what type of navigation is allowed by the user:</b></div>';
 		//msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children:");
 		//msg += addToggle("flow", "Enable previous and next LMS navigation buttons for navigating among this activity’s children:");
-		//msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");	
+		//msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");
 		msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
 		msg += '<br/><div id="sequencingRules" title="" style="float:left;"><b>Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next.: </b></div>';
 		msg += addToggle("notAttemptHidden", "Hide the item in the TOC until it has been attempted:");
      	//msg += '<label title="Hide the item in the TOC until it has been attempted." style="width:350px; float:left;" >Hide in table of contents until attempted : </label>';
-		//msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" style="float:left;"/><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';		
+		//msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" style="float:left;"/><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';
 		msg += '<br/><br/><div id="rollupControls" title="" style="float:left;"><b>Determine which activities participate in status rollup and how their status is weighted in relation to other activities: </b></div>';
 		msg += addToggle("rollupObjectiveSatisfied", "Specifies whether this activity should count towards satisfaction rollup:");
 		msg += '<label for="rolluOobjectiveMeasureWeight" title="" style="float:left">Assign a weight to the score for this activity to be used in rollup.:  </label>';
 		msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" style="width:350px; float:left;"/>';
-		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup:");		
+		msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup:");
 		msg += '<br/><div id="deliveryControls" title="" style="float:left;"><b>Allow for non-communicative content to be delivered and sequenced:</b></div>';
 		msg += addToggle("tracked", "Is data tracked for this activity:");
 		msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
-		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");							     	
+		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");
 		msg += '<br/><div id="reviewModule" title="If this is a test module, a test review module can be added that displays all of the missed objectives from the test.'
 		+' This adds the module at publish time to the final SCORM package." style="float:left;"><b>Add test review module after this module:</b></div>';
-		msg += addToggle("testReview", "Specifies if a test module should proceed this module:");	
+		msg += addToggle("testReview", "Specifies if a test module should proceed this module:");
 		msg += 	'<br/><div style="float:left;"><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" >Sequencing Definition Model</a></div>';
-	
+
 
 		//end sequencing div
 		msg += '</div>';
 		//end accordion div
-		msg += '</div>';			
+		msg += '</div>';
 	    $("#outlinePagePrefPane").append(msg);
-	   
+	    $("#lessonTitle").alphanum();
 	    //Set module settings.
 	    //Mode
 		$("#mode option:contains(" + $(module_arr[_id].xml).find('mode').attr("value") + ")").attr('selected', 'selected');
 		$("#transition").val($(module_arr[_id].xml).find('transitionType').attr("value"));
-		
+
 		if($(module_arr[_id].xml).find('glossary').attr("value") === "true"){
 			$('#hasGlossary').prop('checked',true);
 		}
@@ -1009,8 +1009,8 @@ function C_Outline(_myItem) {
 						$('#tlo').val($(courseData).find("item").eq(j).attr('tlo'));
 					}
 				}
-				
-			}	    	
+
+			}
 	    }
 	    else{
 	    	$('#tlo').val($(module_arr[_id].xml).find('tlo').attr('value'));
@@ -1040,7 +1040,7 @@ function C_Outline(_myItem) {
 			//Update module name in module.xml
 			$(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
 			updateModuleXML(_id, false);
-			
+
 			//find and update module title in course.xml
 			for(var j = 0; j < $(courseData).find("item").length; j++){
 				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
@@ -1048,13 +1048,13 @@ function C_Outline(_myItem) {
 					updateCourseXML(false);
 					break;
 				}
-				
+
 			}
-			
+
 
 			//Update title in menu
 			currentMenuItem.text($("#lessonTitle").val().trim());
-			
+
 			//Send to server for rename
 			var data = {
 	            content: {
@@ -1067,11 +1067,11 @@ function C_Outline(_myItem) {
 	                username: user.username
 	            }
 	        };
-	
+
 	        socket.emit('renameContent', data);
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 	    //END MODULE TITLE CHANGE
-	    
+
 	    //module tlo change
 	    $("#tlo").on("change", function(){
 			$(module_arr[_id].xml).find('tlo').attr('value', $('#tlo').val().trim());
@@ -1084,9 +1084,9 @@ function C_Outline(_myItem) {
 					updateCourseXML(false);
 					break;
 				}
-				
+
 			}
-				
+
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 
 
@@ -1094,7 +1094,7 @@ function C_Outline(_myItem) {
 		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
 		    updateModuleXML(_id);
 	    });
-	    
+
 	    $("#transition").on("change", function(){
 		    $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
 		    if($("#transition").val() == "none"){
@@ -1106,27 +1106,27 @@ function C_Outline(_myItem) {
 		    updateModuleXML(_id);
 
 	    });
-	    
+
 	    $("#transitionDuration").on("change", function(){
 			$(module_arr[_id].xml).find('transitionLength').attr("value", $("#transitionDuration").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
-	    
+
 	    $("#lockDuration").on("change", function(){
 			$(module_arr[_id].xml).find('lockRequestDuration').attr("value", $("#lockDuration").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
-	    
+
 	    $("#lessonWidth").on("change", function(){
 			$(module_arr[_id].xml).find('lessonWidth').attr("value", $("#lessonWidth").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
-	    
+
 	    $("#lessonHeight").on("change", function(){
 			$(module_arr[_id].xml).find('lessonHeight').attr("value", $("#lessonHeight").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
-	    
+
 	    $("#hasGlossary").on("change", function(){
 		   if($('#hasGlossary').prop('checked')){
 			   $(module_arr[_id].xml).find('glossary').attr("value", "true");
@@ -1148,7 +1148,7 @@ function C_Outline(_myItem) {
 			   $(module_arr[_id].xml).find('restartOnFail').attr("value", "false");
 		   }
 		   updateModuleXML(_id);
-	    });	    
+	    });
 
 	    //find the index number for the item
 	    var modIndex = 0;
@@ -1182,7 +1182,7 @@ function C_Outline(_myItem) {
 		}
 		else{
 			$('#notAttemptHidden').prop('checked',false);
-		}  
+		}
 
 		//update the xml when toggles are changed
 		//toggleChange("choice", modIndex);
@@ -1214,7 +1214,7 @@ function C_Outline(_myItem) {
 			   $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "false");
 			}
 			updateCourseXML();
-		});	
+		});
 
 		var currentROMWeight = $("#rollupObjectiveMeasureWeight").val();
 		$(function () {
@@ -1246,12 +1246,12 @@ function C_Outline(_myItem) {
 				collapsible: true,
 				heightStyle: "content"
 			});
-		});					
+		});
 
      }
 
      function addToggle(_id, title){
-     	var msg = '<div id="toggleWrapper" style="float: left;"><div id="' + _id + 'Text" style="width:400px; float: left; margin: 8px">' + title + '</div>'; 
+     	var msg = '<div id="toggleWrapper" style="float: left;"><div id="' + _id + 'Text" style="width:400px; float: left; margin: 8px">' + title + '</div>';
      	msg += '<div id="' + _id + 'Radio" title="'+title+'" style="float: left;">';
 		// msg += '<input type="radio" id="' + _id + 'true" name="' + _id + 'Radio" /><label for="' + _id + 'true" title="Set ' + _id + ' to true.">true </label>';
 		// msg += '<input type="radio" id="' + _id + 'false" name="' + _id + 'Radio" /><label for="' + _id + 'false" title="Set ' + _id + ' to false">false</label>';
@@ -1263,8 +1263,8 @@ function C_Outline(_myItem) {
 		msg += '	    <span class="onoffswitch-switch"></span>';
 		msg += '	</label>';
 		msg += '</div>';
-		msg += '</div></div>';		
-		return msg;     	
+		msg += '</div></div>';
+		return msg;
      }
 
      function setToggle(_id, index){
@@ -1274,7 +1274,7 @@ function C_Outline(_myItem) {
 			}
 			else{
 				$('#'+_id).prop('checked',false);
-			}  
+			}
      	}
      	else{
 			if($(courseData).find('sequencing').eq(index).attr(_id) === "true"){
@@ -1282,9 +1282,9 @@ function C_Outline(_myItem) {
 			}
 			else{
 				$('#'+_id).prop('checked',false);
-			}      		
+			}
      	}
-    	
+
      }
 
      function toggleChange(_id, index){
@@ -1296,7 +1296,7 @@ function C_Outline(_myItem) {
 				   $(courseData).find("course").attr(_id, "false");
 			   }
 			   updateCourseXML();
-			});	
+			});
      	}
      	else{
 			$('#'+_id+'Radio').on("change", function(){
@@ -1306,11 +1306,11 @@ function C_Outline(_myItem) {
 				   $(courseData).find('sequencing').eq(index).attr(_id, "false");
 			   }
 			   updateCourseXML();
-			});	      		
+			});
      	}
      }
-     
-     
+
+
      function updateCourseXML(_commit){
 	    var myData = $(courseData);
 		var xmlString;
@@ -1318,17 +1318,17 @@ function C_Outline(_myItem) {
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
 		}
-		
+
 		var commit = true;
 		if(_commit == false){
 			commit = false;
 		}
-		
+
 		if(xmlString === undefined){
 			var oSerializer = new XMLSerializer();
 			xmlString = oSerializer.serializeToString(myData[0]);
 		}
-		
+
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 		var tmpPath = courseXMLPath.replace(new RegExp("%20", "g"), ' ');
@@ -1336,51 +1336,51 @@ function C_Outline(_myItem) {
         	id: courseID,
             type: currentCourseType,
             permission: currentCoursePermission
-            } 
+            }
 		});
      }
-     
+
      /****************************************************************
      * Serialize XML and send it to the server.
      ****************************************************************/
      function updateModuleXML(_id, _commit, _refresh){
 	 	var myData = $(module_arr[_id].xml);
 		var xmlString;
-		
+
 		//IE being a beatch, as always - have handle xml differently.
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
 		}
-		
+
 		if(xmlString === undefined){
 			var oSerializer = new XMLSerializer();
 			xmlString = oSerializer.serializeToString(myData[0]);
 		}
-		
+
 		var commit = true;
 		if(_commit == false){
 			commit = false;
 		}
-		
+
 		var refresh = false;
 		if(_refresh == true){
 			refresh = true;
 		}
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
-				
+
 		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
 		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, refresh: refresh, user: user ,content: {
         	id: courseID,
             type: currentCourseType,
             permission: currentCoursePermission
-            } 
+            }
 		});
      }
-     
-          
-     
-     
+
+
+
+
      function displayPageData(_id){
      	var matched = false;
      	for(var i = 0; i < module_arr.length; i++){
@@ -1389,7 +1389,7 @@ function C_Outline(_myItem) {
 			    	matched = true;
 			    	currentPageParentModule = i;
 			    	currentPage = j;
-			     	
+
 			     	$("#outlinePagePrefPane").empty();
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
@@ -1397,19 +1397,19 @@ function C_Outline(_myItem) {
 			     	msg += "<label for='out_pageTitle' title='Update the page title.'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			        //display tlo
-			        msg += '<b>terminal objective: </b>' + $(module_arr[i].xml).find('tlo').attr('value') + '<br/>';	
+			        msg += '<b>terminal objective: </b>' + $(module_arr[i].xml).find('tlo').attr('value') + '<br/>';
 					//enter elo
 			     	msg += "<label for='eo' title='Update the enabling objective.'>enabling objective: </label>";
-			        msg += '<input type="text" name="eo" id="eo"  value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';							     	
+			        msg += '<input type="text" name="eo" id="eo"  value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
 			     	msg += "<label for='out_pageObjective'";
 			     	msg += 'title="Update the learner friendly objective description or reference to this page in the lesson. This value is used on completion pages to show missed objectives to students.">objective description: </label>';
-			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective"'; 
+			        msg += '<input type="text" name="out_pageObjective" id="out_pageObjective"';
 
 			        msg += 'value="'+ $(module_arr[i].xml).find('page').eq(j).attr("objective") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 
-					//enter tlo referenced for assessments	
+					//enter tlo referenced for assessments
 			        if($(module_arr[i].xml).find('page').eq(j).attr("type") == "kc"){
-						msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";				     			     	
+						msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";
 				     	msg += "<select name='objItemId' id='objItemId'>";
 				     	//for loop through items in course.xml
 						for(var k = 0; k < $(courseData).find("item").length; k++){
@@ -1421,18 +1421,18 @@ function C_Outline(_myItem) {
 								msg += ' selected';
 							}
 							msg += '>'+itemName+' : '+itemTLO+'</option>';
-						}			     	
+						}
 				     	msg += "</select><br/>";
-			     	}			     	     	
+			     	}
 
 				 	$("#outlinePagePrefPane").append(msg);
-				 	
+
 			     	//if objItemId not set set to current in xml
 					if($(module_arr[i].xml).find('page').eq(j).attr("type") == "kc"){
 						if($(module_arr[i].xml).find('page').eq(j).attr("objItemId")){
 							if($(module_arr[i].xml).find('page').eq(j).attr("objItemId") == 'undefined'){
 								$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
-								updateModuleXML(currentPageParentModule);								
+								updateModuleXML(currentPageParentModule);
 							}
 							else{
 								$('#objItemId').val($(module_arr[i].xml).find('page').eq(j).attr("objItemId"));
@@ -1443,12 +1443,12 @@ function C_Outline(_myItem) {
 							$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
 							updateModuleXML(currentPageParentModule);
 						}
-					}     	
+					}
 
 			     	//add .on change for objItemId
 			     	$('#objItemId').on("change", function(){
 						$(module_arr[i].xml).find('page').eq(j).attr("objItemId",$('#objItemId option:selected').val());
-						updateModuleXML(currentPageParentModule);			     		
+						updateModuleXML(currentPageParentModule);
 			     	});
 
 				 	$("#panePagePreview").button().click(function(){
@@ -1462,10 +1462,10 @@ function C_Outline(_myItem) {
 
 					// update the xml when the enabling is changed
 				    $("#eo").on("change", function(){
-					    $(module_arr[i].xml).find('page').eq(j).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());		    
+					    $(module_arr[i].xml).find('page').eq(j).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());
 					    updateModuleXML(currentPageParentModule);
-				    }).css({'width': '500px', 'color': '#3383bb;'}); 					
-				 	
+				    }).css({'width': '500px', 'color': '#3383bb;'});
+
 				 	$("#out_pageTitle").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 				     	var titleUpdate = $("#out_pageTitle").val().replace('<p>', '').replace('</p>', '').trim();
@@ -1476,7 +1476,7 @@ function C_Outline(_myItem) {
 					   	$(module_arr[i].xml).find('page').eq(j).find("title").first().append(newCDATA);
 						updateModuleXML(currentPageParentModule);
 				    }).css({'width': '500px', 'color': '#3383bb;'});
-				    
+
 				    $("#out_pageObjective").on("change", function(){
 				     	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 				     	var titleUpdate = $("#out_pageObjective").val().trim();
@@ -1491,7 +1491,7 @@ function C_Outline(_myItem) {
 		     }
 		 }
      }
-	
+
 	/************************************************************************************************
 	Function: 		addOutlineRollovers
 	Param: 			myItem = The term to attach the rollover functionality to.
@@ -1504,7 +1504,7 @@ function C_Outline(_myItem) {
 	    myItem.hover(
 	    	function () {
 	    		//$(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
-	            
+
 	            //ADD apropriate title attributes for the toolitp hints on rollovers...
 	            if(_level == "module"){
 		            $(this).append("<div id='outlineRemove' class='outlineModuleRemove'></div>");
@@ -1515,7 +1515,7 @@ function C_Outline(_myItem) {
 		            $("#outlineRemove").attr("title", "Remove this page from your module.");
 		            $("#outlineAdd").attr("title", "Add a new page to your module.");
 	            }
-	            
+
 	            //ADD ADD NAV
 	            $("#outlineAdd").click(function(){
 	            	if(_level == "module"){
@@ -1537,7 +1537,7 @@ function C_Outline(_myItem) {
 	                    duration: 200
 	                }
 	            });
-	            
+
 	            //ADD REMOVE NAV
 	            $("#outlineRemove").click(function(){
 	            	if(_level == "module"){
@@ -1563,13 +1563,13 @@ function C_Outline(_myItem) {
 	        function () {
 				$("#outlineAdd").remove();
 				$("#outlineRemove").remove();
-			});   
+			});
 	}
-	
+
 	/*******************************************************************************
 	ADD and REMOVE FUNCTIONS
 	*******************************************************************************/
-	
+
 	/************************************************************************************************
 	Function: 		addModuleToCourse
 	Param: 			_id = ID of the course to be added to.
@@ -1582,10 +1582,10 @@ function C_Outline(_myItem) {
 		msg += '<label for="myName" class="regField">name: </label>';
 		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
 		msg += '<label for="tlo" class="regField">tlo: </label>';
-		msg += '<input type="text" name="tlo" id="tlo" value="" class="regText text ui-widget-content ui-corner-all" />';		
+		msg += '<input type="text" name="tlo" id="tlo" value="" class="regText text ui-widget-content ui-corner-all" />';
 		msg += '</div>';
 		$("#stage").append(msg);
-		
+		$("#myName").alphanum();
 		$("#dialog-registerContent").dialog({
         	modal: true,
             width: 550,
@@ -1616,7 +1616,7 @@ function C_Outline(_myItem) {
             }
         });
 	}
-	
+
 	/************************************************************************************************
 	Function: 		addLessonToModule
 	Param: 			_id = ID of the module to be added to.
@@ -1626,13 +1626,13 @@ function C_Outline(_myItem) {
 	function addLessonToModule(_id){
 		console.log("_id = " + _id);
 	}
-	
+
 	/************************************************************************************************
 	Function: 		addPageToModule
 	Param: 			_id = ID of the module to be added to.
-	Description:	Creates a new page in the identified module. 
+	Description:	Creates a new page in the identified module.
 					Creates the page after the page being added from.
-	************************************************************************************************/	
+	************************************************************************************************/
 	function addPageToModule(_id){
 		var opt_arr = ["analyze", "apply", "calculate", "classify", "evaluate", "remember", "solve", "synthesis", "understand"];
 		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
@@ -1642,123 +1642,123 @@ function C_Outline(_myItem) {
 		msg += '<label for="elo" class="regField">elo: </label><input type="text" name="elo" id="elo" value="undefined" class="regText text ui-widget-content ui-corner-all" /><br/><br/>';
 		var pages= [
 			{
-				"capability" : "textOnly", 
-				"opt" : ["understand","remember"], 
+				"capability" : "textOnly",
+				"opt" : ["understand","remember"],
 				"content" : ["facts","concepts"]
 			},
 			{
-				"capability" : "graphicOnly", 
-				"opt" : ["understand","remember"], 
+				"capability" : "graphicOnly",
+				"opt" : ["understand","remember"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "top", 
-				"opt" : ["understand","remember", "analyze"], 
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},			
-			{
-				"capability" : "left", 
-				"opt" : ["understand","remember", "analyze"], 
+				"capability" : "top",
+				"opt" : ["understand","remember", "analyze"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "right", 
-				"opt" : ["understand","remember", "analyze"], 
+				"capability" : "left",
+				"opt" : ["understand","remember", "analyze"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "bottom", 
-				"opt" : ["understand","remember", "analyze"], 
+				"capability" : "right",
+				"opt" : ["understand","remember", "analyze"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "sidebar", 
-				"opt" : ["understand","remember"], 
-				"content" : ["facts","concepts"]
-			},										
-			{
-				"capability" : "clickImage", 
-				"opt" : ["understand","remember", "analyze", "classify", "apply"], 
+				"capability" : "bottom",
+				"opt" : ["understand","remember", "analyze"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "tabsOnly", 
-				"opt" : ["understand","remember", "analyze"], 
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "tabsLeft", 
-				"opt" : ["understand","remember", "analyze"], 
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},				
-			{
-				"capability" : "revealRight", 
-				"opt" : ["understand","remember", "analyze"], 
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "revealBottom", 
-				"opt" : ["understand","remember", "classify"], 
+				"capability" : "sidebar",
+				"opt" : ["understand","remember"],
 				"content" : ["facts","concepts"]
 			},
 			{
-				"capability" : "revealLeft", 
-				"opt" : ["understand","remember", "analyze"], 
+				"capability" : "clickImage",
+				"opt" : ["understand","remember", "analyze", "classify", "apply"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "flashcard", 
-				"opt" : ["understand","remember", "classify"], 
-				"content" : ["facts","concepts"]
-			},	
+				"capability" : "tabsOnly",
+				"opt" : ["understand","remember", "analyze"],
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
 			{
-				"capability" : "sequence", 
-				"opt" : ["understand","remember", "analyze"], 
+				"capability" : "tabsLeft",
+				"opt" : ["understand","remember", "analyze"],
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "revealRight",
+				"opt" : ["understand","remember", "analyze"],
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "revealBottom",
+				"opt" : ["understand","remember", "classify"],
+				"content" : ["facts","concepts"]
+			},
+			{
+				"capability" : "revealLeft",
+				"opt" : ["understand","remember", "analyze"],
+				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+			},
+			{
+				"capability" : "flashcard",
+				"opt" : ["understand","remember", "classify"],
+				"content" : ["facts","concepts"]
+			},
+			{
+				"capability" : "sequence",
+				"opt" : ["understand","remember", "analyze"],
 				"content" : ["procedures", "processes"]
 			},
 			{
-				"capability" : "multipleChoice", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "multipleChoice",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "multipleChoiceMedia", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "multipleChoiceMedia",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},	
+			},
 			{
-				"capability" : "matching", 
-				"opt" : ["understand","remember", "analyze", "apply"], 
+				"capability" : "matching",
+				"opt" : ["understand","remember", "analyze", "apply"],
 				"content" : ["facts","concepts", "procedures", "processes"]
 			},
 			{
-				"capability" : "questionBank", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "questionBank",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},	
+			},
 			{
-				"capability" : "completion", 
-				"opt" : [], 
+				"capability" : "completion",
+				"opt" : [],
 				"content" : []
 			},
 			{
-				"capability" : "textInput", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "textInput",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "essayCompare", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "essayCompare",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
 			},
 			{
-				"capability" : "clickListRevealText", 
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"], 
+				"capability" : "clickListRevealText",
+				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
 				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			}																																				
+			}
 		];
-		
-		
+
+
 		//Add the objective performance type dropdown
 		msg += '<div><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
 		msg += '<option value=""></option>';
@@ -1788,8 +1788,8 @@ function C_Outline(_myItem) {
 		msg += '</div></div>';
 		$("#stage").append(msg);
 
-		
-		
+
+
 		$("#dialog-addPage").dialog({
         	modal: true,
             width: 550,
@@ -1809,21 +1809,21 @@ function C_Outline(_myItem) {
                 	$(this).dialog("close");
                 }
             }
-        });		
+        });
 		$(function() {
 			$("#opTypeList").on("change", function() {
 				filterPageList(pages);
 			});
 			$("#contentTypeList").on("change", function() {
 				filterPageList(pages);
-			});		
+			});
 		});
-		
+
 		$("#preview").button().click(function(){
 			clickPreview($("#pageTypeList").val());
 		});
 	}
-	
+
 	/************************************************************************************************
 	Function: 		setupGallery
 	Param: 			mediaType = Identifier of media type - String.
@@ -1839,7 +1839,7 @@ function C_Outline(_myItem) {
 					tempObj.title = mediaType + " example";
 					img_arr.push(tempObj);
 				}
-				
+
 				$.fancybox.open(img_arr, {
 			        padding : 0,
 			        caption : {
@@ -1852,14 +1852,14 @@ function C_Outline(_myItem) {
 					maxHeight	: 1024,
 					maxWidth	: 768
 			    });
-			    
+
 			    return false;
-			    
+
 			    break;
 			}
 		}
 	}
-		
+
 	/************************************************************************************************
 	Function: 		createNewPageByType
 	Param: 			_myType = Identifier of page type - String.
@@ -1870,7 +1870,7 @@ function C_Outline(_myItem) {
 		var myID = guid();
 		var myNode = getNode(_id);
 		var myTitle;
-		if (/\S/.test(_myTitle)) { 
+		if (/\S/.test(_myTitle)) {
 			myTitle = _myTitle;
 		}else{
 			myTitle = "new page";
@@ -1881,16 +1881,16 @@ function C_Outline(_myItem) {
 		var myModuleID = module_arr[myNode.module].id;		//module ID in case needed ----- probably can remove - leaving for now...
 		var myNodeLevel = myNode.level;						//Level that the button resides on ("module", "page" so far)...
 		var myXML = module_arr[myNode.module].xml;
-		
+
 		//Find insert location
 		for (var i = 0; i < $(myXML).find("page").length; i++){
 			if(_id == $(myXML).find("page").eq(i).attr("id")){
 				var insertPoint = i;
 			}
 		}
-		
+
 		$(myXML).find("page").eq(insertPoint).after($('<page id="'+ myID +'" layout="'+_myType+'" audio="null" prevPage="null" nextPage="null"></page>'));
-		
+
 		var currentChildrenLength = $(myXML).find("page").eq(insertPoint).children("page").length;
 		var newPage = insertPoint + currentChildrenLength + 1;
 		$(myXML).find("page").eq(newPage).append($("<title>"));
@@ -1898,7 +1898,7 @@ function C_Outline(_myItem) {
 		var titleCDATA = newPageTitle.createCDATASection(myTitle);
 		$(myXML).find("page").eq(newPage).find("title").append(titleCDATA);
 		$(myXML).find("page").eq(newPage).attr("eo", elo);
-		
+
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//ADD PAGE SPECIFIC ELEMENTS
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1925,8 +1925,8 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -1941,7 +1941,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -1960,7 +1960,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -1979,7 +1979,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -1998,7 +1998,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -2017,7 +2017,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -2030,8 +2030,8 @@ function C_Outline(_myItem) {
 			var newSidebarContent = new DOMParser().parseFromString('<sidebar></sidebar>',  "text/xml");
 			var sidebarCDATA = newSidebarContent.createCDATASection("<p>New Page Sidebar</p>");
 			$(myXML).find("page").eq(newPage).find("sidebar").append(sidebarCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -2050,8 +2050,8 @@ function C_Outline(_myItem) {
 			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA2 = newTabContent2.createCDATASection("New Tab Content");
 			$(myXML).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 			break;
@@ -2076,7 +2076,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("default caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
@@ -2087,7 +2087,7 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
@@ -2101,7 +2101,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
@@ -2115,8 +2115,8 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("w", "150");
@@ -2129,7 +2129,7 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
@@ -2143,7 +2143,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
@@ -2157,8 +2157,8 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("w", "150");
@@ -2171,7 +2171,7 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
@@ -2185,7 +2185,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
@@ -2199,8 +2199,8 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("w", "150");
@@ -2213,7 +2213,7 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
@@ -2227,7 +2227,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
@@ -2241,8 +2241,8 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("w", "150");
@@ -2255,7 +2255,7 @@ function C_Outline(_myItem) {
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>Click on each of the images below to discover more information:</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
 			var newFront1 = new DOMParser().parseFromString('<term></term>',  "text/xml");
 			var newBack1 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
@@ -2263,7 +2263,7 @@ function C_Outline(_myItem) {
 			var backCDATA1 = newBack1.createCDATASection("New Card Definition");
 			$(myXML).find("page").eq(newPage).find("card").eq(0).find("term").append(frontCDATA1);
 			$(myXML).find("page").eq(newPage).find("card").eq(0).find("definition").append(backCDATA1);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
 			var newFront2 = new DOMParser().parseFromString('<term></term>',  "text/xml");
 			var newBack2 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
@@ -2271,21 +2271,21 @@ function C_Outline(_myItem) {
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(myXML).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
 			$(myXML).find("page").eq(newPage).find("card").eq(1).find("definition").append(backCDATA2);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("mandatory", false);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "static");
-			
+
 			break;
-			
+
 		case "clickImage":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
@@ -2298,7 +2298,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
@@ -2311,8 +2311,8 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("w", "150");
@@ -2320,18 +2320,18 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("type", "static");
 
 			break;
-			
+
 		case "questionBank":
 			//PREPOPULATE A QUESTION BANK WITH TWO QUESTIONS
 			//QUESTION 1
 			$(myXML).find("page").eq(newPage).append($("<bankitem>"));
 			var bankitem1 = new DOMParser().parseFromString('<bankitem></bankitem>',  "text/xml");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input question 1.</p>");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).append($("<content>"));
@@ -2343,7 +2343,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(0).attr("correct", "true");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).append($("<content>"));
@@ -2355,43 +2355,43 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("option").eq(1).attr("correct", "false");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).find("feedback").append(myFeedbackCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("btnText", "Submit");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(0).attr("randomize", false);
-			
+
 			//QUESTION 2
 			$(myXML).find("page").eq(newPage).append($("<bankitem>"));
 			var bankitem2 = new DOMParser().parseFromString('<bankitem></bankitem>',  "text/xml");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input question 2.</p>");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).append($("<content>"));
@@ -2403,7 +2403,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(0).attr("correct", "true");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).append($("<content>"));
@@ -2415,49 +2415,49 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("option").eq(1).attr("correct", "false");
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).find("feedback").append(myFeedbackCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("btnText", "Submit");
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).find("bankitem").eq(1).attr("randomize", false);
-			
+
 			//PAGE LEVEL VARS
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-						
+
 			break;
-		
+
 		case "multipleChoice":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
@@ -2469,7 +2469,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
@@ -2481,49 +2481,49 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			
+
+
 			break;
-			
+
 		case "multipleChoiceMedia":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
@@ -2535,7 +2535,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
@@ -2547,27 +2547,27 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<caption>"));
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
 			var captionCDATA = newPageCaption.createCDATASection("default caption");
@@ -2576,21 +2576,21 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
+
 			break;
-			
+
 		case "textInput":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
@@ -2616,50 +2616,50 @@ function C_Outline(_myItem) {
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("question").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			// $(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			// var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			// var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			// $(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			// $(myXML).find("page").eq(newPage).append($("<feedback>"));
 			// var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			// var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			// $(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "differentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			//$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
-			break;	
+
+			break;
 
 		case "matching":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Match the items on the left to the items on the right:</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			var option1CDATA = option1.createCDATASection("Option1");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).append(option1CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "A");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			var option2CDATA = option2.createCDATASection("Option2");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).append(option2CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<answer>"));
 			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
@@ -2672,7 +2672,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("img", "defaultReveal.png");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<answer>"));
 			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
@@ -2685,48 +2685,48 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("img", "defaultReveal.png");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
+
 			break;
-			
+
 		case "categories":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Match the items on the left to the items on the right:</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
@@ -2738,7 +2738,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "A");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
@@ -2750,7 +2750,7 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "B");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<answer>"));
 			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).append($("<content>"));
@@ -2758,7 +2758,7 @@ function C_Outline(_myItem) {
 			var answer1CDATA = content1.createCDATASection("Answer 1");
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).find("content").append(answer1CDATA);
 			$(myXML).find("page").eq(newPage).find("answer").eq(0).attr("correct", "A");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<answer>"));
 			var answer2 = new DOMParser().parseFromString('<answer></answer>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).append($("<content>"));
@@ -2766,49 +2766,49 @@ function C_Outline(_myItem) {
 			var answer2CDATA = content2.createCDATASection("Answer 2");
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).find("content").append(answer2CDATA);
 			$(myXML).find("page").eq(newPage).find("answer").eq(1).attr("correct", "B");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
 			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("cycle", false);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
+
 			break;
-			
+
 		case "sequence":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Place the items below, into the proper order:</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
@@ -2820,7 +2820,7 @@ function C_Outline(_myItem) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "1");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
@@ -2832,7 +2832,7 @@ function C_Outline(_myItem) {
 			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "2");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<option>"));
 			var option3 = new DOMParser().parseFromString('<option></option>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("option").eq(2).append($("<content>"));
@@ -2844,39 +2844,39 @@ function C_Outline(_myItem) {
 			var difFeed3CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(myXML).find("page").eq(newPage).find("option").eq(2).find("diffeed").append(difFeed3CDATA);
 			$(myXML).find("page").eq(newPage).find("option").eq(2).attr("correct", "3");
-			
+
 			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
 			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
 			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
 			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
 			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); $(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("attempts", 2);
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
+
 			break;
 
 		case "essayCompare":
@@ -2884,60 +2884,60 @@ function C_Outline(_myItem) {
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
 			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
-							
+
 			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
 			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
 			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("Expert response goes here...");
 			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
-					
+
 			$(myXML).find("page").eq(newPage).append($("<feedback>"));
 			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
 			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
 			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
 			$(myXML).find("page").eq(newPage).attr("audio", "null");
 			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
-			
+
 			$(myXML).find("page").eq(newPage).attr("graded", false);
 			$(myXML).find("page").eq(newPage).attr("mandatory", true);
 			$(myXML).find("page").eq(newPage).attr("type", "kc");
-			
+
 			break;
-		
+
 		case "clickListRevealText":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>Click each item in the list below to reveal information about each item.</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<title>"));
 			var title1 = new DOMParser().parseFromString('<title></title>', "text/xml");
 			var title1CDATA = title1.createCDATASection("Item 1");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("title").append(title1CDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var option1CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			
+
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<title>"));
 			var title2 = new DOMParser().parseFromString('<title></title>', "text/xml");
 			var title2CDATA = title1.createCDATASection("Item 2");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("title").append(title2CDATA);
-			
+
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
 			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
@@ -2946,7 +2946,7 @@ function C_Outline(_myItem) {
 		refreshExpected = true;
 		updateModuleXML(myModule, true, true);
 	}
-	
+
 	/************************************************************************************************
 	Function: 		filterPageList
 	Param: 			_pages = pages to filter
@@ -2956,7 +2956,7 @@ function C_Outline(_myItem) {
 		var optPage_arr = [];
 		var contentPage_arr = [];
 		$("select#pageTypeList option").remove();
-		
+
 		for(var j=0; j < _pages.length; j++){
 
 			if($.inArray($("#opTypeList").val(), _pages[j].opt) != -1 || $("#opTypeList").val() == ""){
@@ -2969,19 +2969,19 @@ function C_Outline(_myItem) {
 
 		}
 
-		var finalPage_arr = [];		
+		var finalPage_arr = [];
 		for(var w=0; w < optPage_arr.length; w++){
 			if($.inArray(optPage_arr[w], contentPage_arr) != -1){
 				finalPage_arr.push(optPage_arr[w]);
 			}
-		}	
+		}
 
 		for(var t=0; t <finalPage_arr.length; t++){
 			$("#pageTypeList").append($("<option></option>").attr("value", finalPage_arr[t]).text(finalPage_arr[t]));
-		}	
-					
-	}	
-	
+		}
+
+	}
+
 	/************************************************************************************
      removeModuleFromCourse(_id);
      params: _id - id of the item to be removed.
@@ -2994,7 +2994,7 @@ function C_Outline(_myItem) {
 	function removeModuleFromCourse(_id){
 		var myID = _id;
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this lesson?"><p class="validateTips">Are you sure that you want to remove this module?</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -3003,7 +3003,7 @@ function C_Outline(_myItem) {
             },
             buttons: {
                 Yes: function(){
-	               
+
 	               $("#"+myID).remove();									//Remove the item from the menu
 	               $("#"+myID).remove();									//Have to call twice - not sure why...
 	               var myNode = getNode(myID);								//Find node in course.xml as object
@@ -3011,8 +3011,8 @@ function C_Outline(_myItem) {
 	               myRemove.remove();										//Remove from xml
 	               updateCourseXML(false);									//Push xml without commit
 				   for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
-					   if (module_arr[i].id == myID){						
-						   module_arr.splice(i, 1);							//remove from module_arr	
+					   if (module_arr[i].id == myID){
+						   module_arr.splice(i, 1);							//remove from module_arr
 					   }
 				   }
 	               var content = {											//Create data to send to node server
@@ -3021,7 +3021,7 @@ function C_Outline(_myItem) {
 			            user: user,
 			            loc: 'outliner'
 			        };
-					
+
 			        socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
 			        $(this).dialog("close");								//Close dialog.
                 },
@@ -3031,8 +3031,8 @@ function C_Outline(_myItem) {
             }
         });
 	}
-	
-	
+
+
 	/************************************************************************************
      removePageFromModule(_id);
      params: _id - id of the item to be removed.
@@ -3058,7 +3058,7 @@ function C_Outline(_myItem) {
 					var myModule = myNode.module;						//Parent module.
 					var myModuleID = module_arr[myNode.module].id;		//module ID in case needed ----- probably can remove - leaving for now...
 					var myNodeLevel = myNode.level;						//Level that the button resides on ("module", "page" so far)...
-					
+
 					//modules have to have at least 1 page... Ensure that you aren't deleting the last....
 					if($(module_arr[myModule].xml).find("page").length > 1){
 						myRemove.remove();									//remove the node from the xml
@@ -3089,7 +3089,7 @@ function C_Outline(_myItem) {
 			}
 		});
 	}
-	
+
 	/************************************************************************************************
 	Function: 		s4
 	Description:	Create 4 random characters.
@@ -3100,7 +3100,7 @@ function C_Outline(_myItem) {
 	             .toString(16)
 	             .substring(1);
 	};
-	
+
 	/************************************************************************************************
 	Function: 		guid
 	Description:	Creates a random guid.
@@ -3110,7 +3110,7 @@ function C_Outline(_myItem) {
 	         s4() + '-' + s4() + s4() + s4();
 	}
 	/**********************************************************END RANDOM GUID GENERATION*/
-    
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
@@ -3118,7 +3118,7 @@ function C_Outline(_myItem) {
     *****************************************************************************************************************************************************************************************************************/
     function destroy(){
 	     try { $("#dialog-outline").remove(); } catch (e) {}
-	     
+
     }
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }
