@@ -219,6 +219,7 @@ else{
 
         audioAccess_arr.push($(".mejs-play").find('button'));
         audioAccess_arr.push($(".mejs-mute").find('button'));
+        $(".mejs-duration").attr("aria-label", "audio duration: " + $(".mejs-duration").text());
         audioAccess_arr.push($(".mejs-duration"));
 
 		doAccess(pageAccess_arr);

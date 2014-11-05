@@ -6,8 +6,8 @@
  * DATE: 2013-03-04
  * JavaScript utilizing jQuery UI Tabbed Component
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 function C_TabbedContent(_type) {
@@ -19,16 +19,16 @@ function C_TabbedContent(_type) {
 	var revealMenu_arr = [];
 	var currentItem;
 	var myObjective = "undefined";
-    var myObjItemId = "undefined"; 
-	    
+    var myObjItemId = "undefined";
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
 		revealCount = $(data).find("page").eq(currentPage).find("tab").length;
-		myContent = $(data).find("page").eq(currentPage).find("content").text();		
+		myContent = $(data).find("page").eq(currentPage).find("content").text();
 		if($(data).find("page").eq(currentPage).attr("interact") != undefined){
 			interact = $(data).find("page").eq(currentPage).attr("interact");
 		}else{
@@ -36,85 +36,85 @@ function C_TabbedContent(_type) {
 		}
 		pageTitle = new C_PageTitle();
 		audioHolder = new C_AudioHolder();
-		
+
 		buildTemplate();
 	}
-	
-	
+
+
 	/*****************************************
 	**Build Template
 	*****************************************/
 	function buildTemplate() {
-		//Add the divs for the page title and the content and divs.		
-		
-		
+		//Add the divs for the page title and the content and divs.
+
+
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div>');
-		
-		
-		
+
+
+
 		$("#scrollableContent").addClass("tabsLeft");
 	    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		
+
 		var tabString = '<ul>';
-		
+
 		for(var i = 0; i < revealCount; i++){
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
 			tabString += '<li><a href="#'+ tabID +'">'+ currentTab +'</a></li>';
 		}
 		tabString += '</ul>';
-		
+
 		for(var i = 0; i < revealCount; i++){
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
 			var currentTabContent = $(data).find("page").eq(currentPage).find("tab").eq(i).text();
-			tabString += '<div id="'+ tabID +'" class="cognizenTabContent"><p>' + currentTabContent + '</p></div>';	
+			tabString += '<div id="'+ tabID +'" class="cognizenTabContent"><p>' + currentTabContent + '</p></div>';
 		}
-		
+
 		//tabString += '</div>';
-		
+
 		$("#tabs").append(tabString);
-		
+
 		if(type == "tabsLeft"){
 			$("#tabs").addClass("left");
 		}else if(type == "tabsOnly"){
 			$("#tabs").addClass("tabTop");
 		}
-		
+
 		var tabs = $("#tabs").tabs({
-			'create' : function() {	
+			'create' : function() {
 				var contentTop = $("#content").position().top;
 				var tabTop = $(".ui-tabs-nav").position().top;
 				var tabHeight = $(".ui-tabs-nav").height();
 				var audioHeight = 0;
 			}
-		});	
-		
+		});
+
 		/*Attach Media*/
 		if(type == "tabsOnly"){
 			if(transition == true){
 				TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
 			}else{
 				checkMode();
-			}		
+			}
 		}else if(type == "tabsLeft"){
 			mediaHolder = new C_VisualMediaHolder();
-        	mediaHolder.loadVisualMedia(checkMode());		
+        	mediaHolder.loadVisualMedia(checkMode());
 		}else{
 			mediaHolder = new C_VisualMediaHolder();
         	mediaHolder.loadVisualMedia(checkMode());
 		}
 	}
-		
+
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
-		
+
 		$('.antiscroll-wrap').antiscroll();
-		
+
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);
 			CKEDITOR.disableAutoInline = true;
@@ -137,22 +137,22 @@ function C_TabbedContent(_type) {
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-			}); 
-			
-			
+			});
+
+
 			/***************************************************************************************************
 			EDIT TABS
 			***************************************************************************************************/
 			//Add and place contentEdit button
 			$('#tabs').prepend("<div id='conEdit' class='btn_edit_text' title='Edit Text Content'></div>");
-				
-			$("#conEdit").click(function(){					
+
+			$("#conEdit").click(function(){
 				updateRevealDialog();
 			}).tooltip();
 		}
-		$(this).scrubContent();	
+		$(this).scrubContent();
 	}
-	
+
 	function updateRevealDialog(){
 		if (CKEDITOR.instances['revealContentText']) {
 			CKEDITOR.remove(CKEDITOR.instances['revealContentText']);
@@ -169,16 +169,16 @@ function C_TabbedContent(_type) {
 		msg += "<br/>"
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
-		
+
 		updateRevealMenu();
-		
+
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
 		}
-		
+
 		addReveal(currentEditBankMember, false);
-		
-		$("#contentEditDialog").dialog({ 	
+
+		$("#contentEditDialog").dialog({
 			modal: true,
 			width: 875,
 			height: 655,
@@ -219,8 +219,8 @@ function C_TabbedContent(_type) {
 	        $(document).tooltip();
 	    });
 	}
-	
-	
+
+
 	function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -235,7 +235,7 @@ function C_TabbedContent(_type) {
 				msg += " unselectedEditBankMember";
 			}
 			msg += "' style='";
-			
+
 			if(h < 100){
 				msg += "width:30px;";
 			}else if(h > 99){
@@ -243,12 +243,12 @@ function C_TabbedContent(_type) {
 			}
 			var cleanText = $(data).find("page").eq(currentPage).find("tab").eq(h).text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
-			
+
 			revealMenu_arr.push(tmpID);
 		}
-		
+
 		$("#questionMenu").append(msg);
-		
+
 		for(var j = 0; j < revealMenu_arr.length; j++){
 			if(currentEditBankMember != j){
 				var tmpID = "#" + revealMenu_arr[j];
@@ -263,14 +263,14 @@ function C_TabbedContent(_type) {
 			}
 		}
 	}
-	
+
 	function makeRevealDataStore(){
 		//myObjective = $("#inputObjective").val();
 		//myObjItemId = $("#inputObjItemId").val();
-		
+
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-		
+
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");
 			interact = "hover";
@@ -278,17 +278,17 @@ function C_TabbedContent(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
-		
+
 		var newRevealContent = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
 		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).empty();
 		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).append(revealCDATA);
 		$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).attr("title", $("#revealTitleText").val());
 	}
-	
+
 	function addReveal(_addID, _isNew){
 		var revealLabel = parseInt(_addID) + 1;
-		
+
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<tab>"));
 			var option1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
@@ -297,30 +297,30 @@ function C_TabbedContent(_type) {
 			var option1CDATA = option1.createCDATASection("<p>New Tab Text</p>");
 			$(data).find("page").eq(currentPage).find("tab").eq(_addID).append(option1CDATA);
 			$(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title", "new tab");
-			
+
 			currentEditBankMember = _addID;
 			revealCount++;
 		}
-		
+
 		var myTabLabel = $(data).find("page").eq(currentPage).find("tab").eq(_addID).attr("title");
 		var myTabContent = $(data).find("page").eq(currentPage).find("tab").eq(_addID).text();
-			
+
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this tab'/>";
 		msg += "<label title='Input tab title text.'>Tab Title: </label>";
 		msg += "<input id='revealTitleText' class='dialogInput' type='text' value='"+ myTabLabel + "' defaultValue='"+ myTabLabel + "' style='width:30%;'/>";
-					
+
 		msg += "<div title='Input tab content.'>Tab Content:</div> ";
-		msg += "<div id='revealContentText' class='dialogInput'>" + myTabContent + "</div>";	
+		msg += "<div id='revealContentText' class='dialogInput'>" + myTabContent + "</div>";
 		msg += "</div>";
-		
+
 		$("#contentEditDialog").append(msg);
-		
+
 		$("#revealRemove").click(function(){
 			areYouSure();
 		});
-	    
-	    
+
+
 	    CKEDITOR.replace( "revealContentText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -329,21 +329,21 @@ function C_TabbedContent(_type) {
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 		});
-	    			
+
 	}
-	
+
 	function clearCKInstances(){
 		if (CKEDITOR.instances['revealContentText']) {
-            CKEDITOR.instances.revealContentText.destroy();            
+            CKEDITOR.instances.revealContentText.destroy();
         }
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
 	function areYouSure(){
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -359,9 +359,9 @@ function C_TabbedContent(_type) {
 	                $(this).dialog("close");
                 }
             }
-        }); 
+        });
 	}
-	
+
 	function removeReveal(){
 		if(revealCount > 1){
 			$(data).find("page").eq(currentPage).find("tab").eq(currentEditBankMember).remove();
@@ -374,7 +374,7 @@ function C_TabbedContent(_type) {
 		}
 	}
 
-			
+
 	 /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -385,7 +385,7 @@ function C_TabbedContent(_type) {
         $(data).find("page").eq(currentPage).find("content").first().append(newCDATA);
         sendUpdateWithRefresh();
     };
-    
+
 	/**********************************************************************
 	**Save Tab Edit
 	**********************************************************************/
@@ -396,13 +396,13 @@ function C_TabbedContent(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("tab").eq(i).remove();
 		}
-		
+
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
-	
+
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	ACESSIBILITY/508 FUNCTIONALITY
@@ -410,7 +410,7 @@ function C_TabbedContent(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function doAccess(){
 		var tabindex = 1;
-	
+
 		$("#pageTitle").attr("tabindex", tabindex);
 		tabindex++;
 		/*for(var i = 0; i < buttonArray.length; i++){
@@ -422,8 +422,8 @@ function C_TabbedContent(_type) {
 		$("#loader").attr("tabindex", tabindex);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-    
-    
+
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
@@ -436,7 +436,7 @@ function C_TabbedContent(_type) {
 		   	fadeComplete();
 	   	}
     }
-		
+
 	this.fadeComplete = function(){
 		fadeComplete();
 	}

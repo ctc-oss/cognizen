@@ -58,7 +58,6 @@ function C_Dashboard(_type) {
         });
 
         socket.on('updateActiveEditor', function(data){
-	        console.log(data);
 	        if(data.newEditor != null){
 		        //$("#"+data.courseID).find('span').first().append("nono");
 	        }
@@ -949,9 +948,10 @@ function C_Dashboard(_type) {
 	   if(myParent != "root"){
 	  	 parentString = myParent.find("span").first().text();
 	   }
-	   	$("#myName").alphanum();
+
         //Append the string to the stage
         $("#stage").append(msg);
+        $("#myName").alphanum();
         //Convert string to dialog
         $("#dialog-registerContent").dialog({
             modal: true,

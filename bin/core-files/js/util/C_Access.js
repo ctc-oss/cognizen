@@ -43,5 +43,5 @@ function doAccess(items){
 	}
 
 	items[0].focus();
-	//items[0].blur();
+	items[0].blur();
 }

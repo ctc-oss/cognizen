@@ -1,6 +1,6 @@
 function C_VisualMediaHolder(callback){
     //Define Variables
-    var type = $(data).find("page").eq(currentPage).attr('layout'); 
+    var type = $(data).find("page").eq(currentPage).attr('layout');
     var myImage = "";
     var mediaLink = $(data).find("page").eq(currentPage).attr('img');
     var autoPlay = false;
@@ -10,7 +10,7 @@ function C_VisualMediaHolder(callback){
     var mediaHeight = 0;
     var mediaLinkType;
     var popLoop = true;
-    
+
     var mediaType = "";
 	var hasPop = false;
     var altText;
@@ -21,49 +21,49 @@ function C_VisualMediaHolder(callback){
     var altEditText_arr = [];
 	var largeImg = "";
 	var audioUploader;
-	
+
 	var hasPoster;
     var posterLink;
     var hasSubs;
     var subsLink;
-	
+
 	var galleryEdit_arr = [];
-	
+
 	var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
-	
+
 	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg"];
     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
     var convertableVectorTypes = ["eps"];
-    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"]; 
+    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
 
 	var oldIE = false;
-   
+
     //Populate Key Variables
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
 		autoNext = true;
 	}
-		
+
 	if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 		autoPlay = true;
 	}
-	
+
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
-    }    
+    }
         //Check for popups...
     if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
         hasPop = true;
         media_arr = $(data).find("page").eq(currentPage).attr('popup').split(",");
         caption_arr = $(data).find("page").eq(currentPage).attr('popcaps').split("!!!");
-		alt_arr = $(data).find("page").eq(currentPage).attr('popalt').split("!!!");	
+		alt_arr = $(data).find("page").eq(currentPage).attr('popalt').split("!!!");
     }
-    
+
     if($(data).find("page").eq(currentPage).attr('poploop') == "false"){
 		popLoop = false;
 	}
-	
+
 	altText = $(data).find("page").eq(currentPage).attr('alt');
-	
+
 	if(type == "top" || type == "tabsLeft"){
 		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertAfter($("#content"));
 	}else if(type == "bottom"){
@@ -73,22 +73,22 @@ function C_VisualMediaHolder(callback){
 	// inline images and text on mobile
 	}else if(isMobile && (type == "left" || type == "right")){
     	$('#content').prepend('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
-		
+
 	}else {
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
-        	
+
     if(mode == 'edit'){
     	$("#loader").attr("title", "click to browse or drag media to this location");
     }else{
 		$("#loader").attr("title", $(data).find("page").eq(currentPage).attr('alt'));
     }
     var tempID = "#loader";
-    
+
     pageAccess_arr.push($("#loader"));
 
     this.loadVisualMedia = function() {
-		
+
 		if(type == "left"){
             $("#mediaHolder").addClass("right");
         }else if(type == "top"){
@@ -106,13 +106,13 @@ function C_VisualMediaHolder(callback){
         mediaLinkType = $(data).find("page").eq(currentPage).attr('mediaLinkType');
 
         myImage = "media/" + mediaLink;
-        
+
         var parts = myImage.split('.'), i, l;
         var last = parts.length;
 		var imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
         var imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
         mediaType = (parts[last - 1]);
-		
+
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
             $("#loader").flash({swf:myImage,width:imageWidth,height:imageHeight});
         }else if (mediaType == "html" || mediaType == "htm"){////////////////////////////////////////////////HTML for edge or js apps.
@@ -123,11 +123,11 @@ function C_VisualMediaHolder(callback){
             }
             $("#loader").removeClass('loading');
         }else if (mediaType == "mp4"  || mediaLinkType == "youtube"){////////////////////////////////////////////////VIDEO
-            
+
             if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 				autoPlay = true;
 			}
-            
+
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
 			if(mediaLinkType == "youtube"){
                 vidHTMLString += " preload='none'";
@@ -174,7 +174,7 @@ function C_VisualMediaHolder(callback){
 			vidHTMLString += "</video>";
 
             $("#loader").append(vidHTMLString);
-            
+
             //pageAccess_arr.push($("#videoplayer"));
 			// Prefer Flash or Silverlight on IE 8, 9, 10 to enable true fullscreen
 			(function ($) {
@@ -197,7 +197,7 @@ function C_VisualMediaHolder(callback){
 								hasEnded();
 							}, false);
 						}
-					
+
 						//If autoplay - cick off the vid
 						if(autoPlay == true){
 							$('.mejs-overlay-button').trigger('click');
@@ -215,7 +215,7 @@ function C_VisualMediaHolder(callback){
 								hasEnded();
 							}, false);
 						}
-					
+
 						//If autoplay - cick off the vid
 						if(autoPlay == true){
 							$('.mejs-overlay-button').trigger('click');
@@ -223,7 +223,7 @@ function C_VisualMediaHolder(callback){
 					}
 				});
 			}
-			
+
 			pageAccess_arr.push($('.mejs-overlay-button'));
 			//pageAccess_arr.push($(".mejs-play").find('button'));
 			//pageAccess_arr.push($(".mejs-mute").find('button'));
@@ -231,30 +231,30 @@ function C_VisualMediaHolder(callback){
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
-            
+
             $(img).bind('error', function() {
 				alert("Your media was not found and is being replaced by a default image.")
-				
+
 				if(type == "top" || type == "bottom" || type == "graphicOnly"){
 	            	myImage = "media/defaultTop.png";
 	            }else if(type == "left" || type == "right" || type == "multipleChoiceMedia" || type == "tabsLeft"){
 		            myImage = "media/defaultLeft.png";
 	            }
-				
+
 				$(img).load(function(){
 	                $("#loader").removeClass('loading').append(img);
 	                imageWidth = $(img).width();
 	                imageHeight = $(img).height();
-	
+
 	                $("#mediaHolder").css({'width': imageWidth});
 	                $("#loader").css({'width': imageWidth, 'height': imageHeight});
-	                
+
 					/*if(hasPop == true || largeImg != ""){
 						setupGallery(mediaType);
 					}*/
 	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
 			});
-            
+
             $(img).load(function(){
                 $("#loader").removeClass('loading').append(img);
                 imageWidth = $(img).width();
@@ -262,7 +262,7 @@ function C_VisualMediaHolder(callback){
 
                 $("#mediaHolder").css({'width': imageWidth});
                 $("#loader").css({'width': imageWidth, 'height': imageHeight});
-                
+
 				if(hasPop == true || largeImg != ""){
 					setupGallery(mediaType);
 				}
@@ -276,7 +276,7 @@ function C_VisualMediaHolder(callback){
             $("#loader").removeClass('loading');
             $("#mediaHolder").css({'width': imageWidth});
             $("#loader").css({'width': imageWidth, 'height': imageHeight});
-           	            
+
             if(hasPop == true || largeImg != ""){
 				setupGallery(mediaType);
 			}
@@ -284,7 +284,7 @@ function C_VisualMediaHolder(callback){
         }
 
     }
-    
+
     function setupGallery(mediaType){
 		var tempItem;
 		var tempCaption;
@@ -295,9 +295,9 @@ function C_VisualMediaHolder(callback){
 			tempItem = "media/" + media_arr[0];
 			tempCaption = caption_arr[0];
 		}
-				
+
 		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
-					
+
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";
 			var startPoint;
@@ -311,11 +311,11 @@ function C_VisualMediaHolder(callback){
 			}
 			mediaPopString += "</span>";
 		}
-				
+
 		mediaPopString += "</div>";
-				
+
 		$(mediaPopString).insertAfter("#loader");
-		//pageAccess_arr.push($("#mediaPop"));				 
+		//pageAccess_arr.push($("#mediaPop"));
 		$("[rel='mediaPop']").fancybox({
 			caption : {
 				type : 'inside'
@@ -338,7 +338,7 @@ function C_VisualMediaHolder(callback){
 				}
 			}
 		});
-				
+
 		if(mediaType == "swf"){
 			$("[rel='mediaPop']").fancybox({
 				loop	:	true,
@@ -349,26 +349,28 @@ function C_VisualMediaHolder(callback){
 		if(!hasTouch){
 			$("#myImgList").tooltip();
 		}
-		
+
 		$("#mediaPop").click(function(){
 			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 			$(this).attr("title", tempCaption);
 		});
+
 		pageAccess_arr.push($("#mediaPop"));
 	}
-	
+
 	function setCaption(){
         var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
-		
+
         if(hasPop == true || largeImg != ""){
 	    	$('<div id="centerMe" style="position: relative; float: left; height:'+ $("#mediaPop").height()+ 'px; width:'+ $("#mediaPop").width()+ 'px;">&nbsp;</div>').insertAfter("#myImgList");
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#centerMe");
 	    }else{
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#loader");
 	    }
-	    
+
+	    $("#caption").attr("aria-label", "Media caption: " + $("#caption").text());
 	    pageAccess_arr.push($("#caption"));
-       
+
 		/***********************************************************
 		CREATES A TOOLTIP on .tooltip class members.
 		***********************************************************/
@@ -381,11 +383,11 @@ function C_VisualMediaHolder(callback){
 		if(transition == true){
         	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
         }
-        
+
         if(type == "top" || type == "bottom"){
 			$('.antiscroll-wrap').antiscroll();
         }
-        
+
         if(mode == "edit"){
 	        $("#caption").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
@@ -412,9 +414,9 @@ function C_VisualMediaHolder(callback){
 				allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
-			
+
 			$("<div id='imgEdit' class='btn_edit_media' title='Edit Media'></div>").insertBefore($("#loader"));
-			
+
 			//Establish it's functionality
 			$("#imgEdit").click(function(){
 				var msg = "<div id='imgDialog' title='Input Media Path'>";
@@ -430,20 +432,20 @@ function C_VisualMediaHolder(callback){
 				msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
             	msg += "<br/><br/></div>";
             	$("#stage").append(msg);
-                	
+
                 if(largeImg == ""){
 					$("#isEnlargeable").removeAttr('checked');
 				}else{
 					$("#isEnlargeable").attr('checked', 'checked');
 				}
-				
+
 				if(popLoop){
 					$("#isLoop").attr('checked', 'checked');
 				}else{
 					$("#isLoop").removeAttr('checked');
 				}
-				
-				for(var i = 0; i < media_arr.length; i++){	
+
+				for(var i = 0; i < media_arr.length; i++){
 					addGalleryItem(i, false);
 				}
 
@@ -468,9 +470,9 @@ function C_VisualMediaHolder(callback){
 						$("#imgDialog").remove();
 					}
 				});
-				
+
 			}).tooltip();
-			
+
 			/*******************************************************
 			* Drag and Drop Upload &&& Click Image for browse to image to upload
 			********************************************************/
@@ -479,7 +481,7 @@ function C_VisualMediaHolder(callback){
 				var contentId = urlParams['type'] + '_' + urlParams['id'];
 				$loader.attr('data-content', contentId);
 				$loader.find('*').attr('data-content', contentId);
-				
+
 				$loader.click(function(){
 					try { $("#loader").tooltip("destroy"); } catch (e) {}
 					//$loader.unbind();
@@ -487,10 +489,10 @@ function C_VisualMediaHolder(callback){
 				});
 
 				siofu.listenOnDrop(document.getElementById("loader"));
-				
+
 				$("#loader").tooltip();
 			}
-			
+
 			siofu.addEventListener("complete", function(event){
 				siofu.removeEventListener("complete");
 				siofu.removeEventListener("load");
@@ -500,7 +502,7 @@ function C_VisualMediaHolder(callback){
 			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
 	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
 	            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG"){	
+				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG" || myExt == "html" || myExt == "htm" || myExt == "HTML" || myExt == "HTM"){
 					if(event.success == true){
 						saveImageEdit(myFile, true);
 					}else{
@@ -519,7 +521,7 @@ function C_VisualMediaHolder(callback){
 				}else if(myExt == "zip" || myExt == "ZIP"){
 					$("#mediaLoaderText").empty();
 					$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-					cognizenSocket.on('unzipComplete', unzipComplete);				
+					cognizenSocket.on('unzipComplete', unzipComplete);
 				}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase() >= 0)){
 					$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
 					//Theres an error
@@ -531,7 +533,7 @@ function C_VisualMediaHolder(callback){
 						height: 300,
 						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 					});
-					$("#mediaLoader").remove();			
+					$("#mediaLoader").remove();
 				}else{
 					$("#mediaLoaderText").empty();
 					$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
@@ -545,15 +547,15 @@ function C_VisualMediaHolder(callback){
 							$(".progress-label").text("Complete!");
 						}
 					});
-								
+
 					$("#conversionProgress > div").css({ 'background': '#3383bb'});
-																
-					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);								
+
+					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);
 					cognizenSocket.on('mediaInfo', mediaInfo);
 					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
 				}
 			});
-			
+
 			siofu.addEventListener("start", function(event){
 				try { $("#loader").tooltip("destroy"); } catch (e) {}
 				var myFile = event.file.name;
@@ -566,7 +568,7 @@ function C_VisualMediaHolder(callback){
 						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
 					}
 				}else{
-					
+
 					$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
 					$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
 					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
@@ -577,11 +579,11 @@ function C_VisualMediaHolder(callback){
         doAccess(pageAccess_arr);
         callback;
     }
-    
+
     function mediaConversionProgress(data){
 	    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
 	}
-	
+
 	function mediaInfo(data){
 		if(data.video != ""){
 			var splitDim = data.video_details[2].split("x");
@@ -589,7 +591,7 @@ function C_VisualMediaHolder(callback){
 			mediaHeight = splitDim[1];
 		}
 	}
-	
+
 	function unzipComplete(){
 		$("#mediaLoader").remove();
 		cognizenSocket.removeListener("unzipComplete", unzipComplete);
@@ -598,9 +600,9 @@ function C_VisualMediaHolder(callback){
 		msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. For instance, if you zipped a folder called myFolder with a video named myMedia.mp4 in it, when you access the media in the system, the path would be myFolder/myMedia.mp4.</p>";
 		msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  For instance, if you zipped myImage.png, myImage2.png and myImage3.png, you access the media through the system, you would just input myImage.png.</p>"
 		msg += "</div>";
-								
+
 		$("#stage").append(msg);
-		
+
 		//Style it to jQuery UI dialog
 		$("#zipUploadCompleteDialog").dialog({
 			autoOpen: true,
@@ -618,7 +620,7 @@ function C_VisualMediaHolder(callback){
 			}
 		});
 	}
-	
+
 	function mediaConversionComplete(data){
 		var splitPath = data.split("/");
 		var last = splitPath.length;
@@ -630,7 +632,7 @@ function C_VisualMediaHolder(callback){
 		}
 		$("#mediaLoader").remove();
 	}
-	
+
 	/**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -641,50 +643,50 @@ function C_VisualMediaHolder(callback){
         $(data).find("page").eq(currentPage).find("caption").first().append(newCDATA);
         sendUpdate();
     };
-    
+
 	/**********************************************************************
      **Save Image Edit
      **********************************************************************/
 	function saveImageEdit(_path, fromDrop){
 		fromDrop = typeof fromDrop !== 'undefined' ? fromDrop : false;
-		
+
 		$(data).find("page").eq(currentPage).attr("alt", $("#altTextEdit").val());
-		
+
 		//Check if there is an enlarged image to link
 		if($("#isEnlargeable").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("enlarge", $("#lrgImgPath").val());
 		}else{
 			$(data).find("page").eq(currentPage).attr("enlarge", "");
 		}
-		
+
 		if($("#isLoop").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("poploop", "true");
 		}else{
 			$(data).find("page").eq(currentPage).attr("poploop", "false");
 		}
-		
+
 		//Check if there is a gallery attached AND that the media wasn't dropped.
 		if(media_arr.length > 0 && fromDrop == false){
 			var mediaString = "";
 			var captionString = "";
 			var altString = "";
 			var virgin = true;
-			
+
 			for(var i = 0; i < media_arr.length; i++){
 				if(virgin == false){
 					mediaString +=",";
 					captionString += "!!!";
 					altString += "!!!";
 				}
-				
+
 				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
 				captionString += $("#"+captionEditText_arr[i]).val();//.getData();
 				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val();
 				virgin = false;
-			}	
+			}
 			$(data).find("page").eq(currentPage).attr("popup", mediaString);
 			$(data).find("page").eq(currentPage).attr("popcaps", captionString);
-			$(data).find("page").eq(currentPage).attr("popalt", altString);	 	
+			$(data).find("page").eq(currentPage).attr("popalt", altString);
 			captionEditText_arr.length = 0;
 			altEditText_arr.length = 0;
 		}else if(media_arr.length == 0){
@@ -692,15 +694,15 @@ function C_VisualMediaHolder(callback){
 			$(data).find("page").eq(currentPage).attr("popcaps", "");
 			$(data).find("page").eq(currentPage).attr("popalt", "");
 		}
-		
+
 		var imgPath = _path;
         var parts = imgPath.split('.'), i, l;
 		var last = parts.length;
 		if(_path.indexOf("youtube.com") > -1 || _path.indexOf("youtu.be") > -1){
 			mediaLinkType = "youtube";
-		} 
+		}
 		mediaType = getExtension(imgPath);
-		  
+
 		if(mediaType == "mp4" || mediaLinkType == "youtube"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
 			if(mediaWidth == 0){
@@ -709,7 +711,7 @@ function C_VisualMediaHolder(callback){
 					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 				}
 			}
-			
+
 			var msg = "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
@@ -722,21 +724,21 @@ function C_VisualMediaHolder(callback){
 			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input><br/>";
 			msg += "<label id='label'>subtitles: </label>";
 			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input></div>";
-			
+
 			$("#loader").append(msg);
-			
+
 			if(hasSubs == true){
 				$("#subs").attr("checked", "checked");
 			}
-								
+
 			if(autoPlay == true){
 				$("#autoplay").attr("checked", "checked");
 			}
-								
+
 			if(autoNext == true){
 				$("#autonext").attr("checked", "checked");
 			}
-			 	
+
 			$("#videoDialog").dialog({
             	autoOpen: true,
             	dialogClass: "no-close",
@@ -746,14 +748,14 @@ function C_VisualMediaHolder(callback){
 						var strippedPath = "";
 						$(data).find("page").eq(currentPage).attr("w", $("#videoWidth").val());
 						$(data).find("page").eq(currentPage).attr("h", $("#videoHeight").val());
-						
+
 						//Check if youtube - add attribute if needed...
 						if(mediaLinkType == "youtube"){
 							$(data).find("page").eq(currentPage).attr("mediaLinkType", "youtube");
 						}else{
 							$(data).find("page").eq(currentPage).attr("mediaLinkType", "");
 						}
-						
+
 						for(var i = 0; i < last-1; i++){
 							strippedPath += parts[i];
 						}
@@ -762,19 +764,19 @@ function C_VisualMediaHolder(callback){
 						}else{
 							$(data).find("page").eq(currentPage).attr("subs", "null");
 						}
-						
+
 						if($("#poster").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
 						}else{
 							$(data).find("page").eq(currentPage).attr("poster", "null");
 						}
-						
+
 						if($("#autoplay").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("autoplay", "true");
 						}else{
 							$(data).find("page").eq(currentPage).attr("autoplay", "false");
 						}
-						
+
 						if($("#autonext").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("autonext", "true");
 						}else{
@@ -785,18 +787,18 @@ function C_VisualMediaHolder(callback){
 						sendUpdateWithRefresh();
 						currentTemplate.fadeComplete();
 					}
-				});	
+				});
 		}else if(mediaType == "swf"){
              //If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
 			 $(data).find("page").eq(currentPage).attr("img", imgPath);
-			 
+
 			 if(mediaWidth == 0){
 				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
 					mediaWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
 					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 				}
 			}
-			 
+
 			 $("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>SWF Height: <input id='swfHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight+ " style='width:15%;'/></div></div>");
 			 $("#swfDialog").dialog({
                 autoOpen: true,
@@ -814,14 +816,14 @@ function C_VisualMediaHolder(callback){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
 		}else if(mediaType == "html" || mediaType == "HTML" || mediatType == "htm" || mediaType == "HTM"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
-			
+
 			if(mediaWidth == 0){
 				if($(data).find("page").eq(currentPage).attr('w') != undefined && $(data).find("page").eq(currentPage).attr('w') != null){
 					mediaWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
 					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 				}
 			}
-			
+
 			$("#stage").append("<div id='htmlDialog' title='Input Page Information'><div>HTML Width: <input id='htmlWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>HTML Height: <input id='htmlHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div></div>");
 			 $("#htmlDialog").dialog({
                 autoOpen: true,
@@ -835,14 +837,14 @@ function C_VisualMediaHolder(callback){
 				}
 			});
 		}
-		
+
 		if(mediaType != "mp4"  && mediaType != "swf"){
 			sendUpdateWithRefresh();
 			currentTemplate.fadeComplete();
 		}
 		$("#imgDialog").remove();
 	};
-	
+
 	function removeGalleryItem(_removeID){
 		//Find correct location in arrays - to remove - other items by ID are removed by that...
 		//Needed because if you remove more than one the below arr index would be out of step....
@@ -852,7 +854,7 @@ function C_VisualMediaHolder(callback){
 				break;
 			}
 		}
-									
+
 		galleryEdit_arr.splice(arrIndex, 1);
 		media_arr.splice(arrIndex,1);
 		caption_arr.splice(arrIndex, 1);
@@ -862,9 +864,9 @@ function C_VisualMediaHolder(callback){
 		var myItem = "#galleryItem" + _removeID;
 		$(myItem).remove();
 	}
-	
+
 	function addGalleryItem(_addID, _isNew){
-		if(_isNew == true){						
+		if(_isNew == true){
 			//If no entries - just add the next one.
 			if(media_arr.length == 0){
 				$(data).find("page").eq(currentPage).attr('popup', "defaultTop.png");
@@ -881,19 +883,19 @@ function C_VisualMediaHolder(callback){
 				altString += "!!! ";
 				$(data).find("page").eq(currentPage).attr('popalt', altString);
 			}
-			
+
 			media_arr.push("defaultTop.png");
 			caption_arr.push(" ");
-			alt_arr.push(" "); 
+			alt_arr.push(" ");
 		}
-		
+
 		var imgID = "imgPath" + _addID;
 		var captionTextID = "captionEditText" + _addID;
 		var altTextID = "altEditText" + _addID;
 		var removeID = "removeMedia" + _addID;
 		var galleryItemID = "galleryItem" + _addID;
 		captionEditText_arr.push(captionTextID);
-								
+
 		var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='"+removeID+"' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
 		msg += "<label id='label'><b>Gallery Item: </b><br/></label>";
@@ -903,11 +905,11 @@ function C_VisualMediaHolder(callback){
 		msg += "<input id='"+altTextID+"' class='dialogInput' type='text' value='"+alt_arr[_addID]+"' defaultValue='"+alt_arr[_addID]+"' style='width:70%'/>";
 		msg += "</div>"
 		$("#imgDialog").append(msg);
-								
+
 		$("#" + removeID).click(function(){
-			removeGalleryItem($(this).attr("value"));	
+			removeGalleryItem($(this).attr("value"));
 		});
-		
+
 		/*CKEDITOR.inline( captionTextID, {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -915,11 +917,11 @@ function C_VisualMediaHolder(callback){
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
-		});*/							
-						
+		});*/
+
 		galleryEdit_arr.push(galleryItemID);
 	}
-	
+
 	//Function called on video complete if autoNext == true
     function hasEnded(){
         $('#next').click();
@@ -927,7 +929,7 @@ function C_VisualMediaHolder(callback){
 
 
 	this.getCaption = function(){
-		
+
 	}
 
     this.setCaption = function(){
@@ -935,12 +937,12 @@ function C_VisualMediaHolder(callback){
         //otherFighter.health -= 10;
 
     }
-    
+
     this.setupGallery = function(){
         //otherFighter.energy -= item.damage;
         //otherFighter.health -= item.damage;
     }
-    
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
@@ -952,19 +954,19 @@ function C_VisualMediaHolder(callback){
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
-		
+
 		try { $('#loader').flash().remove(); } catch (e) {}
 
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
 		try { $("#mediaLoader").remove(); } catch (e) {}
-		
+
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
-		
+
 		try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 		try { $("#loader").tooltip("destroy"); } catch (e) {}
-		
+
 		try { $(".toolTip").each(function(){
 				$(this).tooltip("destroy");
 			})

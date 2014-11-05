@@ -62,16 +62,16 @@ blockquote
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 #outer {
-	top: 0px; 
-	left: 0px; 
-	width: 100%; 
+	top: 0px;
+	left: 0px;
+	width: 100%;
 	height: 100%;
-	position: absolute; 
+	position: absolute;
 	display: table;
 }
-  
+
 #inner {
-	display: table-cell; 
+	display: table-cell;
 	vertical-align: middle;
 }
 
@@ -126,7 +126,7 @@ blockquote
 	width: 18px;
 	height: 18px;
 	background: url(images/editText.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -137,7 +137,7 @@ blockquote
 	width: 18px;
 	height: 18px;
 	background: url(images/editMedia.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -145,18 +145,18 @@ blockquote
 	width: 18px;
 	height: 18px;
 	background: url(images/editAudio.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_publish{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 200px;
 	width: 30px;
 	height: 30px;
 	background: url(images/publish.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -167,10 +167,10 @@ blockquote
 	font-family: Arial, Helvetica, sans-serif;
 	color: #EEEEEE;
 	text-align: center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	cursor: hand;
 	cursor: pointer;
 	z-index: 5000;
 }
@@ -182,73 +182,73 @@ blockquote
 	width: 30px;
 	height: 30px;
 	background: url(images/comment.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_preferences{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 45px;
 	width: 30px;
 	height: 30px;
 	background: url(images/prefs.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_passLock{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 80px;
 	width: 30px;
 	height: 30px;
 	background: url(images/lockActive.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_requestLock{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 45px;
 	width: 30px;
 	height: 30px;
 	background: url(images/lock.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_mediaDrop{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 115px;
 	width: 30px;
 	height: 30px;
 	background: url(images/upload.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .btn_objedit{
 	position:absolute;
-	bottom :8px; 
+	bottom :8px;
 	left: 150px;
 	width: 30px;
 	height: 30px;
 	background: url(images/upload.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .dialogInput{
-	background-color:#ffffff; 
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	border-top-style: inset; 
-	border-top-width: 1px; 
-	border-left-style: inset; 
+	background-color:#ffffff;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
 	border-left-width: 1px;
 	padding-left: 8px;
 	padding-right: 8px;
@@ -257,28 +257,28 @@ blockquote
 
 .dialogInputCorrect{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
-	border-top-style: inset; 
-	border-top-width: 1px; 
-	border-left-style: inset; 
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
 	border-left-width: 1px;
 	padding-left: 8px;
-	padding-right: 8px;	
+	padding-right: 8px;
 }
 
 .dialogInputIncorrect {
 	background: #F49D96 url(images/wrong.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px;	
-	border-top-style: inset; 
-	border-top-width: 1px; 
-	border-left-style: inset; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
 	border-left-width: 1px;
 	padding-left: 8px;
-	padding-right: 8px;		
+	padding-right: 8px;
 }
 
 #toggleMode{
@@ -306,7 +306,7 @@ blockquote
 	width: 30px;
 	height: 30px;
 	background: url(images/commentRed.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -317,7 +317,7 @@ blockquote
 	width: 30px;
 	height: 30px;
 	background: url(images/commentGreen.png) no-repeat;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -334,9 +334,9 @@ blockquote
 	height: 350px;
 	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 }
 
 .commentHolder{
@@ -350,11 +350,11 @@ blockquote
 	width: 95%;
 	color: #9DA6Ab;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-bottom-right-radius: 8px; 
-	-webkit-border-bottom-right-radius: 8px; 
+	-moz-border-bottom-right-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
 	border-bottom-right-radius: 8px;
-	-moz-border-bottom-left-radius: 8px; 
-	-webkit-border-bottom-left-radius: 8px; 
+	-moz-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
 	border-bottom-left-radius: 8px;
 }
 
@@ -364,11 +364,11 @@ blockquote
 	width: 95%;
 	color: #3383BB;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-bottom-right-radius: 8px; 
-	-webkit-border-bottom-right-radius: 8px; 
+	-moz-border-bottom-right-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
 	border-bottom-right-radius: 8px;
-	-moz-border-bottom-left-radius: 8px; 
-	-webkit-border-bottom-left-radius: 8px; 
+	-moz-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
 	border-bottom-left-radius: 8px;
 }
 
@@ -378,11 +378,11 @@ blockquote
 	width: 95%;
 	color: #EEEEEE;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-top-right-radius: 8px; 
-	-webkit-border-top-right-radius: 8px; 
+	-moz-border-top-right-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
 	border-top-right-radius: 8px;
-	-moz-border-top-left-radius: 8px; 
-	-webkit-top-bottom-left-radius: 8px; 
+	-moz-border-top-left-radius: 8px;
+	-webkit-top-bottom-left-radius: 8px;
 	border-top-left-radius: 8px;
 }
 
@@ -392,11 +392,11 @@ blockquote
 	width: 95%;
 	color: #EEEEEE;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-top-right-radius: 8px; 
-	-webkit-border-top-right-radius: 8px; 
+	-moz-border-top-right-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
 	border-top-right-radius: 8px;
-	-moz-border-top-left-radius: 8px; 
-	-webkit-border-top-left-radius: 8px; 
+	-moz-border-top-left-radius: 8px;
+	-webkit-border-top-left-radius: 8px;
 	border-top-left-radius: 8px;
 }
 
@@ -406,11 +406,11 @@ blockquote
 	height: auto;
 	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
-	-moz-border-bottom-right-radius: 8px; 
-	-webkit-border-bottom-right-radius: 8px; 
+	-moz-border-bottom-right-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;
 	border-bottom-right-radius: 8px;
-	-moz-border-bottom-left-radius: 8px; 
-	-webkit-border-bottom-left-radius: 8px; 
+	-moz-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
 	border-bottom-left-radius: 8px;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -481,7 +481,7 @@ CONTENT TEXT LAYOUTS*/
 	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
-	background: none; 
+	background: none;
 	border-width: 0px;
 	padding-right: 15px;
 }
@@ -495,8 +495,8 @@ CONTENT TEXT LAYOUTS*/
 	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
-	padding: 0px; 
-	background: none; 
+	padding: 0px;
+	background: none;
 	border-width: 0px;
 	top:85px;
 	left:50px;
@@ -593,12 +593,12 @@ CONTENT TEXT LAYOUTS*/
 }
 
 #tabs .ui-tabs-nav {
-	padding-left: 0px; 
-	background: transparent; 
-	border-width: 0px 0px 1px 0px; 
-	-moz-border-radius: 0px; 
-	-webkit-border-radius: 0px; 
-	border-radius: 0px; 
+	padding-left: 0px;
+	background: transparent;
+	border-width: 0px 0px 1px 0px;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
 }
 
 #tabs .ui-tabs-nav li a {
@@ -617,12 +617,12 @@ CONTENT TEXT LAYOUTS*/
 }
 
 #tabs .ui-tabs-nav {
-	padding-left: 0px; 
-	background: transparent; 
-	border-width: 0px 0px 1px 0px; 
-	-moz-border-radius: 0px; 
-	-webkit-border-radius: 0px; 
-	border-radius: 0px; 
+	padding-left: 0px;
+	background: transparent;
+	border-width: 0px 0px 1px 0px;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
 }
 
 #contentEditText{
@@ -636,20 +636,20 @@ img{
 }
 
 p.center{
-	text-align: center; 
+	text-align: center;
 }
 
 p.right{
-	text-align: right; 
+	text-align: right;
 }
 
 p.sidebarHeader{
-	text-align: center; 
+	text-align: center;
 	font-weight: bold;
 }
 
 p.completionText{
-	text-align: center; 
+	text-align: center;
 	font-weight: bold;
 }
 
@@ -697,9 +697,9 @@ td{
 caption{
 	caption-side: bottom;
 	padding: 4px;
-	font-size: 85%; 
-	text-align: center; 
-	color: #000000; 
+	font-size: 85%;
+	text-align: center;
+	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	font-style: italic;
 }
@@ -710,13 +710,13 @@ caption{
 /*	position: absolute;
 	left: 400px;
 	top: 84px;
-*/	
+*/
 }
 
 ul.no-indent {
-	margin-left:20px; 
-	margin-top:5px;  
-	margin-bottom:5px;  
+	margin-left:20px;
+	margin-top:5px;
+	margin-bottom:5px;
 	padding:0px;
 }
 
@@ -746,8 +746,8 @@ ul.no-indent {
 	padding: 15px;
 	margin-right: auto;
 	margin-left: auto;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -761,8 +761,8 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	-moz-border-radius-topleft:8px;
-	-moz-border-radius-topright: 8px;  
-	-webkit-border-radius: 8px; 
+	-moz-border-radius-topright: 8px;
+	-webkit-border-radius: 8px;
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
 }
@@ -777,8 +777,8 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	-moz-border-radius-bottomleft:8px;
-	-moz-border-radius-bottomright: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius-bottomright: 8px;
+	-webkit-border-radius: 8px;
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 8px;
 }
@@ -791,9 +791,9 @@ ul.no-indent {
 }
 
 .categoryProgressLabel{
-	position: relative; 
-	float: left; 
-	font-weight: bold; 
+	position: relative;
+	float: left;
+	font-weight: bold;
 	color: #e4dbc9;
 }
 .categoryTrackingMenuItem{
@@ -808,8 +808,8 @@ ul.no-indent {
 	font-weight: bold;
 	color: #3f3f3f;
 	background-color: #e4dbc9;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -838,15 +838,15 @@ ul.no-indent {
 
 .categoryCorrect{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
 .categoryIncorrect{
 	background: #F49D96 url(images/wrong.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -855,8 +855,8 @@ ul.no-indent {
 	margin-right: auto;
 	margin-left: auto;
 	background: #98FF97 url(images/correctLarge.png) no-repeat center center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -866,8 +866,8 @@ ul.no-indent {
 	margin-left: auto;
 	text-align: center;
 	background: #F49D96 url(images/wrongLarge.png) no-repeat center center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -881,8 +881,8 @@ ul.no-indent {
 	text-align: center;
 	background-color: #98FF97;
 	padding: 8px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -895,8 +895,8 @@ ul.no-indent {
 	color: #3f3f3f;
 	background-color: #F49D96;
 	padding: 8px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 /* END CATEGORIES */
@@ -929,10 +929,10 @@ ul.no-indent {
 	margin-left: 10px;
 	margin-right: 10px;
 	margin-bottom: 10px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1049,12 +1049,12 @@ ul.no-indent {
 	margin-left: 10px;
 	margin-right: 10px;
 	margin-bottom: 10px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border-width: thick;
 	border-color: green;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1084,8 +1084,8 @@ ul.no-indent {
 	margin-left: auto;
 	margin-bottom: 15px;
 	width: 920px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -1119,7 +1119,7 @@ ul.no-indent {
 	border-style: solid;
 	border-width: 1px;
 	font-family: Arial, Helvetica, sans-serif;
-	
+
 }
 
 .clickListSelected{
@@ -1172,12 +1172,12 @@ ul.no-indent {
 	font-weight: bold;
 	color: #9DA6AB;
 	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 	border: solid #9DA6AB;
 	border-width: 2px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1220,8 +1220,8 @@ SEQUENCING LAYOUTS
 	margin-left: auto;
 	border: solid #9DA6AB;
 	border-width: 2px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -1240,10 +1240,10 @@ SEQUENCING LAYOUTS
 	font-size: 12pt;
 	color: #9DA6AB;
 	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 /****************************************************** SEQUENCING END *****/
@@ -1255,11 +1255,11 @@ SIDEBAR LAYOUTS
 	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: auto;
-	background-color: #EEEEEE; 
+	background-color: #EEEEEE;
 	border-width: 0px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 	padding: 10px;
 }
 
@@ -1267,12 +1267,12 @@ SIDEBAR LAYOUTS
 	position: relative;
 	float: right;
 	right: 15px;
-	width: 400px;		
+	width: 400px;
 	/*max-height: 500px;*/
 	border-width: 0px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 	padding-right: 10px;
 	padding-bottom: 10px;
 }
@@ -1316,7 +1316,7 @@ MEDIA LAYOUTS
 
 #mediaHolder.leftTabs{
 	left: 50px;
-	top: 110px;	
+	top: 110px;
 	max-width: 410px;
 }
 
@@ -1351,7 +1351,7 @@ MEDIA LAYOUTS
 	border-width: thin;
 	padding: 3px;
 	-moz-border-radius    : 3px;
-	-webkit-border-radius : 3px;  
+	-webkit-border-radius : 3px;
 	border-radius         : 3px;
 }
 
@@ -1362,7 +1362,7 @@ MEDIA LAYOUTS
 	width: 24px;
 	height: 24px;
 	right: 5px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1373,7 +1373,7 @@ MEDIA LAYOUTS
 	float: right;
 	width: 86px;
 	height: 22px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 	z-index: 5;
 }
@@ -1386,7 +1386,7 @@ MEDIA LAYOUTS
 }
 
 #loader.graphic{
-	
+
 }
 
 #loader .loading {
@@ -1440,25 +1440,25 @@ MEDIA LAYOUTS
 }
 
 .progress-label{
-	position: absolute; 
-	left: 45%; 
-	text-align: center; 
-	text-shadow: 1px 1px 0 #fff; 
+	position: absolute;
+	left: 45%;
+	text-align: center;
+	text-shadow: 1px 1px 0 #fff;
 	background: #f3f3f3;
-	color: #eeeeee; 
-	font-family: Arial, Helvetica, sans-serif; 
+	color: #eeeeee;
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	top: 3px;
 }
-								
+
 .ui-progressbar{
-	position: relative; 
-	margin: 0 auto; 
-	height: 20px; 
-	background: #f3f3f3; 
+	position: relative;
+	margin: 0 auto;
+	height: 20px;
+	background: #f3f3f3;
 	width: 300px;
 }
-		
+
 #audioCon{
 	position: absolute;
 	bottom: 0px;
@@ -1466,9 +1466,9 @@ MEDIA LAYOUTS
 
 
 #caption{
-	font-size: 75%; 
-	text-align: center; 
-	color: #000000; 
+	font-size: 75%;
+	text-align: center;
+	color: #000000;
 	font-family: Arial, Helvetica, sans-serif;
 	margin-left: auto;
 	margin-right: auto;
@@ -1521,7 +1521,7 @@ MULTIPLE CHOICE LAYOUTS
    	left: 580px;
 }
 */
-  
+
 .multipleChoiceImageLabel{
 	position: absolute;
 	overflow : auto;
@@ -1538,10 +1538,10 @@ MULTIPLE CHOICE LAYOUTS
 .multipleChoiceOptionImage{
 	overflow: hidden;
 	background-color: #EEEEEE;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
-	cursor: hand; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1552,7 +1552,7 @@ MULTIPLE CHOICE LAYOUTS
 	font-weight: normal;
 	color:	#000000;
 	font-family: Arial, Helvetica, sans-serif;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 	padding: 10px 35px 10px 4px;
 	margin-bottom: 10px;
@@ -1572,7 +1572,7 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #eeeeee;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1581,21 +1581,21 @@ MULTIPLE CHOICE LAYOUTS
 	background-color: #999999;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .optionCorrect{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
 .optionIncorrect{
 	background: #F49D96 url(images/wrong.png) no-repeat right center;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
@@ -1604,39 +1604,39 @@ MULTIPLE CHOICE LAYOUTS
 	top: 0px;
 	left: 30px;
 	width: 889px;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .questionBankItem{
-	position: relative; 
-	float: left; 
+	position: relative;
+	float: left;
 	margin-right:5px;
-	height:30px; 
-	text-align:center; 
-	vertical-align:middle; 
+	height:30px;
+	text-align:center;
+	vertical-align:middle;
 	line-height:30px;
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 }
 
 .selectedEditBankMember{
-	background-color: green; 
+	background-color: green;
 	color: #f3f3f3;
 }
 
 .unselectedEditBankMember{
-	background-color: #333333; 
+	background-color: #333333;
 	color: #eeeeee;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
 .editItemContainer{
-	-moz-border-radius: 8px; 
-	-webkit-border-radius: 8px; 
-	border-radius: 8px; 
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
 	border-color: #333333;
 	border-width: thin;
 	border-style: solid;
@@ -1701,7 +1701,7 @@ MATCHING LAYOUTS
 	background-color: #eeeeee;
 	color: #3383bb;
 	width: 15px;
-	height: 15px; 
+	height: 15px;
 	text-transform:uppercase;
 	font-size: 100%;
 	font-weight: bold;
@@ -1715,7 +1715,7 @@ MATCHING LAYOUTS
 }
 
 #mcSubmit, #completionButton{
-	position: relative; 
+	position: relative;
 	display: block !important;
 	width: 100px;
 	margin-top: 50px;
@@ -1726,7 +1726,7 @@ MATCHING LAYOUTS
 }
 
 #matchingSubmit{
-	position: absolute; 
+	position: absolute;
 	bottom: 60px;
 	left: 905px;
 }
@@ -1812,13 +1812,13 @@ ESSAY COMPARE LAYOUTS
 
 #help{
 	position:absolute;
-	top:720px; 
+	top:720px;
 	left: 590px;
 }
 
 #back{
 	position:absolute;
-	top:720px; 
+	top:720px;
 	left: 695px;
 }
 
@@ -1832,7 +1832,7 @@ ESSAY COMPARE LAYOUTS
 
 #next{
 	position:absolute;
-	top:720px; 
+	top:720px;
 	left: 900px;
 }
 
@@ -1851,7 +1851,7 @@ ESSAY COMPARE LAYOUTS
 	width : 110px;
 	font-size : 100%;
 	color:	#3383bb;
-	text-align: center; 
+	text-align: center;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -1890,7 +1890,7 @@ ESSAY COMPARE LAYOUTS
 }
 
 /*******************************************************************
-*******  PANEL STYLES 
+*******  PANEL STYLES
 *******************************************************************/
 
 /* Panel Styles for all side panels*/
@@ -1910,7 +1910,7 @@ ESSAY COMPARE LAYOUTS
 	top:71px;
 	left:-406px;
 	-moz-border-radius    : 8px;
-	-webkit-border-radius : 8px;  
+	-webkit-border-radius : 8px;
 	border-radius         : 8px;
 }
 
@@ -1933,7 +1933,7 @@ ESSAY COMPARE LAYOUTS
 
 .docPaneItem{
 	position: relative;
-	text-align: center; 
+	text-align: center;
 	background: #DDDDDD;
 	top: 15px;
 	left: 5px;
@@ -1942,7 +1942,7 @@ ESSAY COMPARE LAYOUTS
 	border: 1px solid #79b7e7;
 	padding: 10px;
 	-moz-border-radius    : 8px;
-	-webkit-border-radius : 8px;  
+	-webkit-border-radius : 8px;
 	border-radius         : 8px;
 }
 
@@ -1958,17 +1958,17 @@ ESSAY COMPARE LAYOUTS
 #indexPane{
 	position:absolute;
 	top:71px;
-	left:-406px;
+	left:-407px;
 }
 
 #indexTab{
 	position: absolute;
 	top: 80px;
-	left: 406px;
+	left: 407px;
 	width: 35px;
 	height: 40px;
 	background: #eeeeee url(images/paneTabIndex.png) no-repeat center center;
-	cursor: hand; 
+	cursor: hand;
 	cursor: pointer;
 }
 
@@ -1982,7 +1982,7 @@ ESSAY COMPARE LAYOUTS
 	font-weight: bold;
 	color: #1d5987;
 	-moz-border-radius    : 8px;
-	-webkit-border-radius : 8px;  
+	-webkit-border-radius : 8px;
 	border-radius         : 8px;
 }
 
@@ -1995,7 +1995,7 @@ ESSAY COMPARE LAYOUTS
 	padding: 3.5px;
 	background-color: #EEEEEE;
 	-moz-border-radius    : 4px;
-	-webkit-border-radius : 4px;  
+	-webkit-border-radius : 4px;
 	border-radius         : 4px;
 }
 
@@ -2003,23 +2003,23 @@ ESSAY COMPARE LAYOUTS
 	position: absolute;
 	top: 10px;
 	right: 2px;
-	width: 10px; 
+	width: 10px;
 	height: 10px;
 	-moz-border-radius    : 50%;
-	-webkit-border-radius : 50%;  
+	-webkit-border-radius : 50%;
 	border-radius         : 50%;
-	background-color: red; 
+	background-color: red;
 }
 
 .indexItemWithClosedComment{
 	position: absolute;
 	top: 10px;
 	right: 2px;
-	width: 10px; 
+	width: 10px;
 	height: 10px;
 	-moz-border-radius    : 50%;
-	-webkit-border-radius : 50%;  
-	border-radius         : 50%; 
+	-webkit-border-radius : 50%;
+	border-radius         : 50%;
 	background-color: green;
 }
 
@@ -2083,11 +2083,11 @@ ESSAY COMPARE LAYOUTS
 .dd-placeholder,
 .dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; box-sizing: border-box; -moz-box-sizing: border-box; }
 .dd-empty { border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
-    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), 
+    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
                       -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
-    background-image:    -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), 
+    background-image:    -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
                          -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
-    background-image:         linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), 
+    background-image:         linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
                               linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
     background-size: 60px 60px;
     background-position: 0 0, 30px 30px;
@@ -2210,18 +2210,18 @@ ESSAY COMPARE LAYOUTS
 }
 
 .glossaryItem{
-	position: relative; 
-	display: block; 
-	max-width: 350px; 
-	list-style: none; 
-	font-size: 13px; 
+	position: relative;
+	display: block;
+	max-width: 350px;
+	list-style: none;
+	font-size: 13px;
 	line-height: 20px;
-	height: auto; 
-	margin: 5px 0; 
-	padding: 4px 10px 4px 10px; 
-	color: #333; 
-	text-decoration: none; 
-	font-weight: bold; 
+	height: auto;
+	margin: 5px 0;
+	padding: 4px 10px 4px 10px;
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
 	border: 1px solid #ccc;
 	font-family: Arial, Helvetica, sans-serif;
     background: #fafafa;
@@ -2296,10 +2296,10 @@ ESSAY COMPARE LAYOUTS
     border: 2px solid #999999; border-radius: 30px;
     position: absolute; top: 0; bottom: 0; right: 66px;
     -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
-    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
-    background-image: -moz-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%); 
-    background-image: -webkit-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%); 
-    background-image: -o-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%); 
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+    background-image: -moz-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+    background-image: -webkit-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
+    background-image: -o-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
     background-image: linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 80%);
     box-shadow: 0 1px 1px white inset;
 }
@@ -2309,7 +2309,7 @@ ESSAY COMPARE LAYOUTS
 }
 
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
+    right: 0px;
 }
 /*on off switch end*/
 
@@ -2884,23 +2884,23 @@ a.fancybox-expand {
 #landscape{
 	visibility: hidden;
 	background-color: #000000;
-	background-image: url('images/landscape.png'); 
-	background-repeat: no-repeat; 
-	background-position: center center; 
+	background-image: url('images/landscape.png');
+	background-repeat: no-repeat;
+	background-position: center center;
 	position: fixed;
 	left: 0px;
 	right: 0px;
 	top: 0px;
 	bottom: 0px;
 	z-index: 1;
-} 
+}
 
 
 @media only screen and (orientation:landscape) {
 	/* show rotate device message on phones in landscape orientation */
 	#landscape{
 		visibility: visible;
-	} 
+	}
 }
 
 
@@ -2912,7 +2912,7 @@ a.fancybox-expand {
 		margin: 0px;
 		padding: 0px;
 		border: 0px;
-		outline: 0px; 
+		outline: 0px;
 	}
 
 	/* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
@@ -2992,7 +2992,7 @@ a.fancybox-expand {
 	#passLock{
 		display: none;
 	}
-	
+
 	.ui-tooltip{
 		display: none !important;
 	}
@@ -3006,11 +3006,11 @@ a.fancybox-expand {
 		left: 0px !important;
 		margin-left: 15px;
 	}
-	
+
 	#contentHolder{
 		width: 100%;
 	}
-	
+
 	/* FOR TABBED CONTENT */
 
 	#tabs.tabTop{
@@ -3021,7 +3021,7 @@ a.fancybox-expand {
 		width: auto;
 		max-width: 56%;
 	}
-	
+
 	#mediaHolder.tabsRight{
 		max-width: 40%;
 		right: 1%;
@@ -3043,18 +3043,18 @@ a.fancybox-expand {
 	}
 
 	#tabs .ui-tabs-nav {
-		padding-left: 0px; 
-		background: transparent; 
-		border-width: 0px 0px 1px 0px; 
-		-moz-border-radius: 0px; 
-		-webkit-border-radius: 0px; 
-		border-radius: 0px; 
+		padding-left: 0px;
+		background: transparent;
+		border-width: 0px 0px 1px 0px;
+		-moz-border-radius: 0px;
+		-webkit-border-radius: 0px;
+		border-radius: 0px;
 	}
 
 	#tabs .revealRightImage{
-		-moz-border-radius: 8px; 
-		-webkit-border-radius: 8px; 
-		border-radius: 8px; 
+		-moz-border-radius: 8px;
+		-webkit-border-radius: 8px;
+		border-radius: 8px;
 		top: 5px !important;
 		left: 5px !important;
 		right: 0px !important;
@@ -3070,17 +3070,17 @@ a.fancybox-expand {
 		top: 20% !important;
 	}
 
-	
+
 	/* FOR CLICKIMAGE CONTENT */
 	.clickImgTextHolder{
 		width: 100%;
 	}
-	
+
 	div#clickImgText.clickImgText{
 		margin-left: 10px;
 		width: 97%;
 	}
-	
+
 
 	/****************************************************** CONTENT TEXT LAYOUTS END *****/
 
@@ -3101,11 +3101,11 @@ a.fancybox-expand {
 	/**************************************************************************************
 	/*MEDIA LAYOUTS*/
 	/**************************************************************************************/
-	#mediaHolder, #loader, #loader img, #videoplayer, .mejs-video{ 
+	#mediaHolder, #loader, #loader img, #videoplayer, .mejs-video{
 		max-width: 100%;
 		max-height: 100%;
 	}
-	
+
 	#mediaHolder.left{
 		left: 0px;
 		margin-right: 15px;
@@ -3141,9 +3141,9 @@ a.fancybox-expand {
 	}
 
 	#caption{
-		font-size: 75%; 
-		text-align: center; 
-		color: #000000; 
+		font-size: 75%;
+		text-align: center;
+		color: #000000;
 		font-family: Arial, Helvetica, sans-serif;
 	}
 
@@ -3224,7 +3224,7 @@ a.fancybox-expand {
 	}
 
 	#matchingSubmit{
-		position: absolute; 
+		position: absolute;
 		bottom: 60px;
 		left: 70%
 	}
@@ -3285,7 +3285,7 @@ a.fancybox-expand {
 		background: url(images/correct.png) no-repeat;
 	}
 	/************************************************************** KNOWLEDGE CHECK END *****/
-	
+
 	#back{
 		position: fixed;
 		top: auto;
@@ -3319,16 +3319,16 @@ a.fancybox-expand {
 		/*bottom: 92%;*/
 		width: 40px;
 		height: 40px;
-		border-radius: 0px;		
-	}	
-	
+		border-radius: 0px;
+	}
+
 	#back:focus, #next:focus, #help:focus{
 		outline: 0px;
 	}
 
 	#publish{
 		position:absolute;
-		top:720px; 
+		top:720px;
 		left: 500px;
 	}
 
@@ -3343,7 +3343,7 @@ a.fancybox-expand {
 		height: 50px;
 		font-size : 100%;
 		color:	#ffffff;
-		text-align: center; 
+		text-align: center;
 		line-height:3em;
 		font-family: Arial, Helvetica, sans-serif;
 		background-color: #b2b2b2;
@@ -3389,7 +3389,7 @@ a.fancybox-expand {
 	}
 
 	/*******************************************************************
-	*******  PANEL STYLES 
+	*******  PANEL STYLES
 	*******************************************************************/
 
 	/* Panel Styles for all side panels*/
@@ -3401,7 +3401,7 @@ a.fancybox-expand {
 	}
 
 	.paneTab{
-		
+
 		-moz-transform:    rotate(0deg);
 	    -o-transform:      rotate(0deg);
 	    -webkit-transform: rotate(0deg);
@@ -3420,13 +3420,13 @@ a.fancybox-expand {
 		left:0px;*/
 		top: 0px;
 		bottom: 0px;
-		left: -406px;		
+		left: -406px;
 	}
 
 	#indexTab{
 		position:absolute;
 		top: 0px;
-		left: 409px;		
+		left: 409px;
 		margin-left: -10px;
 	    height: 60px;
 	    width: 50px;
@@ -3462,7 +3462,7 @@ a.fancybox-expand {
 		left: 409px;
 		margin-left: -10px;
 /*	    margin-top: -25px;*/
-	    height: 60px;	
+	    height: 60px;
 	    width: 50px;
 	}
 
@@ -3498,12 +3498,12 @@ a.fancybox-expand {
 	#stage{
 		top: 40px;
 	}
-	
+
 	#scrollableContent{
 		margin-left: 0px;
 		width: 100% !important;
 	}
-	
+
 	#content, #essayCompareHolder{
 		padding-left: 3%;
 		padding-right: 3%;
@@ -3537,16 +3537,16 @@ a.fancybox-expand {
 		height: 40px;
 		line-height: 2.6em;
 	}
-	
+
 	#mediaHolder.graphic{
 		max-height: 88%;
 		overflow: scroll;
 	}
-	
+
 	#matching{
 		height: auto !important;
 	}
-	
+
 	#matchingOptions, #matchingAnswers{
 		left: 0px;
 		float: none;
@@ -3591,7 +3591,7 @@ a.fancybox-expand {
 
 	#removePage{
 		width: 150px;
-	}		
+	}
 
 	#tabs.left{
 		width: 98%;
@@ -3627,7 +3627,7 @@ a.fancybox-expand {
 		margin-left: 3%;
 		margin-right: 3%;
 	}
-/*		
+/*
 	.flashcard{
 		width: 240px;
 		font-size: 11pt;
@@ -3672,7 +3672,7 @@ a.fancybox-expand {
 	.dd3-content{
 		margin: 2px 0;
 	}
-	
+
 	/* FOR CLICKIMAGE CONTENT */
 	.clickImg{
 		padding: 4px;
@@ -3689,7 +3689,7 @@ a.fancybox-expand {
 	.revealLeft{
 		right: 0px;
 	}
-	
+
 	.revealImg{
 		padding: 4px;
 		margin: 0px 4px 10px 4px;
