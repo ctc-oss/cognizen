@@ -27,6 +27,10 @@ function C_TabbedContent(_type) {
 			$('#stage').css({'opacity':0});
 		}
 
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+
 		revealCount = $(data).find("page").eq(currentPage).find("tab").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").text();
 		if($(data).find("page").eq(currentPage).attr("interact") != undefined){
@@ -50,7 +54,7 @@ function C_TabbedContent(_type) {
 
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div>');
 
-
+		pageAccess_arr.push($("#content"));
 
 		$("#scrollableContent").addClass("tabsLeft");
 	    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -60,7 +64,7 @@ function C_TabbedContent(_type) {
 		for(var i = 0; i < revealCount; i++){
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var tabID = "tab" + i;
-			tabString += '<li><a href="#'+ tabID +'">'+ currentTab +'</a></li>';
+			tabString += '<li id="acc'+tabID+'"><a href="#'+ tabID +'">'+ currentTab +'</a></li>';
 		}
 		tabString += '</ul>';
 
@@ -90,8 +94,19 @@ function C_TabbedContent(_type) {
 			}
 		});
 
+		$tabis = $('#tabs ul li');
+
+		for(var i = 0; i < revealCount; i++){
+			//$("#content").attr("aria-label", $("#content").text());
+			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
+			var currentTabContent = $("#tab"+i).text();
+			$tabis.eq(i).attr('tabindex', '-1').attr('aria-selected', 'false').attr("role", "presentation").attr("aria-label", "Tab: " + currentTab + " with Content: " + currentTabContent);
+			pageAccess_arr.push($tabis.eq(i));
+		}
+
 		/*Attach Media*/
 		if(type == "tabsOnly"){
+
 			if(transition == true){
 				TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
 			}else{
@@ -104,6 +119,8 @@ function C_TabbedContent(_type) {
 			mediaHolder = new C_VisualMediaHolder();
         	mediaHolder.loadVisualMedia(checkMode());
 		}
+
+		doAccess(pageAccess_arr);
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -402,26 +419,6 @@ function C_TabbedContent(_type) {
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
-
-	/*****************************************************************************************************************************************************************************************************************
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	ACESSIBILITY/508 FUNCTIONALITY
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	*****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-		var tabindex = 1;
-
-		$("#pageTitle").attr("tabindex", tabindex);
-		tabindex++;
-		/*for(var i = 0; i < buttonArray.length; i++){
-			$(buttonArray[i]).attr("tabindex", tabindex);
-			tabindex++;
-		}*/
-		$("#content").attr("tabindex", tabindex);
-		tabindex++;
-		$("#loader").attr("tabindex", tabindex);
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
 
 
     /*****************************************************************************************************************************************************************************************************************

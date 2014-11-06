@@ -208,20 +208,20 @@ function launchObjEdit(){
 
 	var msg = '<div id="dialog-objEdit" title="Learning Objectives Edit Window.">';
 	msg += "<div id='objEditDialog'>"
-	msg += '<b>instructional goal: </b>' + $(courseData).find("course").attr("instructionalgoal") + '<br/>';	
+	msg += '<b>instructional goal: </b>' + $(courseData).find("course").attr("instructionalgoal") + '<br/>';
     //display tlo
-    msg += '<b>terminal objective: </b>' + $(data).find('tlo').attr('value') + '<br/>';	
+    msg += '<b>terminal objective: </b>' + $(data).find('tlo').attr('value') + '<br/>';
 	//enter elo
  	msg += "<label for='eo' title='Update the enabling objective.'>enabling objective: </label>";
-    msg += '<input type="text" name="eo" id="eo" value="undefined" /> <br/>';							     	
+    msg += '<input type="text" name="eo" id="eo" value="undefined" /> <br/>';
  	msg += "<label for='out_pageObjective'";
  	msg += 'title="Update the learner friendly objective description or reference to this page in the lesson. This value is used on completion pages to show missed objectives to students.">objective description: </label>';
-    msg += '<input type="text" name="out_pageObjective" id="out_pageObjective" '; 
+    msg += '<input type="text" name="out_pageObjective" id="out_pageObjective" ';
 	msg += 'value="'+ $(data).find('page').eq(currentPage).attr("objective") + '" /> <br/>';
 
-	//enter tlo referenced for assessments	
+	//enter tlo referenced for assessments
     if($(data).find('page').eq(currentPage).attr("type") == "kc"){
-		msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";				     			     	
+		msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";
      	msg += "<select name='objItemId' id='objItemId'>";
      	//for loop through items in course.xml
 		for(var k = 0; k < $(courseData).find("item").length; k++){
@@ -233,12 +233,12 @@ function launchObjEdit(){
 				msg += ' selected';
 			}
 			msg += '>'+itemName+' : '+itemTLO+'</option>';
-		}			     	
+		}
      	msg += "</select><br/>";
- 	}			
+ 	}
 	msg += "<br/>";
 	msg += "</div></div>";
-	
+
 	$("#stage").append(msg);
 
 	var questionResponseIndex = 0;
@@ -255,7 +255,7 @@ function launchObjEdit(){
 			if($(data).find('page').eq(currentPage).attr("objItemId") == 'undefined'){
 				$(data).find('page').eq(currentPage).attr("objItemId",$('#objItemId option:selected').val());
 				questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
-				//updateModuleXML(currentPageParentModule);								
+				//updateModuleXML(currentPageParentModule);
 			}
 			else{
 				$('#objItemId').val($(data).find('page').eq(currentPage).attr("objItemId"));
@@ -267,14 +267,14 @@ function launchObjEdit(){
 			questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
 			//updateModuleXML(currentPageParentModule);
 		}
-	}     	
+	}
 
  	//add .on change for objItemId
  	$('#objItemId').on("change", function(){
 		$(data).find('page').eq(currentPage).attr("objItemId",$('#objItemId option:selected').val());
 		questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
-		//updateModuleXML(currentPageParentModule);			     		
- 	});	
+		//updateModuleXML(currentPageParentModule);
+ 	});
 
 	//set enabling based off value in xml
 	if($(data).find('page').eq(currentPage).attr("eo")){
@@ -283,23 +283,23 @@ function launchObjEdit(){
 
 	// update the xml when the enabling is changed
     $("#eo").on("change", function(){
-	    $(data).find('page').eq(currentPage).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());		    
+	    $(data).find('page').eq(currentPage).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());
 	    //updateModuleXML(currentPageParentModule);
-    }).css({'width': '500px', 'color': '#3383bb;'}); 
+    }).css({'width': '500px', 'color': '#3383bb;'});
 
     $("#out_pageObjective").on("change", function(){
      	var objUpdate = $("#out_pageObjective").val().trim();
 	   	$(data).find('page').eq(currentPage).attr('objective', objUpdate);
 	   	questionResponse_arr[questionResponseIndex].objective = objUpdate;
 		//updateModuleXML(currentPageParentModule);
-    }).css({'width': '500px', 'color': '#3383bb;'});    
+    }).css({'width': '500px', 'color': '#3383bb;'});
 
 	//Make it a dialog
 	$("#dialog-objEdit").dialog({
 		dialogClass: "no-close",
 		modal: true,
 		width: 700,
-		buttons: [       
+		buttons: [
             {
 	            text: "Done",
 	            title: "Saves and closes the media drop dialog.",
@@ -436,6 +436,11 @@ function launchMediaDrop(){
 			}
 			else{
 				if(event.success == true){
+					var urlParams = queryStringParameters();
+					cognizenSocket.emit('contentSaved', {
+			            content: {type: urlParams['type'], id: urlParams['id']},
+			            user: {id: urlParams['u']}
+			        });
 					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
 				}
 				else{
@@ -802,7 +807,7 @@ function clickPublish(){
 function checkHelp(){
 	if(helpButton == true){
 		if($("#help").length == 0){
-			$('#myCanvas').append("<button id='help'>help</button>");
+			$('#myCanvas').append("<button id='help' title='Access help information.'>help</button>");
 			//Style the Help button and give it its listener
 			$("#help").button({
 				icons:{

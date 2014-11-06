@@ -24,7 +24,7 @@
 
 			<scorm value="true"/>
 			<!-- 1.2, 2004, Tin Can -->
-			<scormVersion value="2004_4th"/>			
+			<scormVersion value="2004_4th"/>
 			<breadcrumb value="true" x="12" y="80" home="true" id="0"/>
 			<masterIndex value="true"/>
 			<docs value="false"/>
@@ -41,115 +41,15 @@
 			<id value=""/>
 		</preferences>
 		<glossary value="false">
-			<glossaryitem> 
+			<glossaryitem>
 				<term><![CDATA[ACK]]></term>
 				<content><![CDATA[Acknowledgement]]></content>
 			</glossaryitem>
-			<!--<glossaryitem> 
-				<term><![CDATA[AIS]]></term>
-				<content><![CDATA[Automated Information System]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[API]]></term>
-				<content><![CDATA[Application Programming Interface]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[ASCII]]></term>
-				<content><![CDATA[American Standard Code for Information Interchange]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[AUX]]></term>
-				<content><![CDATA[Auxiliary]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[AVVID]]></term>
-				<content><![CDATA[Architecture for Voice, Video and Integrated Data]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[BBM]]></term>
-				<content><![CDATA[Baseband Module]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[C&A]]></term>
-				<content><![CDATA[Certification and Accreditation]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[C4I]]></term>
-				<content><![CDATA[command, control, communications, computers, and intelligence]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[Cat]]></term>
-				<content><![CDATA[category]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CCI]]></term>
-				<content><![CDATA[cryptologic controlled item]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CIK]]></term>
-				<content><![CDATA[crypto ignition key]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CJCSI]]></term>
-				<content><![CDATA[Chairman Joint Chiefs of Staff Instruction]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CLI]]></term>
-				<content><![CDATA[Command Line Interface]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CMA]]></term>
-				<content><![CDATA[Control Monitoring and Alarm]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CMM]]></term>
-				<content><![CDATA[CallManager Module]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[com]]></term>
-				<content><![CDATA[communications]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[COMSEC]]></term>
-				<content><![CDATA[communications security]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CONUS]]></term>
-				<content><![CDATA[continental United States]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[COTS]]></term>
-				<content><![CDATA[Commercial Off-the-Shelf]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CPR]]></term>
-				<content><![CDATA[cardiopulmonary resuscitation]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[CPU]]></term>
-				<content><![CDATA[central processing unit]]></content>
-			</glossaryitem>
-			<glossaryitem> 
-				<term><![CDATA[crypto]]></term>
-				<content><![CDATA[cryptographic equipment]]></content>
-			</glossaryitem>-->
         </glossary>
         <!--docs>
         	<docItem>
         		<doc link="media/AirForceStructure.pdf"><![CDATA[US Air Force Structure Guide]]></doc>
 				<description><![CDATA[This US Air Force Structure Guide shows you where US Air Force health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
-        	</docItem>
-        	<docItem>
-        		<doc link="media/Army Structure Module.pdf"><![CDATA[US Army Structure Guide]]></doc>
-				<description><![CDATA[This US Army Structure Guide shows you where US Army health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
-        	</docItem>
-        	<docItem>
-        		<doc link="media/USMC_Structure.pdf"><![CDATA[USMC Structure Guide]]></doc>
-				<description><![CDATA[This USMC Structure Guide shows you where US Army health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-7 of the document.]]></description>
-        	</docItem>
-        	<docItem>
-        		<doc link="media/NavyStructure.pdf"><![CDATA[US Navy Structure Guide]]></doc>
-				<description><![CDATA[This US Navy Structure Guide shows you where US Navy health assets fit into the service structure. Click the down arrow in your PDF reader to see additional information on pages 2-3 of the document.]]></description>
         	</docItem>
         </docs-->
         <resources>
