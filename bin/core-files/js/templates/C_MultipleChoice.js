@@ -6,10 +6,10 @@
  * DATE: 2013-1-25
  * JavaScript
  *
- * Copyright (c) 2012, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2012, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
- * 
+ *
  * This function allows for multiple parameters including:
  * 		1. Number of attempts: defaults to 1
  *		2. Any number of options for the answer.
@@ -33,7 +33,7 @@ function C_MultipleChoice(_type) {
     var attemptsAllowed = 2;
     var attemptsMade = 0;
     var optionLabeling = "a"; //"a" for alphabetic - "n" for numeric
-    var type = _type; 
+    var type = _type;
     var option_arr = [];
     var feedbackType;
     var feedbackDisplay;
@@ -44,7 +44,7 @@ function C_MultipleChoice(_type) {
     var iconClicked = false;
     var conHeight;
     var isMulti = false;
-    
+
     var isComplete = false;
     var optionEdit_arr = [];
     var optionCount = 0;
@@ -52,29 +52,29 @@ function C_MultipleChoice(_type) {
     var mandatory = true;
     var randomize = false;
     var pageId;
-    
+
     var order_arr = [];
     var scormVersion;
-    
+
     var currentEditBankMember = 0;
     var revealMenu_arr;
     var currentEditBankMember = 0;
 	var revealMenu_arr = [];
 	var currentItem;
-        
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		buildTemplate();
 	}
-		
+
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
 		isComplete = checkQuestionComplete();
-		
+
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbacktype');
 		feedbackDisplay = $(data).find("page").eq(currentPage).attr('feedbackdisplay');
@@ -84,7 +84,7 @@ function C_MultipleChoice(_type) {
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
 		pageId = $(data).find("page").eq(currentPage).attr("id");
-	
+
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
@@ -94,41 +94,41 @@ function C_MultipleChoice(_type) {
 		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
 			randomize = true;
 		}
-		
+
 		pageTitle = new C_PageTitle();
-		
+
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div>');
-		
+
 		audioHolder = new C_AudioHolder();
-		
+
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
-		
+
 		var correctCount = 0;
 		for(var i = 0; i < optionCount; i++){
 			if($(data).find("page").eq(currentPage).find("option").eq(i).attr('correct') == "true"){
 				correctCount++;
 			}
 		}
-		
+
 		if(correctCount > 1){
 			isMulti = true;
 		}
-				
+
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-           		
+
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
-		
+
 		if(isMulti == false){
 			$('#answerOptions').append('<div id="answer" class="radioSelector">');
 		}else{
 			$('#answerOptions').append('<div id="answer" class="checkBox">');
-		}		
+		}
 		//console.log("number of options = " + optionCount);
-		
+
 		order_arr = [];
 		//Randomize the answer order or set from previous...
 		if(isComplete  && mode != "edit"){
@@ -143,26 +143,26 @@ function C_MultipleChoice(_type) {
 			for (var i = 0; i < optionCount; i++){
 				order_arr.push(i);
 			}
-			
+
 			if(randomize){
 				order_arr = shuffleArray(order_arr);
 			}
 		}
-		
+
 		//find every option in the xml - place them on the screen.
-		for(var j = 0; j < order_arr.length; j++){	
+		for(var j = 0; j < order_arr.length; j++){
 			var myNode = $(data).find("page").eq(currentPage).find("option").eq(order_arr[j]);
 			//Create unique class name for each option
 			var myOption = "option" + iterator;
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
-			
+
 			if(isMulti == false){
 				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
 				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
-			
+
 			$("#" + myOption + "Check").click(function(){
 				iconClicked = true;
 				if($(this).prop('checked') == true){
@@ -171,12 +171,12 @@ function C_MultipleChoice(_type) {
 					$(this).parent().removeClass("optionSelected")
 				}
 			});
-			
-			
+
+
 			//Add button click action to each option
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
-				
+
 				if(isMulti == false){
 					$(this).find('input').prop('checked', true);
 					for(var i=0; i<option_arr.length; i++){
@@ -190,8 +190,8 @@ function C_MultipleChoice(_type) {
 						if(iconClicked != true){
 							$(this).find('input').prop('checked', false);
 							$(this).removeClass("optionSelected");
-						}	
-						
+						}
+
 					}else{
 						if(iconClicked != true){
 							$(this).find('input').prop('checked', true);
@@ -206,25 +206,25 @@ function C_MultipleChoice(_type) {
 				function(){
 					$(this).removeClass("optionHover")
 				});
-			
+
 			//iterate the iterators...
 			optionY += $("#"+myOption).height() + 30;
 			iterator++;
 			option_arr.push($('#' + myOption));
-			
+
 		};
-		
+
 		$("#answerOptions").append('<div id="mcSubmit"></div>');
 
 		$("#answerOptions").append("</div>");
-		
+
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
 		}
-		
+
 		if(type == "multipleChoiceMedia"){
         	$("#answerOptions").addClass("left");
         	mediaHolder = new C_VisualMediaHolder();
@@ -243,8 +243,8 @@ function C_MultipleChoice(_type) {
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 	}
-	
-	
+
+
 	//Called if the user closes the popup instead of proceed
 	function disableOptions(){
 		for(var i = 0; i < option_arr.length; i++){
@@ -252,7 +252,7 @@ function C_MultipleChoice(_type) {
 		}
 	}
 
-	
+
 	function showUserAnswer(){
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
@@ -279,18 +279,18 @@ function C_MultipleChoice(_type) {
 		}
 
 		//set SCORM objective for page - C_SCORM.js
-		setPageObjective(tempCorrect, graded);		
+		setPageObjective(tempCorrect, graded);
 
 		$(".radio").prop('disabled', true);
 		mandatoryInteraction = false;
 		checkNavButtons();
 	}
-		
+
 	function checkAnswer(){
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var tempCorrect = true;
 		attemptsMade++;
-		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');		
+		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
 		if(isMulti == false){
 			var selected = $("#answer input[type='radio']:checked");
 			if(selected.val() == "true"){
@@ -311,7 +311,7 @@ function C_MultipleChoice(_type) {
 			else{
 				setInteractions(pageId, "choice", label, tempCorrect, _title + " : " + $.trim($("#question").text()));
 			}
-			
+
 		}else{
 			var _learnerResponse = [];
 			for(var i = 0; i < option_arr.length; i++){
@@ -324,13 +324,13 @@ function C_MultipleChoice(_type) {
 						tempCorrect = false;
 					}
 				}
-				
+
 				//build learnerResponse array for SCORM interaction
 				//var label = $.trim($("label[for='"+ option_arr[i].find('input').attr('id') +"']").text().replace(/\s+/g, ''));
 				if(option_arr[i].find("input").prop("checked")){
 					_learnerResponse.push($.trim($("label[for='"+ option_arr[i].find("input").attr('id') +"']").text().replace(/\s+/g, '')));
 				}
-				
+
 			}
 
 			//add choice SCORM interaction here
@@ -347,22 +347,22 @@ function C_MultipleChoice(_type) {
 			};
 			setInteractions(pageId, "choice", _learnerResponseString, tempCorrect, _title + " : " + $.trim($("#question").text()) );
 		}
-		
+
 		//////////////////////////FEEDBACK\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var msg = "";
-		
+
 		if(feedbackType == 'undifferentiated'){
 			//Undifferentiated correct answer
 			if(tempCorrect == true){
-				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p> '+ feedback +'</p></div>';	
-			//Undifferentiated wrong answer	
+				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p> '+ feedback +'</p></div>';
+			//Undifferentiated wrong answer
 			}else{
 				if(attemptsMade == attemptsAllowed){
 					//incorrect feedback here
 					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p> '+ feedback +'</p></div>';
 				}else{
 					//try again.
-					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';	
+					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';
 				}
 			}
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////DIFFERENTIATED FEEDBACK FUNCTIONALITY.
@@ -382,7 +382,7 @@ function C_MultipleChoice(_type) {
 							feedbackMsg += "that was an incorrect response.</p>"
 						}
 						feedbackMsg += "<p>" + $(data).find("page").eq(currentPage).find("option").eq(i).find("diffeed").text() + "</p>";
-					}	
+					}
 				}
 				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p> '+ feedbackMsg +'</p></div>';
 			}else{
@@ -398,12 +398,12 @@ function C_MultipleChoice(_type) {
 								feedbackMsg += "That was an incorrect response.</p>"
 							}
 							feedbackMsg += "<p>" + $(data).find("page").eq(currentPage).find("option").eq(i).find("diffeed").text() + "</p>";
-						}	
+						}
 					}
 					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p> '+ feedbackMsg +'</p></div>';
 				}else{
 					//try again.
-					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';	
+					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';
 				}
 			}
 		}else if(feedbackType == 'standardized'){
@@ -417,21 +417,21 @@ function C_MultipleChoice(_type) {
 				}
 			}
 		}
-		
+
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			var selected_arr = [];
 			for(var i = 0; i < option_arr.length; i++){
 				if(option_arr[i].find("input").prop("checked") == true){
 					selected_arr.push(i);
-				}	
+				}
 			}
 			updateScoring(selected_arr, tempCorrect, order_arr);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
-		
+
 		$("#stage").append(msg);
-		
+
 		if(feedbackDisplay == "pop"){
 			var standardWidth = 550;
 			if(standardWidth > windowWidth){
@@ -451,7 +451,7 @@ function C_MultipleChoice(_type) {
 							$( this ).dialog( "close" );
 							if(isLinear == true){
 								updateTracking();
-							}				
+							}
 							$("#next").click();
 						}
 					},
@@ -479,14 +479,14 @@ function C_MultipleChoice(_type) {
 				});
 			}
 		}else if(feedbackDisplay == "inline"){
-			
+
 		}
 	}
-	
+
 	function resizeForMobile(){
-		
+
 	}
-	
+
 	function checkMode(){
 		$('.antiscroll-wrap').antiscroll();
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
@@ -513,53 +513,53 @@ function C_MultipleChoice(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog'
-			}); 
-			
+			});
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
             //Add and style titleEdit button
 			$('#answerOptions').prepend("<div id='questionEdit' class='btn_edit_text' title='Edit Text Question'></div>");
-						
+
 			$("#questionEdit").click(function(){
 				updateOptionDialog();
 			}).tooltip();
 		}
 	}
-	
-	
+
+
 	function updateOptionDialog(){
 		clearCKInstances();
-		
+
 		try { $("#questionEditDialog").remove(); } catch (e) {}
-		
+
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
-		
+
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
-		msg += "<label id='label'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Define the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>randomize options: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this page.'/><br/>";
+		msg += "<label id='label' title='Define the number of attempts.'><b>no. of attempts: </b></label>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'  title='Indicates if the order of the options are randomized on this page.'><b>randomize options: </b></label>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized' title='Standard feedback is used.'>standardized  </input>";
 		msg += "<input id='undifferentiated' type='radio' name='manageFeedbackType' value='undifferentiated' title='One user defined feedback is used.'>undifferentiated  </input>";
 		msg += "<input id='differentiated' type='radio' name='manageFeedbackType' value='differentiated' title='User defined feedback is used for each option.'>differentiated  </input>";
 		msg += "</div>"
-		
+
 		if(feedbackType == "undifferentiated"){
 			msg += "<div id='feedbackLabel'><b>Input your feedback:</b></div>";
 			msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		}
-		
+
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Option Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
-		
+
         if(!graded){
 			$("#isGraded").removeAttr('checked');
 		}else{
@@ -571,7 +571,7 @@ function C_MultipleChoice(_type) {
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		if(!randomize){
 			$("#isRandom").removeAttr('checked');
 		}else{
@@ -589,13 +589,13 @@ function C_MultipleChoice(_type) {
 			      instanceReady: function(event){
 			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
 			    	}
-			    }				
+			    }
 			});
-			//$("#feedbackEditText").height(40);			
+			//$("#feedbackEditText").height(40);
 		}
-		
+
 		$('#' + feedbackType).prop('checked', true);
-		
+
 		//Switch to show the correct feedback type....
 		$("#feedbackTypeGroup").change(function(){
 			feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
@@ -603,11 +603,11 @@ function C_MultipleChoice(_type) {
 			optionEdit_arr = [];
 			updateOptionDialog();
 		});
-		
+
 		updateRevealMenu();
-		
+
 		addOption(currentEditBankMember, false);
-				
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
@@ -623,14 +623,14 @@ function C_MultipleChoice(_type) {
 						makeRevealDataStore();
 						//Need to do these outside because blows up regular feedback...
 						if (CKEDITOR.instances['optionText']) {
-				            CKEDITOR.instances.optionText.destroy();            
+				            CKEDITOR.instances.optionText.destroy();
 				        }
 				        if (CKEDITOR.instances['optionDifFeedText']) {
-				            CKEDITOR.instances.optionDifFeedText.destroy();            
+				            CKEDITOR.instances.optionDifFeedText.destroy();
 				        }
 						try { $("#optionContainer").remove(); } catch (e) {}
 						addOption(optionCount, true);
-						updateRevealMenu();		
+						updateRevealMenu();
 					}
 				},
 				{
@@ -641,9 +641,9 @@ function C_MultipleChoice(_type) {
 				        clearCKInstances();
 						saveQuestionEdit();
 						$("#questionEditDialog").dialog("close");
-						$("#questionEditDialog").remove();				
+						$("#questionEditDialog").remove();
 					}
-				}	
+				}
 			]
 
 		});
@@ -653,24 +653,24 @@ function C_MultipleChoice(_type) {
 	        $(document).tooltip();
 	    });
 	}
-	
+
 	function clearCKInstances(){
 		if (CKEDITOR.instances['optionText']) {
-            CKEDITOR.instances.optionText.destroy();            
+            CKEDITOR.instances.optionText.destroy();
         }
         if (CKEDITOR.instances['feedbackEditText']) {
-            CKEDITOR.instances.feedbackEditText.destroy();            
+            CKEDITOR.instances.feedbackEditText.destroy();
         }
-        
+
         if (CKEDITOR.instances['optionDifFeedText']) {
-            CKEDITOR.instances.optionDifFeedText.destroy();            
+            CKEDITOR.instances.optionDifFeedText.destroy();
         }
 	}
-	
-	function makeRevealDataStore(){	
+
+	function makeRevealDataStore(){
 		attemptsAllowed = $("#inputAttempts").val();
 		$(data).find("page").eq(currentPage).attr("attempts", attemptsAllowed);
-		
+
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
 			mandatory = true;
@@ -678,7 +678,7 @@ function C_MultipleChoice(_type) {
 			$(data).find("page").eq(currentPage).attr("mandatory", "false");
 			mandatory = false;
 		}
-		
+
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
 			graded = true;
@@ -686,14 +686,14 @@ function C_MultipleChoice(_type) {
 			$(data).find("page").eq(currentPage).attr("graded", "false");
 			graded = false;
 		}
-		
+
 		if($("#isRandom").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("randomize", "true");
 		}else{
 			$(data).find("page").eq(currentPage).attr("randomize", "false");
 		}
-				
-		
+
+
 		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
 		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).find("content").empty();
@@ -712,7 +712,7 @@ function C_MultipleChoice(_type) {
 		$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").prop("checked"));
 		$(data).find("page").eq(currentPage).attr("feedbacktype", feedbackType);
 	}
-	
+
 	function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -727,7 +727,7 @@ function C_MultipleChoice(_type) {
 				msg += " unselectedEditBankMember";
 			}
 			msg += "' style='";
-			
+
 			if(h < 100){
 				msg += "width:30px;";
 			}else if(h > 99){
@@ -736,12 +736,12 @@ function C_MultipleChoice(_type) {
 			var cleanText = $(data).find("page").eq(currentPage).find("option").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			//console.log("cleanText = " + cleanText);
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
-			
+
 			revealMenu_arr.push(tmpID);
 		}
-		
+
 		$("#questionMenu").append(msg);
-		
+
 		for(var j = 0; j < revealMenu_arr.length; j++){
 			if(currentEditBankMember != j){
 				var tmpID = "#" + revealMenu_arr[j];
@@ -757,13 +757,13 @@ function C_MultipleChoice(_type) {
 			}
 		}
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
 	function areYouSure(){
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -779,9 +779,9 @@ function C_MultipleChoice(_type) {
 	                $(this).dialog("close");
                 }
             }
-        }); 
+        });
 	}
-	
+
 	function removeOption(){
 		if(optionCount > 1){
 			$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).remove();
@@ -793,10 +793,10 @@ function C_MultipleChoice(_type) {
 			alert("you must have at least one bank item.");
 		}
 	}
-	
+
 	function addOption(_addID, _isNew){
 		var optionLabel = parseInt(_addID) + 1;
-		
+
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<option>"));
 			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
@@ -809,23 +809,23 @@ function C_MultipleChoice(_type) {
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").append(difFeed1CDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct", "false");
-			
+
 			currentEditBankMember = _addID;
 			optionCount++;
 		}
-					
-		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();				
+
+		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer option'/>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label'><b>correct:</b></label>";
-		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){	
+		if($(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") == "true"){
 			msg += "<input id='optionCorrect' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}else{
 			msg += "<input id='optionCorrect' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
 		}
-		
+
 		if(feedbackType == "differentiated"){
 			msg += "<br/>"
 			var difFeedContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("diffeed").text();
@@ -833,13 +833,13 @@ function C_MultipleChoice(_type) {
 			msg += "<div id='optionDifFeedText' contenteditable='true' class='dialogInput'>" + difFeedContent + "</div>";
 		}
 		msg += "</div>";
-				
+
 		$("#questionEditDialog").append(msg);
-		
+
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-		
+
 		CKEDITOR.inline( "optionText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -850,9 +850,9 @@ function C_MultipleChoice(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
 		    	}
-		    }			
-		});	
-		
+		    }
+		});
+
 		if(feedbackType == "differentiated"){
 			CKEDITOR.inline( "optionDifFeedText", {
 				toolbar: contentToolbar,
@@ -864,11 +864,11 @@ function C_MultipleChoice(_type) {
 			      instanceReady: function(event){
 			         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
 			    	}
-			    }				
-			});	
-		}																	
+			    }
+			});
+		}
 	}
-	
+
 	/**********************************************************************
     **Save Content Edit - save updated content text to content.xml
     **********************************************************************/
@@ -890,12 +890,12 @@ function C_MultipleChoice(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
-		
+
 		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      ACESSIBILITY/508 FUNCTIONALITY
@@ -906,19 +906,19 @@ function C_MultipleChoice(_type) {
 
 	   	$("#pageTitle").attr("tabindex", tabindex);
 	   	tabindex++;
-	   	
+
 	   	$('#question').attr("tabindex", tabindex);
 	   	tabindex++;
-	   	
+
 	   	for(var i = 0; i < option_arr.length; i++){
 		   	$(option_arr[i]).attr("tabindex", tabindex);
 		   	tabindex++;
 		}
-		
+
 		$("#pageTitle").focus();
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-	
+
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -928,7 +928,7 @@ function C_MultipleChoice(_type) {
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
-    
+
     this.fadeComplete = function() {
 	    fadeComplete();
     }
