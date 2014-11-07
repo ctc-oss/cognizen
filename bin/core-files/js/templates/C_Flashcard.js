@@ -5,8 +5,8 @@
  * VERSION: alpha 1.0
  * DATE: 2013-06-03
  *
- * Copyright (c) 2013, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2013, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
  */
 function C_Flashcard(_type) {
@@ -14,47 +14,55 @@ function C_Flashcard(_type) {
 	// var pageTitle;
 	// var audioHolder;
 	var myContent;//Body
-	
+
 	var revealCount//number of tabs.
 	var currentCard;
 	var card_arr = [];
-    
+
 	var imageWidth;
 	var imageHeight;
 	var virgin = true;
 	var myIndex = 1;
 	var randomize = false;
-	
+
 	var currentEditBankMember = 0;
 	var revealMenu_arr = [];
 	var currentItem;
 	var myObjective = "undefined";
-    var myObjItemId = "undefined"; 
-	
+    var myObjItemId = "undefined";
+
 	//Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+
 		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
 			randomize = true;
 		}
-		
-		//Position the page text		
+
+		//Position the page text
 		revealCount = $(data).find("page").eq(currentPage).find("card").length;
-		myContent = $(data).find("page").eq(currentPage).find("content").text();		
+		myContent = $(data).find("page").eq(currentPage).find("content").text();
 		pageTitle = new C_PageTitle();
 		audioHolder = new C_AudioHolder();
-		
+
 		buildTemplate();
 	}
-	
+
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div><div id="flashcardHolder"></div></div></div>');
+
+		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
+        pageAccess_arr.push($("#content"));
+
 		$("#scrollableContent").addClass("top");
-		
+
         $("#content").addClass("top");
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
@@ -62,33 +70,36 @@ function C_Flashcard(_type) {
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 //        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		$("#content").append(myContent);
-		
-		shuffle();		
+
+		shuffle();
    	}
-	
+
 	function shuffle(){
 		card_arr.length = 0;
-		
+
 		//FLASHCARDS
 		currentCard = revealCount - 1;
-		
+
 		var order_arr = [];
 		for (var j = 0; j < revealCount; j++){
 			order_arr.push(j);
 		}
-		
+
 		if(randomize){
 			var order_arr = shuffleArray(order_arr);
 		}
-		
+
 		for(var i=0; i<revealCount; i++){
 			var myTerm = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("term").text();
 			var myDef = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("definition").text();
 			var tempID = "card" + i;
 			var tempTextID = "cardText" + i;
-			
+
 			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
-			
+
+			$("#" + tempID).attr("aria-label", "Card Front: " + $("#"+tempID).text().replace(/'/g, "") + "     Card Back: " + $("#"+tempTextID).text().replace(/'/g, ""));
+			pageAccess_arr.push($("#" + tempID));
+
 			//Position the card.
 			var leftPos = 6.7;
 			if(!oldIE){
@@ -101,21 +112,22 @@ function C_Flashcard(_type) {
 			$("#" + tempID).css({'left': leftPos + i*0.4 + '%'});
 			//Postion the text within the card.
 			$("#" + tempTextID).css({'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
-			
+
 			$("#" + tempID).data("myTerm", myTerm);
 			$("#" + tempID).data("myDef", myDef);
-			
+
 			card_arr.push("#" + tempID);
+			doAccess(pageAccess_arr);
 		}
-		
+
 		//Set height of holder, for styling
 		$("#flashcardHolder").height($("#card0").height());
-		
+
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
 		}else{
 			checkMode();
-		}		
+		}
 		enableNextCard();
 		if(randomize == true){
 			$("<div id='flashcardReshuffle'>shuffle</div>").insertAfter("#flashcardHolder");
@@ -130,7 +142,7 @@ function C_Flashcard(_type) {
 			$(this).remove();
 		});
 	}
-	
+
 	function enableNextCard(){
 		$(card_arr[currentCard]).hover(function(){
 				$(this).addClass("flashcardHover");
@@ -143,7 +155,7 @@ function C_Flashcard(_type) {
 				var cardHolderWidth = $("#flashcardHolder").width();
 				// calculate new left position in percent
 				var initialPos = $(this).position().left;
-				var initialPosPercent = initialPos / cardHolderWidth * 100 + "%"; 
+				var initialPosPercent = initialPos / cardHolderWidth * 100 + "%";
 
 				TweenMax.to($(this), .2, {rotationY:90, left:'50%', zIndex: myIndex, onComplete:function(target){
 					target.empty();
@@ -158,20 +170,20 @@ function C_Flashcard(_type) {
 						});
 					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
-					
+
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
-				
+
 				if(currentCard == 0){
-					
+
 				}else{
 					currentCard--;
 					enableNextCard();
 				}
 			});
 	}
-	
-	
+
+
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
@@ -184,11 +196,11 @@ function C_Flashcard(_type) {
 				CKEDITOR.remove(CKEDITOR.instances['content']);
 			}}catch (e) {}
 			$('#flashcardHolder').append("<div id='cardEdit' class='btn_edit_text' title='Edit Cards'></div>");
-			
+
 			$("#cardEdit").click(function(){
 				updateRevealDialog();
 			}).tooltip();
-			
+
 			/**
 			* Edit Content
 			*/
@@ -213,11 +225,11 @@ function C_Flashcard(_type) {
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog',
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-			});			
+			});
 		}
-		$(this).scrubContent();	
+		$(this).scrubContent();
 	}
-	
+
 	function updateRevealDialog(){
 		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
@@ -228,20 +240,20 @@ function C_Flashcard(_type) {
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		msg += "</div>"
-		
+
 		$("#stage").append(msg);
-		
+
 		updateRevealMenu();
-		
+
 		if(!randomize){
 			$("#isRandom").removeAttr('checked');
 		}else{
 			$("#isRandom").attr('checked', 'checked');
 		}
-				
+
 		addReveal(currentEditBankMember, false);
-		
-		$("#contentEditDialog").dialog({ 	
+
+		$("#contentEditDialog").dialog({
 			modal: true,
 			width: 875,
 			height: 655,
@@ -279,8 +291,8 @@ function C_Flashcard(_type) {
 	        $(document).tooltip();
 	    });
 	}
-	
-	
+
+
 	function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -295,7 +307,7 @@ function C_Flashcard(_type) {
 				msg += " unselectedEditBankMember";
 			}
 			msg += "' style='";
-			
+
 			if(h < 100){
 				msg += "width:30px;";
 			}else if(h > 99){
@@ -303,12 +315,12 @@ function C_Flashcard(_type) {
 			}
 			var cleanText = $(data).find("page").eq(currentPage).find("card").eq(h).find("term").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
-			
+
 			revealMenu_arr.push(tmpID);
 		}
-		
+
 		$("#questionMenu").append(msg);
-		
+
 		for(var j = 0; j < revealMenu_arr.length; j++){
 			if(currentEditBankMember != j){
 				var tmpID = "#" + revealMenu_arr[j];
@@ -323,7 +335,7 @@ function C_Flashcard(_type) {
 			}
 		}
 	}
-	
+
 	function addReveal(_addID, _isNew){
 		//ADD to XML if new....
 		if(_isNew == true){
@@ -337,11 +349,11 @@ function C_Flashcard(_type) {
 			currentEditBankMember = _addID;
 			revealCount++;
 		}
-		
+
 		var revealLabel = parseInt(_addID) + 1;
-		var myCardFront = $(data).find("page").eq(currentPage).find("card").eq(_addID).find("term").text();	
+		var myCardFront = $(data).find("page").eq(currentPage).find("card").eq(_addID).find("term").text();
 		var myCardBack = $(data).find("page").eq(currentPage).find("card").eq(_addID).find("definition").text();
-		
+
 		var msg = "<div id='revealContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='removeCard' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
 		msg += "<div id='cardFront' title='Input text for card front.'><b>Card " + revealLabel + " Front:</b></div>";
@@ -349,13 +361,13 @@ function C_Flashcard(_type) {
 		msg += "<div id='cardBack' title='Input text for card back.'><b>Card " + revealLabel + " Back:</b></div>";
 		msg += "<div id='cardBackText' contenteditable='true' class='dialogInput'>" + myCardBack + "</div><br/>";
 		msg += "</div>";
-		
+
 		$("#contentEditDialog").append(msg);
-		
+
 		$("#removeCard").click(function(){
-			areYouSure();	
+			areYouSure();
 		});
-		
+
 		CKEDITOR.inline( "cardFrontText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -363,8 +375,8 @@ function C_Flashcard(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-		});	
-		
+		});
+
 		CKEDITOR.inline( "cardBackText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -372,24 +384,24 @@ function C_Flashcard(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			extraPlugins: 'sourcedialog',
 			allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
-		});	
+		});
 	}
-	
+
 	function clearCKInstances(){
 		if (CKEDITOR.instances['cardFrontText']) {
-            CKEDITOR.instances.cardFrontText.destroy();            
+            CKEDITOR.instances.cardFrontText.destroy();
         }
         if (CKEDITOR.instances['cardBackText']) {
-            CKEDITOR.instances.cardBackText.destroy();            
+            CKEDITOR.instances.cardBackText.destroy();
         }
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
 	function areYouSure(){
 		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
-	    
+
 	    $("#dialog-removeContent").dialog({
             modal: true,
             width: 550,
@@ -405,9 +417,9 @@ function C_Flashcard(_type) {
 	                $(this).dialog("close");
                 }
             }
-        }); 
+        });
 	}
-	
+
 	function removeReveal(){
 		if(revealCount > 1){
 			$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).remove();
@@ -418,15 +430,15 @@ function C_Flashcard(_type) {
 		}else{
 			alert("you must have at least one bank item.");
 		}
-	}	
-	
+	}
+
 	function makeRevealDataStore(){
 		//myObjective = $("#inputObjective").val();
 		//myObjItemId = $("#inputObjItemId").val();
-		
+
 		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
 		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-		
+
 		if($("#isRandom").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("randomize", "true");
 			randomize = true;
@@ -434,7 +446,7 @@ function C_Flashcard(_type) {
 			$(data).find("page").eq(currentPage).attr("randomize", "false");
 			randomize = false;
 		}
-		
+
 		var newRevealContent = new DOMParser().parseFromString('<card></card>',  "text/xml");
 		var revealFrontCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["cardFrontText"].getData());
 		$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).find("term").empty();
@@ -443,7 +455,7 @@ function C_Flashcard(_type) {
 		$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).find("definition").empty();
 		$(data).find("page").eq(currentPage).find("card").eq(currentEditBankMember).find("definition").append(revealBackCDATA);
 	}
-	
+
 	 /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -454,7 +466,7 @@ function C_Flashcard(_type) {
         $(data).find("page").eq(currentPage).find("content").first().append(newCDATA);
         sendUpdate();
     };
-	
+
 	/**********************************************************************
 	**Save Tab Edit
 	**********************************************************************/
@@ -465,32 +477,11 @@ function C_Flashcard(_type) {
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("card").eq(i).remove();
 		}
-		
+
 		sendUpdateWithRefresh();
 		fadeComplete();
 	};
 
-		
-	/*****************************************************************************************************************************************************************************************************************
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	ACESSIBILITY/508 FUNCTIONALITY
-	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	*****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-		var tabindex = 1;
-	
-		$("#pageTitle").attr("tabindex", tabindex);
-		tabindex++;
-		/*for(var i = 0; i < buttonArray.length; i++){
-			$(buttonArray[i]).attr("tabindex", tabindex);
-			tabindex++;
-		}*/
-		$("#content").attr("tabindex", tabindex);
-		tabindex++;
-		$("#loader").attr("tabindex", tabindex);
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-	
 	this.destroySelf = function() {
 	   if(transition == true){
 	   		TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
@@ -498,7 +489,7 @@ function C_Flashcard(_type) {
 		   	fadeComplete();
 	   	}
 	}
-	
+
 	this.fadeComplete = function(){
 		fadeComplete();
 	}
