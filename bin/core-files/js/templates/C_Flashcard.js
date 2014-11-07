@@ -58,9 +58,6 @@ function C_Flashcard(_type) {
 	var buildTemplate = function() {
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div><div id="flashcardHolder"></div></div></div>');
 
-		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        pageAccess_arr.push($("#content"));
-
 		$("#scrollableContent").addClass("top");
 
         $("#content").addClass("top");
@@ -70,6 +67,8 @@ function C_Flashcard(_type) {
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 //        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		$("#content").append(myContent);
+		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
+        pageAccess_arr.push($("#content"));
 
 		shuffle();
    	}
@@ -97,7 +96,8 @@ function C_Flashcard(_type) {
 
 			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
 
-			$("#" + tempID).attr("aria-label", "Card Front: " + $("#"+tempID).text().replace(/'/g, "") + "     Card Back: " + $("#"+tempTextID).text().replace(/'/g, ""));
+			console.log("myDef = " + myDef);
+			$("#" + tempID).attr("aria-label", "The Front of the card has: " + $("#"+tempTextID).text().replace(/'/g, "") + "  and the back of the card has: " + myDef);
 			pageAccess_arr.push($("#" + tempID));
 
 			//Position the card.

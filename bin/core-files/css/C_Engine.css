@@ -222,7 +222,7 @@ blockquote
 .btn_mediaDrop{
 	position:absolute;
 	bottom :8px;
-	left: 115px;
+	left: 150px;
 	width: 30px;
 	height: 30px;
 	background: url(images/upload.png) no-repeat;
@@ -233,7 +233,7 @@ blockquote
 .btn_objedit{
 	position:absolute;
 	bottom :8px;
-	left: 150px;
+	left: 115px;
 	width: 30px;
 	height: 30px;
 	background: url(images/upload.png) no-repeat;
