@@ -37,6 +37,12 @@
     this.autoHide = false !== this.options.autoHide;
     this.padding = undefined == this.options.padding ? 2 : this.options.padding;
 
+	// on IE, antiscroll is adding an extra 17px of height to the inner (#contentHolder), screwing up scrolling
+	// setting this variable stops it from changing height
+	if(isIE){
+		this.x = false;
+	}
+
     this.inner = this.el.find('.antiscroll-inner');
     this.inner.css({
         'width':  '+=' + (this.y ? scrollbarSize() : 0)
