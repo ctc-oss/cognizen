@@ -28,10 +28,6 @@ function C_Reveal(_type) {
 			$('#stage').css({'opacity':0});
 		}
 
-		//Clear accessibility on page load.
-        pageAccess_arr = [];
-        audioAccess_arr = [];
-
 		//Set template variable values.
 		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").first().text();
@@ -90,9 +86,6 @@ function C_Reveal(_type) {
 
         $("#content").append(myContent);
 
-        //$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        //pageAccess_arr.push($("#content"));
-
 		$("<div id='imgPalette' class='revealPalette'></div>").insertAfter("#content");
 
 		for(var i = 0; i < revealCount; i++){
@@ -104,11 +97,6 @@ function C_Reveal(_type) {
 			var revID = "revID" + i;
 
 			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
-			var cont = tmpContent;
-			var ariaText = $(cont).text().replace(/'/g, "");
-			//$("#" + revID).attr("aria-label", "Image Description " + currentAlt + "  with the following associated content: " + ariaText);
-			//pageAccess_arr.push($("#" + revID));
-			//doAccess(pageAccess_arr);
 
 			if(type == "revealRight"){
 				$("#"+revID).addClass("revealRight");
@@ -601,6 +589,27 @@ function C_Reveal(_type) {
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////END EDIT MODE
+
+	/*****************************************************************************************************************************************************************************************************************
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	ACESSIBILITY/508 FUNCTIONALITY
+	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	*****************************************************************************************************************************************************************************************************************/
+	function doAccess(){
+		var tabindex = 1;
+
+		$("#pageTitle").attr("tabindex", tabindex);
+		tabindex++;
+		/*for(var i = 0; i < buttonArray.length; i++){
+			$(buttonArray[i]).attr("tabindex", tabindex);
+			tabindex++;
+		}*/
+		$("#content").attr("tabindex", tabindex);
+		tabindex++;
+		$("#loader").attr("tabindex", tabindex);
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
+
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
