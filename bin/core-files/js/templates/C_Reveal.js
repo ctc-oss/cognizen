@@ -107,8 +107,8 @@ function C_Reveal(_type) {
 			var cont = tmpContent;
 			var ariaText = $(cont).text().replace(/'/g, "");
 			$("#" + revID).attr("aria-label", "Image Description " + currentAlt + "  with the following associated content: " + ariaText);
-			pageAccess_arr.push($("#" + revID));
-			doAccess(pageAccess_arr);
+			//pageAccess_arr.push($("#" + revID));
+			//doAccess(pageAccess_arr);
 
 			if(type == "revealRight"){
 				$("#"+revID).addClass("revealRight");
