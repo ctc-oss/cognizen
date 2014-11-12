@@ -614,6 +614,11 @@ function launchPrefs(){
 				$(data).find('help').attr('url', 'media/' + myFile );
 				$("#selectedHelp").text(myFile);
 				$("#hasHelp").attr('checked', true);
+				var urlParams = queryStringParameters();
+				cognizenSocket.emit('contentSaved', {
+			        content: {type: urlParams['type'], id: urlParams['id']},
+			        user: {id: urlParams['u']}
+			    });
 			}else{
 				$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
 				//Theres an error
@@ -1304,7 +1309,7 @@ function markIncomplete(){
 ***utilizes currentPage variable, which is an int representing a node in content .xml*/
 //Function to load page content
 this.loadPage = function(){
-	//try { $(".ui-tooltip").tooltip("destroy"); } catch (e) {}
+	try { $(".ui-tooltip-content").tooltip("destroy"); } catch (e) {}
 	try { $(".ui-tooltip").tooltip("close"); } catch (e) {}
 	if(isLinear == true){
 		updateTracking();

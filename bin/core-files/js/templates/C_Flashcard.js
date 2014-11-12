@@ -96,7 +96,6 @@ function C_Flashcard(_type) {
 
 			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
 
-			console.log("myDef = " + myDef);
 			$("#" + tempID).attr("aria-label", "The Front of the card has: " + $("#"+tempTextID).text().replace(/'/g, "") + "  and the back of the card has: " + myDef);
 			pageAccess_arr.push($("#" + tempID));
 
