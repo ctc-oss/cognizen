@@ -319,7 +319,6 @@ function C_ClickImage(_type) {
 				}).tooltip();
 			}
 		}
-		console.log("updateRevealMenu completed");
 	}
 
 	function makeRevealDataStore(){
