@@ -122,10 +122,11 @@ var SCORM = {
 								    	var pageObj = myNode.get('objective');
 								    	var pageObjId = myNode.get('objItemId');
 								    	var pageTitle = myNode.findtext('title');
+								    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
 
 								    	var lessonIndictor = 'undefined';
-								    	if(myNode.findtext('tlo')){
-								    		lessonIndictor = myNode.findtext('tlo').replace(/\s+/g, '').replace('.', '');
+								    	if(tlo != 'undefined' || tlo != undefined){
+								    		lessonIndictor = tlo.get('value').replace(/\s+/g, '').replace('.', '');
 								    	}
 								    	else{
 								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
@@ -882,9 +883,11 @@ var SCORM = {
 				    	var pageObjId = myNode.get('objItemId');
 				    	var pageTitle = myNode.findtext('title');
 
+				    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
+
 				    	var lessonIndictor = 'undefined';
-				    	if(myNode.findtext('tlo')){
-				    		lessonIndictor = myNode.findtext('tlo').replace('.', '').replace(/\s+/g, '');
+				    	if(tlo != 'undefined' || tlo != undefined){
+				    		lessonIndictor = tlo.replace('.', '').replace(/\s+/g, '');
 				    	}
 				    	else{
 				    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');

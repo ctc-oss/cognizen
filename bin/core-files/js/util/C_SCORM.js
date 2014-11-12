@@ -249,9 +249,14 @@ function setPageObjective(_correct, _graded){
 			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId').replace('.', '');
 		}	
 
-		var lessonIndicator = 'undefined';
+		var tlo = '';
 		if($(data).find("tlo").attr("value")){
-			lessonIndicator = $(data).find("tlo").attr("value").replace(/\s+/g, '').replace('.', '');
+			tlo = $(data).find("tlo").attr("value");
+		}
+
+		var lessonIndicator = 'undefined';
+		if(tlo != 'undefined' || tlo != undefined){
+			lessonIndicator = tlo.replace(/\s+/g, '').replace('.', '');
 		}
 		else{
 			lessonIndicator = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '').replace('.', '');

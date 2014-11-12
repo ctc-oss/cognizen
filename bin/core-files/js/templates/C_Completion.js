@@ -138,6 +138,7 @@ function C_Completion(_type) {
 		var trackedObjectives = false;
 		var displayRemedObj = "";
 		var displayRemedObjAlt = "";
+
 		if(doScorm()) {//&& scormVersion.indexOf('USSOCOM') == -1){
 			//get objectives, display ones with objectives.n.success_status == failed; only do link if choiceValid(lesson)
 			var scormObjectives = getObjectives();
@@ -253,8 +254,12 @@ function C_Completion(_type) {
 				};
 			}
 		}
-		
-		if(isScored === "true" && trackedObjectives && remediationObjectives.length != 0){
+
+		var isDisplayRemed = false;
+		if(isScored === "true" || review === "true"){
+			isDisplayRemed = true;
+		}
+		if(isDisplayRemed && trackedObjectives && remediationObjectives.length != 0){
 			var scoreTextAlt = scoreText;
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';
