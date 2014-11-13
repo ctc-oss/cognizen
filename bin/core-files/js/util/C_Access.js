@@ -22,9 +22,20 @@ ACESSIBILITY/508 FUNCTIONALITY
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *****************************************************************************************************************************************************************************************************************/
 function doAccess(items){
+
 	var body = document.getElementsByTagName("body")[0];
 	body.setAttribute('role', 'application');
 	var tabIndex = 1;
+
+	//Adding focusGuard front - added to index like skip nav - keeps focus inside of content.
+	$("#frontFocusGuard").attr('tabindex', tabIndex).on('focus', function() {
+	  // "last" focus guard got focus: set focus to the first field
+	  var lastGlobal = globalAccess_arr.length;
+	  console.log("last global = " + lastGlobal);
+	  globalAccess_arr[lastGlobal - 1].focus();
+	});
+
+	tabIndex++;
 	//Add page specific order
 	for(var i = 0; i < items.length; i++){
 		$(items[i]).attr("tabindex", tabIndex);
@@ -42,6 +53,13 @@ function doAccess(items){
 		tabIndex++;
 	}
 
+	//Adding focus guard back - added to index like skip nav
+	//Ensures that the tab indexing is cyclical - keeps focus inside of content.
+	$("#backFocusGuard").attr('tabindex', tabIndex).on('focus', function() {
+	  // "last" focus guard got focus: set focus to the first field
+	  items[0].focus();
+	});
+
 	items[0].focus();
-	items[0].blur();
+	//items[0].blur();
 }

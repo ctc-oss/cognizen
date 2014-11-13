@@ -49,7 +49,7 @@ function checkNav(){
 	nextBack = $(data).find('nextBack').attr('value');
 	if(nextBack == "true"){
 		nextBack = true;
-		$("#myCanvas").append("<button id='back'>back</button><button id='next'>next</button>");
+		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($("#next"));
 		globalAccess_arr.push($("#back"));
@@ -1038,14 +1038,14 @@ function enableBack(){
 }
 
 function disableNext(){
-	$('#next').attr('aria-diabled', 'true');
+	$('#next').attr('aria-disabled', 'true');
 	$('#next').addClass('disabled');
 	$('#next').off('click');
 	nextDisabled = true;
 }
 
 function enableNext(){
-	$('#back').attr('aria-diabled', 'false');
+	$('#back').attr('aria-disabled', 'false');
 	$('#next').removeClass('disabled');
 	$("#next").click(clickNext);
 	nextDisabled = false;

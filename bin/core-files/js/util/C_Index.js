@@ -209,6 +209,13 @@ function addIndex(){
 
 	$("#indexContent").append(indexString);
 	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#courseTitle'>Click to skip navigation index.</a></div>");
+	$("#indexContent").prepend("<div id='frontFocusGuard' class='acc-skipIndex'></div><div id='backFocusGuard'class='acc-skipIndex'></div>");
+	$('#skipIndex').keypress(function(event) {
+		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	    if (chCode == 32){
+		    $("#courseTitle").focus();
+		}
+    });
 	globalAccess_arr.push($("#skipIndex"));
 	var oldNodePos;
 	var newNodePos;
@@ -372,14 +379,12 @@ function addIndex(){
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
-		$(indexItem_arr[i]).click(clickIndexItem)/*
-.keypress(function(e) {
-			var keyCode = (window.event) ? e.which : e.keyCode;
-			if (keyCode == 13){
-				$(this).click();
+		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
+		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32){
+			    $(this).click();
 			}
-		})
-*/.attr('aria-label', $(indexItem_arr[i]).text());
+	    }).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}

@@ -73,6 +73,10 @@ function C_MultipleChoice(_type) {
 			$('#stage').css({'opacity':0});
 		}
 
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+
 		isComplete = checkQuestionComplete();
 
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
@@ -117,7 +121,10 @@ function C_MultipleChoice(_type) {
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-
+		var cont = myContent;
+		var ariaText = $(cont).text().replace(/'/g, "");
+		$("#question").attr("aria-label", ariaText);
+		pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
@@ -158,9 +165,9 @@ function C_MultipleChoice(_type) {
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 
 			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
 
 			$("#" + myOption + "Check").click(function(){
@@ -205,13 +212,30 @@ function C_MultipleChoice(_type) {
 				},
 				function(){
 					$(this).removeClass("optionHover")
-				});
+				}
+			);
+
+			if(!isMulti){
+				$('#' + myOption).keypress(function(event) {
+			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			        if (chCode == 32){
+				        $(this).click();
+				    }
+		        });
+			}
 
 			//iterate the iterators...
 			optionY += $("#"+myOption).height() + 30;
 			iterator++;
 			option_arr.push($('#' + myOption));
-
+			var cont = myNode;
+			if(isMulti){
+				var ariaText = myLabel + "." + $(cont).text().replace(/'/g, "") + ". Use the tab or shift-tab to hear other options. Press spacebar to select.";
+			}else{
+				var ariaText = myLabel + "." + $(cont).text().replace(/'/g, "") + ". Use up and down arrow keys to hear other options. Press spacebar to select.";
+			}
+			$('#' + myOption + "Check").attr("aria-label", ariaText);
+			pageAccess_arr.push($('#' + myOption + "Check"));
 		};
 
 		$("#answerOptions").append('<div id="mcSubmit"></div>');
@@ -219,7 +243,17 @@ function C_MultipleChoice(_type) {
 		$("#answerOptions").append("</div>");
 
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText"), disabled: true });
-		$("#mcSubmit").click(checkAnswer);
+
+		$("#mcSubmit").click(checkAnswer).keypress(function(event) {
+		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32){
+			    $(this).click();
+			}
+	    });
+
+		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
+		pageAccess_arr.push($("#mcSubmit"));
+
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
@@ -242,6 +276,7 @@ function C_MultipleChoice(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
+		doAccess(pageAccess_arr);
 	}
 
 
@@ -457,7 +492,9 @@ function C_MultipleChoice(_type) {
 					},
 					open: function(){
 						$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+						var cont = feedbackMsg;
+						var ariaText = $(cont).text().replace(/'/g, "");
+						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button').attr('aria-label', ariaText + ' Press spacebar to proceed.').focus();
 					},
 					close: function(){
 						mandatoryInteraction = false;
@@ -475,6 +512,12 @@ function C_MultipleChoice(_type) {
 							$( this ).dialog( "close" );
 							$("#dialog-attemptResponse").remove();
 						}
+					},
+					open: function(){
+						$('.ui-dialog-buttonpane').find('button:contains("OK")').attr('aria-label', 'OK - That is incorrect. Please try again. Click here.').focus();
+					},
+					close: function(){
+						$("#option0Check").focus();
 					}
 				});
 			}
@@ -895,30 +938,6 @@ function C_MultipleChoice(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-
-	/*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     ACESSIBILITY/508 FUNCTIONALITY
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-        var tabindex = 1;
-
-	   	$("#pageTitle").attr("tabindex", tabindex);
-	   	tabindex++;
-
-	   	$('#question').attr("tabindex", tabindex);
-	   	tabindex++;
-
-	   	for(var i = 0; i < option_arr.length; i++){
-		   	$(option_arr[i]).attr("tabindex", tabindex);
-		   	tabindex++;
-		}
-
-		$("#pageTitle").focus();
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
