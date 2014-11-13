@@ -60,6 +60,8 @@ function doAccess(items){
 	  items[0].focus();
 	});
 
+	items[0].attr('hidefocus', 'true');
 	items[0].focus();
+
 	//items[0].blur();
 }

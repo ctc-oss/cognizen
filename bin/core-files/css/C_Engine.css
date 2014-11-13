@@ -430,6 +430,10 @@ blockquote
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+#pageTitle:focus{
+	outline: none;
+}
+
 .lesson{
 	position: absolute;
 	width: 924px;
