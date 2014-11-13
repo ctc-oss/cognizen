@@ -6,10 +6,10 @@
  * DATE: 2013-1-25
  * JavaScript
  *
- * Copyright (c) 2012, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2012, CTC. All rights reserved.
+ *
  * @author: Philip Double, doublep@ctc.com
- * 
+ *
  * This function allows for multiple parameters including:
  * 		1. Number of attempts: defaults to 1
  *		2. Any number of options for the answer.
@@ -47,7 +47,7 @@ function C_Matching(_type) {
     var answerEdit_arr = [];
 	var marking_arr;
 	var tempCorrect = true;
-    
+
     var optionStatementY = 0;
     var optionAnswerY = 0;
     var isComplete = false;
@@ -57,20 +57,23 @@ function C_Matching(_type) {
 	var scormVersion;
 	var pageId;
 
-    
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		buildTemplate();
 	}
-		
+
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+
 		isComplete = checkQuestionComplete();
-//		console.log("isComplete = " + isComplete);
 
 		attemptsAllowed = $(data).find("page").eq(currentPage).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).attr('feedbacktype');
@@ -81,16 +84,16 @@ function C_Matching(_type) {
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 		scormVersion = $(data).find('scormVersion').attr('value');
 		pageId = $(data).find("page").eq(currentPage).attr("id");
-		
+
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
 			mandatory = false;
 		}
-		
+
 		pageTitle = new C_PageTitle();
-		
+
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
@@ -98,11 +101,11 @@ function C_Matching(_type) {
 		msg += '<div id="matchingAnswers"></div>';
 		msg += '<div id="matchingOptions"></div>';
 		msg += '</div></div></div>';
-		
+
 		audioHolder = new C_AudioHolder();
-		
+
 		$('#stage').append(msg);
-		
+
 		if(type == "matchingDrag" && isMobilePhone){
 			type = "matchingDragPhone";
 		}
@@ -114,45 +117,50 @@ function C_Matching(_type) {
 			$("#matchingOptions").addClass("matchingDragImgOptions");
 			$("#matchingAnswers").addClass("matchingDragImgAnswers");
 		}
-		
+
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-		
+
+		var cont = myContent;
+		var ariaText = $(cont).text().replace(/'/g, "");
+		$("#question").attr("aria-label", ariaText);
+		pageAccess_arr.push($("#question"));
+
 		placeOptions();
 	}
-	
-	
-	
+
+
+
 	function placeOptions(){
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
-		
+
 		//find every option in the xml - place them on the screen.
 		$(data).find("page").eq(currentPage).find("option").each(function()
-		{	
+		{
 			//Create unique class name for each option
 			var myOption = "option" + iterator;
 			//Create each option as a div.
-						
+
 			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
 			//Add text input field if regular matching
 			if (type == "matching" || type == "matchingDragPhone"){
 				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />";
 			}
-			
+
 			matchString += "<div id='myMatchingText' class='matchingText'>"+ $(this).text() + "</div></div>";
-			
+
 			// if(type == "matching"){
 			// 	matchString += "</div>";
-			// } 
-			
+			// }
+
 			$("#matchingOptions").append(matchString);
 			$("#"+myOption).data("myMatch", $(this).attr("correct"));
-						
+
 			//Position each option with css
 			//$("#"+myOption).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
-			
+
 			/************************************
 			IF DRAG DROP ADD DRAGGABLE FUNCTIONALITY
 			************************************/
@@ -166,13 +174,13 @@ function C_Matching(_type) {
 
 			//iterate the iterators...
 			optionStatementY += $("#"+myOption).height() + 20;
-			
+
 			iterator++;
 			option_arr.push($('#' + myOption));
-			
+
 		});
-		
-		
+
+
 		//Randomize the answer order or set from previous...
 		if(isComplete && mode != "edit"){
 			for(var k=0; k<questionResponse_arr.length; k++){
@@ -190,7 +198,7 @@ function C_Matching(_type) {
 			});
 			order_arr = shuffleArray(order_arr);
 		}
-		
+
 		//find every answer or drop spot in the xml - place them on the screen.
 		for(var j = 0; j < order_arr.length; j++){
 			var myAnswer = "answer" + j;
@@ -215,7 +223,7 @@ function C_Matching(_type) {
 					$("#matching").height(greaterHeight);
 					$('.antiscroll-wrap').antiscroll();
 				});
-				
+
 				$('#' + myAnswer).droppable({
 					activeClass: "ui-state-hover",
 					hoverClass: "ui-state-active",
@@ -231,17 +239,17 @@ function C_Matching(_type) {
 								updateMove = true;
 							}
 						}
-						
+
 						if(updateMove == false){
 							var tempObject = new Object();
 							tempObject.myDrag = ui.draggable.attr("id");
 							tempObject.myDrop = event.target.id;
-						
+
 							drop_arr.push(tempObject);
-						
+
 							drops++;
 						}
-						
+
 						if(drops == dropsMax){
 							checkAnswer();
 						}
@@ -257,16 +265,16 @@ function C_Matching(_type) {
 					}
 				});
 			}
-			
+
 			$("#"+myAnswer).data("matchID", $(data).find("page").eq(currentPage).find("answer").eq(order_arr[j]).attr("correct"));
 			$("#"+myAnswer).data("matchMap", myLabel);
 			$("#"+myAnswer).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
-				
+
 			//iterator++;
 			answer_arr.push($('#' + myAnswer));
 		};
 		$("#matchingAnswers").append("</div>");
-		
+
 		var greaterHeight = 0;
 		if($("#matchingAnswers").height() > $("#matchingOptions").height()){
 			greaterHeight = $("#matchingAnswers").height();
@@ -274,11 +282,31 @@ function C_Matching(_type) {
 			greaterHeight = $("#matchingOptions").height();
 		}
 		$("#matching").height(greaterHeight);
-		
+
 		placematchingSubmit();
-		
+
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
+		//Do matching acessibility.
+		for(var i = 0; i < option_arr.length; i++){
+
+			var ariaText = "Matching Option: " + option_arr[i].text();
+			ariaText += " enter the letter of the item which best matches this option:";
+			for(var j = 0; j < answer_arr.length; j++){
+				ariaText += "Answer Option: " + answer_arr[j].text();
+			}
+
+
+			var tempInput = option_arr[i].find("input");
+
+			ariaText.replace(/'/g, "");
+			$(tempInput).attr("aria-label", ariaText);
+			pageAccess_arr.push($(tempInput));
+		}
+
+		pageAccess_arr.push($("#mcSubmit"));
+
+		//////END Accessibility
         checkMode();
 
 		if(isComplete){
@@ -290,16 +318,23 @@ function C_Matching(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
+
+		doAccess(pageAccess_arr);
 	}
-	
-	
+
+
 	function placematchingSubmit(){
 		if(type == "matching" || type == "matchingDragPhone"){
-			$("#contentHolder").append('<div id="mcSubmit"></div>');
+			$("#contentHolder").append('<div id="mcSubmit" aria-label="'+$(data).find("page").eq(currentPage).attr("btnText")+'"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-			$("#mcSubmit").click(checkAnswer);
+			$("#mcSubmit").click(checkAnswer).keypress(function(event) {
+		        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		        if (chCode == 32){
+			        $(this).click();
+			    }
+	        });
 		}
-		
+
 	}
 
 
@@ -321,7 +356,7 @@ function C_Matching(_type) {
 								break;
 							}
 						}
-						
+
 						if(option_arr[k].data("myMatch") != userMap){
 							tempCorrect = false;
 							option_arr[k].addClass("optionIncorrect");
@@ -364,7 +399,7 @@ function C_Matching(_type) {
 		checkNavButtons();
 	}
 
-	
+
 	function checkAnswer(){
 		//////////////////////////CHECK IF CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		$("#dialog-attemptResponse").remove();
@@ -376,7 +411,7 @@ function C_Matching(_type) {
 		if(type == "matching" || type == "matchingDragPhone"){
 			for(var i=0; i < option_arr.length; i++){
 				var markingObject = new Object();
-				
+
 				//Map the user input to the matchID - needed since randomizing
 				var userInput = option_arr[i].find($('input[id=myInput]')).val().toUpperCase();
 				var userMap = null;
@@ -386,10 +421,10 @@ function C_Matching(_type) {
 						break;
 					}
 				}
-				
+
 				if(option_arr[i].data("myMatch") != userMap){
 					tempCorrect = false;
-					markingObject.isCorrect = false;		
+					markingObject.isCorrect = false;
 				}else{
 					//tempCorrect = true;
 					markingObject.isCorrect = true;
@@ -402,7 +437,7 @@ function C_Matching(_type) {
 			for(var i=0; i < drop_arr.length; i++){
 				var tempDrag = $("#" + drop_arr[i].myDrag);
 				var tempDrop = $("#" + drop_arr[i].myDrop);
-				
+
 				var markingObject = new Object();
 
 				if(tempDrag.data("myMatch") != tempDrop.data("matchID")){
@@ -416,10 +451,10 @@ function C_Matching(_type) {
 				marking_arr.push(markingObject);
 			}
 		}
-		
+
 		//record SCORM cmi.interaction data
 		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
-		var _learnerResponse = '';		
+		var _learnerResponse = '';
 
 		for (var i = 0; i < marking_arr.length; i++) {
 			if(type == "matching" || type == "matchingDragPhone"){
@@ -428,7 +463,7 @@ function C_Matching(_type) {
 			}
 			else{
 				var matchingItem = marking_arr[i].myDrag.find($('div[id=myMatchingText]')).text();
-				_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].myDrop.data("matchID");				
+				_learnerResponse += matchingItem.replace(/\s+/g, '') + "[.]" + marking_arr[i].myDrop.data("matchID");
 			}
 
 			if(i+1 != marking_arr.length){
@@ -438,7 +473,7 @@ function C_Matching(_type) {
 
 
 		setInteractions(pageId, "matching", _learnerResponse, tempCorrect, _title +":"+ $.trim($("#question").text()));
-				
+
 		/************************************
 		POPULATE FEEDBACK STRING
 		************************************/
@@ -453,7 +488,7 @@ function C_Matching(_type) {
 					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectTitle +'</p><p> '+ feedback +'</p></div>';
 				}else{
 					//try again.
-					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';	
+					msg = '<div id="dialog-attemptResponse" class="incorrect" title="'+ feedbackIncorrectTitle +'"><p>'+feedbackIncorrectAttempt +'</p></div>';
 				}
 			}
 		}else if(feedbackType == 'differentiated'){
@@ -466,10 +501,10 @@ function C_Matching(_type) {
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="That is Correct."></div>';
 			}else{
-				
+
 			}
 		}
-		
+
 		if(tempCorrect == true || attemptsMade == attemptsAllowed){
 			var selected_arr = [];
 			if(type == "matching" || type == "matchingDragPhone"){
@@ -480,7 +515,7 @@ function C_Matching(_type) {
 				for(var i=0; i < drop_arr.length; i++){
 					var tempDrag = drop_arr[i].myDrag;
 					var tempDrop = drop_arr[i].myDrop;
-				
+
 					var selectedObject = new Object();
 					selectedObject.top = $("#" + tempDrag).position().top;
 					selectedObject.left = $("#" + tempDrag).position().left;
@@ -494,11 +529,11 @@ function C_Matching(_type) {
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
-		
+
 		/************************************
 		PLACE THE FEEDBACK
 		************************************/
-		
+
 		$("#matching").prepend(msg);
 		//all mobile content will use the pop display
 		if(isMobile){
@@ -511,7 +546,7 @@ function C_Matching(_type) {
 					width: 550,
 					dialogClass: "no-close",
 					close: function(event, ui){
-
+						pageAccess_arr[2].focus();
 						mandatoryInteraction = false;
 						checkNavButtons();
 						$("#dialog-attemptResponse").remove();
@@ -525,13 +560,16 @@ function C_Matching(_type) {
 							$( this ).dialog( "close" );
 							if(isLinear == true){
 								updateTracking();
-							}	
+							}
 							$("#next").click();
 						}
 					},
 					open: function(){
 						$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+						//$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+						var cont = feedback;
+						var ariaText = cont.replace(/'/g, "");
+						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button').attr('aria-label', ariaText + ' Press spacebar to proceed.').focus();
 					}
 				});
 			}else{
@@ -548,23 +586,28 @@ function C_Matching(_type) {
 							}
 							drop_arr = [];
 						}
+						pageAccess_arr[2].focus();
 						$("#dialog-attemptResponse").remove();
 					},
 					buttons: {
 						OK: function(){
 							$( this ).dialog( "close" );
 						}
+					},
+					open: function(){
+						$('.ui-dialog-buttonpane').find('button:contains("OK")').attr('aria-label', 'OK - That is incorrect. Please try again. Click here.').focus();
 					}
+
 				});
 			}
-		}else if(feedbackDisplay == "inline"){			
-			
+		}else if(feedbackDisplay == "inline"){
+
 			if(type == "matchingDrag"){
 				$( "#dialog-attemptResponse" ).addClass("inlineLeftFeedback");
 			}else if(type == "matching"){
 				$( "#dialog-attemptResponse" ).addClass("inlineBottomFeedback");
 			}
-			
+
 			//If drag and attempts left - move options back to start point
 			if(attemptsAllowed > attemptsMade && tempCorrect == false){
 				if(type == "matchingDrag"){
@@ -580,10 +623,10 @@ function C_Matching(_type) {
 						drop_arr = [];
 					});
 				}
-			}		
+			}
 		}
 	}
-	
+
 	function checkMode(){
 		$('.antiscroll-wrap').antiscroll();
 
@@ -610,9 +653,9 @@ function C_Matching(_type) {
 				toolbar: contentToolbar,
 				toolbarGroups :contentToolgroup,
 				extraPlugins: 'sourcedialog'
-			}); 
-			
-			
+			});
+
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -640,7 +683,7 @@ function C_Matching(_type) {
 		msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
 		msg += "<b>Answers:</b><br/><div id='myAnswerList'></div>";
 		$("#stage").append(msg);
-				
+
         if(!graded){
 			$("#isGraded").removeAttr('checked');
 		}else{
@@ -658,7 +701,7 @@ function C_Matching(_type) {
 		}else{
 			$("#dragAndDrop").attr('checked', 'checked');
 		}
-				
+
 		$("#dragAndDrop").change(function(){
 			if($("#dragAndDrop").prop("checked") == true){
 				type = "matchingDrag";
@@ -670,7 +713,7 @@ function C_Matching(_type) {
 			answerEdit_arr = [];
 			updateQuestionEditDialog();
 		});
-								
+
 		CKEDITOR.inline( "feedbackEditText", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -681,19 +724,19 @@ function C_Matching(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
 		    	}
-		    }			
-		});	
-				
+		    }
+		});
+
 		optionCount = option_arr.length;
 		//find every option in the xml - place them on the screen.
 		for (var i = 0; i < optionCount; i++){
 			addOption(i, false);
 		};
-				
+
 		for(var j = 0; j < answer_arr.length; j++){
 			addAnswer(j, false);
 		}
-				
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
@@ -703,7 +746,7 @@ function C_Matching(_type) {
 			dialogClass: "no-close",
 			close: function(){
 				CKEDITOR.instances["feedbackEditText"].destroy();
-				
+
 				for(var i = 0; i < optionEdit_arr.length; i ++){
 					 CKEDITOR.instances[optionEdit_arr[i]+"Text"].destroy();
 				}
@@ -726,7 +769,7 @@ function C_Matching(_type) {
 					text: "AddAnswer",
 					title: "Adds a new matching answer.",
 					click: function(){
-						addAnswer(answerEdit_arr.length, true);	
+						addAnswer(answerEdit_arr.length, true);
 					}
 				},
 				{
@@ -735,7 +778,7 @@ function C_Matching(_type) {
 					click: function(){
 						var tmpObj = new Object();
 						tmpObj.attempts = $("#inputAttempts").val();
-						
+
 						if($("#isGraded").prop("checked") == true){
 							$(data).find("page").eq(currentPage).attr("graded", "true");
 							tmpObj.graded = true;
@@ -748,14 +791,14 @@ function C_Matching(_type) {
 						}else{
 							$(data).find("page").eq(currentPage).attr("mandatory", "false");
 						}
-						
+
 						if($("#dragAndDrop").prop("checked") == true){
 							tmpObj.layout = "matchingDrag";
 						}else{
 							tmpObj.layout = "matching";
 						}
-						
-						
+
+
 	//TURN BACK ON IF MATCHING GETS DIFFERENTIATED
 	//							tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
 	//							if(feedbackType == "undifferentiated"){
@@ -772,24 +815,24 @@ function C_Matching(_type) {
 							tmpOptionArray.push(tmpOptionObj);
 						}
 						tmpObj.option_arr = tmpOptionArray;
-								
+
 						var tmpAnswerArray = new Array();
 						for(var i = 0; i < answerEdit_arr.length; i++){
 							var tmpAnswerObj = new Object();
-							
+
 							if(tmpObj.layout == "matchingDrag"){
 								tmpAnswerObj.answerText = $("#"+ answerEdit_arr[i]+"Text").val();
 							}else{
 								tmpAnswerObj.answerText = CKEDITOR.instances[answerEdit_arr[i]+"Text"].getData();
-							}	
+							}
 							tmpAnswerObj.answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
-									
+
 							tmpAnswerArray.push(tmpAnswerObj);
 						}
 						tmpObj.answer_arr = tmpAnswerArray;
-								
+
 						saveQuestionEdit(tmpObj);
-						$("#questionEditDialog").dialog("close");						
+						$("#questionEditDialog").dialog("close");
 					}
 				}
 			]
@@ -803,12 +846,12 @@ function C_Matching(_type) {
 	    });
 
 	}
-	
+
 	function addAnswer(_addID, _isNew){
 		var answerID = "answer" + _addID;
 		var answerLabel = _addID + 1;
-		
-		
+
+
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<answer>"));
 			var answer1 = new DOMParser().parseFromString('<answer></answer>', "text/xml");
@@ -820,10 +863,10 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("answer").eq(_addID).find("content").append(answer1CDATA);
 			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
 			$(data).find("page").eq(currentPage).find("answer").eq(_addID).find("diffeed").append(difFeed1CDATA);
-			$(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("correct", "X");	
-			$(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("img", "defaultReveal.png");	
+			$(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("correct", "X");
+			$(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("img", "defaultReveal.png");
 		}
-		
+
 		var myMatch = $(data).find("page").eq(currentPage).find("option").eq(i).attr("correct");
 		//var myLabel = String.fromCharCode(_addID % 26 + 65);
 		var myLabel = $(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("correct");
@@ -841,9 +884,9 @@ function C_Matching(_type) {
 			msg += "<input id='"+answerID+"Text' class='dialogInput' type='text' value="+ answerImage + " defaultValue="+ answerImage + " style='width:85%;'/>";
 		}
 		msg += "</div>";
-		
+
 		$("#myAnswerList").append(msg);
-		
+
 		if(type == "matching"){
 			CKEDITOR.inline( answerID+"Text", {
 				toolbar: contentToolbar,
@@ -855,45 +898,45 @@ function C_Matching(_type) {
 			      instanceReady: function(event){
 			         $(event.editor.element.$).attr("title", "Click here to edit this matching answer text.");
 			    	}
-			    }				
+			    }
 			});
-		}	
-		
+		}
+
 		$("#" +answerID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
 			$(data).find("pages").eq(currentPage).find("answer").eq(arrIndex).remove();
 			answerEdit_arr.splice(arrIndex, 1);
 			$("#answer" + arrIndex+"Container").remove();
 		});
-		
+
 		answerCount++;
 		answerEdit_arr.push(answerID);
 	}
-	
+
 	function addOption(_addID, _isNew){
 		var optionID = "option" + _addID;
 		var optionLabel = _addID + 1;
-		
+
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<option>"));
 			var option= new DOMParser().parseFromString('<option></option>',  "text/xml");
 			var optionCDATA = option.createCDATASection("Input Option");
 			$(data).find("page").eq(currentPage).find("option").eq(_addID).append(optionCDATA);
-			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct", "X");			
+			$(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct", "X");
 		}
-		
-		var myMatch = $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct");					
-		
+
+		var myMatch = $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct");
+
 		var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
 		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;' title='Click here to edit the option label.'/><br/>";
-		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();			
+		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();
 		msg +="<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div>";
 		msg += "<div id='"+optionID+"Text' class='dialogInput' contenteditable='true'>" + optionContent + "</div>";
 		msg += "</div>"
 		$("#myOptionList").append(msg);
-							
+
 		CKEDITOR.inline( optionID+"Text", {
 			toolbar: contentToolbar,
 			toolbarGroups :contentToolgroup,
@@ -904,19 +947,19 @@ function C_Matching(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit this matching option.");
 		    	}
-		    }			
-		});	
-							
+		    }
+		});
+
 		$("#" +optionLabel+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
 			$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
 			optionEdit_arr.splice(arrIndex, 1);
 			$("#option"+arrIndex+"Container").remove();
 		});
-		
+
 		optionEdit_arr.push(optionID);
 	}
-		
+
 	/**********************************************************************
     **Save Content Edit - save updated content text to content.xml
     **********************************************************************/
@@ -927,12 +970,12 @@ function C_Matching(_type) {
         $(data).find("page").eq(currentPage).find("question").first().append(newCDATA);
         sendUpdateWithRefresh();
     };
-	
+
 	function saveQuestionEdit(_data){
 		var feedbackUpdate = _data.feedbackUpdate;
 		var feedDoc = new DOMParser().parseFromString('<feedback></feedback>', 'application/xml');
 		var feedCDATA = feedDoc.createCDATASection(feedbackUpdate);
-		
+
 		//Update the local xml - first clearning the content node and then updating it with out newCDATA
 		$(data).find("page").eq(currentPage).find("feedback").empty();
 		$(data).find("page").eq(currentPage).find("feedback").append(feedCDATA);
@@ -946,7 +989,7 @@ function C_Matching(_type) {
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
 		$(data).find("page").eq(currentPage).attr("mandatory", _data.mandatory);
 		$(data).find("page").eq(currentPage).attr("layout", _data.layout);
-		
+
 		for(var i = 0; i < optionEdit_arr.length; i++){
 			var optionText = _data.option_arr[i].optionText;
 			var optionCorrect = _data.option_arr[i].optionCorrect;
@@ -956,11 +999,11 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("option").eq(i).append(optionCDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(i).attr("correct", optionCorrect);
 		}
-		
+
 		for(var i = optionEdit_arr.length; i < optionCount; i++){
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
-		
+
 		for(var i = 0; i < answerEdit_arr.length; i++){
 			var answerText = _data.answer_arr[i].answerText;
 			var answerCorrect = _data.answer_arr[i].answerCorrect;
@@ -974,21 +1017,21 @@ function C_Matching(_type) {
 			}
 			$(data).find("page").eq(currentPage).find("answer").eq(i).attr("correct", answerCorrect);
 		}
-		
+
 		for(var i = answerEdit_arr.length; i < answerCount; i++){
 			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
 		}
-		
+
 		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
-	}	
-	
-	
+	}
+
+
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
-    
+
     this.fadeComplete = function(){
         	fadeComplete();
 	}
