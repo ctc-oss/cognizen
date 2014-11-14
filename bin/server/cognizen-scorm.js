@@ -125,32 +125,31 @@ var SCORM = {
 								    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
 
 								    	var lessonIndictor = 'undefined';
-								    	if(tlo != 'undefined' || tlo != undefined){
-								    		lessonIndictor = tlo.get('value').replace(/\s+/g, '').replace('.', '');
+								    	if(tlo != 'undefined' && tlo != undefined){
+								    		lessonIndictor = tlo.replace('.', '').replace(/\s+/g, '');
 								    	}
 								    	else{
 								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
 								    	}
-
 
 								    	var tmpObjId = '';
 								    	if(pageObj != undefined && pageObj !== "undefined"){
 								    		//console.log(i + " : " + pageObj);
 								 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 								 			tmpObjId = lessonIndictor +"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')).replace('.', '')+"."+
-								 						pageObj.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+								 						pageObj.replace(/\s+/g, '_').replace('.', '');
 
 								    	}
 
 								    	if(pageObjId != undefined && pageObjId !== "undefined"){
 								    		if(tmpObjId.length > 0){
-								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
+								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace('.', '');
 								    		}
 								    		else{
-									 			tmpObjId = lessonIndictor+"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')).replace('.', '')+"."+
-								 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
+									 			tmpObjId = lessonIndictor +"."+
+								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+								 						pageObjId.replace(/\s+/g, '_').replace('.', '');
 								    		}
 								    	}
 
@@ -638,7 +637,7 @@ var SCORM = {
 		var secondaryObjectives = "";
         for (var i = 0; i < _this.objectives_arr.length; i++) {
         	secondaryObjectives += "						<imsss:objective objectiveID=\""+_this.objectives_arr[i]+"\">\n"+
-            "							<imsss:mapInfo targetObjectiveID=\""+_this.objectives_arr[i]+"\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+            "							<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+_this.objectives_arr[i]+"\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
             "						</imsss:objective>\n";
         };
 
@@ -886,11 +885,11 @@ var SCORM = {
 				    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
 
 				    	var lessonIndictor = 'undefined';
-				    	if(tlo != 'undefined' || tlo != undefined){
+				    	if(tlo != 'undefined' && tlo != undefined){
 				    		lessonIndictor = tlo.replace('.', '').replace(/\s+/g, '');
 				    	}
 				    	else{
-				    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
+				    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '');
 				    	}
 
 				    	var tmpObjId = '';
@@ -899,18 +898,18 @@ var SCORM = {
 				 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 				 			tmpObjId = lessonIndictor +"."+
 				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-				 						pageObj.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
+				 						pageObj.replace(/\s+/g, '_').replace('.', '');
 
 				    	}
 
 				    	if(pageObjId != undefined && pageObjId !== "undefined"){
 				    		if(tmpObjId.length > 0){
-				    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace(/:/g, '');
+				    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace('.', '');
 				    		}
 				    		else{
 					 			tmpObjId = lessonIndictor +"."+
 				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-				 						pageObjId.replace(/\s+/g, '_').replace(/:/g, '').replace('.', '');
+				 						pageObjId.replace(/\s+/g, '_').replace('.', '');
 				    		}
 				    	}
 
@@ -938,11 +937,12 @@ var SCORM = {
 
 					        res.files.forEach(function(file) {
 					            var localFile = file.path.replace(/\\/g,"/");
-					            if(localFile.indexOf('content.xml') == -1 ){
+					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html")){
 					            	var inputFile = _lessonPath + '/' + localFile;
 					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/Review-files/'+localFile });
 					        	}
 					        });
+					        //add index.html from server incase changes were made after the course was created
 					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/Review-files/index.html'});
 						}
 
@@ -988,15 +988,16 @@ var SCORM = {
 						            },
 						            function(fileInfo) {},
 						            function (err, res) {
-						                res.files.forEach(function(file) {
-						                    var localFile = file.path.replace(/\\/g,"/")
-						                    var inputFile = _this.scormPath + '/completion/' + localFile;
-						                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
-						                });
+
 
 						                if(courseAttr.certificate === "true"){
 						                	manifestFile += _this._addUSSOCOMExtra('completion');
 						                	completionLines = _this._addResources(res, 'completion-files/');
+							                res.files.forEach(function(file) {
+							                    var localFile = file.path.replace(/\\/g,"/")
+							                    var inputFile = _this.scormPath + '/completion/' + localFile;
+							                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
+							                });						                	
 						            	}
 
 						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -1758,8 +1759,17 @@ var SCORM = {
         _this.logger.info("CONTENTPATH " + _this.contentPath);
 
 		for (var i = 0; i < _this.jsResources_arr.length; i++) {
-		    resource += "				<file href=\""+_prefix+"js/"+_this.jsResources_arr[i]+"\"/>\n";
+		    resource += "		<file href=\""+_prefix+"js/"+_this.jsResources_arr[i]+"\"/>\n";
 		};
+
+		for (var j =0; j < _this.cssResources_arr.length; j++) {
+			resource += "		<file href=\""+_prefix+"css/"+_this.cssResources_arr[j]+"\"/>\n";
+		}
+
+		for (var k =0; k < _this.cssCourseResources_arr.length; k++) {
+			resource += "		<file href=\""+_prefix+"css/"+_this.cssCourseResources_arr[k]+"\"/>\n";
+		}
+
 		//added course.xml file here, figured it would cover it
 		resource += "				<file href=\""+_prefix+"course.xml\"/>\n";
         resource += "		</resource>\n";

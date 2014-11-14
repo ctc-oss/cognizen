@@ -71,13 +71,15 @@ function checkNav(){
 	//Positioning can be updated in css/C_Engine.css
 	helpButton = $(data).find('help').attr('value');
 	if(helpButton == undefined || helpButton == "undefined"){
-		$(data).find("preferences").append($('<help>'));
-		// var newHelp = new DOMParser().parseFromString('<help></help>',  "text/xml");
-		// $(data).find("help").append(newHelp);
-		$(data).find("help").attr("value", "false");
-		$(data).find("help").attr("url", "");
-		$(data).find("help").attr("width", helpWidth);
-		$(data).find("help").attr("height", helpHeight);
+		if(mode === "edit"){
+			$(data).find("preferences").append($('<help>'));
+			// var newHelp = new DOMParser().parseFromString('<help></help>',  "text/xml");
+			// $(data).find("help").append(newHelp);
+			$(data).find("help").attr("value", "false");
+			$(data).find("help").attr("url", "");
+			$(data).find("help").attr("width", helpWidth);
+			$(data).find("help").attr("height", helpHeight);
+		}
 		helpButton = false;
 	}
 	else{

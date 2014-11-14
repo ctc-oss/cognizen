@@ -230,23 +230,24 @@ function choiceValid(lesson){
 }
 
 function setPageObjective(_correct, _graded){
+
 	if(doScorm()){
 		var _objId = "";
 		var myObjective = 'undefined';
 		var myObjItemId = 'undefined';
 		var eo = '';
-		var _pgTitle = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace('.', '');
+		var _pgTitle = encodeURIComponent(pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '');
 
 		if($(data).find("page").eq(currentPage).attr('eo')){
 			eo = $(data).find("page").eq(currentPage).attr('eo').replace('.', '');
 		}
 
 		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective').replace('.', '');
+			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
 
 		if($(data).find("page").eq(currentPage).attr('objItemId')){
-			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId').replace('.', '');
+			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
 		}	
 
 		var tlo = '';
@@ -255,7 +256,7 @@ function setPageObjective(_correct, _graded){
 		}
 
 		var lessonIndicator = 'undefined';
-		if(tlo != 'undefined' || tlo != undefined){
+		if(tlo != 'undefined' && tlo != undefined){
 			lessonIndicator = tlo.replace(/\s+/g, '').replace('.', '');
 		}
 		else{
@@ -266,18 +267,18 @@ function setPageObjective(_correct, _graded){
 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 			_objId = lessonIndicator +"."+
 				_pgTitle+"."+
-				myObjective.replace(/\s+/g, '_');
+				myObjective.replace(/\s+/g, '_').replace('.', '');
 
 		}
 
 		if(myObjItemId != undefined && myObjItemId !== "undefined"){
 			if(_objId.length > 0){
-				_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+				_objId += "." + myObjItemId.replace(/\s+/g, '_').replace('.', '');
 			}
 			else{
 	 			_objId = lessonIndicator +"."+
 					_pgTitle+"."+
-					myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
+					myObjItemId.replace(/\s+/g, '_').replace('.', '');						    			
 			}
 		}
 
@@ -304,7 +305,7 @@ function getObjectives(){
     	if(setId.length > 1){
 	    	objectivesObj.id = encodeURIComponent(setId[2].replace(/_/g, ' '));
 	    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
-	    	objectivesObj.objItemId = setId[setId.length - 1].replace(/_/g, ' ').replace(/:/g, '');
+	    	objectivesObj.objItemId = setId[setId.length - 1].replace(/_/g, ' ');//.replace(/:/g, '');
 	    	objectives_arr.push(objectivesObj);
     	}
     }
@@ -334,8 +335,10 @@ function setObjectiveSuccess(objId, success, eo){
 		var completionStatus = (success) ? "completed":"incomplete";
 
 		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
-		scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
-		scorm.set("cmi.objectives." + objIndex + ".description", eo);
+		if($(courseData).find("course").attr("lms") != "JKO"){
+			scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
+			scorm.set("cmi.objectives." + objIndex + ".description", eo);
+		}
 
 	}
 
@@ -346,10 +349,13 @@ function setInteractions(_id, _type, _response, _result, _description){
 		var num = parseInt(scorm.get("cmi.interactions._count"));
 		var result = (_result) ? "correct":"incorrect";
 
-		scorm.set("cmi.interactions." + num + ".id", _id);
-		scorm.set("cmi.interactions." + num + ".type", _type);
+		if($(courseData).find("course").attr("lms") != "JKO"){
+			scorm.set("cmi.interactions." + num + ".id", _id);
+			scorm.set("cmi.interactions." + num + ".type", _type);
+			scorm.set("cmi.interactions." + num + ".result", result);			
+		}
+
 		scorm.set("cmi.interactions." + num + ".learner_response", _response);
-		scorm.set("cmi.interactions." + num + ".result", result);
 		scorm.set("cmi.interactions." + num + ".description", _description);
 	}
 }
@@ -368,9 +374,8 @@ function setInteractions(_id, _type, _response, _result, _description){
 *******************************************************************************/
 function findObjective(objId) 
 {
-
     var objIndex = -1;
-    var encodedObjId = encodeURIComponent(objId);
+    var encodedObjId = objId;//encodeURIComponent(objId);
 
 	if(lmsObjectives_arr.length != 0){
 		for (var i = 0; i < lmsObjectives_arr.length; i++) {
@@ -405,7 +410,7 @@ function populateObjectivesArr()
 	var num = parseInt(scorm.get("cmi.objectives._count"));
 
     for (var i=0; i < num; ++i) {
-    	var _obj = {id : encodeURIComponent(scorm.get("cmi.objectives." + i + ".id")), index : i };
+    	var _obj = {id : scorm.get("cmi.objectives." + i + ".id"), index : i };
     	lmsObjectives_arr.push(_obj);
     }
 }
