@@ -250,6 +250,9 @@ function initScripts(_data){
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
 		], startEngine);
 	}
+	if(ieUserAgent.renderVersion < 10){
+        oldIE = true;
+	}
 }
 
 //VROOM VROOM
@@ -273,9 +276,9 @@ function startEngine(){
 function isOldIE() {
     "use strict";
 
-    if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
-        oldIE = true;
-    }
+//    if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
+//        oldIE = true;
+//    }
 
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
         isIE = true;
