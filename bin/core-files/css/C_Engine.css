@@ -509,6 +509,7 @@ CONTENT TEXT LAYOUTS*/
 
 #contentHolder{
 	position: static;
+	max-width: 947px;
 }
 
 #scrollableContent.top,.text,.tabsLeft{
@@ -938,6 +939,7 @@ ul.no-indent {
 	border-radius: 8px;
 	cursor: hand;
 	cursor: pointer;
+	max-width: 900px;
 }
 
 .revealText{
@@ -947,6 +949,7 @@ ul.no-indent {
 	font-size: 12pt !important;
 	color: #000000;
 	opacity: .1;
+	max-width: 690px;
 }
 
 .revealText p{

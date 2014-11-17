@@ -218,15 +218,12 @@ function C_Reveal(_type) {
 			var msg = "<div id='revealTextHolder' class='revealTextRight antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
 			$("#" + currentSelected).append(msg);
-			//BECAUSE IE FUCKING SUCKS!!!!
-			if(isIE){
-				if(ieWidth == null){
-					ieWidth = $("#"+ currentSelected).width() - mediaWidth - 30;
-				}
-				$("#" + currentSelected + "Text").css({'width': ieWidth, 'max-width': ieWidth});
-			}else{
-				$("#" + currentSelected + "Text").css({'width': $("#"+ currentSelected).width() - mediaWidth - 10});
+			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 10;
+			if(isIE || isFF){
+				textWidth -= 20;
 			}
+			$("#" + currentSelected + "Text").css({'width': textWidth});
+
 		}else if(type == "revealBottom"){
 			var tmpWidth = $("#" + currentSelected).width() - 10;
 			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
@@ -246,27 +243,15 @@ function C_Reveal(_type) {
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
 			$("#" + currentSelected).append(msg);
-			//BECAUSE IE FUCKING SUCKS!!!!
-			if(isIE){
-				if(ieWidth == null){
-					ieWidth = $("#"+ currentSelected).width() - mediaWidth - 30;
-				}
-				$("#" + currentSelected + "Text").css({'width': ieWidth, 'max-width': ieWidth});
-			}else{
-				$("#" + currentSelected + "Text").css({'width': $("#"+ currentSelected).width() - mediaWidth - 10});
+			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 10;
+			if(isIE || isFF){
+				textWidth -= 20;
 			}
+			$("#" + currentSelected + "Text").css({'width': textWidth});
+
 		}else if(type == "revealTop"){
 			var msg = "<div id='revealTextHolder' class='revealTextTop antiscroll-wrap' style='width: " + mediaWidth + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + mediaWidth + "px;'>" + currentShowText + "</div></div>";
-		}
-
-		if(isIE){
-			if(type == "revealRight" || type == "revealLeft"){
-				$("#contentHolder").height($("#contentHolder").height() - 22);
-			}else{
-				$("#contentHolder").height($("#contentHolder").height() - 25);
-				$("#contentHolder").width($("#contentHolder").width() - 17);
-			}
 		}
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
