@@ -164,10 +164,22 @@ function C_MultipleChoice(_type) {
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 
-			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+			//Create html elements for the options
+			var optString = '<div class="option" id="' + myOption + '">';
+			optString += '<input id="' + myOption + 'Check" name="' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/>';
+			optString += '<label class="fixFunkyIssue" id="label" unselectable="on" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
+			optString += '</div>';
+			$('#answer').append(optString);
+
+			$(".fixFunkyIssue").click(function(){
+				iconClicked = true;
+			});
+
+			//multiselect get's check boxes, multiplechoice get's radios.
+			if(isMulti){
+				$("#" + myOption + "Check").attr("type", "checkbox");
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$("#" + myOption + "Check").attr("type", "radio");
 			}
 
 			$("#" + myOption + "Check").click(function(){
@@ -183,8 +195,18 @@ function C_MultipleChoice(_type) {
 			//Add button click action to each option
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
-
-				if(isMulti == false){
+				if(isMulti){
+					if(iconClicked != true){
+						if($(this).find('input').prop('checked') == true){
+							$(this).find('input').prop('checked', false);
+							$(this).removeClass("optionSelected");
+						}else{
+							$(this).find('input').prop('checked', true);
+							$(this).addClass("optionSelected");
+						}
+					}
+				}else{
+					//Remove selected class from previously selected and add to newly selected.
 					$(this).find('input').prop('checked', true);
 					for(var i=0; i<option_arr.length; i++){
 						if(option_arr[i].hasClass("optionSelected") ){
@@ -192,19 +214,6 @@ function C_MultipleChoice(_type) {
 						}
 					}
 					$(this).addClass("optionSelected");
-				}else if(isMulti == true){
-					if($(this).find('input').prop('checked') == true){
-						if(iconClicked != true){
-							$(this).find('input').prop('checked', false);
-							$(this).removeClass("optionSelected");
-						}
-
-					}else{
-						if(iconClicked != true){
-							$(this).find('input').prop('checked', true);
-							$(this).addClass("optionSelected");
-						}
-					}
 				}
 				iconClicked = false;
 			}).hover(function(){
@@ -216,7 +225,7 @@ function C_MultipleChoice(_type) {
 			);
 
 			if(!isMulti){
-				$('#' + myOption).keypress(function(event) {
+				$('#' + myOption + "Check").keypress(function(event) {
 			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 			        if (chCode == 32){
 				        $(this).click();
