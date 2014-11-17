@@ -1311,8 +1311,8 @@ function markIncomplete(){
 ***utilizes currentPage variable, which is an int representing a node in content .xml*/
 //Function to load page content
 this.loadPage = function(){
-	try { $(".ui-tooltip-content").tooltip("destroy"); } catch (e) {}
-	try { $(".ui-tooltip").tooltip("close"); } catch (e) {}
+	try { $(".ui-tooltip-content").parents('div').remove(); } catch (e) {console.log(e)}
+	try { $(".ui-tooltip").tooltip("close"); } catch (e) {console.log(e)}
 	if(isLinear == true){
 		updateTracking();
 	}

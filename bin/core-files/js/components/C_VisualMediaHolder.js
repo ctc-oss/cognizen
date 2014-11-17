@@ -49,6 +49,7 @@ function C_VisualMediaHolder(callback){
 
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+        console.log("giving large image vale = " + largeImg);
     }
         //Check for popups...
     if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
@@ -295,8 +296,18 @@ function C_VisualMediaHolder(callback){
 			tempItem = "media/" + media_arr[0];
 			tempCaption = caption_arr[0];
 		}
+		var hasSWF = false;
+
+		var checkFile = tempItem.split('.'), i, l;
+        var last = checkFile.length;
+        var thisType = (checkFile[last - 1]);
+		if(thisType == "swf"){
+			hasSWF = true;
+		}
 
 		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
+
+
 
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";
@@ -306,42 +317,72 @@ function C_VisualMediaHolder(callback){
 			}else{
 				startPoint = 0;
 			}
+			console.log("media_arr.length = " + media_arr.length);
 			for(var i = startPoint; i < media_arr.length; i++){
+				console.log("in media array loop");
 				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+				var checkFile = media_arr[i].split('.'), i, l;
+		        var last = checkFile.length;
+		        var thisType = (checkFile[last - 1]);
+				if(thisType == "swf"){
+					hasSWF = true;
+				}
 			}
 			mediaPopString += "</span>";
 		}
 
 		mediaPopString += "</div>";
-
+		console.log("hasSWF = " + hasSWF);
 		$(mediaPopString).insertAfter("#loader");
 		//pageAccess_arr.push($("#mediaPop"));
-		$("[rel='mediaPop']").fancybox({
-			caption : {
-				type : 'inside'
-			},
-			openEffect  : 'elastic',
-			closeEffect : 'elastic',
-			nextEffect  : 'elastic',
-			prevEffect  : 'elastic',
-			loop		: popLoop,
-			maxHeight	: 1024,
-			maxWidth	: 768,
-			helpers : {
-				title : tempCaption,
-				thumbs: {
-					width  : 50,
-                  	height : 50,
-                  	source  : function(current) {
-	                    return $(current.element).data('thumbnail');
-	                }
-				}
-			}
-		});
-
-		if(mediaType == "swf"){
+		if(!hasSWF){
 			$("[rel='mediaPop']").fancybox({
-				loop	:	true,
+				caption : {
+					type : 'inside'
+				},
+				openEffect  : 'elastic',
+				closeEffect : 'elastic',
+				nextEffect  : 'elastic',
+				prevEffect  : 'elastic',
+				loop		: popLoop,
+				maxHeight	: 768,
+				maxWidth	: 1024,
+				helpers : {
+					title : tempCaption,
+					thumbs: {
+						width  : 50,
+	                  	height : 50,
+	                  	source  : function(current) {
+		                    return $(current.element).data('thumbnail');
+		                }
+					}
+				}
+			});
+		}
+
+		if(hasSWF){
+
+			$("[rel='mediaPop']").fancybox({
+				caption : {
+				type : 'inside'
+				},
+				openEffect  : 'elastic',
+				closeEffect : 'elastic',
+				nextEffect  : 'elastic',
+				prevEffect  : 'elastic',
+				loop		: popLoop,
+				maxHeight	: 768,
+				maxWidth	: 1024,
+				helpers : {
+					title : tempCaption,
+					thumbs: {
+						width  : 50,
+	                  	height : 50,
+	                  	source  : function(current) {
+		                    return $(current.element).data('thumbnail');
+		                }
+					}
+				},
 				width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
 				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
 			});
