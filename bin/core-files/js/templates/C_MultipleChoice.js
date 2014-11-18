@@ -167,7 +167,7 @@ function C_MultipleChoice(_type) {
 			//Create html elements for the options
 			var optString = '<div class="option" id="' + myOption + '">';
 			optString += '<input id="' + myOption + 'Check" name="' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/>';
-			optString += '<label class="fixFunkyIssue" id="label" unselectable="on" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
+			optString += '<label id="label" unselectable="on" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
 			optString += '</div>';
 			$('#answer').append(optString);
 
@@ -196,6 +196,7 @@ function C_MultipleChoice(_type) {
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
 				if(isMulti){
+					console.log("iconClicked = " + iconClicked);
 					if(iconClicked != true){
 						if($(this).find('input').prop('checked') == true){
 							$(this).find('input').prop('checked', false);
