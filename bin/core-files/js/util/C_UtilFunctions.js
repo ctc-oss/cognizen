@@ -225,6 +225,5 @@ function fadeComplete() {
 		}
 	}
 	catch(e){}
-	console.log("fade complete");
 	loadPage();
 }

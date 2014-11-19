@@ -196,7 +196,6 @@ function C_MultipleChoice(_type) {
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
 				if(isMulti){
-					console.log("iconClicked = " + iconClicked);
 					if(iconClicked != true){
 						if($(this).find('input').prop('checked') == true){
 							$(this).find('input').prop('checked', false);

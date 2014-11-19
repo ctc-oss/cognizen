@@ -49,7 +49,6 @@ function C_VisualMediaHolder(callback){
 
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
-        console.log("giving large image vale = " + largeImg);
     }
         //Check for popups...
     if($(data).find("page").eq(currentPage).attr('popup') != "" && $(data).find("page").eq(currentPage).attr('popup') != undefined){
@@ -317,9 +316,7 @@ function C_VisualMediaHolder(callback){
 			}else{
 				startPoint = 0;
 			}
-			console.log("media_arr.length = " + media_arr.length);
 			for(var i = startPoint; i < media_arr.length; i++){
-				console.log("in media array loop");
 				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
 				var checkFile = media_arr[i].split('.'), i, l;
 		        var last = checkFile.length;
@@ -332,7 +329,6 @@ function C_VisualMediaHolder(callback){
 		}
 
 		mediaPopString += "</div>";
-		console.log("hasSWF = " + hasSWF);
 		$(mediaPopString).insertAfter("#loader");
 		//pageAccess_arr.push($("#mediaPop"));
 		if(!hasSWF){

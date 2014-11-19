@@ -43,7 +43,6 @@ function C_Completion(_type) {
         	$('#stage').css({'opacity':0});
         }
 
-		console.log("adding loader");
 		$("#myCanvas").append("<div class='C_Loader'><div class='C_LoaderText'>Calculating Results</div></div>");
 
 		scormVersion = $(data).find('scormVersion').attr('value');
@@ -307,12 +306,10 @@ function C_Completion(_type) {
     }
 
     function removeLoader(){
-	    console.log("removeLoader called");
 	    $(".C_Loader").remove();
     }
 
     function determineReviewList(){
-		console.log("starting determineReviewList()");
 		var trackedObjectives = false;
 		var displayRemedObj = "";
 		var displayRemedObjAlt = "";
@@ -464,7 +461,6 @@ function C_Completion(_type) {
 			// }
 
 		}
-		console.log("finishing determineReviewList()");
     }
 
     /*****************************************************************************************************************************************************************************************************************
