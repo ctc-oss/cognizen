@@ -158,7 +158,7 @@ function C_QuestionBank(_type) {
 			//Create html elements for the options
 			var optString = '<div class="option" id="' + myOption + '">';
 			optString += '<input id="' + myOption + 'Check" name="' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/>';
-			optString += '<label id="label" unselectable="on" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
+			optString += '<label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
 			optString += '</div>';
 			$('#answer').append(optString);
 
