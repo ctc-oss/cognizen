@@ -56,6 +56,8 @@ var courseData;
 ****************************************************/
 //LOAD THE XML AS SOON AS THE DOCUMENT IS READY
 $(document).ready(function(){
+	$("body").width(1024);
+	$("body").append("<div class='C_Loader'><div class='C_LoaderText'>Loading content.xml</div></div>");
 	$.ajax({
 		type: "GET",
 		url: "xml/content.xml",
@@ -70,6 +72,7 @@ $(document).ready(function(){
 
 
 function loadCourseXML(_data){
+	$('.C_LoaderText').text("Loading Course.xml");
 	data = _data;
 	var loc = window.location.pathname;
 	var dir = loc.substring(0, loc.lastIndexOf('/'));
@@ -91,6 +94,7 @@ function loadCourseXML(_data){
 **************************** STEP 2 - LOAD JS Modules
 ****************************************************/
 function initScripts(_data){
+	$('.C_LoaderText').text("Initializing scripts.");
 	courseData = _data;
 	////console.log(data);
 
@@ -326,17 +330,18 @@ function buildInterface(){
 	checkFF();
 	checkMobile();
 	$('body').empty();
-		if (isMobilePhone){
-			// add div that hides content in landscape orientation
-			$('body').append("<div id='landscape'></div>");
-		}
-		if (isMobile){
-			//console.log("mobile site");
-			$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
-		}else{
-			//console.log("desktop site");
-			$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle' role='heading'></div><div id='lessonTitle' role='heading'></div><div id='panes'></div></div></div></div>");
-		}
+
+	if (isMobilePhone){
+		// add div that hides content in landscape orientation
+		$('body').append("<div id='landscape'></div>");
+	}
+	if (isMobile){
+		//console.log("mobile site");
+		$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
+	}else{
+		//console.log("desktop site");
+		$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle' role='heading'></div><div id='lessonTitle' role='heading'></div><div id='panes'></div></div></div></div>");
+	}
 
 	//Set variables consumed by templates.
 	stageX = $("#stage").position().left;

@@ -59,6 +59,32 @@ blockquote
 	border-right-width: 5px;
 }
 
+.C_Loader{
+	position: absolute;
+	background: url(images/loadingIcon.gif) center center no-repeat;
+	background-color: #eeeeee;
+	filter:alpha(opacity=85);
+	opacity:0.75;
+	-moz-opacity:0.75;
+	text-align:center;
+	vertical-align:middle;
+	border-style:solid;
+	border-color: #EEEEEE;
+	border-radius: 6px;
+	border-width: thin;
+	width: 100%;
+	height: 100%;
+}
+
+.C_LoaderText{
+	position: absolute;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333333;
+	top: 55%;
+	width: 100%;
+}
+
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 #outer {
