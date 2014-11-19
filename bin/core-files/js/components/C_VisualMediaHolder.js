@@ -540,9 +540,8 @@ function C_VisualMediaHolder(callback){
 				//if successful upload, else....
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
-			    //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "gif", "jpeg", "mp3"];
-	            //if (favoriteTypes.indexOf(myExt.toLowerCase() >= 0)) {
-	            var nonconvertableLinkTypes = ["pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+				console.log("myExt = " + myExt);
+
 				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG" || myExt == "html" || myExt == "htm" || myExt == "HTML" || myExt == "HTM"){
 					if(event.success == true){
 						saveImageEdit(myFile, true);
@@ -558,27 +557,17 @@ function C_VisualMediaHolder(callback){
 							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 						});
 					}
-					$("#mediaLoader").remove();
+					$(".C_Loader").remove();
+
 				}else if(myExt == "zip" || myExt == "ZIP"){
-					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
+					$(".C_LoaderText").empty();
+					$(".C_LoaderText").append("Your zip file is now being unzipped into your media folder.");
 					cognizenSocket.on('unzipComplete', unzipComplete);
-				}else if(nonconvertableLinkTypes.indexOf(myExt.toLowerCase() >= 0)){
-					$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
-					//Theres an error
-					//Style it to jQuery UI dialog
-					$("#uploadErrorDialog").dialog({
-				    	autoOpen: true,
-						modal: true,
-						width: 400,
-						height: 300,
-						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-					});
-					$("#mediaLoader").remove();
-				}else{
-					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+
+				}else if(myExt.toLowerCase() == "avi" || myExt.toLowerCase() == "mpg" || myExt.toLowerCase() == "wmv" || myExt.toLowerCase() == "webm" || myExt.toLowerCase() == "mov" || myExt.toLowerCase() == "ogv" || myExt.toLowerCase() == "flv" || myExt.toLowerCase() == "m4v" || myExt.toLowerCase() == "mpeg" || myExt.toLowerCase() == "f4v" || myExt.toLowerCase() == "mkv" || myExt.toLowerCase() == "m1v" || myExt.toLowerCase() == "mpv" || myExt.toLowerCase() == "m2v" || myExt.toLowerCase() == "ts" || myExt.toLowerCase() == "m2p" || myExt.toLowerCase() == "3gp"){
+					$(".C_LoaderText").empty();
+					$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+					$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 					$("#conversionProgress").progressbar({
 						value: 0,
 						change: function() {
@@ -594,6 +583,19 @@ function C_VisualMediaHolder(callback){
 					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);
 					cognizenSocket.on('mediaInfo', mediaInfo);
 					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+
+				}else{
+					$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
+					//Theres an error
+					//Style it to jQuery UI dialog
+					$("#uploadErrorDialog").dialog({
+				    	autoOpen: true,
+						modal: true,
+						width: 400,
+						height: 300,
+						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+					});
+					$(".C_Loader").remove();
 				}
 			});
 
@@ -604,16 +606,12 @@ function C_VisualMediaHolder(callback){
 				if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
 					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
 					if (type != "top" && type != "bottom"){
-						$("#stage").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						$("#stage").append("<div id='C_Loader' class='C_Loader'></div>");
 					}else{
-						$("#contentHolder").append("<div id='mediaLoader' class='mediaLoader'></div>");
+						$("#contentHolder").append("<div id='C_Loader' class='C_Loader'></div>");
 					}
 				}else{
-
-					$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
-					$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
-					$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
-					$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
+					$("#loader").append("<div class='C_Loader'><div class='C_LoaderText'> Uploading "+ myFile +" to the media directory. Larger files may take a few moments.</div></div>");
 				}
 			});
         }
@@ -634,7 +632,7 @@ function C_VisualMediaHolder(callback){
 	}
 
 	function unzipComplete(){
-		$("#mediaLoader").remove();
+		$(".C_Loader").remove();
 		cognizenSocket.removeListener("unzipComplete", unzipComplete);
 		var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
 		msg += "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
@@ -671,7 +669,7 @@ function C_VisualMediaHolder(callback){
 		if(type == "mp4"){
 			saveImageEdit(mediaPath, true);
 		}
-		$("#mediaLoader").remove();
+		$(".C_Loader").remove();
 	}
 
 	/**********************************************************************
@@ -1000,7 +998,7 @@ function C_VisualMediaHolder(callback){
 
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
-		try { $("#mediaLoader").remove(); } catch (e) {}
+		try { $(".C_Loader").remove(); } catch (e) {}
 
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
