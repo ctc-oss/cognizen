@@ -998,7 +998,7 @@ function C_VisualMediaHolder(callback){
 
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
-		try { $(".C_Loader").remove(); } catch (e) {}
+		//try { $(".C_Loader").remove(); } catch (e) {}
 
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
