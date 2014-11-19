@@ -1,7 +1,7 @@
 /*
  *  	C_UtilFunctions
  *  	Requires jQuery v1.9 or later
- *	
+ *
  *      Houses random utility functions used accross templates.
  *  	Version: 0.5
  *		Date Created: 10/19/13
@@ -14,12 +14,12 @@
  *		Function List:
  				//Gerate the urlParams Variable
  				@queryStringParameters()
- 				
+
  				//Generate random guid
  				@s4()
  				@guid()
  */
- 
+
 // IE Fix for lack of console.log -- IE breaks down for console calls otherwise.
 var alertFallback = true;
 
@@ -37,7 +37,7 @@ if (typeof console === "undefined" || typeof console.log === "undefined") {
 }
 
 
-function checkFileApi(){ 
+function checkFileApi(){
     if(window.File && window.FileReader){
 	    dragFile = true;
     }
@@ -59,8 +59,8 @@ function doError(title, msg) {
     });
 }
 
-checkFileApi() 
- 
+checkFileApi()
+
 var queryStringParameters = function() {
 	var match,
      pl     = /\+/g,  // Regex for replacing addition symbol with a space
@@ -80,11 +80,11 @@ shuffleArray
 randomize the order of any array.  Just pass in array.
 var my_arr = shuffleArray(anyArray);
 OR
-anyArray = shuffleArray(anyArray); 
+anyArray = shuffleArray(anyArray);
 to shuffle self.
 *****************************************************/
 // Fisher-Yates shuffle, no side effects
-function shuffleArray(a) { 
+function shuffleArray(a) {
     var i = a.length, t, j;
     a = a.slice();
     while (--i) t = a[i], a[i] = a[j = ~~(Math.random() * (i+1))], a[j] = t;
@@ -149,8 +149,8 @@ function getExtension(myFile){
 	var last = parts.length;
 
 	mediaType = (parts[last - 1]);
-	
-	return mediaType;	  	
+
+	return mediaType;
 }
 
 function parsePackageLocation(myPath){
@@ -173,22 +173,22 @@ function parsePackageLocation(myPath){
 			dlPath += splitPath[i];
 		}
 	}
-	dlPath = dlPath.replace(/\s+/g, '%20'); 
+	dlPath = dlPath.replace(/\s+/g, '%20');
 
 	cognizenSocket.emit("sendPackageMail", {
 		user: urlParams['u'],
 		path: dlPath
 	});
-	
+
 }
 
 //cleans up all of the data between templates
 function fadeComplete() {
-	try { audioPlayer.pause(); } catch (e) {}	
+	try { audioPlayer.pause(); } catch (e) {}
     try { pageTitle.destroy(); } catch (e) {}
     try { audioHolder.destroy(); } catch (e) {}
     try { mediaHolder.destroy(); } catch (e) {}
-    
+
     try { $("#sidebar").remove(); } catch (e) {}
     try { $("#sidebarHolder").remove(); } catch (e) {}
 	try { $("#scrollableContent").remove(); } catch (e) {}
@@ -199,11 +199,11 @@ function fadeComplete() {
 	try { $("#content").remove(); } catch (e) {}
     try { $("#dialog-attemptResponse").remove(); } catch (e) {}
     try { $("#questionEdit").remove(); } catch (e) {}
-	try { $("#questionEditDialog").remove(); } catch (e) {}	
+	try { $("#questionEditDialog").remove(); } catch (e) {}
 	try { $('#pageTitle').remove(); } catch (e) {}
 	try { $('#question').remove(); } catch (e) {}
 	try { $('#answerOptionsImage').remove(); } catch (e) {}
-	try { $("#mcSubmit").remove(); } catch (e) {}	   
+	try { $("#mcSubmit").remove(); } catch (e) {}
 	try { $('#audioCon').remove(); } catch (e) {}
 	try { $('#player').remove(); } catch (e) {}
 	try { $("#titleEdit").remove(); } catch (e) {}
@@ -225,6 +225,6 @@ function fadeComplete() {
 		}
 	}
 	catch(e){}
-
+	console.log("fade complete");
 	loadPage();
 }
