@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Transition GPS Participant Assessment</title>
+
+
+<script type="text/javascript">
+	var message = "Please print for your records"; 
+	function rtclickcheck(keyp){ if (navigator.appName == "Netscape" && keyp.which == 3){ 
+	    alert(message); 
+		window.print();
+		return false; 
+	} 
+	if (navigator.appVersion.indexOf("MSIE") != -1 && event.button == 2) { 
+		alert(message);
+		window.print(); 	
+		return false; }
+		
+	 } 
+	document.onmousedown = rtclickcheck;
+	
+</script>
+
+		<script type="text/javascript">
+			function getString(myDay) {
+				if(myDay < 10)
+					return "0" + myDay;
+				else
+					return myDay;
+			}
+			
+			function gotoDMDC(){
+				window.open("https://dmdc.osd.mil/tgpsp");
+			}
+			
+			function closeBox(){
+				window.close();	
+			}
+			
+			function onloadFunctions(){
+			
+//				
+//			//	document.getElementById('courseKeydiv').innerHTML = window.opener.courseKey;
+//				document.getElementById('usersFullName').innerHTML = window.opener.fullName;
+//				
+//				var d=new Date();
+//				document.getElementById('date').innerHTML = getString(d.getMonth()+1) + "/" + getString(d.getDate()) + "/" + d.getFullYear();
+//				
+//				opener.endCourseNow();
+				
+			}
+			
+			
+		</script>
+		<style type="text/css">
+			body, html {
+				padding: 0;
+				margin: 0;
+				font-size: 14px;
+			}
+
+			#informationText {
+	font-size:18px;
+	font-family:Arial, Helvetica, sans-serif;
+	position:absolute;
+	text-align:left;
+	top:20px;
+	width:600px;
+	left: 30px;
+	height: 22px;
+			}
+
+		</style>
+	</head>
+	<body onload="onloadFunctions();">
+    <div id='informationText'>
+<p>Please take a few minutes and complete the Transition GPS Participant Assessment on the this course at <a href="https://dmdc.osd.mil/tgpsp" target=_blank> https://dmdc.osd.mil/tgpsp </a>(this link will take you to an external site).  The feedback you provide is essential for ensuring the Transition GPS Program meets the needs and expectations of transitioning Service Members and Spouses.  Your assessment responses will only be used for program evaluation purposes.  Thank you for your time in providing inputs. </p>
+<p>&nbsp;</p>
+<p>Would you like to be automatically directed to the assessment?</p>
+<p><input type="button" value="Yes" onclick="gotoDMDC();"/>         <input type="button" value="No, not at this time" onclick="closeBox();"/></p>
+</div>
+</body>
+</html>

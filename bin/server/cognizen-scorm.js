@@ -122,11 +122,15 @@ var SCORM = {
 								    	var pageObj = myNode.get('objective');
 								    	var pageObjId = myNode.get('objItemId');
 								    	var pageTitle = myNode.findtext('title');
-								    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
+								    	var tlo = etree.find('.courseInfo/preferences/tlo');//.get('value');
 
+								    	var tloValue = "undefined";
+								    	if(tlo != null && tlo != "null"){
+								    		tloValue = tlo.get('value');
+								    	}
 								    	var lessonIndictor = 'undefined';
-								    	if(tlo != 'undefined' && tlo != undefined){
-								    		lessonIndictor = tlo.replace('.', '').replace(/\s+/g, '');
+								    	if(tloValue != 'undefined' && tloValue != undefined){
+								    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
 								    	}
 								    	else{
 								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
@@ -625,7 +629,8 @@ var SCORM = {
 		var objectives = "                    <imsss:objectives>\n"+
         "                       <imsss:primaryObjective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
         "							<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-        "						</imsss:primaryObjective>\n";        
+        "						</imsss:primaryObjective>\n"; 
+       
         objectives += _this._secondaryObjectivesGenerator();
         objectives += "                    </imsss:objectives>\n";
 
@@ -882,11 +887,15 @@ var SCORM = {
 				    	var pageObjId = myNode.get('objItemId');
 				    	var pageTitle = myNode.findtext('title');
 
-				    	var tlo = etree.find('.courseInfo/preferences/tlo').get('value');
+				    	var tlo = etree.find('.courseInfo/preferences/tlo');//.get('value');
 
+				    	var tloValue = "undefined";
+				    	if(tlo != null && tlo != "null"){
+				    		tloValue = tlo.get('value');
+				    	}
 				    	var lessonIndictor = 'undefined';
-				    	if(tlo != 'undefined' && tlo != undefined){
-				    		lessonIndictor = tlo.replace('.', '').replace(/\s+/g, '');
+				    	if(tloValue != 'undefined' && tloValue != undefined){
+				    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
 				    	}
 				    	else{
 				    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '');
@@ -983,7 +992,8 @@ var SCORM = {
 						        }
 
 						        readdirp({
-						                root: _this.scormPath + '/completion/',
+						                //root: _this.scormPath + '/completion/',
+						                root: _this.scormPath + '/completion-files/',
 						                directoryFilter: ['*']
 						            },
 						            function(fileInfo) {},
@@ -995,9 +1005,17 @@ var SCORM = {
 						                	completionLines = _this._addResources(res, 'completion-files/');
 							                res.files.forEach(function(file) {
 							                    var localFile = file.path.replace(/\\/g,"/")
-							                    var inputFile = _this.scormPath + '/completion/' + localFile;
+							                    var inputFile = _this.scormPath + '/completion-files/' + localFile;
 							                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
-							                });						                	
+							                });	
+
+							                //add upper level js files
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/APIWrapper.js'), { name: _this.binDir+'/compjs/APIWrapper.js' });
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });						                	
 						            	}
 
 						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -1336,7 +1354,8 @@ var SCORM = {
 
 		//add resource for completion res
 		if(icompletionLines != ''){
-			_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/wrapper.html\">\n";
+			//_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/wrapper.html\">\n";
+			_manifestFile += "      <resource identifier=\"RES-completion-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/completion-files/certificate.html\">\n";			
 			_manifestFile += icompletionLines;
 			_manifestFile += '      </resource>\n';
 		}
@@ -1687,15 +1706,23 @@ var SCORM = {
             "               </adlnav:presentation>\n"+
 			"				<imsss:sequencing>\n"+
 		    "                  <imsss:sequencingRules>\n"+
-		    "                    <imsss:preConditionRule>\n"+
-		    "                          <imsss:ruleConditions conditionCombination=\"any\">\n"+
-		    "                          <imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
+		    "                     <imsss:preConditionRule>\n"+
+		    "                        <imsss:ruleConditions conditionCombination=\"any\">\n"+
+		    "                           <imsss:ruleCondition operator=\"not\" condition=\"attempted\"/>\n"+
 		    "                        </imsss:ruleConditions>\n"+
 		    "                        <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
-		    "                    </imsss:preConditionRule>\n"+
+		    "                     </imsss:preConditionRule>\n"+
 		    "                  </imsss:sequencingRules>	\n"+
-			'				   <imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n'+
-			' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+
+			'				   <imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n';
+			if(lessonNameTrim === "completion"){
+				item += "                  <imsss:objectives>\n"+
+				"                     	 <imsss:primaryObjective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
+				"							<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
+				"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+				"                     	 </imsss:primaryObjective>\n"+
+				"	          	   </imsss:objectives>\n";
+			}			
+			item += ' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+
 			"		  	   </imsss:sequencing>\n";
    //      	"		            <imsss:sequencingRules>\n"+
 			// "                     <imsss:preConditionRule>\n"+
