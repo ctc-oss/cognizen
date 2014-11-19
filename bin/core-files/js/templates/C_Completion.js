@@ -43,6 +43,8 @@ function C_Completion(_type) {
         	$('#stage').css({'opacity':0});
         }
 
+
+
 		scormVersion = $(data).find('scormVersion').attr('value');
 		finalLesson = $(data).find('finalLesson').attr('value');
 		lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
@@ -144,19 +146,16 @@ function C_Completion(_type) {
 
     //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
+    	$("#myCanvas").append("<div class='C_Loader'><div class='C_LoaderText'>Calculating Results</div></div>");
 		pageTitle = new C_PageTitle();
 		
         //Add classes for page layouts - updatable in css
 	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner">'+
-	    	'<div id="preloadholder" class="mediaLoader"></div><div id="content"></div><div id="scoreFeedback"></div></div></div>');
+	    	'<div id="content"></div><div id="scoreFeedback"></div></div></div>');
 		$("#scrollableContent").addClass("top");
-		$("#preloadholder").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#preloadholder").height(), 'width': $("#preloadholder").width(), 'top': "0px"});
-		$("#preloadholder").append("<div id='preloadholderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
-		$("#preloadholderText").css({'position':'absolute', 'height': $("#preloadholder").height(), 'width': $("#preloadholder").width()});
 		
 		determineReviewList();
 		
-		$("#preloadholder").remove();	
 		$("#content").append(myContent);
 		$("#scoreFeedback").append(scoreText);
 		if(attemptExceeded){
@@ -299,6 +298,7 @@ function C_Completion(_type) {
         audioHolder = new C_AudioHolder();
         checkMode();
         
+        $(".C_Loader").remove();
         if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
         }
