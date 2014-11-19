@@ -298,10 +298,16 @@ function C_Completion(_type) {
         audioHolder = new C_AudioHolder();
         checkMode();
 
-        $(".C_Loader").remove();
         if(transition == true){
-			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:removeLoader});
+        }else{
+	        $(".C_Loader").remove();
         }
+    }
+
+    function removeLoader(){
+	    console.log("removeLoader called");
+	    $(".C_Loader").remove();
     }
 
     function determineReviewList(){
