@@ -634,12 +634,6 @@ function launchPrefs(){
 				});
 			}
 		}
-		// else if(myExt == "zip" || myExt == "ZIP"){
-		// 	// $("#mediaLoaderText").empty();
-		// 	// $("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-		// 	cognizenSocket.on('unzipComplete', _unzipComplete);
-		// 	$("#dialog-lessonPrefs").remove();
-		// }
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
@@ -789,10 +783,7 @@ function updatePrefs(_pub){
 }
 
 function clickPublish(){
-	$('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-
-	// $(data).find('mode').attr("value", 'production');
-	// sendUpdate();
+	$('#myCanvas').append('<div class="C_Loader"><div class="C_LoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	var publishData = {
@@ -801,10 +792,8 @@ function clickPublish(){
 	};
 
 	cognizenSocket.emit('publishContent', publishData, function(fdata) {
-		//this function gets called once the server is done writing to the zip file
-		//$(data).find('mode').attr("value", 'edit');
 		sendUpdate();
-		$('#publishLoader').remove();
+		$('.C_Loader').remove();
 
 		parsePackageLocation(fdata);
 	});

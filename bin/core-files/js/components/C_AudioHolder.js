@@ -112,15 +112,13 @@ function C_AudioHolder(){
 							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 						});
 					}
-					$("#mediaLoader").remove();
+					$(".C_Loader").remove();
 				}else if(myExt == "zip" || myExt == "ZIP"){
-					//$("#mediaLoaderText").empty();
-					//$("#mediaLoaderText").append("Your zip file is now being unzipped into your media folder.");
-					//cognizenSocket.on('unzipComplete', unzipComplete);
+
 				}else{
-					$("#mediaLoaderText").empty();
-					$("#mediaLoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-					$("#mediaLoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+					$(".C_LoaderText").empty();
+					$(".C_LoaderText").append("The file format that you uploaded is not supported in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+					$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 					$("#conversionProgress").progressbar({
 						value: 0,
 						change: function() {
@@ -145,18 +143,8 @@ function C_AudioHolder(){
 			var myExt = getExtension(myFile);
 			if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
 				try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-				$("#audioDrop").append("<div id='mediaLoader' class='mediaLoader'></div>");
-				$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#audioDrop").height(), 'width': $("#audioDrop").width(), 'top': "0px"});
-			}/*
-else{
-				$("#loader").append("<div id='mediaLoader' class='mediaLoader'></div>");
-				$("#mediaLoader").css({'position':'absolute', 'margin-left': 'auto', 'margin-right':'auto', 'height': $("#loader").height(), 'width': $("#loader").width(), 'top': "0px"});
-				$("#mediaLoader").append("<div id='mediaLoaderText'>Please Wait.<br/><br/>Your media is being uploaded to the server.<br/><br/>Larger files may take a few moments.</div>");
-				$("#mediaLoaderText").css({'position':'absolute', 'height': $("#loader").height(), 'width': $("#loader").width()});
-
-				try { $("#loader").tooltip("destroy"); } catch (e) {}
+				$("#audioDrop").append("<div id='C_Loader' class='C_Loader'></div>");
 			}
-*/
 		});
     }
 
@@ -363,7 +351,7 @@ else{
 		if(type == "mp3"){
 			launchAudioDialog(mediaPath, true);
 		}
-		$("#mediaLoader").remove();
+		$(".C_Loader").remove();
 	}
 
 
