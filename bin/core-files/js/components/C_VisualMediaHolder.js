@@ -540,7 +540,6 @@ function C_VisualMediaHolder(callback){
 				//if successful upload, else....
 				var myFile = event.file.name;
 				var myExt = getExtension(myFile);
-				console.log("myExt = " + myExt);
 
 				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG" || myExt == "html" || myExt == "htm" || myExt == "HTML" || myExt == "HTM"){
 					if(event.success == true){

@@ -404,11 +404,11 @@ function launchMediaDrop(){
 			// 	}
 			// }
 			if(myExt == "zip" || myExt == "ZIP"){
-				// $("#inputFeedback").append("Your zip file is now being unzipped into your media folder.");
+				$(".C_Loader").text("Your zip file is now being unzipped into your media folder.");
 				cognizenSocket.on('unzipComplete', _unzipComplete);
-				//$("#dialog-mediaDrop").remove();
 			}
 			else if (convertableTypes.indexOf(myExt.toLowerCase()) >= 0) {
+				$(".C_Loader").remove();
 				$("#stage").append("<div id='uploadConversionDialog' title='Upload Coverting'>The file format that you uploaded can't be played in most browsers. We are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments. <br/><br/></div>");
 				$("#uploadConversionDialog").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
 				$("#conversionProgress").progressbar({
@@ -437,6 +437,7 @@ function launchMediaDrop(){
 				$("#dialog-mediaDrop").remove();
 			}
 			else{
+				$(".C_Loader").remove();
 				if(event.success == true){
 					var urlParams = queryStringParameters();
 					cognizenSocket.emit('contentSaved', {
@@ -462,6 +463,15 @@ function launchMediaDrop(){
 		}
 	});
 
+	siofu.addEventListener("start", function(event){
+		if($('#dialog-mediaDrop').length > 0){
+			try { $("#loader").tooltip("destroy"); } catch (e) {}
+			var myFile = event.file.name;
+			var myExt = getExtension(myFile);
+			$('#dialog-mediaDrop').append("<div class='C_Loader'><div class='C_LoaderText'> Uploading "+ myFile +" to the media directory. Larger files may take a few moments.</div></div>");
+		}
+	});
+
 	$("#dialog-mediaDrop").tooltip();
 
 }
@@ -479,15 +489,15 @@ function _mediaInfo(data){
 }
 
 function _mediaConversionComplete(data){
-	var splitPath = data.split("/");
-	var last = splitPath.length;
-	var mediaPath = splitPath[last-1];
-	var splitType = splitPath[last-1].split(".");
-	var type = splitType[splitType.length-1];
-	if(type == "mp4"){
-		try{ saveImageEdit(mediaPath, true); } catch(e){};
-	}
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+        content: {type: urlParams['type'], id: urlParams['id']},
+        user: {id: urlParams['u']}
+    });
 
+
+	$("#conversionProgress").remove();
+	$("#uploadConversionDialog").append("Conversion Complete!");
 }
 
 function launchPrefs(){
@@ -644,32 +654,19 @@ function launchPrefs(){
 }
 
 function _unzipComplete(){
+	$(".C_Loader").remove();
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+        content: {type: urlParams['type'], id: urlParams['id']},
+        user: {id: urlParams['u']}
+    });
+
 	try { cognizenSocket.removeListener("unzipComplete", _unzipComplete);; } catch (e) {}
-	// var msg = "<div id='zipUploadCompleteDialog' title='Unzipping Complete'>";
 	var msg = "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";
 	msg += "<p><b>IF</b> your zip is a zip of a folder, you will have to add that folder to your path when accessing the media. Ex. myFolder/myMedia.mp4</p>";
 	msg += "<p>If you simply zipped a group of files, they can be accessed as you usually would.  Ex. myImage.png, myImage2.png and myImage3.png</p>"
-	// msg += "</div>";
 
-	// $("#stage").append(msg);
 	$("#inputFeedback").append(msg);
-
-	// //Style it to jQuery UI dialog
-	// $("#zipUploadCompleteDialog").dialog({
-	// 	autoOpen: true,
-	// 	modal: true,
-	// 	width: 500,
-	// 	height: 400,
-	// 	buttons:{
-	// 		OK: function(){
-	// 			$(this).dialog("close");
-	// 			sendUpdateWithRefresh();
-	// 		},
-	// 	},
-	// 	close: function(){
-	// 		$("#zipUploadCompleteDialog").remove();
-	// 	}
-	// });
 }
 
 function openCommentKillerDialog(){
