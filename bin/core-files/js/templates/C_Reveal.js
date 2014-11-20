@@ -87,7 +87,7 @@ function C_Reveal(_type) {
 
 			var revID = "revID" + i;
 			var cont = tmpContent;
-			var ariaText = $(cont).replace(/\'/g, "").replace(/\"/g, "");
+			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
 
 			if(type == "revealRight"){
