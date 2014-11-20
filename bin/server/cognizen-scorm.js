@@ -681,23 +681,23 @@ var SCORM = {
         _this.cssCourseResources_arr = [];
         _this.reviewLines = '';
 
-        for(var i=0; i<_this.found.lessons.length; i++){
-            var obj = _this.found.lessons[i];
-            var lessonPath = _this.contentPath + "/" + obj.name;
-            lessonsArray.push(lessonPath);
-	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
-        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
+       //  for(var i=0; i<_this.found.lessons.length; i++){
+       //      var obj = _this.found.lessons[i];
+       //      var lessonPath = _this.contentPath + "/" + obj.name;
+       //      lessonsArray.push(lessonPath);
+	      //   var lessonXmlContentFile = lessonPath + '/xml/content.xml';
+       //  	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
 
-        	try{
-        		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
-        	}
-        	catch(err){
-    			_this.logger.error("Error copying content.xml file " + err);
-    			callback(err, null);
-        	}
-        	// 	_this.logger.info('content.xml file copied success');
+       //  	try{
+       //  		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
+       //  	}
+       //  	catch(err){
+    			// _this.logger.error("Error copying content.xml file " + err);
+    			// callback(err, null);
+       //  	}
+       //  	// 	_this.logger.info('content.xml file copied success');
 
-        }
+       //  }
 
 
         var courseXmlFile = path.normalize(_this.contentPath + "/course.xml");
@@ -718,6 +718,29 @@ var SCORM = {
         	_this.logger.error("Error reading temp course xml file : " + err);
         	callback(err,null);
         }
+
+        etree = _this.courseData;
+
+	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
+	    var itemCount = _this.courseData.findall('./item').length;
+	    for (var i = 0; i < itemCount; i++) {
+	    	var myNode = _this.courseData.findall('./item')[i];
+	    	var itemName = myNode.get('name');//.replace(/\s+/g, '');
+
+            var lessonPath = _this.contentPath + "/" + itemName;
+            lessonsArray.push(lessonPath);
+            console.log(lessonPath);
+	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
+        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
+
+        	try{
+        		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
+        	}
+        	catch(err){
+    			_this.logger.error("Error copying content.xml file " + err);
+    			callback(err, null);
+        	}
+	    }        
 
         //fs.exists(courseXmlFile, function(exists){
         var data, etree;
@@ -1571,6 +1594,18 @@ var SCORM = {
         //any objectives stuff goes here - objectivesGenerator
         if(_this.objectives_arr.length > 0){
         	item += _this._objectivesGenerator(lessonNameTrim);
+        }
+        else{
+	        var courseAttr = _this._parseCourseAttr();
+
+	        if(courseAttr.lms === "JKO"){   
+				item += "                  <imsss:objectives>\n"+
+				"                     	 <imsss:primaryObjective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
+				"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '') + "." + lessonNameTrim + "_satisfied\"\n"+
+				"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+				"                     	 </imsss:primaryObjective>\n"+
+				"	          	   </imsss:objectives>\n";	        	
+	        }     	
         }
 
         //setting delivery controls
