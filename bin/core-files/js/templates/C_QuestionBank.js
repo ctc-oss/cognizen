@@ -155,23 +155,15 @@ function C_QuestionBank(_type) {
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 
-			//Create html elements for the options
-			var optString = '<div class="option" id="' + myOption + '">';
-			optString += '<input id="' + myOption + 'Check" name="' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/>';
-			optString += '<label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label>';
-			optString += '</div>';
-			$('#answer').append(optString);
+			if(isMulti == false){
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+			}else{
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+			}
 
 			$(".fixFunkyIssue").click(function(){
 				iconClicked = true;
 			});
-
-			//multiselect get's check boxes, multiplechoice get's radios.
-			if(isMulti){
-				$("#" + myOption + "Check").attr("type", "checkbox");
-			}else{
-				$("#" + myOption + "Check").attr("type", "radio");
-			}
 
 			$("#" + myOption + "Check").click(function(){
 				iconClicked = true;
