@@ -11,13 +11,13 @@
  */
 function C_Reveal(_type) {
 	var type = _type;
-	var revealCount//number of tabs.
-	var myContent;//Body
-	var mediaWidth;
-	var mediaHeight;
-	var interact = "click";
-	var currentEditBankMember = 0;
-	var revealMenu_arr = [];
+	var revealCount//number of reveals.
+	var myContent;//Body Text
+	var mediaWidth;//Width of image being loaded
+	var mediaHeight;//Height of image being loaded
+	var interact = "click"; //How users interact with the images
+	var currentEditBankMember = 0; //Edit mode setting
+	var revealMenu_arr = []; //Array of reveals
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
@@ -67,7 +67,8 @@ function C_Reveal(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
-		if(isIE){
+		var isFirefox = typeof InstallTrigger !== 'undefined';
+		if(isIE || isFirefox){
 			$("#contentHolder").height($("#contentHolder").height() - 22);
 		}
 
@@ -218,11 +219,11 @@ function C_Reveal(_type) {
 			var msg = "<div id='revealTextHolder' class='revealTextRight antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
 			$("#" + currentSelected).append(msg);
-			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 10;
+			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 20;
 			if(isIE || isFF){
 				textWidth -= 20;
 			}
-			$("#" + currentSelected + "Text").css({'width': textWidth});
+			$(".revealText").css({'width': textWidth});
 
 		}else if(type == "revealBottom"){
 			var tmpWidth = $("#" + currentSelected).width() - 10;
@@ -256,6 +257,9 @@ function C_Reveal(_type) {
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$(this).scrubContent();
+		if(isFF){
+			$("#contentHolder").height($("#contentHolder").height() - 20);
+		}
 		$('.antiscroll-wrap').antiscroll();
 	}
 
