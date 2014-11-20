@@ -121,8 +121,8 @@ function C_MultipleChoice(_type) {
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
-		var cont = myContent;
-		var ariaText = $(cont).text().replace(/'/g, "").replace(/"/g, "");
+
+		var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
 		$("#question").attr("aria-label", ariaText);
 		pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
@@ -234,9 +234,9 @@ function C_MultipleChoice(_type) {
 			option_arr.push($('#' + myOption));
 			var cont = myNode;
 			if(isMulti){
-				var ariaText = myLabel + "." + $(cont).text().replace(/'/g, "") + ". Use the tab or shift-tab to hear other options. Press spacebar to select.";
+				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use the tab or shift-tab to hear other options. Press spacebar to select.";
 			}else{
-				var ariaText = myLabel + "." + $(cont).text().replace(/'/g, "") + ". Use up and down arrow keys to hear other options. Press spacebar to select.";
+				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use up and down arrow keys to hear other options. Press spacebar to select.";
 			}
 			$('#' + myOption + "Check").attr("aria-label", ariaText);
 			pageAccess_arr.push($('#' + myOption + "Check"));
