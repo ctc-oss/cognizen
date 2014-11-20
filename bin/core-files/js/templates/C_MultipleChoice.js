@@ -122,7 +122,7 @@ function C_MultipleChoice(_type) {
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
 		var cont = myContent;
-		var ariaText = $(cont).text().replace(/'/g, "");
+		var ariaText = $(cont).text().replace(/'/g, "").replace(/"/g, "");
 		$("#question").attr("aria-label", ariaText);
 		pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
