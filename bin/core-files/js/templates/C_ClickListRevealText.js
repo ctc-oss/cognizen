@@ -75,8 +75,7 @@ function C_ClickListRevealText(_type) {
 
 			var revID = "revID" + i;
 
-			var cont = tmpContent;
-			var ariaText = $(cont).text().replace(/'/g, "");
+			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 
 			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' aria-label='Item Label: "+currentItem+" Reveal Content: "+ ariaText +"'>"+currentItem+"</div>");
 

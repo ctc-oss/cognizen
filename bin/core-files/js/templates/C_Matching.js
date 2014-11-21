@@ -122,8 +122,7 @@ function C_Matching(_type) {
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
 
-		var cont = myContent;
-		var ariaText = $(cont).text().replace(/'/g, "");
+		var ariaText = myContent.replace(/\'/g, "").replace(/\"/g, "");
 		$("#question").attr("aria-label", ariaText);
 		pageAccess_arr.push($("#question"));
 
