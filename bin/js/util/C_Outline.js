@@ -655,6 +655,8 @@ function C_Outline(_myItem) {
 		msg += "<div><b>Details:</b></div>";
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += "<label for='targetAudience'>target audience: </label>";
+		msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
 		msg += "<label for='instructionalGoal'>instructional goal: </label>";
 		msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
 		//end div for general
@@ -799,6 +801,17 @@ function C_Outline(_myItem) {
 		    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());
 		    updateCourseXML();
 	    }).css({'width': '500px', 'color': '#3383bb;'});
+
+		//set target audience based off value in xml
+		if($(courseData).find("course").attr("targetaudience")){
+			$("#targetAudience").val($(courseData).find("course").attr("targetaudience"));
+		}
+
+		// update the xml when the target audience is changed
+	    $("#targetAudience").on("change", function(){
+		    $(courseData).find("course").attr("targetaudience", $("#targetAudience").val().replace('<p>', '').replace('</p>', '').trim());
+		    updateCourseXML();
+	    }).css({'width': '500px', 'color': '#3383bb;'});	    
 
 		/*$("#out_courseObjective").on("change", function(){
 		 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
