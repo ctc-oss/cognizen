@@ -6,6 +6,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	}else{
 		type = $(data).find("page").eq(currentPage).attr('layout');
 	}
+	var rootType = $(data).find("page").eq(currentPage).attr('layout');
     var myImage = "";
     var mediaLink;
     if(_mediaLink){
@@ -89,7 +90,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
 
-    if(mode == 'edit'){
+    if(mode == 'edit' && rootType != 'branching'){
     	$("#loader").attr("title", "click to browse or drag media to this location");
     }else{
 		$("#loader").attr("title", $(data).find("page").eq(currentPage).attr('alt'));
@@ -434,7 +435,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			$('.antiscroll-wrap').antiscroll();
         }
 
-        if(mode == "edit"){
+        if(mode == "edit" && $(data).find("page").eq(currentPage).attr('layout') != 'branching'){
 	        $("#caption").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
 			CKEDITOR.inline( 'caption', {
@@ -723,8 +724,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				}
 
 				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
-				captionString += $("#"+captionEditText_arr[i]).val().replace(/\'/g, "&#39;");//.getData();
-				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val();
+				captionString += $("#"+captionEditText_arr[i]).val().replace(/\'/g, "&#39;");
+				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val().replace(/\'/g, "&#39;");
 				virgin = false;
 			}
 			$(data).find("page").eq(currentPage).attr("popup", mediaString);

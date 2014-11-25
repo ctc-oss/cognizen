@@ -186,9 +186,10 @@ function C_Branching(_type) {
 		pageAccess_arr = [];
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
+		try { $("#pageTitle").remove(); } catch (e) {}
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
-		var myTitle = branch_arr[_id].find("title").text();
+		//var myTitle = branch_arr[_id].find("title").text();
 		myContent = branch_arr[_id].find("content").text();
 		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
 		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
@@ -197,7 +198,8 @@ function C_Branching(_type) {
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
-		updatePageTitle(myTitle);
+		//updatePageTitle(myTitle);
+		pageTitle = new C_PageTitle(_id);
 		buildContentText();
 		buildBranchOptions(_id);
 	}

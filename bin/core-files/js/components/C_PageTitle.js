@@ -1,7 +1,12 @@
-function C_PageTitle(){
+function C_PageTitle(_id){
+	 var rootType = $(data).find("page").eq(currentPage).attr('layout');
 	 var myPageTitle;//Title of this page.
 	 //Page title value from content.xml
-     myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
+     if(rootType == "branching" && _id != undefined){
+	    myPageTitle = $(data).find("page").eq(currentPage).find('branch').eq(_id).find('title').first().text();
+     }else{
+     	myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
+     }
 
      //Add the divs for the page title adn the content divs.
      $('#stage').append('<div id="pageTitle" role="heading"></div>');
@@ -46,8 +51,13 @@ function C_PageTitle(){
         var titleUpdate = _data.replace('<p>', '').replace('</p>', '');
 	   	var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
 	   	var newCDATA=docu.createCDATASection(titleUpdate);
-	   	$(data).find("page").eq(currentPage).find("title").first().empty();
-	   	$(data).find("page").eq(currentPage).find("title").first().append(newCDATA);
+	   	if(rootType == "branching" && _id != undefined){
+	   		$(data).find("page").eq(currentPage).find("branch").eq(_id).find("title").first().empty();
+	   		$(data).find("page").eq(currentPage).find("branch").eq(_id).find("title").first().append(newCDATA);
+	   	}else{
+		   	$(data).find("page").eq(currentPage).find("title").first().empty();
+	   		$(data).find("page").eq(currentPage).find("title").first().append(newCDATA);
+	   	}
 	   	sendUpdateWithRefresh();
 	};
 

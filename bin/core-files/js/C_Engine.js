@@ -191,6 +191,7 @@ function initScripts(_data){
 		require([
 			//Funtionality/utilities
 					corePath +"js/libs/jqueryui/jquery-ui.min.js",
+					corePath +"js/libs/fancybox/jquery.fancybox.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 					corePath +"js/libs/antiscroll.js",
@@ -250,7 +251,7 @@ function initScripts(_data){
 			//Give mouse super powers.
 					corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
 			//Lightbox for media popups and galleries.
-					corePath +"js/libs/fancybox/jquery.fancybox.js",
+
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
 		], startEngine);
 	}
