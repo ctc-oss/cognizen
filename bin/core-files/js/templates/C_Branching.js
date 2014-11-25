@@ -141,7 +141,7 @@ function C_Branching(_type) {
             $("#scrollableContent").addClass("left");
         }else if(_type == "sidebar"){
             $("#scrollableContent").addClass("sidebarContent");
-        }else if(_type == "top"  || type == "bottom"){
+        }else if(_type == "top"  || _type == "bottom"){
             $("#scrollableContent").addClass("top");
         }else if(_type == "right"){
             $("#scrollableContent").addClass("right");
