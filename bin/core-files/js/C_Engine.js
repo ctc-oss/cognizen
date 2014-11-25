@@ -210,7 +210,7 @@ function initScripts(_data){
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
 			//Import Cognizen layout templates
-					//corePath +"js/templates/C_LessonTitle.js",
+					corePath +"js/templates/C_Branching.js",
 					corePath +"js/templates/C_Categories.js",
 					corePath +"js/templates/C_ClickImage.js",
 					corePath +"js/templates/C_ClickListRevealText.js",

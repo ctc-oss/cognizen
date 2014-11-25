@@ -1396,6 +1396,10 @@ this.loadPage = function(){
 			currentTemplate.initialize();
 			break;
 		//Interactive Layouts
+		case "branching":
+			currentTemplate = new C_Branching(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "clickImage":
 			currentTemplate = new C_ClickImage(currentTemplateType);
 			currentTemplate.initialize();

@@ -1066,6 +1066,18 @@ ul.no-indent {
 	padding-left: 10px;
 }
 
+.btn_branch{
+	height: 20px;
+	top: auto;
+	bottom: 2px;
+	font-size: 100%;
+	border: 1px solid #e3dac9;
+}
+
+.btn_branch .ui-button-text{
+	padding: 0em 1em .1em 1em  !important;
+}
+
 .imgPalette{
 	position: relative;
 	margin-right: auto;

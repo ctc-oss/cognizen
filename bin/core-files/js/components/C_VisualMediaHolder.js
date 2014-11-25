@@ -1,8 +1,19 @@
-function C_VisualMediaHolder(callback){
+function C_VisualMediaHolder(callback, _type, _mediaLink){
     //Define Variables
-    var type = $(data).find("page").eq(currentPage).attr('layout');
+    var type;
+    if(_type){
+	    type = _type;
+	}else{
+		type = $(data).find("page").eq(currentPage).attr('layout');
+	}
     var myImage = "";
-    var mediaLink = $(data).find("page").eq(currentPage).attr('img');
+    var mediaLink;
+    if(_mediaLink){
+	    mediaLink = _mediaLink;
+    }else{
+	    mediaLink = $(data).find("page").eq(currentPage).attr('img');
+    }
+
     var autoPlay = false;
     var autoNext = false;
     var hasCaption = false;
@@ -305,8 +316,6 @@ function C_VisualMediaHolder(callback){
 		}
 
 		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
-
-
 
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";
@@ -714,7 +723,7 @@ function C_VisualMediaHolder(callback){
 				}
 
 				mediaString += $("#imgPath"+$("#"+galleryEdit_arr[i]).attr('value')).val();
-				captionString += $("#"+captionEditText_arr[i]).val();//.getData();
+				captionString += $("#"+captionEditText_arr[i]).val().replace(/\'/g, "&#39;");//.getData();
 				altString += $("#altEditText"+$("#"+galleryEdit_arr[i]).attr('value')).val();
 				virgin = false;
 			}
@@ -975,6 +984,10 @@ function C_VisualMediaHolder(callback){
     this.setupGallery = function(){
         //otherFighter.energy -= item.damage;
         //otherFighter.health -= item.damage;
+    }
+
+    this.updateMediaCSS = function(){
+
     }
 
     /*****************************************************************************************************************************************************************************************************************

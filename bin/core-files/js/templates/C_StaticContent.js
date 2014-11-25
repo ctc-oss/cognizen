@@ -110,7 +110,6 @@ function C_StaticContent(_type) {
 				}
 
 				$('#sidebar').height($('#sidebarHolder').height());
-				//$('#sidebar').attr('role', 'complementary');
 				$('#sidebar').attr('aria-label', $('#sidebar').text());
 				pageAccess_arr.push($("#sidebar"));
 			}
