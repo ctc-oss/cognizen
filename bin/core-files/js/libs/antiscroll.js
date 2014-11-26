@@ -39,7 +39,7 @@
 
 	// on IE, antiscroll is adding an extra 17px of height to the inner (#contentHolder), screwing up scrolling
 	// setting this variable stops it from changing height
-	if(isIE){
+	if(isIE || isFF){
 		this.x = false;
 	}
 
