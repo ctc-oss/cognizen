@@ -1647,139 +1647,126 @@ function C_Outline(_myItem) {
 					Creates the page after the page being added from.
 	************************************************************************************************/
 	function addPageToModule(_id){
-		var opt_arr = ["analyze", "apply", "calculate", "classify", "evaluate", "remember", "solve", "synthesis", "understand"];
-		var content_arr = ["concepts", "equation", "facts", "principles", "procedures", "processes"];
-
-		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete this form to create your new page.</p>';
-		msg += '<label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="new page" class="regText text ui-widget-content ui-corner-all" /><br/><br/>';
-		msg += '<label for="elo" class="regField">elo: </label><input type="text" name="elo" id="elo" value="undefined" class="regText text ui-widget-content ui-corner-all" /><br/><br/>';
+		var opt_arr = ["application", "analysis", "comprehension", "evaluation", "knowledge", "problem solving", "synthesis"];
+		var content_arr = ["concepts", "facts", "principle", "procedures", "process"];
+		var demoapp_arr = ["demonstration", "practice, testing"];
+		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText"]
+		
 		var pages= [
 			{
-				"capability" : "textOnly",
-				"opt" : ["understand","remember"],
-				"content" : ["facts","concepts"]
+				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["comprehension", "knowledge"],
+				"content" : ["facts"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "graphicOnly",
-				"opt" : ["understand","remember"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "completion" ],
+				"opt" : ["comprehension", "knowledge"],
+				"content" : ["facts"],
+				"demoapp" : "practice, testing"
+			},			
+			{
+				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["application", "analysis"],
+				"content" : ["concepts"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "top",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["flashcard", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["application", "analysis"],
+				"content" : ["concepts"],
+				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : "left",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["application", "analysis"],
+				"content" : ["procedures"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "right",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["application", "analysis"],
+				"content" : ["procedures"],
+				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : "bottom",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["application", "analysis"],
+				"content" : ["process"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "sidebar",
-				"opt" : ["understand","remember"],
-				"content" : ["facts","concepts"]
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["application", "analysis"],
+				"content" : ["process"],
+				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : "clickImage",
-				"opt" : ["understand","remember", "analyze", "classify", "apply"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["application", "analysis"],
+				"content" : ["principle"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "tabsOnly",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["application", "analysis"],
+				"content" : ["principle"],
+				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : "tabsLeft",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["procedures"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "revealRight",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["procedures"],
+				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : "revealBottom",
-				"opt" : ["understand","remember", "classify"],
-				"content" : ["facts","concepts"]
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["process"],
+				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : "revealLeft",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["process"],
+				"demoapp" : "practice, testing"
+			},	
 			{
-				"capability" : "flashcard",
-				"opt" : ["understand","remember", "classify"],
-				"content" : ["facts","concepts"]
-			},
+				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["principle"],
+				"demoapp" : "demonstration"
+			},																										
 			{
-				"capability" : "sequence",
-				"opt" : ["understand","remember", "analyze"],
-				"content" : ["procedures", "processes"]
-			},
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["problem solving", "synthesis"],
+				"content" : ["principle"],
+				"demoapp" : "practice, testing"
+			},	
 			{
-				"capability" : "multipleChoice",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
+				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"opt" : ["evaluation"],
+				"content" : ["procedures", "process", "principle"],
+				"demoapp" : "demonstration"
+			},																										
 			{
-				"capability" : "multipleChoiceMedia",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "matching",
-				"opt" : ["understand","remember", "analyze", "apply"],
-				"content" : ["facts","concepts", "procedures", "processes"]
-			},
-			{
-				"capability" : "questionBank",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "completion",
-				"opt" : [],
-				"content" : []
-			},
-			{
-				"capability" : "textInput",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "essayCompare",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			},
-			{
-				"capability" : "clickListRevealText",
-				"opt" : ["understand","remember", "analyze", "apply", "synthesis", "evaluate"],
-				"content" : ["facts","concepts", "procedures", "processes", "principles"]
-			}
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"opt" : ["evaluation"],
+				"content" : ["procedures", "process", "principle"],
+				"demoapp" : "practice, testing"
+			}				
 		];
 
-
-		//Add the objective performance type dropdown
-		msg += '<div><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
-		msg += '<option value=""></option>';
-		for(var i=0; i < opt_arr.length; i++){
-			msg += '<option value="' + opt_arr[i]+ '">' + opt_arr[i] + '</option>';
-		}
-		msg += '</select></div>';
-
+		var msg = '<div id="dialog-addPage" title="Add Page"><p class="validateTips">Complete the advanced or basic form to create your new page.</p>';
+     	msg += "<div id='addPageAccordion'>";
+     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Advanced</h3>";
+     	msg += '<div id="advanced" style="font-size:100%; padding: 1em 1em; color:#666666">';
 		//Add the content type dropdown
 		msg += '<div><label for="contentTypeList">Select a content type:</label><select id="contentTypeList" name="contentTypeList">';
 		msg += '<option value=""></option>';
@@ -1788,53 +1775,256 @@ function C_Outline(_myItem) {
 		}
 		msg += '</select></div>';
 
+		//Add the objective performance type dropdown
+		msg += '<div id="advancedOpType"><label for="opTypeList">Select a objective performance type:</label><select id="opTypeList" name="opTypeList">';
+		msg += '<option value=""></option>';
+		for(var i=0; i < opt_arr.length; i++){
+			msg += '<option value="' + opt_arr[i]+ '">' + opt_arr[i] + '</option>';
+		}
+		msg += '</select></div>';
+
+		//Add the action verbs dropdown
+		msg += '<div id="advancedActionVerbs"><label for="actionVerbsList">Select an action verb:</label><select id="actionVerbsList" name="actionVerbsList"/>';
+		msg += '</div>';
+
+		//Add the demo/application dropdown
+		msg += '<div id="advancedDemoApp"><label for="demoApp">Select a demonstration or practice/testing:</label><br/>'+
+				'<input type="radio" name="demoApp" id="demoApp" value="demonstration">demonstration'+
+				'<input type="radio" name="demoApp" id="demoApp" value="practice, testing">practice, testing';
+
+		msg += '</div>';		
+
 		//Add the page type dropdown
-		msg += '<div><label for="pageTypeList">Select a page type:</label><select id="pageTypeList" name="pageTypeList">';
-		for(var i=0; i < pages.length; i++){
-			msg += '<option value="' + pages[i].capability + '">' + pages[i].capability + '</option>';
+		msg += '<div id="advancedPageType"><label for="pageTypeList">Select a page type:</label><select id="pageTypeList" name="pageTypeList">';
+		// for(var i=0; i < pages.length; i++){
+		// 	msg += '<option value="' + pages[i].capability + '">' + pages[i].capability + '</option>';
+		// }
+		for(var i=0; i < pageType_arr.length; i++){
+			msg += '<option value="' + pageType_arr[i] + '">' + pageType_arr[i] + '</option>';
 		}
 		msg += '</select>';
 
 		//ADD PREVIEW BUTTON
 		msg += '<button id="preview">preview</button>';
+		//end div tag for pageTypeList
+		msg += '</div>';
 
-		msg += '</div></div>';
+		msg += '<br/><div id="advancedName"><label for="myName" class="regField">name: </label>'+
+				'<input type="text" name="myName" id="myName" value="new page" class="regText text ui-widget-content ui-corner-all" /></div><br/><br/>';
+		msg += '<div id="advancedElo"><label for="elo" class="regField">elo: </label>'+
+				'<input type="text" name="elo" id="elo" value="undefined" class="regText text ui-widget-content ui-corner-all" /></div><br/><br/>';
+
+		//end advanced div
+		msg += '</div>';
+     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Basic</h3>";
+     	msg += '<div id="basic" style="font-size:100%; padding: 1em 1em; color:#666666">';
+		//Add the page type dropdown
+		msg += '<div id="basicPageType"><label for="basicPageTypeList">Select a page type:</label><select id="basicPageTypeList" name="basicPageTypeList">';
+		for(var i=0; i < pageType_arr.length; i++){
+			msg += '<option value="' + pageType_arr[i] + '">' + pageType_arr[i] + '</option>';
+		}
+		msg += '</select>';
+
+		//ADD PREVIEW BUTTON
+		msg += '<button id="basicPreview">preview</button>';
+		//end div tag for pageTypeList
+		msg += '</div>';
+
+		msg += '<br/><div id="basicName"><label for="basicMyName" class="regField">name: </label>'+
+				'<input type="text" name="basicMyName" id="basicMyName" value="new page" class="regText text ui-widget-content ui-corner-all" /></div><br/><br/>';
+		msg += '<div id="basicEloWrap"><label for="basicElo" class="regField">elo: </label>'+
+				'<input type="text" name="basicElo" id="basicElo" value="undefined" class="regText text ui-widget-content ui-corner-all" /></div><br/><br/>';
+     	//end basic div
+     	msg += '</div>';		
+		//end accordion div
+		msg += '</div>'
+		//end dialog-addPage
+		msg += '</div>';
+
 		$("#stage").append(msg);
 
 
 
 		$("#dialog-addPage").dialog({
         	modal: true,
-            width: 550,
+            width: 600,
+            height: 535,
             close: function (event, ui) {
                 $("#dialog-addPage").remove();
             },
             buttons: {
                 Submit: function(){
-                	//TODO: add code that adds the page selected
-                	//alert($("#pageTypeList").val());
-                	var newPageType = $("#pageTypeList").val();
-                	var newPageTitle = $("#myName").val();
-					createNewPageByType(newPageType, newPageTitle, $('#elo').val(), _id);
-                	$(this).dialog("close");
+                	//detect active accordion to know which values to use on submit
+                	if($("#addPageAccordion").accordion("option", "active") == 0){
+						createNewPageByType($("#pageTypeList").val(), $("#myName").val(), $('#elo').val(), _id);
+	                	$(this).dialog("close");
+                	}
+                	else{
+  						createNewPageByType($("#basicPageTypeList").val(), $("#basicMyName").val(), $('#basicElo').val(), _id);
+	                	$(this).dialog("close");              		
+                	}
                 },
                 Cancel: function () {
                 	$(this).dialog("close");
                 }
+            },
+            open: function(){
+				//set up jquerui accordion
+				$("#addPageAccordion").accordion({
+					collapsible: true,
+					heightStyle: "fill"
+				});	            	
             }
         });
 		$(function() {
-			$("#opTypeList").on("change", function() {
-				filterPageList(pages);
-			});
+			$("#advancedOpType" ).hide();//.prop('disabled', true);
+			$("#advancedPageType" ).hide()//.prop('disabled', true);
+			$("#advancedActionVerbs").hide();
+			$("#advancedDemoApp").hide();
+			$("#advancedName").hide();
+			$("#advancedElo").hide();
+		
 			$("#contentTypeList").on("change", function() {
+				setOpTypeList();				
+				$("#advancedOpType" ).show();//.prop('disabled', false);
+				if($("#advancedName").is(":visible")){
+					filterPageList(pages);
+					setActionVerbsList();
+				}
+			});
+
+			$("#opTypeList").on("change", function() {
+				setActionVerbsList();
+				$("#advancedActionVerbs").show();
+				if($("#advancedName").is(":visible")){
+					filterPageList(pages);
+				}
+			});
+
+			$("#actionVerbsList").on("change", function(){
+				$("#advancedDemoApp").show();
+			});
+
+			$("input[name=demoApp]:radio").on("change",function(){
+				$("#advancedPageType" ).show();//.prop('disabled', false);
+				$("#advancedName").show();
+				$("#advancedElo").show();		
 				filterPageList(pages);
 			});
+
+					
 		});
 
-		$("#preview").button().click(function(){
-			clickPreview($("#pageTypeList").val());
+		$("#preview, #basicPreview").button().click(function(){
+        	//detect active accordion to know which values to use on submit
+        	if($("#addPageAccordion").accordion("option", "active") == 0){			
+				clickPreview($("#pageTypeList").val());
+			}
+			else{
+				clickPreview($("#basicPageTypeList").val());
+			}
 		});
+	}
+
+	function setActionVerbsList(){
+		$("select#actionVerbsList option").remove();
+		var opTypeValue = $("#opTypeList").val();
+		if(opTypeValue === "knowledge"){
+			var knowledge_arr = ["","identify", "name", "recite", "recall", "report", "share information"];
+			for (var i = 0; i < knowledge_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", knowledge_arr[i]).text(knowledge_arr[i]));
+			};						
+		}
+		else if(opTypeValue === "comprehension"){
+			var comprehension_arr = ["","reflect", "look up", "find out", "define", "state", "list", "indicate", "restate", "describe",
+			 "explain", "narrate", "collect data", "share information", "represent", "show", "interpret", "relate", "write"];
+			for (var i = 0; i < comprehension_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", comprehension_arr[i]).text(comprehension_arr[i]));
+			};		
+		}
+		else if(opTypeValue === "application"){
+			var application_arr = ["", "contrast", "compare", "classify", "sort", "perform", "follow procedure", "compute", "demonstrate",
+			 "dramatize", "employ", "operate", "practice", "prepare", "schedule", "show", "sketch", "use"];
+			for (var i = 0; i < application_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", application_arr[i]).text(application_arr[i]));
+			};			
+		}
+		else if (opTypeValue === "analysis"){
+			var analysis_arr = ["", "examine", "discover", "decode", "derive", "deduce", "interpret"];
+			for (var i = 0; i < analysis_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", analysis_arr[i]).text(analysis_arr[i]));
+			};			
+		}
+		else if (opTypeValue === "problem solving"){
+			var problemSolving_arr = ["", "diagnose", "decide", "plan", "formulate", "design", "organize", "solve", "resolve", "demonstrate",
+			 "execute", "implement", "substitute", "hypothesize", "change", "choose", "manipulate", "modify", "produce"];
+			for (var i = 0; i < problemSolving_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", problemSolving_arr[i]).text(problemSolving_arr[i]));
+			}			
+		}
+		else if (opTypeValue === "synthesis"){
+			var synthesis_arr = ["", "brainstorm", "identify alternatives", "forecast", "discover", "combine", "generalize", "summarize",
+			 "transfer", "prioritize", "select", "justify", "propagate", "analogize", "find the procedure", "predict"];
+			for (var i = 0; i < synthesis_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", synthesis_arr[i]).text(synthesis_arr[i]));
+			}		
+		}
+		else if (opTypeValue === "evaluation"){
+			var evaluation_arr = ["", "evaluate", "judge", "correct", "prove", "test", "measure", "check answers", "critique"];
+			for (var i = 0; i < evaluation_arr.length; i++) {
+				$("#actionVerbsList").append($("<option></option>").attr("value", evaluation_arr[i]).text(evaluation_arr[i]));
+			}				
+		}
+	}
+
+	function setOpTypeList(){
+		//["application", "analysis", "comprehension", "evaluation", "knowledge", "problem solving", "synthesis"];
+		$("select#opTypeList option").remove();
+		$("#opTypeList").append($("<option></option>").attr("value", "").text(""));
+		var contentTypeValue = $("#contentTypeList").val();
+		if(contentTypeValue === "facts"){
+			$("#opTypeList").append($("<option></option>").attr("value", "knowledge").text("knowledge"));
+			$("#opTypeList").append($("<option></option>").attr("value", "comprehension").text("comprehension"));
+		}
+		else if(contentTypeValue === "concepts"){
+			$("#opTypeList").append($("<option></option>").attr("value", "application").text("application"));
+			$("#opTypeList").append($("<option></option>").attr("value", "analysis").text("analysis"));			
+		}
+		else{
+			$("#opTypeList").append($("<option></option>").attr("value", "application").text("application"));
+			$("#opTypeList").append($("<option></option>").attr("value", "analysis").text("analysis"));	
+			$("#opTypeList").append($("<option></option>").attr("value", "evaluation").text("evaluation"));
+			$("#opTypeList").append($("<option></option>").attr("value", "problem solving").text("problem solving"));	
+			$("#opTypeList").append($("<option></option>").attr("value", "synthesis").text("synthesis"));			
+		}
+	}
+
+	/************************************************************************************************
+	Function: 		filterPageList
+	Param: 			_pages = pages to filter
+	Description:	Create suggestions for page types based on Objectives.
+	************************************************************************************************/
+	function filterPageList(_pages){
+
+		var capabilities = '';
+		$("select#pageTypeList option").remove();
+
+		for(var j=0; j < _pages.length; j++){
+
+			if($.inArray($("#contentTypeList").val(), _pages[j].content) != -1 ){//|| $("#contentTypeList").val() == ""){
+				if($.inArray($("#opTypeList").val(), _pages[j].opt) != -1){
+					if($("#advancedDemoApp input[name=demoApp]:checked").val() === _pages[j].demoapp){
+						capabilities = _pages[j].capability;
+					}
+				}
+			}
+
+		}
+
+		for(var t=0; t <capabilities.length; t++){
+			$("#pageTypeList").append($("<option></option>").attr("value", capabilities[t]).text(capabilities[t]));
+		}
+
 	}
 
 	/************************************************************************************************
@@ -2960,40 +3150,8 @@ function C_Outline(_myItem) {
 		updateModuleXML(myModule, true, true);
 	}
 
-	/************************************************************************************************
-	Function: 		filterPageList
-	Param: 			_pages = pages to filter
-	Description:	Create suggestions for page types based on Objectives.
-	************************************************************************************************/
-	function filterPageList(_pages){
-		var optPage_arr = [];
-		var contentPage_arr = [];
-		$("select#pageTypeList option").remove();
 
-		for(var j=0; j < _pages.length; j++){
 
-			if($.inArray($("#opTypeList").val(), _pages[j].opt) != -1 || $("#opTypeList").val() == ""){
-				optPage_arr.push(_pages[j].capability);
-			}
-
-			if($.inArray($("#contentTypeList").val(), _pages[j].content) != -1 || $("#contentTypeList").val() == ""){
-				contentPage_arr.push(_pages[j].capability);
-			}
-
-		}
-
-		var finalPage_arr = [];
-		for(var w=0; w < optPage_arr.length; w++){
-			if($.inArray(optPage_arr[w], contentPage_arr) != -1){
-				finalPage_arr.push(optPage_arr[w]);
-			}
-		}
-
-		for(var t=0; t <finalPage_arr.length; t++){
-			$("#pageTypeList").append($("<option></option>").attr("value", finalPage_arr[t]).text(finalPage_arr[t]));
-		}
-
-	}
 
 	/************************************************************************************
      removeModuleFromCourse(_id);
