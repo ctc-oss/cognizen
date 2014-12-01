@@ -1,4 +1,4 @@
-Setup Instructions
+nodeSetup Instructions
 ------------------
 !!!!!! IF INSTALLING ON node 10.26 or later, skip steps 1-5 and replace with:
 !!!!!!  npm install --link !!!!! - this line does 1-5 below on node 10.26 and later.
@@ -16,11 +16,12 @@ Setup Instructions
 4. This will create links to all the node packages in the node_modules folder
 5. Make a copy of the config.json.template file, and call it config.json.  This will be your local configuration options.
 6. Make any appropriate changes in that file, such as port, ssl, database username/password, etc..
-7. Run the following command to start the cognizen-server
+7. Take the siofu-server.js file, rename it to server.js and replace the server.js in node-modules/socket.io-file-upload/ (probably installed globally and linked in node-modules, depending upon your install) with this one. This npm was updated by Jeremy Snyder and differs from the npm install - file uploads will not work without this!!!!!
+8. Run the following command to start the cognizen-server
 
         node cognizen-server.js
 
-8. This will start up the cognizen server, the static server, and the git server in one fell swoop
+9. This will start up the cognizen server, the static server, and the git server in one fell swoop
 
 
 Server Side File Descriptions

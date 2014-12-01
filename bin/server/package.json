@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "engines": {
     "node": "0.10.x",
-    "npm": "1.2.x"
+    "npm": "2.1.x"
   },
   "dependencies": {
     "adm-zip": "0.4.x",
-    "archiver": "0.11.x",
+    "archiver": "0.13.x",
     "bcrypt-nodejs": "0.0.3",
     "connect": "2.8.x",
     "cookie": "0.1.x",
@@ -16,6 +16,7 @@
     "fluent-ffmpeg": "1.5.x",
     "fs-extra": "0.12.x",
     "git-server": "0.1.x",
+    "gm": "^1.17.0",
     "http-proxy": "0.10.x",
     "mongoose": "3.6.x",
     "mongoose-schema-extend": "0.1.x",
@@ -30,6 +31,6 @@
     "underscore": "1.4.x",
     "underscore.string": "2.3.x",
     "unzip": "0.1.x",
-    "winston": "0.7.x" 
+    "winston": "0.7.x"
   }
 }
