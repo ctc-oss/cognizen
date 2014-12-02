@@ -656,9 +656,11 @@ function C_Outline(_myItem) {
 		msg += "<label for='out_courseTitle'>course title: </label>";
 		msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 		msg += "<label for='targetAudience'>target audience: </label>";
-		msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
+		msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
+		//msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
 		msg += "<label for='instructionalGoal'>instructional goal: </label>";
-		msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
+		msg += '<textarea rows="4" cols="50" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
+		//msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
 		//end div for general
 		msg += '</div>';
      	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
