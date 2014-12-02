@@ -257,9 +257,6 @@ function C_Reveal(_type) {
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$(this).scrubContent();
-		if(isFF){
-			$("#contentHolder").height($("#contentHolder").height() - 20);
-		}
 		$('.antiscroll-wrap').antiscroll();
 	}
 
