@@ -100,7 +100,7 @@ function C_StaticContent(_type) {
         		$('#content').prepend('<div id="sidebarHolder"><div id="sidebar" class="sidebar"></div></div>');
 				$('#sidebar').append(mySidebar);
         	}else{
-				$('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div id="sidebar" class="sidebar antiscroll-inner"></div></div>');
+				$('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');
 				$('#sidebar').append(mySidebar);
 
 				if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
