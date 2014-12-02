@@ -61,9 +61,10 @@ function C_TextInput(_type) {
 		pageTitle = new C_PageTitle();
 
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap text">';
+		msg += '<div class="box">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="textInputHolder" class="textInputHolder"></div>';
-		msg += '</div></div>';		
+		msg += '</div></div></div>';		
 
 		try { audioHolder.destroy(); } catch (e) {}
 		console.log("add audio holder");

@@ -77,10 +77,11 @@ function C_Sequencing(_type) {
 		pageTitle = new C_PageTitle();
 
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
+		msg += '<div class="box">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
 		msg += '<div id="sequenceHolder" class="sequenceHolder">';
-		msg += '</div></div></div>';
+		msg += '</div></div></div></div>';
 
 		try { audioHolder.destroy(); } catch (e) {}
 		audioHolder = new C_AudioHolder();

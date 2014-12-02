@@ -95,12 +95,13 @@ function C_Matching(_type) {
 		pageTitle = new C_PageTitle();
 
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
+		msg += '<div class="box">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
 		msg += '<div id="matching">';
 		msg += '<div id="matchingAnswers"></div>';
 		msg += '<div id="matchingOptions"></div>';
-		msg += '</div></div></div>';
+		msg += '</div></div></div></div>';
 
 		audioHolder = new C_AudioHolder();
 

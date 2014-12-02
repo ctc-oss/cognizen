@@ -58,7 +58,7 @@ function C_ClickImage(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	//Defines a private method - notice the difference between the public definitions above.
 	function buildTemplate() {
-		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
+		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>');
 		$("#scrollableContent").addClass("top");
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
@@ -130,7 +130,7 @@ function C_ClickImage(_type) {
 		$("#imgPalette").height(heightSpacer * rows);
 
 		//Insert the Text Display area.
-		$("<div class='clickImgTextHolder antiscroll-wrap'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div><br/><br/>").insertAfter("#imgPalette");
+		$("<div class='clickImgTextHolder antiscroll-wrap'><div class='box'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#imgPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickImgTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickImgTextHolder");

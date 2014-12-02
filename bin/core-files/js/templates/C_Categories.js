@@ -86,6 +86,7 @@ function C_Categories(_type) {
 		pageTitle = new C_PageTitle();
 		
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap matching">';
+		msg += '<div class="box">'
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
 		msg += '<div id="categoryHolder" class="categoryHolder">';
@@ -95,7 +96,7 @@ function C_Categories(_type) {
 		msg += '</div>';
 		msg += '<div id="categoryProgressTracker" class="categoryProgressTracker">';
 		msg += '<div id="categoryTrackingMenu" class="categoryTrackingMenu">';
-		msg += '<div class="categoryProgressLabel"><span style="display:inline-block; vertical-align:middle;">Progress:  </span></div></div></div></div></div></div>';
+		msg += '<div class="categoryProgressLabel"><span style="display:inline-block; vertical-align:middle;">Progress:  </span></div></div></div></div></div></div></div>';
 		
 		audioHolder = new C_AudioHolder();
 		

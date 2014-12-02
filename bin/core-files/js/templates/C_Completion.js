@@ -150,8 +150,8 @@ function C_Completion(_type) {
 		pageTitle = new C_PageTitle();
 
         //Add classes for page layouts - updatable in css
-	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner">'+
-	    	'<div id="content"></div><div id="scoreFeedback"></div></div></div>');
+	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner">'+
+	    	'<div id="content"></div><div id="scoreFeedback"></div></div></div></div>');
 		$("#scrollableContent").addClass("top");
 
 		determineReviewList();

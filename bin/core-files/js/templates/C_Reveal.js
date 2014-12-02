@@ -59,7 +59,7 @@ function C_Reveal(_type) {
 			mediaHeight = mediaHeight * 0.6;
 		}
 
-		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
+		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>');
 		$("#scrollableContent").addClass("top");
 
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -217,7 +217,8 @@ function C_Reveal(_type) {
 
 		if(type == "revealRight"){
 			var msg = "<div id='revealTextHolder' class='revealTextRight antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
-			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
+			msg += "<div class='box'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
 			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 20;
 			if(isIE || isFF){
@@ -228,7 +229,8 @@ function C_Reveal(_type) {
 		}else if(type == "revealBottom"){
 			var tmpWidth = $("#" + currentSelected).width() - 10;
 			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
-			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div>";
+			msg += "<div class='box'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
 			//BECAUSE IE FUCKING SUCKS!!!!
 			if(isIE){
@@ -242,7 +244,8 @@ function C_Reveal(_type) {
 
 		}else if(type == "revealLeft"){
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
-			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div>";
+			msg += "<div class='box'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-height: " + mediaHeight + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
 			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 10;
 			if(isIE || isFF){
@@ -252,7 +255,8 @@ function C_Reveal(_type) {
 
 		}else if(type == "revealTop"){
 			var msg = "<div id='revealTextHolder' class='revealTextTop antiscroll-wrap' style='width: " + mediaWidth + "px; overflow: hidden;'>";
-			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + mediaWidth + "px;'>" + currentShowText + "</div></div>";
+			msg += "<div class='box'>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + mediaWidth + "px;'>" + currentShowText + "</div></div></div>";
 		}
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});

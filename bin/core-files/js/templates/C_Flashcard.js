@@ -56,7 +56,7 @@ function C_Flashcard(_type) {
 
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
-		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div><div id="flashcardHolder"></div></div></div>');
+		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div><<div id="flashcardHolder"></div></div></div></div>');
 
 		$("#scrollableContent").addClass("top");
 

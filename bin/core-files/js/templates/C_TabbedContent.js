@@ -52,7 +52,7 @@ function C_TabbedContent(_type) {
 		//Add the divs for the page title and the content and divs.
 
 
-		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div>');
+		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div></div>');
 
 		pageAccess_arr.push($("#content"));
 

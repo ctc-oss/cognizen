@@ -50,7 +50,7 @@ function C_ClickListRevealText(_type) {
 	}
 
 	function buildTemplate() {
-		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>');
+		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>');
 		$("#scrollableContent").addClass("top");
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 			// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
@@ -91,7 +91,7 @@ function C_ClickListRevealText(_type) {
 			pageAccess_arr.push($("#" + revID));
 		}
 
-		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div id='clickListText' class='clickListText antiscroll-inner'></div></div><br/><br/>").insertAfter("#listPalette");
+		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#listPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickListTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickListTextHolder");

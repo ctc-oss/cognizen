@@ -83,7 +83,7 @@ function C_Branching(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	function buildContentText(){
 		if(myContent != ""){
-	        $('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>').insertAfter("#pageTitle");
+	        $('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		    addLayoutCSS(branchType);
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		    // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time

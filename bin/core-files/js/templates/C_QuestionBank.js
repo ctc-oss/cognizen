@@ -107,7 +107,7 @@ function C_QuestionBank(_type) {
 
 		pageTitle = new C_PageTitle();
 
-		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div>');
+		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
 
 		audioHolder = new C_AudioHolder();
 
