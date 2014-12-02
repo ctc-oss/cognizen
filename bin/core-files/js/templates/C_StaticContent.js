@@ -49,7 +49,7 @@ function C_StaticContent(_type) {
 
         //Add classes for page layouts - updatable in css
 		if(type != "graphicOnly"){
-			$('<div id="scrollableContent" class="antiscroll-wrap"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div>').insertAfter("#pageTitle");
+			$('<div id="scrollableContent" class="antiscroll-wrap"><div id="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		}
 
 		audioHolder = new C_AudioHolder();
@@ -81,7 +81,7 @@ function C_StaticContent(_type) {
 		   // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 		   // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		   $("#content").width($("#contentHolder").width()-15);
+		   //$("#content").width($("#contentHolder").width()-15);
 		   $("#content").append(myContent);
 		   //$("#content").attr("role", "main");
 		   $("#content").attr("aria-label", $("#content").text());
