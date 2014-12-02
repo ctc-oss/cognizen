@@ -1033,7 +1033,7 @@ function disableNext(){
 }
 
 function enableNext(){
-	$('#back').attr('aria-disabled', 'false');
+	$('#next').attr('aria-disabled', 'false');
 	$('#next').removeClass('disabled');
 	$("#next").click(clickNext);
 	nextDisabled = false;
