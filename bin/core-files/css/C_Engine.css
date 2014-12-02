@@ -539,6 +539,26 @@ CONTENT TEXT LAYOUTS*/
 	width: 960px;
 }
 
+.left .box, .right .box, .sidebarContent .box{
+	width: 536px;
+}
+
+#sidebarHolder .box{
+	width: 400px;
+}
+
+.clickListTextHolder .box{
+	width: 630px;
+}
+
+.clickImgTextHolder .box{
+	width: 920px;
+}
+
+#revealTextHolder .box{
+	width: auto;
+}
+
 #contentHolder{
 	position: static;
 	/*max-width: 960px;*/
