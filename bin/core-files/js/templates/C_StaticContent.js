@@ -49,7 +49,7 @@ function C_StaticContent(_type) {
 
         //Add classes for page layouts - updatable in css
 		if(type != "graphicOnly"){
-			$('<div id="scrollableContent" class="antiscroll-wrap"><div id="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
+			$('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		}
 
 		audioHolder = new C_AudioHolder();
