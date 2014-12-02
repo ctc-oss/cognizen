@@ -474,7 +474,7 @@ function createNewPageByType(_myType){
 			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
 			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+			var option1CDATA = content1.createCDATASection("<p>New Image ClickImage Text Content 1</p>");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
 			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
 			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
@@ -487,7 +487,7 @@ function createNewPageByType(_myType){
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
 			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+			var option2CDATA = content2.createCDATASection("<p>New Image ClickImage Text Content 2</p>");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
 			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
 			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
