@@ -31,7 +31,6 @@ function C_ClickImage(_type) {
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-
 		//Set template variable values.
 		revealCount = $(data).find("page").eq(currentPage).find("reveal").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").first().text();

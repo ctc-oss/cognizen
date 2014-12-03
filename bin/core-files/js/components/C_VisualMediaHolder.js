@@ -236,10 +236,16 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				});
 			}
 
-			pageAccess_arr.push($('.mejs-overlay-button'));
-			//pageAccess_arr.push($(".mejs-play").find('button'));
-			//pageAccess_arr.push($(".mejs-mute").find('button'));
-			//pageAccess_arr.push($(".mejs-duration"));
+			 //Section 508 stuff - pass the controls...
+			$(".mejs-playpause-button").keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+				if (chCode == 32){
+					$(this).find('button').click();
+				}
+			});
+			pageAccess_arr.push($(".mejs-playpause-button"));
+			pageAccess_arr.push($(".mejs-mute").find('button'));
+			pageAccess_arr.push($(".mejs-duration"));
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
