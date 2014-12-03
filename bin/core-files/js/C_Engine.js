@@ -107,8 +107,11 @@ function initScripts(_data){
 
 	        // Detect whether or not the browser is IE
 	        var ieRegex = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-	        if (ieRegex.exec(ua) == null)
+	        if (ieRegex.exec(ua) == null){
 	            this.exception = "The user agent detected does not contain Internet Explorer.";
+	        }else{
+	        	isIE = true;
+	        }
 
 	        // Get the current "emulated" version of IE
 	        this.renderVersion = parseFloat(RegExp.$1);
@@ -277,24 +280,6 @@ function startEngine(){
 ****************************************************/
 //Place all permanent items in the UI - background - title - nav
 
-// Discover if we are dealing with IE....
-function isOldIE() {
-    "use strict";
-
-//    if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
-//        oldIE = true;
-//    }
-
-    if ($('html').is('.ie6, .ie7, .ie8', '.ie9', '.ie10', '.ie11')) {
-        isIE = true;
-    }
-
-    if (Function('/*@cc_on return document.documentMode===10@*/')()) {
-	    isIE = true;
-	}
-}
-
-
 function checkFF(){
 	isFF = typeof InstallTrigger !== 'undefined';
 }
@@ -327,7 +312,6 @@ function checkMobile(){
 
 
 function buildInterface(){
-	isOldIE();
 	checkFF();
 	checkMobile();
 	$('body').empty();
