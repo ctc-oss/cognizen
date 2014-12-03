@@ -1161,7 +1161,8 @@ ul.no-indent {
 .listPalette{
 	position: relative;
 	float:left;
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: scroll;
 	background: #9DA6AB;
 	padding-top: 8px;
 	width: 290px;
@@ -1177,7 +1178,7 @@ ul.no-indent {
 
 .listItem{
 	height: auto;
-	width: 279px;
+	width: 263px;
 	color: #9DA6AB;
 	cursor: pointer;
 	padding-top: 3px;
