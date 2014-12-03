@@ -332,7 +332,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}else{
 				startPoint = 0;
 			}
+			
+			$("#stage").append( "<div id='acc_gallery' class='acc-skipIndex'></div>");
 			for(var i = startPoint; i < media_arr.length; i++){
+				$("#acc_gallery").append("<div id=''><img src='media/"+media_arr[i]+"'">
 				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
 				var checkFile = media_arr[i].split('.'), i, l;
 		        var last = checkFile.length;
