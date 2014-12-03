@@ -57,10 +57,6 @@ function C_ClickListRevealText(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
-		if(isIE || isFF){
-			$("#contentHolder").height($("#contentHolder").height() - 22);
-		}
-
         $("#content").append(myContent);
 
 		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
