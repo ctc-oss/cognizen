@@ -59,7 +59,8 @@ function doAccess(items){
 	  // "last" focus guard got focus: set focus to the first field
 	  items[0].focus();
 	});
-
+	
+	console.log("mode = " + mode);
 	if(mode != "edit"){
 		items[0].attr('hidefocus', 'true');
 		items[0].focus();

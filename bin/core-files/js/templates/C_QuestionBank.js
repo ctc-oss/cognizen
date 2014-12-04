@@ -60,6 +60,9 @@ function C_QuestionBank(_type) {
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
 		selectbankitem();
 	}
 
@@ -127,7 +130,10 @@ function C_QuestionBank(_type) {
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('question').text();
 		$("#question").append(myContent);
-
+		
+		var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
+		$("#question").attr("aria-label", ariaText);
+		pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
@@ -210,7 +216,15 @@ function C_QuestionBank(_type) {
 			optionY += $("#"+myOption).height() + 30;
 			iterator++;
 			option_arr.push($('#' + myOption));
-
+			//Section 508 code
+			var cont = myNode;
+			if(isMulti){
+				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use the tab or shift-tab to hear other options. Press spacebar to select.";
+			}else{
+				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use up and down arrow keys to hear other options. Press spacebar to select.";
+			}
+			$('#' + myOption + "Check").attr("aria-label", ariaText);
+			pageAccess_arr.push($('#' + myOption + "Check"));
 		};
 
 		$("#answerOptions").append('<div id="mcSubmit"></div>');
@@ -219,6 +233,10 @@ function C_QuestionBank(_type) {
 
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
+		
+		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
+		pageAccess_arr.push($("#mcSubmit"));
+		
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
@@ -241,6 +259,8 @@ function C_QuestionBank(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
+		
+		doAccess(pageAccess_arr);
 	}
 
 	//Called if the user closes the popup instead of proceed
@@ -538,10 +558,10 @@ function C_QuestionBank(_type) {
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 		var msg = "<div id='questionEditDialog' title='Edit Question Bank'>";
 		msg += "<label style='position: relative; float: left; margin-right:20px;'><b>Bank Preferences: </b></label>";
-		msg += "<label id='label'>graded: </label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'>mandatory: </label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/><br/>";
+		msg += "<label id='label' title='Indicates if this page is graded.'>graded: </label>";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'>mandatory: </label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' /><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -1013,30 +1033,6 @@ function C_QuestionBank(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-
-	/*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     ACESSIBILITY/508 FUNCTIONALITY
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-        var tabindex = 1;
-
-	   	$("#pageTitle").attr("tabindex", tabindex);
-	   	tabindex++;
-
-	   	$('#question').attr("tabindex", tabindex);
-	   	tabindex++;
-
-	   	for(var i = 0; i < option_arr.length; i++){
-		   	$(option_arr[i]).attr("tabindex", tabindex);
-		   	tabindex++;
-		}
-
-		$("#pageTitle").focus();
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
-
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

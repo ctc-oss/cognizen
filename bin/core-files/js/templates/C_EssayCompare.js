@@ -27,6 +27,10 @@ function C_EssayCompare(_type) {
  
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+		
 		buildTemplate();
 	}
 
@@ -65,7 +69,7 @@ function C_EssayCompare(_type) {
 		msg += '</div></div></div>';		
 
 		try { audioHolder.destroy(); } catch (e) {}
-		console.log("add audio holder");
+		
 		audioHolder = new C_AudioHolder();
 		
 		$('#stage').append(msg);
