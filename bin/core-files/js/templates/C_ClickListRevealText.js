@@ -62,7 +62,7 @@ function C_ClickListRevealText(_type) {
 		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
         pageAccess_arr.push($("#content"));
 
-        $("<div id='listPalette' class='listPalette'></div>").insertAfter("#content");
+        $("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
 
 		for(var i = 0; i < revealCount; i++){
 			var currentItem = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("title").text();
@@ -87,7 +87,7 @@ function C_ClickListRevealText(_type) {
 			pageAccess_arr.push($("#" + revID));
 		}
 
-		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#listPalette");
+		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickListTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickListTextHolder");
