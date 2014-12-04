@@ -93,9 +93,10 @@ function C_ClickListRevealText(_type) {
 			$("<br/><br/>").insertAfter(".clickListTextHolder");
 		}
 
-		$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#listPalette").position().top+ audioHolder.getAudioShim() + 15));
-		$("#clickListTextHolder").height($("#stage").height() - ($("#scrollableContent").position().top + $("#listPalette").position().top+ audioHolder.getAudioShim() + 15));
-
+		$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#content").height() + $("#scrollableListPalette").position().top + audioHolder.getAudioShim() ));
+		$("#clickListTextHolder").height($(".listPalette").height());
+		
+		
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -122,7 +123,7 @@ function C_ClickListRevealText(_type) {
 			}
 			$("#clickListText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
 			$("#contentHolder").height($("#contentHolder").height() - 17);
-			$("#contentHolder").width($("#contentHolder").width() - 17);
+			//$("#contentHolder").width($("#contentHolder").width() - 17);
 		}
 
 		$('.antiscroll-wrap').antiscroll();
