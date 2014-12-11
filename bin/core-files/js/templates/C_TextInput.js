@@ -29,7 +29,10 @@ function C_TextInput(_type) {
     var acceptedResponseEdit_arr = [];
     var currentEditBankMember = 0;
     var diffeedEdit_arr = [];
+    var dropDownEdit_arr = [];
     var userAttempts = [];
+    var dropDownQuestions_arr = [];
+    var correctDDAnswers_arr = [];
     var isComplete = false;
     var scormVersion;
 
@@ -67,7 +70,7 @@ function C_TextInput(_type) {
 		msg += '</div></div></div>';		
 
 		try { audioHolder.destroy(); } catch (e) {}
-		console.log("add audio holder");
+		//console.log("add audio holder");
 		audioHolder = new C_AudioHolder();
 		
 		$('#stage').append(msg);
@@ -93,8 +96,36 @@ function C_TextInput(_type) {
 			var myNode = $(data).find("page").eq(currentPage).find("question").eq(input_arr[j]);
 			var myQuestion = "question" + j;
 	
-			msg += myNode.find('content').text() + '<div class="ui-widget"><input type="text" name="' + myQuestion  + '" id="' + myQuestion  + '" class="dialogInput" style="width: 440px;" value=""></div>';
-			msg += '<div id="fb'+myQuestion+'"></div>';
+			msg += myNode.find('content').text() + '<div class="ui-widget"><input type="text" name="' + myQuestion  + '" id="' + myQuestion  + '" class="dialogInput" style="width: 440px;" ';
+			if(myNode.attr('dropdown') === "true"){
+				dropDownQuestions_arr.push(myQuestion);
+				msg += 'value="" disabled >';
+				msg += '<select name="'+myQuestion+'drop" id="'+myQuestion+'drop">';
+				msg += '<option value=""></option>';
+				var correctdd_arr = [];
+				for (var m = 0; m < myNode.find('dropdownoption').length; m++) {
+					var optionTrim = $.trim(myNode.find('dropdownoption').eq(m).text().replace("<![CDATA[", "").replace("]]>", ""));
+					msg += '<option value="'+optionTrim+'">'+optionTrim+'</option>';
+					//add to correct drop down answers array if correct attribute is true
+					if(myNode.find('dropdownoption').eq(m).attr('correct') === "true"){
+						correctdd_arr.push(optionTrim);
+					}
+				};
+				msg += '</select>';
+				correctDDAnswers_arr.push(correctdd_arr);				
+			}
+			else{
+				msg += 'value="">';
+			}
+			//end ui-widget div
+			msg += '</div>';
+			if(myNode.attr('dropdown') === "true"){
+				msg += '<div id="fb'+myQuestion+'" style="color:red">Select the correct option in the drop-down box to enable the text field.</div>';
+			}
+			else{
+				msg += '<div id="fb'+myQuestion+'"></div>';
+			}
+
 			inputIds.push(myQuestion);
 			trackFeedbackNum.push(new Array(myQuestion, 0));
 			correctResponses.push(new Array(myQuestion, myNode.find('correctresponse').text()));
@@ -120,7 +151,7 @@ function C_TextInput(_type) {
 			};
 		}
 
-		msg += '</div>';
+		msg += '</div><br/>';
 		$('#textInputHolder').append(msg);
 
 		//apply accepted answers to autocorrect
@@ -142,6 +173,17 @@ function C_TextInput(_type) {
 						textInputQuestion_obj = _tiQuestions[j];
 						if(textInputQuestion_obj.question == "question" + j)
 						{
+							//handle dropdown if present
+							if(textInputQuestion_obj.dropDownEnabled){
+								$("#"+textInputQuestion_obj.question+'drop').val(textInputQuestion_obj.dropDownAnswer);
+								if(textInputQuestion_obj.dropDownComplete){
+									$("#"+textInputQuestion_obj.question+'drop').css('backgroundColor', 'green');
+								}
+								else{
+									$("#"+textInputQuestion_obj.question+'drop').css('backgroundColor', 'red');
+								}
+							}
+
 							$("#"+textInputQuestion_obj.question).val(textInputQuestion_obj.userAnswer);
 							if($.trim(textInputQuestion_obj.userAnswer).length != 0){
 								if(textInputQuestion_obj.correct)
@@ -185,6 +227,15 @@ function C_TextInput(_type) {
 						_tempTIQ_obj.feedback = '';
 						_tempTIQ_obj.userAttempts = 0;
 						_tempTIQ_obj.maxAttempts = parseInt(attempts[k][1]);
+						if($.inArray(_tempTIQ_obj.question, dropDownQuestions_arr) != -1 ){
+							_tempTIQ_obj.dropDownEnabled = true;
+						}
+						else{
+							_tempTIQ_obj.dropDownEnabled = false;
+						}
+						
+						_tempTIQ_obj.dropDownComplete = false;
+						_tempTIQ_obj.dropDownAnswer = '';						
 						questionResponse_arr[i].textInputQuestions.push(_tempTIQ_obj);
 					}
 				}				
@@ -206,6 +257,36 @@ function C_TextInput(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
+
+		for (var t = 0; t < dropDownQuestions_arr.length; t++) {
+			$('#'+dropDownQuestions_arr[t]+'drop').on('change', function(){
+				var textInputQuestion_obj = new Object();
+				for(var i = 0; i < questionResponse_arr.length; i++){
+					if(currentPageID == questionResponse_arr[i].id){
+						var _tiQuestions = questionResponse_arr[i].textInputQuestions;
+						if(_tiQuestions.length > 0){
+							for(var j = 0; j < _tiQuestions.length; j++){
+								textInputQuestion_obj = _tiQuestions[j];
+								if(textInputQuestion_obj.question == dropDownQuestions_arr[j])
+								{
+									textInputQuestion_obj.dropDownAnswer = $('#'+dropDownQuestions_arr[j]+'drop option:selected').text();
+									if($.inArray(textInputQuestion_obj.dropDownAnswer, correctDDAnswers_arr[j]) != -1 ){
+										textInputQuestion_obj.dropDownComplete = true;
+										$('#'+dropDownQuestions_arr[j]+'drop').css('backgroundColor', 'green');
+										$('#'+dropDownQuestions_arr[j]).prop('disabled', false);
+									}
+									else{
+										textInputQuestion_obj.dropDownComplete = false;
+										$('#'+dropDownQuestions_arr[j]+'drop').css('backgroundColor', 'red');
+									}									
+								}
+							}
+						}
+					}
+				}					
+				
+			});
+		};
 
 	}
 
@@ -299,7 +380,7 @@ function C_TextInput(_type) {
 								else
 								{
 									allComplete = false;
-									$('#fb'+textInputQuestion_obj.question).html('Please provide an answer.').css("color", "red");;
+									$('#fb'+textInputQuestion_obj.question).html('Please provide an answer.').css("color", "red");
 								}
 							}																												
 						}
@@ -423,16 +504,25 @@ function C_TextInput(_type) {
 		if(_autoCompleteString == "false" || _autoCompleteString == undefined){
 			autoCompleteValue = false;
 		}
+
+		var dropDownValue = true;
+		var _dropDownString = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('dropdown'); 
+		if(_dropDownString == "false" || _dropDownString == undefined){
+			dropDownValue = false;
+		}
+
 		msg += "</div><br/><br/>";
 		var labelNumber = parseInt(currentEditBankMember) + 1;
 		msg += "<div><b>Edit Question #" + labelNumber + ":</b></div>"; 
 		msg += "<div id='currentEditQuestion' class='editItemContainer'>"
 		msg += "<div id='removeBankItem' class='removeMedia' title='Click to remove this bank item'/>";
-		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
+		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label><br/>";
 		msg += "<label id='label'>no. of attempts: </label>";
 		msg += "<input type='text' name='myName' id='inputAttempts' title='Increase the number of attempts.' value='"+ $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'>Autocomplete: </label>";
 		msg += "<input type='checkbox' name='autocomplete' id='inputAutoComplete' title='Enable autocomplete functionality.' class='radio' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<label id='label'>DropDown Options: </label>";
+		msg += "<input type='checkbox' name='inputDDOptions' id='inputDDOptions' title='Enable drop down box functionality.' class='radio' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";		
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputCRLabel'><b>Correct Response Feedback: </b></div>";
@@ -440,6 +530,7 @@ function C_TextInput(_type) {
 		msg += "</div><br/>"
 		msg += "<div id='acceptedResponseEdit'/>";
 		msg += "<div id='diffeedEdit'/>";
+		msg += "<div id='dropDownEdit'/>";
 
 		msg += "<br/></div></div>";
 		$("#stage").append(msg);
@@ -486,6 +577,7 @@ function C_TextInput(_type) {
 					$("#questionEditDialog").remove();
 					acceptedResponseEdit_arr = [];
 					diffeedEdit_arr = [];
+					dropDownEdit_arr = [];
 					updateQuestionEditDialog();
 				}).tooltip();
 			}
@@ -497,6 +589,23 @@ function C_TextInput(_type) {
 		else{
 			$("#inputAutoComplete").attr('checked', 'checked');
 		}
+		
+		//adds dropdown options when checkbox changed
+		$("#inputDDOptions").change(function(){
+			if($("#inputDDOptions").prop("checked") == true){
+				$("#dropDownEdit").show();
+				$('.ui-button:contains(Add DropDown Option)').show();
+				var test = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").length;
+				if(test == 0){
+					alert("no ddoptions");
+					addDropDownOption(0, true);								
+				}
+			}
+			else{
+				$("#dropDownEdit").hide();
+				$('.ui-button:contains(Add DropDown Option)').hide();
+			}			
+		});
 
         if(!graded){
 			$("#isGraded").removeAttr('checked');
@@ -520,6 +629,11 @@ function C_TextInput(_type) {
 			addDiffeed(j, false);
 		};		
 
+		//find every dropdownoption in the xml - place them on the screen.
+		for (var k = 0; k < $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").length; k++){
+			addDropDownOption(k, false);
+		};		
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
@@ -527,7 +641,7 @@ function C_TextInput(_type) {
 			modal: true,
 			width: 875,
 			height: 650,
-			buttons: [
+			buttons: [		
 				{
 					text: "Add Question",
 					title: "Adds a new question.",
@@ -560,9 +674,27 @@ function C_TextInput(_type) {
 						$("#questionEditDialog").dialog("close");
 						$("#questionEditDialog").remove();
 					}
-				}
+				},
+				{
+					text: "Add DropDown Option",
+					title: "Adds a drop down option.",
+					click: function(){
+						addDropDownOption(dropDownEdit_arr.length, true);
+					}	
+				}					
 			]
 		});	
+
+		if(!dropDownValue){
+			$("#inputDDOptions").removeAttr('checked');
+			$("#dropDownEdit").hide();
+			$('.ui-button:contains(Add DropDown Option)').hide();		
+		}
+		else{
+			$("#inputDDOptions").attr('checked', 'checked');	
+			$("#dropDownEdit").show();
+			$('.ui-button:contains(Add DropDown Option)').show();			
+		}
 
 		//adds tooltips to the edit dialog buttons
 	    $(function () {
@@ -571,16 +703,21 @@ function C_TextInput(_type) {
 
 	}	
 
+
 	function makeQuestionDataStore(){
 		var tmpObj = new Object();
 		tmpObj.attempts = $("#inputAttempts").val();
 		if($("#inputAutoComplete").prop("checked") == true){
-			//$(data).find("page").eq(currentPage).attr("graded", "true");
 			tmpObj.autoComplete= true;
 		}else{
-			//$(data).find("page").eq(currentPage).attr("graded", "false");
 			tmpObj.autoComplete = false;
 		}		
+
+		if($("#inputDDOptions").prop("checked") == true){
+			tmpObj.dropDown= true;
+		}else{
+			tmpObj.dropDown = false;
+		}
 
 		tmpObj.correctResponse = CKEDITOR.instances["inputCorrectResponse"].getData();
 		try{ CKEDITOR.instances["inputCorrectResponse"].destroy() } catch (e) {}
@@ -621,6 +758,21 @@ function C_TextInput(_type) {
 		};
 		tmpObj.diffeed_arr = tmpDiffeedArray;
 
+		var tmpDropDownArray = new Array();
+		for(var k = 0; k < dropDownEdit_arr.length; k++){
+			var tmpDDObj = new Object();
+			tmpDDObj.dropDownText = CKEDITOR.instances[dropDownEdit_arr[k]+"Text"].getData();
+			if($("#"+dropDownEdit_arr[k]+"Correct").prop("checked") == true){
+				tmpObj.correct = true;
+			}else{
+				tmpObj.correct = false;
+			}			
+
+			try {CKEDITOR.instances[dropDownEdit_arr[k]+"Text"].destroy() } catch (e) {}
+			tmpDropDownArray.push(tmpDDObj);			
+		}
+		tmpObj.dropdown_arr = tmpDropDownArray;
+
 		return tmpObj;
 	}
 
@@ -656,6 +808,23 @@ function C_TextInput(_type) {
 		else{
 			alert("you must have at least one feedback.")
 		}	
+	}
+
+	function removeDropDownOption(_id){
+		if($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").length > 1){
+			for(var i = 0; i < dropDownEdit_arr.length; i++){
+				if(_id == $("#"+dropDownEdit_arr[i]+"Container").attr("value")){
+					var arrIndex = i;
+					break;
+				}
+			}
+			$(data).find("pages").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(arrIndex).remove();
+			dropDownEdit_arr.splice(arrIndex, 1);
+			$("#dropDown" + _id +"Container").remove();	
+		}
+		else{
+			alert("you must have at least one drop down option.")
+		}			
 	}	
 
 	function removeBankItem(){
@@ -665,6 +834,7 @@ function C_TextInput(_type) {
 			$("#questionEditDialog").remove();
 			acceptedResponseEdit_arr = [];
 			diffeedEdit_arr = [];
+			dropDownEdit_arr = [];
 			currentEditBankMember = 0;
 			updateQuestionEditDialog();
 		}else{
@@ -678,6 +848,7 @@ function C_TextInput(_type) {
 		var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).attr("attempts", 1);
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).attr("autocomplete", false);
+		$(data).find("page").eq(currentPage).find("question").eq(_addID).attr("dropdown", false);
 		//content
 		$(data).find("page").eq(currentPage).find("question").eq(_addID).append($("<content>"));
 		var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
@@ -704,7 +875,55 @@ function C_TextInput(_type) {
 		$("#questionEditDialog").remove();
 		acceptedResponseEdit_arr  = [];
 		diffeedEdit_arr = [];
+		dropDownEdit_arr = [];
 		updateQuestionEditDialog();
+
+	}
+
+	function addDropDownOption(_addID, _isNew){
+		var dropDownID = "dropDown" + _addID;
+		var dropDownLabel = _addID + 1;
+		if(_isNew){
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).append($("<dropdownoption>"));
+			var dropdownoption1 = new DOMParser().parseFromString('<dropdownoption></dropdownoption>', "text/xml");
+			var dropdownoption1CDATA = dropdownoption1.createCDATASection("xyz");
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").append(dropdownoption1CDATA);
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").attr("correct", "false");
+		}	
+
+		var dropDownContent = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(_addID).text();
+		var msg = "<div id='"+dropDownID+"Container' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='"+dropDownID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this drop down option.'/>";
+		msg += "<div id='"+dropDownID+"Input' style='padding-bottom:5px;'><b>Drop Down Option " + dropDownLabel + ":</b></div>";
+		msg += "<div id='"+dropDownID+"Text' contenteditable='true' class='dialogInput' >" + dropDownContent + "</div>";
+		msg += "<label id='label'><b>correct:</b></label>";
+		if($(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(_addID).attr("correct") == "true"){
+			msg += "<input id='"+dropDownID+"Correct' type='checkbox' checked='checked' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
+		}else{
+			msg += "<input id='"+dropDownID+"Correct' type='checkbox' name='correct' class='radio' value='true' title='Indicates if the option is a correct answer.'/>";
+		}			
+		msg += "</div>";
+				
+		$("#dropDownEdit").append(msg);		
+
+		$("#" +dropDownID+"Remove").on('click', function(){
+			var value = $(this).attr("value");
+			removeDropDownOption($(this).attr("value"));
+		});	
+
+		CKEDITOR.inline( dropDownID+"Text", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this drop down option.");
+		    	}
+		    }			
+		});
+		dropDownEdit_arr.push(dropDownID);	
 
 	}
 
@@ -805,6 +1024,7 @@ function C_TextInput(_type) {
 
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr("attempts", _data.attempts);
 		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr("autocomplete", _data.autoComplete);
+		$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).attr("dropdown", _data.dropDown);		
 
 		var correctResponseUpdate = _data.correctResponse;
 		var correctResponseDoc = new DOMParser().parseFromString('<correctresponse></correctresponse>', 'text/xml')
@@ -837,7 +1057,6 @@ function C_TextInput(_type) {
 			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("acceptedresponse").eq(i).remove();
 		}
 
-		//im here updating the diffeedEdit_arr
 		for(var i = 0; i < diffeedEdit_arr.length; i++){
 			//var correctOptions = 0;
 			var diffeedText = _data.diffeed_arr[i].diffeedText;
@@ -853,7 +1072,25 @@ function C_TextInput(_type) {
 		var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
 			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("diffeed").eq(i).remove();
-		}		
+		}
+
+		for(var i = 0; i < dropDownEdit_arr.length; i++){
+			//var correctOptions = 0;
+			var dropDownText = _data.dropdown_arr[i].dropDownText;
+			var newDropDown = new DOMParser().parseFromString('<dropdownoption></dropdownoption>',  "text/xml");
+			var dropDownCDATA = newDropDown.createCDATASection(dropDownText);
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(i).empty();
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(i).append(dropDownCDATA);
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(i).attr("correct", $("#"+dropDownEdit_arr[i]+"Correct").prop("checked"));
+
+		}
+		
+		var extra = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").length;
+		var active = dropDownEdit_arr.length;
+		var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
+			$(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").eq(i).remove();
+		}				
 		
 	}
 
