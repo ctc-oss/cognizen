@@ -1261,6 +1261,9 @@ function updateTextInputQuestionResponse(_questionObj){
 					questionResponse_arr[i].textInputQuestions[j].feedback = _questionObj.feedback;
 					questionResponse_arr[i].textInputQuestions[j].userAttempts = _questionObj.userAttempts;
 					questionResponse_arr[i].textInputQuestions[j].maxAttempts = _questionObj.maxAttempts;
+					questionResponse_arr[i].textInputQuestions[j].dropDownEnabled = _questionObj.dropDownEnabled;
+					questionResponse_arr[i].textInputQuestions[j].dropDownComplete = _questionObj.dropDownComplete;
+					questionResponse_arr[i].textInputQuestions[j].dropDownAnswer = _questionObj.dropDownAnswer;
 				}
 			}
 
@@ -1272,15 +1275,15 @@ function markIncomplete(){
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
 			questionResponse_arr[i].complete = false;
-			/*for(var j = 0; j < questionResponse_arr[i].textInputQuestions.length; j++){
-				// if(_questionObj.question == questionResponse_arr[i].textInputQuestions[j].question){
-					questionResponse_arr[i].textInputQuestions[j].userAnswer = '';
-					questionResponse_arr[i].textInputQuestions[j].correct = false;
-					questionResponse_arr[i].textInputQuestions[j].feedback = '';
-					questionResponse_arr[i].textInputQuestions[j].userAttempts = 0;
-					//questionResponse_arr[i].textInputQuestions[j].maxAttempts = _questionObj.maxAttempts;
-				// }
-			}*/
+			for(var j = 0; j < questionResponse_arr[i].textInputQuestions.length; j++){
+				questionResponse_arr[i].textInputQuestions[j].userAnswer = '';
+				questionResponse_arr[i].textInputQuestions[j].correct = false;
+				questionResponse_arr[i].textInputQuestions[j].feedback = '';
+				questionResponse_arr[i].textInputQuestions[j].userAttempts = 0;
+				questionResponse_arr[i].textInputQuestions[j].dropDownComplete = false;
+				questionResponse_arr[i].textInputQuestions[j].dropDownAnswer = '';					
+
+			}
 
 		}
 	}
