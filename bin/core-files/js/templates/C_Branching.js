@@ -27,42 +27,26 @@ function C_Branching(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-
-        //Position the page text
-        myContent = $(data).find("page").eq(currentPage).find("content").first().text();
-		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
-        //Clear accessibility on page load.
+		
+		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-		branch_arr = [];
+		
         buildTemplate();
     }
 
      //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
-        pageTitle = new C_PageTitle();
-		audioHolder = new C_AudioHolder();
 		buildBranchArray();
+		audioHolder = new C_AudioHolder();
 		if(isMobile){
 			titleBarHeight = $("#courseTitle").height();
 			navBarHeight = $("#pageCount").height();
 			stageH = window.innerHeight - titleBarHeight - navBarHeight;
 			$("#stage").height(stageH);
 		}
-
-        buildContentText();
-
-		$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
-		$("#imgPalette").append("<div id='begin' class='btn_branch' aria-label='Continue - click to begin'>Continue</div>");
-		$("#begin").button().click(function(){
-			loadBranch(0);
-		});
-		$("#imgPalette").width($("#begin").width())
-		if(transition == true){
-            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-        }
-        doAccess(pageAccess_arr);
-	}
+		loadBranch(0);
+   	}
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -70,10 +54,41 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildBranchArray(){
+		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
+		branch_arr = [];
 		for(var i = 0; i < branchCount; i++){
 			branch_arr.push($(data).find("page").eq(currentPage).find("branch").eq(i));
 		}
 	}
+	
+	/*****************************************************************************************************************************************************************************************************************
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    loadBranch - refreshes the page with the appropriate branch
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    *****************************************************************************************************************************************************************************************************************/
+	function loadBranch(_id){
+		pageAccess_arr = [];
+        audioAccess_arr = [];
+		try { $("#mediaHolder").remove(); } catch (e) {}
+		try { $("#pageTitle").remove(); } catch (e) {}
+		//remove existing scrollable content.
+		$("#scrollableContent").remove();
+		myContent = branch_arr[_id].find("content").text();
+		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
+		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
+		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
+		if(isComplete == "true"){
+			mandatoryInteraction = false;
+			checkNavButtons();
+		}
+
+		pageTitle = new C_PageTitle(_id);
+		buildContentText();
+		buildBranchOptions(_id);
+		checkMode();
+	}
+
+
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -97,7 +112,12 @@ function C_Branching(_type) {
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
 	        mediaHolder.loadVisualMedia();
+	    }else{
+		    if(transition == true){
+	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			}
 	    }
+	    
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -155,16 +175,6 @@ function C_Branching(_type) {
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    updatePageTitle - refreshes the page title for the appropriate branch
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    *****************************************************************************************************************************************************************************************************************/
-	function updatePageTitle(_myTitle){
-		$("#pageTitle").text(_myTitle).attr('aria-label', _myTitle);
-		pageAccess_arr.push($("#pageTitle"));
-	}
-
-	/*****************************************************************************************************************************************************************************************************************
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     loadBranchByID - takes ID of selected option and decides which branch to load
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
@@ -176,34 +186,77 @@ function C_Branching(_type) {
 			}
 		}
 	}
-
+	
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    loadBranch - refreshes the page with the appropriate branch
+    checkMode - Check if authoring is needed
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
-	function loadBranch(_id){
-		pageAccess_arr = [];
-        audioAccess_arr = [];
-		try { $("#mediaHolder").remove(); } catch (e) {}
-		try { $("#pageTitle").remove(); } catch (e) {}
-		//remove existing scrollable content.
-		$("#scrollableContent").remove();
-		//var myTitle = branch_arr[_id].find("title").text();
-		myContent = branch_arr[_id].find("content").text();
-		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
-		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
-		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
-		if(isComplete == "true"){
-			mandatoryInteraction = false;
-			checkNavButtons();
+    function checkMode(){
+	    $('.antiscroll-wrap').antiscroll();
+	    $(this).scrubContent();
+	    try { $("#sidebar").width($("#sidebar").width() + 10); } catch (e) {}
+	    if(mode == "edit"){
+		   /*******************************************************
+			* Edit Sidebar
+			********************************************************/
+			//Add and style contentEdit button
+			if(branchType == "sidebar"){
+				$("#sidebar").attr('contenteditable', true);
+                CKEDITOR.disableAutoInline = true;
+				CKEDITOR.inline( 'sidebar', {
+					on: {
+						blur: function (event){
+							if(cachedTextPreEdit != event.editor.getData()){
+								saveSidebarEdit(event.editor.getData());
+							}
+							enableNext();
+							enableBack();
+						},
+						focus: function (event){
+							cachedTextPreEdit = event.editor.getData();
+							disableNext();
+							disableBack();
+						}
+					},
+					toolbar: contentToolbar,
+					toolbarGroups :contentToolgroup,
+					extraPlugins: 'sourcedialog',
+					allowedContent: true
+				});
+			}
+			
+			/*******************************************************
+			* Edit Content
+			********************************************************/
+			//Add and style contentEdit button
+			if(branchType != "graphicOnly"){
+            	$("#content").attr('contenteditable', true);
+                CKEDITOR.disableAutoInline = true;
+				CKEDITOR.inline( 'content', {
+					on: {
+						blur: function (event){
+							if(cachedTextPreEdit != event.editor.getData()){
+								saveContentEdit(event.editor.getData());
+							}
+							enableNext();
+							enableBack();
+						},
+						focus: function (event){
+							cachedTextPreEdit = event.editor.getData();
+							disableNext();
+							disableBack();
+						}
+					},
+					toolbar: contentToolbar,
+					toolbarGroups :contentToolgroup,
+					extraPlugins: 'sourcedialog',
+					allowedContent: true
+				});
+			}
 		}
-		//updatePageTitle(myTitle);
-		pageTitle = new C_PageTitle(_id);
-		buildContentText();
-		buildBranchOptions(_id);
-	}
-
+    }
+	
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
