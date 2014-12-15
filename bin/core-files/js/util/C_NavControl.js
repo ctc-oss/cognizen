@@ -1493,6 +1493,10 @@ this.loadPage = function(){
 			currentTemplate = new C_EssayCompare(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "slider":
+			currentTemplate = new C_Slider(currentTemplateType);
+			currentTemplate.initialize();
+			break;	
 		//UNITY SWF Layouts
 		case "unity":
 			currentTemplate = new C_Unity3D(currentTemplateType);

@@ -218,6 +218,7 @@ function fadeComplete() {
   	try { $("#acceptedResponseEdit").remove(); } catch (e) {}
   	try { $("#diffeedEdit").remove(); } catch(e) {}
   	try { $("#essayCompareHolder").remove(); } catch (e) {}
+  	try { $("#sliderHolder").remove(); } catch (e) {}
 
 	try{
 		for(name in CKEDITOR.instances){

@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider"];
 
 
 /************************************************************************************
@@ -1203,6 +1203,59 @@ function createNewPageByType(_myType){
 			
 			break;
 
+		case "slider":
+			$(data).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input instructions or a question.</p>");
+			$(data).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+
+			$(data).find("page").eq(newPage).append($("<slider>"));
+			var mySlider = new DOMParser().parseFromString('<slider></slider>',  "text/xml");
+
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("max", 10);
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("min", 0);
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("step", 1);
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("start", 5);
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("orientation", "horizontal");
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("attempts", 1);
+			$(data).find("page").eq(newPage).find("slider").eq(0).attr("correctanswer", 5);
+			//content
+			$(data).find("page").eq(newPage).find("slider").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var question1CDATA = content1.createCDATASection("Input a question.");
+			$(data).find("page").eq(newPage).find("slider").eq(0).find("content").append(question1CDATA);
+			//diffeed
+			$(data).find("page").eq(newPage).find("slider").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(data).find("page").eq(newPage).find("slider").eq(0).find("diffeed").append(difFeed1CDATA);
+			//correctresponse
+			$(data).find("page").eq(newPage).find("slider").eq(0).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(data).find("page").eq(newPage).find("slider").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
+					
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("feedbacktype", "differentiated");
+			$(data).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(data).find("page").eq(newPage).attr("audio", "null");
+			$(data).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(data).find("page").eq(newPage).attr("graded", false);
+			$(data).find("page").eq(newPage).attr("mandatory", true);
+			$(data).find("page").eq(newPage).attr("type", "kc");
+				
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
 	}
 	newPageAdded = true;
 	sendUpdateWithRefresh();
