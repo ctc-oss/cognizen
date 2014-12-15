@@ -149,7 +149,7 @@ blockquote
 
 .btn_edit_text{
 	position: absolute;
-	right: 0px;
+	right: 10px;
 	z-index: 5;
 	width: 18px;
 	height: 18px;
@@ -1650,6 +1650,10 @@ MULTIPLE CHOICE LAYOUTS
 	border-radius: 8px;
 }
 
+.dialogOptionMenu{
+	padding-bottom: 10px;
+}
+
 .selectedEditBankMember{
 	background-color: green;
 	color: #f3f3f3;
@@ -1893,9 +1897,16 @@ ESSAY COMPARE LAYOUTS
 	color:blue;
 }
 
+.ui-dialog{
+	font-size: 10pt !important;
+}
+.ui-widget-header{
+	font-size: 12pt !important;
+}
+
 /* Styling for the text in the tooltip */
 .ui-tooltip{
-	font-size: 75%;
+	font-size: 8pt !important;
 	max-width: 500px;
 }
 

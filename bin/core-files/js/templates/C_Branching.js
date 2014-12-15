@@ -17,6 +17,9 @@ function C_Branching(_type) {
 	var branchType = type;
 	var branch_arr;
 	var currentMedia;
+	var currentBranch = 0;
+	var mandatory = true;
+	 var currentEditBankMember = 0;
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -45,7 +48,7 @@ function C_Branching(_type) {
 			stageH = window.innerHeight - titleBarHeight - navBarHeight;
 			$("#stage").height(stageH);
 		}
-		loadBranch(0);
+		loadBranch(currentBranch);
    	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -73,10 +76,11 @@ function C_Branching(_type) {
 		try { $("#pageTitle").remove(); } catch (e) {}
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
+		currentBranch = _id;
 		myContent = branch_arr[_id].find("content").text();
-		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
-		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
-		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
+		branchType = branch_arr[_id].attr("layout");
+		isComplete = branch_arr[_id].attr("pathcomplete");
+		currentMedia = branch_arr[_id].attr("img");
 		if(isComplete == "true"){
 			mandatoryInteraction = false;
 			checkNavButtons();
@@ -126,9 +130,9 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildBranchOptions(_id){
-		var optionCount = branch_arr[_id].find("option").length;
+		var branchCount = branch_arr[_id].find("option").length;
 
-		if(optionCount > 0){
+		if(branchCount > 0){
 			var paletteWidth = 0;
 			if(branchType == "top" || branchType == "bottom"){
 				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
@@ -136,7 +140,7 @@ function C_Branching(_type) {
 				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
 			}
 
-			for (var i = 0; i < optionCount; i++){
+			for (var i = 0; i < branchCount; i++){
 				var buttonLabel = branch_arr[_id].find("option").eq(i).text();
 				var buttonID = branch_arr[_id].find("option").eq(i).attr("id");
 				var myOption = "option"+i;
@@ -189,7 +193,7 @@ function C_Branching(_type) {
 	
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    checkMode - Check if authoring is needed
+    checkMode - Check if authoring is needed and enable it...
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     function checkMode(){
@@ -254,8 +258,316 @@ function C_Branching(_type) {
 					allowedContent: true
 				});
 			}
+			
+			/*******************************************************
+			* Edit Question
+			********************************************************/
+            //Add and style titleEdit button
+			$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+
+			$("#branchEdit").click(function(){
+				updateBranchDialog();
+			}).tooltip();
 		}
     }
+    
+    function updateBranchDialog(){
+	    var msg = "<div id='branchEditDialog' title='Create Branching Exercise'>";
+		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
+		msg += "<div id='branchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Branch Menu: </b></label></div><br/><br/>";
+		msg += "</div>";
+		$("#stage").append(msg);
+		
+		if(!mandatory){
+			$("#isMandatory").removeAttr('checked');
+		}else{
+			$("#isMandatory").attr('checked', 'checked');
+		}
+		
+		updateRevealMenu();
+
+		addOption(currentEditBankMember, false);
+		
+		//Style it to jQuery UI dialog
+		$("#branchEditDialog").dialog({
+			autoOpen: true,
+			modal: true,
+			width: 800,
+			height: 650,
+			dialogClass: "no-close",
+			buttons: [
+				{
+					text: "Add",
+					title: "Add a new path.",
+					click: function(){
+						makeRevealDataStore();
+						clearCKInstances();
+						try { $("#optionContainer").remove(); } catch (e) {}
+						addOption(branchCount, true);
+						updateRevealMenu();
+					}
+				},
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+				        makeRevealDataStore();
+				        clearCKInstances();
+						saveBranchingEdit();
+						$("#branchEditDialog").dialog("close");
+						$("#branchEditDialog").remove();
+					}
+				}
+			]
+
+		});
+
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
+    }
+    
+    function updateRevealMenu(){
+		revealMenu_arr = [];
+		$(".questionBankItem").remove();
+		var msg = "";
+		for(var h = 0; h < branchCount; h++){
+			var label = parseInt(h + 1);
+			var tmpID = "revealItem"+h;
+			msg += "<div id='"+tmpID+"' class='questionBankItem";
+			if(currentEditBankMember == h){
+				msg += " selectedEditBankMember";
+			}else{
+				msg += " unselectedEditBankMember";
+			}
+			msg += "' style='";
+
+			if(h < 100){
+				msg += "width:30px;";
+			}else if(h > 99){
+				msg += "width:45px;";
+			}
+			var cleanText = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			//console.log("cleanText = " + cleanText);
+			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
+
+			revealMenu_arr.push(tmpID);
+		}
+
+		$("#branchMenu").append(msg);
+
+		for(var j = 0; j < revealMenu_arr.length; j++){
+			if(currentEditBankMember != j){
+				var tmpID = "#" + revealMenu_arr[j];
+				$(tmpID).click(function(){
+					makeRevealDataStore();
+					clearCKInstances();
+					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+					$("#branchEditDialog").remove();
+					currentEditBankMember = $(this).attr("data-myID");
+					updateBranchDialog();
+				}).tooltip();
+			}
+		}
+	}
+	
+	function makeRevealDataStore(){
+		if($("#isMandatory").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("mandatory", "true");
+			mandatory = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("mandatory", "false");
+			mandatory = false;
+		}
+
+		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+		
+		//$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").prop("checked"));
+	}
+	
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeOption();
+	                $(this).dialog("close");
+                }
+            }
+        });
+	}
+
+	function removeOption(){
+		if(branchCount > 1){
+			clearCKInstances();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
+			$("#optionContainer").remove();
+			branchCount--;
+			currentEditBankMember = 0;
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
+			updateBranchDialog();
+		}else{
+			alert("you must have at least one bank item.");
+		}
+	}
+
+	function addOption(_addID, _isNew){
+		var optionLabel = parseInt(_addID) + 1;
+
+		if(_isNew == true){
+			$(data).find("page").eq(currentPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Branch Page Title");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", guid());
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success", "false");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
+			currentEditBankMember = _addID;
+			branchCount++;
+		}
+
+		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
+		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
+		var success = true;
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
+			success = false;
+		}
+		
+		var complete = true;
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete") == "false"){
+			complete = false;
+		}
+		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
+		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch option'/>";
+		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
+		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
+		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/><br/>";
+		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>Edit Branch Title: </b></label>";
+		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
+		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Edit Branch Content: </b></div>";
+		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
+		msg += "</div>";
+
+		$("#branchEditDialog").append(msg);
+		
+		if(!complete){
+			$("#isComplete").removeAttr('checked');
+		}else{
+			$("#isComplete").attr('checked', 'checked');
+		}
+		
+		if(!success){
+			$("#isSuccess").removeAttr('checked');
+		}else{
+			$("#isSuccess").attr('checked', 'checked');
+		}
+
+		$("#optionRemove").on('click', function(){
+			areYouSure();
+		});
+
+		CKEDITOR.inline( "optionText", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
+		    	}
+		    }
+		});
+
+		CKEDITOR.inline( "optionTitleText", {
+			toolbar: pageTitleToolbar,
+			toolbarGroups : pageTitleToolgroup,
+			extraPlugins: 'sourcedialog',
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			allowedContent: true
+		});
+	}
+    
+    function clearCKInstances(){
+		if (CKEDITOR.instances['optionText']) {
+            CKEDITOR.instances.optionText.destroy();
+        }
+        if (CKEDITOR.instances['optionTitleText']) {
+            CKEDITOR.instances.optionTitleText.destroy();
+        }
+
+	}
+    
+     /**********************************************************************
+     **Save Content Edit - save updated content text to content.xml
+     **********************************************************************/
+    function saveContentEdit(_data){
+        var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
+        var newCDATA=docu.createCDATASection(_data);
+        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().empty();
+        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().append(newCDATA);
+        sendUpdate();
+    };
+
+    /**********************************************************************
+     **Save Sidebar Edit
+     **********************************************************************/
+	function saveSidebarEdit(_data){
+	   	var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
+	   	var newCDATA=docu.createCDATASection(_data);
+	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").empty();
+	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").append(newCDATA);
+	   	sendUpdate();
+	};
+	
+	/**********************************************************************
+    **Save Question Edit - save updated question preferences to content.xml
+    **********************************************************************/
+	function saveBranchingEdit(_data){
+		var extra = $(data).find("page").eq(currentPage).find("branch").length;
+		var active = branchCount;
+		//var removed = extra - active;
+		for(var i = extra + 1; i >= active; i--){
+			$(data).find("page").eq(currentPage).find("branch").eq(i).remove();
+		}
+
+		markIncomplete();
+		sendUpdateWithRefresh();
+		fadeComplete();
+	}
 	
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
