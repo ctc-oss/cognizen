@@ -597,7 +597,6 @@ function C_TextInput(_type) {
 				$('.ui-button:contains(Add DropDown Option)').show();
 				var test = $(data).find("page").eq(currentPage).find("question").eq(currentEditBankMember).find("dropdownoption").length;
 				if(test == 0){
-					alert("no ddoptions");
 					addDropDownOption(0, true);								
 				}
 			}
