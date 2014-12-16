@@ -19,7 +19,8 @@ function C_Branching(_type) {
 	var currentMedia;
 	var currentBranch = 0;
 	var mandatory = true;
-	 var currentEditBankMember = 0;
+	var currentEditBankMember = 0;
+	var layoutType_arr = ["textOnly", "graphicOnly", "top", "right", "bottom", "left", "sidebar"];
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -391,15 +392,17 @@ function C_Branching(_type) {
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
-		
-		//$(data).find("page").eq(currentPage).find("option").eq(currentEditBankMember).attr("correct", $("#optionCorrect").prop("checked"));
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
+		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
+			//Add option specific information here
+		} 
 	}
 	
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
 	function areYouSure(){
-		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? <br/><br/>This cannot be undone!</div>');
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this item from the page."><p class="validateTips">Are you sure that you want to remove this item from your page? Selecting "Remove" will also remove all button links to this branch.<br/><br/>This cannot be undone!</div>');
 
 	    $("#dialog-removeContent").dialog({
             modal: true,
@@ -422,6 +425,15 @@ function C_Branching(_type) {
 	function removeOption(){
 		if(branchCount > 1){
 			clearCKInstances();
+			var tempID = $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("id");
+			var optionLength = $(data).find("page").eq(currentPage).find("option").length;
+			
+			//CLEAR OUT ALL LINKS TO THIS BRANCH IN THE XML...
+			for(var i = optionLength - 1; i >= 0; i--){
+				if($(data).find("page").eq(currentPage).find("option").eq(i).attr("id") == tempID){
+					$(data).find("page").eq(currentPage).find("option").eq(i).remove();
+				}
+			} 
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
@@ -448,6 +460,11 @@ function C_Branching(_type) {
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
+			var option = new DOMParser().parseFromString('<option></option>', "text/xml");
+			var optionCDATA = option.createCDATASection("New Branch Option");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").append(optionCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").first().attr("id", branch_arr[0].attr("id"));
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", guid());
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success", "false");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
@@ -469,7 +486,17 @@ function C_Branching(_type) {
 			complete = false;
 		}
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
-		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch option'/>";
+		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
+		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>Set layout:</b> </label>";
+     	msg += "<select name='layoutDrop' id='layoutDrop'>";
+     	for(var j = 0; j < layoutType_arr.length; j++){
+     		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout")){
+     			msg += "<option value='"+layoutType_arr[j]+"' selected='selected'>"+layoutType_arr[j]+"</option>";
+     		}else{
+	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
+     		}
+	 	}
+     	msg += "</select> ";
 		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
 		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
@@ -479,9 +506,43 @@ function C_Branching(_type) {
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Edit Branch Content: </b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		msg += "</div>";
-
 		$("#branchEditDialog").append(msg);
 		
+		var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
+		
+		$("#optionContainer").append("<div id='editBranchOptionHolder'><b>Branch Buttons:</b><br/></div>");
+		//addBranchOptions/selectors
+		for(var i = 0; i < branchOptionLength; i++){
+			var optionText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text();
+			var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
+			var msg = "<div id='myBranchOption"+ i +"' style='width:80%;'>";
+				msg += "<label for='optionLabel'>Label: </label>";
+				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' class='dialogInput' style='width:250px;'/>&nbsp&nbsp";
+				msg += "<label for='branchDrop'  title='Set the branch link.'>Link to: </label>";
+				msg += "<select name='branchDrop' id='branchDrop'>";
+				for(var k = 0; k < branch_arr.length; k++){
+					msg += "<option value='"+branch_arr[k].attr('id')+"'>"+branch_arr[k].find('title').text()+"</option>"
+				}
+				msg += "</select>";
+				msg += "<div id='branchOptionRemove' class='removeMedia' data='"+i+"' value='"+optionID+"' title='Click to remove this branch option'/>";
+				msg += "</div>";
+			$("#editBranchOptionHolder").append(msg);
+			
+			for(var m = 0; m < branch_arr.length; m++){
+				if(optionID == $("#myBranchOption"+i).find($("option")).eq(m).val()){
+					$("#myBranchOption"+i).find($("option")).eq(m).attr('selected','selected');
+				}
+			}
+			
+			$("#myBranchOption" + i).find(".removeMedia").click(function(){
+				removeBranchOption(_addID, $(this).attr("data"), $(this).attr("value"));
+			});
+		}
+		
+		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div>");
+		$("#addBranchOption").button().click(function(){
+			addNewBranchOption($(this).attr("value"));
+		});
 		if(!complete){
 			$("#isComplete").removeAttr('checked');
 		}else{
@@ -519,6 +580,25 @@ function C_Branching(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
+	}
+	
+	function addNewBranchOption(_addID){
+		var newPos = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
+		$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
+		var option = new DOMParser().parseFromString('<option></option>', "text/xml");
+		var optionCDATA = option.createCDATASection("New Branch Option");
+		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).append(optionCDATA);
+		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).attr("id", branch_arr[0].attr("id"));
+		updateBranchDialog();
+	}
+	
+	function removeBranchOption(_branchID, _optionNum, _optionID){
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).remove();
+		$("#optionContainer").remove();
+		$("#branchEditDialog").dialog("close");
+		$("#branchEditDialog").remove();
+		clearCKInstances();
+		updateBranchDialog();
 	}
     
     function clearCKInstances(){
