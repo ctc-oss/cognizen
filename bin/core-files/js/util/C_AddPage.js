@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "textInput", "essayCompare", "clickListRevealText", "slider"];
 
 
 /************************************************************************************
@@ -215,6 +215,41 @@ function createNewPageByType(_myType){
 			var sidebarCDATA = newSidebarContent.createCDATASection("<p>New Page Sidebar</p>");
 			$(data).find("page").eq(newPage).find("sidebar").append(sidebarCDATA);
 			
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("type", "static");
+			break;
+		case "branching":
+			var tempID = guid();
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Branch Page Introduction");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<option>"));
+			var option = new DOMParser().parseFromString('<option></option>', "text/xml");
+			var optionCDATA = option.createCDATASection("This Page");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").append(optionCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").first().attr("id", tempID);
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("success", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathcomplete", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("id", tempID);
+			$(data).find("page").eq(newPage).attr("graded", "false");
+			$(data).find("page").eq(newPage).attr("mandatory", "false");
+			$(data).find("page").eq(newPage).attr("type", "static");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");

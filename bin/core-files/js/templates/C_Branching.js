@@ -35,7 +35,9 @@ function C_Branching(_type) {
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-		
+		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
+			mandatory = false;
+		}
         buildTemplate();
     }
 
@@ -393,8 +395,12 @@ function C_Branching(_type) {
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
-			//Add option specific information here
+			var optionCDATA = newRevealContent.createCDATASection($("#myBranchOption" + i).find(".dialogInput").val());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).append(optionCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("id", $("#myBranchOption" + i).find("#branchDrop option:selected").val());
 		} 
 	}
 	
@@ -460,6 +466,10 @@ function C_Branching(_type) {
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").append(sidebarCDATA);
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
 			var option = new DOMParser().parseFromString('<option></option>', "text/xml");
 			var optionCDATA = option.createCDATASection("New Branch Option");
@@ -472,6 +482,7 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
 			currentEditBankMember = _addID;
 			branchCount++;
+			buildBranchArray();
 		}
 
 		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
@@ -487,7 +498,12 @@ function C_Branching(_type) {
 		}
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
-		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>Set layout:</b> </label>";
+		
+		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
+		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
+		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/>";
+		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
      		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout")){
@@ -496,39 +512,37 @@ function C_Branching(_type) {
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
      		}
 	 	}
-     	msg += "</select> ";
-		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
-		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
-		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
-		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/><br/>";
-		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>Edit Branch Title: </b></label>";
+     	msg += "</select>";
+     	msg += "<label for='mediaLink'><b>media: </b></label>";
+		msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+ $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img') + "' class='dialogInput'/>";
+		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
-		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Edit Branch Content: </b></div>";
+		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
 		
 		var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
 		
-		$("#optionContainer").append("<div id='editBranchOptionHolder'><b>Branch Buttons:</b><br/></div>");
+		$("#optionContainer").append("<div id='editBranchOptionHolder'><b>branch buttons:</b><br/></div>");
 		//addBranchOptions/selectors
 		for(var i = 0; i < branchOptionLength; i++){
-			var optionText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text();
+			var optionText = $.trim($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text());
 			var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
 			var msg = "<div id='myBranchOption"+ i +"' style='width:80%;'>";
-				msg += "<label for='optionLabel'>Label: </label>";
-				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' class='dialogInput' style='width:250px;'/>&nbsp&nbsp";
-				msg += "<label for='branchDrop'  title='Set the branch link.'>Link to: </label>";
+				msg += "<label for='optionLabel'><b>label: </b></label>";
+				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' data='"+i+"' class='dialogInput' style='width:250px;'/>";
+				msg += "<label for='branchDrop'  title='Set the branch link.'><b>link to: </b></label>";
 				msg += "<select name='branchDrop' id='branchDrop'>";
 				for(var k = 0; k < branch_arr.length; k++){
-					msg += "<option value='"+branch_arr[k].attr('id')+"'>"+branch_arr[k].find('title').text()+"</option>"
+					msg += "<option value='"+branch_arr[k].attr('id')+"' data='"+i+"'>"+branch_arr[k].find('title').text()+"</option>"
 				}
 				msg += "</select>";
 				msg += "<div id='branchOptionRemove' class='removeMedia' data='"+i+"' value='"+optionID+"' title='Click to remove this branch option'/>";
 				msg += "</div>";
 			$("#editBranchOptionHolder").append(msg);
 			
-			for(var m = 0; m < branch_arr.length; m++){
+			for(var m = 0; m < $(data).find("page").eq(currentPage).find("branch").length; m++){
 				if(optionID == $("#myBranchOption"+i).find($("option")).eq(m).val()){
 					$("#myBranchOption"+i).find($("option")).eq(m).attr('selected','selected');
 				}
@@ -537,12 +551,32 @@ function C_Branching(_type) {
 			$("#myBranchOption" + i).find(".removeMedia").click(function(){
 				removeBranchOption(_addID, $(this).attr("data"), $(this).attr("value"));
 			});
+			
+			$("#myBranchOption" + i).find(".dialogInput").focusout(function(){
+				console.log("focusout with value = " + $(this).val());
+				updateBranchOption(_addID, $(this).attr("data"));
+			});
+			
+			$("#myBranchOption" + i).find("#branchDrop").change(function() {
+				updateBranchOption(_addID, $(this).attr("data"));
+			});
 		}
 		
-		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div>");
+		$("#optionTitleText").focusout(function(){
+			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+			buildBranchArray();
+			updateBranchDialog();
+		});
+
+		
+		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div><br/><br/>");
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
+		
 		if(!complete){
 			$("#isComplete").removeAttr('checked');
 		}else{
@@ -582,6 +616,15 @@ function C_Branching(_type) {
 		});
 	}
 	
+	function updateBranchOption(_branchID, _optionNum){
+		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");		
+		var optionCDATA = newRevealContent.createCDATASection($("#myBranchOption" + _optionNum).find(".dialogInput").val());
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).empty();
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).append(optionCDATA);
+		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).attr("id", $("#myBranchOption" + _optionNum).find("#branchDrop option:selected").val());
+		
+	}
+	
 	function addNewBranchOption(_addID){
 		var newPos = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
@@ -589,6 +632,10 @@ function C_Branching(_type) {
 		var optionCDATA = option.createCDATASection("New Branch Option");
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).append(optionCDATA);
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).attr("id", branch_arr[0].attr("id"));
+		$("#optionContainer").remove();
+		$("#branchEditDialog").dialog("close");
+		$("#branchEditDialog").remove();
+		clearCKInstances();
 		updateBranchDialog();
 	}
 	
