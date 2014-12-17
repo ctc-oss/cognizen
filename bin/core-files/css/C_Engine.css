@@ -1721,6 +1721,11 @@ MATCHING LAYOUTS
 	display: table;
 }
 
+/*** stack draggable statements instead of side-by-side ***/
+.matchingDragImgOptions .matchingStatement{
+	display: block;
+}
+
 .matchingAnswer{
 	position: absolute;
 	overflow : visible;
