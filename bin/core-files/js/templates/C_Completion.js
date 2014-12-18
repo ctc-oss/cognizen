@@ -266,12 +266,13 @@ function C_Completion(_type) {
 			$("#completionButton").button().click(function(){
 				var _objIndex = findObjective(lessonTitle +"_satisfied");
 				if(isScored === "true"){
-					if(scormVersion === '1.2_CTCU') {
+					//#3219 updated to use passed status to set completions, parameter 1
+					// if(scormVersion === '1.2_CTCU') {
 						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
-					}
-					else{
-						completeLesson(completed, score_obj.passed, score_obj.score, false, false);
-					}
+					// }
+					// else{
+					// 	completeLesson(completed, score_obj.passed, score_obj.score, false, false);
+					// }
 				}
 				else{
 					completeLesson(true, true, 0, false, false);

@@ -633,17 +633,17 @@ var SCORM = {
 		var objectives = "                    <imsss:objectives>\n";
 
 		//JKO 3rd edition player requires the use of secondary objectives for module level objectives, bug with primaryObjectives in player
-        if(courseAttr.lms === "JKO" && _this.scormVersion === "2004_3rd"){
+        // if(courseAttr.lms === "JKO" && _this.scormVersion === "2004_3rd"){
 			objectives += "                    <imsss:primaryObjective /> \n"+
         	"					<imsss:objective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
             "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
             "					</imsss:objective>\n";			
-        }		
-		else{
-	        objectives += "                    <imsss:primaryObjective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
-	        "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-	        "					</imsss:primaryObjective>\n"; 			
-		}
+  //       }		
+		// else{
+	 //        objectives += "                    <imsss:primaryObjective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
+	 //        "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+	 //        "					</imsss:primaryObjective>\n"; 			
+		// }
 
        
         objectives += _this._secondaryObjectivesGenerator();
