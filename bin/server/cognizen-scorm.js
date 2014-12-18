@@ -1830,7 +1830,14 @@ var SCORM = {
 
 	_jsResourceGenerator : function(_prefix){
 		var _this = this;
-		var resource =  "      <resource identifier=\"RES-js-files\" type=\"webcontent\" adlcp:scormType=\"asset\">\n";
+		var resource =  "      <resource identifier=\"RES-js-files\" type=\"webcontent\" "; 
+		//fix for bug#3214
+		if(_this.scormVersion.indexOf('2004') != -1){
+			resource += "adlcp:scormType=\"asset\">\n";
+		}
+		else{
+			resource += "adlcp:scormtype=\"asset\">\n";
+		}
         //add js directory to resources
         _this.logger.info("CONTENTPATH " + _this.contentPath);
 
