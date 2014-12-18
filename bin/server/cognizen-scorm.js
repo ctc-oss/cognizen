@@ -158,6 +158,7 @@ var SCORM = {
 								    	}
 
 								    	if(tmpObjId.length > 0 ){
+								    		tmpObjId += "_id";
 								    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
 								    			_this.objectives_arr.push(tmpObjId);
 								    		}
