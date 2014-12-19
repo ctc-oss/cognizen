@@ -112,6 +112,8 @@ function completeLessonDefault(){
 
 function completeLesson(completion, success, score, remediate, attemptExceeded){
 	if(doScorm()){
+		var raw = score*100;
+
 		if(completion){
 			scorm.status("set", "completed");	
 		}
@@ -128,42 +130,28 @@ function completeLesson(completion, success, score, remediate, attemptExceeded){
 			}
 
 			scorm.set("cmi.score.scaled", score.toString());
+			scorm.set("cmi.score.raw", raw.toString());
 
 			var finalLesson = $(data).find('finalLesson').attr('value');
-			//handle completion for USSOCOM publish
-			if(scorm.VERSION.indexOf('USSOCOM') != -1){
-				if(attemptExceeded){
-					scorm.set("adl.nav.request", "exitAll");
-				}
-				else{
-					// if(remediate){
-					// 	scorm.set("adl.nav.request", "previous");
-					// }
-					// else{
-						scorm.set("adl.nav.request", "continue");
-					//}
-				}
+
+			if(finalLesson === 'true' && !remediate){
+				scorm.set("adl.nav.request", "exitAll");
 			}
-			else{
-				if(finalLesson === 'true' && !remediate){
-					scorm.set("adl.nav.request", "exitAll");
+			else
+			{
+				var validContinue = scorm.get("adl.nav.request_valid.continue");
+				if(validContinue === 'true')
+				{
+					scorm.set("adl.nav.request", "continue");
 				}
 				else
 				{
-					var validContinue = scorm.get("adl.nav.request_valid.continue");
-					if(validContinue === 'true')
-					{
-						scorm.set("adl.nav.request", "continue");
-					}
-					else
-					{
-						scorm.set("adl.nav.request", "exit");
-					}
+					scorm.set("adl.nav.request", "exit");
 				}
 			}
+
 		}
-		else if(scorm.VERSION === "1.2"){
-			var raw = score*100;
+		else if(scorm.VERSION === "1.2"){			
 			scorm.set("cmi.core.score.raw", raw.toString());
 		}
 
