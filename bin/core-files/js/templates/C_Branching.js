@@ -394,7 +394,6 @@ function C_Branching(_type) {
 		}
 
 		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-		console.log(CKEDITOR.instances);
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
@@ -591,18 +590,21 @@ function C_Branching(_type) {
 			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
-		
-		$("#sidebarText").focusout(function(){
-			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
-			clearCKInstances();
-			try { $("#optionContainer").remove(); } catch (e) {}
-			$("#branchEditDialog").dialog("close");
-			$("#branchEditDialog").remove();
-			updateBranchDialog();
-		});
+		if(currentLayout == "sidebar"){
+			$("#sidebarText").focusout(function(){
+				console.log("sidebar changed");
+				console.log(CKEDITOR.instances["sidebarText"].getData());
+				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+				var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
+				clearCKInstances();
+				try { $("#optionContainer").remove(); } catch (e) {}
+				$("#branchEditDialog").dialog("close");
+				$("#branchEditDialog").remove();
+				updateBranchDialog();
+			});
+		}
 		
 		$("#optionText").focusout(function(){
 			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
@@ -684,6 +686,21 @@ function C_Branching(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
+		
+		if(currentLayout == "sidebar"){
+			CKEDITOR.inline( "sidebarText", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit sidebar content.");
+			    	}
+			    }
+			});
+		}
 	}
 	
 	function updateBranchOption(_branchID, _optionNum){
