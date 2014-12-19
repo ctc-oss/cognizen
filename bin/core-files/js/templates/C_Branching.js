@@ -506,6 +506,7 @@ function C_Branching(_type) {
 
 		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
 		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
+		var currentLayout = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout");
 		var success = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
 			success = false;
@@ -532,8 +533,11 @@ function C_Branching(_type) {
      		}
 	 	}
      	msg += "</select>&nbsp;&nbsp;";
-     	msg += "<label for='mediaLink'><b>media: </b></label>";
-		msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/><br/>";
+     	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
+	     	msg += "<label for='mediaLink'><b>media: </b></label>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+		}
+		msg += "<br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
@@ -596,6 +600,12 @@ function C_Branching(_type) {
 		
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
+			buildBranchArray();
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
+			updateBranchDialog();
 		});
 		
 		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div><br/><br/>");
