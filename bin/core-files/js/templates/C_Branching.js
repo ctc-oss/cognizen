@@ -77,6 +77,9 @@ function C_Branching(_type) {
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
+		try { $("#sidebarHolder").remove(); } catch (e) {}
+		clearMainCKEInstances();
+
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
 		currentBranch = _id;
@@ -119,7 +122,21 @@ function C_Branching(_type) {
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
 	        mediaHolder.loadVisualMedia();
-	    }else{
+	    }else if(branchType == "sidebar"){
+		    var mySidebar = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").first().text();
+		    $('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');
+			$('#sidebar').append(mySidebar);
+
+			if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
+				$(".sidebar").height(stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40));
+			}else{
+				$(".sidebar").height($('#sidebar').height());
+			}
+
+			$('#sidebar').height($('#sidebarHolder').height());
+			$('#sidebar').attr('aria-label', $('#sidebar').text());
+			pageAccess_arr.push($("#sidebar"));
+		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
@@ -317,8 +334,9 @@ function C_Branching(_type) {
 					title: "Saves and closes the edit dialog.",
 					click: function(){
 				        makeRevealDataStore();
-				        clearCKInstances();
 						saveBranchingEdit();
+						clearCKInstances();
+						try { $("#optionContainer").remove(); } catch (e) {}
 						$("#branchEditDialog").dialog("close");
 						$("#branchEditDialog").remove();
 					}
@@ -388,6 +406,7 @@ function C_Branching(_type) {
 		}
 
 		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+		console.log(CKEDITOR.instances);
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
@@ -487,6 +506,7 @@ function C_Branching(_type) {
 
 		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
 		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
+		var currentLayout = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout");
 		var success = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
 			success = false;
@@ -502,7 +522,7 @@ function C_Branching(_type) {
 		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
 		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
-		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/>";
+		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
@@ -512,9 +532,12 @@ function C_Branching(_type) {
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
      		}
 	 	}
-     	msg += "</select>";
-     	msg += "<label for='mediaLink'><b>media: </b></label>";
-		msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+ $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img') + "' class='dialogInput'/>";
+     	msg += "</select>&nbsp;&nbsp;";
+     	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
+	     	msg += "<label for='mediaLink'><b>media: </b></label>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+		}
+		msg += "<br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
@@ -568,11 +591,25 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 			buildBranchArray();
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
-
+		
+		$("#layoutDrop").change(function() {
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
+			buildBranchArray();
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
+			updateBranchDialog();
+		});
 		
 		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div><br/><br/>");
+		
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
@@ -588,6 +625,22 @@ function C_Branching(_type) {
 		}else{
 			$("#isSuccess").attr('checked', 'checked');
 		}
+		
+		$("#isSuccess").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "false");
+			}
+		});
+		
+		$("#isComplete").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
+			}
+		});
 
 		$("#optionRemove").on('click', function(){
 			areYouSure();
@@ -656,6 +709,12 @@ function C_Branching(_type) {
             CKEDITOR.instances.optionTitleText.destroy();
         }
 
+	}
+	
+	function clearMainCKEInstances(){
+		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
+		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
+		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
     
      /**********************************************************************

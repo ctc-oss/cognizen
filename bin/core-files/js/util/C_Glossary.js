@@ -26,13 +26,21 @@ Param: 			none
 Description:	Check's to see if this app has glossary turned on - if yes then build it.
 ************************************************************************************************/
 function checkGlossary(){
+	if($(courseData).attr("courseGlossary") == "true"){
+		
+	}
 	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
 		if(isMobile){
 			$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
 		}
 		else{
-			$('#panes').append("<div id='glossaryPane' class='pane'><div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/><div id='glossaryTerms' class='glossaryTerms'></div><div id='glossaryContent' class='glossaryContent'><div id='glossaryDef'></div></div></div>");
+			var msg = "<div id='glossaryPane' class='pane'>";
+				msg += "<div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/>";
+				msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
+				msg += "<div id='glossaryContent' class='glossaryContent'>";
+				msg += "<div id='glossaryDef'></div></div></div>";
+			$('#panes').append(msg);
 		}
 		
 		$('#glossaryTab').click(toggleGlossary).tooltip();

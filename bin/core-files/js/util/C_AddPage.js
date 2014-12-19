@@ -70,11 +70,13 @@ function createNewPageByType(_myType){
 	
 	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
 	var newPage = currentPage + currentChildrenLength + 1;
-	//Place the page title element
-	$(data).find("page").eq(newPage).append($("<title>"));
-	var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
-	var titleCDATA = newPageTitle.createCDATASection("New Page Title");
-	$(data).find("page").eq(newPage).find("title").append(titleCDATA);
+	if(_myType != "branching"){
+		//Place the page title element
+		$(data).find("page").eq(newPage).append($("<title>"));
+		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
+		var titleCDATA = newPageTitle.createCDATASection("New Page Title");
+		$(data).find("page").eq(newPage).find("title").append(titleCDATA);
+	}
 	
 	if(isLinear == true){
 		var page_obj = new Object();
