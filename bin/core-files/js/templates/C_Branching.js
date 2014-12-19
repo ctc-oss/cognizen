@@ -15,7 +15,6 @@ function C_Branching(_type) {
 	var myContent;//Body
 	var branchCount = 0;
 	var branchType = type;
-	var branch_arr;
 	var currentMedia;
 	var currentBranch = 0;
 	var mandatory = true;
@@ -43,7 +42,6 @@ function C_Branching(_type) {
 
      //Defines a private method - notice the difference between the public definitions above.
     function buildTemplate() {
-		buildBranchArray();
 		audioHolder = new C_AudioHolder();
 		if(isMobile){
 			titleBarHeight = $("#courseTitle").height();
@@ -56,23 +54,11 @@ function C_Branching(_type) {
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    buildBranchArray - stores possible branches for page
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    *****************************************************************************************************************************************************************************************************************/
-	function buildBranchArray(){
-		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
-		branch_arr = [];
-		for(var i = 0; i < branchCount; i++){
-			branch_arr.push($(data).find("page").eq(currentPage).find("branch").eq(i));
-		}
-	}
-	
-	/*****************************************************************************************************************************************************************************************************************
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     loadBranch - refreshes the page with the appropriate branch
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function loadBranch(_id){
+		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
 		pageAccess_arr = [];
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
@@ -83,17 +69,20 @@ function C_Branching(_type) {
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
 		currentBranch = _id;
-		myContent = branch_arr[_id].find("content").text();
-		branchType = branch_arr[_id].attr("layout");
-		isComplete = branch_arr[_id].attr("pathcomplete");
-		currentMedia = branch_arr[_id].attr("img");
+		myContent = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("content").text();
+		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
+		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
+		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
 		if(isComplete == "true"){
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
 
 		pageTitle = new C_PageTitle(_id);
-		buildContentText();
+		
+		if(branchType != "graphicOnly"){
+			buildContentText();
+		}
 		buildBranchOptions(_id);
 		checkMode();
 	}
@@ -150,7 +139,7 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildBranchOptions(_id){
-		var branchCount = branch_arr[_id].find("option").length;
+		var branchCount = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").length;
 
 		if(branchCount > 0){
 			var paletteWidth = 0;
@@ -161,8 +150,8 @@ function C_Branching(_type) {
 			}
 
 			for (var i = 0; i < branchCount; i++){
-				var buttonLabel = branch_arr[_id].find("option").eq(i).text();
-				var buttonID = branch_arr[_id].find("option").eq(i).attr("id");
+				var buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
+				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).attr("id");
 				var myOption = "option"+i;
 				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
@@ -372,7 +361,6 @@ function C_Branching(_type) {
 				msg += "width:45px;";
 			}
 			var cleanText = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
-			//console.log("cleanText = " + cleanText);
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 
 			revealMenu_arr.push(tmpID);
@@ -493,7 +481,7 @@ function C_Branching(_type) {
 			var option = new DOMParser().parseFromString('<option></option>', "text/xml");
 			var optionCDATA = option.createCDATASection("New Branch Option");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").append(optionCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").first().attr("id", branch_arr[0].attr("id"));
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").first().attr("id", $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id"));
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", guid());
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success", "false");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
@@ -501,11 +489,11 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
 			currentEditBankMember = _addID;
 			branchCount++;
-			buildBranchArray();
 		}
 
 		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
 		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
+		var branchSidebar = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").text();
 		var currentLayout = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout");
 		var success = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
@@ -540,8 +528,15 @@ function C_Branching(_type) {
 		msg += "<br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
-		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
-		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
+		if(currentLayout != "graphicOnly"){
+			msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
+			msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
+		}
+		
+		if(currentLayout == "sidebar"){
+			msg += "<div id='sidebarInput' style='padding-bottom:5px;'><b>edit branch sidebar: </b></div>";
+			msg += "<div id='sidebarText' contenteditable='true' class='dialogInput'>" + branchSidebar + "</div>";
+		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
 		
@@ -557,8 +552,8 @@ function C_Branching(_type) {
 				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' data='"+i+"' class='dialogInput' style='width:250px;'/>";
 				msg += "<label for='branchDrop'  title='Set the branch link.'><b>link to: </b></label>";
 				msg += "<select name='branchDrop' id='branchDrop'>";
-				for(var k = 0; k < branch_arr.length; k++){
-					msg += "<option value='"+branch_arr[k].attr('id')+"' data='"+i+"'>"+branch_arr[k].find('title').text()+"</option>"
+				for(var k = 0; k < $(data).find("page").eq(currentPage).find("branch").length; k++){
+					msg += "<option value='"+$(data).find("page").eq(currentPage).find("branch").eq(k).attr('id')+"' data='"+i+"'>"+$(data).find("page").eq(currentPage).find("branch").eq(k).find('title').text()+"</option>"
 				}
 				msg += "</select>";
 				msg += "<div id='branchOptionRemove' class='removeMedia' data='"+i+"' value='"+optionID+"' title='Click to remove this branch option'/>";
@@ -590,7 +585,6 @@ function C_Branching(_type) {
 			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
-			buildBranchArray();
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
@@ -600,7 +594,6 @@ function C_Branching(_type) {
 		
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
-			buildBranchArray();
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
@@ -684,7 +677,7 @@ function C_Branching(_type) {
 		var option = new DOMParser().parseFromString('<option></option>', "text/xml");
 		var optionCDATA = option.createCDATASection("New Branch Option");
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).append(optionCDATA);
-		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).attr("id", branch_arr[0].attr("id"));
+		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).attr("id", $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id"));
 		$("#optionContainer").remove();
 		$("#branchEditDialog").dialog("close");
 		$("#branchEditDialog").remove();
