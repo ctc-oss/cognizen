@@ -259,9 +259,9 @@ function C_MultipleChoice(_type) {
 		pageAccess_arr.push($("#mcSubmit"));
 
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
-		if(isIE){
+		/*if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
-		}
+		}*/
 
 		if(type == "multipleChoiceMedia"){
         	$("#answerOptions").addClass("left");

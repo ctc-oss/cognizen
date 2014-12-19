@@ -316,11 +316,19 @@ function C_Branching(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
+				        console.log("1");
 				        makeRevealDataStore();
-				        clearCKInstances();
+				        console.log("2");
 						saveBranchingEdit();
+						console.log("3");
+						clearCKInstances();
+						console.log("4");
+						try { $("#optionContainer").remove(); } catch (e) {}
+						console.log("5");
 						$("#branchEditDialog").dialog("close");
+						console.log("6");
 						$("#branchEditDialog").remove();
+						console.log("7");
 					}
 				}
 			]
@@ -388,6 +396,7 @@ function C_Branching(_type) {
 		}
 
 		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+		console.log(CKEDITOR.instances);
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
@@ -502,7 +511,7 @@ function C_Branching(_type) {
 		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
 		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
-		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/>";
+		msg += "<input id='isSuccess' type='checkbox' name='isSuccess' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
@@ -512,9 +521,9 @@ function C_Branching(_type) {
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
      		}
 	 	}
-     	msg += "</select>";
+     	msg += "</select>&nbsp;&nbsp;";
      	msg += "<label for='mediaLink'><b>media: </b></label>";
-		msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+ $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img') + "' class='dialogInput'/>";
+		msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/><br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
@@ -568,6 +577,10 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 			buildBranchArray();
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
 
