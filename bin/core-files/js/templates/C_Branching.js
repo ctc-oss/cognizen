@@ -701,7 +701,9 @@ function C_Branching(_type) {
         if (CKEDITOR.instances['optionTitleText']) {
             CKEDITOR.instances.optionTitleText.destroy();
         }
-
+		if (CKEDITOR.instances['sidebarText']) {
+            CKEDITOR.instances.sidebarText.destroy();
+        }
 	}
 	
 	function clearMainCKEInstances(){
