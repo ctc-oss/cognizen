@@ -119,7 +119,21 @@ function C_Branching(_type) {
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
 	        mediaHolder.loadVisualMedia();
-	    }else{
+	    }else if(branchType == "sidebar"){
+		    var mySidebar = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").first().text();
+		    $('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');
+			$('#sidebar').append(mySidebar);
+
+			if($('#sidebar').height() > stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40)){
+				$(".sidebar").height(stageH - ($('#sidebarHolder').position().top + audioHolder.getAudioShim() + 40));
+			}else{
+				$(".sidebar").height($('#sidebar').height());
+			}
+
+			$('#sidebar').height($('#sidebarHolder').height());
+			$('#sidebar').attr('aria-label', $('#sidebar').text());
+			pageAccess_arr.push($("#sidebar"));
+		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
