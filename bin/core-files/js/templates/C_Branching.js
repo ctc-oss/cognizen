@@ -77,6 +77,8 @@ function C_Branching(_type) {
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
+		try { $("#sidebar").remove(); } catch (e) {}
+
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
 		currentBranch = _id;
