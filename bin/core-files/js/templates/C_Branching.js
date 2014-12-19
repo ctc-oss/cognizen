@@ -585,11 +585,11 @@ function C_Branching(_type) {
 		});
 		
 		$("#layoutDrop").change(function() {
-			//updateBranchOption(_addID, $(this).attr("data"));
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 		});
 		
 		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div><br/><br/>");
+		
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
@@ -605,6 +605,22 @@ function C_Branching(_type) {
 		}else{
 			$("#isSuccess").attr('checked', 'checked');
 		}
+		
+		$("#isSuccess").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "false");
+			}
+		});
+		
+		$("#isComplete").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
+			}
+		});
 
 		$("#optionRemove").on('click', function(){
 			areYouSure();
