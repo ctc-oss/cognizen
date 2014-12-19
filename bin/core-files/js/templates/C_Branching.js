@@ -77,7 +77,8 @@ function C_Branching(_type) {
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
-		try { $("#sidebar").remove(); } catch (e) {}
+		try { $("#sidebarHolder").remove(); } catch (e) {}
+		clearMainCKEInstances();
 
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
@@ -332,19 +333,12 @@ function C_Branching(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
-				        console.log("1");
 				        makeRevealDataStore();
-				        console.log("2");
 						saveBranchingEdit();
-						console.log("3");
 						clearCKInstances();
-						console.log("4");
 						try { $("#optionContainer").remove(); } catch (e) {}
-						console.log("5");
 						$("#branchEditDialog").dialog("close");
-						console.log("6");
 						$("#branchEditDialog").remove();
-						console.log("7");
 					}
 				}
 			]
@@ -705,6 +699,12 @@ function C_Branching(_type) {
             CKEDITOR.instances.optionTitleText.destroy();
         }
 
+	}
+	
+	function clearMainCKEInstances(){
+		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
+		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
+		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
     
      /**********************************************************************
