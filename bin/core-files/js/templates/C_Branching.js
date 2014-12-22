@@ -579,44 +579,7 @@ function C_Branching(_type) {
 			});
 		}
 		
-		$("#optionTitleText").focusout(function(){
-			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
-			clearCKInstances();
-			try { $("#optionContainer").remove(); } catch (e) {}
-			$("#branchEditDialog").dialog("close");
-			$("#branchEditDialog").remove();
-			updateBranchDialog();
-		});
-		if(currentLayout == "sidebar"){
-			$("#sidebarText").focusout(function(){
-				console.log("sidebar changed");
-				console.log(CKEDITOR.instances["sidebarText"].getData());
-				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-				var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
-				clearCKInstances();
-				try { $("#optionContainer").remove(); } catch (e) {}
-				$("#branchEditDialog").dialog("close");
-				$("#branchEditDialog").remove();
-				updateBranchDialog();
-			});
-		}
 		
-		$("#optionText").focusout(function(){
-			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
-			clearCKInstances();
-			try { $("#optionContainer").remove(); } catch (e) {}
-			$("#branchEditDialog").dialog("close");
-			$("#branchEditDialog").remove();
-			updateBranchDialog();
-		});
 		
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
@@ -701,6 +664,51 @@ function C_Branching(_type) {
 			    }
 			});
 		}
+		
+		//CKEDITOR.instances.editor1.on('blur', function() {
+         //alert('onblur fired');
+      //});
+		//$("#optionTitleText").focusout(function(){
+		CKEDITOR.instances.optionTitleText.on('blur', function(){
+			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
+			updateBranchDialog();
+		});
+		if(currentLayout == "sidebar"){
+			//$("#sidebarText").focusout(function(){
+			CKEDITOR.instances.sidebarText.on('blur', function(){
+				console.log("sidebar changed");
+				console.log(CKEDITOR.instances["sidebarText"].getData());
+				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+				var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
+				clearCKInstances();
+				try { $("#optionContainer").remove(); } catch (e) {}
+				$("#branchEditDialog").dialog("close");
+				$("#branchEditDialog").remove();
+				updateBranchDialog();
+			});
+		}
+		
+		//$("#optionText").focusout(function(){
+		CKEDITOR.instances.optionText.on('blur', function(){
+			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
+			clearCKInstances();
+			try { $("#optionContainer").remove(); } catch (e) {}
+			$("#branchEditDialog").dialog("close");
+			$("#branchEditDialog").remove();
+			updateBranchDialog();
+		});
 	}
 	
 	function updateBranchOption(_branchID, _optionNum){
