@@ -27,6 +27,9 @@ Param: 			none
 Description:	Check's to see if this app has glossary turned on - if yes then build it.
 ************************************************************************************************/
 function checkGlossary(){
+	if($(data).find('glossary').attr('courseGlossary') == undefined){
+		$(data).find('glossary').attr('courseGlossary', 'false');
+	}
 	if($(data).find('glossary').attr('courseGlossary') == "true"){
 		courseGlossary = true;
 	}
