@@ -15,6 +15,7 @@
 
 var glossary = false;
 var glossaryState = false;
+var courseGlossary = false;
 var glossaryClosePos = 0;
 var glossaryClosePosMobile = 0;
 var totalGlossary = 0;
@@ -26,8 +27,8 @@ Param: 			none
 Description:	Check's to see if this app has glossary turned on - if yes then build it.
 ************************************************************************************************/
 function checkGlossary(){
-	if($(courseData).attr("courseGlossary") == "true"){
-		
+	if($(data).find('glossary').attr('courseGlossary') == "true"){
+		courseGlossary = true;
 	}
 	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
@@ -71,7 +72,6 @@ function updateGlossary(){
 	    	async: false,
 	    	success: function(_data){
 	    		data = _data;
-	    		//$("#glossaryPane").remove();
 	    		$("#glossaryTerms").empty();
 	    		$("#glossaryDef").html("");
 		    	addGlossary();
@@ -82,6 +82,27 @@ function updateGlossary(){
 	});
 }
 
+function updateCourseGlossary(){
+	$('.C_LoaderText').text("Loading Course.xml");
+	var loc = window.location.pathname;
+	var dir = loc.substring(0, loc.lastIndexOf('/'));
+	var courseXMLPath = unescape(dir + '/../course.xml');
+	$.ajax({
+		type: "GET",
+		url: courseXMLPath,
+		dataType: "xml",
+		async: false,
+		success: function(_data){
+	    		courseData = _data;
+	    		$("#glossaryTerms").empty();
+	    		$("#glossaryDef").html("");
+		    	addGlossary();
+		   },
+		error: function(){
+			alert("unable to load course.xml")
+		}
+	});
+}
 
 function compare(a,b) {
   if (a.term < b.term)
@@ -97,7 +118,15 @@ Param: 			none
 Description:	Called when the glossary is built and when the glossary updates complete.
 ************************************************************************************************/
 function addGlossary(){
-	totalGlossary = $(data).find('glossaryitem').length;
+	var glossarySource;
+	if(courseGlossary){
+		glossarySource = $(courseData);
+	}else{
+		glossarySource = $(data);
+	}
+
+	totalGlossary = glossarySource.find('glossaryitem').length;
+	
 	glossaryItem_arr = [];
 	glossary_arr = [];
 	var thisTerm;
@@ -106,8 +135,10 @@ function addGlossary(){
 	//Alphabatize
 	for(var j = 0; j < totalGlossary; j++){
 		var tmpObj = new Object();
-		tmpObj.term = $(data).find('glossaryitem').eq(j).find('term').text();
-		tmpObj.definition = $(data).find('glossaryitem').eq(j).find('content').text();
+		
+		tmpObj.term = glossarySource.find('glossaryitem').eq(j).find('term').text();
+		tmpObj.definition = glossarySource.find('glossaryitem').eq(j).find('content').text();
+		
 		tmpObj.id = j;
 		glossary_arr.push(tmpObj);
 	}
@@ -198,6 +229,12 @@ Param: 			myNode = node in xml to manipulate
 Description:	Called when a user removes an existing glossary item.
 ************************************************************************************************/
 function removeGlossaryTerm(myNode){
+	var glossarySource;
+	if(courseGlossary){
+		glossarySource = $(courseData);
+	}else{
+		glossarySource = $(data);
+	}
 	var msg = '<div id="dialog-removeGlossaryTermConfirm" title="Remove Glossary Term"><p class="validateTips">Are you sure that you want to remove this item from your glossary?</p><p>This cannot be undone.</p></div>';
 	
 	//Add to stage.
@@ -215,8 +252,12 @@ function removeGlossaryTerm(myNode){
 				$(this).dialog("close");
 			},
 			Yes: function(){
-				$(data).find("glossaryitem").eq(myNode).remove();
-				sendUpdateWithRefresh("glossary");
+				glossarySource.find("glossaryitem").eq(myNode).remove();
+				if(courseGlossary){
+					sendCourseUpdate();
+				}else{
+					sendUpdateWithRefresh("glossary");
+				}
 				$(this).dialog("close");
 			} 
 		}
@@ -269,8 +310,15 @@ Param: 			myNode = node in xml to manipulate
 Description:	Called when a user edits an existing glossary item.
 ************************************************************************************************/
 function editGlossaryTerm(myNode){
-	var myTerm = $(data).find("glossaryitem").eq(myNode).find("term").text();
-	var myDef = $(data).find("glossaryitem").eq(myNode).find("content").text();
+	var glossarySource;
+	if(courseGlossary){
+		glossarySource = $(courseData);
+	}else{
+		glossarySource = $(data);
+	}
+	
+	var myTerm = glossarySource.find("glossaryitem").eq(myNode).find("term").text();
+	var myDef = glossarySource.find("glossaryitem").eq(myNode).find("content").text();
 	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" contenteditable="true" class="dialogInput">'+myDef+'</div></div>';
 	
 	//Add to stage.
@@ -296,7 +344,7 @@ function editGlossaryTerm(myNode){
                     $(this).dialog("close");
 			},
 			Add: function(){
-				$(data).find("glossaryitem").eq(myNode).remove();
+				glossarySource.find("glossaryitem").eq(myNode).remove();
 				insertGlossaryTerm($("#newTerm").val(), CKEDITOR.instances.definitionEditText.getData());
 				if (CKEDITOR.instances.definitionEditText) CKEDITOR.instances.definitionEditText.destroy();
 				$(this).dialog("close");
@@ -313,15 +361,21 @@ Param: 			_term = the term to update.
 Description:	Called when a user edits or creates a glossary item.
 ************************************************************************************************/
 function insertGlossaryTerm(_term, _definition){
+	var glossarySource;
+	if(courseGlossary){
+		glossarySource = $(courseData);
+	}else{
+		glossarySource = $(data);
+	}
 	var noError = true;
 	var isLast = true;
 	var term = _term.toLowerCase();
 	var insertPoint = 0;
 	var isOnly = false;
-	var totalGlossary = $(data).find('glossaryitem').length;
+	var totalGlossary = glossarySource.find('glossaryitem').length;
 	if(totalGlossary != 0){
 		for(var i = 0; i < totalGlossary; i++){
-			var testTerm = $(data).find('glossaryitem').eq(i).find('term').text().toLowerCase();
+			var testTerm = glossarySource.find('glossaryitem').eq(i).find('term').text().toLowerCase();
 			insertPoint = i;
 			if(term < testTerm){
 				isLast = false;
@@ -338,45 +392,49 @@ function insertGlossaryTerm(_term, _definition){
 	//IF doesn't exist already - create
 	if(noError == true){
 		if(isOnly == true){
-			$(data).find("glossary").append($('<glossaryitem>'));
+			glossarySource.find("glossary").append($('<glossaryitem>'));
 			//Place the page title element
-			$(data).find("glossaryitem").eq(0).append($("<term>"));
+			glossarySource.find("glossaryitem").eq(0).append($("<term>"));
 			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
 			var termCDATA = newGlossaryTerm.createCDATASection(_term);
-			$(data).find("glossaryitem").eq(0).find("term").append(termCDATA);
+			glossarySource.find("glossaryitem").eq(0).find("term").append(termCDATA);
 		
-			$(data).find("glossaryitem").eq(0).append($("<content>"));
+			glossarySource.find("glossaryitem").eq(0).append($("<content>"));
 			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
 			var defCDATA = newGlossaryDef.createCDATASection(_definition);
-			$(data).find("glossaryitem").eq(0).find("content").append(defCDATA);
+			glossarySource.find("glossaryitem").eq(0).find("content").append(defCDATA);
 		}else if(isLast == true){
-			$(data).find("glossaryitem").eq(insertPoint).after($('<glossaryitem></glossaryitem>'));
+			glossarySource.find("glossaryitem").eq(insertPoint).after($('<glossaryitem></glossaryitem>'));
 			//Place the page title element
-			$(data).find("glossaryitem").eq(insertPoint + 1).append($("<term>"));
+			glossarySource.find("glossaryitem").eq(insertPoint + 1).append($("<term>"));
 			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
 			var termCDATA = newGlossaryTerm.createCDATASection(_term);
-			$(data).find("glossaryitem").eq(insertPoint + 1).find("term").append(termCDATA);
+			glossarySource.find("glossaryitem").eq(insertPoint + 1).find("term").append(termCDATA);
 		
-			$(data).find("glossaryitem").eq(insertPoint + 1).append($("<content>"));
+			glossarySource.find("glossaryitem").eq(insertPoint + 1).append($("<content>"));
 			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
 			var defCDATA = newGlossaryDef.createCDATASection(_definition);
-			$(data).find("glossaryitem").eq(insertPoint + 1).find("content").append(defCDATA);
+			glossarySource.find("glossaryitem").eq(insertPoint + 1).find("content").append(defCDATA);
 		}else{
-			$(data).find("glossaryitem").eq(insertPoint).before($('<glossaryitem></glossaryitem>'));
+			glossarySource.find("glossaryitem").eq(insertPoint).before($('<glossaryitem></glossaryitem>'));
 			//Place the page title element
-			$(data).find("glossaryitem").eq(insertPoint).append($("<term>"));
+			glossarySource.find("glossaryitem").eq(insertPoint).append($("<term>"));
 			var newGlossaryTerm = new DOMParser().parseFromString('<term></term>',  "application/xml");
 			var termCDATA = newGlossaryTerm.createCDATASection(_term);
-			$(data).find("glossaryitem").eq(insertPoint).find("term").append(termCDATA);
+			glossarySource.find("glossaryitem").eq(insertPoint).find("term").append(termCDATA);
 		
-			$(data).find("glossaryitem").eq(insertPoint).append($("<content>"));
+			glossarySource.find("glossaryitem").eq(insertPoint).append($("<content>"));
 			var newGlossaryDef = new DOMParser().parseFromString('<content></content>',  "application/xml");
 			var defCDATA = newGlossaryDef.createCDATASection(_definition);
-			$(data).find("glossaryitem").eq(insertPoint).find("content").append(defCDATA);
+			glossarySource.find("glossaryitem").eq(insertPoint).find("content").append(defCDATA);
 		}
 		
 		//When done - update content.xml on the server.
-		sendUpdateWithRefresh("glossary");
+		if(courseGlossary){
+			sendCourseUpdate();
+		}else{
+			sendUpdateWithRefresh("glossary");
+		}
 	}else{
 		//Error about existing....
 		var msg = '<div id="dialog-addGlossaryTermError" title="Term Already Exists"><p class="validateTips">This term is already entered in this glossary.</p><p>To edit this term, roll over it in the glossary list and select the edit button.</p></div>';

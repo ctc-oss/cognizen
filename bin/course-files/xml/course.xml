@@ -1,3 +1,9 @@
-<course name="" id="" courseGlossary="false">
+<course name="" id="">
+	<glossary>
+      <glossaryitem>
+        <term>ACK</term>
+        <content>Acknowledgement</content>
+      </glossaryitem>
+    </glossary>
   <sequencing objectivesGlobalToSystem="false" choice="true" flow="false" forwardOnly="false"/>
 </course>

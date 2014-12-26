@@ -187,6 +187,22 @@ function initializeSockets(){
             //console.log('progress data: ' + data);
 		});
 		
+		socket.on('pushUpdateCourseXMLWithRefreshComplete', function(){
+			
+		});
+		
+		socket.on('updateCourseXMLWithRefreshComplete', function(){
+			if(mode == "edit"){
+		        cognizenSocket.emit('contentSaved', {
+		            content: {type: urlParams['type'], id: urlParams['id']},
+		            user: {id: urlParams['u']}
+		        });
+		    }
+		    
+		    if(courseGlossary){
+		    	updateCourseGlossary();
+		    }
+		});
 
 		socket.on('updateXMLWithRefreshComplete', function(){
 	        if(mode == "edit"){

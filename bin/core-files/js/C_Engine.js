@@ -406,7 +406,6 @@ function sendUpdateWithRefresh(_type){
 
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
-
 		if(_type == undefined){
 			socket.emit('updateXMLWithRefresh', { my: xmlString });
 		}else if(_type == 'glossary'){
@@ -421,6 +420,31 @@ function sendUpdateWithRefresh(_type){
 	}
 }
 
+function sendCourseUpdate(){
+	connected = socket.socket.connected;
+
+	if(connected){
+		//Serialize the xml and send it to nodejs using socket.
+		var myData = $(courseData);
+		var xmlString = undefined;
+		
+		//IE being a beatch, as always - have handle xml differently.
+		if (window.ActiveXObject){
+	        xmlString = myData[0].xml;
+		}
+
+		if(xmlString === undefined){
+			var oSerializer = new XMLSerializer();
+			xmlString = oSerializer.serializeToString(myData[0]);
+		}
+		
+		var pd = new pp();
+		var xmlString  = pd.xml(xmlString);
+		socket.emit('updateCourseXMLWithRefresh', { my: xmlString });
+	}else{
+		fireConnectionError();
+	}
+}
 
 function sendUpdate(){
 	connected = socket.socket.connected;

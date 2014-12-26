@@ -504,8 +504,8 @@ function launchPrefs(){
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
 	//Add the scorm form
 	msg += "<p>";
-	msg += "<form id='scormform' title='Set SCORM Version'>";
-	msg += "<label id='label'>SCORM Version: </label>";
+	msg += "<form id='scormform'>";
+	msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
 	msg += "<select id='scormVersion'>";
 	msg += "<option>2004_4th</option>";
 	msg += "<option>2004_3rd</option>";
@@ -514,9 +514,11 @@ function launchPrefs(){
 	msg += "</select></form>";
 	msg += "</p>";
 	//Add the glossary checkbox.
-	msg += "<div class='preferences_option' id='hasGlossaryDialog' title='Add/Remove Glossary'>";
-	msg += "<label id='label'>Glossary: </label>";
+	msg += "<div class='preferences_option' id='hasGlossaryDialog'>";
+	msg += "<label id='label' title='Add/Remove Glossary'>Glossary: </label>";
 	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
+	msg += "<label id='label' for='hasCourseGlossary' title='Set Course/Module Level Glossary'>Course glossary: </label>";
+	msg += "<input id='hasCourseGlossary' type='checkbox' name='hasCourseGlossary' class='radio'/>";
 	msg += "</div><br/>";
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
@@ -572,10 +574,7 @@ function launchPrefs(){
 		]
 	});
 
-	//adds tooltips to the edit dialog buttons
-    $(function () {
-        $(document).tooltip();
-    });
+	
 
 	$("#clearLessonComments").button().click(function(){
 		openCommentKillerDialog();
@@ -586,9 +585,39 @@ function launchPrefs(){
 
 	if(glossary == true){
 		$("#hasGlossary").attr('checked', true);
+		$("#hasCourseGlossary").removeAttr("disabled");
 	} else{
 		$("#hasGlossary").attr('checked', false);
+		$("#hasCourseGlossary").attr("disabled", true);
+		
 	}
+	
+	if(courseGlossary == true){
+		$("#hasCourseGlossary").attr('checked', true);
+	} else{
+		$("#hasCourseGlossary").attr('checked', false);
+	}
+	
+	$("#hasGlossary").change(function(){
+		if($(this).prop("checked") == true){
+			$("#hasCourseGlossary").removeAttr("disabled");
+		}else{
+			$("#hasCourseGlossary").attr("disabled", true);
+		}
+	});
+	
+	$("#hasCourseGlossary").change(function(){
+		if($(this).prop("checked") == true){
+			//console.log("set as course glossary");
+			//courseGlossary = true;
+			$(data).find("glossary").attr("courseGlossary", "true");
+		}else{
+			//console.log("set as module glossary");
+			//courseGlossary = false;
+			$(data).find("glossary").attr("courseGlossary", "false");
+		}
+	});
+	
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 
 	$("#inputHelp").attr('data-content', contentId);
@@ -648,9 +677,10 @@ function launchPrefs(){
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
 
-	$("#hasGlossaryDialog").tooltip();
-	$("#helpDialog").tooltip();
-
+	//adds tooltips to the edit dialog buttons
+    $(function () {
+        $(document).tooltip();
+    });
 }
 
 function _unzipComplete(){
@@ -702,11 +732,20 @@ function openCommentKillerDialog(){
 function savePreferences(_pub){
 	//check if glossary changed.
 	var glossarySelected = $("#hasGlossary").is(':checked');
+	var courseGlossarySelected = $("#hasCourseGlossary").is(':checked');
 	var updateNeeded = false;
 
 	if(glossary != glossarySelected){
+		glossary = glossarySelected;
 		$(data).find('glossary').attr('value', glossarySelected);
 		updateNeeded = true;
+	}
+	
+	if(courseGlossary != courseGlossarySelected){
+		courseGlossary = courseGlossarySelected;
+		$(data).find('glossary').attr('courseGlossary', courseGlossarySelected);
+		updateNeeded = true;
+		
 	}
 
 	var selectedScorm = $('#scormVersion').find(':selected').text();
@@ -737,6 +776,7 @@ function savePreferences(_pub){
 		sendUpdateWithRefresh("updatePrefs");
 		$("#dialog-lessonPrefs").dialog("close");
 		$("#dialog-lessonPrefs").remove();
+		//updateGlossary();
 	}else if(updateNeeded == true && _pub == true){
 		sendUpdateWithRefresh("updatePrefsWithPublish");
 	}else if(updateNeeded == false && _pub == true){
@@ -756,18 +796,13 @@ function updatePrefs(_pub){
 	    async: false,
 	    success: function(_data){
 	    	data = _data;
-			var tmpGloss = false;
+	    	$("#glossaryPane").remove();
 			if($(data).find('glossary').attr('value') == "true"){
-				tmpGloss = true;
+				glossary = true;				
+			}else{
+				glossary = false;
 			}
-			if(glossary != tmpGloss){
-				glossary = tmpGloss;
-				if(tmpGloss = true){
-					checkGlossary();
-				}else{
-					$("#glossaryPane").remove();
-				}
-			}
+			checkGlossary();
 			if(_pub == true){
 				clickPublish();
 			}
