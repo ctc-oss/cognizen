@@ -25,7 +25,9 @@
  */
 function C_QuestionBank(_type) {
 
-	var myContent;//Body
+	// var pageTitle;
+	// var audioHolder;
+    var myContent;//Body
     var optionHolderY = 0;
     var optionStartX = 0;
     var mcSubmitButtonY = 0;
@@ -45,8 +47,7 @@ function C_QuestionBank(_type) {
     var isMulti = false;
     var bankLength = 0;
     var bankitem = 0;
-	var toComplete = 1;
-	var showAll = false;
+
     var isComplete = false;
     var optionEdit_arr = [];
     var optionCount = 0;
@@ -56,32 +57,16 @@ function C_QuestionBank(_type) {
     var currentEditBankMember = 0;
     var scormVersion;
     var pageId;
-    var questionDisplay_arr = [];
-    var questionsComplete = 0;
-    var score_arr = [];
-    
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-        
-        if(transition == true){
-			$('#stage').css({'opacity':0});
-		}
-		
-		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
-			graded = true;
-		}
-		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
-			mandatory = false;
-		}
-		
-		selectbankitems();
+		selectbankitem();
 	}
 
-	/*function selectbankitem(){
+	function selectbankitem(){
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
@@ -92,103 +77,14 @@ function C_QuestionBank(_type) {
 		if(isComplete && mode != "edit"){
 			for(var i = 0; i < questionResponse_arr.length; i++){
 				if(currentPageID == questionResponse_arr[i].id){
-					//bankitem = questionResponse_arr[i].bankID;
-					showCompleteResult();
+					bankitem = questionResponse_arr[i].bankID;
 				}
 			}
 		}else{
 			bankitem = randomIntFromRange(0, bankLength-1);
-			currentEditBankMember = bankitem;
-			buildTemplate();
 		}
-	}*/
-	
-	function showCompleteResult(){
-		mandatory = false;
-		mandatoryInteraction = false;
-		checkNavButtons();
-		pageTitle = new C_PageTitle();
-		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content" class="contentTop"></div></div></div>');
-		
-		var numberCorrect = 0;
-		for(var i = 0; i < questionResponse_arr.length; i++){
-			if(currentPageID == questionResponse_arr[i].id){
-				if(questionResponse_arr[i].correct == true){
-					numberCorrect++;
-				}
-			}
-		}
-		
-		var msg = "<p>You have already completed this question bank.</p>.";
-			msg += "<p>You got " + numberCorrect + " out of " + toComplete + " correct.</p>";
-			msg += "<button id='done'>Proceed</button>";
-		
-		$("#content").append(msg);
-		
-		
-		$("#done").click(function(){
-			$("#next").click();
-		});
-		
-		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
-		}
-	}
-	
-	function selectbankitems(){
-		isComplete = checkQuestionComplete();
-		bankLength = $(data).find("page").eq(currentPage).find("bankitem").length;
-		
-		//This is undefined for old question banks so always false.
-		if($(data).find("page").eq(currentPage).attr("tocomplete")){
-			toComplete = parseInt($(data).find("page").eq(currentPage).attr("tocomplete"));
-		}
-		
-		//This is undefined for old question banks so always false.
-		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
-			showAll = true;
-			toComplete = bankLength;
-		}
-		
-		if(isComplete && mode != "edit"){
-			for(var i = 0; i < questionResponse_arr.length; i++){
-				if(currentPageID == questionResponse_arr[i].id){
-					if(toComplete == 1){
-						bankitem = questionResponse_arr[i].bankID;
-						currentEditBankMember = bankitem;
-						buildTemplate();
-					}else{
-						showCompleteResult();
-						break;
-					}
-				}
-			}
-		}else{
-			//Generate questionDisplay_arr - either random selection range or show all.
-			if(showAll){
-				var iterator = 0;
-				while(questionDisplay_arr.length < bankLength){
-					questionDisplay_arr.push(iterator);
-					iterator++;
-				}
-			}else{
-				while(questionDisplay_arr.length < toComplete){
-					var randomnumber=randomIntFromRange(0, bankLength-1);
-					var found=false;
-					for(var i=0;i<questionDisplay_arr.length;i++){
-				    	if(questionDisplay_arr[i]==randomnumber){
-					    	found=true;
-					    	break
-					    }
-				  	}
-				  	if(!found)questionDisplay_arr.push(randomnumber);
-				}
-			}
-			bankitem = questionDisplay_arr[questionsComplete];
-			//Set this so that when editing the editor will open the currently viewed question
-			currentEditBankMember = bankitem;
-			buildTemplate();
-		}
+		currentEditBankMember = bankitem;
+		buildTemplate();
 	}
 
 	function buildTemplate(){
@@ -202,11 +98,18 @@ function C_QuestionBank(_type) {
 		scormVersion = $(data).find('scormVersion').attr('value');
 		pageId = $(data).find("page").eq(currentPage).attr("id");
 
+		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
+			graded = true;
+		}
+		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
+			mandatory = false;
+		}
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr('randomize') == "true"){
 			randomize = true;
 		}
+
 		pageTitle = new C_PageTitle();
-		
+
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
 
 		audioHolder = new C_AudioHolder();
@@ -370,7 +273,7 @@ function C_QuestionBank(_type) {
 
 	function showUserAnswer(){
 		for(var i = 0; i < questionResponse_arr.length; i++){
-			if(currentPageID == questionResponse_arr[i].id && questionsComplete == questionResponse_arr[i].subID){
+			if(currentPageID == questionResponse_arr[i].id){
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
@@ -397,9 +300,9 @@ function C_QuestionBank(_type) {
 
 
 		$(".radio").prop('disabled', true);
-		//mandatoryInteraction = false;
+		mandatoryInteraction = false;
 		disableOptions();
-		//checkNavButtons();
+		checkNavButtons();
 
 	}
 
@@ -548,7 +451,7 @@ function C_QuestionBank(_type) {
 					selected_arr.push(i);
 				}
 			}
-			updateScoring(selected_arr, tempCorrect, null, bankitem, questionsComplete);
+			updateScoring(selected_arr, tempCorrect, null, bankitem);
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
@@ -561,67 +464,33 @@ function C_QuestionBank(_type) {
 				standardWidth = windowWidth-20;
 			}
 			if(tempCorrect == true || attemptsMade == attemptsAllowed){
-				questionsComplete++;
-				if(questionsComplete === toComplete){
-					$( "#dialog-attemptResponse" ).dialog({
-						modal: true,
-						width: standardWidth,
-						dialogClass: "no-close",
-						buttons: {
-							Close: function(){
-								disableOptions();
-								$( this ).dialog( "close" );
-							},
-							Proceed: function(){
-								$( this ).dialog( "close" );
-								mandatoryInteraction = false;
-								checkNavButtons();
-								if(isLinear == true){
-									updateTracking();
-								}
-								$("#next").click();
+				$( "#dialog-attemptResponse" ).dialog({
+					modal: true,
+					width: standardWidth,
+					dialogClass: "no-close",
+					buttons: {
+						Close: function(){
+							disableOptions();
+							$( this ).dialog( "close" );
+						},
+						Proceed: function(){
+							$( this ).dialog( "close" );
+							if(isLinear == true){
+								updateTracking();
 							}
-						},
-						open: function(){
-							$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-							$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
-						},
-						close: function(){
-							mandatoryInteraction = false;
-							checkNavButtons();
-							$("#dialog-attemptResponse").remove();
+							$("#next").click();
 						}
-					});
-				}else{
-					$( "#dialog-attemptResponse" ).dialog({
-						modal: true,
-						width: standardWidth,
-						dialogClass: "no-close",
-						buttons: {
-							Next: function(){
-								attemptsMade = 0;
-								mandatoryInteraction = true;
-								checkNavButtons();
-								$( this ).dialog( "close" );
-								if(isLinear == true){
-									updateTracking();
-								}
-								$("#stage").empty();
-								bankitem = questionDisplay_arr[questionsComplete];
-								buildTemplate();
-							}
-						},
-						open: function(){
-							//$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-							$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
-						},
-						close: function(){
-							//mandatoryInteraction = false;
-							//checkNavButtons();
-							$("#dialog-attemptResponse").remove();
-						}
-					});
-				}
+					},
+					open: function(){
+						$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
+						$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+					},
+					close: function(){
+						mandatoryInteraction = false;
+						checkNavButtons();
+						$("#dialog-attemptResponse").remove();
+					}
+				});
 			}else{
 				$( "#dialog-attemptResponse" ).dialog({
 					modal: true,
@@ -692,11 +561,7 @@ function C_QuestionBank(_type) {
 		msg += "<label id='label' title='Indicates if this page is graded.'>graded: </label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'>mandatory: </label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label' title='Indicates if ALL questions should be presented.'>show all: </label>";
-		msg += "<input id='isShowAll' type='checkbox' name='showAll' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label' title='Indicates number of questions to be presented.'>ask how many: </label>";
-		msg += "<input type='text' name='myName' id='inputNumberToPresent' value='"+ $(data).find("page").eq(currentPage).attr("tocomplete") +"' class='dialogInput' style='width:35px;'/><br/>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' /><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -795,12 +660,6 @@ function C_QuestionBank(_type) {
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
-		if($(data).find("page").eq(currentPage).attr("showall") == "false"){
-			$("#isShowAll").removeAttr('checked');
-		}else{
-			$("#isShowAll").attr('checked', 'checked');
-		}
 
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('randomize') == "false"){
 			$("#isRandom").removeAttr('checked');
@@ -879,7 +738,6 @@ function C_QuestionBank(_type) {
 	function makeQuestionDataStore(_feedbackTypeChange){
 		var tmpObj = new Object();
 		tmpObj.attempts = $("#inputAttempts").val();
-		$(data).find("page").eq(currentPage).attr("tocomplete", $("#inputNumberToPresent").val());
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
 			tmpObj.graded = true;
@@ -893,13 +751,6 @@ function C_QuestionBank(_type) {
 		}else{
 			$(data).find("page").eq(currentPage).attr("mandatory", "false");
 			tmpObj.mandatory = false;
-		}
-		if($("#isShowAll").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("showall", "true");
-			tmpObj.showAll = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("showall", "false");
-			tmpObj.showAll = false;
 		}
 
 		if($("#isRandom").prop("checked") == true){

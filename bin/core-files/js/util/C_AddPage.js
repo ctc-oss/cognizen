@@ -637,7 +637,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("feedbackdisplay", "pop");
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("audio", "null");
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("btnText", "Submit");
-			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("attempts", 2);
+			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("attempts", 1);
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("randomize", false);
 			
 			//QUESTION 2
@@ -697,7 +697,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("feedbackdisplay", "pop");
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("audio", "null");
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("btnText", "Submit");
-			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("attempts", 2);
+			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("attempts", 1);
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("randomize", false);
 			
 			//PAGE LEVEL VARS
@@ -706,7 +706,8 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
 			$(data).find("page").eq(newPage).attr("type", "kc");
-			
+			$(data).find("page").eq(newPage).attr("showall", false);
+			$(data).find("page").eq(newPage).attr("tocomplete", 1);
 			
 			//CURRENT VARS IN ACTIVE SESSION
 			var userSelection_arr = [];
