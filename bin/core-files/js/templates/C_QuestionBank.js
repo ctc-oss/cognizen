@@ -136,7 +136,10 @@ function C_QuestionBank(_type) {
 	}
 	
 	function selectbankitems(){
-		isComplete = checkQuestionComplete();
+		if(mode != "edit"){
+			isComplete = checkQuestionComplete();
+		}
+				
 		bankLength = $(data).find("page").eq(currentPage).find("bankitem").length;
 		
 		//This is undefined for old question banks so always false.
@@ -347,7 +350,7 @@ function C_QuestionBank(_type) {
 			checkMode();
         }
 
-		if(isComplete){
+		if(isComplete && mode != "edit"){
 			//disableOptions();
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();

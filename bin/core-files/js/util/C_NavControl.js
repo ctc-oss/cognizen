@@ -1241,8 +1241,6 @@ function updateTracking(){
 ********************************** SCORING FUNCTIONALITY
 *****************************************************/
 function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
-	console.log("_bankID = " + _bankID);
-	console.log("_subID = " + _subID);
 	var hasSubID = false;
 	var isMatch = false;
 	if(_subID){
@@ -1259,7 +1257,6 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 			}
 		}
 		if(isMatch){
-			console.log("found the right item");
 			questionResponse_arr[i].complete = true;
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);
