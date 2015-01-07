@@ -2244,7 +2244,7 @@ ESSAY COMPARE LAYOUTS
 	height: 635px;
 	background-color: #EEEEEE;
 	font-family: Arial, Helvetica, sans-serif;
-	color: #9DA6AB;
+	color: black;
 	-moz-border-bottom-right-radius : 8px;
 	-webkit-border-bottom-right-radius : 8px;
 	border-bottom-right-radius : 8px;
@@ -2993,8 +2993,8 @@ a.fancybox-expand {
 		position: fixed;
 		top: 60px;
 		left: 0px;
-		bottom: 50px;
-		/*height: auto !important;*/
+		bottom: 0px;
+		height: auto !important;
 		width: 100%;
 	}
 
@@ -3006,22 +3006,25 @@ a.fancybox-expand {
 		left: 0px;
 		opacity : 1;
 		overflow : auto;
-		font-size : 175%;
+		font-size : 125%;
+		line-height: 1.5em;
 		color:	#FFFFFF;
 		background-color: #b2b2b2;
-		text-align: center;
+		text-align: left;
+		padding-left: 120px;
 	}
 
 	#lessonTitle{
 		position : fixed;
-		top : 30px;
+		top : 28px;
 		width: 100%;
 		right: auto;
 		opacity : 1;
 		overflow : auto;
 		font-size : 150%;
 		color:	#3383BB;
-		text-align: center;
+		text-align: left;
+		padding-left: 120px;
 	}
 
 	#pageTitle{
@@ -3335,79 +3338,82 @@ a.fancybox-expand {
 	}
 	/************************************************************** KNOWLEDGE CHECK END *****/
 
+
+	/**************************************************************************************
+	BOTTOM NAV
+	**************************************************************************************/
+
 	#back{
 		position: fixed;
-		top: auto;
+		top: 0px;
+		bottom: auto;
+		left: auto;
+		right: 59px;
+		width: 60px;
+		height: 60px;
 		opacity: 1.0;
 		filter: alpha(opacity=100); /* For IE8 and earlier */
-		left: 0px;
-		bottom: 0px;
-		width: 42%;
-		height: 50px;
 		border-radius: 0px;
 	}
 
 	#next{
 		position: fixed;
-		top: auto;
+		top: 0px;
+		bottom: auto;
+		left: auto;
+		right: -1px;
+		width: 60px;
+		height: 60px;
 		opacity: 1.0;
 		filter: alpha(opacity=100); /* For IE8 and earlier */
-		left: 58%;
-		bottom: 0px;
-		width: 42%;
-		height: 50px;
 		border-radius: 0px;
 	}
 
 	#help{
 		position: fixed;
-		top: auto;
+		top: 0px;
+		bottom: auto;
+		left: auto;
+		right: 198px;
+		width: 60px;
+		height: 60px;
 		opacity: 1.0;
 		filter: alpha(opacity=100); /* For IE8 and earlier */
-		left: 90%;
-		/*bottom: 92%;*/
-		width: 40px;
-		height: 40px;
 		border-radius: 0px;
+	}
+
+	#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
+		padding: 0px;
+	}
+
+	#back .ui-icon, #next .ui-icon, #help .ui-icon{
+		position: relative;
+		left: auto;
+		right: auto;
+		margin-top: auto;
+		margin: auto;
 	}
 
 	#back:focus, #next:focus, #help:focus{
 		outline: 0px;
 	}
 
-	#publish{
-		position:absolute;
-		top:720px;
-		left: 500px;
-	}
-
 	#pageCount{
 		position: fixed;
-		top: auto;
-		opacity : 1.0;
-		filter:alpha(opacity=100); /* For IE8 and earlier */
-		left:40%;
-		bottom:0px;
-		width : 20%;
-		height: 50px;
-		font-size : 100%;
+		top: 0px;
+		bottom: auto;
+		left: auto;
+		right: 119px;
+		width : 80px;
+		height: auto;
 		color:	#ffffff;
-		text-align: center;
-		line-height:3em;
-		font-family: Arial, Helvetica, sans-serif;
-		background-color: #b2b2b2;
+		line-height: 60px;
+		opacity: 1.0;
+		filter:alpha(opacity=100); /* For IE8 and earlier */
 	}
+	/************************************************************** BOTTOM NAV END *****/
 
 
-	/*div#loader {
-		margin: auto;
-		border: 1px solid #fff;
-		overflow: hidden;
-	}
-
-	div#loader.loading {
-		background: #ccc url(images/spinner.gif) no-repeat center center;
-	}*/
 
 	/*******************************************************************
 	*******  Tooltip Styles
@@ -3443,10 +3449,7 @@ a.fancybox-expand {
 
 	/* Panel Styles for all side panels*/
 	.pane{
-		/*overflow:hidden;*/
 		position:absolute;
-		/*width:400px;
-		height:643px;*/
 	}
 
 	.paneTab{
@@ -3465,21 +3468,18 @@ a.fancybox-expand {
 	/*index pane specific*/
 	#indexPane{
 		position: fixed;
-		/*top:-645px;
-		left:0px;*/
 		top: 0px;
 		bottom: 0px;
-		left: -406px;
 	}
 
 	#indexTab{
 		position:absolute;
 		top: 0px;
 		left: 409px;
-		margin-left: -10px;
+		margin-left: -4px;
 	    height: 60px;
-	    width: 50px;
-		/*background: #b2b2b2 url(images/paneTabIndex.png) no-repeat center center;*/
+	    width: 53px;
+		background-size: contain;
 	}
 
 	.indexMenuVisited{
@@ -3490,38 +3490,37 @@ a.fancybox-expand {
 	}
 
 	#indexContent{
-		overflow: scroll;
-		left:0px;
-		top:0px;
-		width: 400px;
 		height: 100%;
-		box-shadow: -3px 2px 10px 1px;
+		box-shadow: 1px 0px 2px gray;
 	}
 
 	/*glossary pane specific*/
 	#glossaryPane{
 		position: fixed;
 		top: 0px;
-		left: -406px;
+		bottom: 0px;
 	}
 
 	#glossaryTab{
 		position:absolute;
-		top: 40px;
-		left: 409px;
-		margin-left: -10px;
-/*	    margin-top: -25px;*/
+		top: 0px;
+		left: 759px;
+		margin-left: -4px;
 	    height: 60px;
-	    width: 50px;
+	    width: 53px;
+	    border-style: none;
+		background-size: contain;
 	}
 
-	#glossaryContent{
-		overflow: scroll;
-		left:0px;
-		top:0px;
-		width: 400px;
-		/*height: auto;*/
+	#glossaryTerms{
+		height: 100%;
 	}
+	
+	#glossaryContent{
+		height: 100%;
+		box-shadow: 1px 0px 2px gray;
+	}
+
 	/* Glossary Menu */
 	.ui-tabs-vertical { width: 400px; }
 	.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
@@ -3544,8 +3543,8 @@ a.fancybox-expand {
 
 @media screen and (max-device-width: 568px) {
 
-	#stage{
-		top: 40px;
+	#stage {
+		bottom: 40px;
 	}
 
 	#scrollableContent{
@@ -3561,30 +3560,70 @@ a.fancybox-expand {
 
 	#courseTitle{
 		height: 40px;
-		font-size : 90%;
+		font-size: 90%;
+		padding-left: 50px;
 	}
 
 	#lessonTitle{
-		top : 16px;
-		font-size : 120%;
+		top: 17px;
+		font-size: 110%;
+		padding-left: 50px;
 	}
 
 	#pageTitle{
 		margin: 5px 10px 5px 10px;
-		font-size : 100%;
+		font-size: 100%;
 	}
 
 	#back{
+		top: auto;
+		bottom: 0px;
+		left: 50%;
+		right: auto;
+		width: 25%;
 		height: 40px;
+		margin: 0px;
 	}
 
 	#next{
+		top: auto;
+		bottom: 0px;
+		left: 75%;
+		right: auto;
+		width: 25%;
 		height: 40px;
+		margin: 0px;
+	}
+
+	#help{
+		top: auto;
+		bottom: 0px;
+		left: 0px;
+		right: auto;
+		width: 25%;
+		height: 40px;
+		margin: 0px;
+	}
+	
+	#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
+		font-size: 80%;
+	}		
+	
+	#back .ui-icon, #next .ui-icon, #help .ui-icon{
+		margin-top: 3px;
+		margin-bottom: -2px;
 	}
 
 	#pageCount{
+		top: auto;
+		bottom: 0px;
+		left: 25%;
+		right: auto;
+		width: 25%;
 		height: 40px;
-		line-height: 2.6em;
+		line-height: 2.5em;
+		background-color: #b2b2b2;
+		margin: 0px;
 	}
 
 	#mediaHolder.graphic{
@@ -3834,6 +3873,4 @@ a.fancybox-expand {
 	}
 
 }
-
-
 

@@ -293,7 +293,7 @@ function checkMobile(){
 			//console.log("mobile device detected");
 		}
 
-		if(window.matchMedia("screen and (max-device-width: 568px)").matches) {
+		if(window.matchMedia("screen and (max-device-width: 736px)").matches) {
 			isMobilePhone = true;
 			//console.log("mobile phone detected");
 		}
