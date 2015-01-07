@@ -80,28 +80,6 @@ function C_QuestionBank(_type) {
 		
 		selectbankitems();
 	}
-
-	/*function selectbankitem(){
-		if(transition == true){
-			$('#stage').css({'opacity':0});
-		}
-
-		isComplete = checkQuestionComplete();
-		bankLength = $(data).find("page").eq(currentPage).find("bankitem").length;
-
-		if(isComplete && mode != "edit"){
-			for(var i = 0; i < questionResponse_arr.length; i++){
-				if(currentPageID == questionResponse_arr[i].id){
-					//bankitem = questionResponse_arr[i].bankID;
-					showCompleteResult();
-				}
-			}
-		}else{
-			bankitem = randomIntFromRange(0, bankLength-1);
-			currentEditBankMember = bankitem;
-			buildTemplate();
-		}
-	}*/
 	
 	function showCompleteResult(){
 		mandatory = false;
@@ -152,8 +130,9 @@ function C_QuestionBank(_type) {
 			showAll = true;
 			toComplete = bankLength;
 		}
-		
+
 		if(isComplete && mode != "edit"){
+			console.log("isComplete");
 			for(var i = 0; i < questionResponse_arr.length; i++){
 				if(currentPageID == questionResponse_arr[i].id){
 					if(toComplete == 1){
