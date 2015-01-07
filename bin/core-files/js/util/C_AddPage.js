@@ -639,6 +639,8 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("btnText", "Submit");
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("attempts", 1);
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("randomize", false);
+			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).find("bankitem").eq(0).attr("objItemId", "undefined");
 			
 			//QUESTION 2
 			$(data).find("page").eq(newPage).append($("<bankitem>"));
@@ -699,6 +701,8 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("btnText", "Submit");
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("attempts", 1);
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("randomize", false);
+			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).find("bankitem").eq(1).attr("objItemId", "undefined");
 			
 			//PAGE LEVEL VARS
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
