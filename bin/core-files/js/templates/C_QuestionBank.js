@@ -799,10 +799,10 @@ function C_QuestionBank(_type) {
 			$("#isMandatory").attr('checked', 'checked');
 		}
 		
-		if($(data).find("page").eq(currentPage).attr("showall") == "false"){
-			$("#isShowAll").removeAttr('checked');
-		}else{
+		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
 			$("#isShowAll").attr('checked', 'checked');
+		}else{
+			$("#isShowAll").removeAttr('checked');
 		}
 
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('randomize') == "false"){
