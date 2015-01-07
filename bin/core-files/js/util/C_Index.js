@@ -212,7 +212,7 @@ function addIndex(){
 	$("#indexContent").prepend("<div id='frontFocusGuard' class='acc-skipIndex'></div><div id='backFocusGuard'class='acc-skipIndex'></div>");
 	$('#skipIndex').keypress(function(event) {
 		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-	    if (chCode == 32){
+	    if (chCode == 32 || chCode == 13){
 		    $("#courseTitle").focus();
 		}
     });

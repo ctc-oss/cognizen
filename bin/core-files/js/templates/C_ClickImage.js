@@ -83,12 +83,19 @@ function C_ClickImage(_type) {
 			var revID = "revID" + i;
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			$("#imgPalette").append("<div id='"+ revID +"' class='clickImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			$("#imgPalette").append("<div id='"+ revID +"' class='clickImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Reveal Content: "+ ariaText +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
 
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
 				});
+				
+				$('#' + revID).keypress(function(event) {
+			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			        if (chCode == 32 || chCode == 13){
+				        $(this).click();
+				    }
+		        });
 			}else if(interact == "hover"){
 				$("#" + revID).hover(function(){
 					updateRevealContent($(this));

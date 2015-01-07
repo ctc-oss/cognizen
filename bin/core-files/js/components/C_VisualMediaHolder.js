@@ -239,7 +239,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			 //Section 508 stuff - pass the controls...
 			$(".mejs-playpause-button").keypress(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-				if (chCode == 32){
+				if (chCode == 32 || chCode == 13){
 					$(this).find('button').click();
 				}
 			});
@@ -411,7 +411,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		$("#mediaPop").click(function(){
 			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 			$(this).attr("title", tempCaption);
-		});
+		}).keypress(function(event) {
+	        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	        if (chCode == 32 || chCode == 13){
+		        $(this).click();
+		    }
+        });
 
 		//pageAccess_arr.push($("#mediaPop"));
 	}
@@ -1013,9 +1018,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
-
+			
 		try { $('#loader').flash().remove(); } catch (e) {}
-
+		try { $("#acc_gallery").remove(); } catch (e) {}
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
 		//try { $(".C_Loader").remove(); } catch (e) {}

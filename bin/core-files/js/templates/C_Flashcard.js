@@ -11,8 +11,6 @@
  */
 function C_Flashcard(_type) {
 	var type = _type;
-	// var pageTitle;
-	// var audioHolder;
 	var myContent;//Body
 
 	var revealCount//number of tabs.
@@ -36,7 +34,9 @@ function C_Flashcard(_type) {
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-
+		
+		//var body = document.getElementsByTagName("body")[0];
+		//body.setAttribute('role', 'application');
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
@@ -113,7 +113,6 @@ function C_Flashcard(_type) {
 				}
 			}
 
-//			$("#" + tempID).css({'left': 69 + i*4});
 			$("#" + tempID).css({'left': leftPos + i*0.4 + '%'});
 			//Postion the text within the card.
 			$("#" + tempTextID).css({'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
@@ -122,7 +121,6 @@ function C_Flashcard(_type) {
 			$("#" + tempID).data("myDef", myDef);
 
 			card_arr.push("#" + tempID);
-			doAccess(pageAccess_arr);
 		}
 
 		//Set height of holder, for styling
@@ -139,13 +137,23 @@ function C_Flashcard(_type) {
 		}else{
 			$("<div id='flashcardReshuffle'>reset</div>").insertAfter("#flashcardHolder");
 		}
+		
+		pageAccess_arr.push($("#flashcardReshuffle"));
+		
 		$("#flashcardReshuffle").button().click(function(){
 			$("#flashcardHolder").empty();
 			card_arr = [];
 			myIndex = 1;
 			shuffle();
 			$(this).remove();
-		});
+		}).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	        if (chCode == 32 || chCode == 13){
+		        $(this).click();
+		    }
+        });
+		
+		doAccess(pageAccess_arr);
 	}
 
 	function enableNextCard(){
@@ -185,7 +193,12 @@ function C_Flashcard(_type) {
 					currentCard--;
 					enableNextCard();
 				}
-			});
+			}).keypress(function(event) {
+			    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32 || chCode == 13){
+				    $(this).click();
+				}
+		    });
 	}
 
 

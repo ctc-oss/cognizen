@@ -165,9 +165,9 @@ function C_MultipleChoice(_type) {
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
 
 			if(isMulti == false){
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" /><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
-				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" role="button"/><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
+				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="checkbox" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '" /><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}
 
 			$(".fixFunkyIssue").click(function(){
@@ -181,7 +181,12 @@ function C_MultipleChoice(_type) {
 				}else{
 					$(this).parent().removeClass("optionSelected")
 				}
-			});
+			}).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32 || chCode == 13){
+				    $(this).click();
+				}
+		    });;
 
 
 			//Add button click action to each option
@@ -222,7 +227,7 @@ function C_MultipleChoice(_type) {
 			if(!isMulti){
 				$('#' + myOption).keypress(function(event) {
 			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-			        if (chCode == 32){
+			        if (chCode == 32 || chCode == 13){
 				        $(this).click();
 				    }
 		        });
@@ -250,7 +255,7 @@ function C_MultipleChoice(_type) {
 
 		$("#mcSubmit").click(checkAnswer).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-		    if (chCode == 32){
+		    if (chCode == 32  || chCode == 13){
 			    $(this).click();
 			}
 	    });

@@ -207,7 +207,7 @@ function C_AudioHolder(){
         //Section 508 stuff - pass the controls...
 		$(".mejs-playpause-button").keypress(function(event) {
 			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-			if (chCode == 32){
+			if (chCode == 32 || chCode == 13){
 				$(this).find('button').click();
 			}
 		});

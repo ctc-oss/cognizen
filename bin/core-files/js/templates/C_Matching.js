@@ -329,7 +329,7 @@ function C_Matching(_type) {
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 			$("#mcSubmit").click(checkAnswer).keypress(function(event) {
 		        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-		        if (chCode == 32){
+		        if (chCode == 32 || chCode == 13){
 			        $(this).click();
 			    }
 	        });

@@ -88,7 +88,7 @@ function C_Reveal(_type) {
 			var revID = "revID" + i;
 			var cont = tmpContent;
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Reveal Content: "+ ariaText +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
 
 			if(type == "revealRight"){
 				$("#"+revID).addClass("revealRight");
@@ -159,7 +159,12 @@ function C_Reveal(_type) {
 							]
 						});
 					}
-				});
+				}).keypress(function(event) {
+			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			        if (chCode == 32 || chCode == 13){
+				        $(this).click();
+				    }
+		        });
 			//INTERACTION FOR HOVER INTERACT
 			}else if(interact == "hover"){
 				//REVEAL RIGHT HOVER
