@@ -1003,6 +1003,8 @@ function C_QuestionBank(_type) {
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("btnText", "Submit");
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("attempts", 2);
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("randomize", false);
+		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("objective", "undefined"); 
+		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("objItemId", "undefined");
 
 		bankLength++;
 
