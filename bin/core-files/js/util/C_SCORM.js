@@ -50,40 +50,66 @@ function checkScorm(){
 		var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
 		var _objIndex = findObjective(_lessonTitle+"_satisfied");
 
+		//find passed/failed status of module/lesson objective
+		var _successStatus = '';
+        switch(scorm.version){
+            case "1.2" : 
+            	_successStatus = scorm.get("cmi.objectives."+_objIndex+".status");
+            	break;
+            //2004	
+            default : 
+				_successStatus = scorm.get("cmi.objectives."+_objIndex+".success_status");
+            	break;
+        }		
+
 		//course has already been completed
 		if(lessonStatus == "completed"){
-			scorm.set("cmi.success_status", "passed");
+			if(scorm.version != "1.2"){
+				scorm.set("cmi.success_status", "passed");
+			}
 			//scorm.quit();
 		}
-		else if(scorm.get("cmi.objectives."+_objIndex+".success_status") === "passed"){
+		else if(_successStatus === "passed"){
 			scorm.status("set", "completed");
-			scorm.set("cmi.success_status", "passed");
+			if(scorm.version != "1.2"){
+				scorm.set("cmi.success_status", "passed");
+			}
 		}
 		else{
 			scorm.status("set", "incomplete");
 
 			//resume on page
-			if(scorm.VERSION == "1.2"){
-				if(scorm.get("cmi.core.entry") == "resume"){
-					var location = scorm.get("cmi.core.lesson_location");
-					if(location != ""){
-						//figure out what is going on here.
-						loadPageFromID(location);
-						rejoinTracking(location);
-					}
-				}
-			}
-			else if(scorm.VERSION.substring(0,4) == "2004"){
-				if(scorm.get("cmi.entry") == "resume" || scorm.VERSION.indexOf('USSOCOM') != -1){
-					var location = scorm.get("cmi.location");
-					markResume = true;
-					if(location != ""){
-						//figure out what is going on here.
-						loadPageFromID(location);
-						rejoinTracking(location);
-					}
-				}
-			}
+			var location = "";
+			var scormEntry = "";
+
+            switch(scorm.version){
+                case "1.2" : 
+                	scormEntry = scorm.get("cmi.core.entry");
+                	location = scorm.get("cmi.core.lesson_location");
+                	break;
+                //2004	
+                default : 
+                	scormEntry = scorm.get("cmi.entry");	
+                	location = scorm.get("cmi.location");
+                	break;
+            }
+
+            if(scormEntry === "resume"){
+            	var suspendedQuestionResponse = scorm.get("cmi.suspend_data");
+            	debugger;
+            	var qrObject_arr = suspendedQuestionResponse.split("|");
+            	for (var i = 0; i < qrObject_arr.length-1; i++) {
+            		questionResponse_arr.push(jQuery.parseJSON(qrObject_arr[i]));
+            	};
+            	
+				if(location != ""){
+					//figure out what is going on here.
+					buildTrackingArray();
+					loadPageFromID(location);
+					rejoinTracking(location);
+				}            	
+            }
+
 		}
 	}
 }
@@ -220,15 +246,56 @@ function choiceValid(lesson){
 function setPageObjective(_correct, _graded){
 
 	if(doScorm()){
-		var _objId = "";
-		var myObjective = 'undefined';
-		var myObjItemId = 'undefined';
+
 		var eo = '';
-		var _pgTitle = encodeURIComponent(pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '');
 
 		if($(data).find("page").eq(currentPage).attr('eo')){
 			eo = $(data).find("page").eq(currentPage).attr('eo').replace('.', '');
 		}
+
+		var _objId = buildPageObjectiveId();
+
+		if(_objId.length > 0){	
+			_objId += "_id";
+			if(_correct && _graded){
+				setObjectiveSuccess(_objId, true, eo);
+			}
+			else if(!_correct && _graded){
+				setObjectiveSuccess(_objId, false, eo);
+			}
+		}	
+	}
+}
+
+function getPageObjectiveStatus(){
+	if(doScorm()){
+
+		var _objId = buildPageObjectiveId();
+		var _status = '';
+
+		if(_objId.length > 0){	
+			_objId += "_id";
+			var objIndex = findObjective(_objId);
+	        switch(scorm.version){
+	            case "1.2" : 
+	            	_status = scorm.get("cmi.objectives." + objIndex + ".status");
+	            	break;
+	            //2004	
+	            default : 
+					_status = scorm.get("cmi.objectives." + objIndex + ".success_status");
+	            	break;
+	        }
+		}
+
+		return _status;	
+	}	
+}
+
+function buildPageObjectiveId(){
+		var _objId = "";
+		var myObjective = 'undefined';
+		var myObjItemId = 'undefined';
+		var _pgTitle = encodeURIComponent(pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '');
 
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
@@ -270,16 +337,7 @@ function setPageObjective(_correct, _graded){
 			}
 		}
 
-		if(_objId.length > 0){	
-			_objId += "_id";
-			if(_correct && _graded){
-				setObjectiveSuccess(_objId, true, eo);
-			}
-			else if(!_correct && _graded){
-				setObjectiveSuccess(_objId, false, eo);
-			}
-		}	
-	}
+		return _objId;	
 }
 
 function getObjectives(){
@@ -292,7 +350,15 @@ function getObjectives(){
     	var setId = scorm.get("cmi.objectives." + i + ".id").split(".");
     	if(setId.length > 1){
 	    	objectivesObj.id = encodeURIComponent(setId[2].replace(/_/g, ' '));
-	    	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
+	        switch(scorm.version){
+	            case "1.2" : 
+	            	objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".status");
+	            	break;
+	            //2004	
+	            default : 
+					objectivesObj.successStatus = scorm.get("cmi.objectives." + i + ".success_status");
+	            	break;
+	        }	    		    	
 	    	objectivesObj.objItemId = setId[setId.length - 1].replace(/_/g, ' ');//.replace(/:/g, '');
 	    	objectives_arr.push(objectivesObj);
     	}
@@ -322,11 +388,19 @@ function setObjectiveSuccess(objId, success, eo){
 
 		var completionStatus = (success) ? "completed":"incomplete";
 
-		scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
-		if($(courseData).find("course").attr("lms") != "JKO"){
-			scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
-			scorm.set("cmi.objectives." + objIndex + ".description", eo);
-		}
+        switch(scorm.version){
+            case "1.2" : 
+            	scorm.set("cmi.objectives." + objIndex + ".status", successStatus);
+            	break;
+            //2004	
+            default : 
+				scorm.set("cmi.objectives." + objIndex + ".success_status", successStatus);
+				if($(courseData).find("course").attr("lms") != "JKO"){
+					scorm.set("cmi.objectives." + objIndex + ".completion_status", completionStatus);
+					scorm.set("cmi.objectives." + objIndex + ".description", eo);
+				}
+            	break;
+        }
 
 	}
 
@@ -343,8 +417,17 @@ function setInteractions(_id, _type, _response, _result, _description){
 			scorm.set("cmi.interactions." + num + ".result", result);			
 		}
 
-		scorm.set("cmi.interactions." + num + ".learner_response", _response);
-		scorm.set("cmi.interactions." + num + ".description", _description);
+        switch(scorm.version){
+            case "1.2" : 
+            	scorm.set("cmi.interactions." + num + ".student_response", _response);
+            	break;
+            //2004	
+            default : 
+				scorm.set("cmi.interactions." + num + ".learner_response", _response);
+				scorm.set("cmi.interactions." + num + ".description", _description);
+            	break;
+        }
+
 	}
 }
 

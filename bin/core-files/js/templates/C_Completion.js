@@ -70,29 +70,29 @@ function C_Completion(_type) {
 
 		testReview = $(courseData).find('item[name="'+$(data).find('lessonTitle').attr('value')+'"]').find('sequencing').attr('testReview');
 
-		if(doScorm() && lms == "JKO"){
-			if(scorm.get("cmi.entry") == "resume"){
-				var suspend_data = scorm.get("cmi.suspend_data");
-				if(suspend_data.length != 0){
-					var tmpData = suspend_data.split("~");
-					if(tmpData[0] !== "na"){
-						var tmpscore = tmpData[0].replace(/##/g , ',').split(",");
-						score_obj.passed = (tmpscore[0] === "true");
-						score_obj.minScore = parseInt(tmpscore[1]);
-						score_obj.correctQuestions = parseInt(tmpscore[2]);
-						score_obj.totalQuestions = parseInt(tmpscore[3]);
-						score_obj.scorePercent = parseInt(tmpscore[4]);
-						score_obj.score = parseFloat(tmpscore[5]);
-						var tmpQArray = tmpData[2].split(",");
-						for (var i = 0; i < tmpQArray.length; i++) {
-							stringQR_arr.push(tmpQArray[i]);
-						};
-						resumed = true;
-					}
-				}
+		// if(doScorm() && lms == "JKO"){
+		// 	if(scorm.get("cmi.entry") == "resume"){
+		// 		var suspend_data = scorm.get("cmi.suspend_data");
+		// 		if(suspend_data.length != 0){
+		// 			var tmpData = suspend_data.split("~");
+		// 			if(tmpData[0] !== "na"){
+		// 				var tmpscore = tmpData[0].replace(/##/g , ',').split(",");
+		// 				score_obj.passed = (tmpscore[0] === "true");
+		// 				score_obj.minScore = parseInt(tmpscore[1]);
+		// 				score_obj.correctQuestions = parseInt(tmpscore[2]);
+		// 				score_obj.totalQuestions = parseInt(tmpscore[3]);
+		// 				score_obj.scorePercent = parseInt(tmpscore[4]);
+		// 				score_obj.score = parseFloat(tmpscore[5]);
+		// 				var tmpQArray = tmpData[2].split(",");
+		// 				for (var i = 0; i < tmpQArray.length; i++) {
+		// 					stringQR_arr.push(tmpQArray[i]);
+		// 				};
+		// 				resumed = true;
+		// 			}
+		// 		}
 
-			}
-		}
+		// 	}
+		// }
 
 		if(isScored === "true"){
 			if(!resumed){

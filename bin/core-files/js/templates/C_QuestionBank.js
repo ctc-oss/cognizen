@@ -332,6 +332,8 @@ function C_QuestionBank(_type) {
 		if(isComplete && mode != "edit"){
 			//disableOptions();
 			$("#mcSubmit").button({ disabled: true });
+			mandatoryInteraction = false;
+			checkNavButtons();
 			showUserAnswer();
 		}
 
@@ -450,8 +452,12 @@ function C_QuestionBank(_type) {
 			//////////////////////////////////////////
 		}
 
-		//set SCORM objective for page - C_SCORM.js
-		setPageObjective(tempCorrect, graded);
+		//get SOCRM objective status for page = C_SCORM.js
+		var _pageObjectiveStatus = getPageObjectiveStatus();
+		if(_pageObjectiveStatus != "failed"){
+			//set SCORM objective for page - C_SCORM.js
+			setPageObjective(tempCorrect, graded);
+		}
 
 		//////////////////////////FEEDBACK\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		var msg = "";
@@ -678,7 +684,7 @@ function C_QuestionBank(_type) {
 		msg += "<label id='label' title='Indicates if ALL questions should be presented.'>show all: </label>";
 		msg += "<input id='isShowAll' type='checkbox' name='showAll' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates number of questions to be presented.'>ask how many: </label>";
-		msg += "<input type='text' name='myName' id='inputNumberToPresent' value='"+ $(data).find("page").eq(currentPage).attr("tocomplete") +"' class='dialogInput' style='width:35px;'/><br/>";
+		msg += "<input type='text' name='inputNumberToPresent' id='inputNumberToPresent' value='"+ $(data).find("page").eq(currentPage).attr("tocomplete") +"' class='dialogInput' style='width:35px;'/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -780,9 +786,42 @@ function C_QuestionBank(_type) {
 		
 		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
 			$("#isShowAll").attr('checked', 'checked');
+			$('#inputNumberToPresent').prop('disabled', true);
 		}else{
 			$("#isShowAll").removeAttr('checked');
+			$('#inputNumberToPresent').prop('disabled', false);
 		}
+
+		//disables inputNumberToPresent if isShowAll is checked. 
+		$('#isShowAll').change(function(){
+			if($("#isShowAll").prop("checked") == true){
+				$('#inputNumberToPresent').prop('disabled', true);
+			}
+			else{
+				$('#inputNumberToPresent').prop('disabled', false);
+			}
+		});
+
+		//handles validation of numbertopresent field
+		$('input[name=inputNumberToPresent').change(function(){
+
+			if(!$.isNumeric($("#inputNumberToPresent").val())){
+				alert("The number of question to present must be a numeric value.");
+				$("#inputNumberToPresent").val("1");				
+			}
+			else{
+				var _inputValue = parseInt($("#inputNumberToPresent").val());
+
+				if(_inputValue > bankLength){
+					alert("The number of question to present cannot be more then the number of questions in the question bank.");
+					$("#inputNumberToPresent").val(bankLength.toString());
+				}
+				else if(_inputValue < 1){
+					alert("The number of question to present must be at least 1.");
+					$("#inputNumberToPresent").val("1");				
+				}
+			}
+		});
 
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('randomize') == "false"){
 			$("#isRandom").removeAttr('checked');
@@ -829,30 +868,58 @@ function C_QuestionBank(_type) {
 			width: 800,
 			height: 650,
 			dialogClass: "no-close",
-			buttons: {
-				AddQuestion: function(){
-					var tmpObj = makeQuestionDataStore();
-					saveQuestionEdit(tmpObj);
-					addQuestion(bankLength);
+			buttons:[		
+				{
+					text: "Add Question",
+					title: "Adds a new question.",
+					click: function(){
+						var tmpObj = makeQuestionDataStore();
+						saveQuestionEdit(tmpObj);
+						addQuestion(bankLength);
+					}	
 				},
-				AddOption: function(){
-					addOption(optionEdit_arr.length, true);
+				{
+					text: "Add Option",
+					title: "Adds a new matching option.",
+					click: function(){
+						addOption(optionEdit_arr.length, true);
+					}
 				},
-				Done: function(){
-					var tmpObj = makeQuestionDataStore();
-					saveBankEdit(tmpObj);
-					$("#questionEditDialog").dialog("close");
-				}
-			},
-			close: function(){
-				$("#questionEditDialog").remove();
-			}
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+						var tmpObj = makeQuestionDataStore();
+						saveBankEdit(tmpObj);
+						$("#questionEditDialog").dialog("close");
+						$("#questionEditDialog").remove();
+					}
+				}					
+			] 
+			// {
+			// 	AddQuestion: function(){
+			// 		var tmpObj = makeQuestionDataStore();
+			// 		saveQuestionEdit(tmpObj);
+			// 		addQuestion(bankLength);
+			// 	},
+			// 	AddOption: function(){
+			// 		addOption(optionEdit_arr.length, true);
+			// 	},
+			// 	Done: function(){
+			// 		var tmpObj = makeQuestionDataStore();
+			// 		saveBankEdit(tmpObj);
+			// 		$("#questionEditDialog").dialog("close");
+			// 	}
+			// },
+			// close: function(){
+			// 	$("#questionEditDialog").remove();
+			// }
 		});
 
 		//adds tooltips to the edit dialog buttons
-	    $('button').eq(3).attr('title', 'Adds a new question.');
-	    $('button').eq(4).attr('title', 'Adds a new matching option.');
-	    $('button').eq(5).attr('title', 'Closes the edit dialog.');
+	    // $('button').eq(3).attr('title', 'Adds a new question.');
+	    // $('button').eq(4).attr('title', 'Adds a new matching option.');
+	    // $('button').eq(5).attr('title', 'Closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });

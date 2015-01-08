@@ -44,6 +44,115 @@ var printButton = false;
 var referenceButton = false;
 var referenceURL = "";
 
+function ncInitialize(){
+	debugger;
+	updateTotalGradedQuestions();
+
+	//questionResponse_arr = [];
+	if(questionResponse_arr.length == 0){
+		for(var i = 0; i < totalPages; i++){
+			if($(data).find("page").eq(i).attr('type') == 'kc'){
+				var isMulti = false;
+				if($(data).find("page").eq(i).attr('layout') == 'questionBank'){
+					if(parseInt($(data).find("page").eq(i).attr('tocomplete')) > 1 || $(data).find("page").eq(i).attr('showall') == "true"){
+						isMulti = true;
+					}
+				}
+				if($(data).find("page").eq(i).attr('layout') == 'questionBank' && isMulti){
+					var howMany = 0;
+					if($(data).find("page").eq(i).attr('showall') == "true"){
+						howMany = $(data).find("page").eq(i).find("bankitem").length;
+					}else{
+						howMany = parseInt($(data).find("page").eq(i).attr('tocomplete'));
+					}
+					for(var j = 0; j < howMany; j++){
+						var userSelection_arr = [];
+						var question_obj = new Object();
+						question_obj.complete = false;
+						question_obj.correct = null;
+						if($(data).find("page").eq(i).attr('objective') == undefined){
+							question_obj.objective = "undefined";
+						}else{
+							question_obj.objective = $(data).find("page").eq(i).attr('objective');
+						}
+				
+						if($(data).find("page").eq(i).attr('objItemId') == undefined){
+							question_obj.objItemId = "undefined";
+						}else{
+							question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
+						}
+				
+						if($(data).find("page").eq(i).attr('graded') == 'true'){
+							question_obj.graded = true;
+						}else{
+							question_obj.graded = false;
+						}
+				
+						/*if($(data).find("page").eq(i).attr('layout') == 'textInput'){
+							var _textInputQuestions = [];
+							question_obj.textInputQuestions = _textInputQuestions;
+						}*/
+						
+						question_obj.id = $(data).find('page').eq(i).attr('id');
+						question_obj.subID = j;
+						question_obj.userAnswer = userSelection_arr;
+						questionResponse_arr.push(question_obj);
+					}
+				}else{
+					var userSelection_arr = [];
+					var question_obj = new Object();
+					question_obj.complete = false;
+					question_obj.correct = null;
+					if($(data).find("page").eq(i).attr('objective') == undefined){
+						question_obj.objective = "undefined";
+					}else{
+						question_obj.objective = $(data).find("page").eq(i).attr('objective');
+					}
+			
+					if($(data).find("page").eq(i).attr('objItemId') == undefined){
+						question_obj.objItemId = "undefined";
+					}else{
+						question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
+					}
+			
+					if($(data).find("page").eq(i).attr('graded') == 'true'){
+						question_obj.graded = true;
+					}else{
+						question_obj.graded = false;
+					}
+			
+					if($(data).find("page").eq(i).attr('layout') == 'textInput'){
+						var _textInputQuestions = [];
+						question_obj.textInputQuestions = _textInputQuestions;
+					}
+			
+					question_obj.id = $(data).find('page').eq(i).attr('id');
+					question_obj.subID = 0;
+					question_obj.userAnswer = userSelection_arr;
+					questionResponse_arr.push(question_obj);
+				}
+			}
+		}
+	}
+
+	//If this is a graded exercise, track the questions.  Am marking questions as graded so that you can have questions that ARE NOT scored as well...
+	//if($(data).find('scored').attr("value") == 'true'){
+	//scored = true;
+	if($(data).find('restartOnFail').attr("value") == 'true'){
+		restartOnFail = true;
+	}
+	passScore = $(data).find('minScore').attr("value") / 100;
+
+	//END OF SCORING SET UP.	
+
+	//If the course is linear - must complete page by page - setup a page completion tracking array.
+	if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
+		buildTrackingArray();
+	}
+	//END OF TRACKING SET UP.
+
+}
+
 function checkNav(){
 	//Style is tied to the selected jquery ui theme set in index.
 	nextBack = $(data).find('nextBack').attr('value');
@@ -937,21 +1046,20 @@ function checkLockMode(){
 	});
 }
 
-//If this is a graded exercise, track the questions.  Am marking questions as graded so that you can have questions that ARE NOT scored as well...
-//if($(data).find('scored').attr("value") == 'true'){
-	scored = true;
-	if($(data).find('restartOnFail').attr("value") == 'true'){
-		restartOnFail = true;
-	}
-	passScore = $(data).find('minScore').attr("value") / 100;
+
 
 
 function updateTotalGradedQuestions(){
 	totalGradedQuestions = 0;
 	for(var i = 0; i < totalPages; i++){
 		if( ($(data).find("page").eq(i).attr('type') == 'kc') && ($(data).find("page").eq(i).attr('graded') == 'true') ){
-			if($(data).find("page").eq(i).attr('layout') == 'questionBank'){
-				totalGradedQuestions += parseInt($(data).find("page").eq(i).attr('tocomplete'));
+			if($(data).find("page").eq(i).attr('layout') == 'questionBank' && $(data).find("page").eq(i).attr('tocomplete') != undefined){
+				if($(data).find("page").eq(i).attr('showall') == 'false'){
+					totalGradedQuestions += parseInt($(data).find("page").eq(i).attr('tocomplete'));
+				}
+				else{
+					totalGradedQuestions += $(data).find("page").eq(i).find("bankitem").length;
+				}
 			}else{
 				totalGradedQuestions++;
 			}
@@ -959,100 +1067,9 @@ function updateTotalGradedQuestions(){
 	}
 }
 
-updateTotalGradedQuestions();
 
-questionResponse_arr = [];
 
-for(var i = 0; i < totalPages; i++){
-	if($(data).find("page").eq(i).attr('type') == 'kc'){
-		var isMulti = false;
-		if($(data).find("page").eq(i).attr('layout') == 'questionBank'){
-			if(parseInt($(data).find("page").eq(i).attr('tocomplete')) > 1 || $(data).find("page").eq(i).attr('showall') == "true"){
-				isMulti = true;
-			}
-		}
-		if($(data).find("page").eq(i).attr('layout') == 'questionBank' && isMulti){
-			var howMany = 0;
-			if($(data).find("page").eq(i).attr('showall') == "true"){
-				howMany = $(data).find("page").eq(i).find("bankitem").length;
-			}else{
-				howMany = parseInt($(data).find("page").eq(i).attr('tocomplete'));
-			}
-			for(var j = 0; j < howMany; j++){
-				var userSelection_arr = [];
-				var question_obj = new Object();
-				question_obj.complete = false;
-				question_obj.correct = null;
-				if($(data).find("page").eq(i).find("bankitem").eq(j).attr('objective') == undefined){
-					question_obj.objective = "undefined";
-				}else{
-					question_obj.objective = $(data).find("page").eq(i).find("bankitem").eq(j).attr('objective');
-				}
-		
-				if($(data).find("page").eq(i).find("bankitem").eq(j).attr('objItemId') == undefined){
-					question_obj.objItemId = "undefined";
-				}else{
-					question_obj.objItemId = $(data).find("page").eq(i).find("bankitem").eq(j).attr('objItemId');
-				}
-		
-				if($(data).find("page").eq(i).attr('graded') == 'true'){
-					question_obj.graded = true;
-				}else{
-					question_obj.graded = false;
-				}
-		
-				/*if($(data).find("page").eq(i).attr('layout') == 'textInput'){
-					var _textInputQuestions = [];
-					question_obj.textInputQuestions = _textInputQuestions;
-				}*/
-				
-				question_obj.id = $(data).find('page').eq(i).attr('id');
-				question_obj.subID = j;
-				question_obj.userAnswer = userSelection_arr;
-				questionResponse_arr.push(question_obj);
-			}
-		}else{
-			var userSelection_arr = [];
-			var question_obj = new Object();
-			question_obj.complete = false;
-			question_obj.correct = null;
-			if($(data).find("page").eq(i).attr('objective') == undefined){
-				question_obj.objective = "undefined";
-			}else{
-				question_obj.objective = $(data).find("page").eq(i).attr('objective');
-			}
-	
-			if($(data).find("page").eq(i).attr('objItemId') == undefined){
-				question_obj.objItemId = "undefined";
-			}else{
-				question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
-			}
-	
-			if($(data).find("page").eq(i).attr('graded') == 'true'){
-				question_obj.graded = true;
-			}else{
-				question_obj.graded = false;
-			}
-	
-			if($(data).find("page").eq(i).attr('layout') == 'textInput'){
-				var _textInputQuestions = [];
-				question_obj.textInputQuestions = _textInputQuestions;
-			}
-	
-			question_obj.id = $(data).find('page').eq(i).attr('id');
-			question_obj.subID = 0;
-			question_obj.userAnswer = userSelection_arr;
-			questionResponse_arr.push(question_obj);
-		}
-	}
-}
-//END OF SCORING SET UP.
 
-//If the course is linear - must complete page by page - setup a page completion tracking array.
-if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
-	buildTrackingArray();
-}
-	//END OF TRACKING SET UP.
 
 //If the course is linear - must complete page by page - setup a page completion tracking array.
 function buildTrackingArray(){
@@ -1246,6 +1263,9 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 	if(_subID){
 		hasSubID = true;
 	}
+
+
+
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
 			if(hasSubID){
@@ -1272,6 +1292,18 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 			}
 			break;
 		}
+	}
+
+	//if is running in SCORM LMS set the questionResonse_arr to the cmi.suspend_data
+	if(doScorm()){
+
+		//create string version of questionResponse_arr to be used in suspend_data	
+		var qrString = '';
+		for(var i = 0; i < questionResponse_arr.length; i++){
+			qrString += JSON.stringify(questionResponse_arr[i]) + "|";	
+		}	
+
+		scorm.set("cmi.suspend_data", qrString);
 	}
 
 	if(restartOnFail == true){
