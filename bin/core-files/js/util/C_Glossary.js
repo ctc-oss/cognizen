@@ -6,11 +6,13 @@
  *  	Version: 0.5
  *		Date Created: 10/19/13
  *		Created by: Philip Double
- *		Date Updated: 10/19/13
- *		Updated by: Philip Double
- *		History: Moved all glossary functionality into its own js file.
+ *		Date Updated: 1/6/15
+ *		Updated by: Ryan Dingman
+ *		History: 	Updates to make glossary work on tablets
+ 					Moved all glossary functionality into its own js file.
  *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
  *				- Optimize code.
+ 				- Needs different functionality for phones, where the screen is too small for the current two pane setup.
  */
 
 var glossary = false;
@@ -18,13 +20,14 @@ var glossaryState = false;
 var courseGlossary = false;
 var glossaryClosePos = 0;
 var glossaryClosePosMobile = 0;
+var glossaryTabPos = 0;
 var totalGlossary = 0;
 
 
 /************************************************************************************************
 Function: 		checkGlossary
 Param: 			none
-Description:	Check's to see if this app has glossary turned on - if yes then build it.
+Description:	Checks to see if this app has glossary turned on - if yes then build it.
 ************************************************************************************************/
 function checkGlossary(){
 	if($(data).find('glossary').attr('courseGlossary') == undefined){
@@ -33,21 +36,19 @@ function checkGlossary(){
 	if($(data).find('glossary').attr('courseGlossary') == "true"){
 		courseGlossary = true;
 	}
-	if($(data).find('glossary').attr('value') == "true"){
+	if(($(data).find('glossary').attr('value') == "true") && !isMobilePhone){  // needs to be rewritten for phones, disable on phones for now
 		glossary = true;
-		if(isMobile){
-			$('#panes').append("<div id='glossaryPane' class='pane'><button id='glossaryTab' class='paneTab'></button><div id='glossaryContent' class='glossaryContent'></div></div>");
-		}
-		else{
-			var msg = "<div id='glossaryPane' class='pane'>";
-				msg += "<div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/>";
-				msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
-				msg += "<div id='glossaryContent' class='glossaryContent'>";
-				msg += "<div id='glossaryDef'></div></div></div>";
-			$('#panes').append(msg);
-		}
+		var msg = "<div id='glossaryPane' class='pane'>";
+			msg += "<div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/>";
+			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
+			msg += "<div id='glossaryContent' class='glossaryContent'>";
+			msg += "<div id='glossaryDef'></div></div></div>";
+		$('#panes').append(msg);
 		
-		$('#glossaryTab').click(toggleGlossary).tooltip();
+		$('#glossaryTab').click(toggleGlossary);
+		if(!isMobile){
+			$('#glossaryTab').tooltip();  // don't attach tooltip on mobile devices
+		}
 	
 		if(mode == "edit"){
 			//Add glossary item button
@@ -485,21 +486,15 @@ function toggleGlossary(){
 		glossaryState = true;
 
 		gimmeGlosPos();
-		if(isMobile){
-			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:0}, ease:transitionType});
-		}
-		else{
-			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
-		}
+		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
+		// if tab is not against the left edge of the screen at start, tween it to the right edge of the pane when the pane opens
+		var tabPos = glossaryClosePos * -1;
+		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:tabPos}, ease:transitionType});
 	}
 	else{
 		glossaryState = false;
-		if(isMobile){
-			TweenMax.to($('#glossaryPane'), transitionLength, {css:{top:glossaryClosePosMobile}, ease:transitionType});
-		}
-		else{
-			TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType});
-		}
+		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType});
+		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:glossaryTabPos}, ease:transitionType});
 	}
 }
 
@@ -511,4 +506,5 @@ Description:	Discerns the open and close point for glossary animation.
 function gimmeGlosPos(){
 	glossaryClosePos = ($("#glossaryPane").position().left);
 	glossaryClosePosMobile = ($("#glossaryPane").position().top);
+	glossaryTabPos = ($("#glossaryTab").position().left);
 }

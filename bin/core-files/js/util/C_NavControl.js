@@ -284,11 +284,19 @@ function checkNav(){
 		});
 
 		//Style the Next Button and give it its listener
-		$("#next").button({
-			icons:{
-				secondary: 'ui-icon-circle-triangle-e'
-			}
-		});
+		if(isMobile){
+			$("#next").button({
+				icons:{
+					primary: 'ui-icon-circle-triangle-e'
+				}
+			});
+		}else{
+			$("#next").button({
+				icons:{
+					secondary: 'ui-icon-circle-triangle-e'
+				}
+			});
+		}
 	}
 }
 
@@ -1218,7 +1226,7 @@ function checkNavButtons(){
 *************************************************************/
 function updatePageCount(){
 	var tempPage = currentPage + 1;
-	if(isMobilePhone){
+	if(isMobile){
 		$('#pageCount').text(tempPage + " of " + totalPages);
 	}
 	else{
