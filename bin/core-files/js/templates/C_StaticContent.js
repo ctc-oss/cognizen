@@ -77,8 +77,8 @@ function C_StaticContent(_type) {
 		   //$("#content").width($("#contentHolder").width()-15);
 		   $("#content").append(myContent);
 		   //$("#content").attr("role", "main");
-		   $("#content").attr("aria-label", $("#content").text());
-		   pageAccess_arr.push($("#content"));
+		   //$("#content").attr("aria-label", $("#content").text());
+		   //pageAccess_arr.push($("#content"));
 	    }
 
         /*Attach Media*/

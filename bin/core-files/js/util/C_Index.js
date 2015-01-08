@@ -394,8 +394,8 @@ function addIndex(){
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}
 	//Adding new for accessibility 10/7/14 PD
-	globalAccess_arr.push($("#courseTitle"));
-	globalAccess_arr.push($("#lessonTitle"));
+	//globalAccess_arr.push($("#courseTitle"));
+	//globalAccess_arr.push($("#lessonTitle"));
 
 	if(pushedUpdate == true){
 		fadeComplete();

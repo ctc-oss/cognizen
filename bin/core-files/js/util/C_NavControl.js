@@ -180,7 +180,7 @@ function checkNav(){
 		updatePageCount();
 		//Adding new for accessibility 10/7/14 PD
 		//$("#pageCount").attr("role", "presentation");
-		globalAccess_arr.push($("#pageCount"));
+		//globalAccess_arr.push($("#pageCount"));
 	}
 
 	//Check if we are using help button - if so, set it up.

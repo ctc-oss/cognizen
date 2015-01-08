@@ -54,7 +54,7 @@ function C_TabbedContent(_type) {
 
 		$("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content">' +myContent + '</div><div id="tabs"></div></div></div></div>');
 
-		pageAccess_arr.push($("#content"));
+		//pageAccess_arr.push($("#content"));
 
 		$("#scrollableContent").addClass("tabsLeft");
 	    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -97,7 +97,7 @@ function C_TabbedContent(_type) {
 		$tabis = $('#tabs ul li');
 
 		for(var i = 0; i < revealCount; i++){
-			//$("#content").attr("aria-label", $("#content").text());
+			
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var currentTabContent = $("#tab"+i).text();
 			$tabis.eq(i).attr('tabindex', '-1').attr('aria-selected', 'false').attr("role", "presentation").attr("aria-label", "Tab: " + currentTab + " with Content: " + currentTabContent);
