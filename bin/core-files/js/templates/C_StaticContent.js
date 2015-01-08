@@ -69,13 +69,6 @@ function C_StaticContent(_type) {
             $("#contentHolder").addClass("graphic");
         }
 
-		if(isMobile){
-			titleBarHeight = $("#courseTitle").height();
-			navBarHeight = $("#pageCount").height();
-			stageH = window.innerHeight - titleBarHeight - navBarHeight;
-			$("#stage").height(stageH);
-		}
-
         if(type != "graphicOnly"){
 		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		   // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time

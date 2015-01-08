@@ -293,7 +293,7 @@ function checkMobile(){
 			//console.log("mobile device detected");
 		}
 
-		if(window.matchMedia("screen and (max-device-width: 568px)").matches) {
+		if(window.matchMedia("screen and (max-device-width: 736px)").matches) {
 			isMobilePhone = true;
 			//console.log("mobile phone detected");
 		}
@@ -314,6 +314,14 @@ function checkMobile(){
 function buildInterface(){
 	checkFF();
 	checkMobile();
+	//added for handling of scorm handling of suspending of scoring data
+	////////////////////////////////////////////
+	//function in C_SCORM.js
+	checkScorm();
+	//function in C_NavControl.js
+	ncInitialize();
+	////////////////////////////////////////////
+	
 	$('body').empty();
 
 	if (isMobilePhone){
@@ -369,7 +377,7 @@ function buildInterface(){
 	checkGlossary();
 	checkDocs();
 
-	checkScorm();
+	//checkScorm();
 	loadPage();
 
 	if(mode == "edit" || mode == "review"){
