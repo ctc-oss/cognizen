@@ -325,7 +325,7 @@ function buildInterface(){
 		$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
 	}else{
 		//console.log("desktop site");
-		$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><div id='courseTitle' role='heading'></div><div id='lessonTitle' role='heading'></div><div id='panes'></div></div></div></div>");
+		$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><div id='stage'></div><header id='courseTitle'></header><header id='lessonTitle'></header><div id='panes'></div></div></div></div>");
 	}
 
 	//Set variables consumed by templates.
@@ -348,12 +348,11 @@ function buildInterface(){
 	var courseTitle = $(data).find("courseTitle").attr("value");
 
 	$("#courseTitle").append(courseTitle);
-	$("#courseTitle").attr("aria-label", courseTitle);
+
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle = $(data).find("lessonTitle").attr("value");
 
 	$("#lessonTitle").append(lessonTitle);
-	$("#lessonTitle").attr("aria-label", lessonTitle);
 	checkNav();
 	if(mode == "edit"){
 		addEditNav();

@@ -49,8 +49,15 @@ function checkNav(){
 	nextBack = $(data).find('nextBack').attr('value');
 	if(nextBack == "true"){
 		nextBack = true;
-		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
+		$("#myCanvas").append("<div class='acc-skipIndex'><a id='skipNav' role='button' href='#courseTitle'>Click to skip navigation index.</a></div><div id='frontFocusGuard' class='acc-skipIndex'></div><div id='backFocusGuard'class='acc-skipIndex'></div><button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
 		//Adding new for accessibility 10/7/14 PD
+		$('#skipNav').keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $("#courseTitle").focus();
+			}
+	    });
+		globalAccess_arr.push($("#skipNav"));
 		globalAccess_arr.push($("#next"));
 		globalAccess_arr.push($("#back"));
 	}
@@ -63,7 +70,7 @@ function checkNav(){
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
 		//Adding new for accessibility 10/7/14 PD
-		$("#pageCount").attr("role", "presentation");
+		//$("#pageCount").attr("role", "presentation");
 		globalAccess_arr.push($("#pageCount"));
 	}
 

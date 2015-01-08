@@ -69,8 +69,8 @@ function C_ClickImage(_type) {
 		}
 
         $("#content").append(myContent);
-        $("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        pageAccess_arr.push($("#content"));
+        //$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
+        //pageAccess_arr.push($("#content"));
 
 		$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
 

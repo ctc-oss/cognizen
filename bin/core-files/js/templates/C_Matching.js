@@ -123,9 +123,9 @@ function C_Matching(_type) {
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
 
-		var ariaText = myContent.replace(/\'/g, "").replace(/\"/g, "");
-		$("#question").attr("aria-label", ariaText);
-		pageAccess_arr.push($("#question"));
+		//var ariaText = myContent.replace(/\'/g, "").replace(/\"/g, "");
+		//$("#question").attr("aria-label", ariaText);
+		//pageAccess_arr.push($("#question"));
 
 		placeOptions();
 	}

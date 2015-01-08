@@ -122,9 +122,9 @@ function C_MultipleChoice(_type) {
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
 
-		var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
-		$("#question").attr("aria-label", ariaText);
-		pageAccess_arr.push($("#question"));
+		//var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
+		//$("#question").attr("aria-label", ariaText);
+		//pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
@@ -186,7 +186,7 @@ function C_MultipleChoice(_type) {
 			    if (chCode == 32 || chCode == 13){
 				    $(this).click();
 				}
-		    });;
+		    });
 
 
 			//Add button click action to each option

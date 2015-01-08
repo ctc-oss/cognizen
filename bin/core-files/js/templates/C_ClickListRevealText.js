@@ -1,6 +1,6 @@
 /*!
- * C_ClickImage
- * This class creates a template for placing clickable images - reaveals text in set box.
+ * C_ClickListRevealText
+ * This class creates a template for placing a list of terms that reveals  text in set box.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
  * VERSION: alpha 1.0
  * DATE: 2014-09-01
@@ -59,8 +59,8 @@ function C_ClickListRevealText(_type) {
 
         $("#content").append(myContent);
 
-		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        pageAccess_arr.push($("#content"));
+		//$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
+        //pageAccess_arr.push($("#content"));
 
         $("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
 
@@ -78,7 +78,13 @@ function C_ClickListRevealText(_type) {
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
-				});
+				}).keypress(function(event) {
+					var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+					console.log(chCode);
+				    if (chCode == 32 || chCode == 13){
+					    $(this).click();
+					}
+			    });
 			}else if(interact == "hover"){
 				$("#" + revID).hover(function(){
 					updateRevealContent($(this));

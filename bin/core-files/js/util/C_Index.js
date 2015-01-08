@@ -35,10 +35,16 @@ function checkIndex(){
 		if(progressMode == "linear" || progressMode == "lockStep"){
 			isLinear = true;
 		}
-		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' title='click here to toggle content index'/></div>");
+		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' aria-label='click here to toggle content index' title='click here to toggle content index'/></div>");
 
 		//Set index tab action to open and close the index.
-		$('#indexTab').click(toggleIndex);
+		$('#indexTab').click(toggleIndex).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    toggleIndex();
+			}
+	    });
+		globalAccess_arr.push($('#indexTab'));
 		if(!isMobile){
 			$('#indexTab').tooltip();  // don't attach tooltip on mobile devices
 		}
@@ -74,6 +80,8 @@ function updateMenuItems(){
 					if(mode != "edit"){
 						$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
 						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
+						var newAriaLabelString = "Page Complete " + $("#" + thisID).attr("aria-label");
+						$("#" + thisID).attr("aria-label", newAriaLabelString);
 					}
 				}
 
@@ -163,10 +171,6 @@ function addIndex(){
 		thisID = "indexMenuItem" + i;
 		var pageID = $(data).find("page").eq(i).attr("id");
 		var childLength = $(data).find("page").eq(i).find("page").length;
-		//var hasChildPages = false;
-		//if(childLength > 0){
-			//hasChildPages = true;
-		//}
 
 		indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
 
@@ -376,12 +380,13 @@ function addIndex(){
 
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
+		console.log($(indexItem_arr[i]));
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-		    if (chCode == 32){
+		    if (chCode == 32 || chCode == 13){
 			    $(this).click();
 			}
 	    }).attr('aria-label', $(indexItem_arr[i]).text());

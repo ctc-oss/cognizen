@@ -11,8 +11,8 @@ function C_PageTitle(_id){
      //Add the divs for the page title adn the content divs.
      $('#stage').append('<div id="pageTitle" role="heading"></div>');
      $("#pageTitle").append(myPageTitle);
-     $("#pageTitle").attr('aria-label', $("#pageTitle").text());
-     pageAccess_arr.push($("#pageTitle"));
+     //$("#pageTitle").attr('aria-label', $("#pageTitle").text());
+     //pageAccess_arr.push($("#pageTitle"));
      if(mode == "edit"){
         /*******************************************************
 		* Edit Title

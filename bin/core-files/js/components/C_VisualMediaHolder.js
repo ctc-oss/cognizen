@@ -333,11 +333,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				startPoint = 0;
 			}
 			
-			$("#stage").append( "<div id='acc_gallery' class='acc-skipIndex'></div>");
+			//$("#stage").append( "<div id='acc_gallery' class='acc-skipIndex'></div>");
 			for(var i = startPoint; i < media_arr.length; i++){
-				var accID = "acc" + i;
-				$("#acc_gallery").append("<div id='"+accID+"' aria-label='Picture Alt Text: "+alt_arr[i]+" With a Caption reading:"+caption_arr[i]+"'></div>");
-				pageAccess_arr.push($("#"+accID));
+				//var accID = "acc" + i;
+				//$("#acc_gallery").append("<div id='"+accID+"' aria-label='Picture Alt Text: "+alt_arr[i]+" With a Caption reading:"+caption_arr[i]+"'></div>");
+				//pageAccess_arr.push($("#"+accID));
 				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
 				var checkFile = media_arr[i].split('.'), i, l;
 		        var last = checkFile.length;
@@ -351,7 +351,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 
 		mediaPopString += "</div>";
 		$(mediaPopString).insertAfter("#loader");
-		//pageAccess_arr.push($("#mediaPop"));
+		pageAccess_arr.push($("#mediaPop"));
 		if(!hasSWF){
 			$("[rel='mediaPop']").fancybox({
 				caption : {

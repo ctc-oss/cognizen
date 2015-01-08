@@ -87,9 +87,9 @@ function C_Slider(_type) {
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
 		$("#question").append(myContent);
 
-		var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
-		$("#question").attr("aria-label", ariaText);
-		pageAccess_arr.push($("#question"));
+		//var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
+		//$("#question").attr("aria-label", ariaText);
+		//pageAccess_arr.push($("#question"));
 
 		//buildslider
 		var myNode = $(data).find("page").eq(currentPage).find('slider');

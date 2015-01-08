@@ -73,8 +73,8 @@ function C_Flashcard(_type) {
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 //        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		$("#content").append(myContent);
-		$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        pageAccess_arr.push($("#content"));
+		//$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
+        //pageAccess_arr.push($("#content"));
 
 		shuffle();
    	}
