@@ -409,20 +409,22 @@ function setObjectiveSuccess(objId, success, eo){
 function setInteractions(_id, _type, _response, _result, _description){
 	if(doScorm()){
 		var num = parseInt(scorm.get("cmi.interactions._count"));
-		var result = (_result) ? "correct":"incorrect";
 
 		if($(courseData).find("course").attr("lms") != "JKO"){
 			scorm.set("cmi.interactions." + num + ".id", _id);
-			scorm.set("cmi.interactions." + num + ".type", _type);
-			scorm.set("cmi.interactions." + num + ".result", result);			
+			scorm.set("cmi.interactions." + num + ".type", _type);						
 		}
 
         switch(scorm.version){
             case "1.2" : 
             	scorm.set("cmi.interactions." + num + ".student_response", _response);
+            	var result = (_result) ? "correct":"wrong";
+            	scorm.set("cmi.interactions." + num + ".result", result);
             	break;
             //2004	
             default : 
+            	var result = (_result) ? "correct":"incorrect";
+            	scorm.set("cmi.interactions." + num + ".result", result);
 				scorm.set("cmi.interactions." + num + ".learner_response", _response);
 				scorm.set("cmi.interactions." + num + ".description", _description);
             	break;
