@@ -867,7 +867,7 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("img", "defaultReveal.png");
 		}
 
-		var myMatch = $(data).find("page").eq(currentPage).find("option").eq(i).attr("correct");
+		//var myMatch = $(data).find("page").eq(currentPage).find("option").eq(i).attr("correct");
 		//var myLabel = String.fromCharCode(_addID % 26 + 65);
 		var myLabel = $(data).find("page").eq(currentPage).find("answer").eq(_addID).attr("correct");
 		var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
