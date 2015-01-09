@@ -88,7 +88,7 @@ function C_Reveal(_type) {
 			var revID = "revID" + i;
 			var cont = tmpContent;
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Reveal Content: "+ ariaText +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Click to learn more.'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Click to learn more.' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
 
 			if(type == "revealRight"){
 				$("#"+revID).addClass("revealRight");
@@ -267,6 +267,7 @@ function C_Reveal(_type) {
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$(this).scrubContent();
 		$('.antiscroll-wrap').antiscroll();
+		$("#" + currentSelected + "Text").focus();
 	}
 
 	/*****************************************************************************************************************************************************************************************************************

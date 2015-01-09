@@ -103,8 +103,8 @@ function C_StaticContent(_type) {
 				}
 
 				$('#sidebar').height($('#sidebarHolder').height());
-				$('#sidebar').attr('aria-label', $('#sidebar').text());
-				pageAccess_arr.push($("#sidebar"));
+				//$('#sidebar').attr('aria-label', $('#sidebar').text());
+				//pageAccess_arr.push($("#sidebar"));
 			}
             checkMode();
             if(transition == true){

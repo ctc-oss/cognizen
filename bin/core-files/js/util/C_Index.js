@@ -80,7 +80,7 @@ function updateMenuItems(){
 					if(mode != "edit"){
 						$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
 						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
-						var newAriaLabelString = "Page Complete " + $("#" + thisID).attr("aria-label");
+						var newAriaLabelString = "Page Complete " + $("#" + thisID).text().trim();
 						$("#" + thisID).attr("aria-label", newAriaLabelString);
 					}
 				}
@@ -212,12 +212,11 @@ function addIndex(){
 	indexString += "</ol></div>";
 
 	$("#indexContent").append(indexString);
-	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#courseTitle'>Click to skip navigation index.</a></div>");
-	$("#indexContent").prepend("<div id='frontFocusGuard' class='acc-skipIndex'></div><div id='backFocusGuard'class='acc-skipIndex'></div>");
+	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#pageTitle'>Click to skip navigation index.</a></div>");
 	$('#skipIndex').keypress(function(event) {
 		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 	    if (chCode == 32 || chCode == 13){
-		    $("#courseTitle").focus();
+		    $("#pageTitle").focus();
 		}
     });
 	globalAccess_arr.push($("#skipIndex"));
@@ -380,7 +379,6 @@ function addIndex(){
 
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
-		console.log($(indexItem_arr[i]));
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
@@ -393,9 +391,6 @@ function addIndex(){
 		//Adding new for accessibility 10/7/14 PD
 		globalAccess_arr.push($(indexItem_arr[i]));
 	}
-	//Adding new for accessibility 10/7/14 PD
-	//globalAccess_arr.push($("#courseTitle"));
-	//globalAccess_arr.push($("#lessonTitle"));
 
 	if(pushedUpdate == true){
 		fadeComplete();

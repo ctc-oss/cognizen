@@ -97,7 +97,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     }
     var tempID = "#loader";
 
-    pageAccess_arr.push($("#loader"));
+    //pageAccess_arr.push($("#loader"));
 
     this.loadVisualMedia = function() {
 
@@ -237,15 +237,15 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}
 
 			 //Section 508 stuff - pass the controls...
-			$(".mejs-playpause-button").keypress(function(event) {
+			/*$(".mejs-playpause-button").keypress(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 				if (chCode == 32 || chCode == 13){
 					$(this).find('button').click();
 				}
-			});
-			pageAccess_arr.push($(".mejs-playpause-button"));
-			pageAccess_arr.push($(".mejs-mute").find('button'));
-			pageAccess_arr.push($(".mejs-duration"));
+			});*/
+			//pageAccess_arr.push($(".mejs-playpause-button"));
+			//pageAccess_arr.push($(".mejs-mute").find('button'));
+			//pageAccess_arr.push($(".mejs-duration"));
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
@@ -431,8 +431,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#loader");
 	    }
 
-	    $("#caption").attr("aria-label", "Media caption: " + $("#caption").text());
-	    pageAccess_arr.push($("#caption"));
+	    //$("#caption").attr("aria-label", "Media caption: " + $("#caption").text());
+	    //pageAccess_arr.push($("#caption"));
 
 		/***********************************************************
 		CREATES A TOOLTIP on .tooltip class members.

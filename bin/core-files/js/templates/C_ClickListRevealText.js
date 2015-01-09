@@ -59,9 +59,6 @@ function C_ClickListRevealText(_type) {
 
         $("#content").append(myContent);
 
-		//$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        //pageAccess_arr.push($("#content"));
-
         $("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
 
 		for(var i = 0; i < revealCount; i++){
@@ -73,14 +70,13 @@ function C_ClickListRevealText(_type) {
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 
-			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' aria-label='Item Label: "+currentItem+" Reveal Content: "+ ariaText +"'>"+currentItem+"</div>");
+			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button' aria-label='Item Label: "+currentItem+" Reveal Content: "+ ariaText +"'>"+currentItem+"</div>");
 
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
 				}).keypress(function(event) {
 					var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-					console.log(chCode);
 				    if (chCode == 32 || chCode == 13){
 					    $(this).click();
 					}
@@ -129,9 +125,9 @@ function C_ClickListRevealText(_type) {
 			}
 			$("#clickListText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
 			$("#contentHolder").height($("#contentHolder").height() - 17);
-			//$("#contentHolder").width($("#contentHolder").width() - 17);
 		}
-
+		
+		//$("#clickListText").focus();
 		$('.antiscroll-wrap').antiscroll();
 	}
 

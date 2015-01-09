@@ -100,8 +100,8 @@ function C_TabbedContent(_type) {
 			
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var currentTabContent = $("#tab"+i).text();
-			$tabis.eq(i).attr('tabindex', '-1').attr('aria-selected', 'false').attr("role", "presentation").attr("aria-label", "Tab: " + currentTab + " with Content: " + currentTabContent);
-			pageAccess_arr.push($tabis.eq(i));
+			$tabis.eq(i).attr("aria-label", "Tab: " + currentTab + " with Content: " + currentTabContent);
+			//pageAccess_arr.push($tabis.eq(i));
 		}
 
 		/*Attach Media*/

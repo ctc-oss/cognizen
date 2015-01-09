@@ -130,9 +130,9 @@ function C_MultipleChoice(_type) {
 		var optionY = 0;
 
 		if(isMulti == false){
-			$('#answerOptions').append('<div id="answer" class="radioSelector">');
+			$('#answerOptions').append('<fieldset id="answer" class="radioSelector"><legend>Answer Options:</legend>');
 		}else{
-			$('#answerOptions').append('<div id="answer" class="checkBox">');
+			$('#answerOptions').append('<fieldset id="answer" class="checkBox"><legend>Answer Options:</legend>');
 		}
 		//console.log("number of options = " + optionCount);
 
