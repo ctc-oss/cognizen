@@ -67,11 +67,6 @@ function C_Reveal(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
-		var isFirefox = typeof InstallTrigger !== 'undefined';
-		if(isIE || isFirefox){
-			$("#contentHolder").height($("#contentHolder").height() - 22);
-		}
-
         $("#content").append(myContent);
 
         //$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
@@ -237,15 +232,8 @@ function C_Reveal(_type) {
 			msg += "<div class='box'>";
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
-			//BECAUSE IE FUCKING SUCKS!!!!
-			if(isIE){
-				if(ieHeight == null){
-					ieHeight = $("#" + currentSelected).height() - mediaHeight - 35;
-				}
-				$("#" + currentSelected + "Text").css({'height': ieHeight, 'max-height': ieHeight});
-			}else{
-				$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
-			}
+			// set height of opened reveal
+			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
 
 		}else if(type == "revealLeft"){
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
@@ -254,9 +242,9 @@ function C_Reveal(_type) {
 			$("#" + currentSelected).append(msg);
 			var textWidth = $("#"+ currentSelected).width() - mediaWidth - 10;
 			if(isIE || isFF){
-				textWidth -= 20;
+				textWidth -= 30;
 			}
-			$("#" + currentSelected + "Text").css({'width': textWidth});
+			$(".revealText").css({'width': textWidth});
 
 		}else if(type == "revealTop"){
 			var msg = "<div id='revealTextHolder' class='revealTextTop antiscroll-wrap' style='width: " + mediaWidth + "px; overflow: hidden;'>";
@@ -266,6 +254,14 @@ function C_Reveal(_type) {
 
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$(this).scrubContent();
+
+		if(isIE){
+			$("#contentHolder").width($("#contentHolder").width() - 17);
+		}
+		if(isFF){
+			$("#contentHolder").width($("#contentHolder").width() - 15);
+		}
+
 		$('.antiscroll-wrap').antiscroll();
 		$("#" + currentSelected + "Text").focus();
 	}
