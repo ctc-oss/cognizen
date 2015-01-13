@@ -64,10 +64,6 @@ function C_ClickImage(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
-		if(isIE || isFF){
-			$("#contentHolder").height($("#contentHolder").height() - 22);
-		}
-
         $("#content").append(myContent);
         //$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
         //pageAccess_arr.push($("#content"));
@@ -136,7 +132,7 @@ function C_ClickImage(_type) {
 		$("#imgPalette").height(heightSpacer * rows);
 
 		//Insert the Text Display area.
-		$("<div class='clickImgTextHolder antiscroll-wrap'><div class='box'><div id='clickImgText' class='clickImgText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#imgPalette");
+		$("<div class='clickImgTextHolder'><div id='clickImgText' class='clickImgText'></div></div><br/><br/>").insertAfter("#imgPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickImgTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickImgTextHolder");
@@ -167,12 +163,14 @@ function C_ClickImage(_type) {
 				ieHeight = $("#clickImgText").height();// - 30;
 				ieWidth = $("#clickImgText").width() - 17;
 			}
-			$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
+			$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '34px'});
 		}
 
-		if(isIE || isFF){
-			$("#contentHolder").height($("#contentHolder").height() - 17);
+		if(isIE){
 			$("#contentHolder").width($("#contentHolder").width() - 17);
+		}
+		if(isFF){
+			$("#contentHolder").width($("#contentHolder").width() - 15);
 		}
 
 		$('.antiscroll-wrap').antiscroll();
