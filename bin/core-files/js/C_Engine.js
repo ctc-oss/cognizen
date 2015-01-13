@@ -258,7 +258,7 @@ function initScripts(_data){
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
 		], startEngine);
 	}
-	if(ieUserAgent.renderVersion < 10){
+	if((ieUserAgent.renderVersion < 10) || (document.documentMode < 10)){
         oldIE = true;
 	}
 }
