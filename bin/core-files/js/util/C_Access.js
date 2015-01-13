@@ -32,10 +32,10 @@ function doAccess(items){
 		tabIndex++;
 	}
 
-	for(var a = 0; a < audioAccess_arr.length; a++){
+	/*for(var a = 0; a < audioAccess_arr.length; a++){
 		audioAccess_arr[a].attr("tabIndex", tabIndex);
 		tabIndex++;
-	}
+	}*/
 	//Pick up with shell items after page items (index/next/back/page/course/module).
 	for(var j = 0; j < globalAccess_arr.length; j++){
 

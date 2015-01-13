@@ -45,7 +45,6 @@ var referenceButton = false;
 var referenceURL = "";
 
 function ncInitialize(){
-	debugger;
 	updateTotalGradedQuestions();
 
 	//questionResponse_arr = [];

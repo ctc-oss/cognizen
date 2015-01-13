@@ -205,9 +205,8 @@ function C_AudioHolder(){
             }
         });
         //Section 508 stuff - pass the controls...
-        console.log($(".mejs-playpause-button").find('button'));
         
-		$(".mejs-playpause-button").keypress(function(event) {
+		/*$(".mejs-playpause-button").keypress(function(event) {
 			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 			if (chCode == 32 || chCode == 13){
 				console.log($(this));
@@ -218,7 +217,7 @@ function C_AudioHolder(){
         audioAccess_arr.push($(".mejs-mute").find('button'));
         $(".mejs-playpause-button").attr("aria-label", "select spacebar to play or pause audio");
         //$(".mejs-duration").attr("aria-label", "audio duration: " + $(".mejs-duration").text());
-        //audioAccess_arr.push($(".mejs-duration"));
+        //audioAccess_arr.push($(".mejs-duration"));*/
 
 		doAccess(pageAccess_arr);
     }

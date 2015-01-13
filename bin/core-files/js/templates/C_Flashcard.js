@@ -94,16 +94,15 @@ function C_Flashcard(_type) {
 			var order_arr = shuffleArray(order_arr);
 		}
 
-		for(var i=0; i<revealCount; i++){
+		for(var i=revealCount -1; i>=0; i--){
 			var myTerm = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("term").text();
 			var myDef = $(data).find("page").eq(currentPage).find("card").eq(order_arr[i]).find("definition").text();
 			var tempID = "card" + i;
 			var tempTextID = "cardText" + i;
 
-			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
+			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard' role='button'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
 
-			$("#" + tempID).attr("aria-label", "The Front of the card has: " + $("#"+tempTextID).text().replace(/'/g, "") + "  and the back of the card has: " + myDef);
-			pageAccess_arr.push($("#" + tempID));
+			//$("#" + tempID).attr("aria-label", "The Front of the card has: " + $("#"+tempTextID).text().replace(/'/g, "") + "  and the back of the card has: " + myDef);
 
 			//Position the card.
 			var leftPos = 6.7;
@@ -122,7 +121,13 @@ function C_Flashcard(_type) {
 
 			card_arr.push("#" + tempID);
 		}
-
+		
+		//Accessability clean up...
+		for( var j=0; j< revealCount; j++){
+			var tempID = "card" + j;
+			pageAccess_arr.push($("#" + tempID));
+		}
+		
 		//Set height of holder, for styling
 		$("#flashcardHolder").height($("#card0").height());
 
@@ -172,8 +177,9 @@ function C_Flashcard(_type) {
 
 				TweenMax.to($(this), .2, {rotationY:90, left:'50%', zIndex: myIndex, onComplete:function(target){
 					target.empty();
+					target.removeAttr("role");
 					tempID = "cardBackText" + myIndex;
-					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</dev>");
+					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</div>");
 					$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
 					target.addClass("flashcardBack");
 					target.css('left', 'auto');
@@ -183,7 +189,7 @@ function C_Flashcard(_type) {
 						});
 					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
-
+					$("#" + tempID).focus();
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
 

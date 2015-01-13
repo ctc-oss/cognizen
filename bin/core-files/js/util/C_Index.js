@@ -24,6 +24,7 @@ var pushedUpdate = false;//edit mode, live communication stuff...
 var newPageAdded = false;
 var indexItem_arr = [];
 var progressMode = "linear";
+var indexAccess_arr = [];
 
 //addIndex
 //If masterIndex == true  add the index.
@@ -35,7 +36,7 @@ function checkIndex(){
 		if(progressMode == "linear" || progressMode == "lockStep"){
 			isLinear = true;
 		}
-		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' aria-label='click here to toggle content index' title='click here to toggle content index'/></div>");
+		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' role='button' aria-label='click here to toggle content index' title='click here to toggle content index'/></div>");
 
 		//Set index tab action to open and close the index.
 		$('#indexTab').click(toggleIndex).keypress(function(event) {
@@ -212,14 +213,14 @@ function addIndex(){
 	indexString += "</ol></div>";
 
 	$("#indexContent").append(indexString);
-	$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#pageTitle'>Click to skip navigation index.</a></div>");
+	/*$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#pageTitle'>Click to skip navigation index.</a></div>");
 	$('#skipIndex').keypress(function(event) {
 		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 	    if (chCode == 32 || chCode == 13){
 		    $("#pageTitle").focus();
 		}
     });
-	globalAccess_arr.push($("#skipIndex"));
+	globalAccess_arr.push($("#skipIndex"));*/
 	var oldNodePos;
 	var newNodePos;
 	var oldParent;
@@ -389,7 +390,7 @@ function addIndex(){
 			}
 	    }).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
-		globalAccess_arr.push($(indexItem_arr[i]));
+		indexAccess_arr.push($(indexItem_arr[i]));
 	}
 
 	if(pushedUpdate == true){
@@ -502,10 +503,12 @@ function toggleIndex(){
 		indexState = true;
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
+		indexAccess_arr[0].focus();
 	}
 	else{
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType});
+		$("#pageTitle").focus();
 	}
 }
 

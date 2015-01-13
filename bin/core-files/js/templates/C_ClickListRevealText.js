@@ -70,11 +70,12 @@ function C_ClickListRevealText(_type) {
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 
-			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button' aria-label='Item Label: "+currentItem+" Reveal Content: "+ ariaText +"'>"+currentItem+"</div>");
+			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</div>");
 
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
+					$("#clickListText").focus();
 				}).keypress(function(event) {
 					var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 				    if (chCode == 32 || chCode == 13){
@@ -127,8 +128,8 @@ function C_ClickListRevealText(_type) {
 			$("#contentHolder").height($("#contentHolder").height() - 17);
 		}
 		
-		//$("#clickListText").focus();
 		$('.antiscroll-wrap').antiscroll();
+		$("#clickListText").focus();
 	}
 
 	function checkMode(){

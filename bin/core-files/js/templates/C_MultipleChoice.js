@@ -238,12 +238,12 @@ function C_MultipleChoice(_type) {
 			iterator++;
 			option_arr.push($('#' + myOption));
 			var cont = myNode;
-			if(isMulti){
+			/*if(isMulti){
 				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use the tab or shift-tab to hear other options. Press spacebar to select.";
 			}else{
 				var ariaText = myLabel + "." + $(cont).text().replace(/\'/g, "").replace(/\"/g, ""); + ". Use up and down arrow keys to hear other options. Press spacebar to select.";
 			}
-			$('#' + myOption + "Check").attr("aria-label", ariaText);
+			$('#' + myOption + "Check").attr("aria-label", ariaText);*/
 			pageAccess_arr.push($('#' + myOption + "Check"));
 		};
 
