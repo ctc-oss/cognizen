@@ -503,12 +503,18 @@ function toggleIndex(){
 		indexState = true;
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
-		indexAccess_arr[0].focus();
+		for(var i = 0; i < indexAccess_arr.length; i++){
+			indexAccess_arr[i].attr("tabindex", 1);
+		}
+		$("#indexMenuItem0").focus();
 	}
 	else{
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType});
 		$("#pageTitle").focus();
+		for(var i = 0; i < indexAccess_arr.length; i++){
+			indexAccess_arr[i].attr("tabindex", -1);
+		}
 	}
 }
 
