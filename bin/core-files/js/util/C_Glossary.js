@@ -42,12 +42,17 @@ function checkGlossary(){
 			msg += "<div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/>";
 			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
 			msg += "<div id='glossaryContent' class='glossaryContent'>";
-			msg += "<div id='glossaryDef'></div></div></div>";
+			msg += "<div id='glossaryClose' title='click here to close the glossary'/>";
+			msg += "<div id='glossaryDef'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
+			
 		$('#panes').append(msg);
 		
 		$('#glossaryTab').click(toggleGlossary);
+		$('#glossaryClose').click(toggleGlossary);
+
 		if(!isMobile){
 			$('#glossaryTab').tooltip();  // don't attach tooltip on mobile devices
+			$('#glossaryClose').tooltip();  // don't attach tooltip on mobile devices
 		}
 	
 		if(mode == "edit"){
@@ -159,7 +164,7 @@ function addGlossary(){
 		$(termID).data("myID", glossary_arr[i].id);
 		$(termID).click(function(){
 			if(hoverSubNav == false){
-				$("#glossaryDef").html("<b>Term: </b>" + $(this).text() + "<br/><br/><b>Definition: </b>" + $(this).data("definition"));
+				$("#glossaryDef").html("<p class='term'><span class='label'>Term: </span>" + $(this).text() + "</p><p class='definition'><span class='label'>Definition: </span>" + $(this).data("definition") + "</p>");
 			}
 		}).hover(function(){
 			$(this).addClass("glossaryItemHover");
