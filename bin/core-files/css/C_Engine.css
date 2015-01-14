@@ -2250,6 +2250,47 @@ ESSAY COMPARE LAYOUTS
 	border-left-color: #9DA6AB;
 }
 
+#glossaryContent:before{
+	content: "Glossary";
+	color: #9da6ab; 
+	display: block;
+	margin: 10px !important;
+	font-size: 1.64em;
+	font-weight: bold;
+}
+
+p.term span.label{
+	font-weight: bold;
+}
+
+p.term{
+	margin: 0px 0px 5px 0px;
+}
+	 
+p.definition span.label{
+	font-weight: bold;
+}
+
+#glossaryDef{
+	color: #333;
+	display: block;
+	padding: 15px !important;
+	margin: .7em;
+	font-size: 100%;
+	background-color: #fff;
+	border-radius: .5em;
+}
+
+#glossaryClose{
+	background: url(images/close.png);
+	margin: 15px 10px;
+	top: -55px;
+	width: 24px;
+	height: 24px;
+	position: relative;
+	float: right;	
+}
+
 .glossaryItem{
 	position: relative;
 	display: block;
