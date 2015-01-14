@@ -547,10 +547,6 @@ CONTENT TEXT LAYOUTS*/
 	width: 400px;
 }
 
-.clickImgTextHolder .box{
-	width: 920px;
-}
-
 #revealTextHolder .box{
 	width: auto;
 }
@@ -1134,9 +1130,8 @@ ul.no-indent {
 	margin-left: auto;
 	margin-right: auto;
 	color: #000000;
-	width: 95%;
 	margin-right: -17px;
-	padding-right: 34px;
+	padding: 1px 34px 1px 16px;
 	max-height: none !important;
 }
 
