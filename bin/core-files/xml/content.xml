@@ -40,7 +40,7 @@
 			<tlo value="undefined"/>
 			<id value=""/>
 		</preferences>
-		<glossary value="false">
+		<glossary value="false" courseGlossary="true">
 			<glossaryitem>
 				<term><![CDATA[ACK]]></term>
 				<content><![CDATA[Acknowledgement]]></content>
