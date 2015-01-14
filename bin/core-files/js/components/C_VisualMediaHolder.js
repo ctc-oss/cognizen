@@ -200,7 +200,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			if (oldIE) {
 				// IE 8, 9 or 10 - prefer Flash or Silverlight
 				$('video').mediaelementplayer({
-					mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
+					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
 					success: function(player, node) {
 						//If autoNext then move to next page upon completion.
@@ -236,16 +236,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				});
 			}
 
-			 //Section 508 stuff - pass the controls...
-			/*$(".mejs-playpause-button").keypress(function(event) {
-				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-				if (chCode == 32 || chCode == 13){
-					$(this).find('button').click();
-				}
-			});*/
-			//pageAccess_arr.push($(".mejs-playpause-button"));
-			//pageAccess_arr.push($(".mejs-mute").find('button'));
-			//pageAccess_arr.push($(".mejs-duration"));
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
             var img = new Image();
@@ -267,9 +257,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	                $("#mediaHolder").css({'width': imageWidth});
 	                $("#loader").css({'width': imageWidth, 'height': imageHeight});
 
-					/*if(hasPop == true || largeImg != ""){
-						setupGallery(mediaType);
-					}*/
 	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
 			});
 

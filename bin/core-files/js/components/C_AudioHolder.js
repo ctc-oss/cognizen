@@ -204,22 +204,6 @@ function C_AudioHolder(){
                 }
             }
         });
-        //Section 508 stuff - pass the controls...
-        
-		$(".mejs-playpause-button").keypress(function(event) {
-			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-			if (chCode == 32 || chCode == 13){
-				$(this).find('button').click();
-			}
-		}).attr("role", "button").attr("tabindex", "1");
-		$(".mejs-playpause-button").attr("role", "button");
-		$(".mejs-playpause-button").attr("tabindex", "1");
-		$(".mejs-playpause-button").attr("aria-label", "Play/Pause Button");
-        /*audioAccess_arr.push($(".mejs-playpause-button"));
-        audioAccess_arr.push($(".mejs-mute").find('button'));
-        $(".mejs-playpause-button").attr("aria-label", "select spacebar to play or pause audio");
-        //$(".mejs-duration").attr("aria-label", "audio duration: " + $(".mejs-duration").text());
-        //audioAccess_arr.push($(".mejs-duration"));*/
 
 		doAccess(pageAccess_arr);
     }
