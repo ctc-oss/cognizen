@@ -177,11 +177,11 @@ function addIndex(){
 
 		if(mode == "edit"){
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}else{
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
 		}
 		indexItem_arr.push("#" + thisID);
 
@@ -197,11 +197,11 @@ function addIndex(){
 
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
 				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 				}
 
 				indexItem_arr.push("#" + thisID);
@@ -383,6 +383,7 @@ function addIndex(){
 		if(mode == "edit"){
 			addRollovers($(indexItem_arr[i]));
 		}
+		//$(indexItem_arr[i]).css("visibility", "hidden");
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){
@@ -507,22 +508,31 @@ function toggleIndex(){
 		indexState = true;
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
-		for(var i = 0; i < indexAccess_arr.length; i++){
-			indexAccess_arr[i].attr("tabindex", 1).attr("role", "button");
-		}
+		
+		$("#C_Index").css("visibility", "visible");
+		/*for(var i = 0; i < indexAccess_arr.length; i++){
+			indexAccess_arr[i].attr("tabindex", 1);//.attr("role", "button");
+			indexAccess_arr[i].css("visibility", "visible");
+		}*/
 		$("#indexMenuItem0").focus();
 		$("#indexTab").attr("aria-label", "click here to close content index currently open");
 	}
 	else{
 		indexState = false;
-		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType});
+		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType, onComplete:accHideIndex});
 		$("#pageTitle").focus();
 		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
-		for(var i = 0; i < indexAccess_arr.length; i++){
+		
+		/*for(var i = 0; i < indexAccess_arr.length; i++){
+			indexAccess_arr[i].css("visibility","hidden");
 			indexAccess_arr[i].attr("tabindex", -1);
-			indexAccess_arr[i].removeAttr("role");
-		}
+			//indexAccess_arr[i].removeAttr("role");
+		}*/
 	}
+}
+
+function accHideIndex(){
+	$("#C_Index").css("visibility", "hidden");
 }
 
 function gimmeIndexPos(){
