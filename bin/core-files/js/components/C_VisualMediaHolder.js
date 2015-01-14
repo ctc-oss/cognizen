@@ -322,7 +322,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			hasSWF = true;
 		}
 
-		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
+		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
 
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";

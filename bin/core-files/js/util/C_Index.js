@@ -36,7 +36,7 @@ function checkIndex(){
 		if(progressMode == "linear" || progressMode == "lockStep"){
 			isLinear = true;
 		}
-		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' role='button' aria-label='click here to toggle content index' title='click here to toggle content index'/></div>");
+		$('#panes').append("<div id='indexPane' class='pane'><div id='indexTab' class='paneTab' role='button' aria-label='click here to toggle content index currently closed' title='click here to toggle content index'/></div>");
 
 		//Set index tab action to open and close the index.
 		$('#indexTab').click(toggleIndex).keypress(function(event) {
@@ -197,11 +197,11 @@ function addIndex(){
 
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
 				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
 				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 				}
 
 				indexItem_arr.push("#" + thisID);
@@ -387,6 +387,10 @@ function addIndex(){
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){
 			    $(this).click();
+			}else if(chCode == 27){
+				toggleIndex();
+				$("#indexTab").attr("aria-label", "click here to open content index currently closed");
+				$("#indexTab").focus();
 			}
 	    }).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
@@ -504,16 +508,19 @@ function toggleIndex(){
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		for(var i = 0; i < indexAccess_arr.length; i++){
-			indexAccess_arr[i].attr("tabindex", 1);
+			indexAccess_arr[i].attr("tabindex", 1).attr("role", "button");
 		}
 		$("#indexMenuItem0").focus();
+		$("#indexTab").attr("aria-label", "click here to close content index currently open");
 	}
 	else{
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType});
 		$("#pageTitle").focus();
+		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
 		for(var i = 0; i < indexAccess_arr.length; i++){
 			indexAccess_arr[i].attr("tabindex", -1);
+			indexAccess_arr[i].removeAttr("role");
 		}
 	}
 }

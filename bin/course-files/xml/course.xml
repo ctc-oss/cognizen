@@ -1,8 +1,8 @@
 <course name="" id="">
 	<glossary>
       <glossaryitem>
-        <term>ACK</term>
-        <content>Acknowledgement</content>
+        <term>Course Term</term>
+        <content>Example Course Term</content>
       </glossaryitem>
     </glossary>
   <sequencing objectivesGlobalToSystem="false" choice="true" flow="false" forwardOnly="false"/>
