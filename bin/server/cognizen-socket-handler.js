@@ -1847,7 +1847,7 @@ var SocketHandler = {
 
 	                                    if(err){
 	                                        _this.logger.error(err);
-	                                        _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: 'TODO: generating scorm error'});
+	                                        _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: err});
 
 	                                        _this.Git.lock.release();
 	                                        callback('');

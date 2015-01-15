@@ -699,25 +699,6 @@ var SCORM = {
         _this.reviewLines = '';
         _this.reviewLines_arr = [];
 
-       //  for(var i=0; i<_this.found.lessons.length; i++){
-       //      var obj = _this.found.lessons[i];
-       //      var lessonPath = _this.contentPath + "/" + obj.name;
-       //      lessonsArray.push(lessonPath);
-	      //   var lessonXmlContentFile = lessonPath + '/xml/content.xml';
-       //  	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
-
-       //  	try{
-       //  		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
-       //  	}
-       //  	catch(err){
-    			// _this.logger.error("Error copying content.xml file " + err);
-    			// callback(err, null);
-       //  	}
-       //  	// 	_this.logger.info('content.xml file copied success');
-
-       //  }
-
-
         var courseXmlFile = path.normalize(_this.contentPath + "/course.xml");
         var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
         try{
@@ -726,6 +707,7 @@ var SCORM = {
 	    catch(err){
 	    	_this.logger.error("Copy course xml file error : " + err);
 	    	callback(err, null);
+	    	return;
 	    }
 
        	try{
@@ -735,12 +717,20 @@ var SCORM = {
         catch(err){
         	_this.logger.error("Error reading temp course xml file : " + err);
         	callback(err,null);
+        	return;
         }
 
         etree = _this.courseData;
 
 	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 	    var itemCount = _this.courseData.findall('./item').length;
+
+	    //stop publish if no items are found
+	    if(itemCount == 0){
+	    	callback("A Course must have at least 1 lesson to be published.", null);
+	    	return;
+	    }
+
 	    for (var i = 0; i < itemCount; i++) {
 	    	var myNode = _this.courseData.findall('./item')[i];
 	    	var itemName = myNode.get('name');//.replace(/\s+/g, '');
@@ -757,6 +747,7 @@ var SCORM = {
         	catch(err){
     			_this.logger.error("Error copying content.xml file " + err);
     			callback(err, null);
+    			return;
         	}
 	    }        
 
@@ -780,10 +771,13 @@ var SCORM = {
         	_this.logger.info("archiver has finalized. ");
         	_this.logger.debug("packageFolder = " + outputFile);
         	callback(null, outputFile);
+        	return;
         });
 
         archive.on('error', function(err) {
-            throw err;
+            //throw err;
+			callback(err, null);
+			return;            
         });
 
         archive.pipe(output);
@@ -1012,6 +1006,7 @@ var SCORM = {
 					    catch(err){
 					    	_this.logger.error("Copy review content xml file error : " + err);
 					    	callback(err, null);
+					    	return;
 					    }
 
 				       	try{
@@ -1021,6 +1016,7 @@ var SCORM = {
 				        catch(err){
 				        	_this.logger.error("Error reading temp course xml file : " + err);
 				        	callback(err,null);
+				        	return;
 				        }
 
 		                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
@@ -1137,6 +1133,7 @@ var SCORM = {
 									            if(err) {
 									                _this.logger.error("Write file error" + err);
 									                callback(err, null);
+									                return;
 									            }
 									            else {
 
@@ -1201,6 +1198,7 @@ var SCORM = {
 														if(err){
 															_this.logger.error(err);
 															callback(err, null);
+															return;
 														}
 														_this.logger.info('imsmanifest.xml file removed.');
 												        archive.finalize();
@@ -1236,6 +1234,7 @@ var SCORM = {
 							            if(err) {
 							                _this.logger.error("Write file error" + err);
 							                callback(err, null);
+							                return;
 							            }
 							            else {
 
@@ -1300,6 +1299,7 @@ var SCORM = {
 												if(err){
 													_this.logger.error(err);
 													callback(err, null);
+													return;
 												}
 												_this.logger.info('imsmanifest.xml file removed.');
 
@@ -1338,6 +1338,7 @@ var SCORM = {
 					            if(err) {
 					                _this.logger.error("Write file error" + err);
 					                callback(err, null);
+					                return;
 					            }
 
 		        				archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
@@ -1374,7 +1375,7 @@ var SCORM = {
 						        }
 						        catch(err){
 									_this.logger.error(err);
-									callback(err, null);
+									//callback(err, null);
 						        }
 
 								_this.logger.info('temp index.html file removed.');
