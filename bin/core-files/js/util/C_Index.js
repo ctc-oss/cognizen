@@ -378,7 +378,9 @@ function addIndex(){
 		$('#C_Index').nestable('collapseAll');
 	}
 	
-	accHideIndex();
+	if(!indexState){
+		accHideIndex();
+	}
 
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
@@ -510,7 +512,6 @@ function toggleIndex(){
 		indexState = true;
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
-		
 		$("#C_Index").css("visibility", "visible");
 		/*for(var i = 0; i < indexAccess_arr.length; i++){
 			indexAccess_arr[i].attr("tabindex", 1);//.attr("role", "button");

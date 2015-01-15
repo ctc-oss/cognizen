@@ -91,7 +91,7 @@ function C_ClickListRevealText(_type) {
 			pageAccess_arr.push($("#" + revID));
 		}
 
-		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner'></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
+		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex=-1></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickListTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickListTextHolder");
