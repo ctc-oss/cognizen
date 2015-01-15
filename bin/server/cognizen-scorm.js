@@ -22,6 +22,7 @@ var SCORM = {
     cssResources_arr: [],
     cssCourseResources_arr: [],
     reviewLines: '',
+    reviewLines_arr: [],
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -696,6 +697,7 @@ var SCORM = {
         _this.cssResources_arr = [];
         _this.cssCourseResources_arr = [];
         _this.reviewLines = '';
+        _this.reviewLines_arr = [];
 
        //  for(var i=0; i<_this.found.lessons.length; i++){
        //      var obj = _this.found.lessons[i];
@@ -745,7 +747,7 @@ var SCORM = {
 
             var lessonPath = _this.contentPath + "/" + itemName;
             lessonsArray.push(lessonPath);
-            console.log(lessonPath);
+            //console.log(lessonPath);
 	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
         	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
 
@@ -881,7 +883,7 @@ var SCORM = {
 		var _lessonPath = lArray[count];
 		//clear objectives_arr
 		_this.objectives_arr = [];
-		console.log(_lessonPath);
+		//console.log(_lessonPath);
         readdirp(
             { root: _lessonPath,
                 directoryFilter: [ '!server', '!scorm', '!.git', '!packages'],
@@ -979,20 +981,72 @@ var SCORM = {
 
 					if(courseObj.sequencing.get("testReview") === 'true')
 					{
+						_this.reviewLines = '';
 
-						if(_this.reviewLines == ''){
-					        _this.reviewLines = _this._addResources(res, 'Review-files/')
+				        _this.reviewLines = _this._addResources(res, _lessonTitle.replace(/\s+/g, '%20') +'-Review-files/')
+				        var reviewMap_obj = {
+				        	lesson: _lessonTitle,
+				        	lines: _this.reviewLines
+				        };
+				        _this.reviewLines_arr.push(reviewMap_obj);
+				        res.files.forEach(function(file) {
+				            var localFile = file.path.replace(/\\/g,"/");
+				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
+				            	var inputFile = _lessonPath + '/' + localFile;
+				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
+				        	}
+				        });
+				        //add index.html from server incase changes were made after the course was created
+				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
 
-					        res.files.forEach(function(file) {
-					            var localFile = file.path.replace(/\\/g,"/");
-					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html")){
-					            	var inputFile = _lessonPath + '/' + localFile;
-					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/Review-files/'+localFile });
-					        	}
-					        });
-					        //add index.html from server incase changes were made after the course was created
-					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/Review-files/index.html'});
-						}
+						//updating temp review content.xml file
+						////////////////////////////////////////////////////////////////
+				        var _review_data, _review_etree;
+				        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
+		            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
+		            	console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
+		            	console.log('tempReviewFile : ' + _tempReviewFile);
+				        try{
+					        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
+					    }
+					    catch(err){
+					    	_this.logger.error("Copy review content xml file error : " + err);
+					    	callback(err, null);
+					    }
+
+				       	try{
+							_review_data = fs.readFileSync(_tempReviewFile).toString();
+					        _review_etree = et.parse(_review_data);
+				        }
+				        catch(err){
+				        	_this.logger.error("Error reading temp course xml file : " + err);
+				        	callback(err,null);
+				        }
+
+		                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+		                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
+		                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
+
+		              	if(_this.scormVersion === 'none'){
+		                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
+		                }
+		                if(count+1 == lArray.length){
+		                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+		                }
+
+		                var xml = _review_etree.write({'xml_decleration': false});
+		                fs.outputFile(_tempReviewFile, xml, function (err) {
+		                    if (err) callback(err, null);
+		                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+
+		        			try{
+		        				fs.removeSync(_tempReviewFile);
+		        			}
+		        			catch(err){
+		        				_this.logger.error("Error deleting temp review content.xml file :" + err );
+		        			}
+
+			            });
 
 					}
 
@@ -1050,11 +1104,17 @@ var SCORM = {
 
 							                //add upper level js files
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/APIWrapper.js'), { name: _this.binDir+'/compjs/APIWrapper.js' });
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });						                	
+							                completionLines.push(_this.binDir+'/compjs/APIWrapper.js');
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });
+							                completionLines.push(_this.binDir+'/compjs/common.js');	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });
+							                completionLines.push(_this.binDir+'/compjs/flashobject.js');	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });
+							                completionLines.push(_this.binDir+'/compjs/KnowledgeCheck.js');	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });
+							                completionLines.push(_this.binDir+'/compjs/prototype.js');	
+							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });
+							                completionLines.push(_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js');						                	
 						            	}
 
 						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -1121,10 +1181,10 @@ var SCORM = {
 								        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
 								        			}
 
-								        			//add review content.xml file to zip
-								        			if(_this.reviewLines != ''){
-								        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
-								        			}
+								        			// //add review content.xml file to zip
+								        			// if(_this.reviewLines != ''){
+								        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
+								        			// }
 
 								        			//remove temp course.xml
 								        			try{
@@ -1221,9 +1281,9 @@ var SCORM = {
 						        			}
 
 						        			//add review content.xml file to zip
-						        			if(_this.reviewLines != ''){
-						        				archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
-						        			}
+						        			// if(_this.reviewLines != ''){
+						        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
+						        			// }
 
 						        			//remove temp course.xml
 						        			try{
@@ -1385,11 +1445,17 @@ var SCORM = {
 		}
 
 		//add resource for review res
-		if(_this.reviewLines != ''){
-			_manifestFile += "      <resource identifier=\"RES-Review-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/Review-files/index.html\">\n";
-			_manifestFile += _this.reviewLines;
+		// if(_this.reviewLines != ''){
+		// 	_manifestFile += "      <resource identifier=\"RES-Review-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/Review-files/index.html\">\n";
+		// 	_manifestFile += _this.reviewLines;
+		// 	_manifestFile += '      </resource>\n';
+		// }
+		for (var i = _this.reviewLines_arr.length - 1; i >= 0; i--) {
+			var reviewObj = _this.reviewLines_arr[i];
+			_manifestFile += "      <resource identifier=\"RES-"+reviewObj.lesson.replace(/\s+/g, '')+"-Review-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\""+_this.binDir+"/"+encodeURIComponent(reviewObj.lesson)+"-Review-files/index.html\">\n";
+			_manifestFile += reviewObj.lines;
 			_manifestFile += '      </resource>\n';
-		}
+		};
 
 		//add resource for completion res
 		if(icompletionLines != ''){
@@ -1646,7 +1712,7 @@ var SCORM = {
         item += "           </item>\n";
 
         if(itemSeq.testReview){
-			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-Review-files\">\n"+// isvisible=\"false\">\n"+
+			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-"+lessonNameTrim+"-Review-files\">\n"+// isvisible=\"false\">\n"+
 			"                 <title>"+lessonName+" Review</title>\n"+
 			"                 <adlnav:presentation>\n"+
 			"                     <adlnav:navigationInterface>\n"+
