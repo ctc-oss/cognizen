@@ -169,7 +169,7 @@ function C_Flashcard(_type) {
 			}).click(function(){
 				$(this).unbind('mouseenter mouseleave click');
 				$(this).removeClass("flashcardHover");
-
+				
 				var cardHolderWidth = $("#flashcardHolder").width();
 				// calculate new left position in percent
 				var initialPos = $(this).position().left;
@@ -190,6 +190,7 @@ function C_Flashcard(_type) {
 					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					$("#" + tempID).focus();
+					$("#" + tempID).attr("tabindex", "-1");
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
 
@@ -204,7 +205,7 @@ function C_Flashcard(_type) {
 			    if (chCode == 32 || chCode == 13){
 				    $(this).click();
 				}
-		    });
+		    }).attr("tabindex", "1");
 	}
 
 
