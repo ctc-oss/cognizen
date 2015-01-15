@@ -123,10 +123,10 @@ function C_Flashcard(_type) {
 		}
 		
 		//Accessability clean up...
-		for( var j=0; j< revealCount; j++){
+		/*for( var j=0; j< revealCount; j++){
 			var tempID = "card" + j;
 			pageAccess_arr.push($("#" + tempID));
-		}
+		}*/
 		
 		//Set height of holder, for styling
 		$("#flashcardHolder").height($("#card0").height());
@@ -190,7 +190,7 @@ function C_Flashcard(_type) {
 					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					$("#" + tempID).focus();
-					$("#" + tempID).attr("tabindex", "-1");
+					target.attr("tabindex", "-1");
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
 
