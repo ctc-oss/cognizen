@@ -21,7 +21,9 @@ function C_ClickImage(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
-
+	var isFirst = true;
+	var useKeyboard = false;
+	
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
@@ -79,17 +81,18 @@ function C_ClickImage(_type) {
 			var revID = "revID" + i;
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			$("#imgPalette").append("<div id='"+ revID +"' class='clickImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Reveal Content: "+ ariaText +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Reveal Content: "+ ariaText +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
+			$("#imgPalette").append("<div id='"+ revID +"' class='clickImg' aria-label='"+currentAlt+"' role='button' myContent='"+ tmpContent +"'><img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
 
 			if(interact == "click"){
 				$("#" + revID).click(function(){
+					useKeyboard = true;
 					updateRevealContent($(this));
-				});
-				
-				$('#' + revID).keypress(function(event) {
+				}).keypress(function(event) {
 			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 			        if (chCode == 32 || chCode == 13){
+				        useKeyboard = true;
 				        $(this).click();
+				        
 				    }
 		        });
 			}else if(interact == "hover"){
@@ -132,7 +135,7 @@ function C_ClickImage(_type) {
 		$("#imgPalette").height(heightSpacer * rows);
 
 		//Insert the Text Display area.
-		$("<div class='clickImgTextHolder'><div id='clickImgText' class='clickImgText'></div></div><br/><br/>").insertAfter("#imgPalette");
+		$("<div class='clickImgTextHolder'><div id='clickImgText' class='clickImgText' tabindex=-1></div></div><br/><br/>").insertAfter("#imgPalette");
 		if(isIE || isFF){
 			ieWidth = $("#clickImgTextHolder").width();
 			$("<br/><br/>").insertAfter(".clickImgTextHolder");
@@ -157,6 +160,15 @@ function C_ClickImage(_type) {
 		$("#clickImgText").empty();
 
 		$("#clickImgText").append(_myItem.attr("myContent"));
+		
+		if(isFirst){
+			isFirst = false;
+		}else{
+			if(useKeyboard){
+				$("#clickImgText").focus();
+				useKeyboard = false;
+			}
+		}
 		//BECAUSE IE FUCKING SUCKS!!!!
 		if(isIE || isFF){
 			if(ieHeight == null){
