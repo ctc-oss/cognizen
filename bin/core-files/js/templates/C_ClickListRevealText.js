@@ -21,6 +21,7 @@ function C_ClickListRevealText(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
+    var isFirst = true;
 
      //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -75,7 +76,7 @@ function C_ClickListRevealText(_type) {
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
-					$("#clickListText").focus();
+					
 				}).keypress(function(event) {
 					var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 				    if (chCode == 32 || chCode == 13){
@@ -118,6 +119,11 @@ function C_ClickListRevealText(_type) {
 
 		$("#clickListText").append(_myItem.attr("myContent"));
 		$("#clickListText").height($("#clickListTextHolder").height() - 10);
+		if(isFirst){
+			isFirst = false;
+		}else{
+			$("#clickListText").focus();
+		}
 		//BECAUSE IE FUCKING SUCKS!!!!
 		if(isIE || isFF){
 			if(ieHeight == null){
@@ -129,7 +135,7 @@ function C_ClickListRevealText(_type) {
 		}
 		
 		$('.antiscroll-wrap').antiscroll();
-		$("#clickListText").focus();
+		
 	}
 
 	function checkMode(){

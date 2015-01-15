@@ -377,6 +377,8 @@ function addIndex(){
 	if(mode != "edit"){
 		$('#C_Index').nestable('collapseAll');
 	}
+	
+	accHideIndex();
 
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
@@ -522,7 +524,7 @@ function toggleIndex(){
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType, onComplete:accHideIndex});
 		$("#pageTitle").focus();
 		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
-		
+		accHideIndex();
 		/*for(var i = 0; i < indexAccess_arr.length; i++){
 			indexAccess_arr[i].css("visibility","hidden");
 			indexAccess_arr[i].attr("tabindex", -1);
