@@ -85,6 +85,7 @@ function C_Branching(_type) {
 		}
 		buildBranchOptions(_id);
 		checkMode();
+		doAccess(pageAccess_arr);
 	}
 
 
@@ -106,7 +107,7 @@ function C_Branching(_type) {
 		    $("#content").width($("#contentHolder").width()-15);
 		    $("#content").append(myContent);
 		    $("#content").attr("aria-label", $("#content").text());
-		    pageAccess_arr.push($("#content"));
+		    //pageAccess_arr.push($("#content"));
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
@@ -124,7 +125,7 @@ function C_Branching(_type) {
 
 			$('#sidebar').height($('#sidebarHolder').height());
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
-			pageAccess_arr.push($("#sidebar"));
+			//pageAccess_arr.push($("#sidebar"));
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -153,7 +154,7 @@ function C_Branching(_type) {
 				var buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
 				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).attr("id");
 				var myOption = "option"+i;
-				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
+				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
 				});
