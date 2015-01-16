@@ -1025,7 +1025,7 @@ function createNewPageByType(_myType){
 			question_obj.complete = false;
 			question_obj.correct = null;
 			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.id = $(data).find('page').eq(newPage).attr('id');
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
 			
@@ -1116,7 +1116,7 @@ function createNewPageByType(_myType){
 			question_obj.complete = false;
 			question_obj.correct = null;
 			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.id = $(data).find('page').eq(newPage).attr('id');
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
 			
@@ -1202,7 +1202,7 @@ function createNewPageByType(_myType){
 			question_obj.complete = false;
 			question_obj.correct = null;
 			question_obj.graded = false;
-			question_obj.id = $(data).find('page').eq(i).attr('id');
+			question_obj.id = $(data).find('page').eq(newPage).attr('id');
 			question_obj.userAnswer = userSelection_arr;
 			questionResponse_arr.push(question_obj);
 			
