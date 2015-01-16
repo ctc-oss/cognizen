@@ -803,7 +803,7 @@ function C_QuestionBank(_type) {
 		});
 
 		//handles validation of numbertopresent field
-		$('input[name=inputNumberToPresent').change(function(){
+		$('#inputNumberToPresent').change(function(){
 
 			if(!$.isNumeric($("#inputNumberToPresent").val())){
 				alert("The number of question to present must be a numeric value.");
