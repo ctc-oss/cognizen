@@ -104,14 +104,16 @@ function C_EssayCompare(_type) {
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
-
+		
+		pageAccess_arr.push($("#essayInput"));
+		pageAccess_arr.push($("#mcSubmit"));
+		
 		checkMode();
 
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
-
-
+		doAccess(pageAccess_arr);
 	}
 
 	function checkEssay(){
@@ -183,6 +185,11 @@ function C_EssayCompare(_type) {
 					OK: function(){
 						$( this ).dialog( "close" );
 						$("#dialog-attemptResponse").remove();
+						if($('#essayInput').val() === ""){
+							$("#essayInput").focus();
+						}else{
+							$("#expertResponse").focus();
+						}
 					}
 				}
 			});
@@ -193,7 +200,7 @@ function C_EssayCompare(_type) {
 
 	function _addExpertResponse(){
 		var correctResponse = $.trim($(data).find("page").eq(currentPage).find('correctresponse').text()).replace("<![CDATA[", "").replace("]]>", "").replace(/<br.*?>/g, "\u2028");
-		var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" readOnly="readonly">'+ correctResponse +'</textarea></div>';
+		var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" tabindex=0 readOnly="readonly">'+ correctResponse +'</textarea></div>';
 		$("#essayCompareHolder").append(expert);		
 	}
 
@@ -384,27 +391,6 @@ function C_EssayCompare(_type) {
 		
 	}
 
-	/*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     ACESSIBILITY/508 FUNCTIONALITY
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-        var tabindex = 1;
-
-	   	$("#pageTitle").attr("tabindex", tabindex);
-	   	tabindex++;
-	   	
-	   	$('#question').attr("tabindex", tabindex);
-	   	tabindex++;
-	   	
-	   	for(var i = 0; i < option_arr.length; i++){
-		   	$(option_arr[i]).attr("tabindex", tabindex);
-		   	tabindex++;
-		}
-		
-		$("#pageTitle").focus();
-	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
 
 	this.destroySelf = function() {
