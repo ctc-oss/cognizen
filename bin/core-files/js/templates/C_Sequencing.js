@@ -190,11 +190,12 @@ function C_Sequencing(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
-		doAccess(pageAccess_arr);
+		doAccess(pageAccess_arr, true);
 		
-		if(currentActive != null){
+		if(currentAccActive != null){
 			for (var i = 0; i < order_arr.length; i++){
-				if(currentActive == $("#option"+i).attr("value")){
+				console.log($("#option"+i).attr("value"));
+				if(currentAccActive == $("#option"+i).attr("value")){
 					$("#option"+i).focus();
 					break;
 				}
