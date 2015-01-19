@@ -86,6 +86,12 @@ function C_Branching(_type) {
 		buildBranchOptions(_id);
 		checkMode();
 		doAccess(pageAccess_arr);
+		
+		if(branchType == "graphicOnly"){
+			 if(transition == true){
+	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			}
+		}
 	}
 
 
@@ -398,9 +404,11 @@ function C_Branching(_type) {
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
-		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+		if($("#layoutDrop option:selected").val() != "graphicOnly"){
+			var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+		}
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
@@ -628,19 +636,21 @@ function C_Branching(_type) {
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-
-		CKEDITOR.inline( "optionText", {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-		   	on: {
-		      instanceReady: function(event){
-		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
-		    	}
-		    }
-		});
+		
+		if(currentLayout != "graphicOnly"){
+			CKEDITOR.inline( "optionText", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
+			    	}
+			    }
+			});
+		}
 
 		CKEDITOR.inline( "optionTitleText", {
 			toolbar: pageTitleToolbar,
@@ -698,18 +708,19 @@ function C_Branching(_type) {
 			});
 		}
 		
-		//$("#optionText").focusout(function(){
-		CKEDITOR.instances.optionText.on('blur', function(){
-			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
-			clearCKInstances();
-			try { $("#optionContainer").remove(); } catch (e) {}
-			$("#branchEditDialog").dialog("close");
-			$("#branchEditDialog").remove();
-			updateBranchDialog();
-		});
+		if(currentLayout != "graphicOnly"){
+			CKEDITOR.instances.optionText.on('blur', function(){
+				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+				var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
+				clearCKInstances();
+				try { $("#optionContainer").remove(); } catch (e) {}
+				$("#branchEditDialog").dialog("close");
+				$("#branchEditDialog").remove();
+				updateBranchDialog();
+			});
+		}
 	}
 	
 	function updateBranchOption(_branchID, _optionNum){
