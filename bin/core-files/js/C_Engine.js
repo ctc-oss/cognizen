@@ -215,6 +215,7 @@ function initScripts(_data){
 			//Import Cognizen layout templates
 					corePath +"js/templates/C_Branching.js",
 					corePath +"js/templates/C_Categories.js",
+					corePath +"js/templates/C_Chaining.js",
 					corePath +"js/templates/C_ClickImage.js",
 					corePath +"js/templates/C_ClickListRevealText.js",
 					corePath +"js/templates/C_Completion.js",

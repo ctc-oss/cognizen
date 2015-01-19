@@ -1492,11 +1492,22 @@ this.loadPage = function(){
 
 	if(mode == "edit"){
 		//clear the page comments from last page
-		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" || currentTemplateType == "left" || currentTemplateType == "bottom" || currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" || currentTemplateType == "tabsLeft"){
-			$("#mediaDrop").css({opacity: 0});
+		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" 
+			|| currentTemplateType == "left" || currentTemplateType == "bottom" 
+			|| currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" 
+			|| currentTemplateType == "tabsLeft" || currentTemplateType == "branching"
+			|| currentTemplateType == "chaining"){
+
+			$("#mediaDrop").css("visibility","hidden");
+
 	    }
 		else{
-			$("#mediaDrop").css({opacity: 1});
+
+			// $("#mediaDrop").click(function(){
+			// launchMediaDrop();
+			// });
+			$("#mediaDrop").css("visibility", "visible");
+
 		}
 	}
 
@@ -1543,6 +1554,10 @@ this.loadPage = function(){
 			currentTemplate = new C_Branching(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "chaining":
+			currentTemplate = new C_Chaining(currentTemplateType);
+			currentTemplate.initialize();
+			break;			
 		case "clickImage":
 			currentTemplate = new C_ClickImage(currentTemplateType);
 			currentTemplate.initialize();

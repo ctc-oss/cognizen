@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "textInput", "essayCompare", "clickListRevealText", "slider"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "chaining", "textInput", "essayCompare", "clickListRevealText", "slider"];
 
 
 /************************************************************************************
@@ -70,7 +70,7 @@ function createNewPageByType(_myType){
 	
 	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
 	var newPage = currentPage + currentChildrenLength + 1;
-	if(_myType != "branching"){
+	if(_myType != "branching" && _myType != "chaining"){
 		//Place the page title element
 		$(data).find("page").eq(newPage).append($("<title>"));
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
@@ -256,6 +256,134 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
+		case "chaining":
+			//intro
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Chaining Introduction");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("success", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathcomplete", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("stepnumber", "0");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("steptype", "intro");
+			
+			//overview
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Chaining Overview");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("success", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathcomplete", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("stepnumber", "0");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("steptype", "overview");	
+
+			//summary - success and pathcomplete are always true for summary
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(2).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Chaining Summary");
+			$(data).find("page").eq(newPage).find("branch").eq(2).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(2).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(2).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(2).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(2).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("success", "true");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("pathcomplete", "true");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("stepnumber", "0");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("steptype", "summary");
+
+			//step1 teach
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(3).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Chaining Step 1 teach");
+			$(data).find("page").eq(newPage).find("branch").eq(3).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(3).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(3).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(3).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(3).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("success", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("pathcomplete", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("stepnumber", "1");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("steptype", "teach");
+
+			//step1 practice
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(4).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Chaining Step 1 practice");
+			$(data).find("page").eq(newPage).find("branch").eq(4).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(4).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Branch Content");
+			$(data).find("page").eq(newPage).find("branch").eq(4).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(4).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(4).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("success", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("pathcomplete", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("stepnumber", "1");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("steptype", "practice");													
+
+			$(data).find("page").eq(newPage).attr("graded", "false");
+			$(data).find("page").eq(newPage).attr("mandatory", "false");
+			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("type", "static");
+			break;			
 		case "tabsOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
