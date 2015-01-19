@@ -38,6 +38,9 @@ function C_TextInput(_type) {
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
 		buildTemplate();
 	}
 
@@ -123,7 +126,7 @@ function C_TextInput(_type) {
 				msg += '<div id="fb'+myQuestion+'" style="color:red">Select the correct option in the drop-down box to enable the text field.</div>';
 			}
 			else{
-				msg += '<div id="fb'+myQuestion+'"></div>';
+				msg += '<div id="fb'+myQuestion+'" tabindex=0></div>';
 			}
 
 			inputIds.push(myQuestion);
@@ -153,7 +156,11 @@ function C_TextInput(_type) {
 
 		msg += '</div><br/>';
 		$('#textInputHolder').append(msg);
-
+		
+		//Add inputs to tab order
+		for(var ii = 0; ii < input_arr.length; ii++){
+			pageAccess_arr.push($("#question"+ii));
+		}
 		//apply accepted answers to autocorrect
 		for(var w = 0; w < inputIds.length; w++){
 			if(autoComplete_arr[w]){
@@ -251,7 +258,10 @@ function C_TextInput(_type) {
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
-
+		
+		pageAccess_arr.push($("#mcSubmit"));
+		console.log(pageAccess_arr);
+		doAccess(pageAccess_arr);
 		checkMode();
 
 		if(transition == true){
@@ -287,7 +297,6 @@ function C_TextInput(_type) {
 				
 			});
 		};
-
 	}
 
 	// checks results, tracks feedback and attempts
@@ -375,7 +384,6 @@ function C_TextInput(_type) {
 									}
 
 									updateTextInputQuestionResponse(textInputQuestion_obj);
-
 								}
 								else
 								{
@@ -400,7 +408,7 @@ function C_TextInput(_type) {
 			checkNavButtons();
 		}
 
-
+		$("#fbquestion0").focus();
 
 	}
 
@@ -1105,29 +1113,6 @@ function C_TextInput(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}	
-
-	/*****************************************************************************************************************************************************************************************************************
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     ACESSIBILITY/508 FUNCTIONALITY
-     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     *****************************************************************************************************************************************************************************************************************/
-	function doAccess(){
-        var tabindex = 1;
-
-	   	$("#pageTitle").attr("tabindex", tabindex);
-	   	tabindex++;
-	   	
-	   	$('#question').attr("tabindex", tabindex);
-	   	tabindex++;
-	   	
-	   	for(var i = 0; i < option_arr.length; i++){
-		   	$(option_arr[i]).attr("tabindex", tabindex);
-		   	tabindex++;
-		}
-		
-		$("#pageTitle").focus();
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
 
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});

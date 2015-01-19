@@ -46,6 +46,10 @@ function C_Sequencing(_type) {
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
+		//Clear accessibility on page load.
+        pageAccess_arr = [];
+        audioAccess_arr = [];
+        
 		buildTemplate();
 	}
 
@@ -80,7 +84,7 @@ function C_Sequencing(_type) {
 		msg += '<div class="box">';
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="question" class="questionTop"></div>';
-		msg += '<div id="sequenceHolder" class="sequenceHolder">';
+		msg += '<div id="sequenceHolder" class="sequenceHolder" role="application">';
 		msg += '</div></div></div></div>';
 
 		try { audioHolder.destroy(); } catch (e) {}
@@ -93,29 +97,49 @@ function C_Sequencing(_type) {
 		$("#question").append(myContent);
 
 		placeOptions();
+		
 	}
 
-
-
+	function keyboardUp(_id){
+		isRefresh = true;
+		var holder = order_arr.splice(_id, 1);
+		order_arr.splice(_id+1, 0, holder);
+		$("#sortable").remove();
+		placeOptions();
+	}
+	
+	function keyboardDown(_id){
+		isRefresh = true;
+		var holder = order_arr.splice(_id, 1);
+		order_arr.splice(_id-1, 0, holder);
+		$("#sortable").remove();
+		placeOptions();
+	}
+	
+	var isRefresh = false;
+	var currentAccActive = null;	
+	
 	function placeOptions(){
 		////Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 
-		if(isComplete/* && mode != "edit"*/){
-			for(var k=0; k<questionResponse_arr.length; k++){
-				if(currentPageID == questionResponse_arr[k].id){
-					for(var h = 0; h < questionResponse_arr[k].userAnswer.length; h++){
-						order_arr.push(questionResponse_arr[k].userAnswer[h] - 1);
+		if(!isRefresh){
+			if(isComplete/* && mode != "edit"*/){
+				for(var k=0; k<questionResponse_arr.length; k++){
+					if(currentPageID == questionResponse_arr[k].id){
+						for(var h = 0; h < questionResponse_arr[k].userAnswer.length; h++){
+							order_arr.push(questionResponse_arr[k].userAnswer[h] - 1);
+						}
 					}
 				}
+			}else{
+				for (var i = 0; i < optionCount; i++){
+					order_arr.push(i);
+				}
+				order_arr = shuffleArray(order_arr);
 			}
-		}else{
-			for (var i = 0; i < optionCount; i++){
-				order_arr.push(i);
-			}
-			order_arr = shuffleArray(order_arr);
+			isRefresh = false;
 		}
-
 
 		var msg = "<div id='sortable' style='list-style-type: none;'>";
 		for(var j = 0; j < order_arr.length; j++){
@@ -124,13 +148,33 @@ function C_Sequencing(_type) {
 			var myOption = "option" + j;
 			//Create each option as a div.
 			//myNode.attr("correct")
-			msg += '<div class="sequenceOption" id="' + myOption + '" value="' + myNode.attr("correct")+ '">' +myNode.find("content").text() +'</div>';
+			msg += '<div class="sequenceOption" id="' + myOption + '" aria-label="'+myNode.find("content").text()+' to move this item press u to move up or d to move down" data="'+j+'" value="' + myNode.attr("correct")+ '">' +myNode.find("content").text() +'</div>';
 		}
 		msg += "</div>"
 		$('#sequenceHolder').append(msg);
 		$( "#sortable" ).sortable();
 		$( "#sortable" ).disableSelection();
-
+		
+		//Accessibility stuff
+		for(var j = 0; j < order_arr.length; j++){
+			pageAccess_arr.push($("#option" + j));
+			$("#option" + j).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+				 switch(chCode) {
+				    case 100:
+				    	currentAccActive = $(this).attr('value');
+				    	keyboardDown($(this).attr('data'));
+				    	break;
+				    case 117:
+				    	currentAccActive = $(this).attr('value');
+				    	keyboardUp($(this).attr('data'));
+				    	break;
+				    default:
+				        break;
+				}
+        	});
+		}
+		
 		placematchingSubmit();
 
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -146,6 +190,17 @@ function C_Sequencing(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
+		doAccess(pageAccess_arr, true);
+		
+		if(currentAccActive != null){
+			for (var i = 0; i < order_arr.length; i++){
+				console.log($("#option"+i).attr("value"));
+				if(currentAccActive == $("#option"+i).attr("value")){
+					$("#option"+i).focus();
+					break;
+				}
+			}
+		}
 	}
 
 
@@ -153,6 +208,7 @@ function C_Sequencing(_type) {
 		$("#contentHolder").append('<div id="mcSubmit"></div>');
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 		$("#mcSubmit").click(checkAnswer);
+		pageAccess_arr.push($("#mcSubmit"));
 	}
 
 

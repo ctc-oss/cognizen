@@ -41,6 +41,7 @@ function C_Slider(_type) {
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
+		
 		buildTemplate();
 	}
 
@@ -95,7 +96,7 @@ function C_Slider(_type) {
 		var myNode = $(data).find("page").eq(currentPage).find('slider');
 		var sliderContent = myNode.find('content').text().replace("<![CDATA[", "").replace("]]>", "");
 		msg = '<p><label for="display">'+sliderContent+'</label>';
-		msg += '<input type="text" id="display" readonly>'
+		msg += '<input type="text" id="display">'
 		msg += '</p>';
 		msg += '<div id="slider"></div>';
 
@@ -122,13 +123,20 @@ function C_Slider(_type) {
 		$("#slider").draggable();
 
 		$('#display').val( $('#slider').slider("value") );
-
+		
+		$("#display").change(function(){
+			$("#slider").slider("value", $("#display").val());
+		});
+		
+		pageAccess_arr.push($("#display"))
+		//pageAccess_arr.push($("#slider"));
+		
 		if(!isComplete){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 			$("#mcSubmit").click(checkAnswer).keypress(function(event) {
 			    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-			    if (chCode == 32){
+			    if (chCode == 32 || chCode == 13){
 				    $(this).click();
 				}
 		    });
@@ -194,7 +202,7 @@ function C_Slider(_type) {
 
 		var correctAnswer = $(data).find("page").eq(currentPage).find('slider').attr("correctanswer");
 
-		var userAnswer = $( "#slider" ).slider( "option", "value" );
+		var userAnswer = $("#display").val();//$( "#slider" ).slider( "option", "value" );
 
 		if(parseFloat(correctAnswer) != userAnswer){
 			tempCorrect = false;

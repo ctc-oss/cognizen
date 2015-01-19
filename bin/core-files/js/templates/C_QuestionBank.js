@@ -210,9 +210,9 @@ function C_QuestionBank(_type) {
 		myContent = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find('question').text();
 		$("#question").append(myContent);
 		
-		var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
-		$("#question").attr("aria-label", ariaText);
-		pageAccess_arr.push($("#question"));
+		//var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
+		//$("#question").attr("aria-label", ariaText);
+		//pageAccess_arr.push($("#question"));
 		//Place each option within the container $('#options') - this allows for easier cleanup, control and tracking.
 		var iterator = 0;
 		var optionY = 0;
@@ -803,7 +803,7 @@ function C_QuestionBank(_type) {
 		});
 
 		//handles validation of numbertopresent field
-		$('input[name=inputNumberToPresent').change(function(){
+		$('#inputNumberToPresent').change(function(){
 
 			if(!$.isNumeric($("#inputNumberToPresent").val())){
 				alert("The number of question to present must be a numeric value.");

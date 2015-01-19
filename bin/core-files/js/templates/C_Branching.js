@@ -85,6 +85,13 @@ function C_Branching(_type) {
 		}
 		buildBranchOptions(_id);
 		checkMode();
+		doAccess(pageAccess_arr);
+		
+		if(branchType == "graphicOnly"){
+			 if(transition == true){
+	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			}
+		}
 	}
 
 
@@ -106,7 +113,7 @@ function C_Branching(_type) {
 		    $("#content").width($("#contentHolder").width()-15);
 		    $("#content").append(myContent);
 		    $("#content").attr("aria-label", $("#content").text());
-		    pageAccess_arr.push($("#content"));
+		    //pageAccess_arr.push($("#content"));
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
@@ -124,7 +131,7 @@ function C_Branching(_type) {
 
 			$('#sidebar').height($('#sidebarHolder').height());
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
-			pageAccess_arr.push($("#sidebar"));
+			//pageAccess_arr.push($("#sidebar"));
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -153,7 +160,7 @@ function C_Branching(_type) {
 				var buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
 				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).attr("id");
 				var myOption = "option"+i;
-				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
+				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
 				});
@@ -397,9 +404,11 @@ function C_Branching(_type) {
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
-		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+		if($("#layoutDrop option:selected").val() != "graphicOnly"){
+			var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+		}
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
@@ -627,19 +636,21 @@ function C_Branching(_type) {
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-
-		CKEDITOR.inline( "optionText", {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-		   	on: {
-		      instanceReady: function(event){
-		         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
-		    	}
-		    }
-		});
+		
+		if(currentLayout != "graphicOnly"){
+			CKEDITOR.inline( "optionText", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit this option text.");
+			    	}
+			    }
+			});
+		}
 
 		CKEDITOR.inline( "optionTitleText", {
 			toolbar: pageTitleToolbar,
@@ -697,18 +708,19 @@ function C_Branching(_type) {
 			});
 		}
 		
-		//$("#optionText").focusout(function(){
-		CKEDITOR.instances.optionText.on('blur', function(){
-			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
-			clearCKInstances();
-			try { $("#optionContainer").remove(); } catch (e) {}
-			$("#branchEditDialog").dialog("close");
-			$("#branchEditDialog").remove();
-			updateBranchDialog();
-		});
+		if(currentLayout != "graphicOnly"){
+			CKEDITOR.instances.optionText.on('blur', function(){
+				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+				var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
+				clearCKInstances();
+				try { $("#optionContainer").remove(); } catch (e) {}
+				$("#branchEditDialog").dialog("close");
+				$("#branchEditDialog").remove();
+				updateBranchDialog();
+			});
+		}
 	}
 	
 	function updateBranchOption(_branchID, _optionNum){
