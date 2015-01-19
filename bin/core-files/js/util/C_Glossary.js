@@ -39,14 +39,14 @@ function checkGlossary(){
 	if(($(data).find('glossary').attr('value') == "true") && !isMobilePhone){  // needs to be rewritten for phones, disable on phones for now
 		glossary = true;
 		var msg = "<div id='glossaryPane' class='pane'>";
-			msg += "<div id='glossaryTab' class='paneTab' title='click here to toggle the glossary'/>";
+			msg += "<div id='glossaryTab' class='paneTab' role='button' aria-label='click here to toggle the glossary currently closed' title='click here to toggle the glossary'/>";
 			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
 			msg += "<div id='glossaryContent' class='glossaryContent'>";
 			msg += "<div id='glossaryClose' title='click here to close the glossary'/>";
 			msg += "<div id='glossaryDef'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
 			
 		$('#panes').append(msg);
-		
+		globalAccess_arr.push($('#glossaryTab'));
 		$('#glossaryTab').click(toggleGlossary);
 		$('#glossaryClose').click(toggleGlossary);
 
