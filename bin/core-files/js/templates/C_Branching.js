@@ -274,7 +274,11 @@ function C_Branching(_type) {
 			* Edit Question
 			********************************************************/
             //Add and style titleEdit button
-			$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			if(branchType != "graphicOnly"){
+				$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}else{
+				$('#mediaHolder').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}
 
 			$("#branchEdit").click(function(){
 				updateBranchDialog();
