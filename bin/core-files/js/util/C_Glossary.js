@@ -42,8 +42,8 @@ function checkGlossary(){
 			msg += "<div id='glossaryTab' class='paneTab' role='button' aria-label='click here to toggle the glossary currently closed' title='click here to toggle the glossary'/>";
 			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
 			msg += "<div id='glossaryContent' class='glossaryContent'>";
-			msg += "<div id='glossaryClose' title='click here to close the glossary'/>";
-			msg += "<div id='glossaryDef'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
+			msg += "<div id='glossaryClose' title='click here to close the glossary' tabindex='1' role='button' aria-label='click here to close glossary'/>";
+			msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
 			
 		$('#panes').append(msg);
 		globalAccess_arr.push($('#glossaryTab'));
@@ -159,12 +159,13 @@ function addGlossary(){
 	for(var i = 0; i < glossary_arr.length; i++){
 		thisTerm = "term" + i;
 		termID = "#"+thisTerm;
-		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem'>"+glossary_arr[i].term+"</div>");
+		$("#glossaryTerms").append("<div id='"+thisTerm+"' class='glossaryItem' role='button' tabindex='1' >"+glossary_arr[i].term+"</div>");
 		$(termID).data("definition", glossary_arr[i].definition);
 		$(termID).data("myID", glossary_arr[i].id);
 		$(termID).click(function(){
 			if(hoverSubNav == false){
 				$("#glossaryDef").html("<p class='term'><span class='label'>Term: </span>" + $(this).text() + "</p><p class='definition'><span class='label'>Definition: </span>" + $(this).data("definition") + "</p>");
+				$("#glossaryDef").focus();
 			}
 		}).hover(function(){
 			$(this).addClass("glossaryItemHover");
@@ -180,7 +181,12 @@ function addGlossary(){
 			addEditGlossaryRollovers($(glossaryItem_arr[i]));
 		}
 	}
+	
+	if(!indexState){
+		accHideGlossary();
+	}
 }
+
 
 /************************************************************************************************
 Function: 		addEditGlossaryRollovers
@@ -489,18 +495,33 @@ function toggleGlossary(){
 	var icon = 'ui-icon-circle-triangle-s';
 	if(glossaryState == false){
 		glossaryState = true;
-
+		$("#glossaryTab").attr("aria-label", "click here to close content glossary currently open");
 		gimmeGlosPos();
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
+		accShowGlossary();
+		$("#glossaryDef").focus();
 		// if tab is not against the left edge of the screen at start, tween it to the right edge of the pane when the pane opens
 		var tabPos = glossaryClosePos * -1;
 		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:tabPos}, ease:transitionType});
 	}
 	else{
 		glossaryState = false;
-		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType});
+		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType, onComplete:accHideGlossary});
 		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:glossaryTabPos}, ease:transitionType});
+		$("#glossaryTab").attr("aria-label", "click here to open content glossary currently closed");
 	}
+}
+
+function accShowGlossary(){
+	$("#glossaryTerms").css("visibility", "visible");
+	$("#glossaryContent").css("visibility", "visible");
+	$("#glossaryClose").css("visibility", "visible");
+}
+
+function accHideGlossary(){
+	$("#glossaryTerms").css("visibility", "hidden");
+	$("#glossaryContent").css("visibility", "hidden");
+	$("#glossaryClose").css("visibility", "hidden");
 }
 
 /************************************************************************************************
