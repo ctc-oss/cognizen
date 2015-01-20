@@ -64,6 +64,8 @@ function C_Branching(_type) {
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
+		try { $("#imgPalette").remove(); } catch (e) {}
+		
 		clearMainCKEInstances();
 
 		//remove existing scrollable content.
@@ -80,18 +82,11 @@ function C_Branching(_type) {
 
 		pageTitle = new C_PageTitle(_id);
 		
-		if(branchType != "graphicOnly"){
-			buildContentText();
-		}
+		buildContentText();
+		
 		buildBranchOptions(_id);
 		checkMode();
 		doAccess(pageAccess_arr);
-		
-		if(branchType == "graphicOnly"){
-			 if(transition == true){
-	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-			}
-		}
 	}
 
 
@@ -103,7 +98,7 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildContentText(){
-		if(myContent != ""){
+		if(myContent != "" && branchType != "graphicOnly"){
 	        $('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		    addLayoutCSS(branchType);
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -150,7 +145,7 @@ function C_Branching(_type) {
 
 		if(branchCount > 0){
 			var paletteWidth = 0;
-			if(branchType == "top" || branchType == "bottom"){
+			if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
 				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
 			}else{
 				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
@@ -279,7 +274,11 @@ function C_Branching(_type) {
 			* Edit Question
 			********************************************************/
             //Add and style titleEdit button
-			$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			if(branchType != "graphicOnly"){
+				$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}else{
+				$('#mediaHolder').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}
 
 			$("#branchEdit").click(function(){
 				updateBranchDialog();
