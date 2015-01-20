@@ -495,7 +495,7 @@ function toggleGlossary(){
 	var icon = 'ui-icon-circle-triangle-s';
 	if(glossaryState == false){
 		glossaryState = true;
-
+		$("#glossaryTab").attr("aria-label", "click here to close content glossary currently open");
 		gimmeGlosPos();
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		accShowGlossary();
@@ -508,6 +508,7 @@ function toggleGlossary(){
 		glossaryState = false;
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType, onComplete:accHideGlossary});
 		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:glossaryTabPos}, ease:transitionType});
+		$("#glossaryTab").attr("aria-label", "click here to open content glossary currently closed");
 	}
 }
 
