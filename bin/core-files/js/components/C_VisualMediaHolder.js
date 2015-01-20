@@ -217,13 +217,32 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 						}
 					}
 				});
-			}else{
+			}else if(window.chrome){
 				// decent browser - prefer HTML5 video
 				$('video').mediaelementplayer({
 					enablePluginSmoothing: true,
 					mode: 'auto_plugin',
 					success: function(player, node) {
-						playerRemove_arr.push(player);
+						//playerRemove_arr.push(player);
+						//If autoNext then move to next page upon completion.
+						if(autoNext == true){
+							player.addEventListener('ended', function(e) {
+								hasEnded();
+							}, false);
+						}
+
+						//If autoplay - cick off the vid
+						if(autoPlay == true){
+							$('.mejs-overlay-button').trigger('click');
+						}
+					}
+				});
+			}else{
+				$('video').mediaelementplayer({
+					enablePluginSmoothing: true,
+					//mode: 'auto_plugin',
+					success: function(player, node) {
+						//playerRemove_arr.push(player);
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
 							player.addEventListener('ended', function(e) {
@@ -1044,7 +1063,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		try { $(".C_Loader").remove(); } catch (e) {}
 		
 		try { $("#mediaHolder").remove(); } catch (e) {}
-		try { mediaHolder.remove();)} catch (e) {}
+		try { mediaHolder.remove();} catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
 		
 		try { $("#myImgList").tooltip("destroy"); } catch (e) {}
