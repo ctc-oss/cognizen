@@ -185,6 +185,9 @@ function C_TextInput(_type) {
 								$("#"+textInputQuestion_obj.question+'drop').val(textInputQuestion_obj.dropDownAnswer);
 								if(textInputQuestion_obj.dropDownComplete){
 									$("#"+textInputQuestion_obj.question+'drop').css('backgroundColor', 'green');
+									$('#'+textInputQuestion_obj.question).prop('disabled', false);
+									$('#'+textInputQuestion_obj.question+'drop').prop('disabled', true);
+									$('#'+textInputQuestion_obj.question+'drop').css('color', 'black');
 								}
 								else{
 									$("#"+textInputQuestion_obj.question+'drop').css('backgroundColor', 'red');
@@ -269,7 +272,8 @@ function C_TextInput(_type) {
 		}
 
 		for (var t = 0; t < dropDownQuestions_arr.length; t++) {
-			$('#'+dropDownQuestions_arr[t]+'drop').on('change', function(){
+			var ddQuestionId = dropDownQuestions_arr[t];
+			$('#'+ddQuestionId+'drop').change({id : ddQuestionId} , function(event){
 				var textInputQuestion_obj = new Object();
 				for(var i = 0; i < questionResponse_arr.length; i++){
 					if(currentPageID == questionResponse_arr[i].id){
@@ -277,18 +281,21 @@ function C_TextInput(_type) {
 						if(_tiQuestions.length > 0){
 							for(var j = 0; j < _tiQuestions.length; j++){
 								textInputQuestion_obj = _tiQuestions[j];
-								if(textInputQuestion_obj.question == dropDownQuestions_arr[j])
+								if(textInputQuestion_obj.question == event.data.id)
 								{
-									textInputQuestion_obj.dropDownAnswer = $('#'+dropDownQuestions_arr[j]+'drop option:selected').text();
+									textInputQuestion_obj.dropDownAnswer = $('#'+textInputQuestion_obj.question+'drop option:selected').text();
 									if($.inArray(textInputQuestion_obj.dropDownAnswer, correctDDAnswers_arr[j]) != -1 ){
 										textInputQuestion_obj.dropDownComplete = true;
-										$('#'+dropDownQuestions_arr[j]+'drop').css('backgroundColor', 'green');
-										$('#'+dropDownQuestions_arr[j]).prop('disabled', false);
+										$('#'+textInputQuestion_obj.question+'drop').css('backgroundColor', 'green');
+										$('#'+textInputQuestion_obj.question).prop('disabled', false);
+										$('#'+textInputQuestion_obj.question+'drop').prop('disabled', true);
+										$('#'+textInputQuestion_obj.question+'drop').css('color', 'black');
 									}
 									else{
 										textInputQuestion_obj.dropDownComplete = false;
-										$('#'+dropDownQuestions_arr[j]+'drop').css('backgroundColor', 'red');
-									}									
+										$('#'+textInputQuestion_obj.question+'drop').css('backgroundColor', 'red');
+									}
+									break;									
 								}
 							}
 						}
