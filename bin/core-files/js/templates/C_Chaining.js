@@ -65,6 +65,7 @@ function C_Chaining(_type) {
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
+		try { $("#imgPalette").remove(); } catch (e) {}
 		clearMainCKEInstances();
 
 		//remove existing scrollable content.
@@ -81,18 +82,11 @@ function C_Chaining(_type) {
 
 		pageTitle = new C_PageTitle(_id);
 		
-		if(branchType != "graphicOnly"){
-			buildContentText();
-		}
-
-		if(branchType == "graphicOnly"){
-			if(transition == true){
-	           TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-			}
-		}
+		buildContentText();
 
 		buildBranchOptions(_id);
 		checkMode();
+		doAccess(pageAccess_arr);
 	}
 
 
@@ -104,7 +98,7 @@ function C_Chaining(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildContentText(){
-		if(myContent != ""){
+		if(myContent != "" && branchType != "graphicOnly"){
 	        $('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		    addLayoutCSS(branchType);
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -150,30 +144,27 @@ function C_Chaining(_type) {
 		var branchStepNum = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("stepnumber");
 		var branchStepType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("steptype");
 
-		// if(branchCount > 0){
-			var paletteWidth = 0;
-			if(branchType == "top" || branchType == "bottom"){
-				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
-			}else{
-				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
-			}
+		var paletteWidth = 0;
+		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
+			$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
+		}else{
+			$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
+		}
 
-			// for (var i = 0; i < branchCount; i++){
-			if(branchStepType != "summary"){
-				var _nextId = identifyNextChain(_id);
-				var buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
-				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_nextId).attr("id");
-				var myOption = "option";
-				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
-				$("#"+myOption).button().click(function(){
-					loadBranchByID($(this).attr("mylink"));
-					//loadBranch(_nextId);
-				});
-				paletteWidth += $("#"+myOption).width() + 5;
-				pageAccess_arr.push($("#"+myOption));
-			}
-			$("#imgPalette").width(paletteWidth);
-		// }
+
+		if(branchStepType != "summary"){
+			var _nextId = identifyNextChain(_id);
+			var buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
+			var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_nextId).attr("id");
+			var myOption = "option";
+			$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
+			$("#"+myOption).button().click(function(){
+				loadBranchByID($(this).attr("mylink"));
+			});
+			paletteWidth += $("#"+myOption).width() + 5;
+			pageAccess_arr.push($("#"+myOption));
+		}
+		$("#imgPalette").width(paletteWidth);
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -344,7 +335,12 @@ function C_Chaining(_type) {
 			* Edit Question
 			********************************************************/
             //Add and style titleEdit button
-			$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			if(branchType != "graphicOnly"){
+				$('#scrollableContent').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}
+			else{
+				$('#mediaHolder').prepend("<div id='branchEdit' class='btn_edit_text' title='Edit this exercise'></div>");
+			}
 
 			$("#branchEdit").click(function(){
 				updateBranchDialog();
