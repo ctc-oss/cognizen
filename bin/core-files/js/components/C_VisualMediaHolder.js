@@ -205,6 +205,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				$('video').mediaelementplayer({
 					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
+					enableKeyboard: true,
 					success: function(player, node) {
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
@@ -223,6 +224,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				// decent browser - prefer HTML5 video
 				$('video').mediaelementplayer({
 					enablePluginSmoothing: true,
+					enableKeyboard: true,
 					success: function(player, node) {
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
@@ -230,7 +232,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 								hasEnded();
 							}, false);
 						}
-
 						//If autoplay - cick off the vid
 						if(autoPlay == true){
 							$('.mejs-overlay-button').trigger('click');
@@ -960,15 +961,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			removeGalleryItem($(this).attr("value"));
 		});
 
-		/*CKEDITOR.inline( captionTextID, {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-			allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
-		});*/
-
 		galleryEdit_arr.push(galleryItemID);
 	}
 
@@ -1003,12 +995,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
+	   	
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
-			
 		try { $('#loader').flash().remove(); } catch (e) {}
 		try { $("#acc_gallery").remove(); } catch (e) {}
 		try { $("#mediaPop").remove(); } catch (e) {}

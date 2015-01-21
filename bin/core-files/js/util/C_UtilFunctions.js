@@ -188,7 +188,7 @@ function fadeComplete() {
     try { pageTitle.destroy(); } catch (e) {}
     try { audioHolder.destroy(); } catch (e) {}
     try { mediaHolder.destroy(); } catch (e) {}
-
+	try { mediaHolder.delete(); } catch (e) {}
     try { $("#sidebar").remove(); } catch (e) {}
     try { $("#sidebarHolder").remove(); } catch (e) {}
 	try { $("#scrollableContent").remove(); } catch (e) {}
