@@ -90,7 +90,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "tabsLeft",
-			"images" : ["ex_tabsLeft.png"]
+			"images" : ["ex_TabsLeft.png"]
 		},
 		{
 			"type" : "revealRight",
@@ -147,7 +147,12 @@ function C_Outline(_myItem) {
 		{
 			"type" : "branching",
 			"images" : ["ex_Branching.png", "ex_Branching_A.png", "ex_Branching_B.png", "ex_Branching_C.png"]
+		},
+		{
+			"type" : "slider",
+			"images" : ["ex_Slider.png"]
 		}
+
 	];
 
 
