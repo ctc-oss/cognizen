@@ -90,7 +90,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "tabsLeft",
-			"images" : ["ex_TabsLeft.png"]
+			"images" : ["ex_TabsLeft.png", "ex_TabsLeft1.png"]
 		},
 		{
 			"type" : "revealRight",
@@ -142,7 +142,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "clickListRevealText",
-			"images" : ["ex_clickListRevealText.png"]
+			"images" : ["ex_ClickListRevealText.png", "ex_ClickListRevealText1.png"]
 		},
 		{
 			"type" : "branching",
