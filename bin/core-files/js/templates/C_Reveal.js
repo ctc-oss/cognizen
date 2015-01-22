@@ -21,6 +21,7 @@ function C_Reveal(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
+    var labeled = false;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -40,6 +41,10 @@ function C_Reveal(_type) {
 		interact = $(data).find("page").eq(currentPage).attr("interact");
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('labeled') == "true"){
+			labeled = true;
 		}
 
 		if($(data).find("page").eq(currentPage).attr('objItemId')){
@@ -83,8 +88,20 @@ function C_Reveal(_type) {
 			var revID = "revID" + i;
 			var cont = tmpContent;
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			$("#imgPalette").append("<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Click to learn more.'><img src='media/"+currentImg+"' alt='"+ currentAlt +" Click to learn more.' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/></div>");
-
+			
+			var msg = "<div id='"+ revID +"' class='revealImg' myContent='"+ tmpContent +"' aria-label='Image description: "+currentAlt+" Click to learn more.'>";
+				msg += "<img src='media/"+currentImg+"' alt='"+ currentAlt +" Click to learn more.' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/>";
+				if(labeled){
+					msg += "<div id='mediaLabel' class='mediaLabel'>"+$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("label")+"</div>";
+				}
+				msg += "</div";
+			
+			$("#imgPalette").append(msg);
+			
+			if(labeled){
+				$(".mediaLabel").css("width", mediaWidth);
+			}
+			
 			if(type == "revealRight"){
 				$("#"+revID).addClass("revealRight");
 				$("#imgPalette").addClass("revealPaletteLandscape");
@@ -313,14 +330,13 @@ function C_Reveal(_type) {
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
-		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find('page').eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
 		msg += "<label title='Set width for images.'> <b>Reveal Image Width: </b></label>";
 		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
 		msg += "<label title='Set height for images.'> <b>Reveal Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/><br/>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/>&nbsp;&nbsp";
+		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
+		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
+		
 		msg += "<div id='revealTypeGroup'>";
 		msg += "<label id='hover' title='Set whether users click or hover to reveal.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' />";
@@ -344,6 +360,17 @@ function C_Reveal(_type) {
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
 		}
+		
+		if(labeled){
+			$("#isLabeled").attr("checked", "checked");
+		}
+		
+		$("#isLabeled").change(function(){
+			makeRevealDataStore();
+			clearCKInstances();
+			try { $("#revealContainer").remove(); } catch (e) {}
+			addReveal(currentEditBankMember, false);
+		});
 
 		addReveal(currentEditBankMember, false);
 
@@ -445,6 +472,14 @@ function C_Reveal(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
+		
+		if($("#isLabeled").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("labeled", "true");
+			labeled = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("labeled", "false");
+			labeled = false;
+		}
 
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
@@ -452,6 +487,7 @@ function C_Reveal(_type) {
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("img", $("#revealImageText").val());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("alt", $("#revealAltText").val());
+		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).attr("label", $("#revealLabelText").val());
 	}
 
 	function addReveal(_addID, _isNew){
@@ -470,6 +506,7 @@ function C_Reveal(_type) {
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).find("caption").append(difFeed1CDATA);
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt", "Default alt text");
+			$(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("label", "label text");
 
 			currentEditBankMember = _addID;
 			revealCount++;
@@ -481,7 +518,13 @@ function C_Reveal(_type) {
 			msg += "<div id='revealRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this reveal'/>";
 			msg += "<b>Reveal "+revealLabel+":</b>";
 			msg += "<label id='revealImage' title='Input the image name.'><br/><b>Image: </b></label>";
-			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/><br/>";
+			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+			if(labeled){
+				var myLabel = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("label");
+				msg += "<label id='revealLabel' title='Input the label text.'><br/><b>Label: </b></label>";
+				msg += "<input id='revealLabelText' class='dialogInput' type='text' value='"+myLabel+"' defaultValue='"+myLabel+"' style='width:20%;'/>";
+			}
+			msg += "<br/>"
 		var myAlt = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("alt");
 			msg += "<label id='label' title='Input a description of the image.'><b>ALT text:</b> </label>";
 			msg += "<input id='revealAltText' class='dialogInput' type='text' value='"+myAlt+"' defaultValue='"+myAlt+"' style='width:70%'/>";
