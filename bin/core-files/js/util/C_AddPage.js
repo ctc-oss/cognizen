@@ -914,6 +914,8 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("graded", false);
 			$(data).find("page").eq(newPage).attr("mandatory", true);
 			$(data).find("page").eq(newPage).attr("randomize", false);
+			$(data).find("page").eq(newPage).attr("timed", false);
+			$(data).find("page").eq(newPage).attr("timerlength", "10"); 
 			$(data).find("page").eq(newPage).attr("type", "kc");
 			
 			var userSelection_arr = [];

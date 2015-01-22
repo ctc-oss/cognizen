@@ -232,6 +232,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 								hasEnded();
 							}, false);
 						}
+						
 						//If autoplay - cick off the vid
 						if(autoPlay == true){
 							$('.mejs-overlay-button').trigger('click');
@@ -995,7 +996,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
-	   	
+	   	console.log(mejs.players)
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}

@@ -322,7 +322,7 @@ function buildInterface(){
 	//function in C_NavControl.js
 	ncInitialize();
 	////////////////////////////////////////////
-	
+	try { clearInterval(counter); } catch (e){}
 	$('body').empty();
 
 	if (isMobilePhone){

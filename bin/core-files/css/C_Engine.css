@@ -1519,6 +1519,22 @@ KNOWLEDGE CHECK TEXT LAYOUTS
 	margin-top: 0px;
 }
 
+.timer{
+	position: relative;
+	border-radius: 8px;
+	background-color: #eee;
+	width: 210px;
+	height: 50px;
+	left: 50px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 10px;
+	font-size : 100%;
+	font-weight: normal;
+	color:	#000000;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
 /**************************************************************************************
 MULTIPLE CHOICE LAYOUTS
 **************************************************************************************/
