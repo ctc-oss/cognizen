@@ -46,6 +46,8 @@ var pageTitle;
 var mediaHolder;
 var audioHolder;
 
+var counter;//For any timed countdowns. (set interval).
+
 //Accessibility control arrays.
 var pageAccess_arr = [];
 var globalAccess_arr = [];

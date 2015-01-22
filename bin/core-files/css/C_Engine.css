@@ -1532,15 +1532,16 @@ KNOWLEDGE CHECK TEXT LAYOUTS
 	border-radius: 8px;
 	background-color: #eee;
 	width: 210px;
-	height: 50px;
+	height: 15px;
 	left: 50px;
 	margin-top: 20px;
 	margin-bottom: 20px;
-	padding: 10px;
+	padding: 8px;
 	font-size : 100%;
 	font-weight: normal;
 	color:	#000000;
 	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
 }
 
 /**************************************************************************************

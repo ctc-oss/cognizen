@@ -63,7 +63,7 @@ function C_MultipleChoice(_type) {
 	var currentItem;
 	var isTimed = false;
 	var timerLength = 0;
-	var counter;
+	
 	var countdown = 0;
 
     //Defines a public method - notice the difference between the private definition below.
@@ -74,6 +74,7 @@ function C_MultipleChoice(_type) {
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		try { clearInterval(counter); } catch (e){}
+		
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
@@ -111,12 +112,25 @@ function C_MultipleChoice(_type) {
 
 		pageTitle = new C_PageTitle();
 		
-		if(isTimed){
-			$("#stage").append('<div id="timerDisplay" class="timer">Time Remaining: '+timerLength+'</div>');
-		}
-		
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
-
+		
+		if(isTimed){
+			if(mode == "edit"){
+				$('<div id="timerDisplay" class="timer">Timer disabled in edit mode.</div>').insertAfter($("#question"));
+			}else{
+				$('<div id="timerDisplay" class="timer" aria-label="This question is timed. To disable timer, click here.">Time Remaining: '+timerLength+'</div>').insertAfter($("#question"));
+			}
+			
+			$("#timerDisplay").click(function(){
+				clearInterval(counter);
+			}).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32 || chCode == 13){
+				    $(this).click();
+				}
+		    });
+			pageAccess_arr.push($("#timerDisplay"));
+		}
 		audioHolder = new C_AudioHolder();
 
 		optionCount = $(data).find("page").eq(currentPage).find("option").length;
@@ -300,7 +314,7 @@ function C_MultipleChoice(_type) {
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		doAccess(pageAccess_arr);
-		if(isTimed){
+		if(isTimed && mode != "edit"){
 			countdown = timerLength;
 			counter=setInterval(timer, 1000);
 		}
@@ -560,7 +574,7 @@ function C_MultipleChoice(_type) {
 					dialogClass: "no-close",
 					buttons: {
 						OK: function(){
-							if(isTimed){
+							if(isTimed && mode != "edit"){
 								countdown = timerLength;
 								counter=setInterval(timer, 1000);
 							}
