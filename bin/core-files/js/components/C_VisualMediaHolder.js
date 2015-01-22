@@ -47,7 +47,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm"];
     var convertableVectorTypes = ["eps"];
     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
-    var playerRemove_arr = [];
 
 	var oldIE = false;
 
@@ -142,7 +141,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}
 
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
-			if(mediaLinkType == "youtube"){
+			if(mediaLinkType == "youtube" || window.chrome){
                 vidHTMLString += " preload='none'";
             }
 
@@ -169,8 +168,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
                 vidHTMLString += "mp4' ";
             }
 
-            //Add the video source and close the source node.
-            vidHTMLString += "src='" + myImage + "'/>";
+			if(isIE){
+				vidHTMLString += "src='" + myImage + "'/>";
+			}else{
+				vidHTMLString += "src='" + myImage + "?"+new Date().getTime()+"'/>";
+			}
 
             //Check for subs - defaults to false.
             if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
@@ -203,27 +205,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				$('video').mediaelementplayer({
 					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
+					enableKeyboard: true,
 					success: function(player, node) {
-						//If autoNext then move to next page upon completion.
-						if(autoNext == true){
-							player.addEventListener('ended', function(e) {
-								hasEnded();
-							}, false);
-						}
-
-						//If autoplay - cick off the vid
-						if(autoPlay == true){
-							$('.mejs-overlay-button').trigger('click');
-						}
-					}
-				});
-			}else if(window.chrome){
-				// decent browser - prefer HTML5 video
-				$('video').mediaelementplayer({
-					enablePluginSmoothing: true,
-					mode: 'auto_plugin',
-					success: function(player, node) {
-						//playerRemove_arr.push(player);
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
 							player.addEventListener('ended', function(e) {
@@ -238,18 +221,18 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 					}
 				});
 			}else{
+				// decent browser - prefer HTML5 video
 				$('video').mediaelementplayer({
 					enablePluginSmoothing: true,
-					//mode: 'auto_plugin',
+					enableKeyboard: true,
 					success: function(player, node) {
-						//playerRemove_arr.push(player);
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
 							player.addEventListener('ended', function(e) {
 								hasEnded();
 							}, false);
 						}
-
+						
 						//If autoplay - cick off the vid
 						if(autoPlay == true){
 							$('.mejs-overlay-button').trigger('click');
@@ -979,15 +962,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			removeGalleryItem($(this).attr("value"));
 		});
 
-		/*CKEDITOR.inline( captionTextID, {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-			allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
-		});*/
-
 		galleryEdit_arr.push(galleryItemID);
 	}
 
@@ -1015,57 +989,28 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     this.updateMediaCSS = function(){
 
     }
-	
-	function purge(d) {
-	    var a = d.attributes, i, l, n;
-	    console.log(a.length)
-	    if (a) {
-	        for (i = a.length - 1; i >= 0; i -= 1) {
-	            n = a[i].name;
-	            if (typeof d[n] === 'function') {
-	                d[n] = null;
-	            }
-	        }
-	    }
-	    a = d.childNodes;
-	    if (a) {
-		    console.log(a.length)
-	        l = a.length;
-	        for (i = 0; i < l; i += 1) {
-	            purge(d.childNodes[i]);
-	        }
-	    }
-	}
+
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
-	    //purge($(".mejs-inner"))
-	    
-	    try { $('.mejs-mediaelement').remove();} catch (e) {}
-	    try { mejs.players.remove();} catch (e) {}
+	   	console.log(mejs.players)
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
 		try { $("#swfDialog").remove(); } catch (e) {}
-		for(var i = 0; i < playerRemove_arr.length; i++){
-			playerRemove_arr[i].remove();
-		}
 		try { $('#loader').flash().remove(); } catch (e) {}
 		try { $("#acc_gallery").remove(); } catch (e) {}
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
-		try { $("#videoplayer").removeData(); } catch (e) {}
-		try { $("#videoplayer").remove(); } catch (e) {}
-		try { $(".C_Loader").remove(); } catch (e) {}
-		
+		//try { $(".C_Loader").remove(); } catch (e) {}
+
 		try { $("#mediaHolder").remove(); } catch (e) {}
-		try { mediaHolder.remove();} catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
-		
+
 		try { $("#myImgList").tooltip("destroy"); } catch (e) {}
 		try { $("#loader").tooltip("destroy"); } catch (e) {}
 

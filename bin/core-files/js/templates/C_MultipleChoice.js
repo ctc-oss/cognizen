@@ -61,6 +61,10 @@ function C_MultipleChoice(_type) {
     var currentEditBankMember = 0;
 	var revealMenu_arr = [];
 	var currentItem;
+	var isTimed = false;
+	var timerLength = 0;
+	var counter;
+	var countdown = 0;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
@@ -69,6 +73,7 @@ function C_MultipleChoice(_type) {
 
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
+		try { clearInterval(counter); } catch (e){}
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
@@ -98,9 +103,18 @@ function C_MultipleChoice(_type) {
 		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
 			randomize = true;
 		}
+		
+		if($(data).find("page").eq(currentPage).attr('timed') == "true"){
+			isTimed = true;
+			timerLength = $(data).find("page").eq(currentPage).attr('timerlength')
+		}
 
 		pageTitle = new C_PageTitle();
-
+		
+		if(isTimed){
+			$("#stage").append('<div id="timerDisplay" class="timer">Time Remaining: '+timerLength+'</div>');
+		}
+		
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
 
 		audioHolder = new C_AudioHolder();
@@ -286,8 +300,34 @@ function C_MultipleChoice(_type) {
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		doAccess(pageAccess_arr);
+		if(isTimed){
+			countdown = timerLength;
+			counter=setInterval(timer, 1000);
+		}
 	}
-
+	
+	function timer()
+	{
+	  	countdown = countdown-1;
+	  	if (countdown < 0)
+	  	{
+	     	clearInterval(counter);
+	     	if(mode != "edit"){
+	     		checkAnswer();
+	     	}
+		 	return;
+	  	}
+	  	
+	  	if(countdown <= 5){
+	  		$("#timerDisplay").css("color", "red");
+		}else{
+			$("#timerDisplay").css("color", "black");
+		}
+	  	
+	  	$("#timerDisplay").text("Time Remaining: " + countdown)
+	  	
+	  	//document.getElementById("timer").innerHTML=count + " secs"; // watch for spelling
+	}
 
 	//Called if the user closes the popup instead of proceed
 	function disableOptions(){
@@ -332,6 +372,8 @@ function C_MultipleChoice(_type) {
 
 	function checkAnswer(){
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+		try { clearInterval(counter); } catch (e){}
+		
 		var tempCorrect = true;
 		attemptsMade++;
 		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
@@ -518,6 +560,10 @@ function C_MultipleChoice(_type) {
 					dialogClass: "no-close",
 					buttons: {
 						OK: function(){
+							if(isTimed){
+								countdown = timerLength;
+								counter=setInterval(timer, 1000);
+							}
 							$( this ).dialog( "close" );
 							$("#dialog-attemptResponse").remove();
 						}
@@ -582,20 +628,25 @@ function C_MultipleChoice(_type) {
 
 	function updateOptionDialog(){
 		clearCKInstances();
-
+		
+		try { clearInterval(counter); } catch (e){}
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
 		msg += "<label id='label' title='Define the number of attempts.'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label'  title='Indicates if the order of the options are randomized on this page.'><b>randomize options: </b></label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label'  title='Indicates if this question is timed.'><b>timed: </b></label>";
+		msg += "<input id='isTimed' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Define the length of the timer.'><b>timer length: </b></label>";
+		msg += "<input type='text' name='myName' id='inputTimerLength' value='"+ timerLength +"' class='dialogInput' style='width:35px;'/><br/>";
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized' title='Standard feedback is used.'>standardized  </input>";
@@ -628,6 +679,12 @@ function C_MultipleChoice(_type) {
 			$("#isRandom").removeAttr('checked');
 		}else{
 			$("#isRandom").attr('checked', 'checked');
+		}
+		
+		if(!isTimed){
+			$("#isTimed").removeAttr('checked');
+		}else{
+			$("#isTimed").attr('checked', 'checked');
 		}
 
 		if(feedbackType == "undifferentiated"){
@@ -743,6 +800,13 @@ function C_MultipleChoice(_type) {
 			$(data).find("page").eq(currentPage).attr("randomize", "true");
 		}else{
 			$(data).find("page").eq(currentPage).attr("randomize", "false");
+		}
+		
+		if($("#isTimed").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("timed", "true");
+			$(data).find("page").eq(currentPage).attr("timerlength", $("#inputTimerLength").val());
+		}else{
+			$(data).find("page").eq(currentPage).attr("timed", "false");
 		}
 
 
