@@ -151,7 +151,12 @@ function C_Outline(_myItem) {
 		{
 			"type" : "slider",
 			"images" : ["ex_Slider.png"]
-		}
+		},
+		{
+			//TODO: Images needed for chaining
+			"type" : "chaining",
+			"images" : ["ex_Branching.png", "ex_Branching_A.png", "ex_Branching_B.png", "ex_Branching_C.png"]
+		}		
 
 	];
 
@@ -992,7 +997,7 @@ function C_Outline(_myItem) {
 		msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");
 		msg += '<br/><div id="reviewModule" title="If this is a test module, a test review module can be added that displays all of the missed objectives from the test.'
 		+' This adds the module at publish time to the final SCORM package." style="float:left;"><b>Add test review module after this module:</b></div>';
-		msg += addToggle("testReview", "Specifies if a test module should proceed this module:");
+		msg += addToggle("testReview", "Specifies if a test review module should follow this module:");
 		msg += 	'<br/><div style="float:left;"><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" >Sequencing Definition Model</a></div>';
 
 
@@ -1665,7 +1670,7 @@ function C_Outline(_myItem) {
 		var opt_arr = ["application", "analysis", "comprehension", "evaluation", "knowledge", "problem solving", "synthesis"];
 		var content_arr = ["concepts", "facts", "principle", "procedures", "process"];
 		var demoapp_arr = ["demonstration", "practice, testing"];
-		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText"]
+		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider", "chaining", "branching"]
 		
 		var pages= [
 			{
@@ -1675,7 +1680,7 @@ function C_Outline(_myItem) {
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "completion" ],
+				"capability" : ["flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "slider", "completion" ],
 				"opt" : ["comprehension", "knowledge"],
 				"content" : ["facts"],
 				"demoapp" : "practice, testing"
@@ -1693,85 +1698,85 @@ function C_Outline(_myItem) {
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["procedures"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["procedures"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["process"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["process"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["principle"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["principle"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["procedures"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["procedures"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["process"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["process"],
 				"demoapp" : "practice, testing"
 			},	
 			{
-				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["principle"],
 				"demoapp" : "demonstration"
 			},																										
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["principle"],
 				"demoapp" : "practice, testing"
 			},	
 			{
-				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
 				"opt" : ["evaluation"],
 				"content" : ["procedures", "process", "principle"],
 				"demoapp" : "demonstration"
 			},																										
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "slider", "chaining", "branching", "completion" ],
 				"opt" : ["evaluation"],
 				"content" : ["procedures", "process", "principle"],
 				"demoapp" : "practice, testing"
