@@ -450,6 +450,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
@@ -464,12 +465,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
@@ -492,6 +495,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
@@ -506,12 +510,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
@@ -534,6 +540,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
@@ -548,12 +555,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
@@ -576,6 +585,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
@@ -590,12 +600,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
@@ -647,6 +659,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).append($("<reveal>"));
 			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
@@ -660,12 +673,14 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
 			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("w", "150");
 			$(data).find("page").eq(newPage).attr("h", "150");
+			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;

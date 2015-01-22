@@ -551,6 +551,14 @@ CONTENT TEXT LAYOUTS*/
 	width: auto;
 }
 
+.mediaLabel{
+	position: absolute;
+	bottom: 10px;
+	margin-right: 5px;
+	background-color: rgba(255, 255, 255, 0.50);
+	text-align: center;
+}
+
 #contentHolder{
 	position: static;
 	/*max-width: 960px;*/
