@@ -909,8 +909,6 @@ function C_Outline(_myItem) {
      	msg += "<option>review</option>";
      	msg += "<option>edit</option>";
      	msg += "</select><br/>"
-		msg += "<label id='label' for='hasGlossary'>Glossary: </label>";
-		msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/><br/><br/>";
 		msg += "<div><b>Transitions:</b></div>";
      	msg += "<label for='transition'>set tranition type: </label>";
      	msg += "<select name='transition' id='transition'>";
@@ -1011,10 +1009,6 @@ function C_Outline(_myItem) {
 	    //Mode
 		$("#mode option:contains(" + $(module_arr[_id].xml).find('mode').attr("value") + ")").attr('selected', 'selected');
 		$("#transition").val($(module_arr[_id].xml).find('transitionType').attr("value"));
-
-		if($(module_arr[_id].xml).find('glossary').attr("value") === "true"){
-			$('#hasGlossary').prop('checked',true);
-		}
 
 		//set restartOnFail
 		if($(module_arr[_id].xml).find('restartOnFail').attr("value") === "true"){
@@ -1159,15 +1153,6 @@ function C_Outline(_myItem) {
 			$(module_arr[_id].xml).find('lessonHeight').attr("value", $("#lessonHeight").val());
 			updateModuleXML(_id);
 	    }).css({'width': '50px', 'color': '#3383bb;'});
-
-	    $("#hasGlossary").on("change", function(){
-		   if($('#hasGlossary').prop('checked')){
-			   $(module_arr[_id].xml).find('glossary').attr("value", "true");
-		   } else{
-			   $(module_arr[_id].xml).find('glossary').attr("value", "false");
-		   }
-		   updateModuleXML(_id);
-	    });
 
 	    $("#minScore").on("change", function(){
 			$(module_arr[_id].xml).find('minScore').attr("value", $("#minScore").val());
