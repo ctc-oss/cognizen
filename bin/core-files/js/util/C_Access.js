@@ -13,9 +13,6 @@
  */
 
 
-
-
-
 /*****************************************************************************************************************************************************************************************************************
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ACESSIBILITY/508 FUNCTIONALITY
@@ -26,8 +23,14 @@ function doAccess(items, _refresh){
 	if(_refresh){
 		refresh = true;
 	}
+	
+	var globalAccess_arr = [];
+	try { globalAccess_arr.push($("#indexTab")); } catch(e) {}
+	try { globalAccess_arr.push($("#back")); } catch(e) {}
+	try { globalAccess_arr.push($("#next")); } catch(e) {}
+	
 	var tabIndex = 1;
-
+	
 	tabIndex++;
 	//Add page specific order
 	for(var i = 0; i < items.length; i++){
@@ -47,6 +50,6 @@ function doAccess(items, _refresh){
 	}
 	
 	if(mode != "edit" && !refresh){
-		$("#pageTitle").focus();
+		//$("#pageTitle").focus();
 	}
 }

@@ -45,7 +45,7 @@ function checkIndex(){
 			    toggleIndex();
 			}
 	    });
-		globalAccess_arr.push($('#indexTab'));
+		
 		if(!isMobile){
 			$('#indexTab').tooltip();  // don't attach tooltip on mobile devices
 		}
@@ -213,14 +213,6 @@ function addIndex(){
 	indexString += "</ol></div>";
 
 	$("#indexContent").append(indexString);
-	/*$("#indexContent").prepend("<div class='acc-skipIndex'><a id='skipIndex' role='button' href='#pageTitle'>Click to skip navigation index.</a></div>");
-	$('#skipIndex').keypress(function(event) {
-		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-	    if (chCode == 32 || chCode == 13){
-		    $("#pageTitle").focus();
-		}
-    });
-	globalAccess_arr.push($("#skipIndex"));*/
 	var oldNodePos;
 	var newNodePos;
 	var oldParent;
