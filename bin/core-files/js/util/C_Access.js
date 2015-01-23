@@ -26,6 +26,7 @@ function doAccess(items, _refresh){
 	
 	var globalAccess_arr = [];
 	try { globalAccess_arr.push($("#indexTab")); } catch(e) {}
+	try { globalAccess_arr.push($("#glossaryTab")); } catch(e) {}
 	try { globalAccess_arr.push($("#back")); } catch(e) {}
 	try { globalAccess_arr.push($("#next")); } catch(e) {}
 	
