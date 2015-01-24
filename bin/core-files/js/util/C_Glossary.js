@@ -46,7 +46,6 @@ function checkGlossary(){
 			msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
 			
 		$('#panes').append(msg);
-		globalAccess_arr.push($('#glossaryTab'));
 		$('#glossaryTab').click(toggleGlossary);
 		$('#glossaryClose').click(toggleGlossary);
 
@@ -114,9 +113,9 @@ function updateCourseGlossary(){
 }
 
 function compare(a,b) {
-  if (a.term < b.term)
+  if (a.term.toUpperCase() < b.term.toUpperCase())
      return -1;
-  if (a.term > b.term)
+  if (a.term.toUpperCase() > b.term.toUpperCase())
     return 1;
   return 0;
 }

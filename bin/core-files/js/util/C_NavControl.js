@@ -159,8 +159,6 @@ function checkNav(){
 		nextBack = true;
 		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
 		//Adding new for accessibility 10/7/14 PD
-		globalAccess_arr.push($("#next"));
-		globalAccess_arr.push($("#back"));
 	}
 
 	//Check if we are using page counter - if so, set it up.
