@@ -117,7 +117,8 @@ function C_Flashcard(_type) {
 
 			$("#" + tempID).data("myTerm", myTerm);
 			$("#" + tempID).data("myDef", myDef);
-
+			$("#" + tempID).attr("disabled", "true");
+			
 			card_arr.push("#" + tempID);
 		}
 		
@@ -186,7 +187,7 @@ function C_Flashcard(_type) {
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					$("#" + tempID).focus();
 					target.blur(function(){
-						attr("tabindex", "-1");
+						$(this).attr("tabindex", "-1");
 					});
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
@@ -204,6 +205,7 @@ function C_Flashcard(_type) {
 				    $(this).click();
 				}
 		    }).attr("tabindex", "1");
+		$(card_arr[currentCard]).removeAttr("disabled");
 		pageAccess_arr.splice(cardClicks, 0, $(card_arr[currentCard]));
 		doAccess(pageAccess_arr, true);
 	}
