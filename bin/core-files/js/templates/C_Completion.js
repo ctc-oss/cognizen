@@ -32,6 +32,7 @@ function C_Completion(_type) {
 	var remediationObjectives = [];    //array used to track objectives for duplicates
 	var lms = '';
 	var testReview = '';
+	var testNotAttempted = false;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -156,8 +157,9 @@ function C_Completion(_type) {
         //Add classes for page layouts - updatable in css
 	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner">'+
 	    	'<div id="content"></div><div id="scoreFeedback"></div></div></div></div>');
-		$("#scrollableContent").addClass("top");
-
+		//$("#scrollableContent").addClass("top");
+        $("#scrollableContent").addClass("text");
+        $("#contentHolder").addClass("text");
 		determineReviewList();
 
 		$("#content").append(myContent);
@@ -168,15 +170,23 @@ function C_Completion(_type) {
 		}
 		else{
 			if(review === "true"){
+				var reviewStrip = $(data).find('lessonTitle').attr('value').split(" Review");
 				if(remediationObjectives.length != 0){
 					$("#content").empty();
-					$("#content").append("Use the list below to review any missed objectives. You can come back to this module at any time to review this list. "+
-					"<br/><br/>Select a module to review or select the test module to retry the test. <br/><br/>");//+
-					//"<br/><br/>If you have passed the test you can use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );//press the \"Continue\" button to retry the coures.");
+					$("#content").append("<img src='media/cognizen_warning_icon.png' alt='Warning icon'><i> "+
+					" You did not pass the "+ reviewStrip[0] + ". You will need to pass the " +
+					reviewStrip[0] +" in order to receive course credit and print your course certificate.</i><br/><br/>"+
+					"Use the list below to review any missed objectives. You can come back to this module at any time to review this list. "+
+					"<br/><br/>Select a module to review or select the test module to retry the test. <br/><br/>");
+				}
+				else if(testNotAttempted){
+					$("#content").empty();
+					$("#content").append(reviewStrip[0] + " has not been attempted. You will need to pass the " +
+					$(data).find('lessonTitle').attr('value') +" in order to receive course credit and print your course certificate. " );					
 				}
 				else{
 					$("#content").empty();
-					$("#content").append("You have passed the test. Use the <b>Next Lesson</b> button in the header to access the survey.  All lessons and the test must be completed to take the survey." );
+					$("#content").append("You have passed the "+ reviewStrip[0] + ". Use the <b>Next Lesson</b> button in the header to access the next module. " );
 				}
 
 			}
@@ -220,7 +230,8 @@ function C_Completion(_type) {
 						scorm.set("cmi.objectives."+_objIndex+".success_status", "failed");
 						scorm.set("cmi.objectives."+_objIndex+".completion_status", "incomplete");
 						//scorm.set("adl.nav.request", "continue");
-						scorm.set("cmi.exit", "suspend");
+						//scorm.set("cmi.exit", "suspend");
+						scorm.set("cmi.exit", "normal");
 						scorm.API.getHandle().Terminate("");
 					}
 					else{
@@ -323,6 +334,7 @@ function C_Completion(_type) {
 		var trackedObjectives = false;
 		var displayRemedObj = "";
 		var displayRemedObjAlt = "";
+		var unknownObjsCount = 0;
 
 		if(doScorm()) {//&& scormVersion.indexOf('USSOCOM') == -1){
 			//get objectives, display ones with objectives.n.success_status == failed; only do link if choiceValid(lesson)
@@ -355,6 +367,9 @@ function C_Completion(_type) {
 								//}
 							}
 						}
+						else if(tmpObject.successStatus == "unknown"){
+							unknownObjsCount++;
+						}
 					}
 					else if(tmpObject.objItemId != "undefined"){
 						trackedObjectives = true;
@@ -374,9 +389,19 @@ function C_Completion(_type) {
 									//}
 								}
 							}
+							else if(tmpObject.successStatus == "unknown"){
+								unknownObjsCount++;
+							}							
 					}
 				}
+
+				//determine if test review is launched before test is tried
+				if(unknownObjsCount >= scormObjectives.length){
+					testNotAttempted = true;
+				}
+
 			}
+
 		}
 		else{
 

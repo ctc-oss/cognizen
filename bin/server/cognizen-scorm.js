@@ -993,6 +993,9 @@ var SCORM = {
 				        //add index.html from server incase changes were made after the course was created
 				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
 
+				        //add warning icon 
+				        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+
 						//updating temp review content.xml file
 						////////////////////////////////////////////////////////////////
 				        var _review_data, _review_etree;
@@ -1100,17 +1103,17 @@ var SCORM = {
 
 							                //add upper level js files
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/APIWrapper.js'), { name: _this.binDir+'/compjs/APIWrapper.js' });
-							                completionLines.push(_this.binDir+'/compjs/APIWrapper.js');
+							                //completionLines.push(_this.binDir+'/compjs/APIWrapper.js');
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });
-							                completionLines.push(_this.binDir+'/compjs/common.js');	
+							                //completionLines.push(_this.binDir+'/compjs/common.js');	
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });
-							                completionLines.push(_this.binDir+'/compjs/flashobject.js');	
+							                //completionLines.push(_this.binDir+'/compjs/flashobject.js');	
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });
-							                completionLines.push(_this.binDir+'/compjs/KnowledgeCheck.js');	
+							                //completionLines.push(_this.binDir+'/compjs/KnowledgeCheck.js');	
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });
-							                completionLines.push(_this.binDir+'/compjs/prototype.js');	
+							                //completionLines.push(_this.binDir+'/compjs/prototype.js');	
 							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });
-							                completionLines.push(_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js');						                	
+							                //completionLines.push(_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js');						                	
 						            	}
 
 						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -1893,6 +1896,18 @@ var SCORM = {
 	        }
 	    });
 
+	    if(lesson.indexOf("Review-files") != -1){
+	    	var warningIcon = lesson + "media/cognizen_warning_icon.png";
+	    	resources.push("         <file href=\"" +_this.binDir+ "/"+warningIcon+"\"/>\n");
+	    }
+	    else if(lesson.indexOf("completion-files") != -1){
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/APIWrapper.js'+"\"/>\n");
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/common.js'+"\"/>\n");	
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/flashobject.js'+"\"/>\n");	
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/KnowledgeCheck.js'+"\"/>\n");	
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/prototype.js'+"\"/>\n");	
+            resources.push("         <file href=\"" +_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js'+"\"/>\n");	    	
+	    }
 		resources.push("         <dependency identifierref=\"RES-js-files\"/>\n");
 	    return resources;
 	},

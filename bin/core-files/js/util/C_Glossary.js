@@ -113,9 +113,9 @@ function updateCourseGlossary(){
 }
 
 function compare(a,b) {
-  if (a.term < b.term)
+  if (a.term.toUpperCase() < b.term.toUpperCase())
      return -1;
-  if (a.term > b.term)
+  if (a.term.toUpperCase() > b.term.toUpperCase())
     return 1;
   return 0;
 }
