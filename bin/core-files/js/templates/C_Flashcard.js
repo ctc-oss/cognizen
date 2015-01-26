@@ -28,6 +28,7 @@ function C_Flashcard(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
+    var cardClicks = 0;
 
 	//Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -102,8 +103,6 @@ function C_Flashcard(_type) {
 
 			$("#flashcardHolder").append("<div id='"+tempID+"' class='flashcard' role='button'><div id='"+tempTextID +"' class='cardText'>" + myTerm + "</div></div>");
 
-			//$("#" + tempID).attr("aria-label", "The Front of the card has: " + $("#"+tempTextID).text().replace(/'/g, "") + "  and the back of the card has: " + myDef);
-
 			//Position the card.
 			var leftPos = 6.7;
 			if(!oldIE){
@@ -122,12 +121,6 @@ function C_Flashcard(_type) {
 			card_arr.push("#" + tempID);
 		}
 		
-		//Accessability clean up...
-		/*for( var j=0; j< revealCount; j++){
-			var tempID = "card" + j;
-			pageAccess_arr.push($("#" + tempID));
-		}*/
-		
 		//Set height of holder, for styling
 		$("#flashcardHolder").height($("#card0").height());
 
@@ -138,15 +131,17 @@ function C_Flashcard(_type) {
 		}
 		enableNextCard();
 		if(randomize == true){
-			$("<div id='flashcardReshuffle'>shuffle</div>").insertAfter("#flashcardHolder");
+			$("<div id='flashcardReshuffle' tabindex='5'>shuffle</div>").insertAfter("#flashcardHolder");
 		}else{
-			$("<div id='flashcardReshuffle'>reset</div>").insertAfter("#flashcardHolder");
+			$("<div id='flashcardReshuffle' tabindex='5'>reset</div>").insertAfter("#flashcardHolder");
 		}
 		
 		pageAccess_arr.push($("#flashcardReshuffle"));
 		
 		$("#flashcardReshuffle").button().click(function(){
 			$("#flashcardHolder").empty();
+			cardClicks = 0;
+			pageAccess_arr = [];
 			card_arr = [];
 			myIndex = 1;
 			shuffle();
@@ -158,7 +153,7 @@ function C_Flashcard(_type) {
 		    }
         });
 		
-		doAccess(pageAccess_arr);
+		//doAccess(pageAccess_arr);
 	}
 
 	function enableNextCard(){
@@ -190,22 +185,27 @@ function C_Flashcard(_type) {
 					}
 					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
 					$("#" + tempID).focus();
-					target.attr("tabindex", "-1");
+					target.blur(function(){
+						attr("tabindex", "-1");
+					});
 				}, onCompleteParams:[$(this)]});
 				myIndex++;
-
+				cardClicks++;
 				if(currentCard == 0){
 
 				}else{
 					currentCard--;
 					enableNextCard();
 				}
+				
 			}).keypress(function(event) {
 			    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 			    if (chCode == 32 || chCode == 13){
 				    $(this).click();
 				}
 		    }).attr("tabindex", "1");
+		pageAccess_arr.splice(cardClicks, 0, $(card_arr[currentCard]));
+		doAccess(pageAccess_arr, true);
 	}
 
 
