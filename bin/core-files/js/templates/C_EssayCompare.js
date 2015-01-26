@@ -195,7 +195,8 @@ function C_EssayCompare(_type) {
 			});
 		}else if(feedbackDisplay == "inline"){
 			
-		}				
+		}
+		$( "#dialog-attemptResponse" ).focus();				
 	}
 
 	function _addExpertResponse(){
