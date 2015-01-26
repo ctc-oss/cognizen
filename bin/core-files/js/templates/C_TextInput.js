@@ -126,7 +126,7 @@ function C_TextInput(_type) {
 				msg += '<div id="fb'+myQuestion+'" style="color:red">Select the correct option in the drop-down box to enable the text field.</div>';
 			}
 			else{
-				msg += '<div id="fb'+myQuestion+'" tabindex=0></div>';
+				msg += '<div id="fb'+myQuestion+'" tabindex=1></div>';
 			}
 
 			inputIds.push(myQuestion);

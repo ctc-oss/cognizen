@@ -49,4 +49,5 @@ function doAccess(items, _refresh){
 	if(mode != "edit" && !refresh){
 		$("#pageTitle").focus();
 	}
+	refresh = false;
 }

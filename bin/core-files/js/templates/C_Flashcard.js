@@ -29,6 +29,7 @@ function C_Flashcard(_type) {
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
     var cardClicks = 0;
+    var isVirgin = true;
 
 	//Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -207,7 +208,13 @@ function C_Flashcard(_type) {
 		    }).attr("tabindex", "1");
 		$(card_arr[currentCard]).removeAttr("disabled");
 		pageAccess_arr.splice(cardClicks, 0, $(card_arr[currentCard]));
-		doAccess(pageAccess_arr, true);
+		if(isVirgin){
+			doAccess(pageAccess_arr);
+			isVirgin = false;
+		}else{
+			doAccess(pageAccess_arr, true);
+		}
+		
 	}
 
 
