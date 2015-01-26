@@ -593,6 +593,7 @@ function C_MultipleChoice(_type) {
 		}else if(feedbackDisplay == "inline"){
 
 		}
+		$( "#dialog-attemptResponse" ).focus();
 	}
 
 	function resizeForMobile(){

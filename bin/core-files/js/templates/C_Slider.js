@@ -304,6 +304,7 @@ function C_Slider(_type) {
 					}
 				});
 			}
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 
 		}

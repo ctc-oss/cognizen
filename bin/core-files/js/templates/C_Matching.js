@@ -600,6 +600,7 @@ function C_Matching(_type) {
 
 				});
 			}
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 
 			if(type == "matchingDrag"){
