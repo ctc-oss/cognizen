@@ -197,7 +197,7 @@ function addGlossary(){
 		}
 	}
 	
-	if(!indexState){
+	if(!indexState && mode != "edit"){
 		accHideGlossary();
 	}
 }
