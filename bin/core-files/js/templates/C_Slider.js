@@ -129,7 +129,9 @@ function C_Slider(_type) {
 		});
 		
 		pageAccess_arr.push($("#display"))
-		pageAccess_arr.push($("#slider"));
+		$('.ui-slider-handle').attr("tabindex", "-1");
+		$('.ui-slider-handle').find('a').attr("tabindex", "-1");
+		//pageAccess_arr.push($("#slider"));
 		
 		if(!isComplete){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');

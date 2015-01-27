@@ -101,6 +101,7 @@ function C_Sequencing(_type) {
 	}
 
 	function keyboardUp(_id){
+		console.log(_id);
 		isRefresh = true;
 		var holder = order_arr.splice(_id, 1);
 		order_arr.splice(_id+1, 0, holder);
@@ -109,11 +110,13 @@ function C_Sequencing(_type) {
 	}
 	
 	function keyboardDown(_id){
-		isRefresh = true;
-		var holder = order_arr.splice(_id, 1);
-		order_arr.splice(_id-1, 0, holder);
-		$("#sortable").remove();
-		placeOptions();
+		if(_id >= 1){
+			isRefresh = true;
+			var holder = order_arr.splice(_id, 1);
+			order_arr.splice(_id-1, 0, holder);
+			$("#sortable").remove();
+			placeOptions();
+		}
 	}
 	
 	var isRefresh = false;
@@ -207,7 +210,12 @@ function C_Sequencing(_type) {
 	function placematchingSubmit(){
 		$("#contentHolder").append('<div id="mcSubmit"></div>');
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-		$("#mcSubmit").click(checkAnswer);
+		$("#mcSubmit").click(checkAnswer).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			if (chCode == 32 || chCode == 13){
+				$(this).click();
+			}
+		});
 		pageAccess_arr.push($("#mcSubmit"));
 	}
 
