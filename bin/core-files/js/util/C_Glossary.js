@@ -46,8 +46,19 @@ function checkGlossary(){
 			msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
 			
 		$('#panes').append(msg);
-		$('#glossaryTab').click(toggleGlossary);
-		$('#glossaryClose').click(toggleGlossary);
+		$('#glossaryTab').click(toggleGlossary).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    toggleGlossary();
+			}
+	    });
+
+		$('#glossaryClose').click(toggleGlossary).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $(this).click();
+			}
+	    });;
 
 		if(!isMobile){
 			$('#glossaryTab').tooltip();  // don't attach tooltip on mobile devices
@@ -171,7 +182,12 @@ function addGlossary(){
 		},
 		function(){
 			$(this).removeClass("glossaryItemHover");
-		});
+		}).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $(this).click();
+			}
+	    });
 		glossaryItem_arr.push("#" + thisTerm);
 	}
 	

@@ -31,18 +31,14 @@ function doAccess(items, _refresh){
 	try { globalAccess_arr.push($("#next")); } catch(e) {}
 	
 	var tabIndex = 1;
-	
 	tabIndex++;
+	
 	//Add page specific order
 	for(var i = 0; i < items.length; i++){
 		$(items[i]).attr("tabindex", tabIndex);
 		tabIndex++;
 	}
 
-	/*for(var a = 0; a < audioAccess_arr.length; a++){
-		audioAccess_arr[a].attr("tabIndex", tabIndex);
-		tabIndex++;
-	}*/
 	//Pick up with shell items after page items (index/next/back/page/course/module).
 	for(var j = 0; j < globalAccess_arr.length; j++){
 
@@ -51,6 +47,7 @@ function doAccess(items, _refresh){
 	}
 	
 	if(mode != "edit" && !refresh){
-		//$("#pageTitle").focus();
+		$("#pageTitle").focus();
 	}
+	refresh = false;
 }

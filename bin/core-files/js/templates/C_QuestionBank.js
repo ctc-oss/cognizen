@@ -623,6 +623,7 @@ function C_QuestionBank(_type) {
 					}
 				});
 			}
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 
 		}

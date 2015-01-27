@@ -129,7 +129,7 @@ function C_Slider(_type) {
 		});
 		
 		pageAccess_arr.push($("#display"))
-		//pageAccess_arr.push($("#slider"));
+		pageAccess_arr.push($("#slider"));
 		
 		if(!isComplete){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
@@ -304,6 +304,7 @@ function C_Slider(_type) {
 					}
 				});
 			}
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 
 		}

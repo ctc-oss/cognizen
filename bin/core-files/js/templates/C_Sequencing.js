@@ -349,6 +349,7 @@ function C_Sequencing(_type) {
 					}
 				});
 			}
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 
 			if(type == "matchingDrag"){

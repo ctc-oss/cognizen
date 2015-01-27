@@ -20,6 +20,7 @@ function C_TabbedContent(_type) {
 	var currentItem;
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
+    var currentSelected;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -75,8 +76,6 @@ function C_TabbedContent(_type) {
 			tabString += '<div id="'+ tabID +'" class="cognizenTabContent"><p>' + currentTabContent + '</p></div>';
 		}
 
-		//tabString += '</div>';
-
 		$("#tabs").append(tabString);
 
 		if(type == "tabsLeft"){
@@ -93,6 +92,8 @@ function C_TabbedContent(_type) {
 				var audioHeight = 0;
 			}
 		});
+		
+		$("#tabs").find('ul').removeAttr("role");
 
 		$tabis = $('#tabs ul li');
 
@@ -100,10 +101,29 @@ function C_TabbedContent(_type) {
 			
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var currentTabContent = $("#tab"+i).text();
-			$tabis.eq(i).attr("aria-label", "Tab: " + currentTab + " with Content: " + currentTabContent);
-			//pageAccess_arr.push($tabis.eq(i));
+			$tabis.eq(i).removeAttr("role");
+			$tabis.eq(i).find('a').attr("aria-expanded", "false");
+			$tabis.eq(i).find('a').removeAttr("role");
+			$tabis.eq(i).find('a').click(function(){
+				currentSelected.attr("aria-expanded", "false");
+				currentSelected.attr("aria-selected", "false");
+				currentSelected = $(this);
+				currentSelected.attr("aria-expanded", "true");
+				currentSelected.attr("aria-selected", "true");
+				var temp = $(this).parent().attr("aria-controls");
+				$("#"+temp).focus();
+			}).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32 || chCode == 13){
+				    toggleIndex();
+				}
+		    });
+			pageAccess_arr.push($tabis.eq(i).find('a'));
 		}
-
+		
+		currentSelected = pageAccess_arr[0];
+		currentSelected.attr("aria-expanded", "true")
+		currentSelected.attr("aria-selected", "true");
 		/*Attach Media*/
 		if(type == "tabsOnly"){
 

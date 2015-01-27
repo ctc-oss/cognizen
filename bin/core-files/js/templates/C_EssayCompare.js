@@ -193,6 +193,7 @@ function C_EssayCompare(_type) {
 					}
 				}
 			});
+			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
 			
 		}				
