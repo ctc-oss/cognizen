@@ -164,11 +164,11 @@ function C_Sequencing(_type) {
 			$("#option" + j).keypress(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 				 switch(chCode) {
-				    case 100:
+				    case 117:
 				    	currentAccActive = $(this).attr('value');
 				    	keyboardDown($(this).attr('data'));
 				    	break;
-				    case 117:
+				    case 100:
 				    	currentAccActive = $(this).attr('value');
 				    	keyboardUp($(this).attr('data'));
 				    	break;
