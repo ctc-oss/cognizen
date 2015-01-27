@@ -634,6 +634,8 @@ var SCORM = {
 		var objectives = "                    <imsss:objectives>\n";
 
 		//JKO 3rd edition player requires the use of secondary objectives for module level objectives, bug with primaryObjectives in player
+		_this.logger.info(lessonTitle + " _objectivesGenerator : courseAttr.lms : " + courseAttr.lms);
+		_this.logger.info(lessonTitle + " _objectivesGenerator : scormVersion : " + _this.scormVersion);
         if(courseAttr.lms === "JKO" && _this.scormVersion === "2004_3rd"){
 			objectives += "                    <imsss:primaryObjective /> \n"+
         	"					<imsss:objective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
@@ -1686,11 +1688,13 @@ var SCORM = {
 
 	        if(courseAttr.lms === "JKO"){   
 				item += "                  <imsss:objectives>\n"+
-				"                     	 <imsss:primaryObjective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
-				"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '') + "." + lessonNameTrim + "_satisfied\"\n"+
-				"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-				"                     	 </imsss:primaryObjective>\n"+
-				"	          	   </imsss:objectives>\n";	        	
+				"                    	<imsss:primaryObjective /> \n"+
+	        	"                    	<imsss:objective objectiveID=\""+lessonNameTrim+"_satisfied\">\n"+
+	            "                    		<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonNameTrim+"_satisfied\"\n"+
+	            "                    					readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+	            "                    	</imsss:objective>\n"+			
+				"	          	   </imsss:objectives>\n";	  
+
 	        }     	
         }
 
@@ -1834,17 +1838,17 @@ var SCORM = {
 		    "                        <imsss:ruleAction action=\"hiddenFromChoice\"/>\n"+
 		    "                     </imsss:preConditionRule>\n"+
 		    "                  </imsss:sequencingRules>	\n"+
-			'				   <imsss:rollupRules rollupObjectiveSatisfied=\"false\" rollupProgressCompletion=\"false\" objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n';
+			'				   <imsss:rollupRules objectiveMeasureWeight=\"0\"></imsss:rollupRules>\n';
 			if(lessonNameTrim === "completion"){
 				item += "                  <imsss:objectives>\n"+
-				"                     	 <imsss:primaryObjective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
-				"							<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
-				"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
-				"                     	 </imsss:primaryObjective>\n"+
+				"                    	<imsss:primaryObjective /> \n"+
+	        	"                    	<imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
+	            "                    		<imsss:mapInfo targetObjectiveID=\"" + courseNameTrim + "." + lessonNameTrim + "_satisfied\"\n"+
+	            "                    					readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+	            "                    	</imsss:objective>\n"+					
 				"	          	   </imsss:objectives>\n";
 			}			
-			item += ' 				   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n'+
-			"		  	   </imsss:sequencing>\n";
+			item += "		  	   </imsss:sequencing>\n";
    //      	"		            <imsss:sequencingRules>\n"+
 			// "                     <imsss:preConditionRule>\n"+
 			// "                         <imsss:ruleConditions conditionCombination=\"any\">\n"+

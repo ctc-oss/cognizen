@@ -48,6 +48,18 @@ function checkScorm(){
 		}
 
 		var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
+
+		var review = "false";
+		if($(data).find("page").eq(currentPage).attr('review')){
+			review = $(data).find("page").eq(currentPage).attr('review');
+		}
+
+		if(review === "true"){
+			var reviewStrip = _lessonTitle.split("Review");
+			_lessonTitle = reviewStrip[0];
+
+		}
+		
 		var _objIndex = findObjective(_lessonTitle+"_satisfied");
 
 		//find passed/failed status of module/lesson objective
