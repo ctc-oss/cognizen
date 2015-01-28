@@ -38,6 +38,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     var posterLink;
     var hasSubs;
     var subsLink;
+    var hasTranscript = false;
+    var transcriptText = "Visual transcript content.";
+    var transcriptState = false;
 
 	var galleryEdit_arr = [];
 
@@ -58,7 +61,45 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 		autoPlay = true;
 	}
-
+	
+	if($(data).find("page").eq(currentPage).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find('visualtranscript').text() != ""){
+		transcriptText = $(data).find("page").eq(currentPage).find('visualtranscript').text();
+	}else{
+		$(data).find("page").eq(currentPage).append($("<visualtranscript>"));
+		var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");
+		var vTransCDATA = newVisualTranscript.createCDATASection("Visual transcript content");
+		$(data).find("page").eq(currentPage).find("visualtranscript").append(vTransCDATA);
+	}
+	
+	if($(data).find("page").eq(currentPage).attr('visualtranscript') == "true"){
+		hasTranscript = true;
+		$("#stage").append("<div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript' data='"+transcriptText+"'></div>");
+		$("#transcriptButton").click(function(){
+			if(transcriptState){
+				$(this).removeClass('C_TranscriptActive');
+				transcriptState = false;
+			}else{
+				$(this).addClass('C_TranscriptActive');
+				transcriptState = true;
+			}
+			toggleTranscript();
+		}).keypress(function(event) {
+	        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	        if (chCode == 32 || chCode == 13){
+		        $(this).click();
+		    }
+        });
+	}
+	
+	function toggleTranscript(){
+		if(transcriptState){
+			//Tween transcript open then add text
+			alert(transcriptText);
+		}else{
+			//Tween transcript closed then remove text
+		}
+	}
+	
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
         largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
     }
@@ -483,11 +524,15 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				msg += "<label id='label' title='Include a large version.  Will place an enlarge icon below your media which when clicked will expand the window.'>large version: </label>";
 				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
 				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
+				msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'>transcript: </label>";
+				msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/><br/>";
+				msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
+				msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
 				msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
 				msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
             	msg += "<br/><br/></div>";
             	$("#stage").append(msg);
-
+				
                 if(largeImg == ""){
 					$("#isEnlargeable").removeAttr('checked');
 				}else{
@@ -499,6 +544,42 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				}else{
 					$("#isLoop").removeAttr('checked');
 				}
+				
+				if(hasTranscript){
+					$("#isTranscript").attr('checked', 'checked');
+				}else{
+					$("#isTranscript").removeAttr('checked');
+				}
+				$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
+				
+				CKEDITOR.inline( "inputTranscript", {
+					toolbar: contentToolbar,
+					toolbarGroups :contentToolgroup,
+					enterMode : CKEDITOR.ENTER_BR,
+					shiftEnterMode: CKEDITOR.ENTER_P,
+					extraPlugins: 'sourcedialog',
+				   	on: {
+				      instanceReady: function(event){
+				         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+				    	}
+				    }
+				});
+				
+				if(!hasTranscript){
+					$('#inputTranscript').hide();
+				}
+				
+				//disables inputNumberToPresent if isShowAll is checked. 
+				$('#isTranscript').change(function(){
+					if($("#isTranscript").prop("checked") == true){
+						$('#inputTranscriptLabel').show();
+						$('#inputTranscript').show();
+					}
+					else{
+						$('#inputTranscriptLabel').hide();
+						$('#inputTranscript').hide();
+					}
+				});
 
 				for(var i = 0; i < media_arr.length; i++){
 					addGalleryItem(i, false);
@@ -523,6 +604,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 					},
 					close: function(){
 						$("#imgDialog").remove();
+						try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 					}
 				});
 
@@ -716,7 +798,22 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		}else{
 			$(data).find("page").eq(currentPage).attr("poploop", "false");
 		}
-
+		
+		if($("#isTranscript").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
+			var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
+			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
+			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
+			$(data).find("page").eq(currentPage).find("visualtranscript").empty();
+			$(data).find("page").eq(currentPage).find("visualtranscript").append(transcriptCDATA);
+			transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();		
+		}else{
+			$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
+		}
+		
+		
+		
 		//Check if there is a gallery attached AND that the media wasn't dropped.
 		if(media_arr.length > 0 && fromDrop == false){
 			var mediaString = "";
@@ -996,7 +1093,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
-	   	console.log(mejs.players)
+	   	//console.log(mejs.players)
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}

@@ -66,16 +66,24 @@ function createNewPageByType(_myType){
 	//Create a Unique ID for the page
 	var myID = guid();
 	//Place a page element
-	$(data).find("page").eq(currentPage).after($('<page id="'+ myID +'" layout="'+_myType+'" audio="null" prevPage="null" nextPage="null"></page>'));
+	$(data).find("page").eq(currentPage).after($('<page id="'+ myID +'" layout="'+_myType+'" audio="null" prevPage="null" nextPage="null" visualtranscript="false" audiotranscript="false"></page>'));
 	
 	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
 	var newPage = currentPage + currentChildrenLength + 1;
 	if(_myType != "branching" && _myType != "chaining"){
-		//Place the page title element
+		//Place the page title element and transcript elements
 		$(data).find("page").eq(newPage).append($("<title>"));
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
 		var titleCDATA = newPageTitle.createCDATASection("New Page Title");
 		$(data).find("page").eq(newPage).find("title").append(titleCDATA);
+		$(data).find("page").eq(newPage).append($("<visualtranscript>"));
+		var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");
+		var vTransCDATA = newVisualTranscript.createCDATASection("Visual transcript content");
+		$(data).find("page").eq(newPage).find("visualtranscript").append(vTransCDATA);
+		$(data).find("page").eq(newPage).append($("<audiotranscript>"));
+		var newAudioTranscript = new DOMParser().parseFromString('<audiotranscript></audiotranscript>',  "application/xml");
+		var aTransCDATA = newAudioTranscript.createCDATASection("Audio transcript content");
+		$(data).find("page").eq(newPage).find("audiotranscript").append(aTransCDATA);
 	}
 	
 	if(isLinear == true){

@@ -1468,6 +1468,21 @@ MEDIA LAYOUTS
 
 }
 
+.C_Transcript{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 28px;
+	height: 25px;
+	background: url(images/transcript_icon_open.png) no-repeat;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.C_TranscriptActive{
+	background: url(images/transcript_icon_close.png) no-repeat;
+}
+
 #loader .loading {
 	background: #ccc url(images/spinner.gif) no-repeat center center;
 }
