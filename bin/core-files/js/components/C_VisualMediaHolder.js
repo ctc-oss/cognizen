@@ -73,7 +73,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	
 	if($(data).find("page").eq(currentPage).attr('visualtranscript') == "true"){
 		hasTranscript = true;
-		$("#stage").append("<div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript' data='"+transcriptText+"'></div>");
+		$("#stage").append("<div id='transcriptPane' class='transcriptPane'><div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript'></div></div>");
 		$("#transcriptButton").click(function(){
 			if(transcriptState){
 				$(this).removeClass('C_TranscriptActive');
@@ -93,11 +93,29 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	
 	function toggleTranscript(){
 		if(transcriptState){
-			//Tween transcript open then add text
-			alert(transcriptText);
+			//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			$("#transcriptPane").append("<div id='transcriptDisplay' class='transcriptDisplay'></div>");
+			var displayWidth = $(".transcriptDisplay").css("max-width");
+			var displayHeight = $(".transcriptDisplay").css("max-height");
+			TweenMax.to($('#transcriptDisplay'), transitionLength, {css:{width: displayWidth, height: displayHeight}, ease:transitionType, onComplete: displayTranscriptText});
 		}else{
 			//Tween transcript closed then remove text
+			$("#transcriptDisplay").empty();
+			TweenMax.to($('#transcriptDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeTranscriptDisplay});
 		}
+	}
+	
+	function displayTranscriptText(){
+		$("#transcriptDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="box"><div id="transcriptHolder" class="overthrow antiscroll-inner"><div id="transcript">'+transcriptText+'</div></div></div></div>');
+		$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height"));
+		$("#scrollableTranscript").width($(".transcriptDisplay").css("max-width"));
+		$("#transcriptHolder").height($(".transcriptDisplay").css("max-height"));
+		$("#transcriptHolder").width($(".transcriptDisplay").css("max-width"));
+		$('#scrollableTranscript').antiscroll();
+	}
+	
+	function removeTranscriptDisplay(){
+		$("#transcriptDisplay").remove();
 	}
 	
 	if($(data).find("page").eq(currentPage).attr('enlarge') != undefined && $(data).find("page").eq(currentPage).attr('enlarge') != "" && $(data).find("page").eq(currentPage).attr('enlarge') != " "){
@@ -552,20 +570,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				}
 				$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
 				
-				CKEDITOR.inline( "inputTranscript", {
-					toolbar: contentToolbar,
-					toolbarGroups :contentToolgroup,
-					enterMode : CKEDITOR.ENTER_BR,
-					shiftEnterMode: CKEDITOR.ENTER_P,
-					extraPlugins: 'sourcedialog',
-				   	on: {
-				      instanceReady: function(event){
-				         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
-				    	}
-				    }
-				});
+				
 				
 				if(!hasTranscript){
+					$('#inputTranscriptLabel').hide();
 					$('#inputTranscript').hide();
 				}
 				
@@ -574,8 +582,21 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 					if($("#isTranscript").prop("checked") == true){
 						$('#inputTranscriptLabel').show();
 						$('#inputTranscript').show();
+						CKEDITOR.inline( "inputTranscript", {
+							toolbar: contentToolbar,
+							toolbarGroups :contentToolgroup,
+							enterMode : CKEDITOR.ENTER_BR,
+							shiftEnterMode: CKEDITOR.ENTER_P,
+							extraPlugins: 'sourcedialog',
+						   	on: {
+						      instanceReady: function(event){
+						         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+						    	}
+						    }
+						});
 					}
 					else{
+						try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 						$('#inputTranscriptLabel').hide();
 						$('#inputTranscript').hide();
 					}
@@ -1103,7 +1124,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		try { $("#acc_gallery").remove(); } catch (e) {}
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
-		//try { $(".C_Loader").remove(); } catch (e) {}
+		try { $(".transcriptPane").remove(); } catch (e) {}
 
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}

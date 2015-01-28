@@ -130,10 +130,15 @@ blockquote
 	opacity : 1;
 	overflow : auto;
 	font-size : 150%;
-	/*font-weight: bold;*/
+	font-weight: normal;
 	color:	#EEEEEE;
 	font-family: Arial, Helvetica, sans-serif;
 }
+
+h1#courseTitle{
+	margin-top: 0px;
+}
+
 
 #lessonTitle{
 	position : absolute;
@@ -142,9 +147,13 @@ blockquote
 	opacity : 1;
 	overflow : auto;
 	font-size : 100%;
-	/*font-weight: bold;*/
+	font-weight: normal;
 	color:	#3383BB;
 	font-family: Arial, Helvetica, sans-serif;
+}
+
+h1#lessonTitle{
+	margin-top: 0px;
 }
 
 .btn_edit_text{
@@ -1468,10 +1477,17 @@ MEDIA LAYOUTS
 
 }
 
-.C_Transcript{
+.transcriptPane{
 	position: absolute;
 	right: 10px;
 	top: 10px;
+	overflow: visible;
+	z-index: 10;
+}
+
+.C_Transcript{
+	position: relative;
+	float: right;
 	width: 28px;
 	height: 25px;
 	background: url(images/transcript_icon_open.png) no-repeat;
@@ -1481,7 +1497,33 @@ MEDIA LAYOUTS
 
 .C_TranscriptActive{
 	background: url(images/transcript_icon_close.png) no-repeat;
+	/*#3E5E84*/
 }
+
+.transcriptDisplay{
+	position			  : relative;
+	float				  : right;
+	overflow: 			  : scroll;	
+	background-color      : rgba(255, 255, 255, .8);
+	-moz-border-radius    : 8px;
+	-webkit-border-radius : 8px;
+	border-radius         : 8px;
+	width				  : 10px;
+	height 				  :	15px;
+	max-width 			  : 550px;
+	max-height            : 200px;
+	border-style		  : solid;
+    border-width		  : 1px;
+    border-color: 		  : #333;
+    color			      : #333;
+	font-family           : Arial, Helvetica, sans-serif;
+	font-size             : 12pt;
+	padding               : 5px;
+}
+
+/*.antiscroll-scrollbar{
+	background: #3E5E84 !important;
+}*/
 
 #loader .loading {
 	background: #ccc url(images/spinner.gif) no-repeat center center;
