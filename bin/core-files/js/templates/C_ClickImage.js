@@ -162,7 +162,13 @@ function C_ClickImage(_type) {
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		//Select the first one...
-		$("#revID0").click();
+		
+		if(interact == "hover"){
+			alert("hover");
+			$("#revID0").mouseover();
+		}else{
+			$("#revID0").click();
+		}
 		doAccess(pageAccess_arr);
 	}
 
