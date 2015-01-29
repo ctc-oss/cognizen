@@ -220,6 +220,7 @@ function fadeComplete() {
   	try { $("#essayCompareHolder").remove(); } catch (e) {}
   	try { $("#sliderHolder").remove(); } catch (e) {}
   	try { $("#timerDisplay").remove(); } catch (e) {}
+  	try { $("#imgPalette").remove(); } catch (e) {}
 
 	try{
 		for(name in CKEDITOR.instances){
