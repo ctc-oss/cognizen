@@ -554,7 +554,7 @@ function C_Branching(_type) {
 		for(var i = 0; i < branchOptionLength; i++){
 			var optionText = $.trim($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text());
 			var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
-			var msg = "<div id='myBranchOption"+ i +"' style='width:80%;'>";
+			var msg = "<div id='myBranchOption"+ i +"' style='width:80%; margin-bottom:5px;'>";
 				msg += "<label for='optionLabel'><b>label: </b></label>";
 				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' data='"+i+"' class='dialogInput' style='width:250px;'/>";
 				msg += "<label for='branchDrop'  title='Set the branch link.'><b>link to: </b></label>";
