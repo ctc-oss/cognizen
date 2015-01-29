@@ -73,7 +73,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	
 	if($(data).find("page").eq(currentPage).attr('visualtranscript') == "true"){
 		hasTranscript = true;
-		$("#stage").append("<div id='transcriptPane' class='transcriptPane'><div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript'></div></div>");
+		$("#stage").append("<div id='transcriptPane' class='transcriptPane'><div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript' title='view transcript'></div></div>");
 		$("#transcriptButton").click(function(){
 			if(transcriptState){
 				$(this).removeClass('C_TranscriptActive');
