@@ -164,7 +164,6 @@ function C_ClickImage(_type) {
 		//Select the first one...
 		
 		if(interact == "hover"){
-			alert("hover");
 			$("#revID0").mouseover();
 		}else{
 			$("#revID0").click();
@@ -280,7 +279,6 @@ function C_ClickImage(_type) {
 		}
 		
 		$("#isLabeled").change(function(){
-			alert("change");
 			makeRevealDataStore();
 			//clearCKInstances();
 			try { $("#revealContainer").remove(); } catch (e) {}
