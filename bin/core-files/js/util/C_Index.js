@@ -81,8 +81,10 @@ function updateMenuItems(){
 					if(mode != "edit"){
 						$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
 						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
-						var newAriaLabelString = "Page Complete " + $("#" + thisID).text().trim();
-						$("#" + thisID).attr("aria-label", newAriaLabelString);
+						if(!oldIE){
+							var newAriaLabelString = "Page Complete " + $("#" + thisID).text().trim();
+							$("#" + thisID).attr("aria-label", newAriaLabelString);
+						}
 					}
 				}
 

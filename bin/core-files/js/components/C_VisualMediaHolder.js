@@ -1114,7 +1114,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
-	   	//console.log(mejs.players)
 	    try { $("#loader").unbind(); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
@@ -1136,6 +1135,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				$(this).tooltip("destroy");
 			})
 		}catch (e) {}
+		//console.log(getEventListeners($("#stage")));
     }
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }
