@@ -1477,6 +1477,80 @@ MEDIA LAYOUTS
 
 }
 
+.mediaBrowserPane{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	overflow: visible;
+	z-index: 10;
+}
+
+.C_MediaBrowserButton{
+	position: relative;
+	float: right;
+	width: 30px;
+	height: 30px;
+	background: url(images/upload.png) no-repeat;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.C_MediaBrowserButtonActive{
+	background: url(images/wrong.png) no-repeat;
+	/*#3E5E84*/
+}
+
+.mediaBrowserDisplay{
+	position			  : relative;
+	float				  : right;
+	overflow: 			  : scroll;	
+	background-color      : rgba(255, 255, 255, .9);
+	-moz-border-radius    : 8px;
+	-webkit-border-radius : 8px;
+	border-radius         : 8px;
+	width				  : 10px;
+	height 				  :	15px;
+	max-width 			  : 970px;
+	max-height            : 700px;
+	border-style		  : solid;
+    border-width		  : 1px;
+    border-color: 		  : #333;
+    color			      : #333;
+	font-family           : Arial, Helvetica, sans-serif;
+	font-size             : 12pt;
+	padding               : 5px;
+}
+
+.mediaBrowserHeader{
+	position				: relative;
+	background-color		: rgba(51, 51, 51, .4);
+	width 					: 100%;
+	height					: 20%;
+	font-size               : 14pt;
+	border-top-left-radius  : 8px;
+	border-top-right-radius : 8px;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+	-moz-border-radius-topleft: 8px;
+	-moz-border-radius-topright: 8px;
+	text-align: center;
+	font-size: 18pt;
+	color: #fff;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.mediaBrowserList{
+	position: relative;
+	float: left;
+	width: 30%;
+	height: 80%;
+	background-color: rgba(51, 51, 51, .9);
+	border-bottom-left-radius  : 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-moz-border-radius-bottomleft: 8px;
+}
+
 .transcriptPane{
 	position: absolute;
 	right: 10px;

@@ -1,18 +1,27 @@
 var http = require('http');
 var fs = require('fs-extra');
 var et = require('elementtree');
+var path = require('path');
 var readdirp = require('readdirp');
 var archiver = require('archiver');
 var scorm = require('./cognizen-scorm');
 var openServers = [];
 var io;
 
+/*var walk = require('walk');				///////////////////Comment before push
+var walker;								///////////////////Comment before push	
+var walkerOptions = {
+    followLinks: false,
+    // directories with these keys will be skipped 
+	filters: ["edge_includes", ".DS_Store"]
+  };	*/				
+
 var ContentSocket = {
 	
     start: function(port, path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
         var xmlCourseFile = contentPath + '/../course.xml';
-        console.log(xmlCourseFile);
+        var mediaPath = contentPath + '/media/';
 		var thisPort = port;
         var	app = http.createServer(function (req, res) {
         	res.writeHead(404);
@@ -53,6 +62,7 @@ var ContentSocket = {
         serverObj.xml = xmlContentFile;
         openServers.push(serverObj);
         
+        
         function getXMLContentFile(){
 	        for(var i = 0; i < openServers.length; i++){
 		        if(openServers[i].port == thisPort){
@@ -76,6 +86,52 @@ var ContentSocket = {
                         logger.error("content.xml update failed: " + err);
                     }
 				})
+			});
+			
+			//Set listener to get list of files in media folder
+			socket.on('getMediaDir', function (data) {
+				var p = mediaPath + data;
+				fs.readdir(p, function(err, files){
+    				
+    				if (!files.length) {
+	    				//Return for empty directory....
+	    				//socket.emit('returnFileList', null);
+        			}
+        			
+        			// called for each file walked in the directory
+			        var file_dict = {};
+			        var file_index = 0;
+					var dir_dict = {};
+					var dir_index = 0;
+			        function file(i) {
+			            var filename = files[i];
+			            fs.stat(p + '/' + filename, function (err, stat) {
+			
+			                if (stat.isDirectory() || filename[0] == '.') {
+			                    //List of directories to ignore.
+			                    if(filename != "edge_includes" || filename[0] != '.'){
+									++dir_index;
+									dir_dict[dir_index] = filename;
+								}
+			                } else {
+				                //List of filenames to ignore.
+				                if(filename != ""){
+			                    	++file_index;
+									file_dict[file_index] = filename;
+								}
+			                };
+			
+			                if (++i == files.length) {
+			                    var returnObject = {'dirs': dir_dict, 'files': file_dict};
+								socket.emit('returnMediaDir', returnObject);
+			                } else {
+			                    // continue getting files
+			                    return file(i);
+			                };
+			            });
+			        }
+			        return file(0);
+			    });
 			});
 			
             //Set listener to update the content.xml file

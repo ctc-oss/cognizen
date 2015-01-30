@@ -44,6 +44,7 @@ var printButton = false;
 var referenceButton = false;
 var referenceURL = "";
 
+
 function ncInitialize(){
 	updateTotalGradedQuestions();
 

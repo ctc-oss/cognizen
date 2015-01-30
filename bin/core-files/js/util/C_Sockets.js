@@ -196,6 +196,15 @@ function initializeSockets(){
 			
 		});
 		
+		socket.on('returnMediaDir', function(data){
+			if(data == null){
+				//Empty directory
+			}else{
+				//Do what you do to setup directory...
+				displayMediaBrowser(data);
+			}
+		});
+		
 		socket.on('updateCourseXMLWithRefreshComplete', function(){
 			if(mode == "edit"){
 		        cognizenSocket.emit('contentSaved', {

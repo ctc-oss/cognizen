@@ -124,7 +124,7 @@ function C_ClickListRevealText(_type) {
 		}else{
 			$("#clickListText").focus();
 		}
-		//BECAUSE IE FUCKING SUCKS!!!!
+
 		if(isIE || isFF){
 			if(ieHeight == null){
 				ieHeight = $("#clickListText").height();// - 30;
