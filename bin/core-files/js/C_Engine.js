@@ -371,7 +371,7 @@ function buildInterface(){
 		addEditNav();
 		addMediaDrop();
 		addObjEdit();
-		addMediaBrowser();											////////////////////////////////////////////////////////// Comment out before push
+		//addMediaBrowser();											////////////////////////////////////////////////////////// Comment out before push
 	}
 
 	if(mode == "edit" || mode == "review"){
