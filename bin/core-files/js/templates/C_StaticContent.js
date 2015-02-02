@@ -140,7 +140,7 @@ function C_StaticContent(_type) {
     function checkMode(){
     	$(this).scrubContent();
 
-     	if(type != "graphicOnly"){
+     	if(type != "graphicOnly" && type != "top" && type !="bottom"){
 			$('.antiscroll-wrap').antiscroll();
 		}
 
