@@ -200,10 +200,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}
 
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
-			if(mediaLinkType == "youtube"){
+			if(mediaLinkType == "youtube" || window.chrome){
                 vidHTMLString += " preload='none'";
-            }else{
-	            vidHTMLString += " preload='true'";
             }
 
             if($(data).find("page").eq(currentPage).attr('poster') != undefined && $(data).find("page").eq(currentPage).attr('poster') != "null" && $(data).find("page").eq(currentPage).attr('poster').length != 0){
