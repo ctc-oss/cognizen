@@ -282,6 +282,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}else{
 				// decent browser - prefer HTML5 video
 				$('video').mediaelementplayer({
+					mode: 'auto_plugin',
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
 					success: function(player, node) {
