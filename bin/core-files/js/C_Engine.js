@@ -448,8 +448,10 @@ function getMediaDir(_dir){
 function displayMediaBrowser(_data){
 	console.log(_data);
 	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>"+$('#lessonTitle').text()+" Media Browser</div>";
+		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>"
 		msg += "<div id='mediaBrowserList' class='mediaBrowserList'></div>";
 		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'></div>";
+		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
 	//$("#mediaBrowserDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="box"><div id="transcriptHolder" class="overthrow antiscroll-inner"><div id="transcript">'+transcriptText+'</div></div></div></div>');
 	//$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height"));
@@ -457,7 +459,9 @@ function displayMediaBrowser(_data){
 	//$("#transcriptHolder").height($(".transcriptDisplay").css("max-height"));
 	//$("#transcriptHolder").width($(".transcriptDisplay").css("max-width"));
 	//$('#scrollableTranscript').antiscroll();
-	
+	//for(var i = 0; i < _data.)
+	console.log(_data.dirs);
+	console.log(_data.files);
 }
 
 function removeMediaBrowserDisplay(){

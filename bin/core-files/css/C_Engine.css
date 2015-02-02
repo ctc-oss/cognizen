@@ -1503,7 +1503,7 @@ MEDIA LAYOUTS
 .mediaBrowserDisplay{
 	position			  : relative;
 	float				  : right;
-	overflow: 			  : scroll;	
+	overflow: 			  : hidden;	
 	background-color      : rgba(255, 255, 255, .9);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
@@ -1523,9 +1523,10 @@ MEDIA LAYOUTS
 
 .mediaBrowserHeader{
 	position				: relative;
+	display: 				: block;
 	background-color		: rgba(51, 51, 51, .4);
 	width 					: 100%;
-	height					: 20%;
+	height					: 4%;
 	font-size               : 14pt;
 	border-top-left-radius  : 8px;
 	border-top-right-radius : 8px;
@@ -1536,15 +1537,22 @@ MEDIA LAYOUTS
 	text-align: center;
 	font-size: 18pt;
 	color: #fff;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	/*padding-top: 10px;
+	padding-bottom: 10px;*/
+}
+
+.mediaBrowserContent{
+	position: relative;
+	display: block;
+	height: 96%;
+	width: 100%;
 }
 
 .mediaBrowserList{
 	position: relative;
 	float: left;
 	width: 30%;
-	height: 80%;
+	height: 100%;
 	background-color: rgba(51, 51, 51, .9);
 	border-bottom-left-radius  : 8px;
 	-webkit-border-bottom-left-radius: 8px;
