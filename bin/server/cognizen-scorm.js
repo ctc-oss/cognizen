@@ -975,80 +975,83 @@ var SCORM = {
 					//set up the final test item structure for review
 					var courseObj = _this._parseCourseItem(_lessonTitle.replace(/\s+/g, ''));
 
-					if(courseObj.sequencing.get("testReview") === 'true')
+					if(courseObj.hasOwnProperty('testReview'))
 					{
-						_this.reviewLines = '';
+						if(courseObj.sequencing.get("testReview") === 'true')
+						{
+							_this.reviewLines = '';
 
-				        _this.reviewLines = _this._addResources(res, _lessonTitle.replace(/\s+/g, '%20') +'-Review-files/')
-				        var reviewMap_obj = {
-				        	lesson: _lessonTitle,
-				        	lines: _this.reviewLines
-				        };
-				        _this.reviewLines_arr.push(reviewMap_obj);
-				        res.files.forEach(function(file) {
-				            var localFile = file.path.replace(/\\/g,"/");
-				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
-				            	var inputFile = _lessonPath + '/' + localFile;
-				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
-				        	}
-				        });
-				        //add index.html from server incase changes were made after the course was created
-				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
+					        _this.reviewLines = _this._addResources(res, _lessonTitle.replace(/\s+/g, '%20') +'-Review-files/')
+					        var reviewMap_obj = {
+					        	lesson: _lessonTitle,
+					        	lines: _this.reviewLines
+					        };
+					        _this.reviewLines_arr.push(reviewMap_obj);
+					        res.files.forEach(function(file) {
+					            var localFile = file.path.replace(/\\/g,"/");
+					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
+					            	var inputFile = _lessonPath + '/' + localFile;
+					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
+					        	}
+					        });
+					        //add index.html from server incase changes were made after the course was created
+					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
 
-				        //add warning icon 
-				        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+					        //add warning icon 
+					        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
 
-						//updating temp review content.xml file
-						////////////////////////////////////////////////////////////////
-				        var _review_data, _review_etree;
-				        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
-		            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
-		            	console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
-		            	console.log('tempReviewFile : ' + _tempReviewFile);
-				        try{
-					        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
-					    }
-					    catch(err){
-					    	_this.logger.error("Copy review content xml file error : " + err);
-					    	callback(err, null);
-					    	return;
-					    }
+							//updating temp review content.xml file
+							////////////////////////////////////////////////////////////////
+					        var _review_data, _review_etree;
+					        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
+			            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
+			            	console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
+			            	console.log('tempReviewFile : ' + _tempReviewFile);
+					        try{
+						        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
+						    }
+						    catch(err){
+						    	_this.logger.error("Copy review content xml file error : " + err);
+						    	callback(err, null);
+						    	return;
+						    }
 
-				       	try{
-							_review_data = fs.readFileSync(_tempReviewFile).toString();
-					        _review_etree = et.parse(_review_data);
-				        }
-				        catch(err){
-				        	_this.logger.error("Error reading temp course xml file : " + err);
-				        	callback(err,null);
-				        	return;
-				        }
+					       	try{
+								_review_data = fs.readFileSync(_tempReviewFile).toString();
+						        _review_etree = et.parse(_review_data);
+					        }
+					        catch(err){
+					        	_this.logger.error("Error reading temp course xml file : " + err);
+					        	callback(err,null);
+					        	return;
+					        }
 
-		                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
-		                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
-		                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
+			                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+			                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
+			                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
 
-		              	if(_this.scormVersion === 'none'){
-		                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
-		                }
-		                if(count+1 == lArray.length){
-		                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
-		                }
+			              	if(_this.scormVersion === 'none'){
+			                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
+			                }
+			                if(count+1 == lArray.length){
+			                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+			                }
 
-		                var xml = _review_etree.write({'xml_decleration': false});
-		                fs.outputFile(_tempReviewFile, xml, function (err) {
-		                    if (err) callback(err, null);
-		                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+			                var xml = _review_etree.write({'xml_decleration': false});
+			                fs.outputFile(_tempReviewFile, xml, function (err) {
+			                    if (err) callback(err, null);
+			                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
 
-		        			try{
-		        				fs.removeSync(_tempReviewFile);
-		        			}
-		        			catch(err){
-		        				_this.logger.error("Error deleting temp review content.xml file :" + err );
-		        			}
+			        			try{
+			        				fs.removeSync(_tempReviewFile);
+			        			}
+			        			catch(err){
+			        				_this.logger.error("Error deleting temp review content.xml file :" + err );
+			        			}
 
-			            });
+				            });
 
+						}
 					}
 
 				    //do not need to do scorm files if publishing to "none"
