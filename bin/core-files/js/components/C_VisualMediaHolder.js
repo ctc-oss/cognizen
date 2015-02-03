@@ -576,9 +576,21 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				if(!hasTranscript){
 					$('#inputTranscriptLabel').hide();
 					$('#inputTranscript').hide();
+				}else{
+					CKEDITOR.inline( "inputTranscript", {
+						toolbar: contentToolbar,
+						toolbarGroups :contentToolgroup,
+						enterMode : CKEDITOR.ENTER_BR,
+						shiftEnterMode: CKEDITOR.ENTER_P,
+						extraPlugins: 'sourcedialog',
+						on: {
+					    	instanceReady: function(event){
+					        	$(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+					    	}
+					    }
+					});
 				}
 				
-				//disables inputNumberToPresent if isShowAll is checked. 
 				$('#isTranscript').change(function(){
 					if($("#isTranscript").prop("checked") == true){
 						$('#inputTranscriptLabel').show();
