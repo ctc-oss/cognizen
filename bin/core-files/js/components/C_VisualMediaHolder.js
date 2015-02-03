@@ -227,7 +227,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
                 vidHTMLString += "mp4' ";
             }
 
-			vidHTMLString += "src='" + myImage + "'/>";
+			if(isIE){
+				vidHTMLString += "src='" + myImage + "'/>";
+			}else{
+				vidHTMLString += "src='" + myImage + "?"+new Date().getTime()+"'/>";
+			}
 
             //Check for subs - defaults to false.
             if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
