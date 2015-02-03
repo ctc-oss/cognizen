@@ -361,7 +361,7 @@ function C_Outline(_myItem) {
         });
 
         //OPEN WITH ALL MENU ITEMS COLLAPSED
-        //$('#C_Index').nestable('collapseAll');
+        $('#C_Index').nestable('collapseAll');
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
