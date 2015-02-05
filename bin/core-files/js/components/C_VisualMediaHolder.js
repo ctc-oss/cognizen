@@ -262,7 +262,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			if (oldIE) {
 				// IE 8, 9 or 10 - prefer Flash or Silverlight
 				$('video').mediaelementplayer({
-					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
+					mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
 					success: function(player, node) {
