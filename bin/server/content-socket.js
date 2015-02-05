@@ -109,7 +109,7 @@ var ContentSocket = {
 			
 			                if (stat.isDirectory() || filename[0] == '.') {
 			                    //List of directories to ignore.
-			                    if(filename != "edge_includes" || filename[0] != '.'){
+			                    if(filename != "edge_includes" && filename[0] != '.'){
 									++dir_index;
 									dir_dict[dir_index] = filename;
 								}
