@@ -209,6 +209,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
                 posterLink = $(data).find("page").eq(currentPage).attr('poster');
             }else{
                 hasPoster = false;
+                posterLink = null;
             }
 
             //Check Poster
@@ -230,16 +231,17 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			vidHTMLString += "src='" + myImage + "'/>";
 
             //Check for subs - defaults to false.
-            if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0){
+            if($(data).find("page").eq(currentPage).attr('subs') != undefined && $(data).find("page").eq(currentPage).attr('subs') != "null" && $(data).find("page").eq(currentPage).attr('subs').length != 0 && $(data).find("page").eq(currentPage).attr('subs') != "undefined"){
                 hasSubs = true;
-                subLink = $(data).find("page").eq(currentPage).attr('subs');
+                subsLink = $(data).find("page").eq(currentPage).attr('subs');
             }else{
                 hasSubs = false;
+                subsLink = null;
             }
 
             //Check subs - if subs at track node.
             if(hasSubs == true){
-                vidHTMLString += "<track kind='subtitles' src='media/" + subLink + "' srclang='en'/>"
+                vidHTMLString += "<track kind='subtitles' src='media/" + subsLink + "' srclang='en'/>"
             }
 			vidHTMLString += "</video>";
 
@@ -890,7 +892,25 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 				}
 			}
+			var tmpPath = "";
+			for(var i = 0; i < last-1; i++){
+				tmpPath += String(parts[i]);
+			}
+			tmpPath.replace("undefined", "");
 
+			var tmpPoster;
+			if(posterLink != null){
+				tmpPoster = posterLink;
+			}else{
+				tmpPoster = tmpPath+ ".png";
+			}
+			
+			var tmpSubs;
+			if(subsLink != null){
+				tmpSubs = subsLink;
+			}else{
+				tmpSubs = tmpPath+ ".srt";
+			}
 			var msg = "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
@@ -900,14 +920,19 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			msg += "<label id='label'>autonext: </label>";
 			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
 			msg += "<label id='label'>poster: </label>";
-			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input><br/>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
+			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ tmpPoster + "' defaultValue='"+ tmpPoster + "' style='width:40%;'/>";
+			msg += "<br/>";
 			msg += "<label id='label'>subtitles: </label>";
-			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input></div>";
-
+			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
+			msg += "<input id='subFile' class='dialogInput' type='text' value='"+ tmpSubs + "' defaultValue='"+ tmpSubs + "' style='width:40%;'/>";
+			msg += "</div>";
 			$("#loader").append(msg);
 
 			if(hasSubs == true){
 				$("#subs").attr("checked", "checked");
+			}else{
+				$("#subFile").hide();
 			}
 
 			if(autoPlay == true){
@@ -917,6 +942,30 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			if(autoNext == true){
 				$("#autonext").attr("checked", "checked");
 			}
+			
+			if(hasPoster == true){
+				$("#poster").attr("checked", "checked");
+			}else{
+				$("#posterFile").hide();
+			}
+			
+			$('#subs').change(function(){
+				if($("#subs").prop("checked") == true){
+					$('#subFile').show();
+				}
+				else{
+					$('#subFile').hide();
+				}
+			});
+			
+			$('#poster').change(function(){
+				if($("#poster").prop("checked") == true){
+					$('#posterFile').show();
+				}
+				else{
+					$('#posterFile').hide();
+				}
+			});
 
 			$("#videoDialog").dialog({
             	autoOpen: true,
@@ -939,13 +988,14 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 							strippedPath += parts[i];
 						}
 						if($("#subs").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("subs", strippedPath + ".srt");
+							console.log("subFile = " + $("#subFile").val());
+							$(data).find("page").eq(currentPage).attr("subs", $("#subFile").val());
 						}else{
 							$(data).find("page").eq(currentPage).attr("subs", "null");
 						}
 
 						if($("#poster").prop("checked") == true){
-							$(data).find("page").eq(currentPage).attr("poster", strippedPath + ".png");
+							$(data).find("page").eq(currentPage).attr("poster", $("#posterFile").val());
 						}else{
 							$(data).find("page").eq(currentPage).attr("poster", "null");
 						}
