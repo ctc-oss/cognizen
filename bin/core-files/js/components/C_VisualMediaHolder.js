@@ -200,8 +200,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			}
 
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
-			if(mediaLinkType == "youtube" || window.chrome){
+			if(mediaLinkType == "youtube"){
                 vidHTMLString += " preload='none'";
+            }else{
+	            vidHTMLString += " preload='true'";
             }
 
             if($(data).find("page").eq(currentPage).attr('poster') != undefined && $(data).find("page").eq(currentPage).attr('poster') != "null" && $(data).find("page").eq(currentPage).attr('poster').length != 0){
@@ -259,8 +261,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 
 			if (oldIE) {
 				// IE 8, 9 or 10 - prefer Flash or Silverlight
-				$('video').mediaelementplayer({
-					mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
+				$('#videoplayer').mediaelementplayer({
+					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
 					success: function(player, node) {
@@ -279,8 +281,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				});
 			}else{
 				// decent browser - prefer HTML5 video
-				$('video').mediaelementplayer({
-					mode: 'auto_plugin',
+				$('#videoplayer').mediaelementplayer({
+					//mode: 'auto_plugin',
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
 					success: function(player, node) {
@@ -1173,7 +1175,33 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
     this.destroy = function (){
+
 	    try { $("#loader").unbind(); } catch (e) {}
+	    try { $("#videoplayer").unbind(); } catch (e) {}
+	    try { $("#videoplayer").player.remove(); } catch (e) {}
+	    try { $("#videoplayer").player.setSource("");} catch (e) {}
+	    try { $("#videoplayer").player.load();} catch (e) {}
+	    try { $("#videoplayer").remove(); } catch (e) {}
+	    
+	    console.log(mejs.players)
+	    if (mejs) {
+		    var players = _.keys(mejs.players);
+		    _.each(players, function(player) {
+		        mejs.players[player].remove();
+		    });
+		}
+	    for (var key in mejs.players){
+		    
+		    var obj = mejs.players[key].player;
+		    console.log("removing " + obj);
+		    obj.stop();
+		    obj.setSource("");
+		    obj.load();
+		    obj.remove();
+		    delete obj;
+	    }
+	    console.log(mejs.players)
+	    
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 		try { cognizenSocket.removeListener('mediaConversionComplete', mediaConversionComplete); } catch (e) {}
@@ -1183,7 +1211,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		try { $("#mediaPop").remove(); } catch (e) {}
 		try { $("#myImgList").remove(); } catch (e) {}
 		try { $(".transcriptPane").remove(); } catch (e) {}
-
+		
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#imgDialog").remove(); } catch (e) {}
 
