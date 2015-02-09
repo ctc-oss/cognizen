@@ -570,7 +570,7 @@ CONTENT TEXT LAYOUTS*/
 
 #contentHolder{
 	position: static;
-	max-width: 960px;
+	/*max-width: 960px;*/
 }
 
 #scrollableContent.top,.text,.tabsLeft{
