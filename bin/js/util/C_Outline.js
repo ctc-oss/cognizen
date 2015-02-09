@@ -286,7 +286,10 @@ function C_Outline(_myItem) {
      ************************************************************************************/
      function importOutlineModuleItemComplete(_data){
 	     for(var i = 0; i < module_arr.length; i++){
-		     if($(_data).find("lessonTitle").attr("value") == module_arr[i].name){
+	     	//removes special characters from content.xml lessonTitle attr so it can be compared to the 
+	     	//name attr from course.xml that is limited to alphanumberic
+	     	var strippedContentLessonTitle = $(_data).find("lessonTitle").attr("value").replace(/[^\w\s]/gi, '');
+		     if(strippedContentLessonTitle == module_arr[i].name){
 			     module_arr[i].xml = _data;
 		     }
 	     }
@@ -1019,7 +1022,7 @@ function C_Outline(_myItem) {
 	    if(!$(module_arr[_id].xml).find('tlo').attr('value')){
 	    	//forloop coursedata to find item....
 			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
 					if(!$(courseData).find("item").eq(j).attr('tlo')){
 						$(module_arr[_id].xml).find("preferences").append($('<tlo>',module_arr[_id].xml));
 						$(module_arr[_id].xml).find('tlo').attr('value', 'undefined');
@@ -1070,7 +1073,7 @@ function C_Outline(_myItem) {
 
 			//find and update module title in course.xml
 			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
 					$(courseData).find("item").eq(j).attr('name', $("#lessonTitle").val().trim());
 					updateCourseXML(false);
 					break;
@@ -1106,7 +1109,7 @@ function C_Outline(_myItem) {
 
 			//find and update module tlo in course.xml
 			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
 					$(courseData).find("item").eq(j).attr('tlo', $('#tlo').val().trim());
 					updateCourseXML(false);
 					break;
@@ -1171,7 +1174,7 @@ function C_Outline(_myItem) {
 	    //find the index number for the item
 	    var modIndex = 0;
 		for(var j = 0; j < $(courseData).find("item").length; j++){
-			if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text()){
+			if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
 				modIndex = j+1;
 			}
 		}
