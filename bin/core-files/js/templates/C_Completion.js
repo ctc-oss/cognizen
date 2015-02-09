@@ -206,7 +206,7 @@ function C_Completion(_type) {
 				tmpLessonTitle = reviewStrip[0];
 			}
 
-			var _objIndex = findObjective(tmpLessonTitle +"_satisfied");
+			var _objIndex = findObjective(tmpLessonTitle.replace(/[^\w\s]/gi, '') +"_satisfied");
 
 			if(isScored === "true"){
 

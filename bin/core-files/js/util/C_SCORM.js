@@ -327,7 +327,7 @@ function buildPageObjectiveId(){
 			lessonIndicator = tlo.replace(/\s+/g, '').replace('.', '');
 		}
 		else{
-			lessonIndicator = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '').replace('.', '');
+			lessonIndicator = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '').replace('.', '').replace(/[^\w\s]/gi, '');
 		}
 
 		if(myObjective != undefined && myObjective !== "undefined"){

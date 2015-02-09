@@ -134,7 +134,7 @@ var SCORM = {
 								    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
 								    	}
 								    	else{
-								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '');
+								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '').replace(/\(|\)/g, "");
 								    	}
 
 								    	var tmpObjId = '';
@@ -281,7 +281,7 @@ var SCORM = {
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
 	    if (_this.scormVersion === '2004_3rd'){
-	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += '<manifest identifier=\"'+ encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'Course\" version=\"1.3\"\n';
 	        manifest += "	xmlns = \"http://www.imsglobal.org/xsd/imscp_v1p1\" \n"+
     			"	xmlns:adlcp = \"http://www.adlnet.org/xsd/adlcp_v1p3\" \n"+
     			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
@@ -297,8 +297,8 @@ var SCORM = {
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
 	            "   </metadata>\n";
-	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
-	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
+	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
 	            "           <title>"+_this.courseName+"</title>\n"+
 	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
 	            "               <title>"+_this.courseName+"</title>\n"+
@@ -316,7 +316,7 @@ var SCORM = {
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
 	       	if(_this.objectives_arr.length > 0){
-	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, ''));
+	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""));
 	        }
 
 	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
@@ -329,7 +329,7 @@ var SCORM = {
 	        manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormType=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";
 	    }
 	    else if(_this.scormVersion == "2004_4th"){
-	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+	        manifest += '<manifest identifier=\"'+ encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'Course\" version=\"1.3\"\n';
 	        manifest += "	xmlns = \"http://www.imsglobal.org/xsd/imscp_v1p1\" \n"+
     			"	xmlns:adlcp = \"http://www.adlnet.org/xsd/adlcp_v1p3\" \n"+
     			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
@@ -345,8 +345,8 @@ var SCORM = {
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
 	            "   </metadata>\n";
-	        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
-	            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\">\n"+
+	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
+	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
 	            "           <title>"+_this.courseName+"</title>\n"+
 	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
 	            "               <title>"+_this.courseName+"</title>\n"+
@@ -364,7 +364,7 @@ var SCORM = {
 	            "               <imsss:sequencing>\n";
 	        //any objectives stuff goes here - objectivesGenerator
 	        if(_this.objectives_arr.length > 0){
-	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, ''));
+	        	manifest += _this._objectivesGenerator(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""));
 	        }
 
 	        manifest += "                   <imsss:deliveryControls completionSetByContent=\"true\" objectiveSetByContent=\"true\"/>\n";
@@ -378,7 +378,7 @@ var SCORM = {
 	    }
 	    //SCORM 1.2
 	    else{
-	        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1\"\n';
+	        manifest += '<manifest identifier=\"'+ encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'Course\" version=\"1\"\n';
 	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"\n'+
 	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"\n'+
 	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n';
@@ -396,8 +396,8 @@ var SCORM = {
 	            '   <schema>ADL SCORM</schema>\n'+
 	            '   <schemaversion>1.2</schemaversion>\n'+
 	            '</metadata>\n';
-	        manifest +='<organizations default="'+_this.courseName.replace(/\s+/g, '') +'">\n'+
-	            '   <organization identifier="'+_this.courseName.replace(/\s+/g, '') +'">\n'+
+	        manifest +='<organizations default="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
+	            '   <organization identifier="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
 	            '		<title>'+_this.courseName+'</title>\n'+
 	            '		<item identifier="Home" identifierref="RES-common-files">\n'+
 	            '			<title>'+_this.courseName+'</title>\n'+
@@ -461,7 +461,7 @@ var SCORM = {
 		var _this = this;
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
         //var packageFolder = _this.contentPath + '/packages/';
-        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
 
@@ -634,17 +634,17 @@ var SCORM = {
 		var objectives = "                    <imsss:objectives>\n";
 
 		//JKO 3rd edition player requires the use of secondary objectives for module level objectives, bug with primaryObjectives in player
-		_this.logger.info(lessonTitle + " _objectivesGenerator : courseAttr.lms : " + courseAttr.lms);
-		_this.logger.info(lessonTitle + " _objectivesGenerator : scormVersion : " + _this.scormVersion);
+		//_this.logger.info(lessonTitle + " _objectivesGenerator : courseAttr.lms : " + courseAttr.lms);
+		//_this.logger.info(lessonTitle + " _objectivesGenerator : scormVersion : " + _this.scormVersion);
         if(courseAttr.lms === "JKO" && _this.scormVersion === "2004_3rd"){
 			objectives += "                    <imsss:primaryObjective /> \n"+
         	"					<imsss:objective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
-            "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+            "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+"."+lessonTitle+"_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
             "					</imsss:objective>\n";			
         }		
 		else{
 	        objectives += "                    <imsss:primaryObjective objectiveID=\""+lessonTitle+"_satisfied\">\n"+
-	        "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonTitle+
+	        "						<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+"."+lessonTitle+
 	        "_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\" writeNormalizedMeasure=\"true\"/>\n"+
 	        "					</imsss:primaryObjective>\n"; 			
 		}
@@ -661,7 +661,7 @@ var SCORM = {
 		var secondaryObjectives = "";
         for (var i = 0; i < _this.objectives_arr.length; i++) {
         	secondaryObjectives += "						<imsss:objective objectiveID=\""+_this.objectives_arr[i]+"\">\n"+
-            "							<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+_this.objectives_arr[i]+"\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
+            "							<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+"."+_this.objectives_arr[i]+"\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
             "						</imsss:objective>\n";
         };
 
@@ -739,6 +739,7 @@ var SCORM = {
 
             var lessonPath = _this.contentPath + "/" + itemName;
             lessonsArray.push(lessonPath);
+            lessonsName.push(itemName);
             //console.log(lessonPath);
 	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
         	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
@@ -764,7 +765,7 @@ var SCORM = {
 
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
         _this.packageFolder = _this.contentPath + '/packages/';
-        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '')+'_'+scormFileVersion+'.zip';
+        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
 
@@ -911,8 +912,8 @@ var SCORM = {
                     if (err) callback(err, null);
 
 	                //add item & item sequencing (objectives)
-	                var _lessonTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-	                lessonsName.push(_lessonTitle);
+	                var _lessonTitle = lessonsName[count];//etree.find('.courseInfo/preferences/lessonTitle').get('value');
+	                //lessonsName.push(_lessonTitle);
 
 				    //find the objectives in the pages.
 				    //////////////////////////////////////////////////
@@ -935,7 +936,7 @@ var SCORM = {
 				    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
 				    	}
 				    	else{
-				    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '');
+				    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '').replace(/[^\w\s]/gi, '');
 				    	}
 
 				    	var tmpObjId = '';
@@ -974,85 +975,84 @@ var SCORM = {
 
 					//set up the final test item structure for review
 					var courseObj = _this._parseCourseItem(_lessonTitle.replace(/\s+/g, ''));
+					var mySeq = courseObj.sequencing;
 
-					if(courseObj.hasOwnProperty('testReview'))
+					if(mySeq.get("testReview") === 'true')
 					{
-						if(courseObj.sequencing.get("testReview") === 'true')
-						{
-							_this.reviewLines = '';
+						_this.reviewLines = '';
 
-					        _this.reviewLines = _this._addResources(res, _lessonTitle.replace(/\s+/g, '%20') +'-Review-files/')
-					        var reviewMap_obj = {
-					        	lesson: _lessonTitle,
-					        	lines: _this.reviewLines
-					        };
-					        _this.reviewLines_arr.push(reviewMap_obj);
-					        res.files.forEach(function(file) {
-					            var localFile = file.path.replace(/\\/g,"/");
-					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
-					            	var inputFile = _lessonPath + '/' + localFile;
-					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
-					        	}
-					        });
-					        //add index.html from server incase changes were made after the course was created
-					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
+				        _this.reviewLines = _this._addResources(res, _lessonTitle.replace(/\s+/g, '%20') +'-Review-files/')
+				        var reviewMap_obj = {
+				        	lesson: _lessonTitle,
+				        	lines: _this.reviewLines
+				        };
+				        _this.reviewLines_arr.push(reviewMap_obj);
+				        res.files.forEach(function(file) {
+				            var localFile = file.path.replace(/\\/g,"/");
+				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
+				            	var inputFile = _lessonPath + '/' + localFile;
+				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
+				        	}
+				        });
+				        //add index.html from server incase changes were made after the course was created
+				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
 
-					        //add warning icon 
-					        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+				        //add warning icon 
+				        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
 
-							//updating temp review content.xml file
-							////////////////////////////////////////////////////////////////
-					        var _review_data, _review_etree;
-					        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
-			            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
-			            	console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
-			            	console.log('tempReviewFile : ' + _tempReviewFile);
-					        try{
-						        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
-						    }
-						    catch(err){
-						    	_this.logger.error("Copy review content xml file error : " + err);
-						    	callback(err, null);
-						    	return;
-						    }
+						//updating temp review content.xml file
+						////////////////////////////////////////////////////////////////
+				        var _review_data, _review_etree;
+				        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
+		            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
+		            	// console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
+		            	// console.log('tempReviewFile : ' + _tempReviewFile);
+				        try{
+					        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
+					    }
+					    catch(err){
+					    	_this.logger.error("Copy review content xml file error : " + err);
+					    	callback(err, null);
+					    	return;
+					    }
 
-					       	try{
-								_review_data = fs.readFileSync(_tempReviewFile).toString();
-						        _review_etree = et.parse(_review_data);
-					        }
-					        catch(err){
-					        	_this.logger.error("Error reading temp course xml file : " + err);
-					        	callback(err,null);
-					        	return;
-					        }
+				       	try{
+							_review_data = fs.readFileSync(_tempReviewFile).toString();
+					        _review_etree = et.parse(_review_data);
+				        }
+				        catch(err){
+				        	_this.logger.error("Error reading temp course xml file : " + err);
+				        	callback(err,null);
+				        	return;
+				        }
 
-			                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
-			                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
-			                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
+		                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+		                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
+		                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
 
-			              	if(_this.scormVersion === 'none'){
-			                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
-			                }
-			                if(count+1 == lArray.length){
-			                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
-			                }
+		              	if(_this.scormVersion === 'none'){
+		                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
+		                }
+		                if(count+1 == lArray.length){
+		                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+		                }
 
-			                var xml = _review_etree.write({'xml_decleration': false});
-			                fs.outputFile(_tempReviewFile, xml, function (err) {
-			                    if (err) callback(err, null);
-			                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+		                var xml = _review_etree.write({'xml_decleration': false});
+		                fs.outputFile(_tempReviewFile, xml, function (err) {
+		                    if (err) callback(err, null);
+		                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
 
-			        			try{
-			        				fs.removeSync(_tempReviewFile);
-			        			}
-			        			catch(err){
-			        				_this.logger.error("Error deleting temp review content.xml file :" + err );
-			        			}
+		        			try{
+		        				fs.removeSync(_tempReviewFile);
+		        			}
+		        			catch(err){
+		        				_this.logger.error("Error deleting temp review content.xml file :" + err );
+		        			}
 
-				            });
+			            });
 
-						}
 					}
+
 
 				    //do not need to do scorm files if publishing to "none"
     				if(_this.scormVersion != "none"){
@@ -1515,7 +1515,7 @@ var SCORM = {
         var manifest;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
-        manifest += '<manifest identifier=\"'+ _this.courseName.replace(/\s+/g, '') +'Course\" version=\"1.3\"\n';
+        manifest += '<manifest identifier=\"'+ encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'Course\" version=\"1.3\"\n';
         manifest += "	xmlns = \"http://www.imsglobal.org/xsd/imscp_v1p1\" \n"+
 			"	xmlns:adlcp = \"http://www.adlnet.org/xsd/adlcp_v1p3\" \n"+
 			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
@@ -1544,8 +1544,8 @@ var SCORM = {
 	    	// Courses currently can not be published to 1.2, probably remove else
 
 	    }
-        manifest += "   <organizations default=\""+_this.courseName.replace(/\s+/g, '') +"\">\n"+
-            "       <organization identifier=\""+_this.courseName.replace(/\s+/g, '')+"\" structure=\"hierarchical\" ";
+        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
+            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\" ";
         //set objectivesGlobalToSystem based off of course.xml file
         if(objectivesGlobalToSystem === "true"){
         	manifest += ">\n";
@@ -1562,7 +1562,7 @@ var SCORM = {
 	_add2004Item: function(lessonName, lessonCount, totalLessons){
 		var _this = this;
 		var lessonNameTrim = lessonName.replace(/\s+/g, '');
-
+		//console.log(lessonNameTrim);
 	    var courseObj = _this._parseCourseItem(lessonNameTrim);
 	    var mySeq = courseObj.sequencing;
 	    var mySeqRules = courseObj.sequencingRules;
@@ -1693,7 +1693,7 @@ var SCORM = {
 				item += "                  <imsss:objectives>\n"+
 				"                    	<imsss:primaryObjective /> \n"+
 	        	"                    	<imsss:objective objectiveID=\""+lessonNameTrim+"_satisfied\">\n"+
-	            "                    		<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '')+"."+lessonNameTrim+"_satisfied\"\n"+
+	            "                    		<imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+"."+lessonNameTrim+"_satisfied\"\n"+
 	            "                    					readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
 	            "                    	</imsss:objective>\n"+			
 				"	          	   </imsss:objectives>\n";	  
@@ -1758,7 +1758,7 @@ var SCORM = {
 			"                     <imsss:objectives>\n"+
 			"                         <imsss:primaryObjective />\n"+
 			"                     	  <imsss:objective objectiveID=\"" + lessonNameTrim + "_satisfied\">\n"+
-			"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '') + "." + lessonNameTrim + "_satisfied\"\n"+
+			"							<imsss:mapInfo targetObjectiveID=\"" + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "") + "." + lessonNameTrim + "_satisfied\"\n"+
 			"                                       readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\"/>\n"+
 			"                     	  </imsss:objective>\n";
 			// "			            <imsss:objective objectiveID=\"previous_sco_satisfied\">\n"+
@@ -1819,7 +1819,7 @@ var SCORM = {
 	_addUSSOCOMExtra: function(lessonName){
 		var _this = this;
 		var lessonNameTrim = lessonName.replace(/\s+/g, '');
-		var courseNameTrim = _this.courseName.replace(/\s+/g, '');
+		var courseNameTrim = _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "");
         var item = "           <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\" >\n"+
             "               <title>"+lessonName+"</title>\n"+
             "               <adlnav:presentation>\n"+
@@ -1898,7 +1898,7 @@ var SCORM = {
 	        var fileName = file.path.split("\\");
 	        //does not include files that don't have an "." ext, directories
 	        if(fileName[fileName.length-1].indexOf('.') !== -1 && fileName.indexOf('packages') == -1){
-	        	var fullPath = lesson+file.path.replace(/\\/g,"/");
+	        	var fullPath = lesson+encodeURIComponent(file.path.replace(/\\/g,"/"));
 	            resources.push("         <file href=\"" +_this.binDir+ "/"+fullPath.replace(/\s+/g, '%20')+"\"/>\n");
 	        }
 	    });
