@@ -240,6 +240,7 @@ function initScripts(_data){
 					corePath +"js/components/C_PageTitle.js",
 					corePath +"js/components/C_VisualMediaHolder.js",
 					corePath +"js/components/C_AudioHolder.js",
+					corePath +"js/components/C_MediaBrowser.js",
 			//Import Cognizen Utilities
 					corePath +"js/util/C_Access.js",
 					corePath +"js/util/C_AddPage.js",
@@ -394,81 +395,6 @@ function buildInterface(){
 		}
 	}
 }
-
-
-/*********************************************************************************
-Media Browser - pull to it's own class
-*********************************************************************************/
-var mediaBrowserState = false;
-
-function addMediaBrowser(){
-	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>");
-									
-	$("#mediaBrowserButton").click(function(){							
-		if(mediaBrowserState){
-			$(this).removeClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = false;
-		}else{
-			$(this).addClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = true;
-		}
-		toggleMediaBrowser();
-	}).keypress(function(event) {
-        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-        if (chCode == 32 || chCode == 13){
-	        $(this).click();
-	    }
-    });															
-}
-
-function toggleMediaBrowser(){
-	if(mediaBrowserState){
-		//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
-		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
-		var displayHeight = $(".mediaBrowserDisplay").css("max-height");
-		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: displayWidth, height: displayHeight}, ease:transitionType, onComplete: getMediaDir});
-	}else{
-		//Tween transcript closed then remove text
-		$("#mediaBrowserDisplay").empty();
-		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeMediaBrowserDisplay});
-	}
-}
-
-function getMediaDir(_dir){
-	if(_dir){
-		//Get media directory sub folder.
-		socket.emit('getMediaDir', _dir);
-	}else{
-		//Just get media folder
-		socket.emit('getMediaDir', "");
-	}
-}
-
-function displayMediaBrowser(_data){
-	console.log(_data);
-	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>"+$('#lessonTitle').text()+" Media Browser</div>";
-		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>"
-		msg += "<div id='mediaBrowserList' class='mediaBrowserList'></div>";
-		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'></div>";
-		msg += "</div>";
-	$("#mediaBrowserDisplay").append(msg);
-	//$("#mediaBrowserDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="box"><div id="transcriptHolder" class="overthrow antiscroll-inner"><div id="transcript">'+transcriptText+'</div></div></div></div>');
-	//$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height"));
-	//$("#scrollableTranscript").width($(".transcriptDisplay").css("max-width"));
-	//$("#transcriptHolder").height($(".transcriptDisplay").css("max-height"));
-	//$("#transcriptHolder").width($(".transcriptDisplay").css("max-width"));
-	//$('#scrollableTranscript').antiscroll();
-	//for(var i = 0; i < _data.)
-	console.log(_data.dirs);
-	console.log(_data.files);
-}
-
-function removeMediaBrowserDisplay(){
-	$("#mediaBrowserDisplay").remove();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////End Media Browser
 
 /**
 * sendUpdateWithRefresh

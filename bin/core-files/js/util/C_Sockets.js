@@ -201,7 +201,7 @@ function initializeSockets(){
 				//Empty directory
 			}else{
 				//Do what you do to setup directory...
-				displayMediaBrowser(data);
+				updateMediaBrowserDir(data);
 			}
 		});
 		
