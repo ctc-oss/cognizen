@@ -347,7 +347,7 @@ function editGlossaryTerm(myNode){
 		glossarySource = $(data);
 	}
 	
-	var myTerm = glossarySource.find("glossaryitem").eq(myNode).find("term").text();
+	var myTerm = glossarySource.find("glossaryitem").eq(myNode).find("term").text().trim();
 	var myDef = glossarySource.find("glossaryitem").eq(myNode).find("content").text();
 	var msg = '<div id="dialog-editGlossaryTerm" title="Edit This Term"><p class="validateTips">Edit the data for your term.</p><input id="newTerm" type="text" value="'+myTerm+'" defaultValue="'+myTerm+'" style="width:100%;"/><br/><div>Edit Definition:</div><div id="definitionEditText" type="text" contenteditable="true" class="dialogInput">'+myDef+'</div></div>';
 	

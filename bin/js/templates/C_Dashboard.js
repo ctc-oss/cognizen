@@ -864,7 +864,7 @@ function C_Dashboard(_type) {
                     user: user._id,
                     path: dlPath
                 });
-
+				
                 $("#dialog-updatePrefs").remove();
 
                 $('#publishLoader').remove();

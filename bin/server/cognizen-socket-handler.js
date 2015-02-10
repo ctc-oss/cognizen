@@ -1801,6 +1801,8 @@ var SocketHandler = {
 
     publishContent: function (data, callback){
         var _this = this;
+        var user = data.user.username;
+        console.log(data);
         console.log("publishContent");
         if (data.content.type === 'program') {
             // Don't allow this, too volatile to change the git repo at this point.
@@ -1953,6 +1955,13 @@ var SocketHandler = {
                             });
                         }
                     /////////end lock
+                    });
+                    //Add GIT Commit code
+                    _this.Git.commitProgramContent(found.getProgram(), user, function() {
+                    	console.log("committed your published package to git.");
+                    }, function(message) {
+                        	_this._socket.emit('generalError', {title: 'Repository Saving Error', message: 'Error occurred when saving repository content.'});
+                            _this.logger.error("Error when committing to the Git Repo: " + message);
                     });
                 }
             });
