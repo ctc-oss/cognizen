@@ -292,7 +292,7 @@ function C_Dashboard(_type) {
                     if(myItem.data('permission') == "admin"){
 	                    //$(this).append("<div id='myPref' class='programPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " program.'></div>");
 	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
-	                    $(this).append("<div id='myAdd' class='programAdd' title='add a project to " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myAdd' class='programAdd' title='add a course to " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 					}
                 } else if (myItem.data('type') == "course") {
