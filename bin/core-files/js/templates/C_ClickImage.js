@@ -191,7 +191,7 @@ function C_ClickImage(_type) {
 				useKeyboard = false;
 			}
 		}
-		//BECAUSE IE FUCKING SUCKS!!!!
+
 		if(isIE || isFF){
 			if(ieHeight == null){
 				ieHeight = $("#clickImgText").height();// - 30;

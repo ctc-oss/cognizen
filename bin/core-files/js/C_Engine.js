@@ -98,7 +98,7 @@ function initScripts(_data){
 	$('.C_LoaderText').text("Initializing scripts.");
 	courseData = _data;
 	////console.log(data);
-
+	
 	// Create new ieUserAgent object
 	var ieUserAgent = {
 	    init: function () {
@@ -270,6 +270,7 @@ function initScripts(_data){
 
 //VROOM VROOM
 function startEngine(){
+	
 	//Enable popups from within the dialogs.
 	$.widget("ui.dialog", $.ui.dialog, {
 		_allowInteraction: function(event) {
@@ -364,7 +365,7 @@ function buildInterface(){
 
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle = $(data).find("lessonTitle").attr("value");
-
+	document.title = lessonTitle;
 	$("#lessonTitle").append(lessonTitle);
 	
 	checkNav();

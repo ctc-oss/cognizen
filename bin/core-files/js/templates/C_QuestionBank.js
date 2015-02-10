@@ -676,6 +676,14 @@ function C_QuestionBank(_type) {
 
 	function updateQuestionEditDialog(){
 		try { $("#questionEditDialog").remove(); } catch (e) {}
+		
+		var tempToComplete;
+		if($(data).find("page").eq(currentPage).attr("tocomplete")){
+			tempToComplete = $(data).find("page").eq(currentPage).attr("tocomplete");
+		}else{
+			tempToComplete = 1;
+		}
+		
 		var msg = "<div id='questionEditDialog' title='Edit Question Bank'>";
 		msg += "<label style='position: relative; float: left; margin-right:20px;'><b>Bank Preferences: </b></label>";
 		msg += "<label id='label' title='Indicates if this page is graded.'>graded: </label>";
@@ -685,7 +693,7 @@ function C_QuestionBank(_type) {
 		msg += "<label id='label' title='Indicates if ALL questions should be presented.'>show all: </label>";
 		msg += "<input id='isShowAll' type='checkbox' name='showAll' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates number of questions to be presented.'>ask how many: </label>";
-		msg += "<input type='text' name='inputNumberToPresent' id='inputNumberToPresent' value='"+ $(data).find("page").eq(currentPage).attr("tocomplete") +"' class='dialogInput' style='width:35px;'/><br/>";
+		msg += "<input type='text' name='inputNumberToPresent' id='inputNumberToPresent' value='"+ tempToComplete +"' class='dialogInput' style='width:35px;'/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){

@@ -62,7 +62,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "top",
-			"images" : ["ex_TextTop.png", "ex_TextTop1.png",, "ex_TextTop2.png",  "ex_TextTop3.png"]
+			"images" : ["ex_TextTop.png", "ex_TextTop1.png", "ex_TextTop2.png",  "ex_TextTop3.png"]
 		},
 		{
 			"type" : "left",
