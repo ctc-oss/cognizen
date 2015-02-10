@@ -156,7 +156,7 @@ function C_Completion(_type) {
 
         //Add classes for page layouts - updatable in css
 	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner">'+
-	    	'<div id="content"></div><div id="scoreFeedback"></div></div></div></div>');
+	    	'<div id="content"></div><div id="instructionMsg"></div><div id="scoreFeedback"></div></div></div></div>');
 		//$("#scrollableContent").addClass("top");
         $("#scrollableContent").addClass("text");
         $("#contentHolder").addClass("text");
@@ -165,7 +165,7 @@ function C_Completion(_type) {
 		$("#content").append(myContent);
 		$("#scoreFeedback").append(scoreText);
 		if(attemptExceeded){
-			$("#content").append("You have exceeded the attempt limit of the test. <br/>" +
+			$("#instructionMsg").append("You have exceeded the attempt limit of the test. <br/>" +
 				"You will need to drop the course and reenroll to retake the course. Press the \"Continue\" button to end the coures.");
 		}
 		else{
@@ -173,7 +173,7 @@ function C_Completion(_type) {
 				var reviewStrip = $(data).find('lessonTitle').attr('value').split(" Review");
 				if(remediationObjectives.length != 0){
 					$("#content").empty();
-					$("#content").append("<img src='media/cognizen_warning_icon.png' alt='Warning icon'><i> "+
+					$("#instructionMsg").append("<img src='media/cognizen_warning_icon.png' alt='Warning icon'><i> "+
 					" You did not pass the "+ reviewStrip[0] + ". You will need to pass the " +
 					reviewStrip[0] +" in order to receive course credit and print your course certificate.</i><br/><br/>"+
 					"Use the list below to review any missed objectives. You can come back to this module at any time to review this list. "+
@@ -181,20 +181,20 @@ function C_Completion(_type) {
 				}
 				else if(testNotAttempted){
 					$("#content").empty();
-					$("#content").append(reviewStrip[0] + " has not been attempted. You will need to pass the " +
+					$("#instructionMsg").append(reviewStrip[0] + " has not been attempted. You will need to pass the " +
 					$(data).find('lessonTitle').attr('value') +" in order to receive course credit and print your course certificate. " );					
 				}
 				else{
 					$("#content").empty();
-					$("#content").append("You have passed the "+ reviewStrip[0] + ". Use the <b>Next Lesson</b> button in the header to access the next module. " );
+					$("#instructionMsg").append("You have passed the "+ reviewStrip[0] + ". Use the <b>Next Lesson</b> button in the header to access the next module. " );
 				}
 
 			}
 			else if(lms == "JKO" && testReview == "true"){
-				$("#content").append("<br/><br/>Use the list below to review any missed objectives and press the <b>Next Lesson</b> button in the header to access the review page.");
+				$("#instructionMsg").append("<br/><br/>Use the list below to review any missed objectives and press the <b>Next Lesson</b> button in the header to access the review page.");
 			}
 			else if(lms == "JKO"){
-				$("#content").append("<br/><br/>Press the <b>Next Lesson</b> button in the header to access the next module.<br/><br/>");
+				$("#instructionMsg").append("Press the <b>Next Lesson</b> button in the header to access the next module.<br/><br/>");
 			}
 
 		}
