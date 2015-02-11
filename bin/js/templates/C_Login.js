@@ -59,8 +59,8 @@ function C_Login(_type) {
     	SETUP LISTENERS FOR RESPONSES FROM THE SERVER
     	*********************************************************************************/
 
-    		//Successfully logged in - send them to page defined in content.xml - successID attribute for this page.
-    		socket.on('loginAttemptSuccess', function(data){
+    	//Successfully logged in - send them to page defined in content.xml - successID attribute for this page.
+    	socket.on('loginAttemptSuccess', function(data){
 			user = data;
 			loadPageFromID(successID);
 		});
@@ -119,7 +119,17 @@ function C_Login(_type) {
     	*********************************************************************************/
 
 	    //Add the login form.
-		$("#stage").append("<form id='logForm'><fieldset id='loginFieldSet'><label class='loginField' for='username'>email: </label><input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'/><br><br><label class='loginField' for='pass'>password: </label><input type='password' id='pass' class='loginText text ui-widget-content ui-corner-all'/><br><br><div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div></fieldset></form>");
+		var msg = "<form id='logForm'>";
+			msg += "<fieldset id='loginFieldSet'>";
+			msg += "<label class='loginField' for='username'>email: </label>";
+			msg += "<input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'/><br><br>";
+			msg += "<label class='loginField' for='pass'>password: </label>";
+			msg += "<input type='password' id='pass' class='loginText text ui-widget-content ui-corner-all'/><br><br>";
+			msg += "<div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div>";
+			msg += "</fieldset>";
+			msg += "</form>";
+		
+		$("#stage").append(msg);
 
 		$("#loginSubmit").button();
 		//Add rounded corners for IE because it SUX

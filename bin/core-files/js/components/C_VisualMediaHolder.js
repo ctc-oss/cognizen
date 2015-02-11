@@ -990,7 +990,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 							strippedPath += parts[i];
 						}
 						if($("#subs").prop("checked") == true){
-							console.log("subFile = " + $("#subFile").val());
 							$(data).find("page").eq(currentPage).attr("subs", $("#subFile").val());
 						}else{
 							$(data).find("page").eq(currentPage).attr("subs", "null");
@@ -1183,7 +1182,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	    try { $("#videoplayer").player.load();} catch (e) {}
 	    try { $("#videoplayer").remove(); } catch (e) {}
 	    
-	    console.log(mejs.players)
 	    if (mejs) {
 		    var players = _.keys(mejs.players);
 		    _.each(players, function(player) {
@@ -1193,14 +1191,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	    for (var key in mejs.players){
 		    
 		    var obj = mejs.players[key].player;
-		    console.log("removing " + obj);
 		    obj.stop();
 		    obj.setSource("");
 		    obj.load();
 		    obj.remove();
 		    delete obj;
 	    }
-	    console.log(mejs.players)
 	    
 		try { cognizenSocket.removeListener('mediaConversionProgress', mediaConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
@@ -1222,7 +1218,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 				$(this).tooltip("destroy");
 			})
 		}catch (e) {}
-		//console.log(getEventListeners($("#stage")));
     }
     ///////////////////////////////////////////////////////////////////////////THAT'S A PROPER CLEAN
 }

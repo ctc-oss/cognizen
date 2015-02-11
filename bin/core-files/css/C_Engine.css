@@ -2092,6 +2092,11 @@ ESSAY COMPARE LAYOUTS
 	left: 590px;
 }
 
+#survey{
+	top: 60px;
+	right: 10px;
+}
+
 #back{
 	position:absolute;
 	top:720px;

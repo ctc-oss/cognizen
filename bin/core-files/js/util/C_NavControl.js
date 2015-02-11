@@ -36,6 +36,7 @@ var nextBack = false;
 var nextDisabled = true;
 var backDisabled = false;
 var indexDisabled = false;
+var courseHelp	  = false;
 var helpButton = false;
 var helpURL = "";
 var helpHeight = "750";
@@ -43,6 +44,9 @@ var helpWidth = "800";
 var printButton = false;
 var referenceButton = false;
 var referenceURL = "";
+var testOut		     = false;
+var hasSurvey	     = false;
+var surveyLink       = null;
 
 
 function ncInitialize(){
@@ -88,11 +92,6 @@ function ncInitialize(){
 							question_obj.graded = false;
 						}
 				
-						/*if($(data).find("page").eq(i).attr('layout') == 'textInput'){
-							var _textInputQuestions = [];
-							question_obj.textInputQuestions = _textInputQuestions;
-						}*/
-						
 						question_obj.id = $(data).find('page').eq(i).attr('id');
 						question_obj.subID = j;
 						question_obj.userAnswer = userSelection_arr;
@@ -159,7 +158,6 @@ function checkNav(){
 	if(nextBack == "true"){
 		nextBack = true;
 		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
-		//Adding new for accessibility 10/7/14 PD
 	}
 
 	//Check if we are using page counter - if so, set it up.
@@ -169,11 +167,16 @@ function checkNav(){
 		pageCount = true;
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
-		//Adding new for accessibility 10/7/14 PD
-		//$("#pageCount").attr("role", "presentation");
-		//globalAccess_arr.push($("#pageCount"));
 	}
+	
+	
+	
+	
+	//Test out button.
 
+	
+	//End Test Out
+	
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
 	helpButton = $(data).find('help').attr('value');
@@ -206,6 +209,7 @@ function checkNav(){
 	}
 
 	checkHelp();
+	checkSurvey();
 
 	//Check if we are using print button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
@@ -633,6 +637,14 @@ function launchPrefs(){
 	msg += "<label id='label' for='hasCourseGlossary' title='Set Course/Module Level Glossary'>Course glossary: </label>";
 	msg += "<input id='hasCourseGlossary' type='checkbox' name='hasCourseGlossary' class='radio'/>";
 	msg += "</div><br/>";
+	msg += "<label id='label' for='hasSurvey' title='Add a survey'>Survey: </label>";
+	msg += "<input id='hasSurvey' type='checkbox' name='hasSurvey' class='radio'/>";
+	
+	
+	msg += "<label id='inputSurveyLinkLabel' for='inputSurveyLink' title='Input a link for your survey.'>Survey Link: </label>";
+	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/>";
+	
+	
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
@@ -702,7 +714,6 @@ function launchPrefs(){
 	} else{
 		$("#hasGlossary").attr('checked', false);
 		$("#hasCourseGlossary").attr("disabled", true);
-		
 	}
 	
 	if(courseGlossary == true){
@@ -728,6 +739,28 @@ function launchPrefs(){
 			//console.log("set as module glossary");
 			//courseGlossary = false;
 			$(data).find("glossary").attr("courseGlossary", "false");
+		}
+	});
+	
+	if(hasSurvey == true){
+		$("#hasSurvey").attr('checked', true);
+	} else{
+		$("#hasSurvey").attr('checked', false);
+		$("#inputSurveyLinkLabel").hide();
+		$("#inputSurveyLink").hide();
+	}
+	
+	$("#hasSurvey").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("survey").attr("value", "true");
+			$("#inputSurveyLinkLabel").show();
+			$("#inputSurveyLink").show();
+			hasSurvey = true;
+		}else{
+			$(data).find("survey").attr("value", "false");
+			$("#inputSurveyLink").hide();
+			$("#inputSurveyLinkLabel").hide();
+			hasSurvey = false;
 		}
 	});
 	
@@ -858,7 +891,16 @@ function savePreferences(_pub){
 		courseGlossary = courseGlossarySelected;
 		$(data).find('glossary').attr('courseGlossary', courseGlossarySelected);
 		updateNeeded = true;
-		
+	}
+	
+	var surveySelected = $("#hasSurvey").is(':checked');
+	
+	if(hasSurvey){
+		$(data).find('survey').attr('value', surveySelected);
+		hasSurvey = surveySelected;
+		surveyLink = $("#inputSurveyLink").val();
+		$(data).find('survey').attr('link', $("#inputSurveyLink").val());
+		updateNeeded = true;
 	}
 
 	var selectedScorm = $('#scormVersion').find(':selected').text();
@@ -915,11 +957,20 @@ function updatePrefs(_pub){
 			}else{
 				glossary = false;
 			}
+			
+			if($(data).find('survey').attr('value') == "true"){
+				hasSurvey = true;	
+				surveyLink = $(data).find('survey').attr('link');			
+			}else{
+				hasSurvey = false;
+			}
+			
 			checkGlossary();
 			if(_pub == true){
 				clickPublish();
 			}
 			checkHelp();
+			checkSurvey();
 		},
 		error: function(){
 	   		alert("unable to load content.xml in updatePrefs")
@@ -944,6 +995,31 @@ function clickPublish(){
 	});
 	$("#dialog-lessonPrefs").dialog("close");
 }
+
+function checkSurvey(){
+	try{ $("#survey").remove();} catch(e){}
+	//Survey button.
+	if($(data).find('survey').attr('value')){
+		surveyLink = $(data).find('survey').attr('link');
+		if($(data).find('survey').attr('value') == "true"){
+			hasSurvey = true;
+			$("#myCanvas").append("<button id='survey' aria-label='Click here to take a survey.'>comment</button>");
+		}else{
+			hasSurvey = false;
+		}
+		
+		$("#survey").button().click(function(){
+			if(surveyLink == "null"){
+				alert("The link for the survey has not been set.");
+			}else{
+				window.open(surveyLink, "_blank");
+			}
+		});
+	}else{
+		$(data).find("nextBack").after($('<survey value="false" link="null"/>'));
+		hasSurvey = false;
+	}
+}	//End survey
 
 function checkHelp(){
 	if(helpButton == true){
