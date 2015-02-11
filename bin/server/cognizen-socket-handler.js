@@ -905,8 +905,7 @@ var SocketHandler = {
                         var courseNode = etree.getroot();
                         for (var i = 0; i < itemCount; i++) {
                             var myNode = etree.findall('./item')[i];
-                            console.log("-------------------------------------");
-                            console.log(myNode);
+
                             var nodeId = myNode.get('id');
                             if(nodeId == _dataId){
                                 courseNode.remove(myNode);
