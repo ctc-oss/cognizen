@@ -45,6 +45,7 @@ var printButton = false;
 var referenceButton = false;
 var referenceURL = "";
 var testOut		     = false;
+var testLink		 = null;
 var hasSurvey	     = false;
 var surveyLink       = null;
 
@@ -210,6 +211,7 @@ function checkNav(){
 
 	checkHelp();
 	checkSurvey();
+	checkTestOut();
 
 	//Check if we are using print button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
@@ -639,12 +641,14 @@ function launchPrefs(){
 	msg += "</div><br/>";
 	msg += "<label id='label' for='hasSurvey' title='Add a survey'>Survey: </label>";
 	msg += "<input id='hasSurvey' type='checkbox' name='hasSurvey' class='radio'/>";
-	
-	
 	msg += "<label id='inputSurveyLinkLabel' for='inputSurveyLink' title='Input a link for your survey.'>Survey Link: </label>";
-	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/>";
+	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/><br/>";
 	
-	
+	msg += "<label id='label' for='hasTestOut' title='Add a test out option'>Test out: </label>";
+	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/>";
+	msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
+	msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
+
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
@@ -761,6 +765,28 @@ function launchPrefs(){
 			$("#inputSurveyLink").hide();
 			$("#inputSurveyLinkLabel").hide();
 			hasSurvey = false;
+		}
+	});
+	
+	if(testOut == true){
+		$("#hasTestOut").attr('checked', true);
+	}else{
+		$("#hasTestOut").attr('checked', false);
+		$("#inputTestOutLinkLabel").hide();
+		$("#inputTestOutLink").hide();
+	}
+	
+	$("#hasTestOut").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("testout").attr("value", "true");
+			$("#inputTestOutLinkLabel").show();
+			$("#inputTestOutLink").show();
+			testOut = true;
+		}else{
+			$(data).find("testout").attr("value", "false");
+			$("#inputTestOutLinkLabel").hide();
+			$("#inputTestOutLink").hide();
+			testOut = false;	
 		}
 	});
 	
@@ -902,7 +928,17 @@ function savePreferences(_pub){
 		$(data).find('survey').attr('link', $("#inputSurveyLink").val());
 		updateNeeded = true;
 	}
-
+	
+	var testoutSelected = $("#hasTestOut").is(':checked');
+	
+	if(testOut){
+		$(data).find('testout').attr('value', testoutSelected);
+		testOut = surveySelected;
+		testLink = $("#inputTestOutLink").val();
+		$(data).find('testout').attr('link', $("#inputTestOutLink").val());
+		updateNeeded = true;
+	}
+	
 	var selectedScorm = $('#scormVersion').find(':selected').text();
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	if(scormVersion != myScormVersion){
@@ -965,12 +1001,21 @@ function updatePrefs(_pub){
 				hasSurvey = false;
 			}
 			
-			checkGlossary();
+			if($(data).find('testout').attr('value') == "true"){
+				testOut = true;	
+				testLink = $(data).find('testout').attr('link');			
+			}else{
+				testOut = false;
+			}
+
 			if(_pub == true){
 				clickPublish();
 			}
+			
+			checkGlossary();
 			checkHelp();
 			checkSurvey();
+			checkTestOut();
 		},
 		error: function(){
 	   		alert("unable to load content.xml in updatePrefs")
@@ -1018,6 +1063,31 @@ function checkSurvey(){
 	}else{
 		$(data).find("nextBack").after($('<survey value="false" link="null"/>'));
 		hasSurvey = false;
+	}
+}	//End survey
+
+function checkTestOut(){
+	try{ $("#testOut").remove();} catch(e){}
+	//Test Out button.
+	if($(data).find('testout').attr('value')){
+		testLink = $(data).find('testout').attr('link');
+		if($(data).find('testout').attr('value') == "true"){
+			testOut = true;
+			$("#myCanvas").append("<button id='testOut' aria-label='Click here to got directly to the test.'>test out</button>");
+		}else{
+			testOut = false;
+		}
+		
+		$("#testOut").button().click(function(){
+			if(testLink == "null"){
+				alert("The link for the test has not been set.");
+			}else{
+				loadPageFromID(testLink);
+			}
+		});
+	}else{
+		$(data).find("nextBack").after($('<testout value="false" link="null"/>'));
+		testOut = false;
 	}
 }	//End survey
 

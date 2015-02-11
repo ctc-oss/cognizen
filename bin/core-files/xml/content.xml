@@ -10,7 +10,8 @@
 			<courseTitle value="Cognizen Information"/>
 			<lessonTitle value="Cognizen Overview"/>
 			<nextBack value="true"/>
-			<survey value="false" link="null">
+			<survey value="false" link="null"/>
+			<testout vale="false" link="null"/>
 			<transition value="true"/>
 			<transitionType value="Circ.easeIn"/>
 			<transitionLength value=".3"/>
