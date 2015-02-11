@@ -2094,6 +2094,11 @@ ESSAY COMPARE LAYOUTS
 
 #survey{
 	top: 60px;
+	right: 120px;
+}
+
+#testOut{
+	top: 60px;
 	right: 10px;
 }
 
