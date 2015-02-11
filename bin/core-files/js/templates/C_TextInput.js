@@ -118,6 +118,7 @@ function C_TextInput(_type) {
 				correctDDAnswers_arr.push(correctdd_arr);				
 			}
 			else{
+				correctDDAnswers_arr.push([]);
 				msg += 'value="">';
 			}
 			//end ui-widget div

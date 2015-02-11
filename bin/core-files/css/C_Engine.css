@@ -1232,7 +1232,6 @@ ul.no-indent {
 	right: 40px;
 	background-color: #eeeeee;
 	padding-top: 8px;
-	width: 630px;
 	-moz-border-radius-bottomright: 8px;
 	-moz-border-radius-topright: 8px;
 	-webkit-border-top-right-radius: 8px;
@@ -3324,7 +3323,7 @@ a.fancybox-expand {
 	#pageTitle{
 		position: static;
 		width: 95%;
-		margin: 15px;
+		margin: 10px 15px 15px 15px;
 		overflow : auto;
 		font-size : 125%;
 		font-weight: bold;
@@ -3427,6 +3426,22 @@ a.fancybox-expand {
 		width: 97%;
 	}
 
+	#scrollableListPalette{
+		float: left;
+	}
+
+	#clickListTextHolder{
+		float: left;
+		right: auto;
+	}
+
+	.clickListTextHolder .box{
+		width: 675px;
+	}
+
+	#scrollableListPalette .box{
+		width: 318px;
+	}
 
 	/****************************************************** CONTENT TEXT LAYOUTS END *****/
 
@@ -3820,349 +3835,437 @@ a.fancybox-expand {
 	.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
 	.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 	.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: top; width: 100%;}
-}
 
-@media screen and (max-device-width: 639px) {
 
-	.flashcard{
-		width: 270px;
-		height: 360px;
-		font-weight: normal;
+	@media screen and (max-width: 1022px) {
+
+		.clickListTextHolder .box{
+			width: 633px;
+		}
+
+		#scrollableListPalette .box{
+			width: 298px;
+		}
+
 	}
 
-}
 
+	@media screen and (max-width: 959px) {
 
-@media screen and (max-device-width: 568px) {
+		.clickListTextHolder .box{
+			width: 525px;
+		}
 
-	#stage {
-		bottom: 40px;
+		#scrollableListPalette .box{
+			width: 245px;
+		}
+
 	}
 
-	#scrollableContent{
-		margin-left: 0px;
-		width: 100% !important;
+
+	@media screen and (max-width: 799px) {
+
+		.clickListTextHolder .box{
+			width: 505px;
+		}
+
+		#scrollableListPalette .box{
+			width: 235px;
+		}
+
 	}
 
-	#content, #essayCompareHolder{
-		padding-left: 3%;
-		padding-right: 3%;
-		width: 94% !important;
+
+	@media screen and (max-width: 767px) {
+
+		.clickListTextHolder .box{
+			width: 470px;
+		}
+
+		#scrollableListPalette .box{
+			width: 220px;
+		}
+
 	}
 
-	#courseTitle{
-		height: 40px;
-		font-size: 90%;
-		padding-left: 50px;
+
+	@media screen and (max-width: 719px) {
+
+		#courseTitle{
+			font-size: 110%;
+			line-height: 25px;
+		}
+
+		#lessonTitle{
+			font-size: 132%;
+			line-height: 25px;
+			top: 25px;
+		}
+
+		.clickListTextHolder .box{
+			width: 395px;
+		}
+
+		#scrollableListPalette .box{
+			width: 180px;
+		}
+
 	}
 
-	#lessonTitle{
-		top: 17px;
-		font-size: 110%;
-		padding-left: 50px;
+
+	@media screen and (max-width: 639px) {
+
+		.flashcard{
+			width: 270px;
+			height: 360px;
+			font-weight: normal;
+		}
+
 	}
 
-	#pageTitle{
-		margin: 5px 10px 5px 10px;
-		font-size: 100%;
-	}
 
-	#back{
-		top: auto;
-		bottom: 0px;
-		left: 50%;
-		right: auto;
-		width: 25%;
-		height: 40px;
-		margin: 0px;
-	}
+	@media screen and (max-width: 599px) {
 
-	#next{
-		top: auto;
-		bottom: 0px;
-		left: 75%;
-		right: auto;
-		width: 25%;
-		height: 40px;
-		margin: 0px;
-	}
+		#stage {
+			top: 40px;
+			bottom: 40px;
+		}
 
-	#help{
-		top: auto;
-		bottom: 0px;
-		left: 0px;
-		right: auto;
-		width: 25%;
-		height: 40px;
-		margin: 0px;
-	}
+		#scrollableContent{
+			margin-left: 0px;
+			width: 100% !important;
+		}
+
+		#content, #essayCompareHolder{
+			padding-left: 3%;
+			padding-right: 3%;
+			width: 94% !important;
+		}
+
+		#courseTitle{
+			height: 40px;
+			font-size: 90%;
+			padding-left: 50px;
+		}
+
+		#lessonTitle{
+			top: 17px;
+			font-size: 110%;
+			padding-left: 50px;
+		}
+
+		#pageTitle{
+			margin: 10px;
+			font-size: 100%;
+		}
+
+		#back{
+			top: auto;
+			bottom: 0px;
+			left: 25%;
+			right: auto;
+			width: 25%;
+			height: 40px;
+			margin: 0px;
+		}
+
+		#next{
+			top: auto;
+			bottom: 0px;
+			left: 75%;
+			right: auto;
+			width: 25%;
+			height: 40px;
+			margin: 0px;
+		}
+
+		#help{
+			top: auto;
+			bottom: 0px;
+			left: 0px;
+			right: auto;
+			width: 25%;
+			height: 40px;
+			margin: 0px;
+		}
+
+		#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
+			font-size: 80%;
+		}		
 	
-	#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
-		font-size: 80%;
-	}		
-	
-	#back .ui-icon, #next .ui-icon, #help .ui-icon{
-		margin-top: 3px;
-		margin-bottom: -2px;
-	}
+		#back .ui-icon, #next .ui-icon, #help .ui-icon{
+			margin-top: 3px;
+			margin-bottom: -2px;
+		}
 
-	#pageCount{
-		top: auto;
-		bottom: 0px;
-		left: 25%;
-		right: auto;
-		width: 25%;
-		height: 40px;
-		line-height: 2.5em;
-		background-color: #b2b2b2;
-		margin: 0px;
-	}
+		#pageCount{
+			top: auto;
+			bottom: 0px;
+			left: 50%;
+			right: auto;
+			width: 25%;
+			height: 40px;
+			line-height: 2.5em;
+			background-color: #b2b2b2;
+			margin: 0px;
+		}
 
-	#mediaHolder.graphic{
-		max-height: 88%;
-		overflow: scroll;
-	}
+		#mediaHolder.graphic{
+			max-height: 88%;
+			overflow: scroll;
+		}
 
-	#matching{
-		height: auto !important;
-	}
+		#matching{
+			height: auto !important;
+		}
 
-	#matchingOptions, #matchingAnswers{
-		left: 0px;
-		float: none;
-		width: 100%;
-	}
+		#matchingOptions, #matchingAnswers{
+			left: 0px;
+			float: none;
+			width: 100%;
+		}
 
-	#essayInputHolder, #expertResponseHolder{
-		width: 97%;
-	}
-
-/*index pane specific*/
-	#indexPane{
-		left: -366px;
-	}
-
-	#indexTab{
-		left: 369px;
-		height: 40px;
-	}
-
-	#indexContent{
-		width: 360px;
-	}
-
-	/*glossary pane specific*/
-	#glossaryPane{
-		left: -366px;
-	}
-
-	#glossaryTab{
-		left: 369px;
-		height: 40px;
-	}
-
-	#glossaryContent{
-		width: 360px;
-	}
-
-	#addPage{
-		width: 100%;
-	}
-
-	#removePage{
-		width: 150px;
-	}
-
-	#tabs.left{
-		width: 98%;
-		max-width: 98%;
-		float: none;
-		left: auto;
-		right: auto;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.questionTop{
-		padding-left: 3%;
-		padding-right: 3%;
-		width: 94% !important;
-	}
-
-	#mediaHolder.tabsRight{
-		max-width: 100%;
-		float: none;
-		left: auto;
-		right: auto;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	#answerOptions.left{
-		max-width: 96%;
-		left: 2%;
-	}
-
-	#flashcardHolder{
-		margin-left: 3%;
-		margin-right: 3%;
-	}
-/*
-	.flashcard{
-		width: 240px;
-		font-size: 11pt;
-	}
-*/
-}
-
-
-/* LG Optimus LTE, Optimus 4X HD */
-@media screen and (max-device-width: 424px) {
-
-	#flashcardHolder{
-		margin-left: 9.8%;
-		margin-right: 9.8%;
-	}
-
-	.flashcard{
-		width: 330px;
-		height: 440px;
-	}
-
-}
-
-
-/* iPhone 6 Plus */
-@media screen and (max-device-width: 414px) {
+		#essayInputHolder, #expertResponseHolder{
+			width: 97%;
+		}
 
 	/*index pane specific*/
-	#indexPane{
-		left: -323px;
+		#indexPane{
+			left: -368px;
+		}
+
+		#indexTab{
+			left: 369px;
+			height: 40px;
+		}
+
+		#indexContent{
+			width: 360px;
+		}
+
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -366px;
+		}
+
+		#glossaryTab{
+			left: 369px;
+			height: 40px;
+		}
+
+		#glossaryContent{
+			width: 360px;
+		}
+
+		#addPage{
+			width: 100%;
+		}
+
+		#removePage{
+			width: 150px;
+		}
+
+		#tabs.left{
+			width: 98%;
+			max-width: 98%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.questionTop{
+			padding-left: 3%;
+			padding-right: 3%;
+			width: 94% !important;
+		}
+
+		#mediaHolder.tabsRight{
+			max-width: 100%;
+			float: none;
+			left: auto;
+			right: auto;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		#answerOptions.left{
+			max-width: 96%;
+			left: 2%;
+		}
+
+		#flashcardHolder{
+			margin-left: 3%;
+			margin-right: 3%;
+		}
+	/*
+		.flashcard{
+			width: 240px;
+			font-size: 11pt;
+		}
+	*/
+
+		.clickListTextHolder{
+			border-radius: 8px;
+			width: 100%;
+		}
+		
+		.clickListTextHolder .box{
+			width: 100%;
+		}
+
 	}
 
-	#indexTab{
-		left: 329px;
-		width: 42px;
+
+	/* LG Optimus LTE, Optimus 4X HD */
+	@media screen and (max-width: 424px) {
+
+		#flashcardHolder{
+			margin-left: 9.8%;
+			margin-right: 9.8%;
+		}
+
+		.flashcard{
+			width: 330px;
+			height: 440px;
+		}
+
 	}
 
-	#indexContent{
-		width: 316px;
+
+	/* iPhone 6 Plus */
+	@media screen and (max-width: 414px) {
+
+		/*index pane specific*/
+		#indexPane{
+			left: -324px;
+		}
+
+		#indexTab{
+			left: 321px;
+			width: 42px;
+		}
+
+		#indexContent{
+			width: 316px;
+		}
+
+		.dd3-content{
+			margin: 2px 0;
+		}
+
+		/* FOR CLICKIMAGE CONTENT */
+		.clickImg{
+			padding: 4px;
+			margin: 0px 4px;
+		}
+
+		.clickImg img{
+			max-width: 90px;
+			max-height: auto !important;
+			height: auto;
+		}
+
+		/* FOR REVEAL CONTENT */
+		.revealLeft{
+			right: 0px;
+		}
+
+		.revealImg{
+			padding: 4px;
+			margin: 0px 4px 10px 4px;
+		}
+
+	/*		.revealImg img{
+			max-width: 90px;
+			max-height: auto !important;
+			height: auto;
+		}
+	*/
+		.flashcard{
+			width: 325px;
+			height: 400px;
+		}
+
 	}
 
-	.dd3-content{
-		margin: 2px 0;
+
+	/* BlackBerry Z10, LG Optimus G */
+	@media screen and (max-width: 384px) {
+
+		.flashcard{
+			width: 300px;
+			height: 380px;
+		}
+
 	}
 
-	/* FOR CLICKIMAGE CONTENT */
-	.clickImg{
-		padding: 4px;
-		margin: 0px 4px;
+
+	/* iPhone 6 */
+	@media screen and (max-width: 375px) {
+
+		#flashcardHolder{
+			margin-left: 8.8%;
+			margin-right: 8.8%;
+		}
+
 	}
 
-	.clickImg img{
-		max-width: 90px;
-		max-height: auto !important;
-		height: auto;
+
+	/* Galaxy Note II, S III and newer */
+	@media screen and (max-width: 360px) {
+
+		#flashcardHolder{
+			margin-left: 7.5%;
+			margin-right: 7.5%;
+		}
+
 	}
 
-	/* FOR REVEAL CONTENT */
-	.revealLeft{
-		right: 0px;
-	}
 
-	.revealImg{
-		padding: 4px;
-		margin: 0px 4px 10px 4px;
-	}
+	/* iPhone 5s and earlier */
+	@media screen and (max-width: 320px) {
 
-/*		.revealImg img{
-		max-width: 90px;
-		max-height: auto !important;
-		height: auto;
-	}
-*/
-	.flashcard{
-		width: 325px;
-		height: 400px;
+		/*index pane specific*/
+		#indexPane{
+			left: -283px;
+		}
+
+		#indexTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#indexContent{
+			width: 276px;
+		}
+
+		/*glossary pane specific*/
+		#glossaryPane{
+			left: -283px;
+		}
+
+		#glossaryTab{
+			left: 289px;
+			width: 42px;
+		}
+
+		#glossaryContent{
+			width: 276px;
+		}
+
+		#flashcardHolder{
+			margin-left: 5%;
+			margin-right: 5%;
+		}
+
+		.flashcard{
+			width: 280px;
+			height: 310px;
+			font-size: 11pt;
+		}
+
 	}
 
 }
-
-
-/* BlackBerry Z10, LG Optimus G */
-@media screen and (max-device-width: 384px) {
-
-	.flashcard{
-		width: 300px;
-		height: 380px;
-	}
-
-}
-
-
-/* iPhone 6 */
-@media screen and (max-device-width: 375px) {
-
-	#flashcardHolder{
-		margin-left: 8.8%;
-		margin-right: 8.8%;
-	}
-
-}
-
-
-/* Galaxy Note II, S III and newer */
-@media screen and (max-device-width: 360px) {
-
-	#flashcardHolder{
-		margin-left: 7.5%;
-		margin-right: 7.5%;
-	}
-
-}
-
-
-/* iPhone 5s and earlier */
-@media screen and (max-device-width: 320px) {
-
-	/*index pane specific*/
-	#indexPane{
-		left: -283px;
-	}
-
-	#indexTab{
-		left: 289px;
-		width: 42px;
-	}
-
-	#indexContent{
-		width: 276px;
-	}
-
-	/*glossary pane specific*/
-	#glossaryPane{
-		left: -283px;
-	}
-
-	#glossaryTab{
-		left: 289px;
-		width: 42px;
-	}
-
-	#glossaryContent{
-		width: 276px;
-	}
-
-	#flashcardHolder{
-		margin-left: 5%;
-		margin-right: 5%;
-	}
-
-	.flashcard{
-		width: 280px;
-		height: 310px;
-		font-size: 11pt;
-	}
-
-}
-
