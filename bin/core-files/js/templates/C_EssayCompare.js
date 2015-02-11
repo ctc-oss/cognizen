@@ -204,7 +204,8 @@ function C_EssayCompare(_type) {
 
 	function _addExpertResponse(){
 		var correctResponse = $.trim($(data).find("page").eq(currentPage).find('correctresponse').text()).replace("<![CDATA[", "").replace("]]>", "").replace(/<br.*?>/g, "\u2028");
-		var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" tabindex=0 readOnly="readonly">'+ correctResponse +'</textarea></div>';
+		//var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" tabindex=0 readOnly="readonly">'+ correctResponse +'</textarea></div>';
+		var expert = '<div id="expertResponseHolder"><div id="expertResponse">'+ correctResponse +'</div></div>';
 		$("#essayCompareHolder").append(expert);		
 	}
 
