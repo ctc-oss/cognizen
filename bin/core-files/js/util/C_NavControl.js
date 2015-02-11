@@ -1177,7 +1177,7 @@ function enableIndex(){
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
 
-	if(assessment && mode != "edit"){
+	if(assessment && mode != "edit" && !checkQuestionComplete()){
 		disableIndex();
 		disableHome();
 	}else{
@@ -1185,7 +1185,7 @@ function checkNavButtons(){
 		enableHome();
 	}
 
-	if(currentPage == 0 || assessment == true){
+	if(currentPage == 0 || (assessment == true && !checkQuestionComplete())){
 		disableBack();
 	}else{
 		var _cmi = 'cmi.core.entry';

@@ -65,8 +65,10 @@ function C_EssayCompare(_type) {
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap text">';
 		msg += '<div class="box">'
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
-		msg += '<div id="essayCompareHolder" class="essayCompareHolder"></div>';
-		msg += '</div></div></div>';		
+		msg += '<div id="questionHolder" class="overthrow antiscroll-inner"></div>';
+		msg += '<div id="essayCompareHolder" class="essayCompareHolder">';
+		msg += '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
+		msg += '</div></div></div></div>';		
 
 		try { audioHolder.destroy(); } catch (e) {}
 		
@@ -80,9 +82,10 @@ function C_EssayCompare(_type) {
 
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
-		var question = myContent + '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
+		$('#questionHolder').append(myContent);
+		//var question = myContent + '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
 
-		$("#essayCompareHolder").append(question);
+		//$("#essayCompareHolder").append(question);
 
 		if(isComplete){
 			for(var i = 0; i < questionResponse_arr.length; i++){
