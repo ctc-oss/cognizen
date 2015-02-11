@@ -60,7 +60,11 @@ function C_ClickListRevealText(_type) {
 
         $("#content").append(myContent);
 
-        $("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
+		if(isMobilePhone){
+			$("<form action='#'><select name='listPaletteMenu' id='listPaletteMenu'></select></form>").insertAfter("#content");
+		}else{
+			$("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
+        }
 
 		for(var i = 0; i < revealCount; i++){
 			var currentItem = $(data).find("page").eq(currentPage).find("reveal").eq(i).find("title").text();
@@ -71,35 +75,44 @@ function C_ClickListRevealText(_type) {
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 
-			$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</div>");
+			if(isMobilePhone){
+				$("#listPaletteMenu").append("<option id='"+ revID +"' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</option>");
+			}else{
+				$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</div>");
 
-			if(interact == "click"){
-				$("#" + revID).click(function(){
-					updateRevealContent($(this));
-					
-				}).keypress(function(event) {
-					var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-				    if (chCode == 32 || chCode == 13){
-					    $(this).click();
-					}
-			    });
-			}else if(interact == "hover"){
-				$("#" + revID).hover(function(){
-					updateRevealContent($(this));
-				});
+				if(interact == "click"){
+					$("#" + revID).click(function(){
+						updateRevealContent($(this));
+					}).keypress(function(event) {
+						var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+						if (chCode == 32 || chCode == 13){
+							$(this).click();
+						}
+					});
+				}else if(interact == "hover"){
+					$("#" + revID).hover(function(){
+						updateRevealContent($(this));
+					});
+				}
 			}
 			pageAccess_arr.push($("#" + revID));
 		}
 
-		$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex='0'></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
-		if(isIE || isFF){
-			ieWidth = $("#clickListTextHolder").width();
-			$("<br/><br/>").insertAfter(".clickListTextHolder");
-		}
+		if(isMobilePhone){
+			document.getElementById("listPaletteMenu").onchange=function(){
+				updateRevealContent($('#listPaletteMenu option:selected'));
+			};
+			$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex='0'></div></div></div><br/><br/>").insertAfter("#listPaletteMenu");
+		}else{
+			$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex='0'></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
+			if(isIE || isFF){
+				ieWidth = $("#clickListTextHolder").width();
+				$("<br/><br/>").insertAfter(".clickListTextHolder");
+			}
 
-		$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#content").height() + $("#scrollableListPalette").position().top + audioHolder.getAudioShim() ));
-		$("#clickListTextHolder").height($(".listPalette").height());
-		
+			$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#content").height() + $("#scrollableListPalette").position().top + audioHolder.getAudioShim() ));
+			$("#clickListTextHolder").height($(".listPalette").height());
+		}
 		
 		checkMode();
 		if(transition == true){
@@ -107,7 +120,11 @@ function C_ClickListRevealText(_type) {
 		}
 		//Select the first one...
 		doAccess(pageAccess_arr);
-		$("#revID0").click();
+		if(isMobilePhone){
+			updateRevealContent($('#listPaletteMenu option:selected'));			
+		}else{
+			$("#revID0").click();
+		}
 
 	}
 
@@ -297,7 +314,7 @@ function C_ClickListRevealText(_type) {
 		var revealItemCDATA = newRevealContent.createCDATASection($("#revealTermText").val());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").append(revealItemCDATA);
-		console.log(revealItemCDATA);
+//		console.log(revealItemCDATA);
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);
