@@ -619,7 +619,21 @@ function _mediaConversionComplete(data){
 	$("#uploadConversionDialog").append("Conversion Complete!");
 }
 
+var testOutOption_arr;
+
 function launchPrefs(){
+	//Create array holding values for test out option pages (all graded pages in the module).
+	testOutOption_arr = [];
+
+	for(var i = 0; i < totalPages; i++){
+		if($(data).find("page").eq(i).attr("graded") == "true"){
+			var tempObj = new Object();
+			tempObj.title = $(data).find("page").eq(i).find("title").text().trim();
+			tempObj.id = $(data).find("page").eq(i).attr("id");
+			testOutOption_arr.push(tempObj);
+		}
+	}
+	
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
 	//Add the scorm form
 	msg += "<p>";
@@ -639,16 +653,18 @@ function launchPrefs(){
 	msg += "<label id='label' for='hasCourseGlossary' title='Set Course/Module Level Glossary'>Course glossary: </label>";
 	msg += "<input id='hasCourseGlossary' type='checkbox' name='hasCourseGlossary' class='radio'/>";
 	msg += "</div><br/>";
+	//Survey
 	msg += "<label id='label' for='hasSurvey' title='Add a survey'>Survey: </label>";
 	msg += "<input id='hasSurvey' type='checkbox' name='hasSurvey' class='radio'/>";
 	msg += "<label id='inputSurveyLinkLabel' for='inputSurveyLink' title='Input a link for your survey.'>Survey Link: </label>";
 	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/><br/>";
-	
+	//Test out
 	msg += "<label id='label' for='hasTestOut' title='Add a test out option'>Test out: </label>";
 	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/>";
-	msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
-	msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
-
+	//msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
+	//msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
+    msg += "<select id='testOutSelect'></select>";
+    
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
@@ -736,12 +752,8 @@ function launchPrefs(){
 	
 	$("#hasCourseGlossary").change(function(){
 		if($(this).prop("checked") == true){
-			//console.log("set as course glossary");
-			//courseGlossary = true;
 			$(data).find("glossary").attr("courseGlossary", "true");
 		}else{
-			//console.log("set as module glossary");
-			//courseGlossary = false;
 			$(data).find("glossary").attr("courseGlossary", "false");
 		}
 	});
@@ -772,20 +784,35 @@ function launchPrefs(){
 		$("#hasTestOut").attr('checked', true);
 	}else{
 		$("#hasTestOut").attr('checked', false);
-		$("#inputTestOutLinkLabel").hide();
-		$("#inputTestOutLink").hide();
+		$("#testOutSelect").hide();
+		//$("#inputSurveyLinkLabel").hide();
+		//$("#inputSurveyLink").hide();
 	}
+	
+	$(testOutOption_arr).each(function(){
+		$("#testOutSelect").append($("<option>").attr('value', this.id).text(this.title));
+	});
+	
+	if($(data).find("testout").attr("link") != "null"){
+		$("#testOutSelect").val($(data).find("testout").attr("link"));
+	}
+	
+	$("#testOutSelect").change(function(){
+		console.log($("#testOutSelect option:selected").val());
+	});
 	
 	$("#hasTestOut").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("testout").attr("value", "true");
-			$("#inputTestOutLinkLabel").show();
-			$("#inputTestOutLink").show();
+			$("#testOutSelect").show();
+			//$("#inputSurveyLinkLabel").show();
+			//$("#inputSurveyLink").show();
 			testOut = true;
 		}else{
 			$(data).find("testout").attr("value", "false");
-			$("#inputTestOutLinkLabel").hide();
-			$("#inputTestOutLink").hide();
+			$("#testOutSelect").hide();
+			//$("#inputSurveyLinkLabel").hide();
+			//$("#inputSurveyLink").hide();
 			testOut = false;	
 		}
 	});
@@ -933,9 +960,9 @@ function savePreferences(_pub){
 	
 	if(testOut){
 		$(data).find('testout').attr('value', testoutSelected);
-		testOut = surveySelected;
-		testLink = $("#inputTestOutLink").val();
-		$(data).find('testout').attr('link', $("#inputTestOutLink").val());
+		testOut = testoutSelected;
+		testLink = $("#testOutSelect option:selected").val();
+		$(data).find('testout').attr('link', $("#testOutSelect option:selected").val());
 		updateNeeded = true;
 	}
 	
