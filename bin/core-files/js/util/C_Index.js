@@ -102,6 +102,8 @@ function updateMenuItems(){
 		var thisID = "indexMenuItem"+currentPage;
 		$("#" + thisID).addClass('indexMenuVisited').toggleClass('ui-state-disabled').siblings().removeClass('ui-state-disabled');
 	}
+	
+	try {$("#" + currentIndexItem).addClass('indexActive');} catch (e) {}
 }
 
 
@@ -131,7 +133,9 @@ function checkForGroup(_id){
 
 function clickIndexItem(){
 	if(hoverSubNav == false){
+		try{$("#" + currentIndexItem).removeClass('indexActive');} catch(e){}
 		loadPageFromID($(this).attr("myID"));
+		currentIndexItem = $(this).attr("id");
 		if(indexState){
 			toggleIndex();
 		}

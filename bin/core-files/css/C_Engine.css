@@ -2393,6 +2393,10 @@ ESSAY COMPARE LAYOUTS
             box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
 }
 
+
+.indexActive{
+	color: purple !important;
+}
 /**
  * Nestable Draggable Handles
  */
