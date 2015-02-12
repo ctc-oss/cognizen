@@ -146,16 +146,15 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "branching",
-			"images" : ["ex_Branching.png", "ex_Branching_A.png", "ex_Branching_B.png", "ex_Branching_C.png"]
+			"images" : ["Ex_Branching1.PNG", "Ex_Branching2.PNG", "Ex_Branching3.PNG", "Ex_Branching4.PNG", "Ex_Branching5.PNG", "Ex_Branching6.PNG", "Ex_Branching7.PNG", "Ex_Branching8.PNG", "Ex_Branching9.PNG"]
 		},
 		{
 			"type" : "slider",
 			"images" : ["ex_Slider.png"]
 		},
 		{
-			//TODO: Images needed for chaining
 			"type" : "chaining",
-			"images" : ["ex_Branching.png", "ex_Branching_A.png", "ex_Branching_B.png", "ex_Branching_C.png"]
+			"images" : ["ex_Chaining.PNG", "ex_Chaining1.PNG", "ex_Chaining2.PNG"]
 		}		
 
 	];
@@ -1956,7 +1955,7 @@ function C_Outline(_myItem) {
 			  "infuse", "attach", "decrease/increase", "reduce/elevate", "inform", "sterilize", "prepare"];
 			for (var i = 0; i < application_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", application_arr[i]).text(application_arr[i]));
-			};			
+			};
 		}
 		else if (opTypeValue === "analysis"){
 			var analysis_arr = ["", "examine", "discover", "decode", "derive", "deduce", "interpret", "isolate", "assess", "quantify" ];
