@@ -1,6 +1,6 @@
 body{
 	position: static;
-	background-color:#FEFEFE;
+	background-color:#1A508C;
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
@@ -21,7 +21,7 @@ body{
 	margin-top: -384px;
 	position: absolute;
 	overflow: hidden;
-	background-image: url(images/background.png);
+	background-image: url(images/background_va.png);
 }
 
 #stage {
@@ -263,7 +263,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 102px;
 	right: 398px;
-	color: #9DA6AB;
+	color: #ffffff;
 	font-weight: normal;
 	font-size: 34pt;
 	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
@@ -273,7 +273,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #009DDF;
+	color: #ffffff;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -283,14 +283,15 @@ TREE MENU STYLES
 
 #logout a{
 	text-decoration: none;
+	color: #ffffff;
 }
 
 #logout a:visited{
-	color: #009DDF
+	color: #ffffff;
 }
 
 #logout a:hover{
-	color: #9DA6AB;
+	color: #999999;
 }
 
 #adminAddProgram{
@@ -321,6 +322,7 @@ TREE MENU STYLES
 	right: 65px;
 	width: 550px;
 	height: 500px;
+	background: rgba(255,255,255, .5); 
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 3px;
@@ -331,7 +333,7 @@ TREE MENU STYLES
 	padding: 0px;
 	margin: 0px;
 	list-style: none;
-	color: #9DA6AB;
+	color: #333333;
 	font-weight: normal;
 	font-size: 14pt;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
@@ -357,7 +359,7 @@ TREE MENU STYLES
 
 .treeview li {
 	font-weight: normal;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial";
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
 	margin: 0px;
 	padding: 14px 0pt 0px 0px;
 }
@@ -388,8 +390,8 @@ TREE MENU STYLES
 
 .filetree li { padding: 2px 0px 0px 10px; }
 .filetree span.folder, .filetree span.file { padding: 1px 0px 1px 5px; display: block; }
-.filetree li.collapsable { background: url(images/open.png) no-repeat; background-position:0px 10px;}
-.filetree li.expandable  { background: url(images/closed.png) no-repeat; background-position:0px 10px;}
+.filetree li.collapsable { background: url(images/open_va.png) no-repeat; background-position:0px 10px;}
+.filetree li.expandable  { background: url(images/closed_va.png) no-repeat; background-position:0px 10px;}
 .filetree span.file { background: url(images/file.gif) 0px 0px no-repeat; }
 
 .filetree span.fileHover{}
@@ -1163,7 +1165,7 @@ a.fancybox-expand {
   box-shadow: 0 0 1px #fff;
   position: absolute;
   opacity: 0;
-  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   -webkit-transition: linear 300ms opacity;
   -moz-transition: linear 300ms opacity;
   -o-transition: linear 300ms opacity;
@@ -1171,7 +1173,7 @@ a.fancybox-expand {
 
 .antiscroll-scrollbar-shown {
   opacity: 1;
-  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 }
 
 .antiscroll-scrollbar-horizontal {
