@@ -4046,6 +4046,10 @@ a.fancybox-expand {
 			height: 210px;
 		}
 
+		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect{
+			max-width: 95%;
+		}
+		
 	/*index pane specific*/
 		#indexPane{
 			left: -368px;
