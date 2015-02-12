@@ -147,7 +147,7 @@ function C_Dashboard(_type) {
         var $stage = $('#stage');
         $stage.html('');
 
-        $stage.append("<div id='projListHeader'>projects:</div>");
+        $stage.append("<div id='projListHeader'>my projects:</div>");
 
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
 
