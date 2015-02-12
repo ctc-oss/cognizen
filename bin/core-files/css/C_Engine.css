@@ -1114,6 +1114,7 @@ ul.no-indent {
 	position: relative;
 	margin-right: auto;
 	margin-left: auto;
+	margin-top: 10px;
 	padding-bottom: 10px;
 	width: auto;
 	max-width: 920px;
@@ -3449,6 +3450,10 @@ a.fancybox-expand {
 	#scrollableListPalette .box{
 		width: 318px;
 	}
+	
+	.imgPalette{
+		max-width: 100%;
+	}
 
 	/****************************************************** CONTENT TEXT LAYOUTS END *****/
 
@@ -4043,7 +4048,7 @@ a.fancybox-expand {
 		}
 
 		#essayInput, #expertResponse{
-			height: 210px;
+			height: auto;
 		}
 
 		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect{
