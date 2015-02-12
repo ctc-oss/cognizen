@@ -125,7 +125,20 @@ function C_Slider(_type) {
 		$('#display').val( $('#slider').slider("value") );
 		
 		$("#display").change(function(){
-			$("#slider").slider("value", $("#display").val());
+			var displayValue = $("#display").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#slider").slider("value", myValue);
+				$('#display').val(myValue);		
+			}
+			else if(displayValue > myMax){
+				alert("The value cannot be greater the the max value for the slider.");
+				$("#slider").slider("value", myMax);
+				$('#display').val(myMax);
+			}
+			else{
+				$("#slider").slider("value", displayValue);
+			}
 		});
 		
 		pageAccess_arr.push($("#display"))
@@ -361,7 +374,7 @@ function C_Slider(_type) {
 
 		var msg = "<div id='questionEditDialog' title='Edit slider options'>";
 		msg += "<label id='label' title='Define the number of attempts.'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input type='text' name='inputAttempts' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
@@ -433,6 +446,53 @@ function C_Slider(_type) {
 			$("#isMandatory").attr('checked', 'checked');
 		}
 
+		$("#inputAttempts").change(function(){
+			var displayValue = $("#inputAttempts").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$('#inputAttempts').val(attemptsAllowed);		
+			}
+		});
+
+		$("#max").change(function(){
+			var displayValue = $("#max").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#max").val($(data).find("page").eq(currentPage).find('slider').attr("max"));		
+			}
+		});	
+
+		$("#min").change(function(){
+			var displayValue = $("#min").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#min").val($(data).find("page").eq(currentPage).find('slider').attr("min"));		
+			}
+		});	
+
+		$("#step").change(function(){
+			var displayValue = $("#step").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#step").val($(data).find("page").eq(currentPage).find('slider').attr("step"));		
+			}
+		});
+
+		$("#start").change(function(){
+			var displayValue = $("#start").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#start").val($(data).find("page").eq(currentPage).find('slider').attr("start"));		
+			}
+		});	
+
+		$("#correctanswer").change(function(){
+			var displayValue = $("#correctanswer").val();
+			if(!$.isNumeric(displayValue)){
+				alert("The value must be a numeric value.");
+				$("#correctanswer").val($(data).find("page").eq(currentPage).find('slider').attr("correctanswer"));		
+			}
+		});														
 
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
@@ -462,6 +522,7 @@ function C_Slider(_type) {
 			]
 
 		});
+
 
 		//adds tooltips to the edit dialog buttons
 	    $(function () {
