@@ -1952,33 +1952,36 @@ function C_Outline(_myItem) {
 		}
 		else if(opTypeValue === "application"){
 			var application_arr = ["", "contrast", "compare", "classify", "sort", "perform", "follow procedure", "compute", "demonstrate",
-			 "dramatize", "employ", "operate", "practice", "prepare", "schedule", "show", "sketch", "use"];
+			 "dramatize", "employ", "operate", "practice", "prepare", "schedule", "show", "sketch", "use", "record", "administer", "inject",
+			  "infuse", "attach", "decrease/increase", "reduce/elevate", "inform", "sterilize", "prepare"];
 			for (var i = 0; i < application_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", application_arr[i]).text(application_arr[i]));
 			};			
 		}
 		else if (opTypeValue === "analysis"){
-			var analysis_arr = ["", "examine", "discover", "decode", "derive", "deduce", "interpret"];
+			var analysis_arr = ["", "examine", "discover", "decode", "derive", "deduce", "interpret", "isolate", "assess", "quantify" ];
 			for (var i = 0; i < analysis_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", analysis_arr[i]).text(analysis_arr[i]));
 			};			
 		}
 		else if (opTypeValue === "problem solving"){
 			var problemSolving_arr = ["", "diagnose", "decide", "plan", "formulate", "design", "organize", "solve", "resolve", "demonstrate",
-			 "execute", "implement", "substitute", "hypothesize", "change", "choose", "manipulate", "modify", "produce"];
+			 "execute", "implement", "substitute", "hypothesize", "change", "choose", "manipulate", "modify", "produce", "prescribe", "isolate",
+			 "quantify", "administer", "stabilize", "interpret", "treat", "prevent", "clear", "resuscitate/revive" ];
 			for (var i = 0; i < problemSolving_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", problemSolving_arr[i]).text(problemSolving_arr[i]));
 			}			
 		}
 		else if (opTypeValue === "synthesis"){
 			var synthesis_arr = ["", "brainstorm", "identify alternatives", "forecast", "discover", "combine", "generalize", "summarize",
-			 "transfer", "prioritize", "select", "justify", "propagate", "analogize", "find the procedure", "predict"];
+			 "transfer", "prioritize", "select", "justify", "propagate", "analogize", "find the procedure", "predict", "stabilize", "interpret",
+			 "treat", "prevent", "clear"];
 			for (var i = 0; i < synthesis_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", synthesis_arr[i]).text(synthesis_arr[i]));
 			}		
 		}
 		else if (opTypeValue === "evaluation"){
-			var evaluation_arr = ["", "evaluate", "judge", "correct", "prove", "test", "measure", "check answers", "critique"];
+			var evaluation_arr = ["", "evaluate", "judge", "correct", "prove", "test", "measure", "check answers", "critique", "assess"];
 			for (var i = 0; i < evaluation_arr.length; i++) {
 				$("#actionVerbsList").append($("<option></option>").attr("value", evaluation_arr[i]).text(evaluation_arr[i]));
 			}				
