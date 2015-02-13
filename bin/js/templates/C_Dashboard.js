@@ -22,6 +22,8 @@ function C_Dashboard(_type) {
     var assignParent;
     var myTimer;
     var outlineLaunchItem;
+    var scroller;
+    var scrollTimer;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -154,7 +156,7 @@ function C_Dashboard(_type) {
         /*****************************************************************************
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
-        $stage.append("<ul id='projList' class='filetree'></ul>");
+        $stage.append('<div id="scrollableContent" class="box-wrap antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><ul id="projList" class="filetree"></ul></div></div></div>');
 		//console.log(proj.directories);
         var tree_arr = [];
         //Cycle through the proj object
@@ -275,7 +277,8 @@ function C_Dashboard(_type) {
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType/*, onComplete: getUserList*/});
         }
-    }
+        scroller = $('.box-wrap').antiscroll().data('antiscroll');
+   }
 
     /************************************************************************************************* END OF buildTemplate*/
 
@@ -441,6 +444,7 @@ function C_Dashboard(_type) {
 						$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     }
                 }
+                scrollTimer = setInterval(function () {scrollRefresh()}, 500);
             }
         );
     }
@@ -449,6 +453,12 @@ function C_Dashboard(_type) {
         $("#preloadholder").remove();
         alert("Your request timed out.");
         window.clearInterval(myTimer);
+    }
+
+    function scrollRefresh(){
+        console.log("refreshing");
+		scroller.refresh();
+        window.clearInterval(scrollTimer);
     }
 
 	var moduleLessonWindow;
@@ -460,7 +470,7 @@ function C_Dashboard(_type) {
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
 
-        moduleLessonWindow.focus();
+        try{moduleLessonWindow.focus();} catch(e){};        
     }
 
 	//If closing the dashboard, close the lesson....
