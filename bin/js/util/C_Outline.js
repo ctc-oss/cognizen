@@ -54,11 +54,11 @@ function C_Outline(_myItem) {
     var pageTypeExamples = [
 		{
 			"type" : "textOnly",
-			"images" : ["ex_TextOnly.png", "ex_TextOnly1.png"]
+			"images" : ["ex_textOnly.png", "ex_TextOnly1.png"]
 		},
 		{
 			"type" : "graphicOnly",
-			"images" : ["ex_GraphicOnly.png", "ex_GraphicOnly_Video.png", "ex_GraphicOnly1.png"]
+			"images" : ["ex_graphicOnly.png", "ex_GraphicOnly_Video.png", "ex_GraphicOnly1.png"]
 		},
 		{
 			"type" : "top",
@@ -78,11 +78,11 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "sidebar",
-			"images" : ["ex_Sidebar.png"]
+			"images" : ["ex_sidebar.png"]
 		},
 		{
 			"type" : "clickImage",
-			"images" : ["ex_ClickImage.png", "ex_ClickImage1.png", "ex_ClickImage2.png"]
+			"images" : ["ex_clickImage.png", "ex_ClickImage1.png", "ex_ClickImage2.png"]
 		},
 		{
 			"type" : "tabsOnly",
@@ -90,11 +90,11 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "tabsLeft",
-			"images" : ["ex_TabsLeft.png", "ex_TabsLeft1.png"]
+			"images" : ["ex_tabsLeft.png", "ex_TabsLeft1.png"]
 		},
 		{
 			"type" : "revealRight",
-			"images" : ["ex_RevealRight.png", "ex_RevealRight1.png"]
+			"images" : ["ex_revealRight.png", "ex_RevealRight1.png"]
 		},
 		{
 			"type" : "revealLeft",
@@ -106,15 +106,15 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "flashcard",
-			"images" : ["ex_FlashCards.png", "ex_FlashCards1.png", "ex_GraphicFlashCards.png"]
+			"images" : ["ex_flashCards.png", "ex_FlashCards1.png", "ex_GraphicFlashCards.png"]
 		},
 		{
 			"type" : "sequence",
-			"images" : ["ex_Sequence.png", "ex_Sequence1.png", "ex_Sequence2.png"]
+			"images" : ["ex_sequence.png", "ex_Sequence1.png", "ex_Sequence2.png"]
 		},
 		{
 			"type" : "multipleChoice",
-			"images" : ["ex_MultipleChoice.png", "ex_MultipleChoice1.png", "ex_MultipleChoice2.png"]
+			"images" : ["ex_multipleChoice.png", "ex_MultipleChoice1.png", "ex_MultipleChoice2.png"]
 		},
 		{
 			"type" : "multipleChoiceMedia",
@@ -122,27 +122,27 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "matching",
-			"images" : ["ex_Matching.png", "ex_MatchingMedia1.png", "ex_MatchingMedia2.png"]
+			"images" : ["ex_matching.png", "ex_MatchingMedia1.png", "ex_MatchingMedia2.png"]
 		},
 		{
 			"type" : "questionBank",
-			"images" : ["ex_MultipleChoice.png"]
+			"images" : ["ex_multipleChoice.png"]
 		},
 		{
 			"type" : "completion",
-			"images" : ["ex_Completion.png", "ex_Completion1.png"]
+			"images" : ["ex_completion.png", "ex_Completion1.png"]
 		},
 		{
 			"type" : "textInput",
-			"images" : ["ex_TextInput.png"]
+			"images" : ["ex_textInput.png"]
 		},
 		{
 			"type" : "essayCompare",
-			"images" : ["ex_EssayCompare.png", "ex_EssayCompare_Answers3.png"]
+			"images" : ["ex_essayCompare.png", "ex_EssayCompare_Answers3.png"]
 		},
 		{
 			"type" : "clickListRevealText",
-			"images" : ["ex_ClickListRevealText.png", "ex_ClickListRevealText1.png"]
+			"images" : ["ex_clickListRevealText.png", "ex_ClickListRevealText1.png"]
 		},
 		{
 			"type" : "branching",
