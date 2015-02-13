@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "adm-zip": "0.4.x",
-    "archiver": "0.13.x",
+    "archiver": "0.4.x",
     "bcrypt-nodejs": "0.0.3",
     "connect": "2.8.x",
     "cookie": "0.1.x",
