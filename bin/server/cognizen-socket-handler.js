@@ -1801,6 +1801,11 @@ var SocketHandler = {
         }
     },
 
+    retrieveServer: function(callback){
+        var _this = this;
+        callback(_this.config.server);
+    },
+
     publishContent: function (data, callback){
         var _this = this;
         var user = data.user.username;
