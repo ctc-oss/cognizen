@@ -199,7 +199,7 @@ function C_Completion(_type) {
 
 		}
 
-		if(doScorm() && lms == "JKO"){
+		if(doScorm() && lms == "JKO" && scormVersion != "1.2"){
 			var tmpLessonTitle = lessonTitle;
 			if(review === "true"){
 				var reviewStrip = lessonTitle.split("Review");
@@ -289,7 +289,7 @@ function C_Completion(_type) {
 				scorm.API.getHandle().Terminate("");
 			}
 		}
-		else if(doScorm() && lms != "JKO"){
+		else if(doScorm()){
 			$('<div id="completionButton">Continue</div>').insertAfter("#scoreFeedback");
 			$("#completionButton").css({"width": "200px"});  //moved to css file
 			$("#completionButton").button().click(function(){
