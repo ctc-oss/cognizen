@@ -501,7 +501,6 @@ function addRollovers(myItem){
 ** Index Button Funcitonality
 *************************************************************/
 function toggleIndex(){
-//	console.log("toggleIndex");
 	$("#indexPane").css({'z-index':1});
 	$("#glossaryPane").css({'z-index':0});
 	$("#docPane").css({'z-index':0});
@@ -511,10 +510,6 @@ function toggleIndex(){
 		gimmeIndexPos();
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		$("#C_Index").css("visibility", "visible");
-		/*for(var i = 0; i < indexAccess_arr.length; i++){
-			indexAccess_arr[i].attr("tabindex", 1);//.attr("role", "button");
-			indexAccess_arr[i].css("visibility", "visible");
-		}*/
 		$("#indexMenuItem0").focus();
 		$("#indexTab").attr("aria-label", "click here to close content index currently open");
 	}
@@ -524,11 +519,6 @@ function toggleIndex(){
 		$("#pageTitle").focus();
 		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
 		accHideIndex();
-		/*for(var i = 0; i < indexAccess_arr.length; i++){
-			indexAccess_arr[i].css("visibility","hidden");
-			indexAccess_arr[i].attr("tabindex", -1);
-			//indexAccess_arr[i].removeAttr("role");
-		}*/
 	}
 }
 
