@@ -600,6 +600,12 @@ var Content = {
                     callback(err);
                 });
             });
+            //retrieveServer
+            socket.on('retrieveServer', function (callback) {
+                SocketHandler.socket(socket).retrieveServer(function(err){
+                    callback(err);
+                });
+            });
         });
     });
 })();
