@@ -4194,8 +4194,7 @@ a.fancybox-expand {
 
 		.clickImg img{
 			max-width: 90px;
-			max-height: auto !important;
-			height: auto;
+			max-height: 90px !important;
 		}
 
 		/* FOR REVEAL CONTENT */
