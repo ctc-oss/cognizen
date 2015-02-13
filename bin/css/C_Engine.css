@@ -286,7 +286,7 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #009DDF
+	color: #009DDF;
 }
 
 #logout a:hover{
