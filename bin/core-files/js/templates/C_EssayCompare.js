@@ -65,7 +65,7 @@ function C_EssayCompare(_type) {
 		var msg = '<div id="scrollableContent" class="antiscroll-wrap text">';
 		msg += '<div class="box">'
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
-		msg += '<div id="questionHolder" class="overthrow antiscroll-inner"></div>';
+		msg += '<div id="questionHolder"></div>';
 		msg += '<div id="essayCompareHolder" class="essayCompareHolder">';
 		msg += '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
 		msg += '</div></div></div></div>';		

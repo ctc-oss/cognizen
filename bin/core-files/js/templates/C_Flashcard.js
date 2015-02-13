@@ -74,7 +74,11 @@ function C_Flashcard(_type) {
 		// So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 //        $("#scrollableContent").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		$("#content").append(myContent);
+		if(isMobilePhone){
+			$("#contentHolder").prepend(myContent);
+		}else{
+			$("#content").append(myContent);
+		}
 		//$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
         //pageAccess_arr.push($("#content"));
 

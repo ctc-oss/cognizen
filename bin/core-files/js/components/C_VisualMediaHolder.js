@@ -138,12 +138,26 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	if(type == "top" || type == "tabsLeft"){
 		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertAfter($("#content"));
 	}else if(type == "bottom"){
-		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertBefore($("#content"));
+		if(isMobilePhone){
+			$("#contentHolder").prepend('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
+		}else{
+			$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertBefore($("#content"));
+		}
 	}else if(type == "multipleChoiceMedia"){
 		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertAfter($("#question"));
 	// inline images and text on mobile
 	}else if(isMobile && (type == "left" || type == "right")){
-    	$('#content').prepend('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
+		var myContent = '<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>';
+		if(isMobilePhone){
+			if(type == "left"){
+				$("#contentHolder").append(myContent);
+			}
+			if(type == "right"){
+				$("#contentHolder").prepend(myContent);
+			}
+		}else{
+			$("#content").prepend(myContent);
+		}
 
 	}else {
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');

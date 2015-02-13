@@ -527,7 +527,7 @@ CONTENT TEXT LAYOUTS*/
 	/*padding-right: 15px;*/
 }
 
-#content p{
+#contentHolder p{
 	margin-top: 0px;
 }
 
@@ -1110,14 +1110,17 @@ ul.no-indent {
 	padding: 0em 1em .1em 1em  !important;
 }
 
-.imgPalette{
+.imgPalette, .buttonPalette{
 	position: relative;
 	margin-right: auto;
 	margin-left: auto;
-	margin-top: 10px;
 	padding-bottom: 10px;
 	width: auto;
 	max-width: 920px;
+}
+
+.buttonPalette{
+	margin-top: 10px;
 }
 
 .clickImg{
@@ -1503,7 +1506,7 @@ MEDIA LAYOUTS
 .mediaBrowserDisplay{
 	position			  : relative;
 	float				  : right;
-	overflow: 			  : hidden;	
+	overflow 			  : hidden;	
 	background-color      : rgba(255, 255, 255, .9);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
@@ -1514,7 +1517,7 @@ MEDIA LAYOUTS
 	max-height            : 700px;
 	border-style		  : solid;
     border-width		  : 1px;
-    border-color: 		  : #333;
+    border-color 		  : #333;
     color			      : #333;
 	font-family           : Arial, Helvetica, sans-serif;
 	font-size             : 12pt;
@@ -1663,7 +1666,7 @@ MEDIA LAYOUTS
 .transcriptDisplay{
 	position			  : relative;
 	float				  : right;
-	overflow: 			  : scroll;	
+	overflow 			  : scroll;	
 	background-color      : rgba(255, 255, 255, .8);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
@@ -1674,7 +1677,7 @@ MEDIA LAYOUTS
 	max-height            : 200px;
 	border-style		  : solid;
     border-width		  : 1px;
-    border-color: 		  : #333;
+    border-color 		  : #333;
     color			      : #333;
 	font-family           : Arial, Helvetica, sans-serif;
 	font-size             : 12pt;
@@ -3451,7 +3454,7 @@ a.fancybox-expand {
 		width: 318px;
 	}
 	
-	.imgPalette{
+	.buttonPalette{
 		max-width: 100%;
 	}
 
@@ -3952,7 +3955,7 @@ a.fancybox-expand {
 			width: 100% !important;
 		}
 
-		#content, #questionHolder, #sliderHolder, #textInputHolder{
+		#contentHolder, #questionHolder, #sliderHolder, #textInputHolder{
 			padding-left: 3%;
 			padding-right: 3%;
 			width: 94% !important;
@@ -4135,6 +4138,8 @@ a.fancybox-expand {
 		.clickListTextHolder{
 			border-radius: 8px;
 			width: 100%;
+			margin-top: 3px;
+			margin-bottom: 5px;
 		}
 		
 		.clickListTextHolder .box{

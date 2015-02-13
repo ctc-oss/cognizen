@@ -148,7 +148,11 @@ function C_MultipleChoice(_type) {
 
 		//Set Question
 		myContent = $(data).find("page").eq(currentPage).find('question').text();
-		$("#question").append(myContent);
+		if(isMobilePhone){
+			$("#contentHolder").prepend(myContent);
+		}else{
+			$("#question").append(myContent);
+		}
 
 		//var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
 		//$("#question").attr("aria-label", ariaText);

@@ -75,7 +75,11 @@ function C_StaticContent(_type) {
 		   // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		   //$("#content").width($("#contentHolder").width()-15);
-		   $("#content").append(myContent);
+			if(isMobilePhone){
+				$("#contentHolder").prepend(myContent);
+			}else{
+			   $("#content").append(myContent);
+			}
 		   //$("#content").attr("role", "main");
 		   //$("#content").attr("aria-label", $("#content").text());
 		   //pageAccess_arr.push($("#content"));
@@ -90,7 +94,7 @@ function C_StaticContent(_type) {
             doAccess(pageAccess_arr);
         }else if(type == "sidebar"){
         	if(isMobile){
-        		$('#content').prepend('<div id="sidebarHolder"><div id="sidebar" class="sidebar"></div></div>');
+        		$('#contentHolder').prepend('<div id="sidebarHolder"><div id="sidebar" class="sidebar"></div></div>');
 				$('#sidebar').append(mySidebar);
         	}else{
 				$('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');

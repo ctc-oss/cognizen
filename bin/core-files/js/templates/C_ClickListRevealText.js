@@ -58,11 +58,11 @@ function C_ClickListRevealText(_type) {
 			// So we do it twice to get the right value
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 
-        $("#content").append(myContent);
-
 		if(isMobilePhone){
+			$("#contentHolder").prepend(myContent);
 			$("<form action='#'><select name='listPaletteMenu' id='listPaletteMenu'></select></form>").insertAfter("#content");
 		}else{
+			$("#content").append(myContent);
 			$("<div id='scrollableListPalette' class='antiscroll-wrap'><div class='box'><div id='listPalette' class='listPalette overthrow antiscroll-inner'></div></div></div>").insertAfter("#content");
         }
 

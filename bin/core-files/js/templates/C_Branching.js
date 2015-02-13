@@ -64,7 +64,7 @@ function C_Branching(_type) {
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
-		try { $("#imgPalette").remove(); } catch (e) {}
+		try { $("#buttonPalette").remove(); } catch (e) {}
 		
 		clearMainCKEInstances();
 
@@ -105,10 +105,15 @@ function C_Branching(_type) {
 		    // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 		    // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		    $("#content").width($("#contentHolder").width()-15);
-		    $("#content").append(myContent);
-		    $("#content").attr("aria-label", $("#content").text());
-		    //pageAccess_arr.push($("#content"));
+		    
+		    if(isMobilePhone){
+				$("#contentHolder").prepend(myContent);
+			}else{
+				$("#content").width($("#contentHolder").width()-15);
+				$("#content").append(myContent);
+				$("#content").attr("aria-label", $("#content").text());
+				//pageAccess_arr.push($("#content"));
+		    }
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
@@ -146,23 +151,23 @@ function C_Branching(_type) {
 		if(branchCount > 0){
 			var paletteWidth = 0;
 			if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
-				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
+				$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
 			}else{
-				$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
+				$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#content");
 			}
 
 			for (var i = 0; i < branchCount; i++){
 				var buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
 				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).attr("id");
 				var myOption = "option"+i;
-				$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+				$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
 				});
 				paletteWidth += $("#"+myOption).width() + 5;
 				pageAccess_arr.push($("#"+myOption));
 			}
-			$("#imgPalette").width(paletteWidth);
+			$("#buttonPalette").width(paletteWidth);
 		}
 	}
 

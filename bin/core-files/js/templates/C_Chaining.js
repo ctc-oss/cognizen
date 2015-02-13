@@ -75,7 +75,7 @@ function C_Chaining(_type) {
 		try { $("#mediaHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
-		try { $("#imgPalette").remove(); } catch (e) {}
+		try { $("#buttonPalette").remove(); } catch (e) {}
 		clearMainCKEInstances();
 
 		//remove existing scrollable content.
@@ -115,10 +115,15 @@ function C_Chaining(_type) {
 		    // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 		    // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		    $("#content").width($("#contentHolder").width()-15);
-		    $("#content").append(myContent);
-		    $("#content").attr("aria-label", $("#content").text());
-		    pageAccess_arr.push($("#content"));
+
+		    if(isMobilePhone){
+				$("#contentHolder").prepend(myContent);
+			}else{
+				$("#content").width($("#contentHolder").width()-15);
+				$("#content").append(myContent);
+				$("#content").attr("aria-label", $("#content").text());
+				pageAccess_arr.push($("#content"));
+			}
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
@@ -156,9 +161,9 @@ function C_Chaining(_type) {
 
 		var paletteWidth = 0;
 		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
-			$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#mediaHolder");
+			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
 		}else{
-			$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
+			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#content");
 		}
 
 
@@ -167,7 +172,7 @@ function C_Chaining(_type) {
 			var buttonLabel = 'Back';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
 			var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_backId).attr("id");
 			var myOption = "option0";
-			$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
+			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
 				pageTracker--;
 				loadBranchByID($(this).attr("mylink"));
@@ -181,7 +186,7 @@ function C_Chaining(_type) {
 			var buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
 			var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_nextId).attr("id");
 			var myOption = "option1";
-			$("#imgPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
+			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
 				pageTracker++;
 				loadBranchByID($(this).attr("mylink"));
@@ -189,7 +194,7 @@ function C_Chaining(_type) {
 			paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
-		$("#imgPalette").width(paletteWidth);
+		$("#buttonPalette").width(paletteWidth);
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
