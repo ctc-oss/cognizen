@@ -635,7 +635,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
 			var newFront1 = new DOMParser().parseFromString('<term></term>',  "text/xml");
-			var newBack1 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
+			var newBack1 = new DOMParser().parseFromString('<definition></definition>',  "text/xml");
 			var frontCDATA1 = newFront1.createCDATASection("New Card Term");
 			var backCDATA1 = newBack1.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(0).find("term").append(frontCDATA1);
@@ -643,7 +643,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<card><term/><definition/></card>"));
 			var newFront2 = new DOMParser().parseFromString('<term></term>',  "text/xml");
-			var newBack2 = new DOMParser().parseFromString('<defintion></definition>',  "text/xml");
+			var newBack2 = new DOMParser().parseFromString('<definition></definition>',  "text/xml");
 			var frontCDATA2 = newFront2.createCDATASection("New Card Term");
 			var backCDATA2 = newBack2.createCDATASection("New Card Definition");
 			$(data).find("page").eq(newPage).find("card").eq(1).find("term").append(frontCDATA2);
