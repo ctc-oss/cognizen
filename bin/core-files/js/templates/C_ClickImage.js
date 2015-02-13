@@ -24,6 +24,8 @@ function C_ClickImage(_type) {
 	var isFirst = true;
 	var useKeyboard = false;
 	var labeled = false;
+	var scroller;
+    var scrollTimer;
 	
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -157,10 +159,6 @@ function C_ClickImage(_type) {
 
 		//Insert the Text Display area.
 		$("<div class='clickImgTextHolder'><div id='clickImgText' class='clickImgText' tabindex=-1></div></div><br/><br/>").insertAfter("#imgPalette");
-		if(isIE || isFF){
-			ieWidth = $("#clickImgTextHolder").width();
-			$("<br/><br/>").insertAfter(".clickImgTextHolder");
-		}
 		checkMode();
 		if(transition == true){
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -195,25 +193,14 @@ function C_ClickImage(_type) {
 				useKeyboard = false;
 			}
 		}
-
-		if(isIE || isFF){
-			if(ieHeight == null){
-				ieHeight = $("#clickImgText").height();// - 30;
-				ieWidth = $("#clickImgText").width() - 17;
-			}
-			$("#clickImgText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '34px'});
-		}
-
-		if(isIE){
-			$("#contentHolder").width($("#contentHolder").width() - 17);
-		}
-		if(isFF){
-			$("#contentHolder").width($("#contentHolder").width() - 15);
-		}
-
-		$('.antiscroll-wrap').antiscroll();
+        scrollTimer = setInterval(function () {scrollRefresh()}, 500);
 	}
 
+    function scrollRefresh(){
+    	console.log(scroller);
+        window.clearInterval(scrollTimer);
+		scroller.refresh();
+    }
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
@@ -221,7 +208,7 @@ function C_ClickImage(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 		$(this).scrubContent();
-		$('.antiscroll-wrap').antiscroll();
+		scroller = $('.antiscroll-wrap').antiscroll();
 
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);
