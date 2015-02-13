@@ -21,6 +21,7 @@ function C_TabbedContent(_type) {
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
     var currentSelected;
+    var scroller;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -116,10 +117,11 @@ function C_TabbedContent(_type) {
 				currentSelected.attr("aria-selected", "true");
 				var temp = $(this).parent().attr("aria-controls");
 				$("#"+temp).focus();
+				scrollTimer = setInterval(function () {scrollRefresh()}, 500);
 			}).keypress(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 			    if (chCode == 32 || chCode == 13){
-				    toggleIndex();
+				    $(this).click();
 				}
 		    });
 			pageAccess_arr.push($tabis.eq(i).find('a'));
@@ -146,7 +148,16 @@ function C_TabbedContent(_type) {
 
 		doAccess(pageAccess_arr);
 	}
-
+	
+	 function scrollRefresh(){
+        console.log("refreshing");
+		scroller.refresh();
+        window.clearInterval(scrollTimer);
+    }
+	
+	var scrollTimer;
+	
+	
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	PAGE EDIT FUNCTIONALITY
@@ -155,6 +166,7 @@ function C_TabbedContent(_type) {
 	function checkMode(){
 
 		$('.antiscroll-wrap').antiscroll();
+		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);
