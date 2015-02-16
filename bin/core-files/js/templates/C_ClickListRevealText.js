@@ -22,6 +22,8 @@ function C_ClickListRevealText(_type) {
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
     var isFirst = true;
+	var scroller;
+    var scrollTimer;
 
      //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -105,10 +107,6 @@ function C_ClickListRevealText(_type) {
 			$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex='0'></div></div></div><br/><br/>").insertAfter("#listPaletteMenu");
 		}else{
 			$("<div id='clickListTextHolder' class='clickListTextHolder antiscroll-wrap'><div class='box'><div id='clickListText' class='clickListText antiscroll-inner' tabindex='0'></div></div></div><br/><br/>").insertAfter("#scrollableListPalette");
-			if(isIE || isFF){
-				ieWidth = $("#clickListTextHolder").width();
-				$("<br/><br/>").insertAfter(".clickListTextHolder");
-			}
 
 			$(".listPalette").height($("#stage").height() - ($("#scrollableContent").position().top + $("#content").height() + $("#scrollableListPalette").position().top + audioHolder.getAudioShim() ));
 			$("#clickListTextHolder").height($(".listPalette").height());
@@ -141,23 +139,17 @@ function C_ClickListRevealText(_type) {
 		}else{
 			$("#clickListText").focus();
 		}
-
-		if(isIE || isFF){
-			if(ieHeight == null){
-				ieHeight = $("#clickListText").height();// - 30;
-				ieWidth = $("#clickListText").width() - 17;
-			}
-			$("#clickListText").css({'height': ieHeight, 'max-height': ieHeight, 'width':ieWidth, 'max-width': ieWidth, 'margin-right': '-17px', 'padding-right': '17px'});
-			$("#contentHolder").height($("#contentHolder").height() - 17);
-		}
-		
-		$('.antiscroll-wrap').antiscroll();
-		
+        scrollTimer = setInterval(function () {scrollRefresh()}, 500);
 	}
+
+    function scrollRefresh(){
+        window.clearInterval(scrollTimer);
+		scroller.refresh();
+    }
 
 	function checkMode(){
 		$(this).scrubContent();
-		$('.antiscroll-wrap').antiscroll();
+		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);

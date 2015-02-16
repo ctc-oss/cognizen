@@ -197,7 +197,6 @@ function C_ClickImage(_type) {
 	}
 
     function scrollRefresh(){
-    	console.log(scroller);
         window.clearInterval(scrollTimer);
 		scroller.refresh();
     }
@@ -208,7 +207,7 @@ function C_ClickImage(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 		$(this).scrubContent();
-		scroller = $('.antiscroll-wrap').antiscroll();
+		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);

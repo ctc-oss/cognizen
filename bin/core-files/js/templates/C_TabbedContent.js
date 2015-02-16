@@ -164,7 +164,6 @@ function C_TabbedContent(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 
-		$('.antiscroll-wrap').antiscroll();
 		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 
 		if(mode == "edit"){
