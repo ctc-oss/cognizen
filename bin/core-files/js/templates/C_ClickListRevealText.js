@@ -145,12 +145,14 @@ function C_ClickListRevealText(_type) {
     function scrollRefresh(){
         window.clearInterval(scrollTimer);
 		scroller.refresh();
+		listContentScroller.refresh();
     }
 
 	function checkMode(){
 		$(this).scrubContent();
-		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
-
+		scroller = $('#scrollableContent').antiscroll().data('antiscroll');
+		listContentScroller = $('.clickListTextHolder').antiscroll().data('antiscroll');
+		
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
