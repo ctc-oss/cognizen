@@ -524,7 +524,7 @@ CONTENT TEXT LAYOUTS*/
 	overflow: auto;
 	background: none;
 	border-width: 0px;
-	/*padding-right: 15px;*/
+	padding-right: 10px;
 }
 
 #contentHolder p{
