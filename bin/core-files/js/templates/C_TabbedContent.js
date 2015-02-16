@@ -150,9 +150,8 @@ function C_TabbedContent(_type) {
 	}
 	
 	 function scrollRefresh(){
-        console.log("refreshing");
-		scroller.refresh();
         window.clearInterval(scrollTimer);
+		scroller.refresh();
     }
 	
 	var scrollTimer;
