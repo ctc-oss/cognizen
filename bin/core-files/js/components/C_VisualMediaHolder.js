@@ -52,6 +52,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
 
 	var oldIE = false;
+	var scroller;
+	var scrollTimer;
 
     //Populate Key Variables
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
@@ -159,8 +161,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			$("#content").prepend(myContent);
 		}
 
-	}else {
+	}else if(type == "graphicOnly"){
     	$('#contentHolder').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
+	}else{
+    	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
 
     if(mode == 'edit' && rootType != 'branching'){
@@ -514,8 +518,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
         }
 
         if(type == "graphicOnly" || type == "top" || type == "bottom"){
-        	console.log("antiscroll");
-			$('.antiscroll-wrap').antiscroll();
+			scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
         }
 
         if(mode == "edit" && $(data).find("page").eq(currentPage).attr('layout') != 'branching'){
