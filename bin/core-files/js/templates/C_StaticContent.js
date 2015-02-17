@@ -48,9 +48,7 @@ function C_StaticContent(_type) {
         pageTitle = new C_PageTitle();
 
         //Add classes for page layouts - updatable in css
-		if(type != "graphicOnly"){
-			$('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
-		}
+		$('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 
 		audioHolder = new C_AudioHolder();
 
@@ -69,12 +67,12 @@ function C_StaticContent(_type) {
             $("#contentHolder").addClass("graphic");
         }
 
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
+		// So we do it twice to get the right value  -- Dingman's famous quantum variable!
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+
         if(type != "graphicOnly"){
-		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		   // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
-		   // So we do it twice to get the right value  -- Dingman's famous quantum variable!
-		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		   //$("#content").width($("#contentHolder").width()-15);
 			if(isMobilePhone){
 				$("#contentHolder").prepend(myContent);
 			}else{

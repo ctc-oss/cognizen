@@ -160,7 +160,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		}
 
 	}else {
-    	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
+    	$('#contentHolder').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
 
     if(mode == 'edit' && rootType != 'branching'){
@@ -513,7 +513,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
         	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
         }
 
-        if(type == "top" || type == "bottom"){
+        if(type == "graphicOnly" || type == "top" || type == "bottom"){
+        	console.log("antiscroll");
 			$('.antiscroll-wrap').antiscroll();
         }
 
