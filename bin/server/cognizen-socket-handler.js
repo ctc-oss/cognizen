@@ -1390,6 +1390,7 @@ var SocketHandler = {
 			}
 		}
 		for(var j = 0; j < activeOutline_arr.length; j++){
+			console.log(activeOutline_arr[i].courseID);
 			if(data == activeOutline_arr[i].courseID){
 				allow = false;
 				activeOutlineEditor = activeOutline_arr[i].username;
@@ -1411,6 +1412,8 @@ var SocketHandler = {
 			_this._socket.emit('generalError', {title: 'OutlinerLocked', message: myMessage});
 		}else{
 			var tmpObj = new Object();
+			console.log("----------------------------|||||||||||||||||||||");
+			console.log(data);
 			tmpObj.courseID = data;
 			var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 			tmpObj.username = _this.SocketSessions.socketUsers[sessionId].username;
