@@ -1400,7 +1400,6 @@ var SocketHandler = {
 
 		if(allow == false){
 			var myMessage;
-
 			if(activeOutlineEditor != null){
 				myMessage = activeOutlineEditor + ' is currently using the outliner on this course. Please contact them to request control or try again later.';
 			}else{
