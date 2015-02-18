@@ -17,6 +17,7 @@ function C_StaticContent(_type) {
     var mySidebar;
     var myContent;//Body
     // var audioHolder;
+    var scroller;
 
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -48,9 +49,7 @@ function C_StaticContent(_type) {
         pageTitle = new C_PageTitle();
 
         //Add classes for page layouts - updatable in css
-		if(type != "graphicOnly"){
-			$('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
-		}
+		$('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 
 		audioHolder = new C_AudioHolder();
 
@@ -69,12 +68,12 @@ function C_StaticContent(_type) {
             $("#contentHolder").addClass("graphic");
         }
 
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		// WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
+		// So we do it twice to get the right value  -- Dingman's famous quantum variable!
+		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+
         if(type != "graphicOnly"){
-		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		   // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
-		   // So we do it twice to get the right value  -- Dingman's famous quantum variable!
-		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		   //$("#content").width($("#contentHolder").width()-15);
 			if(isMobilePhone){
 				$("#contentHolder").prepend(myContent);
 			}else{
@@ -83,6 +82,9 @@ function C_StaticContent(_type) {
 		   //$("#content").attr("role", "main");
 		   //$("#content").attr("aria-label", $("#content").text());
 		   //pageAccess_arr.push($("#content"));
+	    }else if(isIE || isFF){
+	    	// Workaround for IE and FF.  Not sure why this is needed again. -Ryan
+			$("#contentHolder").height($("#contentHolder").height() - 17);
 	    }
 
         /*Attach Media*/
@@ -145,7 +147,7 @@ function C_StaticContent(_type) {
     	$(this).scrubContent();
 
      	if(type != "graphicOnly" && type != "top" && type !="bottom"){
-			$('.antiscroll-wrap').antiscroll();
+			scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 		}
 
 		try { $("#sidebar").width($("#sidebar").width() + 10); } catch (e) {}
