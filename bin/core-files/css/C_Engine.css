@@ -544,6 +544,13 @@ CONTENT TEXT LAYOUTS*/
 	width: 924px;
 }
 
+#graphicHolder{
+	width: 970px;
+	height: 596px;
+	left: 30px;
+	overflow: scroll;
+}
+
 .box{
 	width: 970px;
 }

@@ -159,6 +159,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 			$("#content").prepend(myContent);
 		}
 
+	} else if (type == "graphicOnly"){
+		//<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner">
+    	$('#stage').append('<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div></div></div>');
+    	$("#graphicHolder").height(stageH - ($("#graphicHolder").position().top + audioHolder.getAudioShim()));
+    	//$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}else {
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
@@ -335,6 +340,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 
 	                $("#mediaHolder").css({'width': imageWidth});
 	                $("#loader").css({'width': imageWidth, 'height': imageHeight});
+	                if(type == "graphicOnly"){
+	                	$('.antiscroll-wrap').antiscroll();
+	                }
 
 	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
 			});

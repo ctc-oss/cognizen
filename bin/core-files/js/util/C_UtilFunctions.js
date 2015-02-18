@@ -221,7 +221,7 @@ function fadeComplete() {
   	try { $("#sliderHolder").remove(); } catch (e) {}
   	try { $("#timerDisplay").remove(); } catch (e) {}
   	try { $("#imgPalette").remove(); } catch (e) {}
-
+  	try { $("#graphicHolder").remove(); } catch(e){}
 	try{
 		for(name in CKEDITOR.instances){
 			try { CKEDITOR.instances[name].destroy(); } catch (e) {}
