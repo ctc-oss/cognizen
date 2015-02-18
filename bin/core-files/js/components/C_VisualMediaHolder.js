@@ -160,7 +160,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		}
 
 	} else if (type == "graphicOnly"){
-		//<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner">
     	$('#stage').append('<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div></div></div>');
     	$("#graphicHolder").height(stageH - ($("#graphicHolder").position().top + audioHolder.getAudioShim()));
     	//$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
@@ -175,7 +174,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
     }
     var tempID = "#loader";
 
-    //pageAccess_arr.push($("#loader"));
 
     this.loadVisualMedia = function() {
 
