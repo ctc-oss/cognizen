@@ -417,6 +417,9 @@ function C_Chaining(_type) {
 
 		addOption(currentEditBankMember, false);
 		
+		//#3321 fixes dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		
 		//Style it to jQuery UI dialog
 		$("#branchEditDialog").dialog({
 			autoOpen: true,
