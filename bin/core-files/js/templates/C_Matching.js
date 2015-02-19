@@ -742,6 +742,9 @@ function C_Matching(_type) {
 			addAnswer(j, false);
 		}
 
+		//#3321 fixes dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,

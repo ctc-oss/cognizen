@@ -649,6 +649,9 @@ function C_TextInput(_type) {
 			addDropDownOption(k, false);
 		};		
 
+		//#3321 fixes dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
