@@ -204,6 +204,8 @@ function C_QuestionBank(_type) {
 
 		if(correctCount > 1){
 			isMulti = true;
+		}else{
+			isMulti = false;
 		}
 
 		//Set Question
