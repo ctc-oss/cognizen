@@ -1075,7 +1075,7 @@ function checkSurvey(){
 		surveyLink = $(data).find('survey').attr('link');
 		if($(data).find('survey').attr('value') == "true"){
 			hasSurvey = true;
-			$("#myCanvas").append("<button id='survey' aria-label='Click here to take a survey.'>comment</button>");
+			$("#myCanvas").append("<button id='survey' aria-label='Click here to take a survey.'>COMMENT</button>");
 		}else{
 			hasSurvey = false;
 		}
@@ -1100,7 +1100,7 @@ function checkTestOut(){
 		testLink = $(data).find('testout').attr('link');
 		if($(data).find('testout').attr('value') == "true"){
 			testOut = true;
-			$("#myCanvas").append("<button id='testOut' aria-label='Click here to got directly to the test.'>test out</button>");
+			$("#myCanvas").append("<button id='testOut' aria-label='Click here to got directly to the test.'>TEST OUT</button>");
 		}else{
 			testOut = false;
 		}
