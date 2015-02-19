@@ -141,7 +141,11 @@ function C_Chaining(_type) {
 
 			$('#sidebar').height($('#sidebarHolder').height());
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
-			pageAccess_arr.push($("#sidebar"));
+			
+			if(transition == true){
+	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			}
+			
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
