@@ -744,7 +744,7 @@ function C_Matching(_type) {
 
 		//#3321 fixes dialog jumping issue
 		$.ui.dialog.prototype._focusTabbable = function(){};
-		
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
@@ -881,7 +881,7 @@ function C_Matching(_type) {
 		var msg = "<div id='"+answerID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+answerID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this answer'/>";
 		msg += "<label id='label'>Answer "+ answerLabel +" Match: </label>";
-		msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='dialogInput' style='width:35px; text-align:center' title='Click here to edit the answer label.'/><br/>";
+		msg += "<input type='text' name='myLabel' id='"+answerID+"Match' value='"+ myLabel +"' class='dialogInput' style='width:35px; text-align:center' title='Click here to edit the answer label. This value must be an uppercase letter.'/><br/>";
 		if(type == "matching"){
 			var answerContent = $(data).find("page").eq(currentPage).find("answer").eq(_addID).find("content").text();
 			msg += "<div id='"+answerID+"Input'>Answer " + answerLabel + " Text:</div>";
@@ -909,6 +909,9 @@ function C_Matching(_type) {
 			    }
 			});
 		}
+
+		//#3392
+		$('#'+answerID+'Match').alpha("upper");
 
 		$("#" +answerID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
@@ -938,7 +941,7 @@ function C_Matching(_type) {
 		var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
 		msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
-		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;' title='Click here to edit the option label.'/><br/>";
+		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;' title='Click here to edit the option label. This value must be an uppercase letter.'/><br/>";
 		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();
 		msg +="<div id='"+optionID+"Input'>Option " + optionLabel + " Text:</div>";
 		msg += "<div id='"+optionID+"Text' class='dialogInput' contenteditable='true'>" + optionContent + "</div>";
@@ -957,6 +960,9 @@ function C_Matching(_type) {
 		    	}
 		    }
 		});
+		
+		//#3392
+		$('#'+optionID+'Match').alpha("upper");
 
 		$("#" +optionLabel+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
