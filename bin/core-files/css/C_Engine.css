@@ -1689,6 +1689,8 @@ MEDIA LAYOUTS
 	font-family           : Arial, Helvetica, sans-serif;
 	font-size             : 12pt;
 	padding               : 5px;
+	margin-right		  : -22px;
+	padding-right		  : 22px;
 }
 
 /*.antiscroll-scrollbar{

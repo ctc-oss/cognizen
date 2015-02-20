@@ -106,11 +106,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	}
 	
 	function displayTranscriptText(){
-		$("#transcriptDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="box"><div id="transcriptHolder" class="overthrow antiscroll-inner"><div id="transcript">'+transcriptText+'</div></div></div></div>');
-		$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height"));
-		$("#scrollableTranscript").width($(".transcriptDisplay").css("max-width"));
-		$("#transcriptHolder").height($(".transcriptDisplay").css("max-height"));
-		$("#transcriptHolder").width($(".transcriptDisplay").css("max-width"));
+		$("#transcriptDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="transcriptbox"><div id="transcriptHolder" class="overthrow antiscroll-inner">'+transcriptText+'</div></div></div>');
+		//$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height") - 10);
+		//$("#scrollableTranscript").width($(".transcriptDisplay").css("max-width") - 10);
+		//$("#transcriptHolder").height($(".transcriptDisplay").css("max-height") - 30);
+		//$("#transcriptHolder").width($(".transcriptDisplay").css("max-width") - 30);
 		$('#scrollableTranscript').antiscroll();
 	}
 	
