@@ -217,6 +217,10 @@ function completeLesson(completion, success, score, remediate, attemptExceeded){
 			}
 
 		}
+		else if($(courseData).find("course").attr("lms") === 'CTCU'){
+			scorm.set("cmi.exit", "normal");
+			scorm.API.getHandle().Terminate("");			
+		}
 		else{
 			scorm.quit();
 		}

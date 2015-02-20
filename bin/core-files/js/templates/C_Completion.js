@@ -101,7 +101,18 @@ function C_Completion(_type) {
 			}
 
 			if(score_obj.passed){
-				scoreText = '<p class="completionText">You received a passing score for this lesson. ';
+				if(lms === 'CTCU'){
+					scoreText = 'Congratulations! You earned a passing score for this lesson. <br/>'+
+					'<b>Please read and sign Form 638, Classified Automated Information Systems User Acknowledgement</b>, <br/>'+
+					'and submit it to your local Information Systems Security Manager (ISSM). Form 638 must be submitted annually to maintain compliance. <br/>'+
+					'To access Form 638, click this link or copy the link into your web browser: <br/>'+
+					'<a href="http://qpulse1/QPulseDocumentService/Documents.svc/documents/active/attachment?number=638" target="_blank">http://qpulse1/QPulseDocumentService/Documents.svc/documents/active/attachment?number=638</a><br/>'+ 
+					'Form 638 can also be found in the Forms section of the iWeb.<br/>'+
+					'<p class="completionText">';
+				}
+				else{
+					scoreText = '<p class="completionText">You received a passing score for this lesson. ';
+				}
 			}else{
 				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
 			}

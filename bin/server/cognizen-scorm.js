@@ -208,9 +208,9 @@ var SCORM = {
 
 							                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
 
-							                if(_this.scormVersion === '1.2_CTCU'){
-							                	scormBasePath = _this.scormPath + '/1.2/';
-							                }
+							                // if(_this.scormVersion === '1.2_CTCU'){
+							                // 	scormBasePath = _this.scormPath + '/1.2/';
+							                // }
 
 							                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
 
@@ -277,6 +277,10 @@ var SCORM = {
 	_populateManifest: function(res){
 		var _this = this;
         var manifest;
+	    
+	    var courseAttr = _this._parseCourseAttr();
+         
+        var _lms = courseAttr.lms;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
@@ -287,13 +291,20 @@ var SCORM = {
     			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
     			"	xmlns:adlnav = \"http://www.adlnet.org/xsd/adlnav_v1p3\" \n"+
     			"	xmlns:imsss = \"http://www.imsglobal.org/xsd/imsss\" \n"+
-    			"	xmlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\" \n"+
-    			"	xsi:schemaLocation = \"http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+    			"	xmlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\" \n";
+    		if (_lms === 'CTCU'){
+	        	manifest += '    xmlns:c2lcp="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1"';
+	        }	
+    		manifest += "	xsi:schemaLocation = \"http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
-    			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\">\n"+
-	            "   <metadata>\n"+
+    			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n";
+	        if (_lms === 'CTCU'){
+	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';
+	        }
+	        manifest += '\">\n';    			
+	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
 	            "   </metadata>\n";
@@ -335,13 +346,20 @@ var SCORM = {
     			"	xmlns:adlseq = \"http://www.adlnet.org/xsd/adlseq_v1p3\" \n"+
     			"	xmlns:adlnav = \"http://www.adlnet.org/xsd/adlnav_v1p3\" \n"+
     			"	xmlns:imsss = \"http://www.imsglobal.org/xsd/imsss\" \n"+
-    			"	xmlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\" \n"+
-    			"	xsi:schemaLocation = \"http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
+    			"	xmlns:xsi = \"http://www.w3.org/2001/XMLSchema-instance\" \n";
+	        if (_lms === 'CTCU'){
+	        	manifest += '    xmlns:c2lcp="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1"';
+	        }    			
+    		manifest += "	xsi:schemaLocation = \"http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd\n"+
     			"							http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd\n"+
-    			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\">\n"+
-	            "   <metadata>\n"+
+    			"							http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd\n";
+    		if (_lms === 'CTCU'){
+	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';
+	        }
+	        manifest += '\">\n';	
+	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
 	            "   </metadata>\n";
@@ -382,13 +400,13 @@ var SCORM = {
 	        manifest += '    xmlns=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2\"\n'+
 	            '    xmlns:adlcp=\"http://www.adlnet.org/xsd/adlcp_rootv1p2\"\n'+
 	            '    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n';
-	        if (_this.scormVersion === '1.2_CTCU'){
+	        if (_lms === 'CTCU'){
 	        	manifest += '    xmlns:c2lcp="http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1"';
 	        }
 	        manifest += '    xsi:schemaLocation=\"http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd\n'+
 	            '                         http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd\n'+
 	            '                         http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd';
-	        if (_this.scormVersion === '1.2_CTCU'){
+	        if (_lms === 'CTCU'){
 	        	manifest += '\n                 http://www.sumtotalsystems.com/xsd/c2l_cp_rootv1p1 c2l_cp_rootv1p1.xsd';
 	        }
 	        manifest += '\">\n';
@@ -405,13 +423,13 @@ var SCORM = {
 	            '	</organization>\n'+
 	            '</organizations>\n';
 	        manifest += "   <resources>\n";
-	        if(_this.scormVersion === '1.2_CTCU'){
-				manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"index.html\">\n";
-				manifest += "         <file href=\"index.html\"/>\n";
-	        }
-	        else{
+	   //      if(_lms === 'CTCU'){
+				// manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"index.html\">\n";
+				// manifest += "         <file href=\"index.html\"/>\n";
+	   //      }
+	   //      else{
         		manifest += "      <resource identifier=\"RES-common-files\" type=\"webcontent\" adlcp:scormtype=\"sco\" href=\"" +_this.binDir+ "/index.html\">\n";
-        	}
+        	// }
 	    }
 	    //resources go here - resourcesgenerator
 	    var resources = _this._resourcesGenerator(res, '');
@@ -422,7 +440,7 @@ var SCORM = {
 	    manifest += _this._jsResourceGenerator('');
 	    manifest += '   </resources>\n';
 
-	    if (_this.scormVersion === '1.2_CTCU'){
+	    if (_lms === 'CTCU'){
 	    	manifest += '   	<c2lcp:ItemDataExtra>\n'+
 						'			<c2lcp:ItemData Type=\"Course\">\n'+
 						'	 			<c2lcp:ItemSpecificData>\n'+
@@ -442,8 +460,8 @@ var SCORM = {
 			 			'								</c2lcp:TOC>\n'+
 						'							</c2lcp:CourseDisplay>\n'+
 						'							<c2lcp:Launch>\n'+
-			 			'								<c2lcp:Width>640</c2lcp:Width>\n'+
-			 			'								<c2lcp:Height>480</c2lcp:Height>\n'+
+			 			'								<c2lcp:Width>800</c2lcp:Width>\n'+
+			 			'								<c2lcp:Height>600</c2lcp:Height>\n'+
 						'							</c2lcp:Launch>\n'+
 		 				'						</c2lcp:PackageProperties>\n'+
 						'					</c2lcp:CourseData>\n'+
@@ -526,7 +544,7 @@ var SCORM = {
 	        );
 
 	        //add sumtotal xsd files for CTC publish
-	        if (_this.scormVersion === '1.2_CTCU'){
+	        if (_this._parseCourseAttr().lms === 'CTCU'){
 		        readdirp({
 		                root: _this.scormPath + '/1.2_sumtotal/',
 		                directoryFilter: ['*'],

@@ -1395,7 +1395,10 @@ function checkNavButtons(){
 *************************************************************/
 function updatePageCount(){
 	var tempPage = currentPage + 1;
-	if(isMobile){
+	if($(courseData).find("course").attr("lms") === 'CTCU'){
+		$('#pageCount').text(tempPage + "/" + totalPages);
+	}
+	else if(isMobile){
 		$('#pageCount').text(tempPage + " of " + totalPages);
 	}
 	else{
