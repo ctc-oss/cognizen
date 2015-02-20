@@ -548,7 +548,9 @@ CONTENT TEXT LAYOUTS*/
 	width: 970px;
 	height: 596px;
 	left: 30px;
-	overflow: scroll;
+	margin-right: -17px;
+	padding-right: 17px;
+	overflow: auto;
 }
 
 .box{
@@ -1409,6 +1411,7 @@ MEDIA LAYOUTS
 #mediaHolder.graphic{
 	margin-left: auto;
 	margin-right: auto;
+	overflow-y: auto;
 }
 
 #mediaHolder.leftTabs{
