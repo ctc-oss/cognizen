@@ -774,7 +774,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).find("bankitem").eq(0).append($("<correctresponse>"));
@@ -836,7 +836,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).find("bankitem").eq(1).append($("<correctresponse>"));
@@ -916,7 +916,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).append($("<correctresponse>"));
@@ -992,7 +992,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).append($("<correctresponse>"));
@@ -1149,7 +1149,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).append($("<correctresponse>"));
@@ -1240,7 +1240,7 @@ function createNewPageByType(_myType){
 			
 			$(data).find("page").eq(newPage).append($("<attemptresponse>"));
 			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
-			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("That is not correct.  Please try again.");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
 			$(data).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
 			
 			$(data).find("page").eq(newPage).append($("<correctresponse>"));
