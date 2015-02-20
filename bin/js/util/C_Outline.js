@@ -807,7 +807,7 @@ function C_Outline(_myItem) {
 		        socket.emit('renameContent', data);
 			}).css({'width': '500px', 'color': '#3383bb;'});
 
-			if(serverVersion === 'VA'){
+			if(serverVersion != 'VA'){
 				//set lms based off value in xml
 				if($(courseData).find("course").attr("lms")){
 					$("#lms").val($(courseData).find("course").attr("lms"));
