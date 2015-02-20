@@ -548,11 +548,18 @@ CONTENT TEXT LAYOUTS*/
 	width: 970px;
 	height: 596px;
 	left: 30px;
-	overflow: scroll;
+	margin-right: -17px;
+	padding-right: 17px;
+	overflow: auto;
 }
 
 .box{
 	width: 970px;
+}
+
+
+#graphicHolder .box{
+	width: 970px !important;
 }
 
 .left .box, .right .box, .sidebarContent .box{
@@ -1409,6 +1416,7 @@ MEDIA LAYOUTS
 #mediaHolder.graphic{
 	margin-left: auto;
 	margin-right: auto;
+	overflow-y: auto;
 }
 
 #mediaHolder.leftTabs{
@@ -1671,10 +1679,12 @@ MEDIA LAYOUTS
 }
 
 .transcriptDisplay{
-	position			  : relative;
-	float				  : right;
-	overflow 			  : scroll;	
-	background-color      : rgba(255, 255, 255, .8);
+	position			  : absolute;
+	/*float				  : right;*/
+	right				  : 30px;
+	top					  : 15px;
+	overflow-x			  : hidden !important;
+	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
 	border-radius         : 8px;
@@ -1691,6 +1701,24 @@ MEDIA LAYOUTS
 	padding               : 5px;
 	margin-right		  : -22px;
 	padding-right		  : 22px;
+}
+
+#scrollableTranscript{
+	overflow: hidden;
+	margin-right: 5px;
+}
+
+.transcriptbox{
+	width : 530px;
+	height: 195px;
+}
+
+#transcriptHolder{
+	width: 520px;
+	height: 177px;
+	padding-right: 17px;
+	margin-right:   -17px;
+	overflow-y: auto;
 }
 
 /*.antiscroll-scrollbar{
@@ -4040,7 +4068,7 @@ a.fancybox-expand {
 
 		#mediaHolder.graphic{
 			max-height: 88%;
-			overflow: scroll;
+			overflow: auto;
 		}
 
 		#matching{

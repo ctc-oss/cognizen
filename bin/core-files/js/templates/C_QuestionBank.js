@@ -566,7 +566,7 @@ function C_QuestionBank(_type) {
 								disableOptions();
 								$( this ).dialog( "close" );
 							},
-							Proceed: function(){
+							Next: function(){
 								$( this ).dialog( "close" );
 								mandatoryInteraction = false;
 								checkNavButtons();
@@ -578,7 +578,7 @@ function C_QuestionBank(_type) {
 						},
 						open: function(){
 							$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-							$('.ui-dialog-buttonpane').find('button:contains("Proceed")').addClass('feedback-proceed-button');
+							$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
 						},
 						close: function(){
 							mandatoryInteraction = false;
