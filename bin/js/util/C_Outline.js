@@ -704,6 +704,7 @@ function C_Outline(_myItem) {
 		     	msg += "<select name='lms' id='lms' title='Set the preferred LMS to be used for deployment.'>";
 		     	msg += "<option>none</option>";
 		     	msg += "<option>JKO</option>";
+		     	msg += "<option>CTCU</option>";
 		     	msg += "</select> ";
 				//end div for lmsAccord
 				msg += '</div>';
