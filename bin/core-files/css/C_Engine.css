@@ -1679,8 +1679,10 @@ MEDIA LAYOUTS
 }
 
 .transcriptDisplay{
-	position			  : relative;
-	float				  : right;
+	position			  : absolute;
+	/*float				  : right;*/
+	right				  : 30px;
+	top					  : 15px;
 	overflow-x			  : hidden !important;
 	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
