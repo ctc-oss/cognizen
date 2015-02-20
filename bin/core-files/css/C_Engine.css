@@ -557,6 +557,11 @@ CONTENT TEXT LAYOUTS*/
 	width: 970px;
 }
 
+
+#graphicHolder .box{
+	width: 970px !important;
+}
+
 .left .box, .right .box, .sidebarContent .box{
 	width: 536px;
 }
@@ -1676,7 +1681,7 @@ MEDIA LAYOUTS
 .transcriptDisplay{
 	position			  : relative;
 	float				  : right;
-	overflow 			  : scroll;	
+	overflow-x			  : hidden !important;
 	background-color      : rgba(255, 255, 255, .8);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
@@ -1694,6 +1699,24 @@ MEDIA LAYOUTS
 	padding               : 5px;
 	margin-right		  : -22px;
 	padding-right		  : 22px;
+}
+
+#scrollableTranscript{
+	overflow: hidden;
+	margin-right: 5px;
+}
+
+.transcriptbox{
+	width : 530px;
+	height: 195px;
+}
+
+#transcriptHolder{
+	width: 520px;
+	height: 177px;
+	padding-right: 17px;
+	margin-right:   -17px;
+	overflow-y: auto;
 }
 
 /*.antiscroll-scrollbar{
