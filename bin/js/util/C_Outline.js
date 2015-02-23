@@ -2263,15 +2263,19 @@ function C_Outline(_myItem) {
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
 
-			$(myXML).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
+			$(myXML).find("page").eq(newPage).append($("<tab>"));
 			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
 			$(myXML).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).attr('id', '1');
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).attr('title', 'tab1');
 
-			$(myXML).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));
+			$(myXML).find("page").eq(newPage).append($("<tab>"));
 			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA2 = newTabContent2.createCDATASection("New Tab Content");
 			$(myXML).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).attr('id', '2');
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).attr('title', 'tab2');
 
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
@@ -2283,15 +2287,19 @@ function C_Outline(_myItem) {
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
 
-			$(myXML).find("page").eq(newPage).append($("<tab id='1' title='tab1'>"));
+			$(myXML).find("page").eq(newPage).append($("<tab>"));
 			var newTabContent1 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA1 = newTabContent1.createCDATASection("New Tab Content");
 			$(myXML).find("page").eq(newPage).find("tab").eq(0).append(tabCDATA1);
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).attr('id', '1');
+			$(myXML).find("page").eq(newPage).find("tab").eq(0).attr('title', 'tab1');
 
-			$(myXML).find("page").eq(newPage).append($("<tab id='2' title='tab2'>"));
+			$(myXML).find("page").eq(newPage).append($("<tab>"));
 			var newTabContent2 = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
 			var tabCDATA2 = newTabContent2.createCDATASection("<p>New Tab Content</p>");
 			$(myXML).find("page").eq(newPage).find("tab").eq(1).append(tabCDATA2);
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).attr('id', '2');
+			$(myXML).find("page").eq(newPage).find("tab").eq(1).attr('title', 'tab2');
 
 			$(myXML).find("page").eq(newPage).append($("<caption>"));
 			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
