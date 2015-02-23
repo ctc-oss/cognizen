@@ -126,9 +126,8 @@ function openLockRequestAccepted(_data){
 					$(this).dialog("close");
 					nextDisabled = true;
 					backDisabled = true;
-					checkNavButtons();
+					//checkNavButtons();
 					buildInterface();
-					
 				}
 			}
 		});
