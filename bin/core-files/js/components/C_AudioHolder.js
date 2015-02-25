@@ -61,9 +61,9 @@ function C_AudioHolder(){
 		$('#stage').append("<div id='audioEdit' class='btn_edit_audio' title='Edit Page Audio'></div>");
 		//Move the audio edit button up if so as not to lay over the player, if there's audio on the page.
 		if(hasAudio == true){
-     		$("#audioEdit").css({'position':'absolute', 'z-index': 5000, 'bottom':30, 'right': 0});
+     		$("#audioEdit").css({'position':'absolute', 'z-index': 9, 'bottom':30, 'right': 0});
 		}else{
-      		$("#audioEdit").css({'position':'absolute', 'z-index': 5000, 'bottom':0, 'right': 0});
+      		$("#audioEdit").css({'position':'absolute', 'z-index': 9, 'bottom':0, 'right': 0});
 		}
 
 

@@ -68,10 +68,10 @@ blockquote
 	-moz-opacity:0.85;
 	text-align:center;
 	vertical-align:middle;
-	border-style:solid;
+	/*border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 6px;
-	border-width: thin;
+	border-width: thin;*/
 	width: 100%;
 	height: 100%;
 	top: 0px;
@@ -209,7 +209,7 @@ h1#lessonTitle{
 	border-radius: 8px;
 	cursor: hand;
 	cursor: pointer;
-	z-index: 5000;
+	z-index: 9;
 }
 
 .btn_comment{
@@ -1563,162 +1563,183 @@ MEDIA LAYOUTS
 }
 
 .mediaBrowserList{
-	position: relative;
-	float: left;
-	width: 30%;
-	height: 100%;
-	background-color: rgba(51, 51, 51, .9);
+	position				: relative;
+	float					: left;
+	width					: 30%;
+	height					: 100%;
+	background-color		: rgba(51, 51, 51, .9);
 	border-bottom-left-radius  : 8px;
 	-webkit-border-bottom-left-radius: 8px;
 	-moz-border-radius-bottomleft: 8px;
 }
 
+.mediaBrowserPreview{
+	position				: relative;
+	float 					: right;
+	display 				: block;
+	width 					: 70%;
+	height					: 100%;
+}
+
+.mediaBrowserPreviewMediaHolder{
+	position				: relative;
+	display					: table;
+	width					: auto;
+	height					: auto;
+	max-width				: 100%;
+	max-height				: 100%;
+	margin-right 			: auto !important;
+	margin-left				: auto !important;
+	top						: 50%;
+	-webkit-transform		: translateY(-50%);
+    -ms-transform			: translateY(-50%);
+    transform				: translateY(-50%);
+}
+
 #mediaBrowserList .loading {
-	background: #ccc url(images/spinner.gif) no-repeat center center;
+	background				: #ccc url(images/spinner.gif) no-repeat center center;
 }
 
 .mediaBrowserDisplayPath{
-	position			  : relative;
-	float				  : left;
-	width				  : 95%;
-	max-width			  : 95%;
-	top					  : 0px;
-	height				  : auto;
-	overflow 			  : hidden;
-    margin-bottom 		  : 2px;
-    padding 		      : 5px;
-	background-color	  : #333;
-	cursor				  : hand;
-	cursor				  : pointer;
-	font-family 		  : Arial;
-	font-size 			  : 8pt;
-	color 				  : white;
+	position			  	: relative;
+	float				  	: left;
+	width				  	: 95%;
+	max-width			  	: 95%;
+	top					  	: 0px;
+	height				  	: auto;
+	overflow 			  	: hidden;
+    margin-bottom 		  	: 2px;
+    padding 		      	: 5px;
+	background-color	  	: #333;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
+	color 				  	: white;
 }
 
 .mediaBrowserUpDirectory{
-	position			  : relative;
-	float				  : left;
-	width				  : 90%;
-	max-width			  : 90%;
-	height				  : auto;
-	overflow 			  : hidden;
-	border-style		  : solid;
-    border-width		  : 1px;
-    border-color 		  : #333;
-    margin 		  		  : 2px;
-    padding 			  : 5px;
-    padding-left 		  : 20px;
-    background			  : rgba(255, 255, 255, .9) url(images/folder.gif) no-repeat left center;
-	cursor				  : hand;
-	cursor				  : pointer;
-	font-family 		  : Arial;
-	font-size 			  : 8pt;
+	position			  	: relative;
+	float				  	: left;
+	width				  	: 90%;
+	max-width			  	: 90%;
+	height				  	: auto;
+	overflow 			  	: hidden;
+	border-style		  	: solid;
+    border-width		  	: 1px;
+    border-color 		  	: #333;
+    margin 		  		  	: 2px;
+    padding 			  	: 5px;
+    padding-left 		  	: 20px;
+    background			  	: rgba(255, 255, 255, .9) url(images/folder.gif) no-repeat left center;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
 }
 
 .mediaBrowserFolder{
-	position			  : relative;
-	float				  : left;
-	width				  : 90%;
-	max-width			  : 90%;
-	height				  : auto;
-	overflow 			  : hidden;
-	border-style		  : solid;
-    border-width		  : 1px;
-    border-color 		  : #333;
-    margin 		  		  : 2px;
-    padding 			  : 5px;
-    padding-left 		  : 20px;
-    background			  : rgba(255, 255, 255, .9) url(images/folder-closed.gif) no-repeat left center;
-	cursor				  : hand;
-	cursor				  : pointer;
-	font-family 		  : Arial;
-	font-size 			  : 8pt;
+	position			  	: relative;
+	float				  	: left;
+	width				  	: 90%;
+	max-width			  	: 90%;
+	height				  	: auto;
+	overflow 			  	: hidden;
+	border-style		  	: solid;
+    border-width		  	: 1px;
+    border-color 		  	: #333;
+    margin 		  		  	: 2px;
+    padding 			  	: 5px;
+    padding-left 		  	: 20px;
+    background			  	: rgba(255, 255, 255, .9) url(images/folder-closed.gif) no-repeat left center;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
 }
 
 .mediaBrowserFile{
-	position			  : relative;
-	float				  : left;
-	width				  : 90%;
-	max-width			  : 90%;
-	height				  : auto;
-	overflow 			  : hidden;
-	border-style		  : solid;
-    border-width		  : 1px;
-    border-color 		  : #333;
-    margin 		  		  : 2px;
-    padding 			  : 5px;
-    padding-left 		  : 20px;
-	background			  : rgba(255, 255, 255, .9) url(images/file.gif) no-repeat left center;
-	cursor				  : hand;
-	cursor				  : pointer;
-	font-family 		  : Arial;
-	font-size 			  : 8pt;
+	position			  	: relative;
+	float				  	: left;
+	width				  	: 90%;
+	max-width			  	: 90%;
+	height				  	: auto;
+	overflow 			  	: hidden;
+	border-style		  	: solid;
+    border-width		  	: 1px;
+    border-color 		  	: #333;
+    margin 		  		  	: 2px;
+    padding 			  	: 5px;
+    padding-left 		  	: 20px;
+	background			  	: rgba(255, 255, 255, .9) url(images/file.gif) no-repeat left center;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
 }
 
 .transcriptPane{
-	position: absolute;
-	right: 10px;
-	top: 10px;
-	overflow: visible;
-	z-index: 10;
+	position				: absolute;
+	right					: 10px;
+	top						: 10px;
+	overflow				: visible;
+	z-index					: 10;
 }
 
 .C_Transcript{
-	position: relative;
-	float: right;
-	width: 28px;
-	height: 25px;
-	background: url(images/transcript_icon_open.png) no-repeat;
-	cursor: hand;
-	cursor: pointer;
+	position				: relative;
+	float					: right;
+	width					: 28px;
+	height					: 25px;
+	background				: url(images/transcript_icon_open.png) no-repeat;
+	cursor					: hand;
+	cursor					: pointer;
 }
 
 .C_TranscriptActive{
-	background: url(images/transcript_icon_close.png) no-repeat;
-	/*#3E5E84*/
+	background				: url(images/transcript_icon_close.png) no-repeat;
 }
 
 .transcriptDisplay{
-	position			  : absolute;
-	/*float				  : right;*/
-	right				  : 30px;
-	top					  : 15px;
-	overflow-x			  : hidden !important;
-	background-color      : rgba(255, 255, 255, .95);
-	-moz-border-radius    : 8px;
-	-webkit-border-radius : 8px;
-	border-radius         : 8px;
-	width				  : 10px;
-	height 				  :	15px;
-	max-width 			  : 550px;
-	max-height            : 200px;
-	border-style		  : solid;
-    border-width		  : 1px;
-    border-color 		  : #333;
-    color			      : #333;
-	font-family           : Arial, Helvetica, sans-serif;
-	font-size             : 12pt;
-	padding               : 5px;
-	margin-right		  : -22px;
-	padding-right		  : 22px;
+	position			  	: absolute;
+	right				  	: 30px;
+	top					  	: 15px;
+	overflow-x			  	: hidden !important;
+	background-color      	: rgba(255, 255, 255, .95);
+	-moz-border-radius    	: 8px;
+	-webkit-border-radius 	: 8px;
+	border-radius         	: 8px;
+	width				  	: 10px;
+	height 				  	:	15px;
+	max-width 			  	: 550px;
+	max-height            	: 200px;
+	border-style		  	: solid;
+    border-width		  	: 1px;
+    border-color 		  	: #333;
+    color			      	: #333;
+	font-family           	: Arial, Helvetica, sans-serif;
+	font-size             	: 12pt;
+	padding               	: 5px;
+	margin-right		  	: -22px;
+	padding-right		  	: 22px;
 }
 
 #scrollableTranscript{
-	overflow: hidden;
-	margin-right: 5px;
+	overflow				: hidden;
+	margin-right			: 5px;
 }
 
 .transcriptbox{
-	width : 537px;
-	height: 195px;
+	width 					: 537px;
+	height					: 195px;
 }
 
 #transcriptHolder{
-	width: 520px;
-	height: 177px;
-	padding-right: 17px;
-	margin-right:   -17px;
-	overflow-y: auto;
+	width					: 520px;
+	height					: 177px;
+	padding-right			: 17px;
+	margin-right			: -17px;
+	overflow-y				: auto;
 }
 
 /*.antiscroll-scrollbar{
@@ -1726,42 +1747,42 @@ MEDIA LAYOUTS
 }*/
 
 #loader .loading {
-	background: #ccc url(images/spinner.gif) no-repeat center center;
+	background				: #ccc url(images/spinner.gif) no-repeat center center;
 }
 
 .progress-label{
-	position: absolute;
-	left: 45%;
-	text-align: center;
-	text-shadow: 1px 1px 0 #fff;
-	background: #f3f3f3;
-	color: #eeeeee;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10pt;
-	top: 3px;
+	position				: absolute;
+	left					: 45%;
+	text-align				: center;
+	text-shadow				: 1px 1px 0 #fff;
+	background				: #f3f3f3;
+	color					: #eeeeee;
+	font-family				: Arial, Helvetica, sans-serif;
+	font-size				: 10pt;
+	top						: 3px;
 }
 
 .ui-progressbar{
-	position: relative;
-	margin: 0 auto;
-	height: 20px;
-	background: #f3f3f3;
-	width: 300px;
+	position				: relative;
+	margin					: 0 auto;
+	height					: 20px;
+	background				: #f3f3f3;
+	width					: 300px;
 }
 
 #audioCon{
-	position: absolute;
-	bottom: 0px;
+	position				: absolute;
+	bottom					: 0px;
 }
 
 
 #caption{
-	font-size: 75%;
-	text-align: center;
-	color: #000000;
-	font-family: Arial, Helvetica, sans-serif;
-	margin-left: auto;
-	margin-right: auto;
+	font-size				: 75%;
+	text-align				: center;
+	color					: #000000;
+	font-family				: Arial, Helvetica, sans-serif;
+	margin-left				: auto;
+	margin-right			: auto;
 }
 
 /************************************************************** MEDIA LAYOUTS END *****/
@@ -1771,34 +1792,34 @@ MEDIA LAYOUTS
 KNOWLEDGE CHECK TEXT LAYOUTS
 **************************************************************************************/
 .questionTop{
-	position: relative;
-	width: 945px;
-	overflow : auto;
-	font-size : 100%;
-	font-weight: normal;
-	color:	#000000;
-	font-family: Arial, Helvetica, sans-serif;
+	position				: relative;
+	width					: 945px;
+	overflow 				: auto;
+	font-size 				: 100%;
+	font-weight				: normal;
+	color					: #000000;
+	font-family				: Arial, Helvetica, sans-serif;
 }
 
 .questionTop p{
-	margin-top: 0px;
+	margin-top				: 0px;
 }
 
 .timer{
-	position: relative;
-	border-radius: 8px;
-	background-color: #eee;
-	width: 210px;
-	height: 15px;
-	left: 50px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	padding: 8px;
-	font-size : 100%;
-	font-weight: normal;
-	color:	#000000;
-	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;
+	position				: relative;
+	border-radius			: 8px;
+	background-color		: #eee;
+	width					: 210px;
+	height					: 15px;
+	left					: 50px;
+	margin-top				: 20px;
+	margin-bottom			: 20px;
+	padding					: 8px;
+	font-size 				: 100%;
+	font-weight				: normal;
+	color					: #000000;
+	font-family				: Arial, Helvetica, sans-serif;
+	text-align				: center;
 }
 
 /**************************************************************************************

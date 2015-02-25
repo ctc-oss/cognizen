@@ -364,6 +364,27 @@ function C_Outline(_myItem) {
 
         //OPEN WITH ALL MENU ITEMS COLLAPSED
         //$('#C_Index').nestable('collapseAll');
+        
+        $(window).mousemove(function (e) {
+		    var x = $(window).innerHeight() - 50,
+		        y = $(window).scrollTop() + 50;
+		    if ($('.dd-dragel').offset().top > x) {
+		        //Down
+		        $('#outlineIndexPane').animate({
+		            scrollTop: 300 // adjust number of px to scroll down
+		        }, 600);
+		    }
+		    if ($('.dd-dragel').offset().top < y) {
+		        //Up
+		        $('#outlineIndexPane').animate({
+		            scrollTop: 0
+		        }, 600);
+		    } else {
+		        $('#outlineIndexPane').animate({
+		
+		        });
+		    }
+		});
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST
         var tmpStart = $('#C_Index').data('output', $('#nestable-output'));
