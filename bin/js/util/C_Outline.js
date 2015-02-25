@@ -371,7 +371,7 @@ function C_Outline(_myItem) {
 		    try{if ($('.dd-dragel').offset().top > x) {
 			        //Down
 			        $('#outlineIndexPane').animate({
-			            scrollTop: 300 // adjust number of px to scroll down
+			            scrollTop: $('#outlineIndexPane').height() // adjust number of px to scroll down
 			        }, 600);
 			    }
 			}catch(e){}
