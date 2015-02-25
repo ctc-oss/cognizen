@@ -177,6 +177,7 @@ function initializeSockets(){
 		//Simple listener checking connectivity
 		cognizenSocket.on('setUsername', function (data) {
            username = data.username.username;
+		   userID = data.username._id;
            if(username == undefined){
 	           alert("your username was not set properly. please close this lesson, log out and try to log back in.");
            }
