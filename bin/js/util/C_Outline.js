@@ -368,22 +368,24 @@ function C_Outline(_myItem) {
         $(window).mousemove(function (e) {
 		    var x = $(window).innerHeight() - 50,
 		        y = $(window).scrollTop() + 50;
-		    if ($('.dd-dragel').offset().top > x) {
-		        //Down
-		        $('#outlineIndexPane').animate({
-		            scrollTop: 300 // adjust number of px to scroll down
-		        }, 600);
-		    }
-		    if ($('.dd-dragel').offset().top < y) {
-		        //Up
-		        $('#outlineIndexPane').animate({
-		            scrollTop: 0
-		        }, 600);
-		    } else {
-		        $('#outlineIndexPane').animate({
-		
-		        });
-		    }
+		    try{if ($('.dd-dragel').offset().top > x) {
+			        //Down
+			        $('#outlineIndexPane').animate({
+			            scrollTop: 300 // adjust number of px to scroll down
+			        }, 600);
+			    }
+			}catch(e){}
+		    try{if ($('.dd-dragel').offset().top < y) {
+			        //Up
+			        $('#outlineIndexPane').animate({
+			            scrollTop: 0
+			        }, 600);
+			    } else {
+			        $('#outlineIndexPane').animate({
+			
+			        });
+			    }
+			}catch(e){}
 		});
 
         //CREATE A SNAPSHOT OF THE MENU TO COMPARE AGAINST

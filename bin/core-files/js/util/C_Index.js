@@ -377,22 +377,26 @@ function addIndex(){
 	}
 	
 	$(window).mousemove(function (e) {
-		var x = $(window).innerHeight() - 50,
-		    y = $(window).scrollTop() + 50;
-		if ($('.dd-dragel').offset().top > x) {
-			//Down
-			$('#indexContent').animate({
-		    	scrollTop: 300 // adjust number of px to scroll down
-			}, 600);
-		}
-		if ($('.dd-dragel').offset().top < y) {
-		    //Up
-		    $('#indexContent').animate({
-		        scrollTop: 0
-		    }, 600);
-		} else {
-		    $('#indexContent').animate({
-			});
+		if(mode == "edit"){
+			var x = $(window).innerHeight() - 50,
+			    y = $(window).scrollTop() + 50;
+			try{if ($('.dd-dragel').offset().top > x) {
+					//Down
+					$('#indexContent').animate({
+				    	scrollTop: 300 // adjust number of px to scroll down
+					}, 600);
+				}
+			}catch(e){}
+			try{if ($('.dd-dragel').offset().top < y) {
+				    //Up
+				    $('#indexContent').animate({
+				        scrollTop: 0
+				    }, 600);
+				} else {
+				    $('#indexContent').animate({
+					});
+				}
+			}catch(e){}
 		}
 	});
 	
@@ -536,7 +540,9 @@ function toggleIndex(){
 	else{
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType, onComplete:accHideIndex});
-		$("#pageTitle").focus();
+		if(mode != "edit"){
+			$("#pageTitle").focus();
+		}
 		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
 		accHideIndex();
 	}
