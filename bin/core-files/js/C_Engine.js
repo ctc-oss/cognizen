@@ -18,6 +18,7 @@ var stageY;
 var stageH;
 var stageW;
 var username;
+var userID;
 var mode = "production";//mode can be set to production, edit and review.
 
 var windowWidth = $('body').width();
