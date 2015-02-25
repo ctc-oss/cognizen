@@ -22,6 +22,8 @@ function C_Reveal(_type) {
 	var myObjective = "undefined";
     var myObjItemId = "undefined";
     var labeled = false;
+    var scroller;
+    var scrollTimer;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -251,7 +253,7 @@ function C_Reveal(_type) {
 			var tmpWidth = $("#" + currentSelected).width() - 10;
 			var msg = "<div id='revealTextHolder' class='revealTextBottom antiscroll-wrap' style='width: " + tmpWidth + "px; overflow: hidden;'>";
 			msg += "<div class='box'>";
-			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + tmpWidth + "px;'>" + currentShowText + "</div></div></div>";
+			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='width: " + tmpWidth + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
 			// set height of opened reveal
 			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
@@ -276,16 +278,23 @@ function C_Reveal(_type) {
 		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$(this).scrubContent();
 
-		if(isIE){
-			$("#contentHolder").width($("#contentHolder").width() - 17);
-		}
-		if(isFF){
-			$("#contentHolder").width($("#contentHolder").width() - 15);
-		}
+		// if(isIE){
+		// 	$("#contentHolder").width($("#contentHolder").width() - 17);
+		// }
+		// if(isFF){
+		// 	$("#contentHolder").width($("#contentHolder").width() - 15);
+		// }
 
-		$('.antiscroll-wrap').antiscroll();
+		$("#" + currentSelected).find($("#revealTextHolder")).antiscroll();
+		scrollTimer = setInterval(function () {scrollRefresh()}, 500);
 		$("#" + currentSelected + "Text").focus();
 	}
+
+	
+    function scrollRefresh(){
+        window.clearInterval(scrollTimer);
+		scroller.refresh();
+    }
 
 	/*****************************************************************************************************************************************************************************************************************
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -294,7 +303,8 @@ function C_Reveal(_type) {
 	*****************************************************************************************************************************************************************************************************************/
 	function checkMode(){
 		$(this).scrubContent();
-		$('.antiscroll-wrap').antiscroll();
+		//$('.antiscroll-wrap').antiscroll();
+		scroller = $('.antiscroll-wrap').antiscroll().data('antiscroll');
 
 		if(mode == "edit"){
 			$("#content").attr('contenteditable', true);
