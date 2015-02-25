@@ -1056,6 +1056,7 @@ function clickPublish(){
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	var publishData = {
 		content: {type: urlParams['type'], id: urlParams['id']},
+		user: {id: userID, username: username},
 		scorm: {version : myScormVersion}
 	};
 
