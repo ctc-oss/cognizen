@@ -657,11 +657,6 @@ CONTENT TEXT LAYOUTS*/
 	float: left;
 }
 
-#tabs .ui-tabs-nav li a {
-	font-size:10pt !important;
-	font-family: Arial, Helvetica, sans-serif !important;
-}
-
 #tabs .ui-tabs-panel {
 	font-family: Arial, Helvetica, sans-serif !important;
 	font-size: 12pt !important;
