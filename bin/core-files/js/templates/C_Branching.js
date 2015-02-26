@@ -425,12 +425,14 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
-			var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
-			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
-			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
-			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
+			if($('input.isTranscript').is(':checked')){
+				var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
+				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+				var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
+				var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
+			}
 		}
 		
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
