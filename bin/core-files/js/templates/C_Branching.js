@@ -542,7 +542,7 @@ function C_Branching(_type) {
 		}
 		
 		var transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").text();
-		alert("coming in " + transcriptText);
+		//alert("coming in " + transcriptText);
 		var complete = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete") == "false"){
 			complete = false;
