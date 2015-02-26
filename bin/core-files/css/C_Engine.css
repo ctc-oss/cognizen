@@ -559,7 +559,7 @@ CONTENT TEXT LAYOUTS*/
 
 
 #graphicHolder .box{
-	width: 970px !important;
+	width: 100% !important;
 }
 
 .left .box, .right .box, .sidebarContent .box{
@@ -1165,8 +1165,7 @@ ul.no-indent {
 	margin-left: auto;
 	margin-right: auto;
 	color: #000000;
-	margin-right: -17px;
-	padding: 1px 34px 1px 16px;
+	padding: 10px 10px 1px 10px;
 	max-height: none !important;
 }
 
@@ -3425,6 +3424,11 @@ a.fancybox-expand {
 		width: 100%;
 	}
 
+	#graphicHolder{
+		width: 100%;
+		left: 0px;
+	}
+
 	/* FOR TABBED CONTENT */
 
 	#tabs.tabTop{
@@ -3488,11 +3492,6 @@ a.fancybox-expand {
 	/* FOR CLICKIMAGE CONTENT */
 	.clickImgTextHolder{
 		width: 100%;
-	}
-
-	div#clickImgText.clickImgText{
-		margin-left: 10px;
-		width: 97%;
 	}
 
 	#scrollableListPalette{

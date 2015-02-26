@@ -318,6 +318,16 @@ function checkMobile(){
 }
 
 
+function doOnOrientationChange(){
+	// reload page if device is rotated
+	stageX = $("#stage").position().left;
+	stageY = $("#stage").position().top;
+	stageW = $("#stage").width();
+	stageH = $("#stage").height();
+	loadPageFromID(currentPageID);
+}
+
+
 function buildInterface(){
 	checkFF();
 	checkMobile();
@@ -396,6 +406,9 @@ function buildInterface(){
 			fireConnectionError();
 		}
 	}
+	// detect rotated mobile device
+	window.addEventListener('orientationchange', doOnOrientationChange);
+
 }
 
 /**
