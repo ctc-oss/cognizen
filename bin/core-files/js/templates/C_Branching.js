@@ -20,6 +20,7 @@ function C_Branching(_type) {
 	var mandatory = true;
 	var currentEditBankMember = 0;
 	var layoutType_arr = ["textOnly", "graphicOnly", "top", "right", "bottom", "left", "sidebar"];
+	var transcriptText;
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -62,6 +63,7 @@ function C_Branching(_type) {
 		pageAccess_arr = [];
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
+		try { $("#graphicHolder").remove(); } catch (e) {}
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
 		try { $("#buttonPalette").remove(); } catch (e) {}
@@ -82,7 +84,7 @@ function C_Branching(_type) {
 
 		pageTitle = new C_PageTitle(_id);
 		
-		buildContentText();
+		buildContentText(_id);
 		
 		buildBranchOptions(_id);
 		checkMode();
@@ -97,7 +99,7 @@ function C_Branching(_type) {
     				 - adds mediaholder if needed
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
-	function buildContentText(){
+	function buildContentText(_id){
 		if(myContent != "" && branchType != "graphicOnly"){
 	        $('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		    addLayoutCSS(branchType);
@@ -116,7 +118,7 @@ function C_Branching(_type) {
 		    }
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
-		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
+		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia, _id);
 	        mediaHolder.loadVisualMedia();
 	    }else if(branchType == "sidebar"){
 		    var mySidebar = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").first().text();
@@ -313,7 +315,7 @@ function C_Branching(_type) {
 		addOption(currentEditBankMember, false);
 		
 		//#3321 fixes dialog jumping issue
-		$.ui.dialog.prototype._focusTabbable = function(){console.log("focusstuff");};
+		$.ui.dialog.prototype._focusTabbable = function(){};
 
 		//Style it to jQuery UI dialog
 		$("#branchEditDialog").dialog({
@@ -418,6 +420,19 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		}
+		
+		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
+			var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
+			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
+			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").empty();
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
+		}
+		
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
@@ -507,6 +522,15 @@ function C_Branching(_type) {
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
+		
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != ""){
+			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text();
+		}else{
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<visualtranscript>"));
+			var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");
+			var vTransCDATA = newVisualTranscript.createCDATASection("Visual transcript content");
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").append(vTransCDATA);
+		}
 
 		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
 		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
@@ -517,10 +541,30 @@ function C_Branching(_type) {
 			success = false;
 		}
 		
+		var transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").text();
+		alert("coming in " + transcriptText);
 		var complete = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete") == "false"){
 			complete = false;
 		}
+		
+		var autoNext = false;
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autonext") == "true"){
+			autoNext = true;
+		}
+		
+		var autoPlay = false;
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autoplay") == "true"){
+			autoPlay = true;
+		}
+		
+		var hasPoster = false;
+		var posterLink = null;
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0){
+	    	hasPoster = true;
+	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
+	    }
+		
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
 		
@@ -539,8 +583,40 @@ function C_Branching(_type) {
 	 	}
      	msg += "</select>&nbsp;&nbsp;";
      	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
+			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != null){
+				var mediaWidth = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w'));
+				var mediaHeight = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('h'));
+			}else{
+				var mediaWidth = 0;
+				var mediaHeight = 0;
+			}
+			
+			if(posterLink == null){
+				posterLink = "null";
+			}
+			
+			var hasTranscript = false;
+			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
+				hasTranscript = true;
+			}
+			
+			var subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('subs');
+	     	
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
-			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/><br/>";
+			msg += "<label>Media Width:</label> <input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
+			msg += "<label>Media Height:</label> <input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/>";
+			msg += "<label id='label'>autoplay: </label>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
+			msg += "<label id='label'>autonext: </label>";
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+			msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'>transcript: </label>";
+			msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/>";
+			msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
+			msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
+			msg += "<label id='label'>poster: </label>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
+			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/>";
 		}
 		msg += "<br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
@@ -620,17 +696,103 @@ function C_Branching(_type) {
 			$("#isComplete").attr('checked', 'checked');
 		}
 		
+		if(!autoNext){
+			$("#autonext").removeAttr('checked');
+		}else{
+			$("#autonext").attr('checked', 'checked');
+		}
+		
+		if(!hasTranscript){
+			$("#isTranscript").removeAttr('checked');
+		}else{
+			$("#isTranscript").attr('checked', 'checked');
+		}
+		
+		$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
+		
+		if(!hasPoster){
+			$("#poster").removeAttr('checked');
+		}else{
+			$("#poster").attr('checked', 'checked');
+		}
+		
+		if(!autoPlay){
+			$("#autoplay").removeAttr('checked');
+		}else{
+			$("#autoplay").attr('checked', 'checked');
+		}
+		
 		if(!success){
 			$("#isSuccess").removeAttr('checked');
 		}else{
 			$("#isSuccess").attr('checked', 'checked');
 		}
 		
+		if(!hasTranscript){
+			$('#inputTranscriptLabel').hide();
+			$('#inputTranscript').hide();
+		}else{
+			CKEDITOR.inline( "inputTranscript", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+				on: {
+			    	instanceReady: function(event){
+			        	$(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+			    	}
+			    }
+			});
+		}
+		
+		$('#isTranscript').change(function(){
+			if($("#isTranscript").prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "true");
+				$('#inputTranscriptLabel').show();
+				$('#inputTranscript').show();
+				CKEDITOR.inline( "inputTranscript", {
+					toolbar: contentToolbar,
+					toolbarGroups :contentToolgroup,
+					enterMode : CKEDITOR.ENTER_BR,
+					shiftEnterMode: CKEDITOR.ENTER_P,
+					extraPlugins: 'sourcedialog',
+				   	on: {
+				      instanceReady: function(event){
+				         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+				    	}
+				    }
+				});
+			}
+			else{
+				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "false");
+				$('#inputTranscriptLabel').hide();
+				$('#inputTranscript').hide();
+			}
+		});
+		
 		$("#isSuccess").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "true");
 			}else{
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "false");
+			}
+		});
+		
+		$("#autonext").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "false");
+			}
+		});
+		
+		$("#autoplay").change(function(){
+			if($(this).prop("checked") == true){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "true");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "false");
 			}
 		});
 		

@@ -1,4 +1,4 @@
-function C_VisualMediaHolder(callback, _type, _mediaLink){
+function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     //Define Variables
     var type;
     if(_type){
@@ -91,6 +91,37 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
         });
 	}
 	
+	if(rootType == "branching"){
+		if($(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text() != ""){
+			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text();
+		}else{
+			$(data).find("page").eq(currentPage).find("branch").eq(_id).append($("<visualtranscript>"));
+			var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");
+			var vTransCDATA = newVisualTranscript.createCDATASection("Visual transcript content");
+			$(data).find("page").eq(currentPage).find("visualtranscript").append(vTransCDATA);
+		}
+		
+		if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('visualtranscript') == "true"){
+			hasTranscript = true;
+			$("#stage").append("<div id='transcriptPane' class='transcriptPane'><div id='transcriptButton' class='C_Transcript' role='button' aria-lable='open media transcript' title='view transcript'></div></div>");
+			$("#transcriptButton").click(function(){
+				if(transcriptState){
+					$(this).removeClass('C_TranscriptActive');
+					transcriptState = false;
+				}else{
+					$(this).addClass('C_TranscriptActive');
+					transcriptState = true;
+				}
+				toggleTranscript();
+			}).keypress(function(event) {
+		        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		        if (chCode == 32 || chCode == 13){
+			        $(this).click();
+			    }
+	        });
+		}
+	}
+	
 	function toggleTranscript(){
 		if(transcriptState){
 			//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
@@ -107,10 +138,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 	
 	function displayTranscriptText(){
 		$("#transcriptDisplay").append('<div id="scrollableTranscript" class="antiscroll-wrap"><div class="transcriptbox"><div id="transcriptHolder" class="overthrow antiscroll-inner">'+transcriptText+'</div></div></div>');
-		//$("#scrollableTranscript").height($(".transcriptDisplay").css("max-height") - 10);
-		//$("#scrollableTranscript").width($(".transcriptDisplay").css("max-width") - 10);
-		//$("#transcriptHolder").height($(".transcriptDisplay").css("max-height") - 30);
-		//$("#transcriptHolder").width($(".transcriptDisplay").css("max-width") - 30);
 		$('#scrollableTranscript').antiscroll();
 	}
 	
@@ -197,8 +224,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 
         var parts = myImage.split('.'), i, l;
         var last = parts.length;
-		var imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
-        var imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+		if(rootType == "branching"){
+			var imageWidth = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('w'));
+			var imageHeight = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('h'));
+		}else{
+			var imageWidth = parseInt($(data).find("page").eq(currentPage).attr('w'));
+			var imageHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
+		}
         mediaType = (parts[last - 1]);
 
         if(mediaType == "swf"){////////////////////////////////////////////////Flash
@@ -215,7 +247,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
             if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 				autoPlay = true;
 			}
-
+			if(rootType == "branching"){
+				if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('autoplay') == "true"){
+					autoPlay = true;
+				}
+			}
             var vidHTMLString = "<video id='videoplayer' width=" + imageWidth + " height=" + imageHeight + " controls='controls'";
 			if(mediaLinkType == "youtube"){
                 vidHTMLString += " preload='none'";
@@ -229,6 +265,16 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
             }else{
                 hasPoster = false;
                 posterLink = null;
+            }
+            
+            if(rootType == "branching"){
+	            if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster').length != 0){
+	                hasPoster = true;
+	                posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster');
+	            }else{
+	                hasPoster = false;
+	                posterLink = null;
+	            }
             }
 
             //Check Poster
@@ -257,6 +303,16 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
                 hasSubs = false;
                 subsLink = null;
             }
+            
+            if(rootType == "branching"){
+	            if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != "undefined"){
+	                hasSubs = true;
+	                subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs');
+	            }else{
+	                hasSubs = false;
+	                subsLink = null;
+	            }
+            }
 
             //Check subs - if subs at track node.
             if(hasSubs == true){
@@ -275,7 +331,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 					oldIE = true;
 				}
 			}(jQuery));
-
+			
 			if (oldIE) {
 				// IE 8, 9 or 10 - prefer Flash or Silverlight
 				$('#videoplayer').mediaelementplayer({
@@ -854,16 +910,30 @@ function C_VisualMediaHolder(callback, _type, _mediaLink){
 		}
 		
 		if($("#isTranscript").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
+			if(rootType == "branching"){
+				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "true");
+			}else{
+				$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
+			}
 			var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
 			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
 			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
-			$(data).find("page").eq(currentPage).find("visualtranscript").empty();
-			$(data).find("page").eq(currentPage).find("visualtranscript").append(transcriptCDATA);
-			transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();		
+			if(rootType == "branching"){
+				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").empty();
+				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").append(transcriptCDATA);
+				transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").text();
+			}else{
+				$(data).find("page").eq(currentPage).find("visualtranscript").empty();
+				$(data).find("page").eq(currentPage).find("visualtranscript").append(transcriptCDATA);
+				transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();
+			}		
 		}else{
-			$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
+			if(rootType == "branching"){
+				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "false");
+			}else{
+				$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
+			}
 		}
 		
 		
