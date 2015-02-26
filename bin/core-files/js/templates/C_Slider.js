@@ -132,10 +132,15 @@ function C_Slider(_type) {
 				$('#display').val(myValue);		
 			}
 			else if(displayValue > myMax){
-				alert("The value cannot be greater the the max value for the slider.");
+				alert("The value cannot be greater than the max value for the slider.");
 				$("#slider").slider("value", myMax);
 				$('#display').val(myMax);
 			}
+			else if(displayValue < myMin){
+				alert("The value cannot be less than the min value for the slider.");
+				$("#slider").slider("value", myMin);
+				$('#display').val(myMin);
+			}			
 			else{
 				$("#slider").slider("value", displayValue);
 			}
