@@ -386,7 +386,7 @@ function C_Login(_type) {
     //Login function if success - take them to the leader board - if fail - show pop-up saying they failed and to try again.
     function parseLogin(){
     	if($("#username").val() != null && $("#pass").val() != "" && $("#pass").val() != null && $("#pass").val() != ""){
-    		socket.emit('attemptLogin', { user: $("#username").val(), pass: $("#pass").val()});
+    		socket.emit('attemptLogin', { user: $("#username").val().toLowerCase(), pass: $("#pass").val()});
     	}else{
 	    		var myTitle = "Failed Login Attempt";
 			var myMessage = "All form fields are required.</p><p>You must enter e-mail address and password before continuing.";
