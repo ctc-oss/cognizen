@@ -545,8 +545,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		        $(this).click();
 		    }
         });
-
-		//pageAccess_arr.push($("#mediaPop"));
 	}
 
 	function setCaption(){
