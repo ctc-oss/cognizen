@@ -147,10 +147,10 @@ function C_Matching(_type) {
 			var myOption = "option" + iterator;
 			//Create each option as a div.
 
-			var matchString = "<div class='matchingStatement' id="+ myOption + ">";
+			var matchString = "<div class='matchingStatement' id='"+ myOption + "'>";
 			//Add text input field if regular matching
 			if (type == "matching" || type == "matchingDragPhone"){
-				matchString += "<input type='text' maxlength='1' id='myInput' class='matchingInput' />";
+				matchString += "<input type='text' maxlength='1' id='myInput' name='myInput' class='matchingInput' />";
 			}
 
 			matchString += "<div id='myMatchingText' class='matchingText'>"+ $(this).text() + "</div></div>";
@@ -161,6 +161,9 @@ function C_Matching(_type) {
 
 			$("#matchingOptions").append(matchString);
 			$("#"+myOption).data("myMatch", $(this).attr("correct"));
+
+			//#3392
+			$('#'+myOption+' input[name="myInput"]').alpha();
 
 			//Position each option with css
 			//$("#"+myOption).css({'position':'static', 'paddingBottom':'10px', 'paddingTop':'10px', 'paddingLeft':'4px', 'paddingRight':'35px', 'margin':'10px'});
