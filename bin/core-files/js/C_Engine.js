@@ -373,10 +373,8 @@ function buildInterface(){
 	var courseTitle;	
 																	
 	if($(data).find("coursedisplaytitle").attr("value")){
-		alert($(data).find("coursedisplaytitle").attr("value"));
 		courseTitle = $(data).find("coursedisplaytitle").attr("value");
 	}else{
-		alert("adding coursedisplaytitle deal");
 		$(data).find("preferences").append($("<coursedisplaytitle>"));
 		$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
 		courseTitle = $(data).find("courseTitle").attr("value");
