@@ -570,10 +570,6 @@ CONTENT TEXT LAYOUTS*/
 	width: 400px;
 }
 
-#revealTextHolder .box{
-	width: auto;
-}
-
 .mediaLabel{
 	position: absolute;
 	bottom: 10px;
@@ -978,6 +974,10 @@ ul.no-indent {
 
 
 /* FOR REVEAL CONTENT */
+#revealTextHolder .box{
+	width: auto;
+}
+
 .revealPalette{
 	position: relative;
 	/*margin-right: auto;*/

@@ -256,7 +256,7 @@ function C_Reveal(_type) {
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='width: " + tmpWidth + "px;'>" + currentShowText + "</div></div></div>";
 			$("#" + currentSelected).append(msg);
 			// set height of opened reveal
-			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 10, 'padding-right': 30});
+			$("#" + currentSelected + "Text").css({'height': $("#" + currentSelected).height() - mediaHeight - 20, 'padding-right': 30});
 
 		}else if(type == "revealLeft"){
 			var msg = "<div id='revealTextHolder' class='revealTextLeft antiscroll-wrap' style='height: " + mediaHeight + "px; overflow: hidden;'>";
