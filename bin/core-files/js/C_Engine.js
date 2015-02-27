@@ -369,13 +369,35 @@ function buildInterface(){
 	//Image can be updated in css/C_Engine.css and resides in css/images/ folder.
 	$("#myCanvas").fitToBackgroundImage();
 
-	//Place the course title.																	 /*************************Note: Will make this optional*/
-	var courseTitle = $(data).find("courseTitle").attr("value");
+	//Place the course title.
+	var courseTitle;	
+																	
+	if($(data).find("coursedisplaytitle").attr("value")){
+		alert($(data).find("coursedisplaytitle").attr("value"));
+		courseTitle = $(data).find("coursedisplaytitle").attr("value");
+	}else{
+		alert("adding coursedisplaytitle deal");
+		$(data).find("preferences").append($("<coursedisplaytitle>"));
+		$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
+		courseTitle = $(data).find("courseTitle").attr("value");
+	}
+
 
 	$("#courseTitle").append(courseTitle);
 
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
-	var lessonTitle = $(data).find("lessonTitle").attr("value");
+	var lessonTitle;
+	
+	if($(data).find("lessondisplaytitle").attr("value")){
+		alert($(data).find("lessondisplaytitle").attr("value"));
+		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
+	}else{
+		alert("adding lessondisplaytitle deal");
+		$(data).find("preferences").append($("<lessondisplaytitle>"));
+		$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
+		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
+	}
+	
 	document.title = lessonTitle;
 	$("#lessonTitle").append(lessonTitle);
 	
