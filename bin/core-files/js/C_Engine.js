@@ -373,7 +373,6 @@ function buildInterface(){
 	var courseTitle;	
 																	
 	if($(data).find("coursedisplaytitle").attr("value")){
-		alert($(data).find("coursedisplaytitle").attr("value"));
 		courseTitle = $(data).find("coursedisplaytitle").attr("value");
 	}else{
 		alert("adding coursedisplaytitle deal");
