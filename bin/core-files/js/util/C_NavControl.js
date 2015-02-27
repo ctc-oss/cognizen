@@ -947,6 +947,7 @@ function savePreferences(_pub){
 	lessonTitle = $("#altLessonTitle").val();
 	$(data).find("lessondisplaytitle").attr("value", lessonTitle);
 	$("#lessonTitle").text(lessonTitle);
+	document.title = lessonTitle;
 	
 	if(glossary != glossarySelected){
 		glossary = glossarySelected;
@@ -982,7 +983,7 @@ function savePreferences(_pub){
 	
 	var selectedScorm = $('#scormVersion').find(':selected').text();
 	var myScormVersion = $(data).find('scormVersion').attr('value');
-	if(scormVersion != myScormVersion){
+	if(selectedScorm != myScormVersion){
 		$(data).find('scormVersion').attr('value', selectedScorm);
 		updateNeeded = true;
 	}
