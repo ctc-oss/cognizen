@@ -389,10 +389,8 @@ function buildInterface(){
 	var lessonTitle;
 	
 	if($(data).find("lessondisplaytitle").attr("value")){
-		alert($(data).find("lessondisplaytitle").attr("value"));
 		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
 	}else{
-		alert("adding lessondisplaytitle deal");
 		$(data).find("preferences").append($("<lessondisplaytitle>"));
 		$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
 		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
