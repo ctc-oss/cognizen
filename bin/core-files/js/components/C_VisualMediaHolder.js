@@ -421,7 +421,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
         if(mediaType == "mp4" || mediaType == "html"  || mediaType == "htm" || mediaType == "swf" || mediaLinkType == "youtube"){
             $("#loader").removeClass('loading');
             $("#mediaHolder").css({'width': imageWidth});
-            $("#loader").css({'width': imageWidth, 'height': imageHeight});
+            if(!isMobile){
+            	$("#loader").css({'width': imageWidth, 'height': imageHeight});
+            }
 
             if(hasPop == true || largeImg != ""){
 				setupGallery(mediaType);
