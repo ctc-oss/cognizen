@@ -941,10 +941,16 @@ function savePreferences(_pub){
 	
 	
 	courseTitle = $("#altCourseTitle").val();
+	if(courseTitle != $(data).find("coursedisplaytitle").attr("value"){
+		updateNeeded = true;
+	}
 	$(data).find("coursedisplaytitle").attr("value", courseTitle);
 	$("#courseTitle").text(courseTitle);
 	
 	lessonTitle = $("#altLessonTitle").val();
+	if(lessonTitle != $(data).find("lessondisplaytitle").attr("value"){
+		updateNeeded = true;
+	}
 	$(data).find("lessondisplaytitle").attr("value", lessonTitle);
 	$("#lessonTitle").text(lessonTitle);
 	document.title = lessonTitle;
