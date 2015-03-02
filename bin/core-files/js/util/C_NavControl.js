@@ -75,13 +75,13 @@ function ncInitialize(){
 						var question_obj = new Object();
 						question_obj.complete = false;
 						question_obj.correct = null;
-						if($(data).find("page").eq(i).attr('objective') == undefined){
+						if($(data).find("page").eq(i).attr('objective') == undefined || $(data).find("page").eq(i).attr('objective') == "undefined"){
 							question_obj.objective = "undefined";
 						}else{
 							question_obj.objective = $(data).find("page").eq(i).attr('objective');
 						}
 				
-						if($(data).find("page").eq(i).attr('objItemId') == undefined){
+						if($(data).find("page").eq(i).attr('objItemId') == undefined  || $(data).find("page").eq(i).attr('objItemId') == "undefined"){
 							question_obj.objItemId = "undefined";
 						}else{
 							question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
@@ -103,13 +103,13 @@ function ncInitialize(){
 					var question_obj = new Object();
 					question_obj.complete = false;
 					question_obj.correct = null;
-					if($(data).find("page").eq(i).attr('objective') == undefined){
+					if($(data).find("page").eq(i).attr('objective') == undefined  || $(data).find("page").eq(i).attr('objective') == "undefined"){
 						question_obj.objective = "undefined";
 					}else{
 						question_obj.objective = $(data).find("page").eq(i).attr('objective');
 					}
 			
-					if($(data).find("page").eq(i).attr('objItemId') == undefined){
+					if($(data).find("page").eq(i).attr('objItemId') == undefined  || $(data).find("page").eq(i).attr('objItemId') == "undefined"){
 						question_obj.objItemId = "undefined";
 					}else{
 						question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
