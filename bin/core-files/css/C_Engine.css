@@ -1058,9 +1058,10 @@ ul.no-indent {
 }
 
 .revealTextRight{
-	float: right;
+	/*float: right;*/
 	right: 2px;
 	top: 5px;
+	left: 8px;
 }
 
 .revealLeft{
