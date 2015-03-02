@@ -648,9 +648,11 @@ function launchPrefs(){
 	msg += "</p>";
 	console.log($('#lessonTitle').text());
 	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
-	msg += "<input id='altCourseTitle' class='dialogInput' type='text' value='"+ $('#courseTitle').text() + "' defaultValue='"+ $('#courseTitle').text() + "' style='width:70%;'/><br/>";
+	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
+	tmpLessonTitleText = $('#lessonTitle').text().replace(/'/g, "\&#8217;");
+	msg += "<input id='altCourseTitle' class='dialogInput' type='text' value='"+ tmpCourseTitleText + "' defaultValue='"+ tmpCourseTitleText + "' style='width:70%;'/><br/>";
 	msg += "<label id='label' title='Input lesson title as you would like it to appear.'>Alt Lesson Title: </label>";
-	msg += "<input id='altLessonTitle' class='dialogInput' type='text' value='"+ $('#lessonTitle').text() + "' defaultValue='"+ $('#lessonTitle').text() + "' style='width:70%;'/><br/>";
+	msg += "<input id='altLessonTitle' class='dialogInput' type='text' value='"+ tmpLessonTitleText + "' defaultValue='"+ tmpLessonTitleText + "' style='width:70%;'/><br/>";
 	//Add the glossary checkbox.
 	msg += "<div class='preferences_option' id='hasGlossaryDialog'>";
 	msg += "<label id='label' title='Add/Remove Glossary'>Glossary: </label>";
