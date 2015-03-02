@@ -697,7 +697,7 @@ function C_Dashboard(_type) {
 
     function submitRegisterUser() {
         if (checkRegister() == true) {
-            socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val(), pass: $("#regPassword").val()});
+            socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val().toLowerCase(), pass: $("#regPassword").val()});
             $("#firstName").remove();
             $("#lastName").remove();
             $("#regEmail").remove();

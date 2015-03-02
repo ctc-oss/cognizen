@@ -244,8 +244,8 @@ var SocketHandler = {
 
     attemptLogin: function (data) {
         var _this = this;
-
-        User.findOne({username: data.user}).populate('permissions').exec(function (err, user) {
+        // #3397 added regular expression
+        User.findOne({username: { $regex : new RegExp(data.user, "i") } }).populate('permissions').exec(function (err, user) {
             if (err) throw err;
             if (user == null) {
                 _this._socket.emit("loginUserFailed");
