@@ -695,13 +695,13 @@ function C_Outline(_myItem) {
      		serverVersion = fdata;
 
 	     	$("#outlinePagePrefPane").empty();
-		    var msg = "<div class='outlineCourseEditHeader'><b>Course Preferences: " + myItem.find("span").first().text() + "</b></div><br/>";
+		    var msg = "<div name='out_courseHead' id='out_courseHead' class='outlineCourseEditHeader'><b>Course Preferences: " + $(courseData).find('course').first().attr("name") + "</b></div><br/>";
 		    msg += "<div id='accordion'>";
 	     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
 	     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
 			msg += "<div><b>Details:</b></div>";
 			msg += "<label for='out_courseTitle'>course title: </label>";
-			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ myItem.find("span").first().text() + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			msg += "<label for='targetAudience'>target audience: </label>";
 			msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
 			//msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
@@ -813,7 +813,9 @@ function C_Outline(_myItem) {
 				//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
 				var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
 				currentMenuItem.text(titleUpdate);
-				$(courseData).attr("name", titleUpdate);
+				$('#out_courseHead').text("Course Preferences: " + titleUpdate);
+				$(courseData).find('course').first().attr("name", titleUpdate);
+				//$(courseData).attr("name", titleUpdate);
 				updateCourseXML();
 
 				var data = {
