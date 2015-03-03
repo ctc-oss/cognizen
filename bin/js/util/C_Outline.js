@@ -309,7 +309,7 @@ function C_Outline(_myItem) {
      	var thisID;
      	indexItem_arr = [];
 
-     	msg = '<div id="dialog-outline" title="Outline '+ myItem.find("span").first().text() + ':">';
+     	msg = '<div id="dialog-outline" title="Outline '+ $(courseData).find('course').first().attr("name") + ':">';
 	    msg += '<div id="outlinePane" class="pane">'
 	    msg += '<div id="outlineIndexPane" class="paneContent">';
 	    msg += '<div class="dd" id="C_Index">';
@@ -317,7 +317,7 @@ function C_Outline(_myItem) {
 	    //COURSE LEVEL
 	    msg += '<li id="courseIndex" class="dd-item dd3-item outlineCourseItem" data-id="course">';
 		//msg += '<div class="dd-handle dd3-handle">Drag</div>';
-		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="'+ courseID+'">'+myItem.find("span").first().text() +'</div>';
+		msg += '<div id="courseIndexHotspot" class="dd3-content" data-id="'+ courseID+'">'+ $(courseData).find('course').first().attr("name") +'</div>';
 		msg += '<ol class="dd-list">';
 
 	    //ADD MODULE and PAGES LEVEL  ----- Calls a separate function for cleanliness
