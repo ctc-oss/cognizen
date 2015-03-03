@@ -814,6 +814,8 @@ function C_Outline(_myItem) {
 				var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
 				currentMenuItem.text(titleUpdate);
 				$('#out_courseHead').text("Course Preferences: " + titleUpdate);
+				$('#courseIndexHotspot').text(titleUpdate);
+				$('#dialog-outline').dialog('option', 'title', 'Outline ' + titleUpdate + ':');
 				$(courseData).find('course').first().attr("name", titleUpdate);
 				//$(courseData).attr("name", titleUpdate);
 				updateCourseXML();
