@@ -165,7 +165,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	if(type == "top" || type == "tabsLeft"){
 		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertAfter($("#content"));
 	}else if(type == "bottom"){
-		if(isMobilePhone){
+		if(isMobile){
 			$("#contentHolder").prepend('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 		}else{
 			$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertBefore($("#content"));
@@ -175,15 +175,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	// inline images and text on mobile
 	}else if(isMobile && (type == "left" || type == "right")){
 		var myContent = '<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>';
-		if(isMobilePhone){
-			if(type == "left"){
-				$("#contentHolder").append(myContent);
-			}
-			if(type == "right"){
-				$("#contentHolder").prepend(myContent);
-			}
+		if(isMobilePhone && (type == "left")){
+			$("#contentHolder").append(myContent);
 		}else{
-			$("#content").prepend(myContent);
+			$("#contentHolder").prepend(myContent);
 		}
 
 	} else if (type == "graphicOnly"){
@@ -406,7 +401,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 imageWidth = $(img).width();
                 imageHeight = $(img).height();
 
-                $("#mediaHolder").css({'width': imageWidth, 'height': imageHeight});
+	            $("#mediaHolder").css({'width': imageWidth});
                 $("#loader").css({'width': imageWidth, 'height': imageHeight});
 
 				if(hasPop == true || largeImg != ""){

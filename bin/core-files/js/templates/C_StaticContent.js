@@ -75,7 +75,7 @@ function C_StaticContent(_type) {
 		   // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		   $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		   //$("#content").width($("#contentHolder").width()-15);
-			if(isMobilePhone){
+			if(isMobile){
 				$("#contentHolder").prepend(myContent);
 			}else{
 			   $("#content").append(myContent);

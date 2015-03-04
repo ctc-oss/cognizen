@@ -424,9 +424,10 @@ function buildInterface(){
 			fireConnectionError();
 		}
 	}
-	// detect rotated mobile device
-	window.addEventListener('orientationchange', doOnOrientationChange);
-
+	// detect rotated tablet
+	if (isMobile && !isMobilePhone){
+		window.addEventListener('orientationchange', doOnOrientationChange);
+	}
 }
 
 /**
