@@ -13,7 +13,7 @@
 			<lessondisplaytitle value=""/>
 			<nextBack value="true"/>
 			<survey value="false" link="null"/>
-			<testout vale="false" link="null"/>
+			<testout value="false" link="null"/>
 			<transition value="true"/>
 			<transitionType value="Circ.easeIn"/>
 			<transitionLength value=".3"/>
