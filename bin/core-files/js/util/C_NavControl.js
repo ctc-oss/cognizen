@@ -1695,8 +1695,7 @@ this.loadPage = function(){
 		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" 
 			|| currentTemplateType == "left" || currentTemplateType == "bottom" 
 			|| currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" 
-			|| currentTemplateType == "tabsLeft" || currentTemplateType == "branching"
-			|| currentTemplateType == "chaining"){
+			|| currentTemplateType == "tabsLeft"){
 
 			$("#mediaDrop").css("visibility","hidden");
 
