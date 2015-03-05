@@ -49,7 +49,6 @@ var testLink		 = null;
 var hasSurvey	     = false;
 var surveyLink       = null;
 
-
 function ncInitialize(){
 	updateTotalGradedQuestions();
 
