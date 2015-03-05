@@ -401,7 +401,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 imageWidth = $(img).width();
                 imageHeight = $(img).height();
 
-	            $("#mediaHolder").css({'width': imageWidth});
+	            $("#mediaHolder").css({'width': imageWidth, 'height': imageHeight});
                 $("#loader").css({'width': imageWidth, 'height': imageHeight});
 
 				if(hasPop == true || largeImg != ""){
