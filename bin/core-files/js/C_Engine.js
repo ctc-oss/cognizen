@@ -372,7 +372,10 @@ function buildInterface(){
 	//Place the course title.
 	var courseTitle;	
 																	
-	if($(data).find("coursedisplaytitle").attr("value")){
+	if($(data).find("coursedisplaytitle")){
+		if($(data).find("coursedisplaytitle").attr("value") == ""){
+			$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
+		}
 		courseTitle = $(data).find("coursedisplaytitle").attr("value");
 	}else{
 		$(data).find("preferences").append($("<coursedisplaytitle>"));
@@ -386,8 +389,12 @@ function buildInterface(){
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle;
 	
-	if($(data).find("lessondisplaytitle").attr("value")){
+	if($(data).find("lessondisplaytitle")){
+		if($(data).find("lessondisplaytitle").attr("value") == ""){
+			$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));		
+		}
 		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
+		
 	}else{
 		$(data).find("preferences").append($("<lessondisplaytitle>"));
 		$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
