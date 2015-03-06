@@ -196,7 +196,7 @@ function checkNav(){
 	}
 	else{
 		helpButton = ($(data).find('help').attr('value') === 'true');
-		if($(data).find('help').attr('value') == "true"){
+		if($(data).find('help').attr('course') == "true"){
 			courseHelp = true;
 		}
 		var tempWidth = $(data).find('help').attr('width');
@@ -820,14 +820,10 @@ function launchPrefs(){
 		if($(this).prop("checked") == true){
 			$(data).find("testout").attr("value", "true");
 			$("#testOutSelect").show();
-			//$("#inputSurveyLinkLabel").show();
-			//$("#inputSurveyLink").show();
 			testOut = true;
 		}else{
 			$(data).find("testout").attr("value", "false");
 			$("#testOutSelect").hide();
-			//$("#inputSurveyLinkLabel").hide();
-			//$("#inputSurveyLink").hide();
 			testOut = false;	
 		}
 	});
@@ -856,11 +852,17 @@ function launchPrefs(){
 	$("#hasCourseHelp").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("help").attr("course", "true");
+			var tmpURL = "../" + $(data).find("help").attr("url");
 			courseHelp = true;
 		}else{
 			$(data).find("help").attr("course", "false");
-			courseHelp = false;	
+			var tmpURL = $(data).find("help").attr("url");
+			tmpURL = tmpURL.replace("../", "");
+			courseHelp = false;
 		}
+		$(data).find("help").attr("url", tmpURL);
+		$("#selectedHelp").text(tmpURL);
+		forceUpdateOnSave = true;
 	});
 
 	$("#hasHelp").click(function() {
@@ -883,7 +885,7 @@ function launchPrefs(){
         if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			if(event.success == true){
 				if(courseHelp == true){
-					$(data).find('help').attr('url', '/../media/' + myFile );
+					$(data).find('help').attr('url', '../media/' + myFile );
 				}else{
 					$(data).find('help').attr('url', 'media/' + myFile );
 				}
@@ -1204,7 +1206,6 @@ function checkHelp(){
 		}
 		//grab URL of help file and attach click action
 		helpURL = $(data).find('help').attr('url');
-		
 		$("#help").click(function() {
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
