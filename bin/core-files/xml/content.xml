@@ -40,7 +40,7 @@
 			<feedbackType value="standard"/>
 			<reloadPage value="true"/>
 			<finalLesson value="false"/>
-			<help value="false" url="media/test.png"/>
+			<help value="false" course="false" url="media/test.png"/>
 			<tlo value="undefined"/>
 			<id value=""/>
 		</preferences>

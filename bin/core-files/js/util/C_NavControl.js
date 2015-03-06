@@ -180,18 +180,24 @@ function checkNav(){
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
 	helpButton = $(data).find('help').attr('value');
+	
 	if(helpButton == undefined || helpButton == "undefined"){
 		if(mode === "edit"){
 			$(data).find("preferences").append($('<help>'));
 			$(data).find("help").attr("value", "false");
+			$(data).find("help").attr("course", "false");
 			$(data).find("help").attr("url", "");
 			$(data).find("help").attr("width", helpWidth);
 			$(data).find("help").attr("height", helpHeight);
 		}
 		helpButton = false;
+		courseHelp = false;
 	}
 	else{
 		helpButton = ($(data).find('help').attr('value') === 'true');
+		if($(data).find('help').attr('value') == "true"){
+			courseHelp = true;
+		}
 		var tempWidth = $(data).find('help').attr('width');
 		if(tempWidth != undefined && tempWidth != 'undefined'){
 			helpWidth = tempWidth;
@@ -207,6 +213,7 @@ function checkNav(){
 			$(data).find("help").attr("height", helpHeight);
 		}
 	}
+	
 
 	checkHelp();
 	checkSurvey();
@@ -674,6 +681,8 @@ function launchPrefs(){
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
+	msg += "<label id='helpCourseLabel'>Course Help: </label>";
+	msg += "<input id='hasCourseHelp' type='checkbox' name='hasCourseHelp'>";
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
 	msg += "<label id='helpWidthLabel'>Help window width: </label>";
@@ -837,6 +846,22 @@ function launchPrefs(){
 		$("#helpWidth").attr('disabled', true);
 		$("#helpHeight").attr('disabled', true);
 	}
+	
+	if(courseHelp == true){
+		$("#hasCourseHelp").attr('checked', true);
+	}else{
+		$("#hasCourseHelp").attr('checked', false);
+	}
+	
+	$("#hasCourseHelp").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("help").attr("course", "true");
+			courseHelp = true;
+		}else{
+			$(data).find("help").attr("course", "false");
+			courseHelp = false;	
+		}
+	});
 
 	$("#hasHelp").click(function() {
 		$("#inputHelp").toggle(this.checked);
@@ -861,8 +886,12 @@ function launchPrefs(){
 				$("#selectedHelp").text(myFile);
 				$("#hasHelp").attr('checked', true);
 				var urlParams = queryStringParameters();
+				var level = "module";
+				if(courseHelp == true){
+					level = "course";
+				}
 				cognizenSocket.emit('contentSaved', {
-			        content: {type: urlParams['type'], id: urlParams['id']},
+			        content: {type: urlParams['type'], id: urlParams['id'], level: level},
 			        user: {id: urlParams['u']}
 			    });
 			}else{
