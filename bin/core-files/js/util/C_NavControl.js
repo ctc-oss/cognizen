@@ -48,6 +48,7 @@ var testOut		     = false;
 var testLink		 = null;
 var hasSurvey	     = false;
 var surveyLink       = null;
+var forceUpdateOnSave = false;
 
 function ncInitialize(){
 	updateTotalGradedQuestions();
@@ -652,7 +653,6 @@ function launchPrefs(){
 	msg += "<option>none</option>";
 	msg += "</select></form>";
 	msg += "</p>";
-	console.log($('#lessonTitle').text());
 	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
 	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
 	tmpLessonTitleText = $('#lessonTitle').text().replace(/'/g, "\&#8217;");
@@ -882,18 +882,24 @@ function launchPrefs(){
 	    var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
         if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			if(event.success == true){
-				$(data).find('help').attr('url', 'media/' + myFile );
+				if(courseHelp == true){
+					$(data).find('help').attr('url', '/../media/' + myFile );
+				}else{
+					$(data).find('help').attr('url', 'media/' + myFile );
+				}
+				helpURL = $(data).find('help').attr('url');
 				$("#selectedHelp").text(myFile);
 				$("#hasHelp").attr('checked', true);
 				var urlParams = queryStringParameters();
-				var level = "module";
+				forceUpdateOnSave = true;
 				if(courseHelp == true){
-					level = "course";
+					socket.emit('updateHelpLocation', { my: myFile });
+				}else{
+					cognizenSocket.emit('contentSaved', {
+				        content: {type: urlParams['type'], id: urlParams['id']},
+				        user: {id: urlParams['u']}
+				    });
 				}
-				cognizenSocket.emit('contentSaved', {
-			        content: {type: urlParams['type'], id: urlParams['id'], level: level},
-			        user: {id: urlParams['u']}
-			    });
 			}else{
 				$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
 				//Theres an error
@@ -907,6 +913,14 @@ function launchPrefs(){
 				});
 			}
 		}
+	});
+	
+	//If course help - once file moved commit to git
+	socket.on("courseHelpLocationUpdated", function(){
+		cognizenSocket.emit('contentSaved', {
+			content: {type: urlParams['type'], id: urlParams['id']},
+			user: {id: urlParams['u']}
+		});
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
@@ -1038,9 +1052,16 @@ function savePreferences(_pub){
 
 	if(helpSelected){
 		helpButton = true;
+	}else{ 
+		helpButton = false; 
 	}
-	else{ helpButton = false; }
-
+	
+	//Force an update to the xml if a new help file is uploaded.
+	if(forceUpdateOnSave == true){
+		updateNeeded = true;
+		forceUpdateOnSave = false;
+	}
+	
 	if(updateNeeded == true && _pub != true){
 		sendUpdateWithRefresh("updatePrefs");
 		$("#dialog-lessonPrefs").dialog("close");
@@ -1180,10 +1201,10 @@ function checkHelp(){
 					primary: 'ui-icon-help'
 				}
 			});
-
 		}
 		//grab URL of help file and attach click action
 		helpURL = $(data).find('help').attr('url');
+		
 		$("#help").click(function() {
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});

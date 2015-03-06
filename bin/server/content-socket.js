@@ -134,6 +134,16 @@ var ContentSocket = {
 			    });
 			});
 			
+			socket.on('updateHelpLocation', function(data){
+				fs.copy(contentPath + "/media/" + data.my , contentPath +'/../media/' + data.my, { replace: true }, function (err) {
+				  if (err) {
+				    // i.e. file already exists or can't write to directory 
+				    throw err;
+				  }
+				  socket.emit("courseHelpLocationUpdated");
+				});
+			});
+			
             //Set listener to update the content.xml file
             socket.on('updateXMLWithRefresh', function (data) {
                 fs.outputFile(/*getXMLContentFile()*/xmlContentFile, data.my, function(err) {

@@ -511,6 +511,7 @@ var SocketHandler = {
 	    var tokenz = content.path.split("/");
 	    var programName = tokenz[0];
 	    var xmlPath = path.normalize('../course-files/xml/course.xml');
+	    var courseMediaPath = path.normalize('../course-files/media/test.png');
 	    var courseID = content._id;
 	    var courseName = content.name;
 
@@ -523,29 +524,31 @@ var SocketHandler = {
         	FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog/jqueryui"), baseWritePath + '/css/CourseCSS/jqueryui', function (path) {
 	            return (path.endsWith('jqueryui') || path.contains('images') || path.endsWith('jquery-ui.min.css'));
 	        }, function (err) {
-				fs.copy(xmlPath, newCourseXML, function(err){
-			    	if(err){
-						_this.logger.error("Error copying content.xml file " + err);
-						callback(err, null);
-		            }
-
-		            _this.logger.info('course.xml file copied success');
-
-				    var data, etree;
-
-				    fs.readFile(newCourseXML, function(err, data){
-				    	data = data.toString();
-						etree = et.parse(data);
-						//set the name and id in the course.xml
-				        etree.find('./').set('name', courseName);
-				        etree.find('./').set('id', courseID);
-				        var xml = etree.write({'xml_decleration': false});
-				        fs.outputFile(newCourseXML, xml, function (err) {
-				        	if (err) callback(err, null);
-				         	callback(err);
-				        });
+				fs.mkdir(baseWritePath + "/media", function(err){
+					fs.copy(xmlPath, newCourseXML, function(err){
+				    	if(err){
+							_this.logger.error("Error copying content.xml file " + err);
+							callback(err, null);
+			            }
+	
+			            _this.logger.info('course.xml file copied success');
+	
+					    var data, etree;
+	
+					    fs.readFile(newCourseXML, function(err, data){
+					    	data = data.toString();
+							etree = et.parse(data);
+							//set the name and id in the course.xml
+					        etree.find('./').set('name', courseName);
+					        etree.find('./').set('id', courseID);
+					        var xml = etree.write({'xml_decleration': false});
+					        fs.outputFile(newCourseXML, xml, function (err) {
+					        	if (err) callback(err, null);
+					         	callback(err);
+					        });
+					    });
 				    });
-			    });
+				});
 	        });
         });
     },
