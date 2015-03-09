@@ -316,7 +316,7 @@ function C_Matching(_type) {
 		//////END Accessibility
         checkMode();
 
-		if(isComplete){
+		if(isComplete && mode != "edit"){
 			//disableOptions();
 			//$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
@@ -810,19 +810,12 @@ function C_Matching(_type) {
 						}
 
 
-	//TURN BACK ON IF MATCHING GETS DIFFERENTIATED
-	//							tmpObj.feedbackType = $('input[name=manageFeedbackType]:checked', '#feedbackTypeGroup').val();
-	//							if(feedbackType == "undifferentiated"){
 						tmpObj.feedbackUpdate = CKEDITOR.instances["feedbackEditText"].getData();
-	//							}
 						var tmpOptionArray = new Array();
 						for(var i = 0; i < optionEdit_arr.length; i++){
 							var tmpOptionObj = new Object();
 							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
 							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Match").val();
-	//						if(feedbackType == "differentiated"){
-	//							tmpOptionObj.difText = CKEDITOR.instances[optionEdit_arr[i]+"DifFeedText"].getData()
-	//						}
 							tmpOptionArray.push(tmpOptionObj);
 						}
 						tmpObj.option_arr = tmpOptionArray;
@@ -918,9 +911,14 @@ function C_Matching(_type) {
 
 		$("#" +answerID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
+			console.log($(data).find("pages").eq(currentPage).find("answer").length);
 			$(data).find("pages").eq(currentPage).find("answer").eq(arrIndex).remove();
+			console.log($(data).find("pages").eq(currentPage).find("answer").length);
 			answerEdit_arr.splice(arrIndex, 1);
 			$("#answer" + arrIndex+"Container").remove();
+			for(var i = 0; i < answerEdit_arr.length; i++){
+				$("#"+answerEdit_arr[i]).find(".removeMedia").attr("value", i);
+			}
 		});
 
 		answerCount++;
@@ -972,6 +970,9 @@ function C_Matching(_type) {
 			$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
 			optionEdit_arr.splice(arrIndex, 1);
 			$("#option"+arrIndex+"Container").remove();
+			for(var i = 0; i < answerEdit_arr.length; i++){
+				$("#"+ optionEdit_arr[i]).find(".removeMedia").attr("value", i);
+			}
 		});
 
 		optionEdit_arr.push(optionID);
