@@ -911,9 +911,9 @@ function C_Matching(_type) {
 
 		$("#" +answerID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
-			console.log($(data).find("pages").eq(currentPage).find("answer").length);
-			$(data).find("pages").eq(currentPage).find("answer").eq(arrIndex).remove();
-			console.log($(data).find("pages").eq(currentPage).find("answer").length);
+			console.log($(data).find("page").eq(currentPage).find("answer").length);
+			$(data).find("page").eq(currentPage).find("answer").eq(arrIndex).remove();
+			console.log($(data).find("page").eq(currentPage).find("answer").length);
 			answerEdit_arr.splice(arrIndex, 1);
 			$("#answer" + arrIndex+"Container").remove();
 			for(var i = 0; i < answerEdit_arr.length; i++){
@@ -967,7 +967,7 @@ function C_Matching(_type) {
 
 		$("#" +optionLabel+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
-			$(data).find("pages").eq(currentPage).find("option").eq(arrIndex).remove();
+			$(data).find("page").eq(currentPage).find("option").eq(arrIndex).remove();
 			optionEdit_arr.splice(arrIndex, 1);
 			$("#option"+arrIndex+"Container").remove();
 			for(var i = 0; i < answerEdit_arr.length; i++){
