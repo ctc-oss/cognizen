@@ -1094,6 +1094,10 @@ ul.no-indent {
 	display: none;
 }
 
+.matching > div.antiscroll-scrollbar-horizontal{
+	display: none;
+}
+
 .revealPalette > div.antiscroll-scrollbar.antiscroll-scrollbar-horizontal{
 	display: none;
 }
