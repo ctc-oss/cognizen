@@ -1113,7 +1113,7 @@ ul.no-indent {
 }
 
 .btn_branch{
-	height: 20px;
+	line-height: 20px;
 	top: auto;
 	bottom: 2px;
 	font-size: 100%;
