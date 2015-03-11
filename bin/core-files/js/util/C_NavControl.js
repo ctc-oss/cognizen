@@ -681,7 +681,7 @@ function launchPrefs(){
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
-	msg += "<label id='helpCourseLabel'>Course Help: </label>";
+	msg += "<label id='helpCourseLabel' title='BEWARE: MAKE SURE THAT COURSE HELP HAS ALREADY BEEN UPLOADED. IF IT HAS NOT, UPLOAD YOUR HELP WITH THE COURSE HELP CHECKBOX SELECTED.'>Course Help: </label>";
 	msg += "<input id='hasCourseHelp' type='checkbox' name='hasCourseHelp'>";
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
