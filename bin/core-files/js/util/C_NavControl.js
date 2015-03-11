@@ -641,6 +641,20 @@ function launchPrefs(){
 		}
 	}
 	
+	var selectedHelp = '';
+	if(courseHelp === true){
+
+		if(!$(courseData).find("course").attr("help")){
+			selectedHelp = 'No course wide help document updated, please upload a file!';
+		}
+		else{
+			selectedHelp = $(courseData).find("course").attr("help");
+		}
+	}
+	else{
+		selectedHelp = $(data).find('help').attr('url');
+	}
+
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
 	//Add the scorm form
 	msg += "<p>";
@@ -684,7 +698,7 @@ function launchPrefs(){
 	msg += "<label id='helpCourseLabel' title='BEWARE: MAKE SURE THAT COURSE HELP HAS ALREADY BEEN UPLOADED. IF IT HAS NOT, UPLOAD YOUR HELP WITH THE COURSE HELP CHECKBOX SELECTED.'>Course Help: </label>";
 	msg += "<input id='hasCourseHelp' type='checkbox' name='hasCourseHelp'>";
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
-	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
+	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+selectedHelp+"</div>";
 	msg += "<label id='helpWidthLabel'>Help window width: </label>";
 	msg += "<input id='helpWidth' type='text' name='helpWidth' value='"+helpWidth+"' disabled='disabled' size='4'>";
 	msg += "<br/><label id='helpHeightLabel'>Help window height: </label>";
@@ -853,7 +867,7 @@ function launchPrefs(){
 		if($(this).prop("checked") == true){
 			$(data).find("help").attr("course", "true");
 			courseHelp = true;
-			if($(courseData).find("course").attr("help").length == 0){
+			if(!$(courseData).find("course").attr("help")){
 				var tmpURL = "../" + $(data).find("help").attr("url");
 				$(courseData).find("course").attr("help", tmpURL);
 				sendCourseUpdate();
@@ -1206,6 +1220,11 @@ function checkTestOut(){
 }	//End survey
 
 function checkHelp(){
+	if($(data).find('help').attr('course') === 'true'){	
+		if(!$(courseData).find("course").attr("help")){
+			helpButton = false;
+		}
+	}
 	if(helpButton == true){
 		if($("#help").length == 0){
 			$('#myCanvas').append("<button id='help' title='Access help information.'>help</button>");
@@ -1225,7 +1244,6 @@ function checkHelp(){
 		}
 		
 		$("#help").click(function() {
-			console.log(helpURL);
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
 	}
