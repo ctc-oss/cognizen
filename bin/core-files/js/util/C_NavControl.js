@@ -852,16 +852,26 @@ function launchPrefs(){
 	$("#hasCourseHelp").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("help").attr("course", "true");
-			var tmpURL = "../" + $(data).find("help").attr("url");
 			courseHelp = true;
+			if($(courseData).find("course").attr("help").length == 0){
+				var tmpURL = "../" + $(data).find("help").attr("url");
+				$(courseData).find("course").attr("help", tmpURL);
+				sendCourseUpdate();
+				$("#selectedHelp").text(tmpURL); 				
+			}
+			else{
+				$("#selectedHelp").text($(courseData).find("course").attr("help"));
+			}
+
 		}else{
 			$(data).find("help").attr("course", "false");
 			var tmpURL = $(data).find("help").attr("url");
 			tmpURL = tmpURL.replace("../", "");
 			courseHelp = false;
+			$("#selectedHelp").text(tmpURL);
+			$(data).find("help").attr("url", tmpURL);
 		}
-		$(data).find("help").attr("url", tmpURL);
-		$("#selectedHelp").text(tmpURL);
+		
 		forceUpdateOnSave = true;
 	});
 
@@ -886,6 +896,7 @@ function launchPrefs(){
 			if(event.success == true){
 				if(courseHelp == true){
 					$(data).find('help').attr('url', '../media/' + myFile );
+					$(courseData).find("course").attr("help", '../media/' + myFile );
 				}else{
 					$(data).find('help').attr('url', 'media/' + myFile );
 				}
@@ -896,6 +907,7 @@ function launchPrefs(){
 				forceUpdateOnSave = true;
 				if(courseHelp == true){
 					socket.emit('updateHelpLocation', { my: myFile });
+					sendCourseUpdate();
 				}else{
 					cognizenSocket.emit('contentSaved', {
 				        content: {type: urlParams['type'], id: urlParams['id']},
@@ -1205,8 +1217,15 @@ function checkHelp(){
 			});
 		}
 		//grab URL of help file and attach click action
-		helpURL = $(data).find('help').attr('url');
+		if($(data).find('help').attr('course') === 'true'){	
+			helpURL = $(courseData).find("course").attr("help");
+		}
+		else{
+			helpURL = $(data).find('help').attr('url');
+		}
+		
 		$("#help").click(function() {
+			console.log(helpURL);
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
 	}
