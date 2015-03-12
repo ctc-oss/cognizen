@@ -641,6 +641,20 @@ function launchPrefs(){
 		}
 	}
 	
+	var selectedHelp = '';
+	if(courseHelp === true){
+
+		if(!$(courseData).find("course").attr("help")){
+			selectedHelp = 'No course wide help document updated, please upload a file!';
+		}
+		else{
+			selectedHelp = $(courseData).find("course").attr("help");
+		}
+	}
+	else{
+		selectedHelp = $(data).find('help').attr('url');
+	}
+
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
 	//Add the scorm form
 	msg += "<p>";
@@ -684,7 +698,7 @@ function launchPrefs(){
 	msg += "<label id='helpCourseLabel' title='BEWARE: MAKE SURE THAT COURSE HELP HAS ALREADY BEEN UPLOADED. IF IT HAS NOT, UPLOAD YOUR HELP WITH THE COURSE HELP CHECKBOX SELECTED.'>Course Help: </label>";
 	msg += "<input id='hasCourseHelp' type='checkbox' name='hasCourseHelp'>";
 	msg += "<div id='inputHelp' title='Browse for file to be used.' class='audioDropSpot'>Help Drop</div>";
-	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+$(data).find('help').attr('url')+"</div>";
+	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+selectedHelp+"</div>";
 	msg += "<label id='helpWidthLabel'>Help window width: </label>";
 	msg += "<input id='helpWidth' type='text' name='helpWidth' value='"+helpWidth+"' disabled='disabled' size='4'>";
 	msg += "<br/><label id='helpHeightLabel'>Help window height: </label>";
@@ -852,16 +866,26 @@ function launchPrefs(){
 	$("#hasCourseHelp").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("help").attr("course", "true");
-			var tmpURL = "../" + $(data).find("help").attr("url");
 			courseHelp = true;
+			if(!$(courseData).find("course").attr("help")){
+				var tmpURL = "../" + $(data).find("help").attr("url");
+				$(courseData).find("course").attr("help", tmpURL);
+				sendCourseUpdate();
+				$("#selectedHelp").text(tmpURL); 				
+			}
+			else{
+				$("#selectedHelp").text($(courseData).find("course").attr("help"));
+			}
+
 		}else{
 			$(data).find("help").attr("course", "false");
 			var tmpURL = $(data).find("help").attr("url");
 			tmpURL = tmpURL.replace("../", "");
 			courseHelp = false;
+			$("#selectedHelp").text(tmpURL);
+			$(data).find("help").attr("url", tmpURL);
 		}
-		$(data).find("help").attr("url", tmpURL);
-		$("#selectedHelp").text(tmpURL);
+		
 		forceUpdateOnSave = true;
 	});
 
@@ -885,7 +909,8 @@ function launchPrefs(){
         if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			if(event.success == true){
 				if(courseHelp == true){
-					$(data).find('help').attr('url', '../media/' + myFile );
+					//$(data).find('help').attr('url', '../media/' + myFile );
+					$(courseData).find("course").attr("help", '../media/' + myFile );
 				}else{
 					$(data).find('help').attr('url', 'media/' + myFile );
 				}
@@ -896,6 +921,7 @@ function launchPrefs(){
 				forceUpdateOnSave = true;
 				if(courseHelp == true){
 					socket.emit('updateHelpLocation', { my: myFile });
+					sendCourseUpdate();
 				}else{
 					cognizenSocket.emit('contentSaved', {
 				        content: {type: urlParams['type'], id: urlParams['id']},
@@ -919,6 +945,7 @@ function launchPrefs(){
 	
 	//If course help - once file moved commit to git
 	socket.on("courseHelpLocationUpdated", function(){
+		alert("Done");
 		cognizenSocket.emit('contentSaved', {
 			content: {type: urlParams['type'], id: urlParams['id']},
 			user: {id: urlParams['u']}
@@ -1194,6 +1221,11 @@ function checkTestOut(){
 }	//End survey
 
 function checkHelp(){
+	if($(data).find('help').attr('course') === 'true'){	
+		if(!$(courseData).find("course").attr("help")){
+			helpButton = false;
+		}
+	}
 	if(helpButton == true){
 		if($("#help").length == 0){
 			$('#myCanvas').append("<button id='help' title='Access help information.'>help</button>");
@@ -1205,7 +1237,13 @@ function checkHelp(){
 			});
 		}
 		//grab URL of help file and attach click action
-		helpURL = $(data).find('help').attr('url');
+		if($(data).find('help').attr('course') === 'true'){	
+			helpURL = $(courseData).find("course").attr("help");
+		}
+		else{
+			helpURL = $(data).find('help').attr('url');
+		}
+				
 		$("#help").click(function() {
 			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
