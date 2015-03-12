@@ -945,7 +945,6 @@ function launchPrefs(){
 	
 	//If course help - once file moved commit to git
 	socket.on("courseHelpLocationUpdated", function(){
-		alert("Done");
 		cognizenSocket.emit('contentSaved', {
 			content: {type: urlParams['type'], id: urlParams['id']},
 			user: {id: urlParams['u']}
