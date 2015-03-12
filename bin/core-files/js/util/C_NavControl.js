@@ -814,8 +814,6 @@ function launchPrefs(){
 	}else{
 		$("#hasTestOut").attr('checked', false);
 		$("#testOutSelect").hide();
-		//$("#inputSurveyLinkLabel").hide();
-		//$("#inputSurveyLink").hide();
 	}
 	
 	$(testOutOption_arr).each(function(){
@@ -909,7 +907,7 @@ function launchPrefs(){
         if (favoriteTypes.indexOf(myExt.toLowerCase()) >= 0) {
 			if(event.success == true){
 				if(courseHelp == true){
-					$(data).find('help').attr('url', '../media/' + myFile );
+					//$(data).find('help').attr('url', '../media/' + myFile );
 					$(courseData).find("course").attr("help", '../media/' + myFile );
 				}else{
 					$(data).find('help').attr('url', 'media/' + myFile );
@@ -1236,15 +1234,19 @@ function checkHelp(){
 			});
 		}
 		//grab URL of help file and attach click action
+
+		var loc = window.location.pathname;
+		var dir = loc.substring(0, loc.lastIndexOf('/'));
+		
 		if($(data).find('help').attr('course') === 'true'){	
 			helpURL = $(courseData).find("course").attr("help");
 		}
 		else{
 			helpURL = $(data).find('help').attr('url');
 		}
-		
+
 		$("#help").click(function() {
-			window.open(helpURL, 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
+			window.open(unescape(dir + "/" +helpURL), 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
 	}
 	else{
