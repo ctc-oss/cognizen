@@ -18,7 +18,7 @@ var walkerOptions = {
 
 var ContentSocket = {
 	
-    start: function(port, path, contentPath, scormPath, logger, callback) {
+    start: function(port, _path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
         var xmlCourseFile = contentPath + '/../course.xml';
         var mediaPath = contentPath + '/media/';
@@ -39,11 +39,11 @@ var ContentSocket = {
             return;
         }
 
-        if (path) {
-            io.set('resource', '/' + path);
+        if (_path) {
+            io.set('resource', '/' + _path);
             io.set('log level', 1);
 //          io.set('polling duration', 600);
-            logger.info('Socket.io resource set to /' + path);
+            logger.info('Socket.io resource set to /' + _path);
         }
         else {
             logger.error('Path must be provided as an argument');
@@ -57,7 +57,7 @@ var ContentSocket = {
         
         var serverObj = new Object();
         serverObj.app = app;
-        serverObj.id = path;
+        serverObj.id = _path;
         serverObj.port = port;
         serverObj.xml = xmlContentFile;
         openServers.push(serverObj);
@@ -135,7 +135,7 @@ var ContentSocket = {
 			});
 			
 			socket.on('updateHelpLocation', function(data){
-				fs.copy(contentPath + "/media/" + data.my , contentPath +'/../media/' + data.my, { replace: true }, function (err) {
+				fs.copy(path.normalize(contentPath + "/media/") + data.my , path.normalize(contentPath +'/../media/') + data.my, { replace: true }, function (err) {
 				  if (err) {
 				    // i.e. file already exists or can't write to directory 
 				    throw err;

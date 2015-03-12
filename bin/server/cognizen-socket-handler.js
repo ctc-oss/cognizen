@@ -524,7 +524,7 @@ var SocketHandler = {
         	FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog/jqueryui"), baseWritePath + '/css/CourseCSS/jqueryui', function (path) {
 	            return (path.endsWith('jqueryui') || path.contains('images') || path.endsWith('jquery-ui.min.css'));
 	        }, function (err) {
-				fs.mkdir(baseWritePath + "/media", function(err){
+				fs.mkdir(baseWritePath + path.normalize("/media"), function(err){
 					fs.copy(xmlPath, newCourseXML, function(err){
 				    	if(err){
 							_this.logger.error("Error copying content.xml file " + err);
