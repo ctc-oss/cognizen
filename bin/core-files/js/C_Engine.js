@@ -213,6 +213,7 @@ function initScripts(_data){
 					corePath +"js/libs/jquery.corner.js",
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
+					//corePath +"js/libs/socket.io-stream.js",
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
@@ -262,11 +263,18 @@ function initScripts(_data){
 			//Lightbox for media popups and galleries.
 
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
-		], startEngine);
+		], loadStreamer);
 	}
 	if((ieUserAgent.renderVersion < 10) || (document.documentMode < 10)){
         oldIE = true;
 	}
+}
+
+function loadStreamer(){
+	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
+   		ss = foo;
+		startEngine();
+	});
 }
 
 //VROOM VROOM

@@ -7,7 +7,7 @@ var archiver = require('archiver');
 var scorm = require('./cognizen-scorm');
 var openServers = [];
 var io;
-
+var ss = require('socket.io-stream');
 /*var walk = require('walk');				///////////////////Comment before push
 var walker;								///////////////////Comment before push	
 var walkerOptions = {
@@ -132,6 +132,11 @@ var ContentSocket = {
 			        }
 			        return file(0);
 			    });
+			});
+			
+			socket.on('upload-media', function(stream, data){
+				var filename = path.basename(data.name);
+				stream.pip(fs.createWriteStream(filename));
 			});
 			
 			socket.on('updateHelpLocation', function(data){

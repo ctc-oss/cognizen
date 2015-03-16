@@ -45,6 +45,13 @@ var dirDepth = 0;
 * @default ""
 */
 var relPath = "";
+/**
+* Variable to hold socket stream.
+* 
+* @type {String}
+* @default ""
+*/
+var ss;
 
 
 /**
@@ -97,12 +104,29 @@ function toggleMediaBrowser(){
 * @method addDisplay
 */
 function addDisplay(){
-	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser</div>";
+	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser<input id='file' type='file' /></div>";
 		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>"
 		msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
 		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'><div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div></div>";
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
+	
+	$('#file').change(function(e) {
+	    $('#file').change(function(e) {
+	    	var file = e.target.files[0];
+			var stream = ss.createStream();
+			ss.forceBase64 = true;
+			ss(socket).emit('upload-media', stream, {size: file.size, name: file.name});
+			var blobStream = ss.createBlobReadStream(file);
+			var size = 0;
+			blobStream.on('data', function(chunk) {
+				size += chunk.length;
+				console.log(Math.floor(size / file.size * 100) + '%');
+			});
+			blobStream.pipe(stream);
+		});
+	});
+	
 	getMediaDir();
 }
 
@@ -177,7 +201,7 @@ function updateMediaBrowserDir(_data){
 	   });
 	}
 	
-	//Add files
+	//Add files display
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
