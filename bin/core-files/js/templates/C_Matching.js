@@ -735,9 +735,8 @@ function C_Matching(_type) {
 		    }
 		});
 
-		optionCount = option_arr.length;
 		//find every option in the xml - place them on the screen.
-		for (var i = 0; i < optionCount; i++){
+		for (var i = 0; i < option_arr.length; i++){
 			addOption(i, false);
 		};
 
@@ -910,12 +909,16 @@ function C_Matching(_type) {
 		$('#'+answerID+'Match').alpha("upper");
 
 		$("#" +answerID+"Remove").click(function(){
+			answerCount--;
 			var arrIndex = $(this).attr('value');
 			$(data).find("page").eq(currentPage).find("answer").eq(arrIndex).remove();
+			
+			$("#"+answerEdit_arr[arrIndex]+"Container").remove();
+			
 			answerEdit_arr.splice(arrIndex, 1);
-			$("#answer" + arrIndex+"Container").remove();
+			
 			for(var i = 0; i < answerEdit_arr.length; i++){
-				$("#answer" +i+"Remove").attr("value", i);
+				$("#" +answerEdit_arr[i]+"Remove").attr("value", i);
 			}
 		});
 
@@ -964,15 +967,22 @@ function C_Matching(_type) {
 		$('#'+optionID+'Match').alpha("upper");
 
 		$("#" +optionID+"Remove").click(function(){
+			optionCount--;
 			var arrIndex = $(this).attr('value');
 			$(data).find("page").eq(currentPage).find("option").eq(arrIndex).remove();
+			console.log("optionEdit_arr.length = " + optionEdit_arr.length);
+			$("#"+optionEdit_arr[arrIndex]+"Container").remove();
+			
 			optionEdit_arr.splice(arrIndex, 1);
-			$("#option"+arrIndex+"Container").remove();
+			
 			for(var i = 0; i < optionEdit_arr.length; i++){
-				$("#option" +i+"Remove").attr("value", i);
+				console.log("resetting value for: option"+i+"Remove");
+				console.log(optionEdit_arr[i]);
+				$("#"+optionEdit_arr[i]+"Remove").attr("value", i);
 			}
 		});
-
+		
+		optionCount++;
 		optionEdit_arr.push(optionID);
 	}
 
@@ -1015,8 +1025,14 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("option").eq(i).append(optionCDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(i).attr("correct", optionCorrect);
 		}
-
-		for(var i = optionEdit_arr.length; i < optionCount; i++){
+		
+		var optionOverage = $(data).find("page").eq(currentPage).find("option").length;
+		console.log("optionOverage = " + optionOverage);
+		console.log("optionEdit_arr.length = " + optionEdit_arr.length);
+		for(var i = optionEdit_arr.length; i < optionOverage; i++){
+			console.log("removingOptionOverage");
+			console.log("Removing:");
+			console.log($(data).find("page").eq(currentPage).find("option").eq(i));
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
 
@@ -1033,8 +1049,15 @@ function C_Matching(_type) {
 			}
 			$(data).find("page").eq(currentPage).find("answer").eq(i).attr("correct", answerCorrect);
 		}
-
-		for(var i = answerEdit_arr.length; i < answerCount; i++){
+		
+		var answerOverage = $(data).find("page").eq(currentPage).find("answer").length;
+		
+		console.log("optionOverage = " + optionOverage);
+		console.log("optionEdit_arr.length = " + optionEdit_arr.length);
+		for(var i = answerEdit_arr.length; i < answerOverage; i++){
+			console.log("removingAnswerOverage");
+			console.log("Removing:");
+			console.log($(data).find("page").eq(currentPage).find("answer").eq(i));
 			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
 		}
 
