@@ -17,7 +17,8 @@ var Utils = require('./cognizen-utils'),
     unzip = require('adm-zip'),
     util = require('util'),
 	readdirp = require('readdirp'),
-	et = require('elementtree');
+	et = require('elementtree'),
+    redmine = require('./cognizen-redmine');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
