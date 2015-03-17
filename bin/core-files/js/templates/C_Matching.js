@@ -911,13 +911,11 @@ function C_Matching(_type) {
 
 		$("#" +answerID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
-			console.log($(data).find("page").eq(currentPage).find("answer").length);
 			$(data).find("page").eq(currentPage).find("answer").eq(arrIndex).remove();
-			console.log($(data).find("page").eq(currentPage).find("answer").length);
 			answerEdit_arr.splice(arrIndex, 1);
 			$("#answer" + arrIndex+"Container").remove();
 			for(var i = 0; i < answerEdit_arr.length; i++){
-				$("#"+answerEdit_arr[i]).find(".removeMedia").attr("value", i);
+				$("#answer" +i+"Remove").attr("value", i);
 			}
 		});
 
@@ -940,7 +938,7 @@ function C_Matching(_type) {
 		var myMatch = $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct");
 
 		var msg = "<div id='"+optionID+"Container' class='templateAddItem'>";
-		msg += "<div id='"+optionLabel+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
+		msg += "<div id='"+optionID+"Remove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<label id='label'>Option " + optionLabel + " Match: </label>";
 		msg += "<input type='text' name='myMatch' id='"+optionID+"Match' value='"+ myMatch +"' value='X' class='dialogInput' style='width:35px; text-align:center;' title='Click here to edit the option label. This value must be an uppercase letter.'/><br/>";
 		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).text();
@@ -965,13 +963,17 @@ function C_Matching(_type) {
 		//#3392
 		$('#'+optionID+'Match').alpha("upper");
 
-		$("#" +optionLabel+"Remove").click(function(){
+		$("#" +optionID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
+			console.log("arrIndex = " + arrIndex);
 			$(data).find("page").eq(currentPage).find("option").eq(arrIndex).remove();
+			console.log($(data).find("page").eq(currentPage).find("option"));
 			optionEdit_arr.splice(arrIndex, 1);
+			console.log(optionEdit_arr);
 			$("#option"+arrIndex+"Container").remove();
-			for(var i = 0; i < answerEdit_arr.length; i++){
-				$("#"+ optionEdit_arr[i]).find(".removeMedia").attr("value", i);
+			for(var i = 0; i < optionEdit_arr.length; i++){
+				console.log("updating values");
+				$("#option" +i+"Remove").attr("value", i);
 			}
 		});
 
