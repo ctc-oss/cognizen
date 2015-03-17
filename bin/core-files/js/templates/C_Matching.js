@@ -965,14 +965,10 @@ function C_Matching(_type) {
 
 		$("#" +optionID+"Remove").click(function(){
 			var arrIndex = $(this).attr('value');
-			console.log("arrIndex = " + arrIndex);
 			$(data).find("page").eq(currentPage).find("option").eq(arrIndex).remove();
-			console.log($(data).find("page").eq(currentPage).find("option"));
 			optionEdit_arr.splice(arrIndex, 1);
-			console.log(optionEdit_arr);
 			$("#option"+arrIndex+"Container").remove();
 			for(var i = 0; i < optionEdit_arr.length; i++){
-				console.log("updating values");
 				$("#option" +i+"Remove").attr("value", i);
 			}
 		});
