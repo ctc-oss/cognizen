@@ -112,19 +112,17 @@ function addDisplay(){
 	$("#mediaBrowserDisplay").append(msg);
 	
 	$('#file').change(function(e) {
-	    $('#file').change(function(e) {
-	    	var file = e.target.files[0];
-			var stream = ss.createStream();
-			ss.forceBase64 = true;
-			ss(socket).emit('upload-media', stream, {size: file.size, name: file.name});
-			var blobStream = ss.createBlobReadStream(file);
-			var size = 0;
-			blobStream.on('data', function(chunk) {
-				size += chunk.length;
-				console.log(Math.floor(size / file.size * 100) + '%');
-			});
-			blobStream.pipe(stream);
+    	var file = e.target.files[0];
+		var stream = ss.createStream();
+		alert("file.name = " + file.name);
+		ss(socket).emit('upload-media', stream, {size: file.size, name: file.name});
+		var blobStream = ss.createBlobReadStream(file);
+		var size = 0;
+		blobStream.on('data', function(chunk) {
+			size += chunk.length;
+			console.log(Math.floor(size / file.size * 100) + '%');
 		});
+		blobStream.pipe(stream);
 	});
 	
 	getMediaDir();
