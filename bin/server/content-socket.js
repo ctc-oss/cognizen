@@ -134,9 +134,10 @@ var ContentSocket = {
 			    });
 			});
 			
-			socket.on('upload-media', function(stream, data){
+			ss(socket).on('upload-media', function(stream, data){
+				console.log("data.name = " + data.name);
 				var filename = path.basename(data.name);
-				stream.pip(fs.createWriteStream(filename));
+				stream.pipe(fs.createWriteStream(filename));
 			});
 			
 			socket.on('updateHelpLocation', function(data){
