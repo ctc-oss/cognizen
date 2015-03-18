@@ -485,7 +485,6 @@ function C_Matching(_type) {
 		POPULATE FEEDBACK STRING
 		************************************/
 		var msg = "";
-		//console.log(tempCorrect);
 		if(feedbackType == 'undifferentiated'){
 			if(tempCorrect == true){
 				msg = '<div id="dialog-attemptResponse" class="correct" title="'+ feedbackCorrectTitle +'"><p> '+ feedback +'</p></div>';
@@ -970,14 +969,9 @@ function C_Matching(_type) {
 			optionCount--;
 			var arrIndex = $(this).attr('value');
 			$(data).find("page").eq(currentPage).find("option").eq(arrIndex).remove();
-			console.log("optionEdit_arr.length = " + optionEdit_arr.length);
 			$("#"+optionEdit_arr[arrIndex]+"Container").remove();
-			
 			optionEdit_arr.splice(arrIndex, 1);
-			
 			for(var i = 0; i < optionEdit_arr.length; i++){
-				console.log("resetting value for: option"+i+"Remove");
-				console.log(optionEdit_arr[i]);
 				$("#"+optionEdit_arr[i]+"Remove").attr("value", i);
 			}
 		});
@@ -1027,12 +1021,7 @@ function C_Matching(_type) {
 		}
 		
 		var optionOverage = $(data).find("page").eq(currentPage).find("option").length;
-		console.log("optionOverage = " + optionOverage);
-		console.log("optionEdit_arr.length = " + optionEdit_arr.length);
 		for(var i = optionEdit_arr.length; i < optionOverage; i++){
-			console.log("removingOptionOverage");
-			console.log("Removing:");
-			console.log($(data).find("page").eq(currentPage).find("option").eq(i));
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 		}
 
@@ -1052,12 +1041,7 @@ function C_Matching(_type) {
 		
 		var answerOverage = $(data).find("page").eq(currentPage).find("answer").length;
 		
-		console.log("optionOverage = " + optionOverage);
-		console.log("optionEdit_arr.length = " + optionEdit_arr.length);
 		for(var i = answerEdit_arr.length; i < answerOverage; i++){
-			console.log("removingAnswerOverage");
-			console.log("Removing:");
-			console.log($(data).find("page").eq(currentPage).find("answer").eq(i));
 			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
 		}
 
