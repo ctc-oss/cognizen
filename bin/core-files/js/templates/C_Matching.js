@@ -530,8 +530,9 @@ function C_Matching(_type) {
 					selected_arr.push(selectedObject);
 				}
 			}
-
-			updateScoring(selected_arr, tempCorrect, order_arr, 0);
+			if(mode != "edit"){
+				updateScoring(selected_arr, tempCorrect, order_arr, 0);
+			}
 			$("#mcSubmit").button({ disabled: true });
 			showUserAnswer();
 		}
