@@ -371,7 +371,7 @@ function C_Completion(_type) {
 			if(scormObjectives.length > 0){
 				for (var i = 0; i < scormObjectives.length; i++) {
 					var tmpObject = scormObjectives[i];
-					if(tmpObject.id != "undefined"){
+					if(tmpObject.id != "undefined" || tmpObject.id != undefined){
 						trackedObjectives = true;
 						if(tmpObject.successStatus == "failed"){
 							//check for duplicates
@@ -400,7 +400,7 @@ function C_Completion(_type) {
 							unknownObjsCount++;
 						}
 					}
-					else if(tmpObject.objItemId != "undefined"){
+					else if(tmpObject.objItemId != "undefined" || tmpObject.objItemId != undefined){
 						trackedObjectives = true;
 							if(tmpObject.successStatus == "failed"){
 								//check for duplicates
@@ -442,8 +442,10 @@ function C_Completion(_type) {
 			if(stringQR_arr.length == 0){
 
 				for(var i = 0; i < questionResponse_arr.length; i++){
-					if(questionResponse_arr[i].objective != "undefined"){
+					if(questionResponse_arr[i].objective != "undefined" && questionResponse_arr[i].objective != undefined){
 						trackedObjectives = true;
+						alert("im in here and shouldn't be!!!!!");
+						alert(questionResponse_arr[i].objective);
 						if(!questionResponse_arr[i].correct){
 							//check for duplicates
 							if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
@@ -461,7 +463,9 @@ function C_Completion(_type) {
 						}
 					}
 					else if(questionResponse_arr[i].objItemId != "undefined"){
-						trackedObjectives = true;
+						if(questionResponse_arr[i].objective !== undefined && questionResponse_arr[i].objective !== 'undefined'){
+							alert(questionResponse_arr[i].objItemId)
+							trackedObjectives = true;
 							if(!questionResponse_arr[i].correct){
 								//check for duplicates
 								if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
@@ -479,6 +483,7 @@ function C_Completion(_type) {
 									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 								}
 							}
+						}
 					}
 				}
 			}
