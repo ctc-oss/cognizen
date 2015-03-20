@@ -786,6 +786,8 @@ function C_Matching(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
+						var cleanoptions = true;
+						var cleananswers = true;
 						var tmpObj = new Object();
 						tmpObj.attempts = $("#inputAttempts").val();
 
@@ -815,8 +817,15 @@ function C_Matching(_type) {
 							var tmpOptionObj = new Object();
 							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
 							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Match").val();
+							for(var k = 0; k < tmpOptionArray.length; k++){
+								if($("#"+optionEdit_arr[i]+"Match").val() == tmpOptionArray[k].optionCorrect){
+									cleanoptions = false;
+								}
+							}
+							
 							tmpOptionArray.push(tmpOptionObj);
 						}
+						
 						tmpObj.option_arr = tmpOptionArray;
 
 						var tmpAnswerArray = new Array();
@@ -829,13 +838,63 @@ function C_Matching(_type) {
 								tmpAnswerObj.answerText = CKEDITOR.instances[answerEdit_arr[i]+"Text"].getData();
 							}
 							tmpAnswerObj.answerCorrect = $("#"+answerEdit_arr[i]+"Match").val();
-
+							for(var k = 0; k < tmpAnswerArray.length; k++){
+								if($("#"+answerEdit_arr[i]+"Match").val() == tmpAnswerArray[k].answerCorrect){
+									cleananswers = false;
+								}
+							}
 							tmpAnswerArray.push(tmpAnswerObj);
 						}
 						tmpObj.answer_arr = tmpAnswerArray;
-
-						saveQuestionEdit(tmpObj);
-						$("#questionEditDialog").dialog("close");
+						
+						if(cleanoptions == true && cleananswers == true){
+							saveQuestionEdit(tmpObj);
+							$("#questionEditDialog").dialog("close");
+						}else if(cleanoptions == false){
+							var msg = "<div id='matchingEditError' title='Error in matching inputs'>";
+								msg += "<p>You cannot have more than one option with the same key value.  All key values must be unique.</p>";
+								msg += "<p>Please resolve your issue and try saving again.</p>";
+								msg += "</div>";
+							$("#stage").append(msg);
+							
+							$("#matchingEditError").dialog({
+								autoOpen: true,
+								modal: true,
+								width: 400,
+								height: 300,
+								buttons: [
+									{
+										text: "Close",
+										title: "Close this dialog.",
+										click: function(){
+											$("#matchingEditError").dialog("close");
+										}
+									}
+								]
+							});
+						}else{
+							var msg = "<div id='matchingEditError' title='Error in matching inputs'>";
+								msg += "<p>You cannot have more than one answer with the same key value.  All key values must be unique.</p>";
+								msg += "<p>Please resolve your issue and try saving again.</p>";
+								msg += "</div>";
+							$("#stage").append(msg);
+							
+							$("#matchingEditError").dialog({
+								autoOpen: true,
+								modal: true,
+								width: 400,
+								height: 300,
+								buttons: [
+									{
+										text: "Close",
+										title: "Close this dialog.",
+										click: function(){
+											$("#matchingEditError").dialog("close");
+										}
+									}
+								]
+							});
+						}
 					}
 				}
 			]
@@ -906,7 +965,10 @@ function C_Matching(_type) {
 		}
 
 		//#3392
-		$('#'+answerID+'Match').alpha("upper");
+		$('#'+answerID+'Match').alpha();
+		$('#'+answerID+'Match').change(function(){
+			$('#'+answerID+'Match').val($('#'+answerID+'Match').val().toUpperCase());
+		});
 
 		$("#" +answerID+"Remove").click(function(){
 			answerCount--;
@@ -964,7 +1026,10 @@ function C_Matching(_type) {
 		});
 		
 		//#3392
-		$('#'+optionID+'Match').alpha("upper");
+		$('#'+optionID+'Match').alpha();
+		$('#'+optionID+'Match').change(function(){
+			$(this).val($(this).val().toUpperCase());
+		});
 
 		$("#" +optionID+"Remove").click(function(){
 			optionCount--;
