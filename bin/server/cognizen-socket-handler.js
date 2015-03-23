@@ -188,9 +188,12 @@ var SocketHandler = {
     },
 
     checkLoginStatus: function() {
+        var _this = this;
         var status = {};
         var sessionId = this.SocketSessions.sessionIdFromSocket(this._socket);
         status.user = this.SocketSessions.socketUsers[sessionId];
+        //cognizen-redmine init
+        redmine.init(_this.logger, _this.config.redmineHost, _this.config.redmineApiKey, _this.config.redmineProtocal);
         this._socket.emit('loadDashboardPage', status);
     },
 
@@ -299,6 +302,15 @@ var SocketHandler = {
                     if (err) {
                         _this.logger.info("Problem Houston - can't save new password." + err);
                     } else {
+                        //update user password in Redmine
+                        redmine.updateUserPassword(data.user, data.pass, function(err){
+                            if(err){
+                                _this.logger.error("Error updating redmine user: " + err);
+                            }
+                            else{
+                                _this.logger.info("User updated to redmine");
+                            }
+                        });                        
                         _this._socket.emit('passwordUpdated');
                     }
                 });
@@ -348,6 +360,16 @@ var SocketHandler = {
                     //if already exists - kick the registration failed
                     _this._socket.emit('registrationFailed');
                 } else {
+                    //create user in Redmine
+                    redmine.createUser(data.user, data.firstName, data.lastName, data.pass, function(err){
+                        if(err){
+                            _this.logger.error("Error creating redmine user: " + err);
+                        }
+                        else{
+                            _this.logger.info("User added to redmine");
+                        }
+                    });
+                    
                     _this._socket.emit('registrationSuccess');
                     _this.Mail.send({
                         user: data.user,
@@ -762,6 +784,15 @@ var SocketHandler = {
                                 }
                                 else {
                                     _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    //create user in Redmine
+                                    redmine.createProgram(data.name, function(err){
+                                        if(err){
+                                            _this.logger.error("Error creating redmine program: " + err);
+                                        }
+                                        else{
+                                            _this.logger.info("Program added to redmine");
+                                        }
+                                    });                                    
                                     if (nameHadInvalidChars) {
                                         _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
                                     }

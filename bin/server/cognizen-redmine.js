@@ -1,16 +1,144 @@
 var promised = require('promised-redmine');
 
 var REDMINE = {
+	logger: {},
 	promisedAPI: {},
-	init: function(){
+	init: function(logger, Host, ApiKey, Protocol){
+		this.logger = logger;
+
         var config = {
-            host: "192.168.191.128",
-            apiKey: "1a9467aecfde737f12e1fc8c1db50f7ca04786df",
-            protocol: "http"
+            host: Host,
+            apiKey: ApiKey,
+            protocol: Protocol
         };
-        this.promisedAPI = promised(config);
+        this.promisedAPI = new promised(config);
+        console.log("In cognizen-redmine");
+        console.log(config);
+        // this.promisedAPI.getUserCurrent()
+        //     .then(function(data){
+        //         console.log("Current user:");
+        //         console.log(data);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // ); 
+        // this.promisedAPI.getUsers()
+        //     .then(function(data){
+        //         console.log(data);
+        //         console.log(data.total_count);
+        //         console.log(data.users);
+        //         console.log(data.users.length);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // );   
+  //      var user = {
+		// 	login: "shuie28@gmail.com", 
+		// 	firstname: "Luke",
+		//  	lastname: "Shumaker",
+		//  	mail: "shuie28@gmail.com",
+		//  	password: "test8888"
+		// };
+
+		// this.promisedAPI.put("users/5",{user:user})
+		// 	.error(function(err){
+		// 		callback(err);
+		// 	})
+		// 	.success(function(data){
+		// 		_this.logger.info(data)
+		// 	})
+		// ;                 	
         return this;
+	},
+	createUser: function(Username, FirstName, LastName, _Password, callback){
+		var _this = this;
+
+		var user = {
+			login: Username, 
+			firstname: FirstName,
+		 	lastname: LastName,
+		 	mail: Username,
+		 	password: _Password
+		};
+
+		_this.promisedAPI.post("users",{user:user})
+			.error(function(err){
+				callback(err);
+			})
+			.success(function(data){
+				_this.logger.info(data)
+			})
+		;
+	},
+	updateUserPassword: function(Username, _Password, callback){
+		var _this = this;
+
+		_this._findUserId(Username, function(data, err){
+			if(err){
+				console.log("Error " + err);
+				callback(err);
+			}
+			else{
+				data.password = _Password;
+				_this.promisedAPI.put("users/"+data.id,{user:data})
+					.error(function(err){
+						callback(err);
+					})
+					.success(function(data){
+						_this.logger.info("Redmine user password updated successfully " + data)
+					})
+				;
+			}
+		});
+
+
+	},
+	_findUserId: function(Username, callback){
+		var _this = this;
+		
+        _this.promisedAPI.getUsers()
+            .then(function(data){
+                var found = false;
+                var _users = data.users;
+                for (var i = 0; i < _users.length; i++) {
+                	if(_users[i].login === Username){
+                		found = true;
+                		callback(_users[i], null);
+                	}
+                };
+                if(!found){
+                	callback(null, "No user was found with the " + Username + " username!" );
+                }
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );  
+	},
+	createProgram: function(Name, callback){
+		var _this = this;
+		 var project = {
+            name: Name,
+            identifier: Name
+        };
+		_this.promisedAPI.post("projects", {project: project})
+			.error(function(err){
+				callback(err);
+			})
+			.success(function(data){
+				_this.logger.info(data)
+			})
+		;        
 	}
+
+};
+
+module.exports = REDMINE;
 
         // var project = {
         //     name: "test2",
@@ -48,7 +176,3 @@ var REDMINE = {
         // // redmineApi.getIssues().success(function(issues){
         // //     console.log("ISSUES  " + issues);
         // // });
-
-};
-
-module.export = REDMINE;
