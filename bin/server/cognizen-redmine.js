@@ -99,7 +99,7 @@ var REDMINE = {
 	},
 	_findUserId: function(Username, callback){
 		var _this = this;
-		
+
         _this.promisedAPI.getUsers()
             .then(function(data){
                 var found = false;
@@ -120,7 +120,7 @@ var REDMINE = {
             }
         );  
 	},
-	createProgram: function(Name, callback){
+	createProject: function(Name, callback){
 		var _this = this;
 		 var project = {
             name: Name,

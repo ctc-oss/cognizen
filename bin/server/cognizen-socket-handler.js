@@ -784,8 +784,8 @@ var SocketHandler = {
                                 }
                                 else {
                                     _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
-                                    //create user in Redmine
-                                    redmine.createProgram(data.name, function(err){
+                                    //create project in Redmine
+                                    redmine.createProject(data.name, function(err){
                                         if(err){
                                             _this.logger.error("Error creating redmine program: " + err);
                                         }
