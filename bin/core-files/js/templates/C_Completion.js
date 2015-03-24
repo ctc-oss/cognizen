@@ -33,6 +33,7 @@ function C_Completion(_type) {
 	var lms = '';
 	var testReview = '';
 	var testNotAttempted = false;
+	var showRemediate = true;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -57,6 +58,13 @@ function C_Completion(_type) {
 		if($(data).find("page").eq(currentPage).attr('review')){
 			review = $(data).find("page").eq(currentPage).attr('review');
 		}
+
+		if($(data).find("page").eq(currentPage).attr('showremediate')){
+			if($(data).find("page").eq(currentPage).attr('showremediate') == "false"){
+				showRemediate = false;
+			}
+		}
+
 		//evaluate score
 		for(var k = 0; k < $(data).find("page").length; k++){
 			if($(data).find("page").eq(k).attr('graded') === "true" &&
@@ -151,6 +159,7 @@ function C_Completion(_type) {
 				//setObjectiveSuccess("attempt_"+tmpCount, true);
 
 			}
+
 		}
 
 
@@ -345,6 +354,9 @@ function C_Completion(_type) {
         pageAccess_arr.push($("#completionButton"));
 
         audioHolder = new C_AudioHolder();
+        if(isScored === "true"){
+        	showScoreEdit();
+    	}
         checkMode();
 
         if(transition == true){
@@ -371,7 +383,7 @@ function C_Completion(_type) {
 			if(scormObjectives.length > 0){
 				for (var i = 0; i < scormObjectives.length; i++) {
 					var tmpObject = scormObjectives[i];
-					if(tmpObject.id != "undefined" || tmpObject.id != undefined){
+					if(tmpObject.id != "undefined"){
 						trackedObjectives = true;
 						if(tmpObject.successStatus == "failed"){
 							//check for duplicates
@@ -400,7 +412,7 @@ function C_Completion(_type) {
 							unknownObjsCount++;
 						}
 					}
-					else if(tmpObject.objItemId != "undefined" || tmpObject.objItemId != undefined){
+					else if(tmpObject.objItemId != "undefined"){
 						trackedObjectives = true;
 							if(tmpObject.successStatus == "failed"){
 								//check for duplicates
@@ -442,10 +454,8 @@ function C_Completion(_type) {
 			if(stringQR_arr.length == 0){
 
 				for(var i = 0; i < questionResponse_arr.length; i++){
-					if(questionResponse_arr[i].objective != "undefined" && questionResponse_arr[i].objective != undefined){
+					if(questionResponse_arr[i].objective != "undefined" && questionResponse_arr[i].objective != undefined ){
 						trackedObjectives = true;
-						alert("im in here and shouldn't be!!!!!");
-						alert(questionResponse_arr[i].objective);
 						if(!questionResponse_arr[i].correct){
 							//check for duplicates
 							if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
@@ -462,26 +472,23 @@ function C_Completion(_type) {
 							}
 						}
 					}
-					else if(questionResponse_arr[i].objItemId != "undefined"){
-						if(questionResponse_arr[i].objective !== undefined && questionResponse_arr[i].objective !== 'undefined'){
-							alert(questionResponse_arr[i].objItemId)
-							trackedObjectives = true;
-							if(!questionResponse_arr[i].correct){
-								//check for duplicates
-								if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
-									remediationObjectives.push(questionResponse_arr[i].objItemId);
-									if(doScorm() && lms == "JKO"){
-										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
-									}
-									else{
-									var itemName = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('name');
-									var itemTlo = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('tlo');
-										displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
-									}
-									//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
-									//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
-									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
+					else if(questionResponse_arr[i].objItemId != "undefined" && questionResponse_arr[i].objItemId != undefined){
+						trackedObjectives = true;
+						if(!questionResponse_arr[i].correct){
+							//check for duplicates
+							if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
+								remediationObjectives.push(questionResponse_arr[i].objItemId);
+								if(doScorm() && lms == "JKO"){
+									stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
 								}
+								else{
+								var itemName = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('name');
+								var itemTlo = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('tlo');
+									displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
+								}
+								//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+								//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 							}
 						}
 					}
@@ -503,7 +510,7 @@ function C_Completion(_type) {
 		if(isScored === "true" || review === "true"){
 			isDisplayRemed = true;
 		}
-		if(isDisplayRemed && trackedObjectives && remediationObjectives.length != 0){
+		if(isDisplayRemed && trackedObjectives && remediationObjectives.length != 0 && showRemediate){
 			var scoreTextAlt = scoreText;
 			scoreText += '<p class="completionText">You missed questions regarding the following objectives: ';
 			scoreText += '<ul class="completionText">';
@@ -569,8 +576,88 @@ function C_Completion(_type) {
 				extraPlugins: 'sourcedialog',
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
+	
 		}
 	}
+
+	function showScoreEdit(){
+     	$(this).scrubContent();
+     	$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
+		$('.antiscroll-wrap').antiscroll();
+
+     	if(mode == "edit"){
+
+            //Add and style titleEdit button
+			$('#scoreFeedback').prepend("<div id='questionEdit' class='btn_edit_text' title='Edit Text Question'></div>");
+
+			$("#questionEdit").click(function(){
+				updateOptionDialog();
+			}).tooltip();			
+		}		
+	}
+
+	function updateOptionDialog(){
+		
+		try { clearInterval(counter); } catch (e){}
+		try { $("#questionEditDialog").remove(); } catch (e) {}
+
+		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
+
+		var msg = "<div id='questionEditDialog' title='Completion Edit Dialog'>";
+		msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
+		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "</div>";
+		$("#stage").append(msg);	
+		
+        if(!showRemediate){
+			$("#isRemediate").removeAttr('checked');
+		}else{
+			$("#isRemediate").attr('checked', 'checked');
+		}
+
+		//Style it to jQuery UI dialog
+		$("#questionEditDialog").dialog({
+			autoOpen: true,
+			modal: true,
+			width: 600,
+			height: 300,
+			dialogClass: "no-close",
+			buttons: [
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+				        makeRevealDataStore();;
+						saveEditDialog();
+						$("#questionEditDialog").dialog("close");
+						$("#questionEditDialog").remove();
+					}
+				}
+			]
+
+		});
+
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });				
+
+	}
+
+	function makeRevealDataStore(){
+		if($("#isRemediate").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("showremediate", "true");
+			showRemediate = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("showremediate", "false");
+			showRemediate = false;
+		}
+	}
+
+	function saveEditDialog(_data){
+		sendUpdateWithRefresh();
+		fadeComplete();
+	}	
 
     /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
