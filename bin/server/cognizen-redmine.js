@@ -51,7 +51,19 @@ var REDMINE = {
 		// 	.success(function(data){
 		// 		_this.logger.info(data)
 		// 	})
-		// ;                 	
+		// ;  
+        this.promisedAPI.getProjects()
+            .then(function(data){
+                var found = false;
+                var _projects = data.projects;
+                for (var i = 0; i < _projects.length; i++) {
+                    console.log(_projects[i]);
+                };
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+            }
+        );                        	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, callback){
@@ -122,7 +134,7 @@ var REDMINE = {
 	},
 	createProject: function(Name, callback){
 		var _this = this;
-		 var project = {
+		var project = {
             name: Name,
             identifier: Name
         };
@@ -134,7 +146,58 @@ var REDMINE = {
 				_this.logger.info(data)
 			})
 		;        
-	}
+	},
+    createCourse: function(Name, Project, callback){
+        var _this = this;
+        console.log("inside createCourse");
+        _this._findProjectId(Project, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
+            }
+            else{
+                var project = {
+                    name: Name,
+                    identifier: Name,
+                    parent_id: data.identifier,
+                    inherit_members: true
+                };
+                _this.promisedAPI.post("projects", {project: project})
+                    .error(function(err){
+                        callback(err);
+                    })
+                    .success(function(data){
+                        _this.logger.info(data)
+                    })
+                ;                                 
+            }
+        });
+
+        
+    },
+    _findProjectId: function(Project, callback){
+        var _this = this;
+        console.log("_findProjectId Name " + Project.name);
+        _this.promisedAPI.getProjects()
+            .then(function(data){
+                var found = false;
+                var _projects = data.projects;
+                for (var i = 0; i < _projects.length; i++) {
+                    if(_projects[i].name === Project.name){
+                        found = true;
+                        callback(_projects[i], null);
+                    }
+                };
+                if(!found){
+                    callback(null, "No project was found with the " + Name + " name!" );
+                }
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );          
+    }
 
 };
 

@@ -837,6 +837,16 @@ var SocketHandler = {
 	                                            _this.logger.error(err);
 	                                        }
 	                                        else {
+                                                //create Redmine project for the course
+                                                console.log("$$$$ Create course");
+                                                redmine.createCourse(data.name, data.program, function(err){
+                                                    if(err){
+                                                        _this.logger.error("Error creating redmine program: " + err);
+                                                    }
+                                                    else{
+                                                        _this.logger.info("Program added to redmine");
+                                                    }
+                                                });                                                  
 	                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
 	                                        }
 	                                    });
