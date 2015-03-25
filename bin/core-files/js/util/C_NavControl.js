@@ -418,7 +418,9 @@ function launchObjEdit(){
     $("#out_pageObjective").on("change", function(){
      	var objUpdate = $("#out_pageObjective").val().trim();
 	   	$(data).find('page').eq(currentPage).attr('objective', objUpdate);
-	   	questionResponse_arr[questionResponseIndex].objective = objUpdate;
+	   	if($(data).find('page').eq(currentPage).attr("type") == "kc"){
+	   		questionResponse_arr[questionResponseIndex].objective = objUpdate;
+	   	}
 		//updateModuleXML(currentPageParentModule);
     }).css({'width': '500px', 'color': '#3383bb;'});
 
