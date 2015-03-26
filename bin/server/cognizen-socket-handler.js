@@ -22,7 +22,7 @@ var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
-
+var ss = require('socket.io-stream');
 
 var activeEdit_arr = [];
 var activeOutline_arr = [];
@@ -77,6 +77,7 @@ var SocketHandler = {
                         var type = target[0];
                         var id = target[1];
                         var contentType = _this.Content.objectType(type);
+                        
                         if (contentType) {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
@@ -184,6 +185,39 @@ var SocketHandler = {
                 }
             }
         });
+        
+        ss(this._socket).on('upload-media', function(stream, data){
+			var filename = uploader.dir + "/" + data.name;
+			var mediaStream = stream.pipe(fs.createWriteStream(filename));
+			
+			//Complete upload callback
+			mediaStream.on('close', function(){
+				console.log("FILE UPLOAD COMPLETE");
+				var type = data.type;
+                var id = data.id;
+                var contentType = _this.Content.objectType(type);
+                
+                if (contentType) {
+                    contentType.findById(id, function (err, found) {
+                        if (found) {
+                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.name);
+							console.log(contentPath);
+							var stream = fs.createReadStream(filename);
+                            stream.pipe(fs.createWriteStream(contentPath));
+                            var had_error = false;
+                            stream.on('error', function(err){
+                                had_error = true;
+                            });
+
+                            stream.on('close', function(){
+	                            //Remove item from tmp folder after moving it over.
+                                if (!had_error) fs.unlink(filename);
+                            });
+						}
+					});
+				}
+			});
+		});
     },
 
     checkLoginStatus: function() {

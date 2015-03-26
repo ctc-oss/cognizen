@@ -86,7 +86,6 @@ function addMediaBrowser(){
 */
 function toggleMediaBrowser(){
 	if(mediaBrowserState){
-		//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
 		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
 		var displayHeight = $(".mediaBrowserDisplay").css("max-height");
@@ -114,8 +113,7 @@ function addDisplay(){
 	$('#file').change(function(e) {
     	var file = e.target.files[0];
 		var stream = ss.createStream();
-		alert("file.name = " + file.name);
-		ss(socket).emit('upload-media', stream, {size: file.size, name: file.name});
+		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type']});
 		var blobStream = ss.createBlobReadStream(file);
 		var size = 0;
 		blobStream.on('data', function(chunk) {

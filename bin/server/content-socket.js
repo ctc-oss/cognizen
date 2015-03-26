@@ -133,13 +133,7 @@ var ContentSocket = {
 			        return file(0);
 			    });
 			});
-			
-			ss(socket).on('upload-media', function(stream, data){
-				console.log("data.name = " + data.name);
-				var filename = path.basename(data.name);
-				stream.pipe(fs.createWriteStream(filename));
-			});
-			
+
 			socket.on('updateHelpLocation', function(data){
 				fs.copy(path.normalize(contentPath + "/media/") + data.my , path.normalize(contentPath +'/../media/') + data.my, { replace: true }, function (err) {
 				  if (err) {
