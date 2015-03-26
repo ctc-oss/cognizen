@@ -52,18 +52,18 @@ var REDMINE = {
 		// 		_this.logger.info(data)
 		// 	})
 		// ;  
-        this.promisedAPI.getProjects()
-            .then(function(data){
-                var found = false;
-                var _projects = data.projects;
-                for (var i = 0; i < _projects.length; i++) {
-                    console.log(_projects[i]);
-                };
-            },
-            function(err) {
-                console.log("Error: " + err.message);
-            }
-        );                        	
+        // this.promisedAPI.getProjects()
+        //     .then(function(data){
+        //         var found = false;
+        //         var _projects = data.projects;
+        //         for (var i = 0; i < _projects.length; i++) {
+        //             console.log(_projects[i]);
+        //         };
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //     }
+        // );                        	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, callback){
@@ -106,37 +106,12 @@ var REDMINE = {
 				;
 			}
 		});
-
-
-	},
-	_findUserId: function(Username, callback){
-		var _this = this;
-
-        _this.promisedAPI.getUsers()
-            .then(function(data){
-                var found = false;
-                var _users = data.users;
-                for (var i = 0; i < _users.length; i++) {
-                	if(_users[i].login === Username){
-                		found = true;
-                		callback(_users[i], null);
-                	}
-                };
-                if(!found){
-                	callback(null, "No user was found with the " + Username + " username!" );
-                }
-            },
-            function(err) {
-                console.log("Error: " + err.message);
-                callback(null, "Error: " + err.message);
-            }
-        );  
 	},
 	createProject: function(Name, callback){
 		var _this = this;
 		var project = {
             name: Name,
-            identifier: Name
+            identifier: "rm" + Name.toLowerCase().replace(/ /g,'')
         };
 		_this.promisedAPI.post("projects", {project: project})
 			.error(function(err){
@@ -149,8 +124,7 @@ var REDMINE = {
 	},
     createCourse: function(Name, Project, callback){
         var _this = this;
-        console.log("inside createCourse");
-        _this._findProjectId(Project, function(data, err){
+        _this._findProjectId(Project.name, function(data, err){
             if(err){
                 console.log("Error " + err);
                 callback(err);
@@ -158,8 +132,8 @@ var REDMINE = {
             else{
                 var project = {
                     name: Name,
-                    identifier: Name,
-                    parent_id: data.identifier,
+                    identifier: "rm" + Name.toLowerCase().replace(/ /g,''),
+                    parent_id: data.id,
                     inherit_members: true
                 };
                 _this.promisedAPI.post("projects", {project: project})
@@ -171,19 +145,88 @@ var REDMINE = {
                     })
                 ;                                 
             }
-        });
-
-        
+        });        
     },
+    createLesson: function(Name, Course, callback){
+        var _this = this;
+        _this._findProjectId(Course.name, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
+            }
+            else{
+                var project = {
+                    name: Name,
+                    identifier: "rm" +Name.toLowerCase().replace(/ /g,''),
+                    parent_id: data.id,
+                    inherit_members: true
+                };
+                _this.promisedAPI.post("projects", {project: project})
+                    .error(function(err){
+                        callback(err);
+                    })
+                    .success(function(data){
+                        _this.logger.info(data)
+                    })
+                ;                                 
+            }
+        });        
+    },
+    updateProjectName: function(Original, New, callback){
+        var _this = this;
+        _this._findProjectId(Original, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
+            }
+            else{
+                var project = {
+                    name: New,
+                    identifier: data.identifier,
+                };
+                _this.promisedAPI.put("projects/"+data.id, {project: project})
+                    .error(function(err){
+                        callback(err);
+                    })
+                    .success(function(data){
+                        _this.logger.info(data)
+                    })
+                ;                                 
+            }
+        });    
+    },    
+    _findUserId: function(Username, callback){
+        var _this = this;
+
+        _this.promisedAPI.getUsers()
+            .then(function(data){
+                var found = false;
+                var _users = data.users;
+                for (var i = 0; i < _users.length; i++) {
+                    if(_users[i].login === Username){
+                        found = true;
+                        callback(_users[i], null);
+                    }
+                };
+                if(!found){
+                    callback(null, "No user was found with the " + Username + " username!" );
+                }
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );  
+    },    
     _findProjectId: function(Project, callback){
         var _this = this;
-        console.log("_findProjectId Name " + Project.name);
+        
         _this.promisedAPI.getProjects()
             .then(function(data){
                 var found = false;
                 var _projects = data.projects;
                 for (var i = 0; i < _projects.length; i++) {
-                    if(_projects[i].name === Project.name){
+                    if(_projects[i].name === Project){
                         found = true;
                         callback(_projects[i], null);
                     }
@@ -197,7 +240,7 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );          
-    }
+    }  
 
 };
 

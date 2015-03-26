@@ -787,10 +787,10 @@ var SocketHandler = {
                                     //create project in Redmine
                                     redmine.createProject(data.name, function(err){
                                         if(err){
-                                            _this.logger.error("Error creating redmine program: " + err);
+                                            _this.logger.error("Error creating redmine project: " + err);
                                         }
                                         else{
-                                            _this.logger.info("Program added to redmine");
+                                            _this.logger.info("Project added to redmine");
                                         }
                                     });                                    
                                     if (nameHadInvalidChars) {
@@ -838,13 +838,12 @@ var SocketHandler = {
 	                                        }
 	                                        else {
                                                 //create Redmine project for the course
-                                                console.log("$$$$ Create course");
                                                 redmine.createCourse(data.name, data.program, function(err){
                                                     if(err){
-                                                        _this.logger.error("Error creating redmine program: " + err);
+                                                        _this.logger.error("Error creating redmine course project: " + err);
                                                     }
                                                     else{
-                                                        _this.logger.info("Program added to redmine");
+                                                        _this.logger.info("course project added to redmine");
                                                     }
                                                 });                                                  
 	                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
@@ -885,6 +884,15 @@ var SocketHandler = {
                                         _this.logger.error(err);
                                     }
                                     else {
+                                        //create Redmine project for the lesson
+                                        redmine.createLesson(data.name, data.course, function(err){
+                                            if(err){
+                                                _this.logger.error("Error creating redmine lesson project: " + err);
+                                            }
+                                            else{
+                                                _this.logger.info("Lesson project added to redmine");
+                                            }
+                                        });                                           
                                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                                     }
                                 });
@@ -1660,7 +1668,7 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                 	var serverDetails = _this.Content.serverDetails(found);
-
+                    var oldName = found.name;
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
@@ -1693,13 +1701,25 @@ var SocketHandler = {
                             Utils.saveAll(itemsToSave, function() {
                                 // Now we have to rename the folder on the disk.
                                 FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+
                                     if (err) {
                                         _this.logger.error('FileUtils.renameDir(): ' + err);
                                         _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (2)'});
                                     }
                                     else {
+                                        //rename Redmine project for the course or lesson
+                                        redmine.updateProjectName(oldName, found.name, function(err){
+                                            if(err){
+                                                _this.logger.error("Error renaming redmine "+ data.content.type +" project: " + err);
+                                            }
+                                            else{
+                                                _this.logger.info(data.content.type + " project renamed in redmine");
+                                            }
+                                        }); 
+
                                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                             var parent = content.getParent();
+                                            console.log("parent : " + parent.name + " content : " + content.name);
                                             etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
                                             etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                                             etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
