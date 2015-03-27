@@ -63,7 +63,64 @@ var REDMINE = {
         //     function(err) {
         //         console.log("Error: " + err.message);
         //     }
-        // );                        	
+        // );  
+           // this.promisedAPI.getIssues({project_id: 19})
+        //     .then(function(data){
+        //         console.log("Issues:");
+        //         console.log(data);
+        //         console.log(data.issues[0].project);
+        //         console.log(data.issues[0].status);
+        //         console.log(data.issues[0].custom_fields);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // ); 
+        // this.promisedAPI.get('custom_fields')
+        //     .then(function(data){
+        //         console.log("custom fields:");
+        //         console.log(data);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // );
+        // var issue = {
+        //     project_id: 6,
+        //     subject: "Fix the pageEE",
+        //     description: "More stuff",
+        //     custom_fields:
+        //         [
+        //             {value: "blah", id: 2},
+        //             {value: "blahid", id: 3}
+        //         ]
+        // }            
+        // this.promisedAPI.postIssue(issue)
+        //     .error(function(err){
+        //         console.log("Error: " + err.message);
+        //     })
+
+        //     .success(function(data){
+        //         console.log(data)
+        //     })
+        // ; 
+        // var comment = {
+        //     subject: "Here is the subject.",
+        //     text: "This stuff isn't right",
+        //     page:{
+        //         id: "ojwmf209mmmspomdos23"
+        //     }
+        // };
+        // this.createIssue("Cognizen - Page", comment, "page Title test", function(err){
+        //     if(err){
+        //         _this.logger.error("Error creating redmine issue: " + err);
+        //     }
+        //     else{
+        //         _this.logger.info(" issue created in redmine");
+        //     }
+        // });                 	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, callback){
@@ -194,6 +251,58 @@ var REDMINE = {
                 ;                                 
             }
         });    
+    },
+    createIssue: function(Lesson, Comment, PageTitle, callback){
+        var _this = this;
+        console.log("in createIssue");
+        //find project id
+        _this._findProjectId(Lesson, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
+            }
+            else{
+                var _projectId = data.id;
+                _this._findCustomFieldId("Page Title", function(data, err){
+                    if(err){
+                        console.log("Error " + err);
+                        callback(null, err);
+                    }
+                    else{
+                        var _pageTitleId = data.id;
+                        _this._findCustomFieldId("Page Id", function(data, err){
+                            if(err){
+                                console.log("Error " + err);
+                                callback(null, err);
+                            }
+                            else{
+                                var _pageIdId = data.id;
+                                var issue = {
+                                    project_id: _projectId,
+                                    subject: Comment.subject,
+                                    description: Comment.text,
+                                    custom_fields:
+                                        [
+                                            {value: PageTitle, id: _pageTitleId},
+                                            {value: Comment.page.id, id: _pageIdId}
+                                        ]
+                                };            
+                                _this.promisedAPI.postIssue(issue)
+                                    .error(function(err){
+                                        console.log("Error: " + err.message);
+                                        callback(err);
+                                    })
+
+                                    .success(function(data){
+                                        console.log(data)
+                                    })
+                                ; 
+                            }
+                        }); 
+                    }
+                });                                              
+            }
+        });          
     },    
     _findUserId: function(Username, callback){
         var _this = this;
@@ -232,7 +341,7 @@ var REDMINE = {
                     }
                 };
                 if(!found){
-                    callback(null, "No project was found with the " + Name + " name!" );
+                    callback(null, "No project was found with the " + Project + " name!" );
                 }
             },
             function(err) {
@@ -240,7 +349,30 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );          
-    }  
+    },
+    _findCustomFieldId: function(Name, callback){
+        var _this = this;
+
+        _this.promisedAPI.get('custom_fields')
+            .then(function(data){
+                var found = false;
+                var _customFields = data.custom_fields;
+                for (var i = 0; i < _customFields.length; i++) {
+                    if(_customFields[i].name === Name){
+                        found = true;
+                        callback(_customFields[i], null);
+                    }
+                };
+                if(!found){
+                    callback(null, "No custom_field was found with the " + Name + " name!" );
+                }                
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );
+    },
 
 };
 
