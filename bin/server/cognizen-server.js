@@ -483,6 +483,10 @@ var Content = {
 				SocketHandler.socket(socket).updateCourseXML(data);
 			});
 			
+			socket.on('mediaBrowserRemoveMedia', function(data){
+				SocketHandler.socket(socket).mediaBrowserRemoveMedia(data);
+			});
+			
 			socket.on('updateModuleXML', function(data){
 				SocketHandler.socket(socket).updateModuleXML(data);
 			});

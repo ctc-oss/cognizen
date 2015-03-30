@@ -1681,6 +1681,16 @@ MEDIA LAYOUTS
 	color: purple;
 }
 
+.mediaRemove {
+	position: relative;
+	float: right; 
+	top: 2.5px; 
+	right: 2px; 
+	width: 10px;
+	height: 10px; 
+	background: #fff url(images/mbRemove.png) no-repeat;
+}
+
 .transcriptPane{
 	position				: absolute;
 	right					: 10px;

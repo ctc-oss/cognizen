@@ -58,7 +58,12 @@ var ss;
 * @type {Object}
 */
 var currentSelectedMediaPreview;
-
+/**
+* Variable to hold if removeMedia button was clicked.
+* 
+* @type {Boolean}
+*/
+var removeClicked = false;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -208,6 +213,7 @@ function updateMediaBrowserDir(_data){
 	   var tempID = "folder"+key;
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
+	   
 	   $("#"+tempID).click(function(){
 		   $("#mediaBrowserList").addClass('C_Loader');
 		   $("#mediaBrowserList").empty();
@@ -223,15 +229,76 @@ function updateMediaBrowserDir(_data){
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
+	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"<div id='mediaRemove' class='mediaRemove' title='delete this item'></div></div>";
 	   $("#mediaBrowserList").append(msg);
+	   
+	   $("#"+tempID).find(".mediaRemove").click(function(){
+			removeClicked = true;
+			var myItem = relPath + $(this).parent().attr('data');	
+			checkRemoveMedia(myItem);	   
+	   });
+	   
 	   $("#"+tempID).click(function(){
-		   try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
-		   currentSelectedMediaPreview = $(this);
-		   currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-		   mediaBrowserPreviewFile($(this).attr('data'));
+		   if(removeClicked){
+			   removeClicked = false;
+		   }else{
+			   try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+			   currentSelectedMediaPreview = $(this);
+			   currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
+			   mediaBrowserPreviewFile($(this).attr('data'));
+			}
 	   });
 	}
+}
+
+/**
+* Launch Dialog to confirm removal of media.
+*
+* @method checkRemoveMedia
+* @param {String} server path and name of file to be removed.
+*/
+function checkRemoveMedia(_file){
+	//Create the Dialog
+	$("#stage").append("<div id='dialog-removePage' title='Remove Media Object'><p>Are you sure that you want to remove " + _file + " from this project?</p></div>");
+	//Style it to jQuery UI dialog
+	$("#dialog-removePage").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("dialog-removePage").remove();
+		},
+		buttons: {
+			Yes: function(){
+				removeMedia(_file);
+				$( this ).dialog( "close" );
+			},
+			No: function(){
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+}
+
+function removeMedia(_file){
+	cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
+	$("#mediaBrowserList").addClass('C_Loader');
+	$("#mediaBrowserList").empty();
+	$("#mediaBrowserPreviewMediaHolder").empty();
+
+	cognizenSocket.emit('mediaBrowserRemoveMedia', {file: _file, type: urlParams['type'], id: urlParams['id']})
+}
+
+function mediaBrowserRemoveMediaComplete(){
+	alert("removed media");
+	$("#mediaBrowserList").removeClass('C_Loader');
+	try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
+	//Commit GIT when complete.
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+        content: {type: urlParams['type'], id: urlParams['id']},
+        user: {id: urlParams['u']}
+    });
+    getMediaDir(relPath);
 }
 
 /**

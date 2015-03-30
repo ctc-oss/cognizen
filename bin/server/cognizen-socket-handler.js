@@ -384,6 +384,26 @@ var SocketHandler = {
 			});
 		});
     },
+    
+    mediaBrowserRemoveMedia: function(data) {
+		var _this = this;
+		var type = data.type;
+        var id = data.id;
+        var contentType = _this.Content.objectType(type);
+				
+        if (contentType) {
+        	contentType.findById(id, function (err, found) {
+            	if (found) {
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.file);
+                	fs.unlink(contentPath, function (err) {
+						if (err) throw err;
+						console.log('successfully deleted media file');
+						_this._socket.emit('mediaBrowserRemoveMediaComplete');
+					});
+                }
+            });
+        }
+    },
 
     checkLoginStatus: function() {
         var status = {};
