@@ -52,7 +52,12 @@ var relPath = "";
 * @default ""
 */
 var ss;
-
+/**
+* Variable to hold current preview menu item.
+* 
+* @type {Object}
+*/
+var currentSelectedMediaPreview;
 
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
@@ -221,6 +226,9 @@ function updateMediaBrowserDir(_data){
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
 	   $("#"+tempID).click(function(){
+		   try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+		   currentSelectedMediaPreview = $(this);
+		   currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
 		   mediaBrowserPreviewFile($(this).attr('data'));
 	   });
 	}

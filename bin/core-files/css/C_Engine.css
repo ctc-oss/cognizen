@@ -1677,6 +1677,10 @@ MEDIA LAYOUTS
 	font-size 			  	: 8pt;
 }
 
+.mediaBrowserFileSelected{
+	color: purple;
+}
+
 .transcriptPane{
 	position				: absolute;
 	right					: 10px;
