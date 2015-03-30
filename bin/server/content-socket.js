@@ -7,7 +7,6 @@ var archiver = require('archiver');
 var scorm = require('./cognizen-scorm');
 var openServers = [];
 var io;
-var ss = require('socket.io-stream');
 /*var walk = require('walk');				///////////////////Comment before push
 var walker;								///////////////////Comment before push	
 var walkerOptions = {

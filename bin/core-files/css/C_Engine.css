@@ -1764,7 +1764,7 @@ MEDIA LAYOUTS
 .ui-progressbar{
 	position				: relative;
 	margin					: 0 auto;
-	height					: 20px;
+	height					: 13px;
 	background				: #f3f3f3;
 	width					: 300px;
 }

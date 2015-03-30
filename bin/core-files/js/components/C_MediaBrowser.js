@@ -111,14 +111,30 @@ function addDisplay(){
 	$("#mediaBrowserDisplay").append(msg);
 	
 	$('#file').change(function(e) {
+		cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
+		cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+    	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content.</div></div>");
+    	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
+		$("#uploadProgress").progressbar({
+			value: 0,
+			change: function() {
+				$(".progress-label").text($("#uploadProgress").progressbar("value") + "%");
+			},
+			complete: function() {
+				$(".progress-label").text("Complete!");
+			}
+		});
+
+		$("#uploadProgress > div").css({ 'background': '#3383bb'});
+		
     	var file = e.target.files[0];
 		var stream = ss.createStream();
-		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type']});
+		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath});
 		var blobStream = ss.createBlobReadStream(file);
 		var size = 0;
 		blobStream.on('data', function(chunk) {
 			size += chunk.length;
-			console.log(Math.floor(size / file.size * 100) + '%');
+			$("#uploadProgress").progressbar("value", Math.floor(size / file.size * 100))
 		});
 		blobStream.pipe(stream);
 	});
@@ -227,7 +243,6 @@ function mediaBrowserPreviewFile(_file){
 	}else if(myType == "mp4"){
 		mediaBrowserLoadVideoPreview(fp);
 	}else if(myType == "swf"){
-		alert("I'm a swf")
 		mediaBrowserLoadSWFPreview(fp);
 	}else if(imageTypes.indexOf(myType) > -1) {
 		mediaBrowserLoadImagePreview(fp);
@@ -323,7 +338,6 @@ function mediaBrowserLoadSWFPreview(_fp){
     TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
 }
 
-
 /**
 * Loads an image preview.
 *
@@ -347,11 +361,81 @@ function mediaBrowserLoadImagePreview(_fp){
 }
 
 /**
+* Called when media upload is complete but a media conversion is required.
+*
+* @method mediaBrowserConversionStart
+*/
+function mediaBrowserConversionStart(data){
+	//$("#C_Loader").remove();
+	$(".C_LoaderText").empty();
+	$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+	$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+	$("#conversionProgress").progressbar({
+		value: 0,
+		change: function() {
+			$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+		},
+		complete: function() {
+			$(".progress-label").text("Complete!");
+		}
+	});
+
+	$("#conversionProgress > div").css({ 'background': '#3383bb'});
+
+	cognizenSocket.on('mediaBrowserConversionProgress', mediaBrowserConversionProgress);
+	cognizenSocket.on('mediaInfo', mediaInfo);
+}
+
+/**
+* Called when mediaConversion progress updates are recieved
+*
+* @method mediaBrowserConversionProgress
+* @param {object} data regarding converted file.
+*/
+function mediaBrowserConversionProgress(data){
+    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
+}
+
+/**
+* Called when mediaConversion is complete
+*
+* @method mediaBrowserUploadComplete
+* @param {object} data regarding converted file.
+*/
+function mediaBrowserUploadComplete(data){
+	$("#C_Loader").remove();
+	try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+	try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
+	var splitPath = data.split("/");
+	var last = splitPath.length;
+	var mediaPath = splitPath[last-1];
+	mediaBrowserPreviewFile(mediaPath);
+	//Commit GIT when complete.
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+        content: {type: urlParams['type'], id: urlParams['id']},
+        user: {id: urlParams['u']}
+    });
+}
+
+function mediaInfo(data){
+	if(data.video != ""){
+		var splitDim = data.video_details[2].split("x");
+		var mediaWidth = splitDim[0];
+		var mediaHeight = splitDim[1];
+	}
+}
+
+/**
 * Removes the mediaBrowser display from the screen after closing in toggle.
 *
 * @method removeMediaBrowserDisplay
 */
 function removeMediaBrowserDisplay(){
+	try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+	try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	$("#mediaBrowserDisplay").remove();
 	relPath = "";
 	mediaBrowserDisplayPath = "media/";
