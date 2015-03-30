@@ -149,6 +149,7 @@ function addDisplay(){
 * @param {String} _dir Directory path to be parsed.
 */
 function getMediaDir(_dir){
+	$("#mediaBrowserList").empty();
 	if(_dir){
 		//Get media directory sub folder.
 		socket.emit('getMediaDir', _dir);
@@ -417,6 +418,7 @@ function mediaBrowserUploadComplete(data){
         content: {type: urlParams['type'], id: urlParams['id']},
         user: {id: urlParams['u']}
     });
+    getMediaDir(relPath);
 }
 
 function mediaInfo(data){
