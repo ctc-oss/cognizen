@@ -1496,8 +1496,8 @@ MEDIA LAYOUTS
 
 .mediaBrowserPane{
 	position: absolute;
-	right: 10px;
-	top: 10px;
+	right: 0px;
+	top: 0px;
 	overflow: visible;
 	z-index: 10;
 }
@@ -1521,7 +1521,7 @@ MEDIA LAYOUTS
 	position			  : relative;
 	float				  : right;
 	overflow 			  : hidden;	
-	background-color      : rgba(255, 255, 255, .9);
+	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
 	border-radius         : 8px;
@@ -1684,11 +1684,21 @@ MEDIA LAYOUTS
 .mediaRemove {
 	position: relative;
 	float: right; 
-	top: 2.5px; 
-	right: 2px; 
+	top: 0px; 
+	right: 0px; 
 	width: 10px;
 	height: 10px; 
-	background: #fff url(images/mbRemove.png) no-repeat;
+	background: url(images/mbRemove.png) no-repeat;
+}
+
+.mediaDownload {
+	position: relative;
+	float: right; 
+	top: 0px; 
+	right: 11px; 
+	width: 10px;
+	height: 10px; 
+	background: url(images/mbRemove.png) no-repeat;
 }
 
 .transcriptPane{

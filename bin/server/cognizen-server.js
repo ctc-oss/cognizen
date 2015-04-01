@@ -487,6 +487,10 @@ var Content = {
 				SocketHandler.socket(socket).mediaBrowserRemoveMedia(data);
 			});
 			
+			socket.on('mediaBrowserDownloadMedia', function(data){
+				SocketHandler.socket(socket).mediaBrowserDownloadMedia(data);
+			});
+			
 			socket.on('updateModuleXML', function(data){
 				SocketHandler.socket(socket).updateModuleXML(data);
 			});

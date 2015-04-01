@@ -23,6 +23,7 @@ _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
 var ss = require('socket.io-stream');
+var request = require('request');
 
 var activeEdit_arr = [];
 var activeOutline_arr = [];
@@ -400,6 +401,30 @@ var SocketHandler = {
 						console.log('successfully deleted media file');
 						_this._socket.emit('mediaBrowserRemoveMediaComplete');
 					});
+                }
+            });
+        }
+    },
+    
+    mediaBrowserDownloadMedia: function(data) {
+		var _this = this;
+		var type = data.type;
+        var id = data.id;
+        var contentType = _this.Content.objectType(type);
+				
+        if (contentType) {
+        	contentType.findById(id, function (err, found) {
+            	if (found) {
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.file);
+                	/*fs.unlink(contentPath, function (err) {
+						if (err) throw err;
+						console.log('successfully deleted media file');
+						_this._socket.emit('mediaBrowserRemoveMediaComplete');
+					});*/
+					//var file = fs.createReadStream(contentPath);
+					//console.log(file);
+					//_this._socket.stream(file);
+					request(data.url+"media/"+data.file).pipe(fs.createWriteStream('doodle.png'))
                 }
             });
         }
