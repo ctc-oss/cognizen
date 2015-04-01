@@ -573,11 +573,21 @@ var Content = {
 
             socket.on('getContentComments', function (data) {
                 SocketHandler.socket(socket).getContentComments(data);
-            });
+            });          
 
             socket.on('getCourseCommentPages', function (data) {
                 SocketHandler.socket(socket).getCourseCommentPages(data);
             });
+
+            socket.on('addRedmineIssue', function (data){
+                SocketHandler.socket(socket).addRedmineIssue(data);
+            });
+
+            socket.on('getRemineIssues', function (data, callback){
+                SocketHandler.socket(socket).getRemineIssues(data, function(fdata){
+                    callback(fdata);
+                });
+            });             
 
             socket.on('sendPackageMail', function (data) {
                 SocketHandler.socket(socket).sendPackageMail(data);

@@ -64,7 +64,7 @@ var REDMINE = {
         //         console.log("Error: " + err.message);
         //     }
         // );  
-           // this.promisedAPI.getIssues({project_id: 19})
+        //    this.promisedAPI.getIssues({project_id: 20})
         //     .then(function(data){
         //         console.log("Issues:");
         //         console.log(data);
@@ -77,7 +77,7 @@ var REDMINE = {
         //         return;
         //     }
         // ); 
-        // this.promisedAPI.get('custom_fields')
+        // this.promisedAPI.get('issue_statuses')
         //     .then(function(data){
         //         console.log("custom fields:");
         //         console.log(data);
@@ -120,7 +120,20 @@ var REDMINE = {
         //     else{
         //         _this.logger.info(" issue created in redmine");
         //     }
-        // });                 	
+        // }); 
+        // var page = {
+        //     lessontitle: "101 GlovesW",
+        //     id: "3d4aeb42-7bb7-5b90-e375-b47c098175b3"
+        // }; 
+        // this.getIssueByPageId(page, function(data, err){
+        //     if(err){
+        //         console.log("Error finding issues: " + err);
+        //     }
+        //     else{
+        //         console.log(" issues found");
+        //         console.log(data);
+        //     }
+        // });                        	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, callback){
@@ -252,11 +265,11 @@ var REDMINE = {
             }
         });    
     },
-    createIssue: function(Lesson, Comment, PageTitle, callback){
+    createIssue: function(Comment, callback){
         var _this = this;
         console.log("in createIssue");
         //find project id
-        _this._findProjectId(Lesson, function(data, err){
+        _this._findProjectId(Comment.lessontitle, function(data, err){
             if(err){
                 console.log("Error " + err);
                 callback(err);
@@ -283,7 +296,7 @@ var REDMINE = {
                                     description: Comment.text,
                                     custom_fields:
                                         [
-                                            {value: PageTitle, id: _pageTitleId},
+                                            {value: Comment.page.title, id: _pageTitleId},
                                             {value: Comment.page.id, id: _pageIdId}
                                         ]
                                 };            
@@ -303,6 +316,39 @@ var REDMINE = {
                 });                                              
             }
         });          
+    },
+    getIssueByPageId: function(Page, callback){
+        var _this = this;
+        _this._findProjectId(Page.lessontitle, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(null, err);
+            }
+            else{
+                var _projectId = data.id;
+                _this._findCustomFieldId("Page Id", function(data, err){
+                    if(err){
+                        console.log("Error " + err);
+                        callback(null, err);
+                    }
+                    else{
+                        var _customFilter = "cf_" + data.id;
+                        var _params = {project_id: _projectId};
+                        _params[_customFilter] = Page.id;
+                        _this.promisedAPI.getIssues(_params)
+                            .error(function(err){
+                                console.log("Error: " + err.message);
+                                callback(null, err);
+                            })
+                            .success(function(data){
+                                callback(data, null);
+                            })
+                        ;                                              
+                    }
+                });                
+
+            }
+        });
     },    
     _findUserId: function(Username, callback){
         var _this = this;

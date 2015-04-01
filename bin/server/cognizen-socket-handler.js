@@ -638,6 +638,7 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
+                            item.set("redmine", "true");
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");
@@ -1746,6 +1747,35 @@ var SocketHandler = {
 
     clearLessonComments: function (lesson){
     	ContentComment.find({contentId: lesson.lesson}).remove()
+    },
+
+    addRedmineIssue: function(comment){
+        var _this = this;
+
+        //console.log(comment);
+        redmine.createIssue(comment, function(err){
+            if(err){
+                _this.logger.error("Error creating redmine issue: " + err);
+            }
+            else{
+                _this.logger.info(" issue created in redmine");
+            }
+        }); 
+    },
+
+    getRemineIssues: function(page, callback){
+        var _this = this
+        console.log(page);
+        redmine.getIssueByPageId(page, function(data, err){
+            if(err){
+                _this.logger.error("Error finding issues: " + err);
+                callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
+            }
+            else{
+                console.log(data);
+                callback(data);
+            }
+        }); 
     },
 
     addComment: function (comment) {
