@@ -817,7 +817,11 @@ function C_Matching(_type) {
 							var tmpOptionObj = new Object();
 							tmpOptionObj.optionText = CKEDITOR.instances[optionEdit_arr[i]+"Text"].getData();
 							tmpOptionObj.optionCorrect = $("#"+optionEdit_arr[i]+"Match").val();
-							
+							for(var k = 0; k < tmpOptionArray.length; k++){
+								if($("#"+optionEdit_arr[i]+"Match").val() == tmpOptionArray[k].optionCorrect){
+									//cleanoptions = false;
+								}
+							}
 							tmpOptionArray.push(tmpOptionObj);
 						}
 						
