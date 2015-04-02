@@ -515,9 +515,11 @@ function toggleGlossary(){
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		accShowGlossary();
 		$("#glossaryDef").focus();
-		// if tab is not against the left edge of the screen at start, tween it to the right edge of the pane when the pane opens
-		var tabPos = glossaryClosePos * -1;
-		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:tabPos}, ease:transitionType});
+		if(isMobile){
+			// if tab is not against the left edge of the screen at start, tween it to the right edge of the pane when the pane opens
+			var tabPos = $('#glossaryPane').width();
+			TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:tabPos}, ease:transitionType});
+		}
 	}
 	else{
 		glossaryState = false;

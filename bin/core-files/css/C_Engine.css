@@ -3560,10 +3560,32 @@ a.fancybox-expand {
 		height: 100% !important;
 	}
 
+	.transcriptPane{
+		top: 5px;
+	}
 
+	.C_Transcript{
+		width: 45px;
+		height: 40px;
+		background-size: contain;
+	}
 
+	.C_TranscriptActive{
+		background-size: contain;
+	}
 
+	.transcriptDisplay{
+		margin-right: 0px;
+		padding: 10px 0px 10px 10px;
+	}
 
+	#transcriptHolder{
+		height: 195px;
+	}
+	
+	#transcriptHolder p{
+		margin-top: 0px;
+	}
 
 	/************************************************************** MEDIA LAYOUTS END *****/
 
@@ -3724,6 +3746,26 @@ a.fancybox-expand {
 	BOTTOM NAV
 	**************************************************************************************/
 
+	#survey{
+		position: fixed;
+		top: 90px;
+		bottom: auto;
+		left: auto;
+		right: 60px;
+		width: 60px;
+		height: 30px;
+	}
+
+	#testOut{
+		position: fixed;
+		top: 90px;
+		bottom: auto;
+		left: auto;
+		right: 130px;
+		width: 60px;
+		height: 30px;
+	}
+
 	#back{
 		position: fixed;
 		top: 0px;
@@ -3769,6 +3811,12 @@ a.fancybox-expand {
 		padding: 0px;
 	}
 
+	#survey .ui-button-text, #testOut .ui-button-text{
+		text-transform: lowercase;
+		font-size: 12px;
+		padding: 0.4em;
+	}
+
 	#back .ui-icon, #next .ui-icon, #help .ui-icon{
 		position: relative;
 		left: auto;
@@ -3777,7 +3825,7 @@ a.fancybox-expand {
 		margin: auto;
 	}
 
-	#back:focus, #next:focus, #help:focus{
+	#back:focus, #next:focus, #help:focus, #survey:focus, #testOut:focus{
 		outline: 0px;
 	}
 
@@ -3880,24 +3928,36 @@ a.fancybox-expand {
 		position: fixed;
 		top: 0px;
 		bottom: 0px;
+		left: -90%;
+		width: 90%;
+		max-width: 700px;
 	}
 
 	#glossaryTab{
-		position:absolute;
+		position: fixed;
+		left: 1px;
 		top: 40px;
-		left: 708px;
-		margin-left: -4px;
+		margin-left: 0px;
 	    border-style: none;
 		background-size: contain;
 	}
 
 	#glossaryTerms{
+		width: 50%;
+		max-width: 350px;
 		height: 100%;
 	}
 	
 	#glossaryContent{
+		left: 50%;
+		width: 50%;
+		max-width: 350px;
 		height: 100%;
 		box-shadow: 1px 0px 2px gray;
+	}
+
+	#indexTab:focus, #glossaryTab:focus{
+		outline: 0px;
 	}
 
 	/* Glossary Menu */
