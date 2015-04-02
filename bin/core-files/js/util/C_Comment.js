@@ -124,7 +124,7 @@ function updatePageIssues(){
 	msg += "<div id='commentDisplayHolder'>";
 	msg += "<div id='pageComments' class='editItemContainer '></div>";
 	msg += "</div>";//contentDisplayHolder
-	msg += "<label for='commentInputSubject'>Comment Subject: </label>";
+	msg += "<label for='commentInputSubject'>Comment Subject: *</label>";
 	msg += "<input type='text' id='commentInputSubject' name='commentInputSubject' type='text' title='Add comment subject here.''/><br/>";
 	msg += "<label for='commentInputText'>Comment Description: </label>";
 	msg += '<textarea rows="4" cols="50" name="commentInputText" id="commentInputText" title="Add comment description here." class="text ui-widget-content ui-corner-all"></textarea><br/>';
@@ -147,7 +147,7 @@ function updatePageIssues(){
 		lessontitle: $(data).find('lessonTitle').attr('value'),
 		id: $(data).find("page").eq(currentPage).attr("id")
 	};
-	cognizenSocket.emit('getRemineIssues', _page, function(fdata){
+	cognizenSocket.emit('getRedmineIssues', _page, function(fdata){
 		_issues = fdata;
 
 		console.log(_issues);
@@ -210,11 +210,43 @@ function updatePageIssues(){
 						$('#bankItem'+ currentIssueBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 						currentIssueBankMember = $(this).attr("data-myID");
 						$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+						try { CKEDITOR.instances["questionEditText"].destroy() } catch (e) {}
+						$(".questionBankItem").remove();
 						$("#commentDialog").remove();
 						updatePageIssues();
 					}).tooltip();
 				}
-			}					
+			}
+
+			$("#pageComments").append("<div id='updateIssueBtn' >Submit</div><br/><br/>");
+		
+			$("#updateIssueBtn").button().click(function(){
+				_issues.issues[currentIssueBankMember].subject = $('#commentSubject').val();
+				_issues.issues[currentIssueBankMember].description = CKEDITOR.instances['commentText'].getData();
+				var currentStatus = $('#commentStatus option:selected').text();
+				//var statusId = findStatusId(currentStatus);
+				_issues.issues[currentIssueBankMember].status_id = findStatusId(currentStatus);
+				//_issues.issues[currentIssueBankMember].status = {name: currentStatus, id: statusId};
+
+				cognizenSocket.emit('updateRedmineIssue', _issues.issues[currentIssueBankMember], function(err){
+					if(err){
+						alert(err);
+					}
+					else{
+						setTimeout(updatePageIssues(), 3000);
+					}
+				});				
+			});
+
+			//Add and style contentEdit button
+	        $("#commentText").attr('contenteditable', true);
+	        CKEDITOR.disableAutoInline = true;
+			CKEDITOR.inline( 'commentText', {
+				toolbar: pageTitleToolbar,
+				toolbarGroups : pageTitleToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P
+			});								
 		}
 		else{
 			$('#pageComments').hide();
@@ -232,36 +264,34 @@ function updatePageIssues(){
 					text: "Add",
 					title: "Adds a new issue.",
 					click: function(){
-						var myStatusId = 1;
-						if($("#commentInputStatus").val() == "In Progress"){
-							myStatusId = 2;
-						}
-						else if($("#commentInputStatus").val() == "Resolved"){
-							myStatusId = 3;
-						}
-						else if($("#commentInputStatus").val() == "Tested"){
-							myStatusId = 4;
-						}
-						else if($("#commentInputStatus").val() == "Closed"){
-							myStatusId = 5;
-						}
-						else if($("#commentInputStatus").val() == "Rejected"){
-							myStatusId = 6;
-						}
+						if($('#commentInputSubject').val().length != 0){
+							var inputStatusId = findStatusId($("#commentInputStatus").val());
+							var pageData = {
+								user: {id: urlParams['u']},
+								content: {type: urlParams['type'], id: urlParams['id']},
+								lessontitle: $(data).find('lessonTitle').attr('value'),
+								page: {
+									id: $(data).find("page").eq(currentPage).attr("id"),
+									title: $(data).find('page').eq(currentPage).find("title").first().text().trim()
+								},
+								subject: $('#commentInputSubject').val().replace('<p>', '').replace('</p>', '').trim(),
+								text: $('#commentInputText').val().replace('<p>', '').replace('</p>', '').trim(),
+								status: inputStatusId
+							};
 
-						cognizenSocket.emit('addRedmineIssue', {
-							user: {id: urlParams['u']},
-							content: {type: urlParams['type'], id: urlParams['id']},
-							lessontitle: $(data).find('lessonTitle').attr('value'),
-							page: {
-								id: $(data).find("page").eq(currentPage).attr("id"),
-								title: $(data).find('page').eq(currentPage).find("title").first().text().trim()
-							},
-							subject: $('#commentInputSubject').val().replace('<p>', '').replace('</p>', '').trim(),
-							text: $('#commentInputText').val().replace('<p>', '').replace('</p>', '').trim(),
-							status: myStatusId
-						});
-						setTimeout(updatePageIssues(), 3000);
+							cognizenSocket.emit('addRedmineIssue', pageData, function(err){
+								if(err){
+									alert(err);
+								}
+								else{
+									setTimeout(updatePageIssues(), 3000);
+								}
+							});
+							
+						}
+						else{
+							alert("A subject must be provided to add a comment.");
+						}
 					}	
 				},
 				{
@@ -278,6 +308,26 @@ function updatePageIssues(){
 	});			
 
 	$('.antiscroll-wrap').antiscroll();		
+}
+
+function findStatusId(name){
+	var myStatusId = 1;
+	if(name == "In Progress"){
+		myStatusId = 2;
+	}
+	else if(name == "Resolved"){
+		myStatusId = 3;
+	}
+	else if(name == "Tested"){
+		myStatusId = 4;
+	}
+	else if(name == "Closed"){
+		myStatusId = 5;
+	}
+	else if(name == "Rejected"){
+		myStatusId = 6;
+	}
+	return myStatusId;	
 }
 
 function refreshPageComments(){

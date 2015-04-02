@@ -1749,33 +1749,50 @@ var SocketHandler = {
     	ContentComment.find({contentId: lesson.lesson}).remove()
     },
 
-    addRedmineIssue: function(comment){
+    addRedmineIssue: function(comment, callback){
         var _this = this;
 
         //console.log(comment);
         redmine.createIssue(comment, function(err){
             if(err){
                 _this.logger.error("Error creating redmine issue: " + err);
+                callback(err);
             }
             else{
                 _this.logger.info(" issue created in redmine");
+                callback();
             }
         }); 
     },
 
-    getRemineIssues: function(page, callback){
+    getRedmineIssues: function (page, callback){
         var _this = this
-        console.log(page);
-        redmine.getIssueByPageId(page, function(data, err){
+
+        redmine.getIssuesByPageId(page, function(data, err){
             if(err){
                 _this.logger.error("Error finding issues: " + err);
                 callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
             }
             else{
-                console.log(data);
+                //_this.logger.info(data);
                 callback(data);
             }
         }); 
+    },
+
+    updateRedmineIssue: function (issue, callback){
+        var _this = this;
+        redmine.updateIssue(issue, function(err){
+            if(err){
+                _this.logger.error("Error updating issue: " + err);
+                callback(err);
+            }
+            else{
+                _this.logger.info("Issue updated successfully");
+                callback();
+            }
+        }) ; 
+
     },
 
     addComment: function (comment) {

@@ -133,7 +133,30 @@ var REDMINE = {
         //         console.log(" issues found");
         //         console.log(data);
         //     }
-        // });                        	
+        // });
+        // var issue = {
+        //     id: 6,
+        //     project_id: 6,
+        //     //subject: "Fix the pageEEXXX"
+        //     description: "More stuff for tommy t"
+        // };
+        // this.updateIssue(issue, function(err){
+        //     if(err){
+        //         console.log("error: " + err);
+        //     }
+        //     else{
+        //         console.log("issue updated");
+        //     }
+        // }) ;         
+        // this.promisedAPI.updateIssue(6, issue)
+        //     .error(function(err){
+        //         callback(err);
+        //     })
+        //     .success(function(data){
+        //         console("done good");
+        //         console(data)
+        //     })
+        // ;                         	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, callback){
@@ -267,7 +290,6 @@ var REDMINE = {
     },
     createIssue: function(Comment, callback){
         var _this = this;
-        console.log("in createIssue");
         //find project id
         _this._findProjectId(Comment.lessontitle, function(data, err){
             if(err){
@@ -298,7 +320,8 @@ var REDMINE = {
                                         [
                                             {value: Comment.page.title, id: _pageTitleId},
                                             {value: Comment.page.id, id: _pageIdId}
-                                        ]
+                                        ],
+                                    status_id: Comment.status    
                                 };            
                                 _this.promisedAPI.postIssue(issue)
                                     .error(function(err){
@@ -307,7 +330,8 @@ var REDMINE = {
                                     })
 
                                     .success(function(data){
-                                        console.log(data)
+                                        //console.log(data)
+                                        callback();
                                     })
                                 ; 
                             }
@@ -317,7 +341,7 @@ var REDMINE = {
             }
         });          
     },
-    getIssueByPageId: function(Page, callback){
+    getIssuesByPageId: function(Page, callback){
         var _this = this;
         _this._findProjectId(Page.lessontitle, function(data, err){
             if(err){
@@ -349,6 +373,18 @@ var REDMINE = {
 
             }
         });
+    },
+    updateIssue: function(Issue, callback){
+       var _this = this;
+       
+        _this.promisedAPI.updateIssue(Issue.id, Issue)
+            .error(function(err){
+                callback(err);
+            })
+            .success(function(data){
+                callback();
+            })
+        ;  
     },    
     _findUserId: function(Username, callback){
         var _this = this;
@@ -418,8 +454,7 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );
-    },
-
+    }
 };
 
 module.exports = REDMINE;
