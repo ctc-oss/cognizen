@@ -64,6 +64,10 @@ var currentSelectedMediaPreview;
 * @type {Boolean}
 */
 var removeClicked = false;
+
+var listScroller;
+
+var folderTrack = "media";
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -114,11 +118,40 @@ function toggleMediaBrowser(){
 */
 function addDisplay(){
 	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser<input id='file' type='file' /></div>";
-		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>"
-		msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
+		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>";
+		msg += "<div id='mediaBrowserDirectorySelectPalette' class='mediaBrowserDirectorySelectPalette'>";
+		msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton' data='./media/'>media</div>";
+		msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='../../core-prog/'>core-prog</div>";
+		msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='../css/'>course css</div>";
+		msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='./css/'>lesson css</div>";
+		msg += "</div>";
+		msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
+		msg += " <div class='box-wrap antiscroll-wrap'><div class='list-box'><div class='antiscroll-inner'><div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div></div></div></div>";
 		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'><div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div></div>";
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
+	
+	$("#mediaButton").click(function(){
+		folderTrack = "media"
+		getMediaDir();
+	});
+	
+	$("#coreprogButton").click(function(){
+		folderTrack = "core";
+		getMediaDir();
+	});
+	
+	$("#coursecssButton").click(function(){
+		folderTrack = "course"
+		getMediaDir();
+	});
+	
+	$("#lessoncssButton").click(function(){
+		folderTrack = "lesson"
+		getMediaDir();
+	});
+	
+	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
 	
 	$('#file').change(function(e) {
 		cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
@@ -162,10 +195,10 @@ function getMediaDir(_dir){
 	$("#mediaBrowserList").empty();
 	if(_dir){
 		//Get media directory sub folder.
-		socket.emit('getMediaDir', _dir);
+		socket.emit('getMediaDir',  {loc: folderTrack, path: _dir});
 	}else{
 		//Just get media folder
-		socket.emit('getMediaDir', "");
+		socket.emit('getMediaDir', {loc: folderTrack, path: ""});
 	}
 }
 
@@ -177,8 +210,7 @@ function getMediaDir(_dir){
 */
 function updateMediaBrowserDir(_data){
 	$("#mediaBrowserList").removeClass('C_Loader');
-	$("#mediaBrowserList").append("<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>");
-	
+	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
 	
 	//Add up a directory button if needed.
@@ -229,7 +261,7 @@ function updateMediaBrowserDir(_data){
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a></div><div id='mediaRemove' class='mediaRemove' title='delete this item'></div></div>";
+	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a><div id='mediaRemove' class='mediaRemove' title='delete this item'></div></div>";
 	   $("#mediaBrowserList").append(msg);
 	   
 	   $("#"+tempID).find(".mediaRemove").click(function(){
@@ -245,60 +277,30 @@ function updateMediaBrowserDir(_data){
 	   });
 	   
 	   $("#"+tempID).click(function(){
-		   if(removeClicked){
-			   removeClicked = false;
-		   }else{
-			   try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
-			   currentSelectedMediaPreview = $(this);
-			   currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-			   mediaBrowserPreviewFile($(this).attr('data'));
+			if(removeClicked){
+				removeClicked = false;
+			}else{
+		   		try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+		   		currentSelectedMediaPreview = $(this);
+		   		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
+		   		//var transitionEnd = transitionEndEventName();
+		   		//currentSelectedMediaPreview.addEventListener(transitionEnd, callfunction, false);
+		   		currentSelectedMediaPreview.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', callfunction);
+		   		mediaBrowserPreviewFile($(this).attr('data'));
 			}
 	   });
 	}
+	listScroller.refresh();
+}
+
+function callfunction(event){
+	currentSelectedMediaPreview.off(event);
+	//alert("trans end");
 }
 
 function downloadMedia(_file){
 	cognizenSocket.emit('mediaBrowserDownloadMedia', {file: _file, type: urlParams['type'], id: urlParams['id']});
 }
-
-/*for (var key in _data.files) {
-	   var obj = _data.files[key];
-	   var tempID = "file"+key;
-	   console.log(relPath+obj);
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"<a href=./media/"+relPath+obj+ " download><div id='downloadMedia' class='mediaDownload' title='download this item'></div></a></div>";
-	   $("#mediaBrowserList").append(msg);
-	   
-	   $("#"+tempID).find(".mediaRemove").click(function(){
-			removeClicked = true;
-			var myItem = relPath + $(this).parent().attr('data');	
-			checkRemoveMedia(myItem);	   
-	   });
-	   
-	   $("#"+tempID).find(".mediaDownload").click(function(){
-			removeClicked = true;
-			var myItem = relPath + $(this).parent().attr('data');	
-			downloadMedia(myItem);	   
-	   });
-	   
-	   $("#"+tempID).click(function(){
-		   if(removeClicked){
-			   removeClicked = false;
-		   }else{
-			   try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
-			   currentSelectedMediaPreview = $(this);
-			   currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-			   mediaBrowserPreviewFile($(this).attr('data'));
-			}
-	   });
-	}
-}
-
-function downloadMedia(_file){
-	var tmpURL = document.URL;
-	var parts = document.URL.split("index.html?");
-	cognizenSocket.emit('mediaBrowserDownloadMedia', {file: _file, type: urlParams['type'], id: urlParams['id'], url: parts[0]});
-}
-*/
 
 /**
 * Launch Dialog to confirm removal of media.

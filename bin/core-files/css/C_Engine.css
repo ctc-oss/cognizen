@@ -1561,15 +1561,65 @@ MEDIA LAYOUTS
 	width: 100%;
 }
 
-.mediaBrowserList{
+.mediaBrowserDirectorySelectPalette{
+	position: relative;
+	left: 0px;
+	width: 30%;
+	height: 3%;
+	background-color: #eee;
+}
+
+.mediaBrowserDirectorySelectButton{
 	position				: relative;
 	float					: left;
-	width					: 30%;
-	height					: 100%;
+	width					: 25%;
+	background-color		: #eee;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
+	text-align				: center;
+}
+
+.mediaBrowserDisplayPath{
+	position			  	: relative;
+	left					: 0px;
+	width				  	: 30%;
+	max-width			  	: 30%;
+	top					  	: 0px;
+	height				  	: 3%;
+	overflow 			  	: hidden;
+	background-color	  	: #333;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
+	color 				  	: white;
+	text-indent				: 5px;
+	line-height				: 200%; 	
+}
+
+.box-wrap{
+	position: relative;
+	left: 0px;
+	width: 30%;
+	height: 94%;
 	background-color		: rgba(51, 51, 51, .9);
 	border-bottom-left-radius  : 8px;
 	-webkit-border-bottom-left-radius: 8px;
 	-moz-border-radius-bottomleft: 8px;
+}
+
+.list-box, .list-box .antiscroll-inner {
+	width: 100%;
+    height: 100%;
+}
+
+.mediaBrowserList{
+	position				: relative;
+	float					: left;
+	width					: 100%;
+	height					: 100%;
 }
 
 .mediaBrowserPreview{
@@ -1597,24 +1647,6 @@ MEDIA LAYOUTS
 
 #mediaBrowserList .loading {
 	background				: #ccc url(images/spinner.gif) no-repeat center center;
-}
-
-.mediaBrowserDisplayPath{
-	position			  	: relative;
-	float				  	: left;
-	width				  	: 95%;
-	max-width			  	: 95%;
-	top					  	: 0px;
-	height				  	: auto;
-	overflow 			  	: hidden;
-    margin-bottom 		  	: 2px;
-    padding 		      	: 5px;
-	background-color	  	: #333;
-	cursor				  	: hand;
-	cursor				  	: pointer;
-	font-family 		  	: Arial;
-	font-size 			  	: 8pt;
-	color 				  	: white;
 }
 
 .mediaBrowserUpDirectory{
@@ -1675,15 +1707,19 @@ MEDIA LAYOUTS
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
 	font-size 			  	: 8pt;
+	-webkit-transition		: height 1s; /* Safari */
+    transition				: height 1s;
 }
 
 .mediaBrowserFileSelected{
 	color: purple;
+	-webkit-transition: height 1s; /* Safari */
+    transition: height 1s;
+    height: 150px;
 }
 
 .mediaRemove {
-	position: relative;
-	float: right; 
+	position: absolute;
 	top: 0px; 
 	right: 0px; 
 	width: 10px;
@@ -1692,10 +1728,9 @@ MEDIA LAYOUTS
 }
 
 .mediaDownload {
-	position: relative;
-	float: right; 
+	position: absolute;
 	top: 0px; 
-	right: 11px; 
+	right: 11px;
 	width: 10px;
 	height: 10px; 
 	background: url(images/mbRemove.png) no-repeat;

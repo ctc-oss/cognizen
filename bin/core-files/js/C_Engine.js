@@ -199,7 +199,6 @@ function initScripts(_data){
 					corePath +"js/libs/fancybox/jquery.fancybox.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-					corePath +"js/libs/antiscroll.js",
 					corePath +"js/libs/overthrow.min.js",
 					corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
 					ckpath,
@@ -260,6 +259,7 @@ function initScripts(_data){
 					corePath +"js/util/C_UtilFunctions.js",
 			//Give mouse super powers.
 					corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
+					corePath +"js/libs/antiscroll.js",
 			//Lightbox for media popups and galleries.
 
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
