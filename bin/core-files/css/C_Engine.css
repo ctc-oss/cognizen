@@ -4270,6 +4270,18 @@ a.fancybox-expand {
 			width: 100%;
 		}
 
+		.transcriptDisplay{
+			max-width: 360px;
+		}
+		
+		.transcriptbox{
+			width: 347px;
+		}
+
+		#transcriptHolder{
+			width: 330px;
+		}
+
 	}
 
 
@@ -4353,6 +4365,18 @@ a.fancybox-expand {
 			height: 380px;
 		}
 
+		.transcriptDisplay{
+			max-width: 320px;
+		}
+		
+		.transcriptbox{
+			width: 307px;
+		}
+
+		#transcriptHolder{
+			width: 290px;
+		}
+
 	}
 
 
@@ -4373,6 +4397,18 @@ a.fancybox-expand {
 		#flashcardHolder{
 			margin-left: 7.5%;
 			margin-right: 7.5%;
+		}
+
+		.transcriptDisplay{
+			max-width: 305px;
+		}
+		
+		.transcriptbox{
+			width: 292px;
+		}
+
+		#transcriptHolder{
+			width: 275px;
 		}
 
 	}
@@ -4418,6 +4454,18 @@ a.fancybox-expand {
 			width: 280px;
 			height: 310px;
 			font-size: 11pt;
+		}
+
+		.transcriptDisplay{
+			max-width: 265px;
+		}
+		
+		.transcriptbox{
+			width: 252px;
+		}
+
+		#transcriptHolder{
+			width: 235px;
 		}
 
 	}
