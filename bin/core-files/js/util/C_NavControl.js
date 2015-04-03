@@ -1844,6 +1844,10 @@ this.loadPage = function(){
 			currentTemplate = new C_Branching(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "pathing":
+			currentTemplate = new C_Pathing(currentTemplateType);
+			currentTemplate.initialize();
+			break;			
 		case "chaining":
 			currentTemplate = new C_Chaining(currentTemplateType);
 			currentTemplate.initialize();

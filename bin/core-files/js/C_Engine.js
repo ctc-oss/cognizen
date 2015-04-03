@@ -223,6 +223,7 @@ function initScripts(_data){
 					corePath +"js/templates/C_ClickImage.js",
 					corePath +"js/templates/C_ClickListRevealText.js",
 					corePath +"js/templates/C_Completion.js",
+					corePath +"js/templates/C_Pathing.js",
 					corePath +"js/templates/C_StaticContent.js", //All text and static media pages - text, .jpg, .png, .swf
 					corePath +"js/templates/C_TabbedContent.js", //Tabs can be added to static by power users but this is more user friendly.
 					corePath +"js/templates/C_Reveal.js", //Reveal text upon clicking on an image.
