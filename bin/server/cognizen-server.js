@@ -7,9 +7,10 @@ var httpProxy = require('http-proxy');
 var path = require("path");
 var et = require('elementtree');
 var express = require('express');
+var session = require('express-session')
 var cookie = require("cookie");
 var connect = require("connect");
-
+var cookieParser = require("cookie-parser");
 var socketIo = require('socket.io');
 
 var fs = require('fs-extra');
@@ -363,8 +364,8 @@ var Content = {
     });
 
     var app = express();
-    app.use(express.cookieParser('cognizen'));
-    app.use(express.session());
+    app.use(cookieParser('cognizen'));
+    app.use(session());
     app.get('/logout', function(req, res) {
         if (req.session) {
             req.session.auth = null;
@@ -480,6 +481,14 @@ var Content = {
 			
 			socket.on('updateCourseXML', function(data){
 				SocketHandler.socket(socket).updateCourseXML(data);
+			});
+			
+			socket.on('mediaBrowserRemoveMedia', function(data){
+				SocketHandler.socket(socket).mediaBrowserRemoveMedia(data);
+			});
+			
+			socket.on('mediaBrowserDownloadMedia', function(data){
+				SocketHandler.socket(socket).mediaBrowserDownloadMedia(data);
 			});
 			
 			socket.on('updateModuleXML', function(data){
