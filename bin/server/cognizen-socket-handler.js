@@ -22,10 +22,106 @@ var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string'); // => true
-
+var ss = require('socket.io-stream');
+var request = require('request');
 
 var activeEdit_arr = [];
 var activeOutline_arr = [];
+
+/*function processUpload{
+	var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+    var convertableVectorTypes = ["eps"];
+    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+    var archiveTypes = ["zip"];
+    if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+        //Convert files
+        var convertedFileName;
+        var convertedPathName;
+        var convertedPath;
+        //VIDEO CONVERSION
+        if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
+        	convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp4';
+			convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp4';
+			convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+        	var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+            	.toFormat('mp4')
+				.withVideoBitrate('1200k')
+				.withVideoCodec('libx264')
+				.withAudioBitrate('160k')
+				.withAudioCodec('libfaac')
+				.withAudioChannels(2)
+				.onCodecData(function (codecinfo) {
+                	_this.logger.info(codecinfo);
+					_this._socket.emit('mediaInfo', codecinfo);
+				})
+           //used for ffmpeg on windows machine
+           //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
+
+		}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+			convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
+			convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
+			convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
+			var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+            	.toFormat('mp3')
+				.withAudioCodec('libmp3lame')
+				.withAudioChannels(2)
+				.onCodecData(function (codecinfo) {
+                	_this.logger.info(codecinfo);
+					_this._socket.emit('mediaInfo', codecinfo);
+				})
+		}
+        proc.onProgress(function (progress) {
+        	_this._socket.emit('mediaConversionProgress', progress);
+		})
+		.saveToFile(convertedPathName, function (stdout, stderr) {
+        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+
+			var stream = fs.createReadStream(convertedPathName);
+            stream.pipe(fs.createWriteStream(convertedPath));
+
+			var had_error = false;
+			stream.on('error', function(err){
+				had_error = true;
+			});
+
+			stream.on('close', function(){
+                if (!had_error) fs.unlink(event.file.pathName);
+                fs.unlink(convertedPathName, function (err) {
+                	_this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
+                	_this._socket.emit('mediaConversionComplete', convertedPath);
+                });
+			})
+		});
+    }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+    	var zip = new unzip(event.file.pathName);
+    	var zipEntries = zip.getEntries();
+
+    	zipEntries.forEach(function(entry) {
+		    var entryName = entry.entryName;
+		    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true);
+		});
+
+		fs.unlink(event.file.pathName, function (err) {
+        	_this._socket.emit('unzipComplete', convertedPath);
+        });
+    }
+    //if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+    else{
+        var stream = fs.createReadStream(event.file.pathName);
+        stream.pipe(fs.createWriteStream(contentPath));
+        var had_error = false;
+        stream.on('error', function(err){
+            had_error = true;
+        });
+
+        stream.on('close', function(){
+            _this.logger.info("wrote to location - now trying to delete file from tmp");
+            if (!had_error) fs.unlink(event.file.pathName);
+        });
+        //Git commit
+    }
+}*/
 
 var SocketHandler = {
     config: {},
@@ -77,6 +173,7 @@ var SocketHandler = {
                         var type = target[0];
                         var id = target[1];
                         var contentType = _this.Content.objectType(type);
+                        
                         if (contentType) {
                             contentType.findById(id, function (err, found) {
                                 if (found) {
@@ -85,6 +182,7 @@ var SocketHandler = {
                                     var capPath = path.normalize(_this.Content.diskPath(found.path) + '/media/');
                                     //Handle our favorite media types
                                     //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
+
                                     var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
                                     var convertableVectorTypes = ["eps"];
                                     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
@@ -184,6 +282,152 @@ var SocketHandler = {
                 }
             }
         });
+        
+        ss(this._socket).on('upload-media', function(stream, data){
+			var filename = uploader.dir + "/" + data.name;
+			var mediaStream = stream.pipe(fs.createWriteStream(filename));
+			
+			//Complete upload callback
+			mediaStream.on('close', function(){
+				var type = data.type;
+                var id = data.id;
+                var contentType = _this.Content.objectType(type);
+				
+                if (contentType) {
+                    contentType.findById(id, function (err, found) {
+                        if (found) {
+                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.path + data.name);
+							var fileSplit = data.name.split(".");
+							var mediaType = fileSplit[fileSplit.length - 1];
+							
+							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+                            var convertableVectorTypes = ["eps"];
+                            var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+                            var archiveTypes = ["zip"];
+                            if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                _this._socket.emit("mediaBrowserConversionStart");
+                                //Convert files
+                                var convertedFileName;
+                                var convertedPathName;
+                                var convertedPath;
+                                //VIDEO CONVERSION
+                                if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                	convertedFileName = data.name.replace(/\.[^/.]+$/, '') + '.mp4';
+									convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp4';
+									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                                	var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
+                                    	.toFormat('mp4')
+										.withVideoBitrate('1200k')
+										.withVideoCodec('libx264')
+										.withAudioBitrate('160k')
+										.withAudioCodec('libfaac')
+										.withAudioChannels(2)
+										.onCodecData(function (codecinfo) {
+                                        	_this.logger.info(codecinfo);
+											_this._socket.emit('mediaInfo', codecinfo);
+										})
+                                   //used for ffmpeg on windows machine
+                                   //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
+
+								}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+									convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
+									convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
+									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
+									var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+                                    	.toFormat('mp3')
+										.withAudioCodec('libmp3lame')
+										.withAudioChannels(2)
+										.onCodecData(function (codecinfo) {
+                                        	_this.logger.info(codecinfo);
+											_this._socket.emit('mediaInfo', codecinfo);
+										})
+								}
+                                proc.onProgress(function (progress) {
+                                	_this._socket.emit('mediaBrowserConversionProgress', progress);
+								})
+								.saveToFile(convertedPathName, function (stdout, stderr) {
+                                	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+                                    if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+
+									var stream = fs.createReadStream(convertedPathName);
+                                    stream.pipe(fs.createWriteStream(convertedPath));
+
+									var had_error = false;
+									stream.on('error', function(err){
+										had_error = true;
+									});
+
+									stream.on('close', function(){
+                                        if (!had_error) fs.unlink(filename);
+	                                    fs.unlink(convertedPathName, function (err) {
+	                                    	_this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
+                                        	_this._socket.emit('mediaBrowserUploadComplete', convertedPath);
+                                        });
+									})
+								});
+                            }else{
+	                            var stream = fs.createReadStream(filename);
+	                            stream.pipe(fs.createWriteStream(contentPath));
+	                            var had_error = false;
+	                            stream.on('error', function(err){
+	                                had_error = true;
+	                            });
+	
+	                            stream.on('close', function(){
+		                            //Remove item from tmp folder after moving it over.
+	                                if (!had_error) fs.unlink(filename);
+	                                _this._socket.emit('mediaBrowserUploadComplete', contentPath);
+	                            });
+                            }
+						}
+					});
+				}
+			});
+		});
+    },
+    
+    mediaBrowserRemoveMedia: function(data) {
+		var _this = this;
+		var type = data.type;
+        var id = data.id;
+        var contentType = _this.Content.objectType(type);
+				
+        if (contentType) {
+        	contentType.findById(id, function (err, found) {
+            	if (found) {
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.file);
+                	fs.unlink(contentPath, function (err) {
+						if (err) throw err;
+						console.log('successfully deleted media file');
+						_this._socket.emit('mediaBrowserRemoveMediaComplete');
+					});
+                }
+            });
+        }
+    },
+    
+    mediaBrowserDownloadMedia: function(data) {
+		var _this = this;
+		var type = data.type;
+        var id = data.id;
+        var contentType = _this.Content.objectType(type);
+				
+        if (contentType) {
+        	contentType.findById(id, function (err, found) {
+            	if (found) {
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.file);
+                	/*fs.unlink(contentPath, function (err) {
+						if (err) throw err;
+						console.log('successfully deleted media file');
+						_this._socket.emit('mediaBrowserRemoveMediaComplete');
+					});*/
+					//var file = fs.createReadStream(contentPath);
+					//console.log(file);
+					//_this._socket.stream(file);
+					request(data.url+"media/"+data.file).pipe(fs.createWriteStream('doodle.png'))
+                }
+            });
+        }
     },
 
     checkLoginStatus: function() {
