@@ -1210,6 +1210,9 @@ function checkTestOut(){
 			if(testLink == "null"){
 				alert("The link for the test has not been set.");
 			}else{
+				if(indexState == true){
+					toggleIndex();
+				}
 				loadPageFromID(testLink);
 			}
 		});
