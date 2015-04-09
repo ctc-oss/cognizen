@@ -259,7 +259,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 posterLink = $(data).find("page").eq(currentPage).attr('poster');
             }else{
                 hasPoster = false;
-                posterLink = null;
+                posterLink = "Input poster link here.";
             }
             
             if(rootType == "branching"){
@@ -268,7 +268,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	                posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster');
 	            }else{
 	                hasPoster = false;
-	                posterLink = null;
+	                posterLink = "Input poster link here.";
 	            }
             }
 
