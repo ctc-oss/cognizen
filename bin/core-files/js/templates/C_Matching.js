@@ -786,6 +786,12 @@ function C_Matching(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
+						for(var i=0; i<questionResponse_arr.length; i++){
+							if(currentPageID == questionResponse_arr[i].id){
+								questionResponse_arr[i].complete = false;
+								questionResponse_arr[i].userAnswer = [];
+							}
+						}
 						var cleanoptions = true;
 						var cleananswers = true;
 						var tmpObj = new Object();
