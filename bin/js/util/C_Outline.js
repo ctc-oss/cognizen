@@ -704,10 +704,10 @@ function C_Outline(_myItem) {
 			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			msg += "<label for='targetAudience'>target audience: </label>";
 			msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			//msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
 			msg += "<label for='instructionalGoal'>instructional goal: </label>";
 			msg += '<textarea rows="4" cols="50" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			//msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
+	     	msg += "<div><b>Redmine:</b></div>";
+			msg += addToggle("redmine", "Enable the use of Redmine for commenting.");
 			//end div for general
 			msg += '</div>';
 	     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
@@ -737,6 +737,31 @@ function C_Outline(_myItem) {
 
 			$("#outlinePagePrefPane").append(msg);
 			$("#out_courseTitle").alphanum();
+
+			//set redmine to default if not set and set redmine based off of value in xml
+			if(!$(courseData).find("course").attr("redmine")){
+				$('#redmine').prop('checked', false);
+				$(courseData).find("course").attr("redmine", "false");
+				updateCourseXML();
+			}
+			else if($(courseData).find("course").attr("redmine") === "true"){
+				$('#redmine').prop('checked', true);
+			}
+			else{
+				$('#redmine').prop('checked', false);
+			}
+
+			//update the xml when the redmine toggle is changed
+			$('#redmine').on('change', function(){
+				if($('#redmine').prop('checked')){
+					$(courseData).find("course").attr("redmine", "true");
+				}
+				else{
+					$(courseData).find("course").attr("redmine", "false");
+				}
+				updateCourseXML();
+			});
+
 			//set objectivesGlobalToSystem based off value in xml
 			if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
 				$('#objectivesGlobalToSystem').prop('checked',true);

@@ -17,7 +17,8 @@ var Utils = require('./cognizen-utils'),
     unzip = require('adm-zip'),
     util = require('util'),
 	readdirp = require('readdirp'),
-	et = require('elementtree');
+	et = require('elementtree'),
+    redmine = require('./cognizen-redmine');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -431,9 +432,12 @@ var SocketHandler = {
     },
 
     checkLoginStatus: function() {
+        var _this = this;
         var status = {};
         var sessionId = this.SocketSessions.sessionIdFromSocket(this._socket);
         status.user = this.SocketSessions.socketUsers[sessionId];
+        //cognizen-redmine init
+        redmine.init(_this.logger, _this.config.redmineHost, _this.config.redmineApiKey, _this.config.redmineProtocal);
         this._socket.emit('loadDashboardPage', status);
     },
 
@@ -542,6 +546,15 @@ var SocketHandler = {
                     if (err) {
                         _this.logger.info("Problem Houston - can't save new password." + err);
                     } else {
+                        //update user password in Redmine
+                        redmine.updateUserPassword(data.user, data.pass, function(err){
+                            if(err){
+                                _this.logger.error("Error updating redmine user: " + err);
+                            }
+                            else{
+                                _this.logger.info("User updated to redmine");
+                            }
+                        });                        
                         _this._socket.emit('passwordUpdated');
                     }
                 });
@@ -591,6 +604,16 @@ var SocketHandler = {
                     //if already exists - kick the registration failed
                     _this._socket.emit('registrationFailed');
                 } else {
+                    //create user in Redmine
+                    redmine.createUser(data.user, data.firstName, data.lastName, data.pass, function(err){
+                        if(err){
+                            _this.logger.error("Error creating redmine user: " + err);
+                        }
+                        else{
+                            _this.logger.info("User added to redmine");
+                        }
+                    });
+                    
                     _this._socket.emit('registrationSuccess');
                     _this.Mail.send({
                         user: data.user,
@@ -859,6 +882,7 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
+                            item.set("redmine", "true");
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");
@@ -1005,6 +1029,15 @@ var SocketHandler = {
                                 }
                                 else {
                                     _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    //create project in Redmine
+                                    redmine.createProject(data.name, function(err){
+                                        if(err){
+                                            _this.logger.error("Error creating redmine project: " + err);
+                                        }
+                                        else{
+                                            _this.logger.info("Project added to redmine");
+                                        }
+                                    });                                    
                                     if (nameHadInvalidChars) {
                                         _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
                                     }
@@ -1049,6 +1082,15 @@ var SocketHandler = {
 	                                            _this.logger.error(err);
 	                                        }
 	                                        else {
+                                                //create Redmine project for the course
+                                                redmine.createCourse(data.name, data.program, function(err){
+                                                    if(err){
+                                                        _this.logger.error("Error creating redmine course project: " + err);
+                                                    }
+                                                    else{
+                                                        _this.logger.info("course project added to redmine");
+                                                    }
+                                                });                                                  
 	                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
 	                                        }
 	                                    });
@@ -1087,6 +1129,15 @@ var SocketHandler = {
                                         _this.logger.error(err);
                                     }
                                     else {
+                                        //create Redmine project for the lesson
+                                        redmine.createLesson(data.name, data.course, function(err){
+                                            if(err){
+                                                _this.logger.error("Error creating redmine lesson project: " + err);
+                                            }
+                                            else{
+                                                _this.logger.info("Lesson project added to redmine");
+                                            }
+                                        });                                           
                                         _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                                     }
                                 });
@@ -1862,7 +1913,7 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                 	var serverDetails = _this.Content.serverDetails(found);
-
+                    var oldName = found.name;
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
@@ -1895,13 +1946,25 @@ var SocketHandler = {
                             Utils.saveAll(itemsToSave, function() {
                                 // Now we have to rename the folder on the disk.
                                 FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+
                                     if (err) {
                                         _this.logger.error('FileUtils.renameDir(): ' + err);
                                         _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (2)'});
                                     }
                                     else {
+                                        //rename Redmine project for the course or lesson
+                                        redmine.updateProjectName(oldName, found.name, function(err){
+                                            if(err){
+                                                _this.logger.error("Error renaming redmine "+ data.content.type +" project: " + err);
+                                            }
+                                            else{
+                                                _this.logger.info(data.content.type + " project renamed in redmine");
+                                            }
+                                        }); 
+
                                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                             var parent = content.getParent();
+                                            console.log("parent : " + parent.name + " content : " + content.name);
                                             etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
                                             etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                                             etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
@@ -1928,6 +1991,52 @@ var SocketHandler = {
 
     clearLessonComments: function (lesson){
     	ContentComment.find({contentId: lesson.lesson}).remove()
+    },
+
+    addRedmineIssue: function(comment, callback){
+        var _this = this;
+
+        //console.log(comment);
+        redmine.createIssue(comment, function(err){
+            if(err){
+                _this.logger.error("Error creating redmine issue: " + err);
+                callback(err);
+            }
+            else{
+                _this.logger.info(" issue created in redmine");
+                callback();
+            }
+        }); 
+    },
+
+    getRedmineIssues: function (page, callback){
+        var _this = this
+
+        redmine.getIssuesByPageId(page, function(data, err){
+            if(err){
+                _this.logger.error("Error finding issues: " + err);
+                callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
+            }
+            else{
+                //_this.logger.info(data);
+                callback(data);
+            }
+        }); 
+    },
+
+    updateRedmineIssue: function (issue, callback){
+        var _this = this;
+        redmine.updateIssue(issue, function(err){
+            if(err){
+                _this.logger.error("Error updating issue: " + err);
+                callback(err);
+            }
+            else{
+                _this.logger.info("Issue updated successfully");
+                callback();
+            }
+        }) ; 
+
     },
 
     addComment: function (comment) {
