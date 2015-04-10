@@ -1,0 +1,18 @@
+﻿Revert "Merge branch '3462-update_commenting_system'"
+
+This reverts commit f86bf5200b33809af0d2015914e907e77a88171f, reversing
+changes made to 6bbc270305b7137a2cb9744abbf4dc8b6ef7d2b7.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   bin/core-files/js/util/C_Comment.js
+#	modified:   bin/js/util/C_Outline.js
+#	deleted:    bin/server/cognizen-redmine.js
+#	modified:   bin/server/cognizen-server.js
+#	modified:   bin/server/cognizen-socket-handler.js
+#
+
