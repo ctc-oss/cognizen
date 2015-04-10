@@ -13,7 +13,7 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "chaining", "textInput", "essayCompare", "clickListRevealText", "slider"];
+var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "pathing", "chaining", "textInput", "essayCompare", "clickListRevealText", "slider"];
 
 
 /************************************************************************************
@@ -70,7 +70,7 @@ function createNewPageByType(_myType){
 	
 	var currentChildrenLength = $(data).find("page").eq(currentPage).children("page").length;
 	var newPage = currentPage + currentChildrenLength + 1;
-	if(_myType != "branching" && _myType != "chaining"){
+	if(_myType != "branching" && _myType != "chaining" && _myType != "pathing"){
 		//Place the page title element and transcript elements
 		$(data).find("page").eq(newPage).append($("<title>"));
 		var newPageTitle = new DOMParser().parseFromString('<title></title>',  "application/xml");
@@ -264,6 +264,64 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
 			break;
+		case "pathing":
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Pathing Home");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Path Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<option>"));
+			var path1Guid = guid();
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("id", path1Guid);
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("path", "1");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("img", "");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("active", "false");
+
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathid", "0");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathtype", "home");
+
+			//path 1
+			$(data).find("page").eq(newPage).append($("<branch>"));
+			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<title>"));
+			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
+			var titleCDATA = title.createCDATASection("Path Page 1");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("title").append(titleCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<content>"));
+			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var contentCDATA = content.createCDATASection("New Path Content");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<sidebar>"));
+			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
+			var sidebarCDATA = content.createCDATASection("New sidebar Content");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("sidebar").append(sidebarCDATA);
+
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("id", path1Guid);
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathid", "1");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathtype", "branch");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathtimg", "");
+
+			$(data).find("page").eq(newPage).attr("graded", "false");
+			$(data).find("page").eq(newPage).attr("mandatory", "false");
+			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("type", "static");
+			break;			
 		case "chaining":
 			//intro
 			$(data).find("page").eq(newPage).append($("<branch>"));

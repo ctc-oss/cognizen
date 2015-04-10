@@ -422,6 +422,23 @@ function setObjectiveSuccess(objId, success, eo){
 
 }
 
+function getObjectiveSuccess(objId){
+	if(doScorm()){
+		var objIndex = findObjective(objId);
+        switch(scorm.version){
+            case "1.2" : 
+            	return scorm.get("cmi.objectives." + objIndex + ".status");
+            //2004	
+            default : 
+				return scorm.get("cmi.objectives." + objIndex + ".success_status");
+            	
+        }		
+	}
+	else{
+		return "undefined";
+	}
+}
+
 function setInteractions(_id, _type, _response, _result, _description){
 	if(doScorm()){
 		var num = parseInt(scorm.get("cmi.interactions._count"));

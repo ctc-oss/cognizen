@@ -1124,6 +1124,11 @@ ul.no-indent {
 	padding: 0em 1em .1em 1em  !important;
 }
 
+.btn_branchComplete{
+	background: url(images/correct.png) no-repeat right center !important;
+	padding-right: 15px !important;
+}
+
 .imgPalette, .buttonPalette{
 	position: relative;
 	margin-right: auto;

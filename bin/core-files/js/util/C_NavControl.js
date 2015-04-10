@@ -49,6 +49,7 @@ var testLink		 = null;
 var hasSurvey	     = false;
 var surveyLink       = null;
 var forceUpdateOnSave = false;
+var pathingTrack_arr = [];
 
 function ncInitialize(){
 	updateTotalGradedQuestions();
@@ -1491,6 +1492,10 @@ function checkNavButtons(){
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
+		if($(data).find("page").eq(currentPage).attr('layout') == "pathing"){
+			disableIndex();
+			disableBack();
+		}
 
 	}else{
 		if(nextDisabled == true){
@@ -1723,6 +1728,59 @@ function markIncomplete(){
 	}
 }
 
+function addPathingTracking(_id){
+	
+	var paths_arr = [];
+	var pathingPage = {
+		id: _id,
+		paths: paths_arr
+	};
+
+	if(pathingTrack_arr.length == 0){
+		pathingTrack_arr.push(pathingPage);
+	}
+	else{
+		var exists = false;
+		for (var i = 0; i < pathingTrack_arr.length; i++) {
+			if(pathingTrack_arr[i].id == _id){
+				exists = true;
+			}
+		};
+		if(!exists){
+			pathingTrack_arr.push(pathingPage);
+		}
+	}
+}
+
+function updatePathingTracking(_id, _paths){
+	for (var i = 0; i < pathingTrack_arr.length; i++) {
+		if(pathingTrack_arr[i].id == _id){
+			pathingTrack_arr[i].paths = _paths;
+		}
+	};
+}
+
+function checkPathComplete(_id, _path){
+	var _paths_arr = [];
+	for (var i = 0; i < pathingTrack_arr.length; i++) {
+		if(pathingTrack_arr[i].id == _id){
+			_paths_arr = pathingTrack_arr[i].paths;
+		}
+	};
+
+	if(_paths_arr.length > 0){
+		for (var j = 0; j < _paths_arr.length; j++) {
+			if(_paths_arr[j].pathid == _path){
+				return _paths_arr[j].completion;
+			}
+		};
+	}
+	else{
+		return false;
+	}
+
+}
+
 /////////////////////////////////////////////////////END SCORING FUNCTIONALITY
 
 /****************************************************
@@ -1847,6 +1905,10 @@ this.loadPage = function(){
 			currentTemplate = new C_Branching(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "pathing":
+			currentTemplate = new C_Pathing(currentTemplateType);
+			currentTemplate.initialize();
+			break;			
 		case "chaining":
 			currentTemplate = new C_Chaining(currentTemplateType);
 			currentTemplate.initialize();

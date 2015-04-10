@@ -2,7 +2,7 @@ function C_PageTitle(_id){
 	 var rootType = $(data).find("page").eq(currentPage).attr('layout');
 	 var myPageTitle;//Title of this page.
 	 //Page title value from content.xml
-     if((rootType == "branching" || rootType == "chaining" )&& _id != undefined){
+     if((rootType == "branching" || rootType == "chaining" || rootType == "pathing")&& _id != undefined){
 	    myPageTitle = $(data).find("page").eq(currentPage).find('branch').eq(_id).find('title').first().text();
      }else{
      	myPageTitle = $(data).find("page").eq(currentPage).find('title').first().text();
