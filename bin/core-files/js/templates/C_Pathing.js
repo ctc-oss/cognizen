@@ -219,19 +219,26 @@ function C_Pathing(_type) {
 		}
 		else{
 			var next = _id + 1;
-			var nextId = $(data).find("page").eq(currentPage).find("branch").eq(next).attr("pathid");
+			//var nextId = $(data).find("page").eq(currentPage).find("branch").eq(next).attr("pathid");
 
 			var buttonLabel = "";
 			var buttonID = "";
 			var pathComplete = false;
-			if(pathId != nextId){
+
+			for(var h = next; h < branchCount; h++){
+				if($(data).find("page").eq(currentPage).find("branch").eq(h).attr('pathid') == pathId){
+					break;
+				}
+			}
+
+			if(h == branchCount){
 				buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
 				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id");
 				pathComplete = true;
 			}
 			else{
-				buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(next).find("title").text();
-				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(next).attr("id");				
+				buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
+				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(h).attr("id");				
 			}
 
 			var myOption = "option"+i;
@@ -435,11 +442,11 @@ function C_Pathing(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
+						pathCompletion_arr = [];
+						updatePathingTracking(pageId, pathCompletion_arr);							
 				        makeRevealDataStore();
 						saveBranchingEdit();
 						clearCKInstances();
-						pathCompletion_arr = [];
-						updatePathingTracking(pageId, pathCompletion_arr);	
 						try { $("#optionContainer").remove(); } catch (e) {}
 						$("#branchEditDialog").dialog("close");
 						$("#branchEditDialog").remove();
