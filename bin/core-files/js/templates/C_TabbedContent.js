@@ -116,7 +116,12 @@ function C_TabbedContent(_type) {
 				currentSelected.attr("aria-expanded", "true");
 				currentSelected.attr("aria-selected", "true");
 				var temp = $(this).parent().attr("aria-controls");
-				$("#"+temp).focus();
+				if(!$(courseData).find('course').attr('section508')){
+					$("#"+temp).focus();
+				}
+				else if($(courseData).find('course').attr('section508') === 'true'){
+					$("#"+temp).focus();
+				}
 				scrollTimer = setInterval(function () {scrollRefresh()}, 500);
 			}).keypress(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;

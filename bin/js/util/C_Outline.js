@@ -704,11 +704,10 @@ function C_Outline(_myItem) {
 			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
 			msg += "<label for='targetAudience'>target audience: </label>";
 			msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			//msg += '<input type="text" name="targetAudience" id="targetAudience" title="Update the target audience for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';		
 			msg += "<label for='instructionalGoal'>instructional goal: </label>";
 			msg += '<textarea rows="4" cols="50" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			//msg += '<input type="text" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all" /> <br/>';
-			//end div for general
+			msg += '<div><b>Section 508:</b></div>';
+			msg += addToggle("section508", "Enable content to follow Section 508 standards.");
 			msg += '</div>';
 	     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
 			msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
@@ -737,6 +736,32 @@ function C_Outline(_myItem) {
 
 			$("#outlinePagePrefPane").append(msg);
 			$("#out_courseTitle").alphanum();
+
+			//handle seeting of section 508 if not set and setting the value based off of the xml
+			if(!$(courseData).find('course').attr('section508')){
+				$('#section508').prop('checked', true);
+				$(courseData).find('course').attr('section508', 'true');
+				updateCourseXML();
+
+			}
+			else if($(courseData).find('course').attr('section508') === 'true'){
+				$('#section508').prop('checked', true);
+			}
+			else{
+				$('#section508').prop('checked', false);
+			}
+
+			//on change of the section508 toggle update the course xml 
+			$('#section508').on('change', function(){
+				if($('#section508').prop('checked')){
+					$(courseData).find('course').attr('section508', 'true');
+				}
+				else{
+					$(courseData).find('course').attr('section508', 'false');
+				}
+				updateCourseXML();
+			});
+
 			//set objectivesGlobalToSystem based off value in xml
 			if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
 				$('#objectivesGlobalToSystem').prop('checked',true);
