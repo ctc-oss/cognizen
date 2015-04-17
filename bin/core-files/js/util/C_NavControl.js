@@ -179,7 +179,6 @@ function checkNav(){
 	
 	if(closeLesson == undefined || closeLesson == "undefined"){
 
-		alert("setting")
 		$(data).find("preferences").append($('<closelesson>'));
 		$(data).find("closelesson").attr("value", "false");
 
