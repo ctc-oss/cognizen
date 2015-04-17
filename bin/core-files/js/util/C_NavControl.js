@@ -48,6 +48,7 @@ var testOut		     = false;
 var testLink		 = null;
 var hasSurvey	     = false;
 var surveyLink       = null;
+var closeLesson 	 = false;
 var forceUpdateOnSave = false;
 var pathingTrack_arr = [];
 
@@ -174,10 +175,22 @@ function checkNav(){
 	
 	
 	
-	//Test out button.
-
+	closeLesson = $(data).find('closelesson').attr('value');
 	
-	//End Test Out
+	if(closeLesson == undefined || closeLesson == "undefined"){
+
+		alert("setting")
+		$(data).find("preferences").append($('<closelesson>'));
+		$(data).find("closelesson").attr("value", "false");
+
+		closeLesson = false;
+	}else{
+		if(closeLesson == "false"){
+			closeLesson = false;
+		}else{
+			closeLesson = true;
+		}
+	}
 	
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
@@ -220,6 +233,7 @@ function checkNav(){
 	checkHelp();
 	checkSurvey();
 	checkTestOut();
+	checkCloseLesson();
 
 	//Check if we are using print button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
@@ -693,7 +707,10 @@ function launchPrefs(){
 	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/>";
 	//msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
 	//msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
-    msg += "<select id='testOutSelect'></select>";
+    msg += "<select id='testOutSelect'></select></br>";
+    
+    msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
+	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
     
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
@@ -809,6 +826,22 @@ function launchPrefs(){
 			$("#inputSurveyLink").hide();
 			$("#inputSurveyLinkLabel").hide();
 			hasSurvey = false;
+		}
+	});
+	
+	if(closeLesson == true){
+		$("#hasCloseLesson").attr('checked', true);
+	}else{
+		$("#hasCloseLesson").attr('checked', false);
+	}
+	
+	$("#hasCloseLesson").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("closelesson").attr("value", "true");
+			closeLesson = true;
+		}else{
+			$(data).find("closelesson").attr("value", "false");
+			closeLesson = false;
 		}
 	});
 	
@@ -1052,11 +1085,19 @@ function savePreferences(_pub){
 	
 	var testoutSelected = $("#hasTestOut").is(':checked');
 	
-	if(testOut){
+	if(testOut != undefined){
 		$(data).find('testout').attr('value', testoutSelected);
 		testOut = testoutSelected;
 		testLink = $("#testOutSelect option:selected").val();
 		$(data).find('testout').attr('link', $("#testOutSelect option:selected").val());
+		updateNeeded = true;
+	}
+	
+	var closeLessonSelected = $("#hasCloseLesson").is(':checked');
+	console.log(closeLessonSelected);
+	if(closeLesson){
+		console.log("hit this");
+		$(data).find('closelesson').attr('value', closeLessonSelected);
 		updateNeeded = true;
 	}
 	
@@ -1135,6 +1176,12 @@ function updatePrefs(_pub){
 			}else{
 				testOut = false;
 			}
+			
+			if($(data).find('closelesson').attr('value') == "true"){
+				closeLesson = true;				
+			}else{
+				closeLesson = false;
+			}
 
 			if(_pub == true){
 				clickPublish();
@@ -1144,6 +1191,7 @@ function updatePrefs(_pub){
 			checkHelp();
 			checkSurvey();
 			checkTestOut();
+			checkCloseLesson();
 		},
 		error: function(){
 	   		alert("unable to load content.xml in updatePrefs")
@@ -1222,6 +1270,19 @@ function checkTestOut(){
 		testOut = false;
 	}
 }	//End survey
+
+
+
+function checkCloseLesson(){
+	try{ $("#closeLesson").remove();} catch(e){}
+	if(closeLesson){
+		$("#myCanvas").append("<button id='closeLesson' title='Click here close your lesson.'>CLOSE LESSON</button>");
+		
+		$("#closeLesson").button().click(function(){
+			window.close();
+		});
+	}
+}
 
 function checkHelp(){
 	if($(data).find('help').attr('course') === 'true'){	
