@@ -110,6 +110,17 @@ function createNewPageByType(_myType){
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
 			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
 			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+
+			$(data).find("page").eq(newPage).append($("<passedresponse>"));
+			var myPassedResponse = new DOMParser().parseFromString('<passedresponse></passedresponse>',  "text/xml");
+			var myPassedResponseCDATA = myPassedResponse.createCDATASection("You received a passing score for this lesson.");
+			$(data).find("page").eq(newPage).find("passedresponse").append(myPassedResponseCDATA);
+
+			$(data).find("page").eq(newPage).append($("<failedresponse>"));
+			var myFailedResponse = new DOMParser().parseFromString('<failedresponse></failedresponse>',  "text/xml");
+			var myFailedResponseCDATA = myFailedResponse.createCDATASection("You did not receive a passing score for this lesson.");
+			$(data).find("page").eq(newPage).find("failedresponse").append(myFailedResponseCDATA);			
+
 			$(data).find("page").eq(newPage).attr("graded", "true");
 			$(data).find("page").eq(newPage).attr("mandatory", "true");
 			$(data).find("page").eq(newPage).attr("type", "completion");

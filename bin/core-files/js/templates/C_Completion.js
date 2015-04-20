@@ -109,20 +109,22 @@ function C_Completion(_type) {
 			}
 
 			if(score_obj.passed){
-				if(lms === 'CTCU'){
-					scoreText = 'Congratulations! You earned a passing score for this lesson. <br/>'+
-					'<b>Please read and sign Form 638, Classified Automated Information Systems User Acknowledgement</b>, <br/>'+
-					'and submit it to your local Information Systems Security Manager (ISSM). Form 638 must be submitted annually to maintain compliance. <br/>'+
-					'To access Form 638, click this link or copy the link into your web browser: <br/>'+
-					'<a href="http://qpulse1/QPulseDocumentService/Documents.svc/documents/active/attachment?number=638" target="_blank">http://qpulse1/QPulseDocumentService/Documents.svc/documents/active/attachment?number=638</a><br/>'+ 
-					'Form 638 can also be found in the Forms section of the iWeb.<br/>'+
-					'<p class="completionText">';
-				}
-				else{
+
+				if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){					
 					scoreText = '<p class="completionText">You received a passing score for this lesson. ';
 				}
-			}else{
-				scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
+				else{
+					scoreText = '<p class="completionText">' + $(data).find("page").eq(currentPage).find("passedresponse").eq(0).text();
+				}
+
+			}
+			else{
+				if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){	
+					scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
+				}
+				else{
+					scoreText = '<p class="completionText">' + $(data).find("page").eq(currentPage).find("failedresponse").eq(0).text();
+				}
 			}
 			scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
 			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
@@ -606,6 +608,10 @@ function C_Completion(_type) {
 		var msg = "<div id='questionEditDialog' title='Completion Edit Dialog'>";
 		msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
 		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<div id='inputPRLabel'><b>Passed Response Feedback: </b></div>";
+		msg += "<div id='inputPassedResponse' class='dialogInput' contenteditable='true'></div>";
+		msg += "<div id='inputFRLabel'><b>Failed Response Feedback: </b></div>";
+		msg += "<div id='inputFailedResponse' class='dialogInput' contenteditable='true'></div>";				
 		msg += "</div>";
 		$("#stage").append(msg);	
 		
@@ -614,6 +620,46 @@ function C_Completion(_type) {
 		}else{
 			$("#isRemediate").attr('checked', 'checked');
 		}
+
+		if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
+			$("#inputPassedResponse").append("You received a passing score for this lesson.");
+		}
+		else{
+			$("#inputPassedResponse").append($(data).find("page").eq(currentPage).find("passedresponse").eq(0).text());
+		}
+
+		if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
+			$("#inputFailedResponse").append("You did not receive a passing score for this lesson.");
+		}
+		else{
+			$("#inputFailedResponse").append($(data).find("page").eq(currentPage).find("failedresponse").eq(0).text());
+		}
+
+		CKEDITOR.inline( "inputPassedResponse", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit the passed feedback given.");
+		    	}
+		    }			
+		});
+
+		CKEDITOR.inline( "inputFailedResponse", {
+			toolbar: contentToolbar,
+			toolbarGroups :contentToolgroup,
+			enterMode : CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
+			extraPlugins: 'sourcedialog',
+		   	on: {
+		      instanceReady: function(event){
+		         $(event.editor.element.$).attr("title", "Click here to edit the failed feedback given.");
+		    	}
+		    }			
+		});	
 
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
@@ -627,7 +673,7 @@ function C_Completion(_type) {
 					text: "Done",
 					title: "Saves and closes the edit dialog.",
 					click: function(){
-				        makeRevealDataStore();;
+				        makeRevealDataStore();
 						saveEditDialog();
 						$("#questionEditDialog").dialog("close");
 						$("#questionEditDialog").remove();
@@ -652,9 +698,34 @@ function C_Completion(_type) {
 			$(data).find("page").eq(currentPage).attr("showremediate", "false");
 			showRemediate = false;
 		}
+
+		var passedResponseUpdate = CKEDITOR.instances["inputPassedResponse"].getData();
+		try{ CKEDITOR.instances["inputPassedResponse"].destroy() } catch (e) {}
+		var passedResponseDoc = new DOMParser().parseFromString('<passedresponse></passedresponse>', 'text/xml')
+		var passedResponseCDATA = passedResponseDoc.createCDATASection(passedResponseUpdate);
+		if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
+			$(data).find("page").eq(currentPage).append($("<passedresponse>"));
+		}
+		else{
+			$(data).find("page").eq(currentPage).find('passedresponse').empty();
+		}		
+		$(data).find("page").eq(currentPage).find('passedresponse').append(passedResponseCDATA);	
+
+		var failedResponseUpdate = CKEDITOR.instances["inputFailedResponse"].getData();
+		try{ CKEDITOR.instances["inputFailedResponse"].destroy() } catch (e) {}
+		var failedResponseDoc = new DOMParser().parseFromString('<failedresponse></failedresponse>', 'text/xml')
+		var failedResponseCDATA = failedResponseDoc.createCDATASection(failedResponseUpdate);
+		if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
+			$(data).find("page").eq(currentPage).append($("<failedresponse>"));
+		}
+		else{
+			$(data).find("page").eq(currentPage).find('failedresponse').empty();
+		}		
+		$(data).find("page").eq(currentPage).find('failedresponse').append(failedResponseCDATA);				
+
 	}
 
-	function saveEditDialog(_data){
+	function saveEditDialog(){
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}	
