@@ -80,6 +80,7 @@ function C_StaticContent(_type) {
 			}else{
 			   $("#content").append(myContent);
 			}
+			doMe();
 		   //$("#content").attr("role", "main");
 		   //$("#content").attr("aria-label", $("#content").text());
 		   //pageAccess_arr.push($("#content"));
@@ -175,7 +176,7 @@ function C_StaticContent(_type) {
 					},
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
-					extraPlugins: 'sourcedialog',
+					extraPlugins: 'sourcedialog, chart',
 					allowedContent: true
 				});
 			}
@@ -204,7 +205,7 @@ function C_StaticContent(_type) {
 					},
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
-					extraPlugins: 'sourcedialog',
+					extraPlugins: 'sourcedialog,chart',
 					allowedContent: true
 				});
 			}

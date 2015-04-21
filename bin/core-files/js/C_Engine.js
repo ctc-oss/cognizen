@@ -216,6 +216,8 @@ function initScripts(_data){
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
+					corePath +"js/libs/widget2chart.js",
+					corePath +"js/libs/chart.min.js",
 			//Import Cognizen layout templates
 					corePath +"js/templates/C_Branching.js",
 					corePath +"js/templates/C_Categories.js",
