@@ -64,10 +64,24 @@ var currentSelectedMediaPreview;
 * @type {Boolean}
 */
 var removeClicked = false;
-
+/**
+* Variable representing scroll bar for lists.
+*/
 var listScroller;
-
+/**
+* Variable to hold folder track. Options are "media", "core", "course" and "lesson".
+* 
+* @type {String}
+*/
 var folderTrack = "media";
+/**
+* Variable to hold folder track path.
+* 
+* @type {String}
+*/
+var folderTrackPath = "./";
+
+var currentSelectedTrack;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -111,6 +125,38 @@ function toggleMediaBrowser(){
 	}
 }
 
+
+/**
+* Method to open and close different folders in the structure.
+*
+* @method updateFolderTrack
+* @param _track {String} variable stating which folder has been opened.
+*/
+function updateFolderTrack(_track){
+	currentSelectedTrack.removeClass("mediaBrowserSelectedTrack");
+	folderTrack = _track.attr("data");
+	currentSelectedTrack = _track;
+	currentSelectedTrack.addClass("mediaBrowserSelectedTrack");
+	if(folderTrack == "core"){
+		folderTrackPath = "../..";
+		mediaBrowserDisplayPath = "core-prog/"
+	}else if(folderTrack == "course"){
+		folderTrackPath = "../";
+		mediaBrowserDisplayPath = "css/CourseCSS/"
+	}else if(folderTrack == "lesson"){
+		folderTrackPath = "./";
+		mediaBrowserDisplayPath = "css/"
+	}else{
+		folderTrackPath = "./";
+		mediaBrowserDisplayPath = "media/"
+	}
+	
+	dirDepth = 0;
+	relPath = "";
+	
+	getMediaDir();
+}
+
 /**
 * After the media browser has animated open - add the file display.  Fired at end of toggleMediaBrowser tween
 *
@@ -120,10 +166,10 @@ function addDisplay(){
 	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser<input id='file' type='file' /></div>";
 		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>";
 		msg += "<div id='mediaBrowserDirectorySelectPalette' class='mediaBrowserDirectorySelectPalette'>";
-		msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton' data='./media/'>media</div>";
-		msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='../../core-prog/'>core-prog</div>";
-		msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='../css/'>course css</div>";
-		msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='./css/'>lesson css</div>";
+		msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton mediaBrowserSelectedTrack' data='media'>media</div>";
+		msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='core'>core-prog</div>";
+		msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='course'>course css</div>";
+		msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='lesson'>lesson css</div>";
 		msg += "</div>";
 		msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
 		msg += " <div class='box-wrap antiscroll-wrap'><div class='list-box'><div class='antiscroll-inner'><div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div></div></div></div>";
@@ -131,25 +177,24 @@ function addDisplay(){
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
 	
+	
 	$("#mediaButton").click(function(){
-		folderTrack = "media"
-		getMediaDir();
+		updateFolderTrack($(this));
 	});
 	
 	$("#coreprogButton").click(function(){
-		folderTrack = "core";
-		getMediaDir();
+		updateFolderTrack($(this));
 	});
 	
 	$("#coursecssButton").click(function(){
-		folderTrack = "course"
-		getMediaDir();
+		updateFolderTrack($(this));
 	});
 	
 	$("#lessoncssButton").click(function(){
-		folderTrack = "lesson"
-		getMediaDir();
+		updateFolderTrack($(this));
 	});
+	
+	currentSelectedTrack = $("#mediaButton");
 	
 	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
 	
@@ -172,7 +217,7 @@ function addDisplay(){
 		
     	var file = e.target.files[0];
 		var stream = ss.createStream();
-		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath});
+		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
 		var blobStream = ss.createBlobReadStream(file);
 		var size = 0;
 		blobStream.on('data', function(chunk) {
@@ -193,8 +238,10 @@ function addDisplay(){
 */
 function getMediaDir(_dir){
 	$("#mediaBrowserList").empty();
+	console.log("_dir = " + _dir);
 	if(_dir){
 		//Get media directory sub folder.
+		
 		socket.emit('getMediaDir',  {loc: folderTrack, path: _dir});
 	}else{
 		//Just get media folder
@@ -212,10 +259,11 @@ function updateMediaBrowserDir(_data){
 	$("#mediaBrowserList").removeClass('C_Loader');
 	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
-	
-	//Add up a directory button if needed.
-	if(res[res.length-2] != "media"){
+	console.log(res);
+	//Add "up a directory" (../media) button if needed.
+	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS" && res[res.length-2] != "ModuleCSS"){
 		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
+		
 		$("#mediaBrowserUpDirectory").click(function(){
 		   $("#mediaBrowserList").empty();
 		   //update the path display string
@@ -293,11 +341,21 @@ function updateMediaBrowserDir(_data){
 	listScroller.refresh();
 }
 
+/**
+* Function to disable currently selected media item preview.
+* 
+* @type {Event}
+*/
 function callfunction(event){
 	currentSelectedMediaPreview.off(event);
 	//alert("trans end");
 }
 
+/**
+* Variable to hold if removeMedia button was clicked.
+* 
+* @param _file {String} - file name
+*/
 function downloadMedia(_file){
 	cognizenSocket.emit('mediaBrowserDownloadMedia', {file: _file, type: urlParams['type'], id: urlParams['id']});
 }
@@ -330,17 +388,27 @@ function checkRemoveMedia(_file){
 	});
 }
 
+/**
+* Function to remove selected media.
+* 
+* @method removeMedia
+* @param _file {Boolean} path to file to remove
+*/
 function removeMedia(_file){
 	cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
 	$("#mediaBrowserList").addClass('C_Loader');
 	$("#mediaBrowserList").empty();
 	$("#mediaBrowserPreviewMediaHolder").empty();
 
-	cognizenSocket.emit('mediaBrowserRemoveMedia', {file: _file, type: urlParams['type'], id: urlParams['id']});
+	cognizenSocket.emit('mediaBrowserRemoveMedia', {file: _file, type: urlParams['type'], id: urlParams['id'], track: folderTrack});
 }
 
+/**
+* Function to to update once removal of media is complete.
+* 
+* @method mediaBrowserRemoveMediaComplete
+*/
 function mediaBrowserRemoveMediaComplete(){
-	alert("removed media");
 	$("#mediaBrowserList").removeClass('C_Loader');
 	try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
 	//Commit GIT when complete.
@@ -361,7 +429,7 @@ function mediaBrowserRemoveMediaComplete(){
 function mediaBrowserPreviewFile(_file){
 	$("#mediaBrowserPreview").addClass("C_Loader");
 	var imageTypes = ["png", "jpg", "gif"];
-	var fp = mediaBrowserDisplayPath + _file;
+	var fp = folderTrackPath + "/" + mediaBrowserDisplayPath + _file;
 	$("#mediaBrowserPreviewMediaHolder").empty();
 	$("#mediaBrowserPreviewMediaHolder").css({'opacity':0});
 	var myType = getFileType(_file);
@@ -547,6 +615,12 @@ function mediaBrowserUploadComplete(data){
     getMediaDir(relPath);
 }
 
+/**
+* Called when mediaInfo object is recieved upon loading media item
+*
+* @method mediaInfo
+* @param data {object} data regarding selected file.
+*/
 function mediaInfo(data){
 	if(data.video != ""){
 		var splitDim = data.video_details[2].split("x");
@@ -567,4 +641,5 @@ function removeMediaBrowserDisplay(){
 	$("#mediaBrowserDisplay").remove();
 	relPath = "";
 	mediaBrowserDisplayPath = "media/";
+	folderTrack = "media";
 }

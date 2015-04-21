@@ -1579,6 +1579,12 @@ MEDIA LAYOUTS
 	font-family 		  	: Arial;
 	font-size 			  	: 8pt;
 	text-align				: center;
+	height					: 100%;
+}
+
+.mediaBrowserSelectedTrack{
+	background-color: red;
+	color: white;
 }
 
 .mediaBrowserDisplayPath{

@@ -22,8 +22,10 @@ var ContentSocket = {
         var xmlCourseFile = contentPath + '/../course.xml';
         var mediaPath = contentPath + '/media/';
         var corePath = contentPath + '/../../core-prog/';
-        var coursePath = contentPath + '../css/';
-        var lessonPath = contentPath + '/css/';
+        var coursePath = contentPath + '/../css/CourseCSS/';
+        var lessonPath = contentPath + '/./css/';
+        console.log("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+__+_+");
+        console.log("contentPath = " + contentPath);
 		var thisPort = port;
         var	app = http.createServer(function (req, res) {
         	res.writeHead(404);
@@ -93,15 +95,17 @@ var ContentSocket = {
 			//Set listener to get list of files in media folder
 			socket.on('getMediaDir', function (data) {
 				var p;
+				
 				if(data.loc == "core"){
-					p = mediaPath + data.path;
+					p = corePath + data.path;
 				}else if(data.loc == "course"){
-					p = corePath + data.path;
+					p = coursePath + data.path;
 				}else if(data.loc == "lesson"){
-					p = corePath + data.path;
+					p = lessonPath + data.path;
 				}else{
 					p = mediaPath + data.path;
 				}
+				
 				fs.readdir(p, function(err, files){
     				
     				if (!files.length) {
