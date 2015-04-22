@@ -176,7 +176,7 @@ function C_StaticContent(_type) {
 					},
 					toolbar: contentToolbar,
 					toolbarGroups :contentToolgroup,
-					extraPlugins: 'sourcedialog, chart',
+					extraPlugins: 'sourcedialog,chart',
 					allowedContent: true
 				});
 			}
