@@ -105,6 +105,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
+            $("#preloadholder").remove();
             socket.emit('getProjects', user);
         });
 
@@ -496,6 +497,8 @@ function C_Dashboard(_type) {
     }
 
     function getUserList(_id) {
+	    $("#stage").append('<div id="preloadholder"></div>');
+        $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
         socket.emit('getPermissions', {content: {id: _id}});
     }
 
@@ -503,7 +506,7 @@ function C_Dashboard(_type) {
      ASSIGN USER TO CONTENT
      ************************************************************************************/
     function assignUser(data) {
-
+		$("#preloadholder").remove();
     	var userData = data;
     	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
     	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
@@ -563,7 +566,8 @@ function C_Dashboard(_type) {
                         },
                         users: user_arr
                     });
-
+					$("#stage").append('<div id="preloadholder"></div>');
+					$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     $(this).dialog("close");
                     $("#dialog-assignUser").remove();
                 }
