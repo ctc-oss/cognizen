@@ -702,6 +702,8 @@ function C_Outline(_myItem) {
 			msg += "<div><b>Details:</b></div>";
 			msg += "<label for='out_courseTitle'>course title: </label>";
 			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+			msg += "<label for='out_courseDisplayTitle'>alt course title: </label>";
+			msg += '<input type="text" name="out_courseDisplayTitle" id="out_courseDisplayTitle" title="Input course title as you would like it to appear." class="text ui-widget-content ui-corner-all" /> <br/>';			
 			msg += "<label for='targetAudience'>target audience: </label>";
 			msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
 			msg += "<label for='instructionalGoal'>instructional goal: </label>";
@@ -736,6 +738,25 @@ function C_Outline(_myItem) {
 
 			$("#outlinePagePrefPane").append(msg);
 			$("#out_courseTitle").alphanum();
+
+
+			//handle seeting of coursedisplaytitle if not set and setting the value based off of the xml
+			if(!$(courseData).find('course').attr('coursedisplaytitle')){
+				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				updateCourseXML();
+
+			}
+			else{
+				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("coursedisplaytitle"));
+			}
+
+			//on change of the section508 toggle update the course xml 
+			$('#out_courseDisplayTitle').on('change', function(){
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				updateCourseXML();
+			}).css({'width': '500px', 'color': '#3383bb;'});
+
 
 			//handle seeting of section 508 if not set and setting the value based off of the xml
 			if(!$(courseData).find('course').attr('section508')){
@@ -921,19 +942,43 @@ function C_Outline(_myItem) {
 	function setLmsAccord(){
 		if($("#lms").val() == "JKO"){
 			//append to accordon for course...
-			var jkoData = addToggle("survey", "Adds the JKO survey to the end of the course.");
+			var jkoData = "<div id='certTitleHolder'><br/><label id='certTitleLabel' for='out_certificateCourseTitle'>certificate course title: </label>";
+			jkoData += '<input type="text" name="out_certificateCourseTitle" id="out_certificateCourseTitle" title="Update the course title to be used on the certificate." class="text ui-widget-content ui-corner-all" /></div> <br/>';
+			jkoData += addToggle("survey", "Adds the JKO survey to the end of the course.");
 			jkoData += addToggle("certificate", "Adds the JKO certificate to the end of the course.");
+
 			$("#lmsAccord").append(jkoData);
 			setToggle("survey", -1);
 			setToggle("certificate", -1);
 			toggleChange("survey", -1);
 			toggleChange("certificate", -1);
+
+			$(courseData).find('course').first().attr("name")
+
+			//set cert title based off value in xml
+			if($(courseData).find("course").attr("certificatetitle")){
+				$("#out_certificateCourseTitle").val($(courseData).find("course").attr("certificatetitle"));
+			}
+			else{
+				var displaytitle = $(courseData).find('course').first().attr("coursedisplaytitle");
+				$("#out_certificateCourseTitle").val(displaytitle);
+			    $(courseData).find("course").attr("certificatetitle", displaytitle);
+			    updateCourseXML();				
+			}
+
+			// update the xml when the cert title is changed
+		    $("#out_certificateCourseTitle").on("change", function(){
+			    $(courseData).find("course").attr("certificatetitle", $("#out_certificateCourseTitle").val().replace('<p>', '').replace('</p>', '').trim());
+			    updateCourseXML();
+		    }).css({'width': '500px', 'color': '#3383bb;'});
+
 			$( document ).tooltip();
 			$("#accordion").accordion("refresh");
 		}
 		else if($("#lms").val() == "none"){
 			$(courseData).find("course").attr("survey", "false");
 			$(courseData).find("course").attr("certificate", "false");
+			$("#certTitleHolder").remove();
 			$("#surveyText").parent().remove();
 			$("#certificateText").parent().remove();
 		}
@@ -959,6 +1004,8 @@ function C_Outline(_myItem) {
      	msg += "<div><b>Details:</b></div>";
      	msg += "<label for='lessonTitle'>lesson title: </label>";
         msg += '<input type="text" name="lessonTitle" id="lessonTitle" title="Update the lesson title." value="'+ $(module_arr[_id].xml).find('lessonTitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
+     	msg += "<br/><label for='lessonDisplayTitle'>alt lesson title: </label>";
+        msg += '<input type="text" name="lessonDisplayTitle" id="lessonDisplayTitle" title="Input lesson title as you would like it to appear." value="'+ $(module_arr[_id].xml).find('lessondisplaytitle').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';        
      	msg += "<br/><label for='tlo'>terminal objective: </label>";
         msg += '<input type="text" name="tlo" id="tlo" title="Update the course terminal objective." value="'+ $(module_arr[_id].xml).find('tlo').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<div>"
@@ -1161,6 +1208,11 @@ function C_Outline(_myItem) {
 	        socket.emit('renameContent', data);
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 	    //END MODULE TITLE CHANGE
+
+	    $('#lessonDisplayTitle').on('change', function(){
+			$(module_arr[_id].xml).find('lessondisplaytitle').attr("value", $("#lessonDisplayTitle").val().trim());
+			updateModuleXML(_id, false);
+	    }).css({'width': '500px', 'color': '#3383bb;'});
 
 	    //module tlo change
 	    $("#tlo").on("change", function(){

@@ -173,18 +173,14 @@ function checkNav(){
 	}
 	
 	
-	
-	
-	closeLesson = $(data).find('closelesson').attr('value');
-	
-	if(closeLesson == undefined || closeLesson == "undefined"){
+	if(!$(data).find('closelesson').attr('value')){
 
-		$(data).find("preferences").append($('<closelesson>'));
+		$(data).find("preferences").append($('<closelesson>', data));
 		$(data).find("closelesson").attr("value", "false");
 
 		closeLesson = false;
 	}else{
-		if(closeLesson == "false"){
+		if($(data).find('closelesson').attr('value') == "false"){
 			closeLesson = false;
 		}else{
 			closeLesson = true;
@@ -193,11 +189,11 @@ function checkNav(){
 	
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
-	helpButton = $(data).find('help').attr('value');
+	//helpButton = $(data).find('help').attr('value');
 	
-	if(helpButton == undefined || helpButton == "undefined"){
+	if(!$(data).find('help').attr('value')){
 		if(mode === "edit"){
-			$(data).find("preferences").append($('<help>'));
+			$(data).find("preferences").append($('<help>', data));
 			$(data).find("help").attr("value", "false");
 			$(data).find("help").attr("course", "false");
 			$(data).find("help").attr("url", "");
@@ -1046,10 +1042,12 @@ function savePreferences(_pub){
 	
 	
 	courseTitle = $("#altCourseTitle").val();
-	if(courseTitle != $(data).find("coursedisplaytitle").attr("value")){
+	if(courseTitle != $(courseData).find('course').attr('coursedisplaytitle')){
 		updateNeeded = true;
 	}
-	$(data).find("coursedisplaytitle").attr("value", courseTitle);
+	//$(data).find("coursedisplaytitle").attr("value", courseTitle);
+	$(courseData).find('course').attr('coursedisplaytitle', courseTitle);
+	sendCourseUpdate();
 	$("#courseTitle").text(courseTitle);
 	
 	lessonTitle = $("#altLessonTitle").val();

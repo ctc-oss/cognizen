@@ -3,6 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<title>Certificate</title>
+		<script src="../js/libs/jquery.min.js" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -30,14 +31,31 @@
 					return myDay;
 			}
 			
+			function loadCourseXML(){
+				var loc = window.location.pathname;
+				var dir = loc.substring(0, loc.lastIndexOf('/'));
+				var courseXMLPath = unescape(dir + '/../course.xml');
+				$.ajax({
+					type: "GET",
+					url: courseXMLPath,
+					dataType: "xml",
+					async: false,
+					success: onloadFunctions,
+					error: function(){
+						alert("unable to load course.xml")
+					}
+				});
+			}
 
-
-			function onloadFunctions(){
+			function onloadFunctions(_data){
+				var courseData = _data;
 			
 				var fullName = prompt("Please enter your full name:","First Last");
 				
 			//Jenni	document.getElementById('courseKeydiv').innerHTML = window.opener.courseKey;
 				document.getElementById('usersFullName').innerHTML = fullName;
+
+				document.getElementById('courseName').innerHTML = $(courseData).find('course').attr('certificatetitle');
 				
 				var d=new Date();
 				document.getElementById('date').innerHTML = getString(d.getMonth()+1) + "/" + getString(d.getDate()) + "/" + d.getFullYear();
@@ -74,17 +92,28 @@
 	font-size:30px;
 	position:absolute;
 	text-align:center;
-	top:465px;
+	top:485px;
 	width:1000px;
 	left: -15px;
 			}
+			#courseName{
+	font-size:30px;
+	font-weight: bold;
+	position:absolute;
+	text-align:center;
+	top:420px;
+	width:880px;
+	left: 35px;				
+			}
 		</style>
 	</head>
-	<body onload="onloadFunctions();">
-		<img src="media/certificate.jpg" alt="Certificate Background" />
+	<body onload="loadCourseXML();">
+		<img src="media/certificate.png" alt="Certificate Background" />
 <br>
 		<div id='usersFullName'></div>
 <br>
+		<div id='courseName'></div>
+		<br>
 		<div id="date"></div>
 </body>
 </html>
