@@ -1762,8 +1762,10 @@ div.chartjs div.chartjs-legend li {
 
 div.chartjs{
 	width: 500px;
-	margin-left: auto;
-	margin-right: auto;
+	position: relative;
+	float: right;
+	/*margin-left: auto;
+	margin-right: auto;*/
 }
 /*End of charts*/
 
