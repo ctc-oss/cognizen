@@ -456,7 +456,6 @@ function C_Dashboard(_type) {
     }
 
     function scrollRefresh(){
-        console.log("refreshing");
 		scroller.refresh();
         window.clearInterval(scrollTimer);
     }
