@@ -185,7 +185,7 @@ function C_Pathing(_type) {
 				var myOption = "option"+i;
 
 				var pathBtnComplete = checkPathComplete(pageId, homePage_arr[i].pathid.toString());
-				var widthAdjust = 5;
+				var widthAdjust = 35;
 
 				//check object for when running in SCORM
 				var scormObjSuccess = getObjectiveSuccess(pageId + "_" + homePage_arr[i].pathid.toString()) 
@@ -196,7 +196,7 @@ function C_Pathing(_type) {
 				}
 
 				if(pathBtnComplete){
-					widthAdjust = 20;
+					widthAdjust = 50;
 					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch btn_branchComplete' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				}
 				else{
