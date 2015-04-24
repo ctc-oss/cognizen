@@ -1091,9 +1091,8 @@ function savePreferences(_pub){
 	}
 	
 	var closeLessonSelected = $("#hasCloseLesson").is(':checked');
-	console.log(closeLessonSelected);
+	//console.log(closeLessonSelected);
 	if(closeLesson){
-		console.log("hit this");
 		$(data).find('closelesson').attr('value', closeLessonSelected);
 		updateNeeded = true;
 	}
@@ -1276,6 +1275,17 @@ function checkCloseLesson(){
 		$("#myCanvas").append("<button id='closeLesson' title='Click here close your lesson.'>CLOSE LESSON</button>");
 		
 		$("#closeLesson").button().click(function(){
+			//#3550 updated to call scorm call.
+			if(doScorm()){
+				if(currentTemplateType == "completion"){
+					var _score_obj = getFinalScore();
+					completeLesson(true, _score_obj.passed, _score_obj.score, false, false);
+				}
+				else{
+					scorm.API.getHandle().Terminate("");
+				}
+				
+			}
 			window.close();
 		});
 	}
