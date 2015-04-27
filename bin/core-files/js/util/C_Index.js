@@ -452,7 +452,7 @@ function removePage(myNode){
 		modal: true,
 		width: 550,
 		close: function(event, ui){
-			$("dialog-removePage").remove();
+			$("#dialog-removePage").remove();
 		},
 		buttons: {
 			Yes: function(){
