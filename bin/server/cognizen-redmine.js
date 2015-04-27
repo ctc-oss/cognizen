@@ -64,19 +64,22 @@ var REDMINE = {
         //         console.log("Error: " + err.message);
         //     }
         // );  
-        //    this.promisedAPI.getIssues({project_id: 20})
-        //     .then(function(data){
-        //         console.log("Issues:");
-        //         console.log(data);
-        //         console.log(data.issues[0].project);
-        //         console.log(data.issues[0].status);
-        //         console.log(data.issues[0].custom_fields);
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //         return;
-        //     }
-        // ); 
+//+'?include=journals'
+//'GET', '/' + path + '.json', params
+           //this.promisedAPI.getIssues({project_id: 2, include: "journals"})
+           this.promisedAPI.request('GET', '/issues/2.json', {include: 'journals'})
+            .then(function(data){
+                console.log("Issues:");
+                console.log(data);
+                // console.log(data.issues[0].project);
+                // console.log(data.issues[0].status);
+                // console.log(data.issues[0].custom_fields);
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                return;
+            }
+        ); 
         // this.promisedAPI.get('issue_statuses')
         //     .then(function(data){
         //         console.log("custom fields:");

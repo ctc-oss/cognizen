@@ -564,6 +564,7 @@ var SocketHandler = {
 							//set the name and id in the course.xml
 					        etree.find('./').set('name', courseName);
 					        etree.find('./').set('id', courseID);
+                            etree.find('./').set("redmine", "true");
 					        var xml = etree.write({'xml_decleration': false});
 					        fs.outputFile(newCourseXML, xml, function (err) {
 					        	if (err) callback(err, null);
@@ -638,7 +639,7 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
-                            item.set("redmine", "true");
+                            
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");

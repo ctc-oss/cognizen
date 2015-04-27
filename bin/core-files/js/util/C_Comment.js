@@ -183,6 +183,8 @@ function updatePageIssues(){
 			issuesMsg += "<input type='text' id='commentSubject' name='commentSubject' type='text' title='Edit comment subject here.'' value='"+_issues.issues[currentIssueBankMember].subject+"'/><br/>";
 			issuesMsg += "<div id='label'>Comment Description: </div>";
 			issuesMsg += '<div name="commentText" id="commentText" title="Edit comment description here." class="dialogInput" contenteditable="true"></div><br/>';
+			issuesMsg += "<div id='label'>Add Note: </div>";
+			issuesMsg += '<div name="commentNote" id="commentNote" title="Add note to comment here." class="dialogInput" contenteditable="true"></div><br/>';			
 	     	issuesMsg += "<label for='commentStatus'>Status: </label>";
 	     	issuesMsg += "<select name='commentStatus' id='commentStatus' title='Edit the status of the issue.'>";
 	     	issuesMsg += "<option>New</option>";
@@ -223,6 +225,7 @@ function updatePageIssues(){
 			$("#updateIssueBtn").button().click(function(){
 				_issues.issues[currentIssueBankMember].subject = $('#commentSubject').val();
 				_issues.issues[currentIssueBankMember].description = CKEDITOR.instances['commentText'].getData();
+				_issues.issues[currentIssueBankMember].notes = CKEDITOR.instances['commentNote'].getData();
 				var currentStatus = $('#commentStatus option:selected').text();
 				//var statusId = findStatusId(currentStatus);
 				_issues.issues[currentIssueBankMember].status_id = findStatusId(currentStatus);
@@ -246,7 +249,18 @@ function updatePageIssues(){
 				toolbarGroups : pageTitleToolgroup,
 				enterMode : CKEDITOR.ENTER_BR,
 				shiftEnterMode: CKEDITOR.ENTER_P
-			});								
+			});	
+
+			//Add and style contentEdit button
+	        $("#commentNote").attr('contenteditable', true);
+	        CKEDITOR.disableAutoInline = true;
+			CKEDITOR.inline( 'commentNote', {
+				toolbar: pageTitleToolbar,
+				toolbarGroups : pageTitleToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P
+			});	
+
 		}
 		else{
 			$('#pageComments').hide();
@@ -354,6 +368,32 @@ function refreshPageComments(){
 	}
 	
 	$('.antiscroll-wrap').antiscroll();
+}
+
+function closeAllPageIssues(_currentPage){
+	var _issues = {};
+	//get issues for the page
+	var _page = {
+		lessontitle: $(data).find('lessonTitle').attr('value'),
+		id: $(data).find("page").eq(_currentPage).attr("id")
+	};
+	cognizenSocket.emit('getRedmineIssues', _page, function(fdata){
+		_issues = fdata;
+		if(_issues.total_count != 0){
+			var issuesMsg = '';
+			for(var h = 0; h < _issues.issues.length; h++){
+				_issues.issues[h].description = 'This page was deleted in Cognizen so the issue was closed.';
+
+				_issues.issues[h].status_id = 5;
+
+				cognizenSocket.emit('updateRedmineIssue', _issues.issues[h], function(err){
+					if(err){
+						alert(err);
+					}
+				});
+			}
+		}
+	});	
 }
 
 function updateIndexCommentFlags(){

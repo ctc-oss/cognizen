@@ -457,6 +457,9 @@ function removePage(myNode){
 		buttons: {
 			Yes: function(){
 				if(totalPages > 1){
+					//close all redmine issues for this page
+					closeAllPageIssues(currentPage);
+
 					$(data).find("page").eq(myNode).remove();
 					if(currentPage == myNode){
 						if(currentPage == 0){
@@ -464,6 +467,7 @@ function removePage(myNode){
 						}else{
 							currentPage--;
 						}
+
 						//Load either previous or next page if you are removing the currentPage...
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
 						fadeComplete();
