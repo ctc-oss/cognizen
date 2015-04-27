@@ -607,7 +607,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			$("#imgEdit").click(function(){
 				var msg = "<div id='imgDialog' title='Input Media Path'>";
 				msg += "<label id='label' title='input file name - must include file extension.'>file name: </label>";
-				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/><br/>";
+				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+				msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 				msg += "<label id='label' title='Input a description of the media for visually impaired users.'>ALT text: </label>";
             	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
 				msg += "<br/>";
@@ -642,7 +643,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				}
 				$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
 				
-				
+				$("#dialogMediaBrowseButton").click(function(){
+					$(".ui-dialog").hide();
+					$(".ui-widget-overlay").hide();
+					dialogToggleMediaBrowser($("#imgPath"));					
+				});
 				
 				if(!hasTranscript){
 					$('#inputTranscriptLabel').hide();

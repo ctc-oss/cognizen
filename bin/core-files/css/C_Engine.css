@@ -1722,24 +1722,37 @@ MEDIA LAYOUTS
 	-webkit-transition: height 1s; /* Safari */
     transition: height 1s;
     height: 150px;
+    cursor: auto; 
 }
 
 .mediaRemove {
 	position: absolute;
-	top: 0px; 
-	right: 0px; 
-	width: 10px;
-	height: 10px; 
+	bottom: 0px; 
+	left: 0px; 
+	width: 100px;
+	height: 20px; 
 	background: url(images/mbRemove.png) no-repeat;
+	cursor: auto;
 }
 
 .mediaDownload {
 	position: absolute;
-	top: 0px; 
-	right: 11px;
-	width: 10px;
-	height: 10px; 
-	background: url(images/mbRemove.png) no-repeat;
+	bottom: 0px; 
+	left: 105px;
+	width: 86px;
+	height: 20px; 
+	background: url(images/mbDownload.png) no-repeat;
+	cursor: auto;
+}
+
+.mediaSelect {
+	position: absolute;
+	bottom: 0px; 
+	left: 195px; 
+	width: 95px;
+	height: 20px; 
+	background: url(images/mbSelect.png) no-repeat;
+	cursor: auto;
 }
 
 /*CHARTS*/

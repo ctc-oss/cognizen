@@ -80,7 +80,11 @@ var folderTrack = "media";
 * @type {String}
 */
 var folderTrackPath = "./";
-
+/**
+* Variable to hold folder track label.
+* 
+* @type {String}
+*/
 var currentSelectedTrack;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
@@ -91,13 +95,7 @@ function addMediaBrowser(){
 	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>");
 									
 	$("#mediaBrowserButton").click(function(){							
-		if(mediaBrowserState){
-			$(this).removeClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = false;
-		}else{
-			$(this).addClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = true;
-		}
+		
 		toggleMediaBrowser();
 	}).keypress(function(event) {
         var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -107,12 +105,30 @@ function addMediaBrowser(){
     });															
 }
 
+var fromDialog = false;
+var fileTarget = null;
+
+//function dialogToggleMediaBrowser(){
+this.dialogToggleMediaBrowser = function(_target){
+	fromDialog = true;
+	fileTarget = _target;
+	toggleMediaBrowser();
+}
+
 /**
 * Method to open and close the mediaBrowser depending upon it's current state.
 *
 * @method toggleMediaBrowser
 */
 function toggleMediaBrowser(){
+	if(mediaBrowserState){
+		$("#mediaBrowserButton").removeClass('C_MediaBrowserButtonActive');
+		mediaBrowserState = false;
+	}else{
+		$("#mediaBrowserButton").addClass('C_MediaBrowserButtonActive');
+		mediaBrowserState = true;
+	}
+	
 	if(mediaBrowserState){
 		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
 		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
@@ -122,6 +138,11 @@ function toggleMediaBrowser(){
 		//Tween transcript closed then remove text
 		$("#mediaBrowserDisplay").empty();
 		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeMediaBrowserDisplay});
+		if(fromDialog){
+			fromDialog = false;
+			$(".ui-dialog").show();
+			$(".ui-widget-overlay").show();
+		}
 	}
 }
 
@@ -238,7 +259,7 @@ function addDisplay(){
 */
 function getMediaDir(_dir){
 	$("#mediaBrowserList").empty();
-	console.log("_dir = " + _dir);
+	//console.log("_dir = " + _dir);
 	if(_dir){
 		//Get media directory sub folder.
 		
@@ -259,7 +280,7 @@ function updateMediaBrowserDir(_data){
 	$("#mediaBrowserList").removeClass('C_Loader');
 	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
-	console.log(res);
+	//console.log(res);
 	//Add "up a directory" (../media) button if needed.
 	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS" && res[res.length-2] != "ModuleCSS"){
 		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
@@ -309,46 +330,73 @@ function updateMediaBrowserDir(_data){
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a><div id='mediaRemove' class='mediaRemove' title='delete this item'></div></div>";
+	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
 	   
-	   $("#"+tempID).find(".mediaRemove").click(function(){
-			removeClicked = true;
-			var myItem = relPath + $(this).parent().attr('data');	
-			checkRemoveMedia(myItem);	   
-	   });
-	   
-	   $("#"+tempID).find(".mediaDownload").click(function(){
-			removeClicked = true;
-			var myItem = relPath + $(this).parent().attr('data');	
-			//downloadMedia(myItem);	   
-	   });
-	   
 	   $("#"+tempID).click(function(){
-			if(removeClicked){
-				removeClicked = false;
-			}else{
-		   		try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
-		   		currentSelectedMediaPreview = $(this);
-		   		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-		   		//var transitionEnd = transitionEndEventName();
-		   		//currentSelectedMediaPreview.addEventListener(transitionEnd, callfunction, false);
-		   		currentSelectedMediaPreview.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', callfunction);
-		   		mediaBrowserPreviewFile($(this).attr('data'));
-			}
+			loadMedia($(this));
 	   });
 	}
 	listScroller.refresh();
 }
 
 /**
-* Function to disable currently selected media item preview.
-* 
+* Function to animate button and call function to load selected button's media.
+* @method loadMedia
+* @type {Event}
+* @param _me the button that has been selected.
+*/
+function loadMedia(_me){
+	if(removeClicked){
+		removeClicked = false;
+	}else{
+		try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+		try { currentSelectedMediaPreview.on("click", function(){
+			loadMedia($(this));
+		}); } catch (e) {}
+		currentSelectedMediaPreview = _me;
+		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
+		currentSelectedMediaPreview.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', showItemStats);
+		mediaBrowserPreviewFile(_me.attr('data'));
+	}
+}
+
+/**
+* Function to disable currently selected media item button and display stats and options for that media item.
+* @method showItemStats
 * @type {Event}
 */
-function callfunction(event){
-	currentSelectedMediaPreview.off(event);
-	//alert("trans end");
+function showItemStats(event){
+	var obj = currentSelectedMediaPreview.attr("data");
+	//Disable button action for selected media
+	currentSelectedMediaPreview.off('click');
+	//Place media item options
+	var msg = "<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
+		msg += "<div id='mediaRemove' class='mediaRemove' title='delete this item'></div>";
+		msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
+	currentSelectedMediaPreview.append(msg);
+	
+	//Button Actions for interactives
+	$(".mediaRemove").click(function(){
+		var myItem = relPath + obj;	
+		checkRemoveMedia(myItem);	   
+	});
+	   
+	$(".mediaDownload").click(function(){
+		var myItem = relPath + obj;	
+		//downloadMedia(myItem);	   
+	});
+	
+	$(".mediaSelect").click(function(){
+		var myItem = relPath + obj;	
+		if(fileTarget != null){
+			console.log(fileTarget);
+			fileTarget.attr('value', myItem);
+		}
+		$(".ui-dialog").show();
+		$(".ui-widget-overlay").show();
+		toggleMediaBrowser();
+	});
 }
 
 /**
