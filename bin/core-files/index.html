@@ -16,27 +16,41 @@
 		<!--CSS for the media player. -->
 		<link href="../css/CoreCSS/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>
 		<!--cognizen base CSS - DO NOT CHANGE!!!! EDIT ProgramOverride.css, CourseOverride.css or ModuleOverride.css depending on level of change. -->
-		<link href="../css/CoreCSS/C_Engine.css" rel="stylesheet" type="text/css"/>
 		<link href="../css/CourseCSS/jqueryui/jquery-ui.min.css" rel="stylesheet"></link>
+		<link href="../css/CoreCSS/C_Engine.css" rel="stylesheet" type="text/css"/>
 		<!--CSS for the program layer - gets moved at publish time... -->
 		<script type="text/javascript">
-			var filename;
+			var programFilename;
+			var courseFileName;
+			var moduleFileName;
 			if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
 				//load mobile Override CSS files on mobile devices
-				filename = "../css/ProgramCSS/ProgramOverrideMobile.css";
-				filename = "../css/CourseCSS/CourseOverrideMobile.css";
-				filename = "../css/ModuleCSS/ModuleOverrideMobile.css";
+				programFilename = "../css/ProgramCSS/ProgramOverrideMobile.css";
+				courseFilename = "../css/CourseCSS/CourseOverrideMobile.css";
+				moduleFilename = "./css/ModuleCSS/ModuleOverrideMobile.css";
 			}else{
 				//load regular Override CSS files
-				filename = "../css/ProgramCSS/ProgramOverride.css";
-				filename = "../css/CourseCSS/CourseOverride.css";
-				filename = "../css/ModuleCSS/ModuleOverride.css";
+				programFilename = "../css/ProgramCSS/ProgramOverride.css";
+				courseFilename = "../css/CourseCSS/CourseOverride.css";
+				moduleFilename = "./css/ModuleCSS/ModuleOverride.css";
 			}
-			var fileref = document.createElement("link");
-			fileref.rel = "stylesheet";
-			fileref.type = "text/css";
-			fileref.href = filename;
-			document.getElementsByTagName("head")[0].appendChild(fileref);
+			var programFileref = document.createElement("link");
+			programFileref.rel = "stylesheet";
+			programFileref.type = "text/css";
+			programFileref.href = programFilename;
+			document.getElementsByTagName("head")[0].appendChild(programFileref);
+			
+			var courseFileref = document.createElement("link");
+			courseFileref.rel = "stylesheet";
+			courseFileref.type = "text/css";
+			courseFileref.href = courseFilename;
+			document.getElementsByTagName("head")[0].appendChild(courseFileref);
+			
+			var moduleFileref = document.createElement("link");
+			moduleFileref.rel = "stylesheet";
+			moduleFileref.type = "text/css";
+			moduleFileref.href = moduleFilename;
+			document.getElementsByTagName("head")[0].appendChild(moduleFileref);
 		</script>
 		<!--  LOAD SCRIPTS  -->
 		<!-- Detect IE10 and add class to html element -->
@@ -60,9 +74,9 @@
 				var courseOverridePath =  unescape(dir + '/../css/CourseCSS/CourseOverride.css');
 				var programOverridePath = unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css');
 				var editPaths = '<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
 					editPaths += '<link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/>';
 					editPaths += '<link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link>';
-					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
 					editPaths += '<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>';
 					editPaths += '<link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link>';
 					editPaths += '<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script>';

@@ -376,14 +376,18 @@ function buildInterface(){
 		if($(courseData).find('course').attr('coursedisplaytitle') == ""){
 			//$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
 			$(courseData).find('course').attr('coursedisplaytitle', $(data).find("courseTitle").attr("value"));
-			sendCourseUpdate();
+			if(mode == "edit"){
+				sendCourseUpdate();
+			}
 		}
 		courseTitle = $(courseData).find('course').attr('coursedisplaytitle');
 	}else{
 		//$(data).find("preferences").append($("<coursedisplaytitle>", data));
 		//$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
 		$(courseData).find('course').attr('coursedisplaytitle', $(data).find("courseTitle").attr("value"));
-		sendCourseUpdate();
+		if(mode== "edit"){
+			sendCourseUpdate();
+		}
 		courseTitle = $(courseData).find('course').attr('coursedisplaytitle');
 	}
 
