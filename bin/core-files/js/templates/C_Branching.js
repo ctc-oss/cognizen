@@ -424,7 +424,12 @@ function C_Branching(_type) {
 		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
+			if($("#posterFile").val() == "input poster path"){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", "null");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
+			}
+			
 			if($('input.isTranscript').is(':checked')){
 				var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
 				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
@@ -561,8 +566,8 @@ function C_Branching(_type) {
 		}
 		
 		var hasPoster = false;
-		var posterLink = null;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0){
+		var posterLink = "input poster path";
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "input poster path"){
 	    	hasPoster = true;
 	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
 	    }
@@ -593,9 +598,9 @@ function C_Branching(_type) {
 				var mediaHeight = 0;
 			}
 			
-			if(posterLink == null){
+			/*if(posterLink == null){
 				posterLink = "null";
-			}
+			}*/
 			
 			var hasTranscript = false;
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
