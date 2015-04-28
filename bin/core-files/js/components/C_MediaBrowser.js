@@ -388,14 +388,40 @@ function showItemStats(event){
 	});
 	
 	$(".mediaSelect").click(function(){
+		var myType = getFileType(obj).toLowerCase();
+		var permitted = true;
+		var failType = null;
+		
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
-			console.log(fileTarget);
-			fileTarget.attr('value', myItem);
+			//Check if file is permitted in this input.
+			if(fileTarget.attr("id") == "imgPath"){
+				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf"];
+			}else if(fileTarget.attr("id") == "revealImageText"){
+				var acceptedTypes = ["png", "jpg", "gif"];
+			}else if(fileTarget.attr("id") == "audioPath"){
+				var acceptedTypes = ["mp3"];
+			}
+			
+			if(acceptedTypes.indexOf(myType) > -1){
+				permitted = true;
+			}else{
+				permitted = false;
+			}
+			
+			if(permitted){
+				fileTarget.attr('value', myItem);
+				$(".ui-dialog").show();
+				$(".ui-widget-overlay").show();
+				toggleMediaBrowser();
+			}else{
+				alert("This media input does not support the " + myType + " file format. Please make another selection.");
+			}
+		}else{
+			$(".ui-dialog").show();
+			$(".ui-widget-overlay").show();
+			toggleMediaBrowser();
 		}
-		$(".ui-dialog").show();
-		$(".ui-widget-overlay").show();
-		toggleMediaBrowser();
 	});
 }
 
