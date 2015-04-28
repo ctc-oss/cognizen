@@ -1276,10 +1276,31 @@ function checkCloseLesson(){
 		
 		$("#closeLesson").button().click(function(){
 			//#3550 updated to call scorm call.
+			//#3568
+			var isScored = 'false';
+			//evaluate score
+			for(var k = 0; k < $(data).find("page").length; k++){
+				if($(data).find("page").eq(k).attr('graded') === "true" &&
+					$(data).find("page").eq(k).attr('type') === "kc"){
+					isScored = "true";
+					break;
+				}
+			}
 			if(doScorm()){
 				if(currentTemplateType == "completion"){
-					var _score_obj = getFinalScore();
-					completeLesson(true, _score_obj.passed, _score_obj.score, false, false);
+					if(isScored === "true"){
+						var _score_obj = getFinalScore();
+						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU') {
+							completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
+						}
+						else{
+							completeLesson(true, _score_obj.passed, _score_obj.score, false, false);
+						}
+					}
+					else{
+						//#3568 - don't set success_status for non scored lessons
+						completeLesson(true, 'undefined', 0, false, false);
+					}
 				}
 				else{
 					scorm.API.getHandle().Terminate("");

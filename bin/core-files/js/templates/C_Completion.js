@@ -318,15 +318,17 @@ function C_Completion(_type) {
 				var _objIndex = findObjective(lessonTitle +"_satisfied");
 				if(isScored === "true"){
 					//#3219 updated to use passed status to set completions, parameter 1
-					// if(scormVersion === '1.2_CTCU') {
+					//#3568 reverted change for #3219 except for CTCU courses
+					if(scormVersion === '1.2_CTCU' || lms == 'CTCU') {
 						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
-					// }
-					// else{
-					// 	completeLesson(completed, score_obj.passed, score_obj.score, false, false);
-					// }
+					}
+					else{
+						completeLesson(completed, score_obj.passed, score_obj.score, false, false);
+					}
 				}
 				else{
-					completeLesson(true, true, 0, false, false);
+					//#3568 - don't set success_status for non scored lessons
+					completeLesson(true, 'undefined', 0, false, false);
 				}
 			});
 		}

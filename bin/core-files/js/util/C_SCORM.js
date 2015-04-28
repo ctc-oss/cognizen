@@ -160,7 +160,11 @@ function completeLesson(completion, success, score, remediate, attemptExceeded){
 		}
 
 		if(scorm.VERSION.substring(0,4) == "2004"){
-			if(success){
+			//#3568 if success is undefined do not set success_status
+			if(success === 'undefined'){
+				//do nothing
+			}
+			else if(success){
 				scorm.set("cmi.success_status", "passed");			
 			}
 			else{
