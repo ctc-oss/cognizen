@@ -43,6 +43,19 @@ function checkFileApi(){
     }
 }
 
+/**
+* Finds the file type of an inputted file.
+*
+* @method getFileType
+* @param {string} _file File to find the type of....
+* @return {string} Returns a string in reference to the file type.
+*/
+function getFileType(_file){
+	var fileSplit = _file.split(".");
+    var mediaType = fileSplit[fileSplit.length - 1].toLowerCase();
+	return mediaType;
+}
+
 function doError(title, msg) {
 	$("#stage").append('<div id="dialog-error"><p>' + msg + '</p></div>');
 
