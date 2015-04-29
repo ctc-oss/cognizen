@@ -12,7 +12,7 @@
     "connect": "2.8.x",
     "cookie": "0.1.x",
     "elementtree": "0.1.x",
-    "express": "3.x",
+    "express": "4.x",
     "fluent-ffmpeg": "1.5.x",
     "fs-extra": "0.12.x",
     "git-server": "0.1.x",
