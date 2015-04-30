@@ -408,7 +408,7 @@ function closeAllPageIssues(_currentPage){
 		if(_issues.total_count != 0){
 			var issuesMsg = '';
 			for(var h = 0; h < _issues.issues.length; h++){
-				_issues.issues[h].description = 'This page was deleted in Cognizen so the issue was closed.';
+				_issues.issues[h].notes = 'This page was deleted in Cognizen so the issue was closed.';
 
 				_issues.issues[h].status_id = 5;
 
