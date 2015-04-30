@@ -545,8 +545,12 @@ function C_Pathing(_type) {
 		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
-			if($('input.isTranscript').is(':checked')){
+			if($("#posterFile").val() == "input poster path"){
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", "null");
+			}else{
+				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
+			}
+			if($('#isTranscript').is(':checked')){
 				var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
 				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 				var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
@@ -680,8 +684,8 @@ function C_Pathing(_type) {
 		}
 		
 		var hasPoster = false;
-		var posterLink = null;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0){
+		var posterLink = "input poster path";
+		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "input poster path"){
 	    	hasPoster = true;
 	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
 	    }
@@ -702,7 +706,7 @@ function C_Pathing(_type) {
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
      		}
 	 	}
-     	msg += "</select>&nbsp;&nbsp;";
+     	msg += "</select><br/>";
      	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != null){
 				var mediaWidth = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w'));
@@ -712,9 +716,9 @@ function C_Pathing(_type) {
 				var mediaHeight = 0;
 			}
 			
-			if(posterLink == null){
+			/*if(posterLink == null){
 				posterLink = "null";
-			}
+			}*/
 			
 			var hasTranscript = false;
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
@@ -725,19 +729,21 @@ function C_Pathing(_type) {
 	     	
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
 			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/><br/>";
-			msg += "<label>Media Width:</label> <input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
-			msg += "<label>Media Height:</label> <input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/>";
-			msg += "<label id='label'>autoplay: </label>";
+			msg += "<label id='mediaWidthLabel'>Media Width:</label>";
+			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
+			msg += "<label id='mediaHeightLabel'>Media Height:</label>";
+			msg += "<input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/>";
+			msg += "<label id='autoplayLabel'>autoplay: </label>";
 			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
-			msg += "<label id='label'>autonext: </label>";
+			msg += "<label id='autonextLabel'>autonext: </label>";
 			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
-			msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'>transcript: </label>";
+			msg += "<label id='posterLabel'>poster: </label>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
+			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/><br/>";
+			msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'><b>Transcript:</b> </label>";
 			msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/>";
 			msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
-			msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
-			msg += "<label id='label'>poster: </label>";
-			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
-			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/>";
+			msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput' style='width:40%;'>" + transcriptText + "</div>";
 		}
 		msg += "<br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
@@ -753,7 +759,38 @@ function C_Pathing(_type) {
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
-			
+		
+		var tempType = getFileType($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img'));
+		if(tempType == "mp4" || tempType == "swf"){
+			$("#mediaWidthLabel").show();
+			$("#mediaWidth").show();
+			$("#mediaHeightLabel").show();
+			$("#mediaHeight").show();
+		}else{
+			$("#mediaWidthLabel").hide();
+			$("#mediaWidth").hide();
+			$("#mediaHeightLabel").hide();
+			$("#mediaHeight").hide();
+		}
+		
+		if(tempType == "mp4"){
+			$("#posterLabel").show();
+			$("#poster").show();
+			$("#posterFile").show();
+			$("#autoplayLabel").show();
+			$("#autoplay").show();
+			$("#autonextLabel").show();
+			$("#autonext").show();
+		}else{
+			$("#posterLabel").hide();
+			$("#poster").hide();
+			$("#posterFile").hide();
+			$("#autoplayLabel").hide();
+			$("#autoplay").hide();
+			$("#autonextLabel").hide();
+			$("#autonext").hide();
+		}
+		
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
@@ -868,6 +905,40 @@ function C_Pathing(_type) {
 			    }
 			});
 		}
+		
+		$("#mediaLink").change(function(){
+			var myType = getFileType($(this).val());
+			
+			if(myType == "mp4" || myType == "swf"){
+				$("#mediaWidthLabel").show();
+				$("#mediaWidth").show();
+				$("#mediaHeightLabel").show();
+				$("#mediaHeight").show();
+			}else{
+				$("#mediaWidthLabel").hide();
+				$("#mediaWidth").hide();
+				$("#mediaHeightLabel").hide();
+				$("#mediaHeight").hide();
+			}
+			
+			if(myType == "mp4"){
+				$("#posterLabel").show();
+				$("#poster").show();
+				$("#posterFile").show();
+				$("#autoplayLabel").show();
+				$("#autoplay").show();
+				$("#autonextLabel").show();
+				$("#autonext").show();
+			}else{
+				$("#posterLabel").hide();
+				$("#poster").hide();
+				$("#posterFile").hide();
+				$("#autoplayLabel").hide();
+				$("#autoplay").hide();
+				$("#autonextLabel").hide();
+				$("#autonext").hide();
+			}
+		});
 		
 		$('#isTranscript').change(function(){
 			if($("#isTranscript").prop("checked") == true){
