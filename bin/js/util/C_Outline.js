@@ -1177,7 +1177,7 @@ function C_Outline(_myItem) {
 			//Update module name in module.xml
 			$(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
 			updateModuleXML(_id, false);
-			console.log(module_arr);
+			
 			//find and update module title in course.xml
 			for(var j = 0; j < $(courseData).find("item").length; j++){
 				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
@@ -1207,20 +1207,13 @@ function C_Outline(_myItem) {
 
 	        socket.emit('renameContent', data);
 	        
+	        //Update the array after making changes.
 	        module_arr[_id].name = $("#lessonTitle").val().trim();
-			console.log("BEFORE:")
-			console.log(module_arr);
 			var pathSplitter = module_arr[_id].path.split("/");
 			pathSplitter[pathSplitter.length - 1] = $("#lessonTitle").val().trim();
-			console.log("pathSplitter = " + pathSplitter);
-			//console.log("what I wanna change on path = " + pathSplitter[pathSplitter.length - 1]);
-			
 			module_arr[_id].path = pathSplitter.join("/");
-			console.log("PATH:");
-			console.log(module_arr[_id].path)
+			
 			var xmlpathSplitter = module_arr[_id].xmlPath.split("/");
-			//console.log(module_arr[_id].xmlPath);
-			//console.log("xmlpathSplitter = " + xmlpathSplitter);
 			xmlpathSplitter[1] = $("#lessonTitle").val().trim();
 			module_arr[_id].xmlPath = xmlpathSplitter.join("/")
 			
