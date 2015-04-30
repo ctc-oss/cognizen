@@ -1211,7 +1211,7 @@ function C_Outline(_myItem) {
 
 	    $('#lessonDisplayTitle').on('change', function(){
 			$(module_arr[_id].xml).find('lessondisplaytitle').attr("value", $("#lessonDisplayTitle").val().trim());
-			updateModuleXML(_id, false);
+			updateModuleXML(_id);
 	    }).css({'width': '500px', 'color': '#3383bb;'});
 
 	    //module tlo change
