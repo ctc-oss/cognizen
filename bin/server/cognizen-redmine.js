@@ -67,19 +67,25 @@ var REDMINE = {
 //+'?include=journals'
 //'GET', '/' + path + '.json', params
            //this.promisedAPI.getIssues({project_id: 2, include: "journals"})
-           this.promisedAPI.request('GET', '/issues/2.json', {include: 'journals'})
-            .then(function(data){
-                console.log("Issues:");
-                console.log(data);
-                // console.log(data.issues[0].project);
-                // console.log(data.issues[0].status);
-                // console.log(data.issues[0].custom_fields);
-            },
-            function(err) {
-                console.log("Error: " + err.message);
-                return;
-            }
-        ); 
+        //    this.promisedAPI.request('GET', '/issues/2.json', {include: 'journals'})
+        //     .then(function(data){
+        //         console.log("Issues:");
+        //         console.log(data);
+        //         var journals = data.issue.journals;
+        //         for (var i = 0; i < journals.length; i++) {
+        //             console.log(journals[i].user);
+        //             console.log(journals[i].notes);
+        //             console.log(journals[i].created_on);
+        //         };
+        //         // console.log(data.issues[0].project);
+        //         // console.log(data.issues[0].status);
+        //         // console.log(data.issues[0].custom_fields);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // ); 
         // this.promisedAPI.get('issue_statuses')
         //     .then(function(data){
         //         console.log("custom fields:");
@@ -388,6 +394,28 @@ var REDMINE = {
                 callback();
             })
         ;  
+    },
+    getIssueJournal: function(IssueId, callback){
+        var _this = this;
+
+       _this.promisedAPI.request('GET', '/issues/'+IssueId+'.json', {include: 'journals'})
+            .then(function(data){
+                // console.log("Issues:");
+                // console.log(data);
+                // var journals = data.issue.journals;
+                callback(data.issue.journals, null);
+                // for (var i = 0; i < journals.length; i++) {
+                //     console.log(journals[i].user);
+                //     console.log(journals[i].notes);
+                //     console.log(journals[i].created_on);
+                // };
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, err);
+            }
+        ); 
+
     },    
     _findUserId: function(Username, callback){
         var _this = this;

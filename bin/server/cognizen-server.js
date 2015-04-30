@@ -581,6 +581,12 @@ var Content = {
                 SocketHandler.socket(socket).getCourseCommentPages(data);
             });
 
+            socket.on('retrieveRedmineHost', function (callback){
+                SocketHandler.socket(socket).retrieveRedmineHost(function (fdata){
+                    callback(fdata);
+                });
+            });
+
             socket.on('addRedmineIssue', function (data, callback){
                 SocketHandler.socket(socket).addRedmineIssue(data, function (fdata){
                     callback(fdata);
@@ -597,7 +603,13 @@ var Content = {
                 SocketHandler.socket(socket).updateRedmineIssue(data, function (fdata){
                     callback(fdata);
                 });
-            });   
+            }); 
+
+            socket.on('getRedmineIssueJournal', function (data, callback){
+                SocketHandler.socket(socket).getRedmineIssueJournal(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
 
             socket.on('sendPackageMail', function (data) {
                 SocketHandler.socket(socket).sendPackageMail(data);

@@ -1750,6 +1750,11 @@ var SocketHandler = {
     	ContentComment.find({contentId: lesson.lesson}).remove()
     },
 
+    retrieveRedmineHost: function(callback){
+        var _this = this;
+        callback(_this.config.redmineHost);
+    },    
+
     addRedmineIssue: function(comment, callback){
         var _this = this;
 
@@ -1794,6 +1799,20 @@ var SocketHandler = {
             }
         }) ; 
 
+    },
+
+    getRedmineIssueJournal: function(issueId, callback){
+        var _this = this;
+        redmine.getIssueJournal(issueId, function(data, err){
+            if(err){
+                _this.logger.error("Error finding journal: " + err.message);
+                var emptyJournal = [];
+                callback(emptyJournal);
+            }
+            else{
+                callback(data);
+            }
+        });
     },
 
     addComment: function (comment) {
