@@ -91,7 +91,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
         });
 	}
 	
-	if(rootType == "branching"){
+	if(rootType == "branching" || rootType == "pathing" || rootType == "chaining"){
 		if($(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text() != ""){
 			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find('visualtranscript').text();
 		}else{
@@ -189,7 +189,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
 
-    if(mode == 'edit' && rootType != 'branching'){
+    if(mode == 'edit' && rootType != 'branching' && rootType != "pathing" && rootType != "chaining"){
     	$("#loader").attr("title", "click to browse or drag media to this location");
     }else{
 		$("#loader").attr("title", $(data).find("page").eq(currentPage).attr('alt'));
@@ -219,7 +219,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
         var parts = myImage.split('.'), i, l;
         var last = parts.length;
-		if(rootType == "branching"){
+		if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 			var imageWidth = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('w'));
 			var imageHeight = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('h'));
 		}else{
@@ -242,7 +242,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
             if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 				autoPlay = true;
 			}
-			if(rootType == "branching"){
+			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 				if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('autoplay') == "true"){
 					autoPlay = true;
 				}
@@ -262,7 +262,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 posterLink = "Input poster link here.";
             }
             
-            if(rootType == "branching"){
+            if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 	            if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster').length != 0){
 	                hasPoster = true;
 	                posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('poster');
@@ -299,7 +299,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 subsLink = null;
             }
             
-            if(rootType == "branching"){
+            if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 	            if($(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs') != "undefined"){
 	                hasSubs = true;
 	                subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr('subs');
@@ -574,7 +574,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			$('.antiscroll-wrap').antiscroll();
         }
 
-        if(mode == "edit" && $(data).find("page").eq(currentPage).attr('layout') != 'branching'){
+        if(mode == "edit" && rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
 	        $("#caption").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
 			CKEDITOR.inline( 'caption', {
@@ -905,7 +905,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		}
 		
 		if($("#isTranscript").prop("checked") == true){
-			if(rootType == "branching"){
+			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "true");
 			}else{
 				$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
@@ -914,7 +914,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
 			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
-			if(rootType == "branching"){
+			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").empty();
 				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").append(transcriptCDATA);
 				transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").text();
@@ -924,7 +924,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();
 			}		
 		}else{
-			if(rootType == "branching"){
+			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
 				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "false");
 			}else{
 				$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
