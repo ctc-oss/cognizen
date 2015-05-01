@@ -67,6 +67,7 @@ function C_Branching(_type) {
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
 		try { $("#buttonPalette").remove(); } catch (e) {}
+		try { $("#transcriptPane").remove(); } catch (e) {}
 		
 		clearMainCKEInstances();
 

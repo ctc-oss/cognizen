@@ -76,6 +76,7 @@ function C_Pathing(_type) {
 		try { $("#pageTitle").remove(); } catch (e) {}
 		try { $("#sidebarHolder").remove(); } catch (e) {}
 		try { $("#buttonPalette").remove(); } catch (e) {}
+		try { $("#transcriptPane").remove(); } catch (e) {}
 		
 		clearMainCKEInstances();
 
