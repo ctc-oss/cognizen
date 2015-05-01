@@ -444,7 +444,7 @@ function launchObjEdit(){
 
 }
 
-function addMediaDrop(){
+/*function addMediaDrop(){
 	$("#myCanvas").append("<div id='mediaDrop' class='btn_mediaDrop' title='Add files to the media directory.'></div>");
 
 	$("#mediaDrop").click(function(){
@@ -452,7 +452,7 @@ function addMediaDrop(){
 	});
 
 	$("#mediaDrop").tooltip();
-}
+}*/
 
 function launchMediaDrop(){
 

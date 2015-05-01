@@ -256,7 +256,7 @@ h1#lessonTitle{
 	cursor: pointer;
 }
 
-.btn_mediaDrop{
+/*.btn_mediaDrop{
 	position:absolute;
 	bottom :8px;
 	left: 150px;
@@ -265,7 +265,7 @@ h1#lessonTitle{
 	background: url(images/upload.png) no-repeat;
 	cursor: hand;
 	cursor: pointer;
-}
+}*/
 
 .btn_objedit{
 	position:absolute;
@@ -1495,18 +1495,30 @@ MEDIA LAYOUTS
 }
 
 .mediaBrowserPane{
-	position: absolute;
-	right: 0px;
-	top: 0px;
+	position:absolute;
+	bottom :8px;
+	left: 150px;
 	overflow: visible;
 	z-index: 10;
 }
+/*.btn_mediaDrop{
+	position:absolute;
+	bottom :8px;
+	left: 150px;
+	width: 30px;
+	height: 30px;
+	background: url(images/upload.png) no-repeat;
+	cursor: hand;
+	cursor: pointer;
+}*/
 
 .C_MediaBrowserButton{
-	position: relative;
+	position: absolute;
 	float: right;
 	width: 30px;
 	height: 30px;
+	bottom: 0;
+	left: 0;
 	background: url(images/upload.png) no-repeat;
 	cursor: hand;
 	cursor: pointer;
@@ -1519,7 +1531,9 @@ MEDIA LAYOUTS
 
 .mediaBrowserDisplay{
 	position			  : relative;
-	float				  : right;
+	float				  : left;
+	left				  : -147px;
+	bottom				  : 43px;
 	overflow 			  : hidden;	
 	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
@@ -1527,7 +1541,7 @@ MEDIA LAYOUTS
 	border-radius         : 8px;
 	width				  : 10px;
 	height 				  :	15px;
-	max-width 			  : 970px;
+	max-width 			  : 1005px;
 	max-height            : 700px;
 	border-style		  : solid;
     border-width		  : 1px;

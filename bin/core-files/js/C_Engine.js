@@ -417,7 +417,7 @@ function buildInterface(){
 	checkNav();
 	if(mode == "edit"){
 		addEditNav();
-		addMediaDrop();
+		//addMediaDrop();
 		addObjEdit();
 		addMediaBrowser();											////////////////////////////////////////////////////////// Comment out before push
 	}
