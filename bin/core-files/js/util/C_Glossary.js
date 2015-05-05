@@ -73,6 +73,7 @@ function checkGlossary(){
 			});
 		}
 		addGlossary();
+		gimmeGlosPos();
 	}else{
 		$("#glossaryPane").remove();
 	}
@@ -504,14 +505,16 @@ Param: 			none
 Description:	Opens and closes the glossary pane.
 ************************************************************************************************/
 function toggleGlossary(){
-	$("#glossaryPane").css({'z-index':1});
-	$("#indexPane").css({'z-index':0});
-	$("#docPane").css({'z-index':0});
 	var icon = 'ui-icon-circle-triangle-s';
 	if(glossaryState == false){
+		// open
+		$("#glossaryPane").css({'z-index':1});
+		$("#indexPane").css({'z-index':0});
+		$("#docPane").css({'z-index':0});
+		closeIndex(); // close index if it's open
 		glossaryState = true;
 		$("#glossaryTab").attr("aria-label", "click here to close content glossary currently open");
-		gimmeGlosPos();
+//		gimmeGlosPos(); // moved to checkGlossary
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		accShowGlossary();
 		$("#glossaryDef").focus();
@@ -522,6 +525,7 @@ function toggleGlossary(){
 		}
 	}
 	else{
+		// close
 		glossaryState = false;
 		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType, onComplete:accHideGlossary});
 		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:glossaryTabPos}, ease:transitionType});
@@ -536,9 +540,20 @@ function accShowGlossary(){
 }
 
 function accHideGlossary(){
+	$("#glossaryPane").css({'z-index':0});
 	$("#glossaryTerms").css("visibility", "hidden");
 	$("#glossaryContent").css("visibility", "hidden");
 	$("#glossaryClose").css("visibility", "hidden");
+}
+
+/************************************************************************************************
+Function: 		closeGlossary
+Param: 			none
+Description:	Closes the glossary pane.
+************************************************************************************************/
+function closeGlossary(){
+	glossaryState = true;
+	toggleGlossary();
 }
 
 /************************************************************************************************

@@ -51,6 +51,7 @@ function checkIndex(){
 		}
 
 		addIndex();
+		gimmeIndexPos();
 	}
 }
 
@@ -525,30 +526,38 @@ function addRollovers(myItem){
 ** Index Button Funcitonality
 *************************************************************/
 function toggleIndex(){
-	$("#indexPane").css({'z-index':1});
-	$("#glossaryPane").css({'z-index':0});
-	$("#docPane").css({'z-index':0});
 	//var icon = 'ui-icon-circle-triangle-s';
 	if(indexState == false){
+		// open
+		$("#indexPane").css({'z-index':1});
+		$("#glossaryPane").css({'z-index':0});
+		$("#docPane").css({'z-index':0});
+		closeGlossary(); // close glossary if it's open
 		indexState = true;
-		gimmeIndexPos();
+//		gimmeIndexPos(); // moved to checkIndex
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		$("#C_Index").css("visibility", "visible");
 		$("#indexMenuItem0").focus();
 		$("#indexTab").attr("aria-label", "click here to close content index currently open");
 	}
 	else{
+		// close
 		indexState = false;
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType, onComplete:accHideIndex});
 		if(mode != "edit"){
 			$("#pageTitle").focus();
 		}
 		$("#indexTab").attr("aria-label", "click here to open content index currently closed");
-		accHideIndex();
 	}
 }
 
+function closeIndex(){
+	indexState = true;
+	toggleIndex();
+}
+
 function accHideIndex(){
+	$("#indexPane").css({'z-index':0});
 	$("#C_Index").css("visibility", "hidden");
 }
 
