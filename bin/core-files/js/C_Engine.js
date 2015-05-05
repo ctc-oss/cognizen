@@ -212,6 +212,7 @@ function initScripts(_data){
 					corePath +"js/libs/jquery.corner.js",
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
+					corePath +"js/libs/exif.js",
 					//corePath +"js/libs/socket.io-stream.js",
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",

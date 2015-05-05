@@ -92,7 +92,7 @@ var currentSelectedTrack;
 * @method addMediaBrowser
 */
 function addMediaBrowser(){
-	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>");
+	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>").tooltip();
 									
 	$("#mediaBrowserButton").click(function(){							
 		
@@ -350,13 +350,15 @@ function loadMedia(_me){
 	if(removeClicked){
 		removeClicked = false;
 	}else{
+		try { $("#mbItemControlHolder").remove();} catch (e) {}
 		try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+		//turn last item back on...
 		try { currentSelectedMediaPreview.on("click", function(){
 			loadMedia($(this));
 		}); } catch (e) {}
 		currentSelectedMediaPreview = _me;
 		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-		currentSelectedMediaPreview.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', showItemStats);
+		currentSelectedMediaPreview.one('otransitionend oTransitionEnd msTransitionEnd transitionend', showItemStats);
 		mediaBrowserPreviewFile(_me.attr('data'));
 	}
 }
@@ -370,10 +372,13 @@ function showItemStats(event){
 	var obj = currentSelectedMediaPreview.attr("data");
 	//Disable button action for selected media
 	currentSelectedMediaPreview.off('click');
+	//try { $("#mbItemControlHolder").remove(); alert("remove mofo")} catch (e) {}
 	//Place media item options
-	var msg = "<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
+	var msg = "<div id='mbItemControlHolder' class='mbItemControlHolder'>";
+		msg += "<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
 		msg += "<div id='mediaRemove' class='mediaRemove' title='delete this item'></div>";
 		msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
+		msg += "</div>"
 	currentSelectedMediaPreview.append(msg);
 	
 	//Button Actions for interactives
@@ -516,6 +521,7 @@ function mediaBrowserPreviewFile(_file){
 	}else if(imageTypes.indexOf(myType) > -1) {
 		mediaBrowserLoadImagePreview(fp);
 	}else{
+		$("#mediaBrowserPreview").removeClass("C_Loader");
 		alert("You can't preview this file type.");
 	}
 }
@@ -625,9 +631,29 @@ function mediaBrowserLoadImagePreview(_fp){
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
         var imageHeight = $(img).height();
+        
         TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
     }).attr('src', _fp);
 }
+
+/*document.getElementById("objecturltest").onclick = function() {
+    var http = new XMLHttpRequest();
+    http.open("GET", "DSCN0614_small.jpg", true);
+    http.responseType = "blob";
+    http.onload = function(e) {
+        if (this.status === 200) {
+            var image = new Image();
+            image.onload = function() {
+                EXIF.getData(image, function() {
+                    alert(EXIF.pretty(this));
+                });
+            };
+            image.src = URL.createObjectURL(http.response);
+
+        }
+    };
+    http.send();
+}*/
 
 /**
 * Called when media upload is complete but a media conversion is required.
