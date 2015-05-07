@@ -188,6 +188,7 @@ function C_QuestionBank(_type) {
 			randomize = true;
 		}
 		pageTitle = new C_PageTitle();
+		$("#pageTitle").text($("#pageTitle").text() + " (question " + (questionsComplete + 1)  + " of " + toComplete + ")")
 		
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
 
