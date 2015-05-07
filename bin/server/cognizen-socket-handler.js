@@ -361,7 +361,7 @@ var SocketHandler = {
                     _this._socket.emit('registrationFailed');
                 } else {
                     //create user in Redmine
-                    redmine.createUser(data.user, data.firstName, data.lastName, data.pass, function(err){
+                    redmine.createUser(data.user, data.firstName, data.lastName, data.pass, false, function(err){
                         if(err){
                             _this.logger.error("Error creating redmine user: " + err);
                         }
@@ -1137,6 +1137,7 @@ var SocketHandler = {
     },
 
     assignContentToUsers: function (data, callback) {
+        var _this = this;
         // data.content.id
         // data.content.type
         // data.users = [{id, permission}]
@@ -1193,6 +1194,16 @@ var SocketHandler = {
                                 permissionsToSave.push(permission);
                             }
                         });
+
+                        //update Redmine project membership
+                        redmine.updateProjectMembership(data, function(err){
+                            if(err){
+                                _this.logger.error("Error udpating redmine project membership :"+ data.content.type +" project: " + err);
+                            }
+                            else{
+                                _this.logger.info(data.content.name + " project membership updated in redmine");
+                            }
+                        }); 
 
                         var allItemsToSave = permissionsToSave.concat(_.values(usersToSave));
 

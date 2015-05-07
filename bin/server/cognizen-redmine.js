@@ -86,16 +86,31 @@ var REDMINE = {
         //         return;
         //     }
         // ); 
-        // this.promisedAPI.get('issue_statuses')
-        //     .then(function(data){
-        //         console.log("custom fields:");
-        //         console.log(data);
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //         return;
-        //     }
-        // );
+        //
+// this.promisedAPI.post('/projects/6/memberships', {"membership": {"user_id": 5, "role_ids": [4]}})
+//     .error(function(err){
+//         console.log("Error: " + err.message);
+//     })
+
+//     .success(function(data){
+//         console.log(data)
+//     })
+// ;         
+// this.promisedAPI.get('/projects/6/memberships', {})
+//     .then(function(data){
+//         console.log("mem:");
+//         console.log(data);
+//         console.log(data.memberships[0].project);
+//         console.log(data.memberships[0].user);
+//         console.log(data.memberships[0].roles[0]);
+//     },
+//     function(err) {
+//         console.log("Error: " + err.message);
+//         return;
+//     }
+// );
+
+
         // var issue = {
         //     project_id: 6,
         //     subject: "Fix the pageEE",
@@ -168,7 +183,7 @@ var REDMINE = {
         // ;                         	
         return this;
 	},
-	createUser: function(Username, FirstName, LastName, _Password, callback){
+	createUser: function(Username, FirstName, LastName, _Password, MustChange, callback){
 		var _this = this;
 
 		var user = {
@@ -176,7 +191,8 @@ var REDMINE = {
 			firstname: FirstName,
 		 	lastname: LastName,
 		 	mail: Username,
-		 	password: _Password
+		 	password: _Password,
+            must_change_passwd: MustChange
 		};
 
 		_this.promisedAPI.post("users",{user:user})
@@ -184,7 +200,9 @@ var REDMINE = {
 				callback(err);
 			})
 			.success(function(data){
-				_this.logger.info(data)
+                _this.logger.info('Redmine user was created : ');
+                _this.logger.info(data);
+                callback();
 			})
 		;
 	},
@@ -203,7 +221,9 @@ var REDMINE = {
 						callback(err);
 					})
 					.success(function(data){
-						_this.logger.info("Redmine user password updated successfully " + data)
+						_this.logger.info("Redmine user password updated successfully :");
+                        _this.logger.info(data);
+                        callback();
 					})
 				;
 			}
@@ -221,6 +241,7 @@ var REDMINE = {
 			})
 			.success(function(data){
 				_this.logger.info(data)
+                callback();
 			})
 		;        
 	},
@@ -243,7 +264,8 @@ var REDMINE = {
                         callback(err);
                     })
                     .success(function(data){
-                        _this.logger.info(data)
+                        _this.logger.info(data);
+                        callback();
                     })
                 ;                                 
             }
@@ -268,7 +290,8 @@ var REDMINE = {
                         callback(err);
                     })
                     .success(function(data){
-                        _this.logger.info(data)
+                        _this.logger.info(data);
+                        callback();
                     })
                 ;                                 
             }
@@ -291,7 +314,8 @@ var REDMINE = {
                         callback(err);
                     })
                     .success(function(data){
-                        _this.logger.info(data)
+                        _this.logger.info(data);
+                        callback();
                     })
                 ;                                 
             }
@@ -400,15 +424,9 @@ var REDMINE = {
 
        _this.promisedAPI.request('GET', '/issues/'+IssueId+'.json', {include: 'journals'})
             .then(function(data){
-                // console.log("Issues:");
-                // console.log(data);
-                // var journals = data.issue.journals;
+
                 callback(data.issue.journals, null);
-                // for (var i = 0; i < journals.length; i++) {
-                //     console.log(journals[i].user);
-                //     console.log(journals[i].notes);
-                //     console.log(journals[i].created_on);
-                // };
+
             },
             function(err) {
                 console.log("Error: " + err.message);
@@ -416,6 +434,39 @@ var REDMINE = {
             }
         ); 
 
+    },
+    updateProjectMembership: function(Permissions, callback){
+        var _this = this;
+
+        _this._findProjectIdWithParent(Permissions.content.name, Permissions.content.parent, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
+            }
+            else{
+                var _projectId = data.id;
+                // console.log("project ID = " + _projectId); 
+                //get current project membership
+                _this._getProjectMembership(_projectId, function(data, err){
+                    if(err){
+                        console.log("Error getting project membership " + err);
+                        callback(err);
+                    }
+                    else{
+                        var _membership_arr = data.memberships;
+                        _this._assignMembership(_projectId, _membership_arr, Permissions.users, 0, function(err){
+                            if(err){
+                                callback(err);
+                            }
+                            else{
+                                callback();
+                            }
+                        });                       
+                    }
+                });
+
+            }
+        });        
     },    
     _findUserId: function(Username, callback){
         var _this = this;
@@ -431,7 +482,7 @@ var REDMINE = {
                     }
                 };
                 if(!found){
-                    callback(null, "No user was found with the " + Username + " username!" );
+                    callback("404", "No user was found with the " + Username + " username!" );
                 }
             },
             function(err) {
@@ -439,6 +490,36 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );  
+    },
+    _findProjectIdWithParent: function(Project, Parent, callback){
+        var _this = this;
+
+        _this.promisedAPI.getProjects()
+            .then(function(data){
+                var found = false;
+                var _projects = data.projects;
+                for (var i = 0; i < _projects.length; i++) {
+                    if(_projects[i].name === Project){
+                        if(Parent === ''){
+                            found = true;
+                            callback(_projects[i], null);                            
+                        }
+                        else if(_projects[i].parent.name === Parent){
+                            found = true;
+                            callback(_projects[i], null);
+                        }
+                    }
+                };
+                if(!found){
+                    callback(null, "No project was found with the " + Project + " name!" );
+                }
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        ); 
+
     },    
     _findProjectId: function(Project, callback){
         var _this = this;
@@ -485,44 +566,211 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );
+    },
+    _findRoleId: function(Name, callback){
+        var _this = this;
+
+        _this.promisedAPI.get('roles', {})
+            .then(function(data){
+                var found = false;
+                for (var i = 0; i < data.roles.length; i++) { 
+                    if(data.roles[i].name === Name){
+                        found = true;
+                        callback(data.roles[i], null);
+                    }                   
+                };
+                if(!found){
+                    callback(null, "No role with the name of "+ Name+ " was found!");
+                }
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );        
+    },
+    _assignMembership: function(ProjectId, Membership_arr, Users, Index, callback){
+        var _this = this;
+
+        if(Index < Users.length){
+
+            _this._findUserId(Users[Index].username, function(data, err){
+                if(err){
+                    ///if user not found then create the user and do stuff
+                    if(data === '404'){
+                        //console.log('404, '+ err);
+                        //no reason to change anything if permission is none
+                        if(Users[Index].permission != 'none'){
+                            //require password reset on first login / default password is cognizen
+                            _this.createUser(Users[Index].username, Users[Index].first, Users[Index].last, 'cognizen', true, function(err){
+                                if(err){
+                                    console.log("Error creating redmine user: " + err);
+                                    callback(err);                                        
+                                }
+                                else{
+                                    //now call assignMembership with the same index
+                                    _this._assignMembership(ProjectId, Membership_arr, Users, Index, function(err){
+                                        if(err){
+                                            callback(err);
+                                        }
+                                        else{
+                                            callback();
+                                        }
+                                    }); 
+
+                                }
+                            });
+                        }
+                    }
+                    else{
+                        console.log("Error " + err);
+                        callback(err);
+                    }
+                }
+                else{
+                    //add the user id and role id to the projects membership
+                    var userId = data.id;
+                    var _membershipId = _this._getMembershipId(Membership_arr, userId);
+
+                    _this._setMembership(_membershipId, ProjectId, userId, Users[Index].permission, function(data, err){
+                        if(err){
+                            console.log("Error in setMembership " + err);
+                            callback(err);
+                        }
+                        else{
+                            _this._assignMembership(ProjectId, Membership_arr, Users, Index+1, function(err){
+                                if(err){
+                                    callback(err);
+                                }
+                                else{
+                                    callback();
+                                }
+                            }); 
+                        }
+                    });                                        
+
+                }
+            });  
+        }
+        else{
+            callback();            
+        }
+    },
+    _setMembership: function(MembershipId, ProjectId, UserId, Permission, callback){
+        var _this = this;
+
+        var redmineRole = '';
+        if(Permission === 'admin'){
+            redmineRole = 'Manager';
+        }
+        else if(Permission === 'editor'){
+            redmineRole = 'Developer';
+        }
+        else if(Permission === 'reviewer'){
+            redmineRole = 'Reporter';
+        }
+
+        if(MembershipId != 0){
+            if(redmineRole != ''){
+                //update membership
+                //console.log(MembershipId + ' update membership');
+                _this._findRoleId(redmineRole, function(data, err){
+                    if(err){
+                        console.log("Error finding role id " + err);
+                        callback(err);
+                    }
+                    else{
+                        var roleId = data.id;
+                        _this.promisedAPI.put('/memberships/'+MembershipId, {"membership": {"role_ids": [roleId]}})
+                            .error(function(err){
+                                console.log("Error: " + err.message);
+                                callback(err);
+                            })
+
+                            .success(function(data){
+                                //console.log(data);
+                                callback();
+                            })
+                        ;    
+
+                    }
+                });                    
+            }
+            else{
+                //delete membership
+                //console.log("in delete membership");
+                _this.promisedAPI.del('/memberships/'+MembershipId, {})
+                    .error(function(err){
+                        console.log("Error: " + err.message);
+                        callback(err);
+                    })
+
+                    .success(function(data){
+                        //console.log(data);
+                        callback();
+                    })
+                ;                     
+            }
+        }
+        else{
+             if(redmineRole != ''){
+                //console.log('post membership');
+                _this._findRoleId(redmineRole, function(data, err){
+                    if(err){
+                        console.log("Error finding role id " + err);
+                        callback(err);
+                    }
+                    else{
+                        var roleId = data.id;
+                        _this.promisedAPI.post('/projects/'+ProjectId+'/memberships', {"membership": {"user_id": UserId, "role_ids": [roleId]}})
+                            .error(function(err){
+                                console.log("Error: " + err.message);
+                                callback(err);
+                            })
+
+                            .success(function(data){
+                                //console.log(data);
+                                callback();
+                            })
+                        ;    
+
+                    }
+                });
+            }
+            else{
+                //do nothing callback 
+                //console.log('do nothing');
+                callback();
+            }                               
+        }
+    },
+    _getProjectMembership: function(ProjectId, callback){
+        var _this = this;
+
+        _this.promisedAPI.get('/projects/'+ProjectId+'/memberships', {})
+            .then(function(data){
+                callback(data, null);
+            },
+            function(err) {
+                console.log("Error in _getProjectMembership: " + err.message);
+                callback(null, err);
+            }
+        );        
+    },
+    _getMembershipId: function(Membership_arr, UserId){
+        var _this = this;
+
+        for (var i = 0; i < Membership_arr.length; i++) {
+            var found = false;
+            if(Membership_arr[i].user.id == UserId){
+                found = true;
+                return Membership_arr[i].id;
+            }
+        }
+        if(!found){
+            return 0;
+        }        
     }
 };
 
 module.exports = REDMINE;
-
-        // var project = {
-        //     name: "test2",
-        //     identifier: "test2"
-        // };
-
-        // var issue = {
-        //     project_id: 1,
-        //     subject: "Test issue",
-        //     description: "More stuff"
-        // }
-
-        // redmineApi.post("projects", {project: project})
-        // //redmineApi.post("issues", issue)
-        // //redmineApi.postIssue(issue)
-        //     .error(function(err){
-        //         console.log("Error: " + err.message);
-        //     })
-
-        //     .success(function(data){
-        //         console.log(data)
-        //     })
-        // ;
-
-        // redmineApi.getIssues({project_id: 1})
-        //     .then(function(data){
-        //         console.log("Issues:");
-        //         console.log(data);
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //         return;
-        //     }
-        // );
-        // // redmineApi.getIssues().success(function(issues){
-        // //     console.log("ISSUES  " + issues);
-        // // });
