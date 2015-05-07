@@ -124,6 +124,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("graded", "true");
 			$(data).find("page").eq(newPage).attr("mandatory", "true");
 			$(data).find("page").eq(newPage).attr("type", "completion");
+			$(data).find("page").eq(newPage).attr("indexhide", "false");
 			break;
 		case "textOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));

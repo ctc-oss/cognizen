@@ -34,6 +34,7 @@ function C_Completion(_type) {
 	var testReview = '';
 	var testNotAttempted = false;
 	var showRemediate = true;
+	var hideIndex = false;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -57,6 +58,14 @@ function C_Completion(_type) {
 
 		if($(data).find("page").eq(currentPage).attr('review')){
 			review = $(data).find("page").eq(currentPage).attr('review');
+		}
+		
+		if($(data).find("page").eq(currentPage).attr('indexhide')){
+			if($(data).find("page").eq(currentPage).attr('indexhide') == "true"){
+				hideIndex = true;
+			}
+		}else{
+			$(data).find("page").eq(currentPage).attr('indexhide', false);
 		}
 
 		if($(data).find("page").eq(currentPage).attr('showremediate')){
@@ -610,12 +619,20 @@ function C_Completion(_type) {
 		var msg = "<div id='questionEditDialog' title='Completion Edit Dialog'>";
 		msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
 		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Prevent completion page from showing up in the Index.'><b>Hide in Index: </b></label>";
+		msg += "<input id='hideFromIndex' type='checkbox' name='hideFromIndex' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<div id='inputPRLabel'><b>Passed Response Feedback: </b></div>";
 		msg += "<div id='inputPassedResponse' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputFRLabel'><b>Failed Response Feedback: </b></div>";
 		msg += "<div id='inputFailedResponse' class='dialogInput' contenteditable='true'></div>";				
 		msg += "</div>";
 		$("#stage").append(msg);	
+		
+		if(hideIndex){
+			$("#hideFromIndex").attr('checked', 'checked');
+		}else{
+			$("#hideFromIndex").removeAttr('checked');
+		}
 		
         if(!showRemediate){
 			$("#isRemediate").removeAttr('checked');
@@ -700,7 +717,15 @@ function C_Completion(_type) {
 			$(data).find("page").eq(currentPage).attr("showremediate", "false");
 			showRemediate = false;
 		}
-
+		
+		if($("#hideFromIndex").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("indexhide", "true");
+			hideIndex = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("indexhide", "false");
+			hideIndex = false;
+		}
+		
 		var passedResponseUpdate = CKEDITOR.instances["inputPassedResponse"].getData();
 		try{ CKEDITOR.instances["inputPassedResponse"].destroy() } catch (e) {}
 		var passedResponseDoc = new DOMParser().parseFromString('<passedresponse></passedresponse>', 'text/xml')

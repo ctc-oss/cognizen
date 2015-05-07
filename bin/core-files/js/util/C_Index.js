@@ -186,9 +186,16 @@ function addIndex(){
 			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
 			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			//check if item should be hidden
+			console.log($(data).find("page").eq(i).attr("indexhide"))
+			if($(data).find("page").eq(i).attr("indexhide") != "true"){
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			}
 		}else{
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			//check if item should be hidden
+			if($(data).find("page").eq(i).attr("indexhide") != "true"){
+				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+			}
 		}
 		indexItem_arr.push("#" + thisID);
 
