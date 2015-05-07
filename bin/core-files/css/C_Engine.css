@@ -1494,6 +1494,17 @@ MEDIA LAYOUTS
 
 }
 
+.scaleWarning{
+	position: relative;
+	top: 0px;
+	color: red;
+	width: auto;
+	height: auto;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
 .mediaBrowserPane{
 	position:absolute;
 	bottom :8px;

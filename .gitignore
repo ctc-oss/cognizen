@@ -2,6 +2,7 @@
 *.log
 bin/programs/*
 *.tgz
+*.zip
 bin/core-files/server/node_modules/*
 bin/server/node_modules/*
 bin/server/repos

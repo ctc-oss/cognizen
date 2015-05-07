@@ -159,7 +159,7 @@ function updateFolderTrack(_track){
 	currentSelectedTrack = _track;
 	currentSelectedTrack.addClass("mediaBrowserSelectedTrack");
 	if(folderTrack == "core"){
-		folderTrackPath = "../..";
+		folderTrackPath = "../../";
 		mediaBrowserDisplayPath = "core-prog/"
 	}else if(folderTrack == "course"){
 		folderTrackPath = "../";
@@ -377,7 +377,9 @@ function showItemStats(event){
 	var msg = "<div id='mbItemControlHolder' class='mbItemControlHolder'>";
 		msg += "<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
 		msg += "<div id='mediaRemove' class='mediaRemove' title='delete this item'></div>";
-		msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
+		if(fromDialog){
+			msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
+		}
 		msg += "</div>"
 	currentSelectedMediaPreview.append(msg);
 	
@@ -508,7 +510,10 @@ function mediaBrowserRemoveMediaComplete(){
 function mediaBrowserPreviewFile(_file){
 	$("#mediaBrowserPreview").addClass("C_Loader");
 	var imageTypes = ["png", "jpg", "gif"];
-	var fp = folderTrackPath + "/" + mediaBrowserDisplayPath + _file;
+	console.log("folderTrackPath = " + folderTrackPath);
+	console.log("mediaBrowserDisplayPath = " + mediaBrowserDisplayPath);
+	var fp = folderTrackPath + mediaBrowserDisplayPath + _file;
+	console.log("fp = " + fp);
 	$("#mediaBrowserPreviewMediaHolder").empty();
 	$("#mediaBrowserPreviewMediaHolder").css({'opacity':0});
 	var myType = getFileType(_file);
@@ -631,29 +636,15 @@ function mediaBrowserLoadImagePreview(_fp){
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
         var imageHeight = $(img).height();
-        
-        TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
-    }).attr('src', _fp);
-}
-
-/*document.getElementById("objecturltest").onclick = function() {
-    var http = new XMLHttpRequest();
-    http.open("GET", "DSCN0614_small.jpg", true);
-    http.responseType = "blob";
-    http.onload = function(e) {
-        if (this.status === 200) {
-            var image = new Image();
-            image.onload = function() {
-                EXIF.getData(image, function() {
-                    alert(EXIF.pretty(this));
-                });
-            };
-            image.src = URL.createObjectURL(http.response);
-
+        if(imageWidth > $("#mediaBrowserPreview").width()){
+	        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
+	        $(img).width($(img).width() * widthScale);
+			$(img).height($(img).height() * widthScale);
+			$("#mediaBrowserPreviewMediaHolder").prepend("<div class='scaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
         }
-    };
-    http.send();
-}*/
+        TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
+    }).attr('src', _fp).attr('id', 'myImage');
+}
 
 /**
 * Called when media upload is complete but a media conversion is required.
