@@ -187,7 +187,6 @@ function addIndex(){
 			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
 			//check if item should be hidden
-			console.log($(data).find("page").eq(i).attr("indexhide"))
 			if($(data).find("page").eq(i).attr("indexhide") != "true"){
 				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
 			}

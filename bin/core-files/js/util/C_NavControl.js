@@ -1549,8 +1549,9 @@ function disableIndex(){
 
 function enableIndex(){
 	if(indexDisabled){
+		alert("enableIndex")
 		$('#indexTab').removeClass('disabled');
-		$('#indexTab').click(toggleIndex);
+		//$('#indexTab').click(toggleIndex);
 		indexDisabled = false;
 	}
 }
@@ -1589,6 +1590,7 @@ function checkNavButtons(){
 	}else{
 		if(nextDisabled == true){
 			enableNext();
+			enableIndex();
 		}
 	}
 
