@@ -23,7 +23,18 @@
 			var programFilename;
 			var courseFileName;
 			var moduleFileName;
-			if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
+			//fix for #3594
+			var useMobile = false;
+			try{
+				if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
+					useMobile = true;
+				}
+			}
+			catch(err){
+				console.log('Browser does not support window.matchMedia; desktop css will be used. ');
+			}
+			
+			if(useMobile) {
 				//load mobile Override CSS files on mobile devices
 				programFilename = "../css/ProgramCSS/ProgramOverrideMobile.css";
 				courseFilename = "../css/CourseCSS/CourseOverrideMobile.css";
@@ -34,6 +45,7 @@
 				courseFilename = "../css/CourseCSS/CourseOverride.css";
 				moduleFilename = "./css/ModuleCSS/ModuleOverride.css";
 			}
+
 			var programFileref = document.createElement("link");
 			programFileref.rel = "stylesheet";
 			programFileref.type = "text/css";
