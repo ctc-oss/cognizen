@@ -156,7 +156,7 @@ function addGlossary(){
 	for(var j = 0; j < totalGlossary; j++){
 		var tmpObj = new Object();
 		
-		tmpObj.term = glossarySource.find('glossaryitem').eq(j).find('term').text().trim();
+		tmpObj.term = $.trim(glossarySource.find('glossaryitem').eq(j).find('term').text());
 		tmpObj.definition = glossarySource.find('glossaryitem').eq(j).find('content').text();
 		
 		tmpObj.id = j;
