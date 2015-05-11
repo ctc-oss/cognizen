@@ -132,7 +132,6 @@ function C_QuestionBank(_type) {
 		}
 
 		if(isComplete && mode != "edit"){
-			console.log("isComplete");
 			for(var i = 0; i < questionResponse_arr.length; i++){
 				if(currentPageID == questionResponse_arr[i].id){
 					if(toComplete == 1){
@@ -569,11 +568,6 @@ function C_QuestionBank(_type) {
 							},
 							Next: function(){
 								$( this ).dialog( "close" );
-								mandatoryInteraction = false;
-								checkNavButtons();
-								if(isLinear == true){
-									updateTracking();
-								}
 								$("#next").click();
 							}
 						},
@@ -582,6 +576,9 @@ function C_QuestionBank(_type) {
 							$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
 						},
 						close: function(){
+							if(isLinear == true){
+								updateTracking();
+							}
 							mandatoryInteraction = false;
 							checkNavButtons();
 							$("#dialog-attemptResponse").remove();
@@ -596,7 +593,7 @@ function C_QuestionBank(_type) {
 							Next: function(){
 								attemptsMade = 0;
 								mandatoryInteraction = true;
-								checkNavButtons();
+								//checkNavButtons();
 								$( this ).dialog( "close" );
 								if(isLinear == true){
 									updateTracking();

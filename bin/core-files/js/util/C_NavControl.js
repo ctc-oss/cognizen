@@ -1549,22 +1549,25 @@ function disableIndex(){
 
 function enableIndex(){
 	if(indexDisabled){
-		alert("enableIndex")
 		$('#indexTab').removeClass('disabled');
-		//$('#indexTab').click(toggleIndex);
+		$('#indexTab').unbind('click').click(toggleIndex);
 		indexDisabled = false;
 	}
 }
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-
-	if(assessment && mode != "edit" && !checkQuestionComplete()){
+	if(assessment && !checkQuestionComplete()){
 		disableIndex();
 		disableHome();
 	}else{
 		enableIndex();
 		enableHome();
+	}
+	
+	if(mode == "edit" && indexDisabled == true){
+		mandatoryInteraction = false;
+		enableIndex();
 	}
 
 	if(currentPage == 0 || (assessment == true && !checkQuestionComplete())){
@@ -1590,7 +1593,7 @@ function checkNavButtons(){
 	}else{
 		if(nextDisabled == true){
 			enableNext();
-			enableIndex();
+			//enableIndex();
 		}
 	}
 

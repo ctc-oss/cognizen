@@ -533,6 +533,7 @@ function addRollovers(myItem){
 *************************************************************/
 function toggleIndex(){
 	//var icon = 'ui-icon-circle-triangle-s';
+
 	if(indexState == false){
 		// open
 		$("#indexPane").css({'z-index':1});
