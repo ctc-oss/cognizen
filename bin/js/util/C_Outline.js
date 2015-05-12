@@ -272,7 +272,7 @@ function C_Outline(_myItem) {
 		    async: false,
 		    success: importOutlineModuleItemComplete,
 		    error: function(){
-			    alert("unable to load module data");
+			    alert("unable to load module data for " + _path);
 		    }
 		});
      }
