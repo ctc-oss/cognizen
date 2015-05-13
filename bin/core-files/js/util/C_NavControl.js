@@ -421,12 +421,12 @@ function launchObjEdit(){
 
 	// update the xml when the enabling is changed
     $("#eo").on("change", function(){
-	    $(data).find('page').eq(currentPage).attr("eo", $("#eo").val().replace('<p>', '').replace('</p>', '').trim());
+	    $(data).find('page').eq(currentPage).attr("eo", $.trim($("#eo").val().replace('<p>', '').replace('</p>', '')));
 	    //updateModuleXML(currentPageParentModule);
     }).css({'width': '500px', 'color': '#3383bb;'});
 
     $("#out_pageObjective").on("change", function(){
-     	var objUpdate = $("#out_pageObjective").val().trim();
+     	var objUpdate = $.trim($("#out_pageObjective").val());
 	   	$(data).find('page').eq(currentPage).attr('objective', objUpdate);
 	   	if($(data).find('page').eq(currentPage).attr("type") == "kc"){
 	   		questionResponse_arr[questionResponseIndex].objective = objUpdate;
@@ -647,7 +647,7 @@ function launchPrefs(){
 	for(var i = 0; i < totalPages; i++){
 		if($(data).find("page").eq(i).attr("graded") == "true"){
 			var tempObj = new Object();
-			tempObj.title = $(data).find("page").eq(i).find("title").text().trim();
+			tempObj.title = $.trim($(data).find("page").eq(i).find("title").text());
 			tempObj.id = $(data).find("page").eq(i).attr("id");
 			testOutOption_arr.push(tempObj);
 		}
