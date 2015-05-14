@@ -888,49 +888,50 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
      **********************************************************************/
 	function saveImageEdit(_path, fromDrop){
 		fromDrop = typeof fromDrop !== 'undefined' ? fromDrop : false;
-
-		$(data).find("page").eq(currentPage).attr("alt", $("#altTextEdit").val());
-
-		//Check if there is an enlarged image to link
-		if($("#isEnlargeable").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("enlarge", $("#lrgImgPath").val());
-		}else{
-			$(data).find("page").eq(currentPage).attr("enlarge", "");
-		}
-
-		if($("#isLoop").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("poploop", "true");
-		}else{
-			$(data).find("page").eq(currentPage).attr("poploop", "false");
-		}
 		
-		if($("#isTranscript").prop("checked") == true){
-			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
-				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "true");
+		if(!fromDrop){
+			$(data).find("page").eq(currentPage).attr("alt", $("#altTextEdit").val());
+			
+			//Check if there is an enlarged image to link
+			if($("#isEnlargeable").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("enlarge", $("#lrgImgPath").val());
 			}else{
-				$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
+				$(data).find("page").eq(currentPage).attr("enlarge", "");
 			}
-			var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
-			try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
-			var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
-			var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
-			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
-				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").append(transcriptCDATA);
-				transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").text();
+	
+			if($("#isLoop").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("poploop", "true");
 			}else{
-				$(data).find("page").eq(currentPage).find("visualtranscript").empty();
-				$(data).find("page").eq(currentPage).find("visualtranscript").append(transcriptCDATA);
-				transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();
-			}		
-		}else{
-			if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
-				$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "false");
+				$(data).find("page").eq(currentPage).attr("poploop", "false");
+			}
+			
+			if($("#isTranscript").prop("checked") == true){
+				if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
+					$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "true");
+				}else{
+					$(data).find("page").eq(currentPage).attr("visualtranscript", "true");
+				}
+				var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
+				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+				var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
+				var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
+				if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
+					$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").empty();
+					$(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").append(transcriptCDATA);
+					transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("visualtranscript").text();
+				}else{
+					$(data).find("page").eq(currentPage).find("visualtranscript").empty();
+					$(data).find("page").eq(currentPage).find("visualtranscript").append(transcriptCDATA);
+					transcriptText = $(data).find("page").eq(currentPage).find("visualtranscript").text();
+				}		
 			}else{
-				$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
+				if(rootType == "branching"  || rootType == "pathing" || rootType == "chaining"){
+					$(data).find("page").eq(currentPage).find("branch").eq(_id).attr("visualtranscript", "false");
+				}else{
+					$(data).find("page").eq(currentPage).attr("visualtranscript", "false");
+				}
 			}
 		}
-		
 		
 		
 		//Check if there is a gallery attached AND that the media wasn't dropped.
