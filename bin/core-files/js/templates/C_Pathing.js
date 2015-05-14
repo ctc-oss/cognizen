@@ -25,6 +25,7 @@ function C_Pathing(_type) {
 	var pageId;
 	var pathCompletion_arr = [];
 	var revealPageMenu_arr = [];
+	var pathPageTracker = 1;
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -160,7 +161,7 @@ function C_Pathing(_type) {
 		var pathType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathtype");
 
 		var paletteWidth = 0;
-		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
+		if(branchType == "top" || branchType == "graphicOnly"){
 			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
 		}else{
 			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#content");
@@ -168,6 +169,7 @@ function C_Pathing(_type) {
 
 		if(pathType === "home"){
 			homePage_arr = [];
+			pathPageTracker = 1;
 			createHomePageArray(1);
 
 			var allCompleted = true;
@@ -219,12 +221,43 @@ function C_Pathing(_type) {
 					
 		}
 		else{
-			var next = _id + 1;
-			//var nextId = $(data).find("page").eq(currentPage).find("branch").eq(next).attr("pathid");
+			
 
-			var buttonLabel = "";
+
+			var buttonLabel = "Back";
 			var buttonID = "";
 			var pathComplete = false;
+
+			//back button
+			var back = _id - 1;
+
+			for(var w = back; w > 0; w--){
+				if($(data).find("page").eq(currentPage).find("branch").eq(w).attr('pathid') == pathId){
+					break;
+				}
+			}
+			
+			if(w == 0){
+				//buttonLabel = 'Home';//$(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
+				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id");
+			}
+			else{
+				//buttonLabel = 'Back';//$(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
+				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(w).attr("id");		
+			}
+
+			var myOption = "option0";
+			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+			$("#"+myOption).button().click(function(){
+				pathPageTracker--;
+				loadBranchByID($(this).attr("mylink"));
+			});
+			paletteWidth += $("#"+myOption).width() + 5;
+			pageAccess_arr.push($("#"+myOption));	
+
+			//next button
+
+			var next = _id + 1;
 
 			for(var h = next; h < branchCount; h++){
 				if($(data).find("page").eq(currentPage).find("branch").eq(h).attr('pathid') == pathId){
@@ -232,17 +265,19 @@ function C_Pathing(_type) {
 				}
 			}
 
+			buttonLabel = 'Next';
+
 			if(h == branchCount){
-				buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
+				//buttonLabel = 'Home';//$(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
 				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id");
 				pathComplete = true;
 			}
 			else{
-				buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
+				//buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
 				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(h).attr("id");				
 			}
 
-			var myOption = "option"+i;
+			myOption = "option1";
 			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click(function(){
 				if(pathComplete && !checkPathComplete(pageId, pathId)){
@@ -251,12 +286,15 @@ function C_Pathing(_type) {
 					//set SCORM Objective
 					setObjectiveSuccess(pageId + "_" + pathId, pathComplete, pageId + " path " + pathId);
 				}
+				pathPageTracker++;
 				loadBranchByID($(this).attr("mylink"));
 			});
 			paletteWidth += $("#"+myOption).width() + 5;
-			pageAccess_arr.push($("#"+myOption));	
+			pageAccess_arr.push($("#"+myOption));
+
+			$("#pageTitle").text($("#pageTitle").text() + " ( " + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");				
 		}
-		$("#buttonPalette").width(paletteWidth);	
+		$("#buttonPalette").width(paletteWidth);
 
 	}
 
@@ -829,7 +867,7 @@ function C_Pathing(_type) {
 		else{
 
 			var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
-			$("#optionContainer").append("<div id='editBranchOptionHolder'><b>path buttons:</b><br/></div>");
+			$("#optionContainer").append("<div id='editBranchOptionHolder'><b>image path buttons (optional) :</b><br/></div>");
 			for(var i = 0; i < branchOptionLength; i++){
 				var optionText = $.trim($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text());
 				var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
@@ -837,14 +875,17 @@ function C_Pathing(_type) {
 				var msg = "<div id='myBranchOption"+ i +"' style='width:80%; margin-bottom:5px;'>";
 					msg += "<label for='optionLabel'><b>path : "+$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("path")+"</b></label>";
 					msg += "<input id='optionActive"+i+"' type='checkbox' name='optionActive"+i+"' class='radio' title='Activate image button.'/>";
-					msg += "<input type='text' name='optionImg' id='optionImg"+ i + "' title='Image to be used for button.' value='"+ optionImage + "' data='"+i+"' class='dialogInput' style='width:250px;'/>";
+					msg += "<input type='text' name='optionImg' id='optionImg"+ i + "' title='Image to be used for button.' value='"+ optionImage + "' data='"+i+"' class='dialogInput' style='width:250px;display:none'/>";
 					msg += "</div>";
 				$("#editBranchOptionHolder").append(msg);
 				
 
 				if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("active") === "true"){
 					$('#optionActive'+i).prop('checked', true);
-				}				
+					$('#optionImg'+i).toggle();
+				}
+				var activeString = 'optionActive'+i;
+				$('#'+activeString).change(toggle_handler(i));				
 
 			}
 
@@ -1071,6 +1112,12 @@ function C_Pathing(_type) {
 				updateBranchDialog();
 			});
 		}
+	}
+
+	function toggle_handler( j ) {
+	    return function(event) { 
+	        $('#optionImg'+j).toggle();
+	    };
 	}
 	
 	function createPathBank(_id){
