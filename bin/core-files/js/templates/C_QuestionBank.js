@@ -366,7 +366,7 @@ function C_QuestionBank(_type) {
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
-					
+					console.log(questionResponse_arr[i])
 					option_arr[parseInt(temp_arr[k])].find("input").prop("checked", "checked");
 					if(option_arr[parseInt(temp_arr[k])].find('input').attr("value") == "false"){
 						tempCorrect = false;
@@ -381,6 +381,9 @@ function C_QuestionBank(_type) {
 							option_arr[j].addClass("optionCorrect");
 						}
 					}
+				}
+				if(mode=="edit"){
+					questionResponse_arr[i].complete = false;
 				}
 				break;
 			}
