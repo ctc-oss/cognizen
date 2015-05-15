@@ -35,6 +35,8 @@ function C_Completion(_type) {
 	var testNotAttempted = false;
 	var showRemediate = true;
 	var hideIndex = false;
+	var retainScore = false;
+	var passedPreviously = false;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -67,6 +69,14 @@ function C_Completion(_type) {
 		}else{
 			$(data).find("page").eq(currentPage).attr('indexhide', false);
 		}
+
+		if($(data).find("page").eq(currentPage).attr('retainscore')){
+			if($(data).find("page").eq(currentPage).attr('retainscore') == "true"){
+				retainScore = true;
+			}
+		}else{
+			$(data).find("page").eq(currentPage).attr('retainscore', false);
+		}		
 
 		if($(data).find("page").eq(currentPage).attr('showremediate')){
 			if($(data).find("page").eq(currentPage).attr('showremediate') == "false"){
@@ -117,27 +127,55 @@ function C_Completion(_type) {
 				score_obj = getFinalScore();
 			}
 
+			//retain score if already passed #3589
+			if(retainScore){
+				if(review === "true"){
+					var reviewStrip = _lessonTitle.split("Review");
+					lessonTitle = reviewStrip[0];
+
+				}	
+				var _objIndex = findObjective(lessonTitle.replace(/[^\w\s]/gi, '')+"_satisfied");
+		        var savedScore = scorm.get("cmi.objectives."+_objIndex+".score.scaled");			
+		        var numSavedScore = 0;
+
+				if(savedScore.length != 0){
+					numSavedScore = Math.round(parseFloat(savedScore) * 100);
+					if(numSavedScore >= score_obj.minScore){
+						score_obj.passed = true;
+						score_obj.score = savedScore;
+						score_obj.scorePercent = numSavedScore;
+						passedPreviously = true;
+						scoreText += '<p class="completionText">You have already passed this lesson with a score of ' + score_obj.scorePercent + '%. </p>';
+					}
+				}	
+
+
+			}
+
 			if(score_obj.passed){
 
 				if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){					
-					scoreText = '<p class="completionText">You received a passing score for this lesson. ';
+					scoreText += '<p class="completionText">You received a passing score for this lesson. ';
 				}
 				else{
-					scoreText = '<p class="completionText">' + $(data).find("page").eq(currentPage).find("passedresponse").eq(0).text();
+					scoreText += '<p class="completionText">' + $(data).find("page").eq(currentPage).find("passedresponse").eq(0).text();
 				}
 
 			}
 			else{
 				if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){	
-					scoreText = '<p class="completionText">You did not receive a passing score for this lesson. ';
+					scoreText += '<p class="completionText">You did not receive a passing score for this lesson. ';
 				}
 				else{
-					scoreText = '<p class="completionText">' + $(data).find("page").eq(currentPage).find("failedresponse").eq(0).text();
+					scoreText += '<p class="completionText">' + $(data).find("page").eq(currentPage).find("failedresponse").eq(0).text();
 				}
 			}
-			scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
-			scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
-			scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%. </p>';
+
+			if(!passedPreviously){
+				scoreText += 'The minimum score is ' + score_obj.minScore + '%.</p>';
+				scoreText += '<p class="completionText">You answered ' + score_obj.correctQuestions + ' out of ' + score_obj.totalQuestions + ' questions correctly.</p>';
+				scoreText += '<p class="completionText">Your total score is ' + score_obj.scorePercent + '%. </p>';
+			}
 			//check attempt for USSOCOM publish, using SCORM objectives
 			if(doScorm() && lms == "JKO"){
 				//convert score_obj to score_arr
@@ -328,16 +366,16 @@ function C_Completion(_type) {
 				if(isScored === "true"){
 					//#3219 updated to use passed status to set completions, parameter 1
 					//#3568 reverted change for #3219 except for CTCU courses
-					if(scormVersion === '1.2_CTCU' || lms == 'CTCU') {
-						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
+					if(scormVersion === '1.2_CTCU' || lms === 'CTCU' || lms === 'NEL') {
+						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false, false);
 					}
 					else{
-						completeLesson(completed, score_obj.passed, score_obj.score, false, false);
+						completeLesson(completed, score_obj.passed, score_obj.score, false, false, false);
 					}
 				}
 				else{
 					//#3568 - don't set success_status for non scored lessons
-					completeLesson(true, 'undefined', 0, false, false);
+					completeLesson(true, 'undefined', 0, false, false, true);
 				}
 			});
 		}
@@ -621,6 +659,8 @@ function C_Completion(_type) {
 		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Prevent completion page from showing up in the Index.'><b>Hide in Index: </b></label>";
 		msg += "<input id='hideFromIndex' type='checkbox' name='hideFromIndex' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Retains a passing score for the lesson once it has been achieved on retry.'><b>Retain passing score on retry: </b></label>";
+		msg += "<input id='retainScore' type='checkbox' name='retainScore' class='radio' value='true'/>&nbsp;&nbsp;";		
 		msg += "<div id='inputPRLabel'><b>Passed Response Feedback: </b></div>";
 		msg += "<div id='inputPassedResponse' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputFRLabel'><b>Failed Response Feedback: </b></div>";
@@ -638,6 +678,12 @@ function C_Completion(_type) {
 			$("#isRemediate").removeAttr('checked');
 		}else{
 			$("#isRemediate").attr('checked', 'checked');
+		}
+
+		if(!retainScore){
+			$('#retainScore').removeAttr('checked');
+		}else{
+			$('#retainScore').attr('checked', 'checked');
 		}
 
 		if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
@@ -725,7 +771,15 @@ function C_Completion(_type) {
 			$(data).find("page").eq(currentPage).attr("indexhide", "false");
 			hideIndex = false;
 		}
-		
+
+		if($("#retainScore").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("retainscore", "true");
+			retainScore = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("retainscore", "false");
+			retainScore = false;
+		}
+
 		var passedResponseUpdate = CKEDITOR.instances["inputPassedResponse"].getData();
 		try{ CKEDITOR.instances["inputPassedResponse"].destroy() } catch (e) {}
 		var passedResponseDoc = new DOMParser().parseFromString('<passedresponse></passedresponse>', 'text/xml')
