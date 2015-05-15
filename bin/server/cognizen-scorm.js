@@ -118,56 +118,8 @@ var SCORM = {
 								    //find the objectives in the pages.
 								    var pageCount = etree.findall('./pages/page').length;
 
-								    for (var i = 0; i < pageCount; i++) {
-								    	var myNode = etree.findall('./pages/page')[i];
-								    	var pageObj = myNode.get('objective');
-								    	var pageObjId = myNode.get('objItemId');
-								    	var pageTitle = myNode.findtext('title');
-								    	var tlo = etree.find('.courseInfo/preferences/tlo');//.get('value');
-
-								    	var tloValue = "undefined";
-								    	if(tlo != null && tlo != "null"){
-								    		tloValue = tlo.get('value');
-								    	}
-								    	var lessonIndictor = 'undefined';
-								    	if(tloValue != 'undefined' && tloValue != undefined){
-								    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
-								    	}
-								    	else{
-								    		lessonIndictor = _this.courseName.replace(/\s+/g, '').replace('.', '').replace(/\(|\)/g, "");
-								    	}
-
-								    	var tmpObjId = '';
-								    	if(pageObj != undefined && pageObj !== "undefined"){
-								    		//console.log(i + " : " + pageObj);
-								 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-								 			tmpObjId = lessonIndictor +"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-								 						pageObj.replace(/\s+/g, '_').replace('.', '');
-
-								    	}
-
-								    	if(pageObjId != undefined && pageObjId !== "undefined"){
-								    		if(tmpObjId.length > 0){
-								    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace('.', '');
-								    		}
-								    		else{
-									 			tmpObjId = lessonIndictor +"."+
-								 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-								 						pageObjId.replace(/\s+/g, '_').replace('.', '');
-								    		}
-								    	}
-
-								    	if(tmpObjId.length > 0 ){
-								    		tmpObjId += "_id";
-								    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
-								    			_this.objectives_arr.push(tmpObjId);
-								    		}
-								    		else{
-								    			_this.objectives_arr.push(tmpObjId+i);
-								    		}
-								    	}
-								    }
+								    //#3604
+								    _this._populateObjectivesArr(pageCount, etree, _this.courseName, 0);
 
 							        var courseXmlFile = path.normalize(_this.contentPath + "/../course.xml");
 							        var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
@@ -937,59 +889,8 @@ var SCORM = {
 				    //////////////////////////////////////////////////
 				    var pageCount = etree.findall('./pages/page').length;
 
-				    for (var i = 0; i < pageCount; i++) {
-				    	var myNode = etree.findall('./pages/page')[i];
-				    	var pageObj = myNode.get('objective');
-				    	var pageObjId = myNode.get('objItemId');
-				    	var pageTitle = myNode.findtext('title');
-
-				    	var tlo = etree.find('.courseInfo/preferences/tlo');//.get('value');
-
-				    	var tloValue = "undefined";
-				    	if(tlo != null && tlo != "null"){
-				    		tloValue = tlo.get('value');
-				    	}
-				    	var lessonIndictor = 'undefined';
-				    	if(tloValue != 'undefined' && tloValue != undefined){
-				    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
-				    	}
-				    	else{
-				    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '').replace(/[^\w\s]/gi, '');
-				    	}
-
-				    	var tmpObjId = '';
-				    	if(pageObj != undefined && pageObj !== "undefined"){
-				    		//console.log(i + " : " + pageObj);
-				 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-				 			tmpObjId = lessonIndictor +"."+
-				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-				 						pageObj.replace(/\s+/g, '_').replace('.', '');
-
-				    	}
-
-				    	if(pageObjId != undefined && pageObjId !== "undefined"){
-				    		if(tmpObjId.length > 0){
-				    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace('.', '');
-				    		}
-				    		else{
-					 			tmpObjId = lessonIndictor +"."+
-				 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
-				 						pageObjId.replace(/\s+/g, '_').replace('.', '');
-				    		}
-				    	}
-
-				    	if(tmpObjId.length > 0 ){
-				    		tmpObjId += "_id";
-				    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
-				    			_this.objectives_arr.push(tmpObjId);
-				    		}
-				    		else{
-				    			_this.objectives_arr.push(tmpObjId+i);
-				    		}
-				    	}
-				    }
-				    ///////////////////////////////////////////////////
-
+				    //#3604
+				    _this._populateObjectivesArr(pageCount, etree, _lessonTitle, 0);
 
 					//set up the final test item structure for review
 					var courseObj = _this._parseCourseItem(_lessonTitle.replace(/\s+/g, ''));
@@ -1425,6 +1326,67 @@ var SCORM = {
 
 	},
 
+	//#3604
+	//recursive function to avoid async issues when populating objectives_arr
+	_populateObjectivesArr:function(_pageCount, _etree, _lessonTitle, index){
+		var _this = this;
+
+	    if(index < _pageCount){	
+	    	var myNode = _etree.findall('./pages/page')[index];
+	    	var pageObj = myNode.get('objective');
+	    	var pageObjId = myNode.get('objItemId');
+	    	var pageTitle = myNode.findtext('title');
+
+	    	var tlo = _etree.find('.courseInfo/preferences/tlo');//.get('value');
+
+	    	var tloValue = "undefined";
+	    	if(tlo != null && tlo != "null"){
+	    		tloValue = tlo.get('value');
+	    	}
+	    	var lessonIndictor = 'undefined';
+	    	if(tloValue != 'undefined' && tloValue != undefined){
+	    		lessonIndictor = tloValue.replace('.', '').replace(/\s+/g, '');
+	    	}
+	    	else{
+	    		lessonIndictor = _lessonTitle.replace(/\s+/g, '').replace('.', '').replace(/[^\w\s]/gi, '');
+	    	}
+
+	    	var tmpObjId = '';
+	    	if(pageObj != undefined && pageObj !== "undefined"){
+	    		//console.log(i + " : " + pageObj);
+	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
+	 			tmpObjId = lessonIndictor +"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						pageObj.replace(/\s+/g, '_').replace('.', '');
+
+	    	}
+
+	    	if(pageObjId != undefined && pageObjId !== "undefined"){
+	    		if(tmpObjId.length > 0){
+	    			tmpObjId += "." + pageObjId.replace(/\s+/g, '_').replace('.', '');
+	    		}
+	    		else{
+		 			tmpObjId = lessonIndictor +"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						pageObjId.replace(/\s+/g, '_').replace('.', '');
+	    		}
+	    	}
+
+	    	if(tmpObjId.length > 0 ){
+	    		tmpObjId += "_id";
+	    		if(_this.objectives_arr.indexOf(tmpObjId) == -1){
+	    			_this.objectives_arr.push(tmpObjId);
+	    		}
+	    		else{
+	    			_this.objectives_arr.push(tmpObjId+i);
+	    		}
+	    	}
+
+	    	_this._populateObjectivesArr(_pageCount, _etree, _lessonTitle, index+1);
+	    }
+
+	},
+
 	_finalizeManifest: function(ilessonsName, iresourceLines, icompletionLines){
 		var _this = this;
 
@@ -1705,6 +1667,7 @@ var SCORM = {
         	item += _this._objectivesGenerator(lessonNameTrim);
         }
         else{
+        	//#3604 all items get a primary objective
 	        var courseAttr = _this._parseCourseAttr();
 
 	        if(courseAttr.lms === "JKO"){   
@@ -1716,6 +1679,14 @@ var SCORM = {
 	            "                    	</imsss:objective>\n"+			
 				"	          	   </imsss:objectives>\n";	  
 
+	        }
+	        else{
+	        item += "                  <imsss:objectives>\n"+
+	        "                      <imsss:primaryObjective objectiveID=\""+lessonNameTrim+"_satisfied\">\n"+
+	        "						  <imsss:mapInfo targetObjectiveID=\""+_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+"."+lessonNameTrim+
+	        "_satisfied\"\n readSatisfiedStatus=\"true\" writeSatisfiedStatus=\"true\" writeNormalizedMeasure=\"true\"/>\n"+
+	        "					   </imsss:primaryObjective>\n"+
+	        "	          	   </imsss:objectives>\n";	  		        	
 	        }     	
         }
 
