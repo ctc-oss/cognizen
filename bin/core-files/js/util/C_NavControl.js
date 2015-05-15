@@ -1290,20 +1290,29 @@ function checkCloseLesson(){
 				if(currentTemplateType == "completion"){
 					if(isScored === "true"){
 						var _score_obj = getFinalScore();
-						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU') {
-							completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false);
+						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU' || $(courseData).find("course").attr("lms") == 'NEL') {
+							completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false, false);
 						}
 						else{
-							completeLesson(true, _score_obj.passed, _score_obj.score, false, false);
+							completeLesson(true, _score_obj.passed, _score_obj.score, false, false, false);
 						}
 					}
 					else{
 						//#3568 - don't set success_status for non scored lessons
-						completeLesson(true, 'undefined', 0, false, false);
+						completeLesson(true, 'undefined', 0, false, false, true);
 					}
 				}
 				else{
-					scorm.API.getHandle().Terminate("");
+			        switch(scorm.version){
+			            case "1.2" : 
+							scorm.API.getHandle().LMSFinish("");	
+			            	break;
+			            //2004	
+			            default : 
+							scorm.API.getHandle().Terminate("");
+			            	break;
+			        }					
+
 				}
 				
 			}
@@ -1694,13 +1703,16 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 	//if is running in SCORM LMS set the questionResonse_arr to the cmi.suspend_data
 	if(doScorm()){
 
-		//create string version of questionResponse_arr to be used in suspend_data	
-		var qrString = '';
-		for(var i = 0; i < questionResponse_arr.length; i++){
-			qrString += JSON.stringify(questionResponse_arr[i]) + "|";	
-		}	
+		//NWC (NEL) courses do not persist score of tests
+		if($(courseData).find("course").attr("lms") != 'NEL'){
+			//create string version of questionResponse_arr to be used in suspend_data	
+			var qrString = '';
+			for(var i = 0; i < questionResponse_arr.length; i++){
+				qrString += JSON.stringify(questionResponse_arr[i]) + "|";	
+			}	
 
-		scorm.set("cmi.suspend_data", qrString);
+			scorm.set("cmi.suspend_data", qrString);
+		}
 	}
 
 	if(restartOnFail == true){
