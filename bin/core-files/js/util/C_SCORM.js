@@ -76,9 +76,10 @@ function checkScorm(){
 
 		//course has already been completed
 		if(lessonStatus == "completed"){
-			if(scorm.version != "1.2"){
-				scorm.set("cmi.success_status", "passed");
-			}
+			//do nothing
+			// if(scorm.version != "1.2"){
+			// 	scorm.set("cmi.success_status", "passed");
+			// }
 			//scorm.quit();
 		}
 		else if(_successStatus === "passed"){
@@ -148,7 +149,7 @@ function completeLessonDefault(){
 	}
 }
 
-function completeLesson(completion, success, score, remediate, attemptExceeded){
+function completeLesson(completion, success, score, remediate, attemptExceeded, suspend){
 	if(doScorm()){
 		var raw = score*100;
 
@@ -221,12 +222,33 @@ function completeLesson(completion, success, score, remediate, attemptExceeded){
 			}
 
 		}
-		else if($(courseData).find("course").attr("lms") === 'CTCU'){
-			scorm.set("cmi.exit", "normal");
-			scorm.API.getHandle().Terminate("");			
+		else if(suspend){
+	        switch(scorm.version){
+	            case "1.2" : 
+					scorm.set("cmi.core.exit", "suspend");
+					scorm.API.getHandle().LMSFinish("");	
+	            	break;
+	            //2004	
+	            default : 
+					scorm.set("cmi.exit", "suspend");
+					scorm.API.getHandle().Terminate("");	
+	            	break;
+	        }
+	
 		}
 		else{
-			scorm.quit();
+	        switch(scorm.version){
+	            case "1.2" : 
+					scorm.set("cmi.core.exit", "logout");
+					scorm.API.getHandle().LMSFinish("");	
+	            	break;
+	            //2004	
+	            default : 
+					scorm.set("cmi.exit", "normal");
+					scorm.API.getHandle().Terminate("");
+	            	break;
+	        }			
+	
 		}
 	}
 }
