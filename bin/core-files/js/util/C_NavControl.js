@@ -1682,8 +1682,13 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 				isMatch = true;
 			}
 		}
+		
 		if(isMatch){
-			questionResponse_arr[i].complete = true;
+			if(mode != "edit"){
+				questionResponse_arr[i].complete = true;
+			}
+			
+			questionResponse_arr[i].userAnswer = [];
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);
 				questionResponse_arr[i].correct = _correct;
@@ -1692,8 +1697,9 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 			if(_order){
 				questionResponse_arr[i].order = _order;
 			}
+			
 			//Show proper bank item, if a bank...
-			if(_bankID){
+			if(_bankID != undefined){
 				questionResponse_arr[i].bankID = _bankID;
 			}
 			break;

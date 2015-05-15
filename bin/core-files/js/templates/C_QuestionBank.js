@@ -57,7 +57,7 @@ function C_QuestionBank(_type) {
     var scormVersion;
     var pageId;
     var questionDisplay_arr = [];
-    var questionsComplete = 0;
+    var questionsComplete = 0; //
     var score_arr = [];
     
 
@@ -196,7 +196,6 @@ function C_QuestionBank(_type) {
 		audioHolder = new C_AudioHolder();
 
 		optionCount = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find("option").length;
-
 		var correctCount = 0;
 		for(var i = 0; i < optionCount; i++){
 			if($(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find("option").eq(i).attr('correct') == "true"){
@@ -239,7 +238,7 @@ function C_QuestionBank(_type) {
 		if(randomize){
 			var order_arr = shuffleArray(order_arr);
 		}
-
+		
 		//find every option in the xml - place them on the screen.
 		for(var j = 0; j < order_arr.length; j++){
 			var myNode = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find("option").eq(order_arr[j]);
@@ -247,7 +246,6 @@ function C_QuestionBank(_type) {
 			var myOption = "option" + iterator;
 			//Create each option as a div.
 			var myLabel = String.fromCharCode(iterator % 26 + 65);
-
 			if(isMulti == false){
 				$('#answer').append('<div class="option" id="' + myOption + '"><input id="' + myOption + 'Check" type="radio" name=' + type + '" class="radio" value="' + myNode.attr("correct")+ '"/><label id="label" class="fixFunkyIssue" for="'+ myOption +'Check">'+ myLabel + '. ' +myNode.find("content").text() +'</label></div>');
 			}else{
@@ -366,7 +364,6 @@ function C_QuestionBank(_type) {
 				var temp_arr = questionResponse_arr[i].userAnswer;
 				var tempCorrect = true;
 				for(var k = 0; k < temp_arr.length; k++){
-					console.log(questionResponse_arr[i])
 					option_arr[parseInt(temp_arr[k])].find("input").prop("checked", "checked");
 					if(option_arr[parseInt(temp_arr[k])].find('input').attr("value") == "false"){
 						tempCorrect = false;
@@ -384,6 +381,7 @@ function C_QuestionBank(_type) {
 				}
 				if(mode=="edit"){
 					questionResponse_arr[i].complete = false;
+					questionResponse_arr[i].userAnswer = [];
 				}
 				break;
 			}
