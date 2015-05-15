@@ -1826,6 +1826,21 @@ var SocketHandler = {
         });
     },
 
+    getRedmineProjectMembership: function(page, callback){
+        var _this = this;
+
+        redmine.getProjectMembership(page.lessontitle, page.coursetitle, function(data, err){
+            if(err){
+                _this.logger.error("Error finding project membership: " + err.message);
+                var emptyMembership = [];
+                callback(emptyMembership);
+            }
+            else{
+                callback(data);
+            }
+        });
+    },
+
     addComment: function (comment) {
         //comment.user
         //comment.content.type

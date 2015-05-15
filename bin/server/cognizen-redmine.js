@@ -233,7 +233,8 @@ var REDMINE = {
 		var _this = this;
 		var project = {
             name: Name,
-            identifier: "rm" + Name.toLowerCase().replace(/ /g,'')
+            identifier: "rm" + Name.toLowerCase().replace(/ /g,''),
+            is_public: false
         };
 		_this.promisedAPI.post("projects", {project: project})
 			.error(function(err){
@@ -257,7 +258,8 @@ var REDMINE = {
                     name: Name,
                     identifier: "rm" + Name.toLowerCase().replace(/ /g,''),
                     parent_id: data.id,
-                    inherit_members: true
+                    inherit_members: true,
+                    is_public: false
                 };
                 _this.promisedAPI.post("projects", {project: project})
                     .error(function(err){
@@ -283,7 +285,8 @@ var REDMINE = {
                     name: Name,
                     identifier: "rm" +Name.toLowerCase().replace(/ /g,''),
                     parent_id: data.id,
-                    inherit_members: true
+                    inherit_members: true,
+                    is_public: false
                 };
                 _this.promisedAPI.post("projects", {project: project})
                     .error(function(err){
@@ -438,16 +441,16 @@ var REDMINE = {
     updateProjectMembership: function(Permissions, callback){
         var _this = this;
 
-        _this._findProjectIdWithParent(Permissions.content.name, Permissions.content.parent, function(data, err){
-            if(err){
-                console.log("Error " + err);
-                callback(err);
-            }
-            else{
-                var _projectId = data.id;
-                // console.log("project ID = " + _projectId); 
-                //get current project membership
-                _this._getProjectMembership(_projectId, function(data, err){
+        // _this._findProjectIdWithParent(Permissions.content.name, Permissions.content.parent, function(data, err){
+        //     if(err){
+        //         console.log("Error " + err);
+        //         callback(err);
+        //     }
+        //     else{
+        //         var _projectId = data.id;
+        //         // console.log("project ID = " + _projectId); 
+        //         //get current project membership
+                _this.getProjectMembership(Permissions.content.name, Permissions.content.parent, function(data, err){
                     if(err){
                         console.log("Error getting project membership " + err);
                         callback(err);
@@ -465,9 +468,30 @@ var REDMINE = {
                     }
                 });
 
+        //     }
+        // });        
+    },
+    getProjectMembership: function(Project, ProjectParent, callback){
+        var _this = this;
+        _this._findProjectIdWithParent(Project, ProjectParent, function(data, err){
+            if(err){
+                console.log("Error " + err);
+                callback(err);
             }
-        });        
-    },    
+            else{
+                var _projectId = data.id;
+                _this.promisedAPI.get('/projects/'+_projectId+'/memberships', {})
+                    .then(function(data){
+                        callback(data, null);
+                    },
+                    function(err) {
+                        console.log("Error in _getProjectMembership: " + err.message);
+                        callback(null, err);
+                    }
+                );  
+            }
+        });      
+    },        
     _findUserId: function(Username, callback){
         var _this = this;
 
@@ -744,19 +768,7 @@ var REDMINE = {
             }                               
         }
     },
-    _getProjectMembership: function(ProjectId, callback){
-        var _this = this;
 
-        _this.promisedAPI.get('/projects/'+ProjectId+'/memberships', {})
-            .then(function(data){
-                callback(data, null);
-            },
-            function(err) {
-                console.log("Error in _getProjectMembership: " + err.message);
-                callback(null, err);
-            }
-        );        
-    },
     _getMembershipId: function(Membership_arr, UserId){
         var _this = this;
 

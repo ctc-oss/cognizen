@@ -611,6 +611,12 @@ var Content = {
                 });
             }); 
 
+            socket.on('getRedmineProjectMembership', function (data, callback){
+                SocketHandler.socket(socket).getRedmineProjectMembership(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
             socket.on('sendPackageMail', function (data) {
                 SocketHandler.socket(socket).sendPackageMail(data);
             });
