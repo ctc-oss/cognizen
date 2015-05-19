@@ -310,7 +310,7 @@ var SocketHandler = {
 							var fileSplit = data.name.split(".");
 							var mediaType = fileSplit[fileSplit.length - 1];
 							
-							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "asf"];
                             var convertableVectorTypes = ["eps"];
                             var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                             var archiveTypes = ["zip"];

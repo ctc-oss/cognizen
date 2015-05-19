@@ -86,6 +86,9 @@ var folderTrackPath = "./";
 * @type {String}
 */
 var currentSelectedTrack;
+var queue;
+var queueLength;
+var queueCurrent = 0;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -184,20 +187,40 @@ function updateFolderTrack(_track){
 * @method addDisplay
 */
 function addDisplay(){
-	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser<input id='file' type='file' /></div>";
-		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>";
-		msg += "<div id='mediaBrowserDirectorySelectPalette' class='mediaBrowserDirectorySelectPalette'>";
-		msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton mediaBrowserSelectedTrack' data='media'>media</div>";
-		msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='core'>core-prog</div>";
-		msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='course'>course css</div>";
-		msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='lesson'>lesson css</div>";
+	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser";
+			msg += "<div id='mediaBrowserClose' class='mediaBrowserClose'></div>";
 		msg += "</div>";
-		msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
-		msg += " <div class='box-wrap antiscroll-wrap'><div class='list-box'><div class='antiscroll-inner'><div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div></div></div></div>";
-		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'><div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div></div>";
+		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>";
+			msg += "<div id='mediaBrowserDirectorySelectPalette' class='mediaBrowserDirectorySelectPalette'>";
+				msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton mediaBrowserSelectedTrack' data='media'>media</div>";
+				msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='core'>core-prog</div>";
+				msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='course'>course css</div>";
+				msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='lesson'>lesson css</div>";
+			msg += "</div>";
+			msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
+			msg += "<div class='box-wrap antiscroll-wrap'>";
+				msg += "<div class='list-box'>";
+					msg += "<div class='antiscroll-inner'>";
+						msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
+					msg += "</div>";
+				msg += "</div>";
+			msg += "</div>";
+			msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'>";
+				msg += "<div id='mediaBrowserUploadWidget' class='mediaBrowserUploadWidget'>";
+					if (window.File && window.FileList && window.FileReader) {
+						msg += "<div id='mediaBrowserFileDrag' class='mediaBrowserFileDrag'>or drop files here</div>";
+					}
+					msg += "<strong>UPLOAD WIDGET:</strong><br/>";
+					msg += "<input id='file' type='file' multiple='multiple'/>";
+				msg += "</div>";
+				msg += "<div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div>";
+			msg += "</div>";
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
 	
+	$("#mediaBrowserClose").click(function(){
+		toggleMediaBrowser();
+	});
 	
 	$("#mediaButton").click(function(){
 		updateFolderTrack($(this));
@@ -215,40 +238,94 @@ function addDisplay(){
 		updateFolderTrack($(this));
 	});
 	
+	if (window.File && window.FileList && window.FileReader) {
+		//alert("adding events")
+		// file drop
+		$("#mediaBrowserFileDrag").on("dragover", FileDragHover);
+		$("#mediaBrowserFileDrag").on("dragleave", FileDragLeave);
+		$("#mediaBrowserFileDrag").on("drop", FileSelectHandler);
+	}
+	
 	currentSelectedTrack = $("#mediaButton");
 	
 	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
 	
 	$('#file').change(function(e) {
-		cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
-		cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
-    	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content.</div></div>");
-    	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
-		$("#uploadProgress").progressbar({
-			value: 0,
-			change: function() {
-				$(".progress-label").text($("#uploadProgress").progressbar("value") + "%");
-			},
-			complete: function() {
-				$(".progress-label").text("Complete!");
-			}
-		});
+		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 
-		$("#uploadProgress > div").css({ 'background': '#3383bb'});
-		
-    	var file = e.target.files[0];
-		var stream = ss.createStream();
-		ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
-		var blobStream = ss.createBlobReadStream(file);
-		var size = 0;
-		blobStream.on('data', function(chunk) {
-			size += chunk.length;
-			$("#uploadProgress").progressbar("value", Math.floor(size / file.size * 100))
-		});
-		blobStream.pipe(stream);
+    	queueFileUpload(e.target.files);
 	});
 	
 	getMediaDir();
+}
+
+function FileDragHover(e){
+	e.preventDefault();
+    e.stopPropagation();
+	e.addClass("hover");
+}
+
+function FileDragLeave(e){
+	e.preventDefault();
+    e.stopPropagation();
+	e.removeClass("hover");
+}
+
+// file selection
+function FileSelectHandler(e) {
+	if(e.originalEvent.dataTransfer){
+		if(e.originalEvent.dataTransfer.files.length) {
+			e.preventDefault();
+			e.stopPropagation();
+			/*UPLOAD FILES HERE*/
+			queueFileUpload(e.originalEvent.dataTransfer.files);
+		}
+	}
+}
+
+function queueFileUpload(_fl){
+	queue = _fl;
+	console.log("queue = " + queue);
+	queueLength = _fl.length;
+	console.log("queueLength = " + queueLength);
+	queueCurrent = 0;
+	uploadFile(queue[queueCurrent]);
+}
+
+/**
+* Node call to hit server and get list of files in the current directory
+*
+* @method uploadFile
+* @param _files File to be uploaded.
+*/
+function uploadFile(_file){
+	cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
+	cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content:<br/><strong>name: </strong>" + _file.name+ "<br/><strong>size:</strong> "+ _file.size + "<br/><strong>type:</strong> "+_file.type+"</div></div>");
+	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
+	$("#uploadProgress").progressbar({
+		value: 0,
+		change: function() {
+			$(".progress-label").text($("#uploadProgress").progressbar("value") + "%");
+		},
+		complete: function() {
+			$(".progress-label").text("Complete!");
+		}
+	});
+
+	$("#uploadProgress > div").css({ 'background': '#3383bb'});
+	
+	var file = _file;
+	var stream = ss.createStream();
+	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
+	var blobStream = ss.createBlobReadStream(file);
+	var size = 0;
+	blobStream.on('data', function(chunk) {
+		size += chunk.length;
+		$("#uploadProgress").progressbar("value", Math.floor(size / file.size * 100))
+	});
+	blobStream.pipe(stream);
 }
 
 /**
@@ -372,10 +449,9 @@ function showItemStats(event){
 	var obj = currentSelectedMediaPreview.attr("data");
 	//Disable button action for selected media
 	currentSelectedMediaPreview.off('click');
-	//try { $("#mbItemControlHolder").remove(); alert("remove mofo")} catch (e) {}
-	//Place media item options
+
 	var msg = "<div id='mbItemControlHolder' class='mbItemControlHolder'>";
-		msg += "<a  target='_blank' href=./media/"+relPath+obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
+		msg += "<a  target='_blank' href=" + folderTrackPath + mediaBrowserDisplayPath +obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
 		msg += "<div id='mediaRemove' class='mediaRemove' title='delete this item'></div>";
 		if(fromDialog){
 			msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
@@ -390,7 +466,8 @@ function showItemStats(event){
 	});
 	   
 	$(".mediaDownload").click(function(){
-		var myItem = relPath + obj;	
+		var myItem = folderTrackPath + mediaBrowserDisplayPath +obj;
+		//console.log(myItem)	
 		//downloadMedia(myItem);	   
 	});
 	
@@ -510,10 +587,7 @@ function mediaBrowserRemoveMediaComplete(){
 function mediaBrowserPreviewFile(_file){
 	$("#mediaBrowserPreview").addClass("C_Loader");
 	var imageTypes = ["png", "jpg", "gif"];
-	console.log("folderTrackPath = " + folderTrackPath);
-	console.log("mediaBrowserDisplayPath = " + mediaBrowserDisplayPath);
 	var fp = folderTrackPath + mediaBrowserDisplayPath + _file;
-	console.log("fp = " + fp);
 	$("#mediaBrowserPreviewMediaHolder").empty();
 	$("#mediaBrowserPreviewMediaHolder").css({'opacity':0});
 	var myType = getFileType(_file);
@@ -527,7 +601,10 @@ function mediaBrowserPreviewFile(_file){
 		mediaBrowserLoadImagePreview(fp);
 	}else{
 		$("#mediaBrowserPreview").removeClass("C_Loader");
-		alert("You can't preview this file type.");
+		//alert("You can't preview this file type.");
+		$("#mediaBrowserPreviewMediaHolder").append("<p><b>You can't preview this file type from within the system.</b></p><p>It has been opened in a new window. Check how your browser handles different file types to see if it has been downloaded.</p>");
+		$("#mediaBrowserPreviewMediaHolder").css({'opacity': 1, 'text-align': 'center'});
+		window.open(fp, "_blank");
 	}
 }
 
@@ -635,12 +712,19 @@ function mediaBrowserLoadImagePreview(_fp){
 	    $("#mediaBrowserPreview").removeClass("C_Loader");
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
-        var imageHeight = $(img).height();
+        
         if(imageWidth > $("#mediaBrowserPreview").width()){
 	        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
 	        $(img).width($(img).width() * widthScale);
-			$(img).height($(img).height() * widthScale);
-			$("#mediaBrowserPreviewMediaHolder").prepend("<div class='scaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+			//$(img).height($(img).height() * widthScale);
+			$("#mediaBrowserPreviewMediaHolder").append("<div class='scaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+        }
+        var imageHeight = $(img).height();
+        if(imageHeight > $("#mediaBrowserPreview").height()){
+	        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
+	        //$(img).width($(img).width() * heightScale);
+			$(img).height($(img).height() * heightScale);
+	        $("#mediaBrowserPreviewMediaHolder").append("<div class='scaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
         }
         TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
     }).attr('src', _fp).attr('id', 'myImage');
@@ -690,20 +774,27 @@ function mediaBrowserConversionProgress(data){
 */
 function mediaBrowserUploadComplete(data){
 	$("#C_Loader").remove();
-	try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
-	try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+	queueCurrent++;
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
-	var splitPath = data.split("/");
-	var last = splitPath.length;
-	var mediaPath = splitPath[last-1];
-	mediaBrowserPreviewFile(mediaPath);
-	//Commit GIT when complete.
-	var urlParams = queryStringParameters();
-	cognizenSocket.emit('contentSaved', {
-        content: {type: urlParams['type'], id: urlParams['id']},
-        user: {id: urlParams['u']}
-    });
-    getMediaDir(relPath);
+	console.log("MEDIABROWSER UPLOAD COMPLETE");
+	if(queueLength == queueCurrent){
+		console.log("DONE");
+		var splitPath = data.split("/");
+		var last = splitPath.length;
+		var mediaPath = splitPath[last-1];
+		mediaBrowserPreviewFile(mediaPath);
+		//Commit GIT when complete.
+		var urlParams = queryStringParameters();
+		cognizenSocket.emit('contentSaved', {
+	        content: {type: urlParams['type'], id: urlParams['id']},
+	        user: {id: urlParams['u']}
+	    });
+	    getMediaDir(relPath);
+	}else{
+		console.log("LOAD NEXT");
+		uploadFile(queue[queueCurrent]);
+	}
+    
 }
 
 /**
