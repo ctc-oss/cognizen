@@ -16,7 +16,7 @@ function C_Branching(_type) {
 	var branchCount = 0;
 	var branchType = type;
 	var currentMedia;
-	var currentBranch = 0;
+	//var currentBranch = 0;
 	var mandatory = true;
 	var currentEditBankMember = 0;
 	var layoutType_arr = ["textOnly", "graphicOnly", "top", "right", "bottom", "left", "sidebar"];
@@ -88,6 +88,11 @@ function C_Branching(_type) {
 		
 		buildBranchOptions(_id);
 		checkMode();
+
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
+			updateRedmineCommentIcon();		
+		}		
+
 		doAccess(pageAccess_arr);
 	}
 

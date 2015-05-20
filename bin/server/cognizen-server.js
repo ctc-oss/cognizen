@@ -593,14 +593,18 @@ var Content = {
                 });
             });
 
-            socket.on('getRedmineIssues', function (data, callback){
-                SocketHandler.socket(socket).getRedmineIssues(data, function (fdata){
+            socket.on('getRedminePageIssues', function (data, callback){
+                SocketHandler.socket(socket).getRedminePageIssues(data, function (fdata){
                     callback(fdata);
                 });
             });             
 
-            socket.on('updateRedmineIssue', function (data, callback){
-                SocketHandler.socket(socket).updateRedmineIssue(data, function (fdata){
+            socket.on('getRedmineLessonIssues', function (data){
+                SocketHandler.socket(socket).getRedmineLessonIssues(data);
+            }); 
+
+            socket.on('updateRedmineIssue', function (data, username, callback){
+                SocketHandler.socket(socket).updateRedmineIssue(data, username, function (fdata){
                     callback(fdata);
                 });
             }); 

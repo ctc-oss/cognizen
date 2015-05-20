@@ -211,7 +211,7 @@ var REDMINE = {
 
 		_this._findUserId(Username, function(data, err){
 			if(err){
-				console.log("Error " + err);
+				_this.logger.error("Error " + err);
 				callback(err);
 			}
 			else{
@@ -250,7 +250,7 @@ var REDMINE = {
         var _this = this;
         _this._findProjectId(Project.name, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(err);
             }
             else{
@@ -277,7 +277,7 @@ var REDMINE = {
         var _this = this;
         _this._findProjectId(Course.name, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(err);
             }
             else{
@@ -304,7 +304,7 @@ var REDMINE = {
         var _this = this;
         _this._findProjectId(Original, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(err);
             }
             else{
@@ -329,21 +329,21 @@ var REDMINE = {
         //find project id
         _this._findProjectId(Comment.lessontitle, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(err);
             }
             else{
                 var _projectId = data.id;
                 _this._findCustomFieldId("Page Title", function(data, err){
                     if(err){
-                        console.log("Error " + err);
+                        _this.logger.error("Error " + err);
                         callback(null, err);
                     }
                     else{
                         var _pageTitleId = data.id;
                         _this._findCustomFieldId("Page Id", function(data, err){
                             if(err){
-                                console.log("Error " + err);
+                                _this.logger.error("Error " + err);
                                 callback(null, err);
                             }
                             else{
@@ -357,11 +357,12 @@ var REDMINE = {
                                             {value: Comment.page.title, id: _pageTitleId},
                                             {value: Comment.page.id, id: _pageIdId}
                                         ],
-                                    status_id: Comment.status    
+                                    status_id: Comment.status,
+                                    assigned_to_id: Comment.assigned_to_id   
                                 };            
-                                _this.promisedAPI.postIssue(issue)
+                                _this.promisedAPI.postIssue(issue, Comment.user.username)
                                     .error(function(err){
-                                        console.log("Error: " + err.message);
+                                        _this.logger.error("Error: " + err.message);
                                         callback(err);
                                     })
 
@@ -381,14 +382,14 @@ var REDMINE = {
         var _this = this;
         _this._findProjectId(Page.lessontitle, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(null, err);
             }
             else{
                 var _projectId = data.id;
                 _this._findCustomFieldId("Page Id", function(data, err){
                     if(err){
-                        console.log("Error " + err);
+                        _this.logger.error("Error " + err);
                         callback(null, err);
                     }
                     else{
@@ -397,7 +398,7 @@ var REDMINE = {
                         _params[_customFilter] = Page.id;
                         _this.promisedAPI.getIssues(_params)
                             .error(function(err){
-                                console.log("Error: " + err.message);
+                                _this.logger.error("Error: " + err.message);
                                 callback(null, err);
                             })
                             .success(function(data){
@@ -410,10 +411,35 @@ var REDMINE = {
             }
         });
     },
-    updateIssue: function(Issue, callback){
+    getIssuesByLessonId: function(lessontitle, callback){
+        var _this = this;
+
+        _this._findProjectId(lessontitle, function(data, err){
+            if(err){
+                _this.logger.error("Error " + err);
+                callback(null, err);
+            }
+            else{
+                var _projectId = data.id;
+                var _params = {project_id: _projectId};
+                _this.promisedAPI.getIssues(_params)
+                    .error(function(err){
+                        _this.logger.error("Error: " + err.message);
+                        callback(null, err);
+                    })
+                    .success(function(data){
+                        callback(data, null);
+                    })
+                ;                                              
+              
+
+            }
+        });
+    },
+    updateIssue: function(Issue, username, callback){
        var _this = this;
        
-        _this.promisedAPI.updateIssue(Issue.id, Issue)
+        _this.promisedAPI.updateIssue(Issue.id, Issue, username)
             .error(function(err){
                 callback(err);
             })
@@ -432,7 +458,7 @@ var REDMINE = {
 
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, err);
             }
         ); 
@@ -441,41 +467,30 @@ var REDMINE = {
     updateProjectMembership: function(Permissions, callback){
         var _this = this;
 
-        // _this._findProjectIdWithParent(Permissions.content.name, Permissions.content.parent, function(data, err){
-        //     if(err){
-        //         console.log("Error " + err);
-        //         callback(err);
-        //     }
-        //     else{
-        //         var _projectId = data.id;
-        //         // console.log("project ID = " + _projectId); 
-        //         //get current project membership
-                _this.getProjectMembership(Permissions.content.name, Permissions.content.parent, function(data, err){
+        _this.getProjectMembership(Permissions.content.name, Permissions.content.parent, function(data, err){
+            if(err){
+                _this.logger.error("Error getting project membership " + err);
+                callback(err);
+            }
+            else{
+                var _membership_arr = data.memberships;
+                _this._assignMembership(_projectId, _membership_arr, Permissions.users, 0, function(err){
                     if(err){
-                        console.log("Error getting project membership " + err);
                         callback(err);
                     }
                     else{
-                        var _membership_arr = data.memberships;
-                        _this._assignMembership(_projectId, _membership_arr, Permissions.users, 0, function(err){
-                            if(err){
-                                callback(err);
-                            }
-                            else{
-                                callback();
-                            }
-                        });                       
+                        callback();
                     }
-                });
-
-        //     }
-        // });        
+                });                       
+            }
+        });
+      
     },
     getProjectMembership: function(Project, ProjectParent, callback){
         var _this = this;
         _this._findProjectIdWithParent(Project, ProjectParent, function(data, err){
             if(err){
-                console.log("Error " + err);
+                _this.logger.error("Error " + err);
                 callback(err);
             }
             else{
@@ -485,7 +500,7 @@ var REDMINE = {
                         callback(data, null);
                     },
                     function(err) {
-                        console.log("Error in _getProjectMembership: " + err.message);
+                        _this.logger.error("Error in _getProjectMembership: " + err.message);
                         callback(null, err);
                     }
                 );  
@@ -510,7 +525,7 @@ var REDMINE = {
                 }
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, "Error: " + err.message);
             }
         );  
@@ -539,7 +554,7 @@ var REDMINE = {
                 }
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, "Error: " + err.message);
             }
         ); 
@@ -563,7 +578,7 @@ var REDMINE = {
                 }
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, "Error: " + err.message);
             }
         );          
@@ -586,7 +601,7 @@ var REDMINE = {
                 }                
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, "Error: " + err.message);
             }
         );
@@ -608,7 +623,7 @@ var REDMINE = {
                 }
             },
             function(err) {
-                console.log("Error: " + err.message);
+                _this.logger.error("Error: " + err.message);
                 callback(null, "Error: " + err.message);
             }
         );        
@@ -628,7 +643,7 @@ var REDMINE = {
                             //require password reset on first login / default password is cognizen
                             _this.createUser(Users[Index].username, Users[Index].first, Users[Index].last, 'cognizen', true, function(err){
                                 if(err){
-                                    console.log("Error creating redmine user: " + err);
+                                    _this.logger.error("Error creating redmine user: " + err);
                                     callback(err);                                        
                                 }
                                 else{
@@ -647,7 +662,7 @@ var REDMINE = {
                         }
                     }
                     else{
-                        console.log("Error " + err);
+                        _this.logger.error("Error " + err);
                         callback(err);
                     }
                 }
@@ -658,7 +673,7 @@ var REDMINE = {
 
                     _this._setMembership(_membershipId, ProjectId, userId, Users[Index].permission, function(data, err){
                         if(err){
-                            console.log("Error in setMembership " + err);
+                            _this.logger.error("Error in setMembership " + err);
                             callback(err);
                         }
                         else{
@@ -697,22 +712,20 @@ var REDMINE = {
         if(MembershipId != 0){
             if(redmineRole != ''){
                 //update membership
-                //console.log(MembershipId + ' update membership');
                 _this._findRoleId(redmineRole, function(data, err){
                     if(err){
-                        console.log("Error finding role id " + err);
+                        _this.logger.error("Error finding role id " + err);
                         callback(err);
                     }
                     else{
                         var roleId = data.id;
                         _this.promisedAPI.put('/memberships/'+MembershipId, {"membership": {"role_ids": [roleId]}})
                             .error(function(err){
-                                console.log("Error: " + err.message);
+                                _this.logger.error("Error: " + err.message);
                                 callback(err);
                             })
 
                             .success(function(data){
-                                //console.log(data);
                                 callback();
                             })
                         ;    
@@ -722,15 +735,13 @@ var REDMINE = {
             }
             else{
                 //delete membership
-                //console.log("in delete membership");
                 _this.promisedAPI.del('/memberships/'+MembershipId, {})
                     .error(function(err){
-                        console.log("Error: " + err.message);
+                        _this.logger.error("Error: " + err.message);
                         callback(err);
                     })
 
                     .success(function(data){
-                        //console.log(data);
                         callback();
                     })
                 ;                     
@@ -738,7 +749,6 @@ var REDMINE = {
         }
         else{
              if(redmineRole != ''){
-                //console.log('post membership');
                 _this._findRoleId(redmineRole, function(data, err){
                     if(err){
                         console.log("Error finding role id " + err);
@@ -748,12 +758,11 @@ var REDMINE = {
                         var roleId = data.id;
                         _this.promisedAPI.post('/projects/'+ProjectId+'/memberships', {"membership": {"user_id": UserId, "role_ids": [roleId]}})
                             .error(function(err){
-                                console.log("Error: " + err.message);
+                                _this.logger.error("Error: " + err.message);
                                 callback(err);
                             })
 
                             .success(function(data){
-                                //console.log(data);
                                 callback();
                             })
                         ;    
@@ -763,7 +772,6 @@ var REDMINE = {
             }
             else{
                 //do nothing callback 
-                //console.log('do nothing');
                 callback();
             }                               
         }

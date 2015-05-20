@@ -1782,7 +1782,7 @@ var SocketHandler = {
         }); 
     },
 
-    getRedmineIssues: function (page, callback){
+    getRedminePageIssues: function (page, callback){
         var _this = this
 
         redmine.getIssuesByPageId(page, function(data, err){
@@ -1797,9 +1797,23 @@ var SocketHandler = {
         }); 
     },
 
-    updateRedmineIssue: function (issue, callback){
+    getRedmineLessonIssues: function (_lessontitle){
+        var _this = this
+        redmine.getIssuesByLessonId(_lessontitle, function(data, err){
+            if(err){
+                _this.logger.error("Error finding issues: " + err);
+                //callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
+            }
+            else{
+                //_this.logger.info(data);
+                _this.io.sockets.emit('updateRedmineCommentIndex', data);
+            }
+        }); 
+    },    
+
+    updateRedmineIssue: function (issue, username, callback){
         var _this = this;
-        redmine.updateIssue(issue, function(err){
+        redmine.updateIssue(issue, username, function(err){
             if(err){
                 _this.logger.error("Error updating issue: " + err);
                 callback(err);
