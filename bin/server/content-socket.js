@@ -20,12 +20,12 @@ var ContentSocket = {
     start: function(port, _path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
         var xmlCourseFile = contentPath + '/../course.xml';
+        
         var mediaPath = contentPath + '/media/';
         var corePath = contentPath + '/../../core-prog/';
         var coursePath = contentPath + '/../css/CourseCSS/';
-        var lessonPath = contentPath + '/./css/';
-        console.log("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+__+_+");
-        console.log("contentPath = " + contentPath);
+        var lessonPath = contentPath + '/css/';
+        
 		var thisPort = port;
         var	app = http.createServer(function (req, res) {
         	res.writeHead(404);

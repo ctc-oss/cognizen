@@ -1494,15 +1494,21 @@ MEDIA LAYOUTS
 
 }
 
-.scaleWarning{
-	position: relative;
+.mediaBrowserScaleWarning{
+	position: absolute;
+	background-color: rgba(255, 255, 255, .5);
 	top: 0px;
 	color: red;
-	width: auto;
+	width: 100%;
 	height: auto;
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	padding: 10px;
+	z-index: 2;
 }
 
 .mediaBrowserPane{
@@ -1582,8 +1588,8 @@ MEDIA LAYOUTS
 
 .mediaBrowserClose{
 	position: absolute;
-	top: 0px;
-	right: 0px;
+	top: 1px;
+	right: 1px;
 	background: url(images/close.png) no-repeat;
 	width: 24px;
 	height: 24px;

@@ -286,9 +286,7 @@ function FileSelectHandler(e) {
 
 function queueFileUpload(_fl){
 	queue = _fl;
-	console.log("queue = " + queue);
 	queueLength = _fl.length;
-	console.log("queueLength = " + queueLength);
 	queueCurrent = 0;
 	uploadFile(queue[queueCurrent]);
 }
@@ -336,7 +334,7 @@ function uploadFile(_file){
 */
 function getMediaDir(_dir){
 	$("#mediaBrowserList").empty();
-	//console.log("_dir = " + _dir);
+	
 	if(_dir){
 		//Get media directory sub folder.
 		
@@ -359,30 +357,32 @@ function updateMediaBrowserDir(_data){
 	var res = mediaBrowserDisplayPath.split("/");
 	//console.log(res);
 	//Add "up a directory" (../media) button if needed.
-	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS" && res[res.length-2] != "ModuleCSS"){
-		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
-		
-		$("#mediaBrowserUpDirectory").click(function(){
-		   $("#mediaBrowserList").empty();
-		   //update the path display string
-		   var tempString_arr = mediaBrowserDisplayPath.split("/");
-		   tempString_arr.pop();
-		   tempString_arr.pop();
-		   mediaBrowserDisplayPath = "";
-		   for(var i = 0; i < tempString_arr.length; i++){
-			   mediaBrowserDisplayPath += tempString_arr[i] + "/";
-		   }
-		   //rewrite the relative path
-		   var tempRel = relPath.split("/");
-		   tempRel.pop();
-		   tempRel.pop();
-		   relPath = "";
-		   for(var j = 0; j < tempRel.length; j++){
-			   relPath += tempRel[j] + "/";
-		   }
-		   //Load the new path
-		   getMediaDir(relPath);
-	   });
+	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS"){
+		if(res[res.length-2] == "css" && folderTrack != "lesson"){
+			$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
+			
+			$("#mediaBrowserUpDirectory").click(function(){
+			   $("#mediaBrowserList").empty();
+			   //update the path display string
+			   var tempString_arr = mediaBrowserDisplayPath.split("/");
+			   tempString_arr.pop();
+			   tempString_arr.pop();
+			   mediaBrowserDisplayPath = "";
+			   for(var i = 0; i < tempString_arr.length; i++){
+				   mediaBrowserDisplayPath += tempString_arr[i] + "/";
+			   }
+			   //rewrite the relative path
+			   var tempRel = relPath.split("/");
+			   tempRel.pop();
+			   tempRel.pop();
+			   relPath = "";
+			   for(var j = 0; j < tempRel.length; j++){
+				   relPath += tempRel[j] + "/";
+			   }
+			   //Load the new path
+			   getMediaDir(relPath);
+		   });
+		}
 	}
 	
 	//Add directories
@@ -668,13 +668,27 @@ function mediaBrowserLoadVideoPreview(_fp){
 		vidHTMLString += "</video>";
 
     $("#mediaBrowserPreviewMediaHolder").append(vidHTMLString);
-		
+	//$('#mediaBrowserPreviewMediaHolder').css({'opacity': .1})	
 	// decent browser - prefer HTML5 video
 	$('#mb_videoplayer').mediaelementplayer({
 		enablePluginSmoothing: true,
 		enableKeyboard: true,
 		success: function(player, node){
 			player.addEventListener('loadeddata', function(e) {
+				var imageWidth = e.target.videoWidth;
+        
+		        if(imageWidth > $("#mediaBrowserPreview").width()){
+			        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
+			        e.target.videoWidth = e.target.videoWidth * widthScale;
+					$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+		        }
+		        var imageHeight = e.target.videoHeight;
+		        /*if(imageHeight > $("#mediaBrowserPreview").height()){
+			        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
+					//e.target.videoHeight = e.target.videoHeight * heightScale;
+			        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
+		        }*/
+				
 				//tween after loaded and positioned.
 				$("#mediaBrowserPreview").removeClass("C_Loader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
@@ -716,15 +730,13 @@ function mediaBrowserLoadImagePreview(_fp){
         if(imageWidth > $("#mediaBrowserPreview").width()){
 	        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
 	        $(img).width($(img).width() * widthScale);
-			//$(img).height($(img).height() * widthScale);
-			$("#mediaBrowserPreviewMediaHolder").append("<div class='scaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+			$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
         }
         var imageHeight = $(img).height();
         if(imageHeight > $("#mediaBrowserPreview").height()){
 	        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
-	        //$(img).width($(img).width() * heightScale);
 			$(img).height($(img).height() * heightScale);
-	        $("#mediaBrowserPreviewMediaHolder").append("<div class='scaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
+	        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
         }
         TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
     }).attr('src', _fp).attr('id', 'myImage');
@@ -739,7 +751,7 @@ function mediaBrowserConversionStart(data){
 	//$("#C_Loader").remove();
 	$(".C_LoaderText").empty();
 	$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-	$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+	$(".C_LoaderText").append("<div id='conversionProgress'><div id='progress-label' class='progress-label'>Converting...</div></div>");
 	$("#conversionProgress").progressbar({
 		value: 0,
 		change: function() {
@@ -776,9 +788,8 @@ function mediaBrowserUploadComplete(data){
 	$("#C_Loader").remove();
 	queueCurrent++;
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
-	console.log("MEDIABROWSER UPLOAD COMPLETE");
 	if(queueLength == queueCurrent){
-		console.log("DONE");
+		//queue complete
 		var splitPath = data.split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
@@ -791,10 +802,9 @@ function mediaBrowserUploadComplete(data){
 	    });
 	    getMediaDir(relPath);
 	}else{
-		console.log("LOAD NEXT");
+		//Load next item
 		uploadFile(queue[queueCurrent]);
 	}
-    
 }
 
 /**
@@ -808,6 +818,7 @@ function mediaInfo(data){
 		var splitDim = data.video_details[2].split("x");
 		var mediaWidth = splitDim[0];
 		var mediaHeight = splitDim[1];
+		console.log(data);
 	}
 }
 
