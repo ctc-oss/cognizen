@@ -212,7 +212,8 @@ function C_AudioHolder(){
     function launchAudioDialog(audioText, dragged){
 		var msg = "<div id='audioEditDialog' title='Input Audio Path'>";
 		msg += "<label id='label'>file name: </label>";
-		msg += "<input id='audioPath' class='dialogInput' type='text' title='Name of the audio file.' value="+ audioText + " defaultValue="+ audioText + " style='width:70%;'/><br/>";
+		msg += "<input id='audioPath' class='dialogInput' type='text' title='Name of the audio file.' value="+ audioText + " defaultValue="+ audioText + " style='width:70%;'/>";
+		msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 		msg += "<label id='label'>autoplay:</label>";
 		msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true' title='Add/Remove Autoplay Functionality.'/></input><br/>";
 		msg += "<label id='label'>autonext:</label>";
@@ -234,6 +235,12 @@ function C_AudioHolder(){
 		if(autoNext == true){
 			$("#autonext").attr("checked", "checked");
 		}
+		
+		$("#dialogMediaBrowseButton").click(function(){
+			$(".ui-dialog").hide();
+			$(".ui-widget-overlay").hide();
+			dialogToggleMediaBrowser($("#audioPath"));					
+		});
 
 		//Style it to jQuery UI dialog
 		$("#audioEditDialog").dialog({
@@ -314,7 +321,7 @@ function C_AudioHolder(){
 			$("#audioEditDialog").dialog("close");
 
 			sendUpdateWithRefresh();
-			currentTemplate.fadeComplete();
+			fadeComplete();
 		}else{
           	$("#audioEditDialog").append("<div id='addError' style='color:#FF0000'><br/><br/>* Only .mp3 audio files are supported at this time.</div>");
 		}

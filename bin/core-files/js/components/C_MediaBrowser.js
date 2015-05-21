@@ -45,24 +45,60 @@ var dirDepth = 0;
 * @default ""
 */
 var relPath = "";
-
-
+/**
+* Variable to hold socket stream.
+* 
+* @type {String}
+* @default ""
+*/
+var ss;
+/**
+* Variable to hold current preview menu item.
+* 
+* @type {Object}
+*/
+var currentSelectedMediaPreview;
+/**
+* Variable to hold if removeMedia button was clicked.
+* 
+* @type {Boolean}
+*/
+var removeClicked = false;
+/**
+* Variable representing scroll bar for lists.
+*/
+var listScroller;
+/**
+* Variable to hold folder track. Options are "media", "core", "course" and "lesson".
+* 
+* @type {String}
+*/
+var folderTrack = "media";
+/**
+* Variable to hold folder track path.
+* 
+* @type {String}
+*/
+var folderTrackPath = "./";
+/**
+* Variable to hold folder track label.
+* 
+* @type {String}
+*/
+var currentSelectedTrack;
+var queue;
+var queueLength;
+var queueCurrent = 0;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
 * @method addMediaBrowser
 */
 function addMediaBrowser(){
-	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>");
+	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>").tooltip();
 									
 	$("#mediaBrowserButton").click(function(){							
-		if(mediaBrowserState){
-			$(this).removeClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = false;
-		}else{
-			$(this).addClass('C_MediaBrowserButtonActive');
-			mediaBrowserState = true;
-		}
+		
 		toggleMediaBrowser();
 	}).keypress(function(event) {
         var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -72,6 +108,16 @@ function addMediaBrowser(){
     });															
 }
 
+var fromDialog = false;
+var fileTarget = null;
+
+//function dialogToggleMediaBrowser(){
+this.dialogToggleMediaBrowser = function(_target){
+	fromDialog = true;
+	fileTarget = _target;
+	toggleMediaBrowser();
+}
+
 /**
 * Method to open and close the mediaBrowser depending upon it's current state.
 *
@@ -79,7 +125,14 @@ function addMediaBrowser(){
 */
 function toggleMediaBrowser(){
 	if(mediaBrowserState){
-		//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+		$("#mediaBrowserButton").removeClass('C_MediaBrowserButtonActive');
+		mediaBrowserState = false;
+	}else{
+		$("#mediaBrowserButton").addClass('C_MediaBrowserButtonActive');
+		mediaBrowserState = true;
+	}
+	
+	if(mediaBrowserState){
 		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
 		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
 		var displayHeight = $(".mediaBrowserDisplay").css("max-height");
@@ -88,7 +141,44 @@ function toggleMediaBrowser(){
 		//Tween transcript closed then remove text
 		$("#mediaBrowserDisplay").empty();
 		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeMediaBrowserDisplay});
+		if(fromDialog){
+			fromDialog = false;
+			$(".ui-dialog").show();
+			$(".ui-widget-overlay").show();
+		}
 	}
+}
+
+
+/**
+* Method to open and close different folders in the structure.
+*
+* @method updateFolderTrack
+* @param _track {String} variable stating which folder has been opened.
+*/
+function updateFolderTrack(_track){
+	currentSelectedTrack.removeClass("mediaBrowserSelectedTrack");
+	folderTrack = _track.attr("data");
+	currentSelectedTrack = _track;
+	currentSelectedTrack.addClass("mediaBrowserSelectedTrack");
+	if(folderTrack == "core"){
+		folderTrackPath = "../../";
+		mediaBrowserDisplayPath = "core-prog/"
+	}else if(folderTrack == "course"){
+		folderTrackPath = "../";
+		mediaBrowserDisplayPath = "css/CourseCSS/"
+	}else if(folderTrack == "lesson"){
+		folderTrackPath = "./";
+		mediaBrowserDisplayPath = "css/"
+	}else{
+		folderTrackPath = "./";
+		mediaBrowserDisplayPath = "media/"
+	}
+	
+	dirDepth = 0;
+	relPath = "";
+	
+	getMediaDir();
 }
 
 /**
@@ -97,13 +187,143 @@ function toggleMediaBrowser(){
 * @method addDisplay
 */
 function addDisplay(){
-	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser</div>";
-		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>"
-		msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
-		msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'><div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div></div>";
+	var msg = "<div id='mediaBrowserHeader' class='mediaBrowserHeader'>Media Browser";
+			msg += "<div id='mediaBrowserClose' class='mediaBrowserClose'></div>";
+		msg += "</div>";
+		msg += "<div id='mediaBrowserContent' class='mediaBrowserContent'>";
+			msg += "<div id='mediaBrowserDirectorySelectPalette' class='mediaBrowserDirectorySelectPalette'>";
+				msg += "<div id='mediaButton' class='mediaBrowserDirectorySelectButton mediaBrowserSelectedTrack' data='media'>media</div>";
+				msg += "<div id='coreprogButton' class='mediaBrowserDirectorySelectButton' data='core'>core-prog</div>";
+				msg += "<div id='coursecssButton' class='mediaBrowserDirectorySelectButton' data='course'>course css</div>";
+				msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='lesson'>lesson css</div>";
+			msg += "</div>";
+			msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
+			msg += "<div class='box-wrap antiscroll-wrap'>";
+				msg += "<div class='list-box'>";
+					msg += "<div class='antiscroll-inner'>";
+						msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
+					msg += "</div>";
+				msg += "</div>";
+			msg += "</div>";
+			msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'>";
+				msg += "<div id='mediaBrowserUploadWidget' class='mediaBrowserUploadWidget'>";
+					if (window.File && window.FileList && window.FileReader) {
+						msg += "<div id='mediaBrowserFileDrag' class='mediaBrowserFileDrag'>or drop files here</div>";
+					}
+					msg += "<strong>UPLOAD WIDGET:</strong><br/>";
+					msg += "<input id='file' type='file' multiple='multiple'/>";
+				msg += "</div>";
+				msg += "<div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div>";
+			msg += "</div>";
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
+	
+	$("#mediaBrowserClose").click(function(){
+		toggleMediaBrowser();
+	});
+	
+	$("#mediaButton").click(function(){
+		updateFolderTrack($(this));
+	});
+	
+	$("#coreprogButton").click(function(){
+		updateFolderTrack($(this));
+	});
+	
+	$("#coursecssButton").click(function(){
+		updateFolderTrack($(this));
+	});
+	
+	$("#lessoncssButton").click(function(){
+		updateFolderTrack($(this));
+	});
+	
+	if (window.File && window.FileList && window.FileReader) {
+		//alert("adding events")
+		// file drop
+		$("#mediaBrowserFileDrag").on("dragover", FileDragHover);
+		$("#mediaBrowserFileDrag").on("dragleave", FileDragLeave);
+		$("#mediaBrowserFileDrag").on("drop", FileSelectHandler);
+	}
+	
+	currentSelectedTrack = $("#mediaButton");
+	
+	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
+	
+	$('#file').change(function(e) {
+		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+
+    	queueFileUpload(e.target.files);
+	});
+	
 	getMediaDir();
+}
+
+function FileDragHover(e){
+	e.preventDefault();
+    e.stopPropagation();
+	e.addClass("hover");
+}
+
+function FileDragLeave(e){
+	e.preventDefault();
+    e.stopPropagation();
+	e.removeClass("hover");
+}
+
+// file selection
+function FileSelectHandler(e) {
+	if(e.originalEvent.dataTransfer){
+		if(e.originalEvent.dataTransfer.files.length) {
+			e.preventDefault();
+			e.stopPropagation();
+			/*UPLOAD FILES HERE*/
+			queueFileUpload(e.originalEvent.dataTransfer.files);
+		}
+	}
+}
+
+function queueFileUpload(_fl){
+	queue = _fl;
+	queueLength = _fl.length;
+	queueCurrent = 0;
+	uploadFile(queue[queueCurrent]);
+}
+
+/**
+* Node call to hit server and get list of files in the current directory
+*
+* @method uploadFile
+* @param _files File to be uploaded.
+*/
+function uploadFile(_file){
+	cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
+	cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content:<br/><strong>name: </strong>" + _file.name+ "<br/><strong>size:</strong> "+ _file.size + "<br/><strong>type:</strong> "+_file.type+"</div></div>");
+	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
+	$("#uploadProgress").progressbar({
+		value: 0,
+		change: function() {
+			$(".progress-label").text($("#uploadProgress").progressbar("value") + "%");
+		},
+		complete: function() {
+			$(".progress-label").text("Complete!");
+		}
+	});
+
+	$("#uploadProgress > div").css({ 'background': '#3383bb'});
+	
+	var file = _file;
+	var stream = ss.createStream();
+	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
+	var blobStream = ss.createBlobReadStream(file);
+	var size = 0;
+	blobStream.on('data', function(chunk) {
+		size += chunk.length;
+		$("#uploadProgress").progressbar("value", Math.floor(size / file.size * 100))
+	});
+	blobStream.pipe(stream);
 }
 
 /**
@@ -113,12 +333,15 @@ function addDisplay(){
 * @param {String} _dir Directory path to be parsed.
 */
 function getMediaDir(_dir){
+	$("#mediaBrowserList").empty();
+	
 	if(_dir){
 		//Get media directory sub folder.
-		socket.emit('getMediaDir', _dir);
+		
+		socket.emit('getMediaDir',  {loc: folderTrack, path: _dir});
 	}else{
 		//Just get media folder
-		socket.emit('getMediaDir', "");
+		socket.emit('getMediaDir', {loc: folderTrack, path: ""});
 	}
 }
 
@@ -130,34 +353,36 @@ function getMediaDir(_dir){
 */
 function updateMediaBrowserDir(_data){
 	$("#mediaBrowserList").removeClass('C_Loader');
-	$("#mediaBrowserList").append("<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>");
-	
+	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
-	
-	//Add up a directory button if needed.
-	if(res[res.length-2] != "media"){
-		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
-		$("#mediaBrowserUpDirectory").click(function(){
-		   $("#mediaBrowserList").empty();
-		   //update the path display string
-		   var tempString_arr = mediaBrowserDisplayPath.split("/");
-		   tempString_arr.pop();
-		   tempString_arr.pop();
-		   mediaBrowserDisplayPath = "";
-		   for(var i = 0; i < tempString_arr.length; i++){
-			   mediaBrowserDisplayPath += tempString_arr[i] + "/";
-		   }
-		   //rewrite the relative path
-		   var tempRel = relPath.split("/");
-		   tempRel.pop();
-		   tempRel.pop();
-		   relPath = "";
-		   for(var j = 0; j < tempRel.length; j++){
-			   relPath += tempRel[j] + "/";
-		   }
-		   //Load the new path
-		   getMediaDir(relPath);
-	   });
+	//console.log(res);
+	//Add "up a directory" (../media) button if needed.
+	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS"){
+		if(res[res.length-2] == "css" && folderTrack != "lesson"){
+			$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
+			
+			$("#mediaBrowserUpDirectory").click(function(){
+			   $("#mediaBrowserList").empty();
+			   //update the path display string
+			   var tempString_arr = mediaBrowserDisplayPath.split("/");
+			   tempString_arr.pop();
+			   tempString_arr.pop();
+			   mediaBrowserDisplayPath = "";
+			   for(var i = 0; i < tempString_arr.length; i++){
+				   mediaBrowserDisplayPath += tempString_arr[i] + "/";
+			   }
+			   //rewrite the relative path
+			   var tempRel = relPath.split("/");
+			   tempRel.pop();
+			   tempRel.pop();
+			   relPath = "";
+			   for(var j = 0; j < tempRel.length; j++){
+				   relPath += tempRel[j] + "/";
+			   }
+			   //Load the new path
+			   getMediaDir(relPath);
+		   });
+		}
 	}
 	
 	//Add directories
@@ -166,6 +391,7 @@ function updateMediaBrowserDir(_data){
 	   var tempID = "folder"+key;
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
+	   
 	   $("#"+tempID).click(function(){
 		   $("#mediaBrowserList").addClass('C_Loader');
 		   $("#mediaBrowserList").empty();
@@ -177,16 +403,179 @@ function updateMediaBrowserDir(_data){
 	   });
 	}
 	
-	//Add files
+	//Add files display
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
+	   
 	   $("#"+tempID).click(function(){
-		   mediaBrowserPreviewFile($(this).attr('data'));
+			loadMedia($(this));
 	   });
 	}
+	listScroller.refresh();
+}
+
+/**
+* Function to animate button and call function to load selected button's media.
+* @method loadMedia
+* @type {Event}
+* @param _me the button that has been selected.
+*/
+function loadMedia(_me){
+	if(removeClicked){
+		removeClicked = false;
+	}else{
+		try { $("#mbItemControlHolder").remove();} catch (e) {}
+		try { currentSelectedMediaPreview.removeClass("mediaBrowserFileSelected"); } catch (e) {}
+		//turn last item back on...
+		try { currentSelectedMediaPreview.on("click", function(){
+			loadMedia($(this));
+		}); } catch (e) {}
+		currentSelectedMediaPreview = _me;
+		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
+		currentSelectedMediaPreview.one('otransitionend oTransitionEnd msTransitionEnd transitionend', showItemStats);
+		mediaBrowserPreviewFile(_me.attr('data'));
+	}
+}
+
+/**
+* Function to disable currently selected media item button and display stats and options for that media item.
+* @method showItemStats
+* @type {Event}
+*/
+function showItemStats(event){
+	var obj = currentSelectedMediaPreview.attr("data");
+	//Disable button action for selected media
+	currentSelectedMediaPreview.off('click');
+
+	var msg = "<div id='mbItemControlHolder' class='mbItemControlHolder'>";
+		msg += "<a  target='_blank' href=" + folderTrackPath + mediaBrowserDisplayPath +obj+ " download id='downloadMedia' class='mediaDownload' title='download this item'></a>";
+		msg += "<div id='mediaRemove' class='mediaRemove' title='delete this item'></div>";
+		if(fromDialog){
+			msg += "<div id='mediaSelect' class='mediaSelect' title='select this media object'></div>";
+		}
+		msg += "</div>"
+	currentSelectedMediaPreview.append(msg);
+	
+	//Button Actions for interactives
+	$(".mediaRemove").click(function(){
+		var myItem = relPath + obj;	
+		checkRemoveMedia(myItem);	   
+	});
+	   
+	$(".mediaDownload").click(function(){
+		var myItem = folderTrackPath + mediaBrowserDisplayPath +obj;
+		//console.log(myItem)	
+		//downloadMedia(myItem);	   
+	});
+	
+	$(".mediaSelect").click(function(){
+		var myType = getFileType(obj).toLowerCase();
+		var permitted = true;
+		var failType = null;
+		
+		var myItem = relPath + obj;	
+		if(fileTarget != null){
+			//Check if file is permitted in this input.
+			if(fileTarget.attr("id") == "imgPath"){
+				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf"];
+			}else if(fileTarget.attr("id") == "revealImageText"){
+				var acceptedTypes = ["png", "jpg", "gif"];
+			}else if(fileTarget.attr("id") == "audioPath"){
+				var acceptedTypes = ["mp3"];
+			}
+			
+			if(acceptedTypes.indexOf(myType) > -1){
+				permitted = true;
+			}else{
+				permitted = false;
+			}
+			
+			if(permitted){
+				fileTarget.attr('value', myItem);
+				$(".ui-dialog").show();
+				$(".ui-widget-overlay").show();
+				toggleMediaBrowser();
+			}else{
+				alert("This media input does not support the " + myType + " file format. Please make another selection.");
+			}
+		}else{
+			$(".ui-dialog").show();
+			$(".ui-widget-overlay").show();
+			toggleMediaBrowser();
+		}
+	});
+}
+
+/**
+* Variable to hold if removeMedia button was clicked.
+* 
+* @param _file {String} - file name
+*/
+function downloadMedia(_file){
+	cognizenSocket.emit('mediaBrowserDownloadMedia', {file: _file, type: urlParams['type'], id: urlParams['id']});
+}
+
+/**
+* Launch Dialog to confirm removal of media.
+*
+* @method checkRemoveMedia
+* @param {String} server path and name of file to be removed.
+*/
+function checkRemoveMedia(_file){
+	//Create the Dialog
+	$("#stage").append("<div id='dialog-removePage' title='Remove Media Object'><p>Are you sure that you want to remove " + _file + " from this project?</p></div>");
+	//Style it to jQuery UI dialog
+	$("#dialog-removePage").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("dialog-removePage").remove();
+		},
+		buttons: {
+			Yes: function(){
+				removeMedia(_file);
+				$( this ).dialog( "close" );
+			},
+			No: function(){
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+}
+
+/**
+* Function to remove selected media.
+* 
+* @method removeMedia
+* @param _file {Boolean} path to file to remove
+*/
+function removeMedia(_file){
+	cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
+	$("#mediaBrowserList").addClass('C_Loader');
+	$("#mediaBrowserList").empty();
+	$("#mediaBrowserPreviewMediaHolder").empty();
+
+	cognizenSocket.emit('mediaBrowserRemoveMedia', {file: _file, type: urlParams['type'], id: urlParams['id'], track: folderTrack});
+}
+
+/**
+* Function to to update once removal of media is complete.
+* 
+* @method mediaBrowserRemoveMediaComplete
+*/
+function mediaBrowserRemoveMediaComplete(){
+	$("#mediaBrowserList").removeClass('C_Loader');
+	try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
+	//Commit GIT when complete.
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+        content: {type: urlParams['type'], id: urlParams['id']},
+        user: {id: urlParams['u']}
+    });
+    getMediaDir(relPath);
 }
 
 /**
@@ -198,7 +587,7 @@ function updateMediaBrowserDir(_data){
 function mediaBrowserPreviewFile(_file){
 	$("#mediaBrowserPreview").addClass("C_Loader");
 	var imageTypes = ["png", "jpg", "gif"];
-	var fp = mediaBrowserDisplayPath + _file;
+	var fp = folderTrackPath + mediaBrowserDisplayPath + _file;
 	$("#mediaBrowserPreviewMediaHolder").empty();
 	$("#mediaBrowserPreviewMediaHolder").css({'opacity':0});
 	var myType = getFileType(_file);
@@ -207,12 +596,15 @@ function mediaBrowserPreviewFile(_file){
 	}else if(myType == "mp4"){
 		mediaBrowserLoadVideoPreview(fp);
 	}else if(myType == "swf"){
-		alert("I'm a swf")
 		mediaBrowserLoadSWFPreview(fp);
 	}else if(imageTypes.indexOf(myType) > -1) {
 		mediaBrowserLoadImagePreview(fp);
 	}else{
-		alert("You can't preview this file type.");
+		$("#mediaBrowserPreview").removeClass("C_Loader");
+		//alert("You can't preview this file type.");
+		$("#mediaBrowserPreviewMediaHolder").append("<p><b>You can't preview this file type from within the system.</b></p><p>It has been opened in a new window. Check how your browser handles different file types to see if it has been downloaded.</p>");
+		$("#mediaBrowserPreviewMediaHolder").css({'opacity': 1, 'text-align': 'center'});
+		window.open(fp, "_blank");
 	}
 }
 
@@ -276,13 +668,27 @@ function mediaBrowserLoadVideoPreview(_fp){
 		vidHTMLString += "</video>";
 
     $("#mediaBrowserPreviewMediaHolder").append(vidHTMLString);
-		
+	//$('#mediaBrowserPreviewMediaHolder').css({'opacity': .1})	
 	// decent browser - prefer HTML5 video
 	$('#mb_videoplayer').mediaelementplayer({
 		enablePluginSmoothing: true,
 		enableKeyboard: true,
 		success: function(player, node){
 			player.addEventListener('loadeddata', function(e) {
+				var imageWidth = e.target.videoWidth;
+        
+		        if(imageWidth > $("#mediaBrowserPreview").width()){
+			        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
+			        e.target.videoWidth = e.target.videoWidth * widthScale;
+					$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+		        }
+		        var imageHeight = e.target.videoHeight;
+		        /*if(imageHeight > $("#mediaBrowserPreview").height()){
+			        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
+					//e.target.videoHeight = e.target.videoHeight * heightScale;
+			        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
+		        }*/
+				
 				//tween after loaded and positioned.
 				$("#mediaBrowserPreview").removeClass("C_Loader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
@@ -303,7 +709,6 @@ function mediaBrowserLoadSWFPreview(_fp){
     TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
 }
 
-
 /**
 * Loads an image preview.
 *
@@ -321,9 +726,100 @@ function mediaBrowserLoadImagePreview(_fp){
 	    $("#mediaBrowserPreview").removeClass("C_Loader");
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
+        
+        if(imageWidth > $("#mediaBrowserPreview").width()){
+	        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
+	        $(img).width($(img).width() * widthScale);
+			$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
+        }
         var imageHeight = $(img).height();
+        if(imageHeight > $("#mediaBrowserPreview").height()){
+	        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
+			$(img).height($(img).height() * heightScale);
+	        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
+        }
         TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
-    }).attr('src', _fp);
+    }).attr('src', _fp).attr('id', 'myImage');
+}
+
+/**
+* Called when media upload is complete but a media conversion is required.
+*
+* @method mediaBrowserConversionStart
+*/
+function mediaBrowserConversionStart(data){
+	//$("#C_Loader").remove();
+	$(".C_LoaderText").empty();
+	$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+	$(".C_LoaderText").append("<div id='conversionProgress'><div id='progress-label' class='progress-label'>Converting...</div></div>");
+	$("#conversionProgress").progressbar({
+		value: 0,
+		change: function() {
+			$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+		},
+		complete: function() {
+			$(".progress-label").text("Complete!");
+		}
+	});
+
+	$("#conversionProgress > div").css({ 'background': '#3383bb'});
+
+	cognizenSocket.on('mediaBrowserConversionProgress', mediaBrowserConversionProgress);
+	cognizenSocket.on('mediaInfo', mediaInfo);
+}
+
+/**
+* Called when mediaConversion progress updates are recieved
+*
+* @method mediaBrowserConversionProgress
+* @param {object} data regarding converted file.
+*/
+function mediaBrowserConversionProgress(data){
+    $("#conversionProgress").progressbar("value", Math.floor(data.percent))
+}
+
+/**
+* Called when mediaConversion is complete
+*
+* @method mediaBrowserUploadComplete
+* @param {object} data regarding converted file.
+*/
+function mediaBrowserUploadComplete(data){
+	$("#C_Loader").remove();
+	queueCurrent++;
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
+	if(queueLength == queueCurrent){
+		//queue complete
+		var splitPath = data.split("/");
+		var last = splitPath.length;
+		var mediaPath = splitPath[last-1];
+		mediaBrowserPreviewFile(mediaPath);
+		//Commit GIT when complete.
+		var urlParams = queryStringParameters();
+		cognizenSocket.emit('contentSaved', {
+	        content: {type: urlParams['type'], id: urlParams['id']},
+	        user: {id: urlParams['u']}
+	    });
+	    getMediaDir(relPath);
+	}else{
+		//Load next item
+		uploadFile(queue[queueCurrent]);
+	}
+}
+
+/**
+* Called when mediaInfo object is recieved upon loading media item
+*
+* @method mediaInfo
+* @param data {object} data regarding selected file.
+*/
+function mediaInfo(data){
+	if(data.video != ""){
+		var splitDim = data.video_details[2].split("x");
+		var mediaWidth = splitDim[0];
+		var mediaHeight = splitDim[1];
+		console.log(data);
+	}
 }
 
 /**
@@ -332,7 +828,11 @@ function mediaBrowserLoadImagePreview(_fp){
 * @method removeMediaBrowserDisplay
 */
 function removeMediaBrowserDisplay(){
+	try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+	try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	$("#mediaBrowserDisplay").remove();
 	relPath = "";
 	mediaBrowserDisplayPath = "media/";
+	folderTrack = "media";
 }

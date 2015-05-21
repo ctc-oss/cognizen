@@ -256,7 +256,7 @@ h1#lessonTitle{
 	cursor: pointer;
 }
 
-.btn_mediaDrop{
+/*.btn_mediaDrop{
 	position:absolute;
 	bottom :8px;
 	left: 150px;
@@ -265,7 +265,7 @@ h1#lessonTitle{
 	background: url(images/upload.png) no-repeat;
 	cursor: hand;
 	cursor: pointer;
-}
+}*/
 
 .btn_objedit{
 	position:absolute;
@@ -1499,19 +1499,48 @@ MEDIA LAYOUTS
 
 }
 
-.mediaBrowserPane{
+.mediaBrowserScaleWarning{
 	position: absolute;
-	right: 10px;
-	top: 10px;
+	background-color: rgba(255, 255, 255, .5);
+	top: 0px;
+	color: red;
+	width: 100%;
+	height: auto;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	padding: 10px;
+	z-index: 2;
+}
+
+.mediaBrowserPane{
+	position:absolute;
+	bottom :8px;
+	left: 150px;
 	overflow: visible;
 	z-index: 10;
 }
+/*.btn_mediaDrop{
+	position:absolute;
+	bottom :8px;
+	left: 150px;
+	width: 30px;
+	height: 30px;
+	background: url(images/upload.png) no-repeat;
+	cursor: hand;
+	cursor: pointer;
+}*/
 
 .C_MediaBrowserButton{
-	position: relative;
+	position: absolute;
 	float: right;
 	width: 30px;
 	height: 30px;
+	bottom: 0;
+	left: 0;
 	background: url(images/upload.png) no-repeat;
 	cursor: hand;
 	cursor: pointer;
@@ -1524,15 +1553,17 @@ MEDIA LAYOUTS
 
 .mediaBrowserDisplay{
 	position			  : relative;
-	float				  : right;
+	float				  : left;
+	left				  : -147px;
+	bottom				  : 43px;
 	overflow 			  : hidden;	
-	background-color      : rgba(255, 255, 255, .9);
+	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
 	border-radius         : 8px;
 	width				  : 10px;
 	height 				  :	15px;
-	max-width 			  : 970px;
+	max-width 			  : 1005px;
 	max-height            : 700px;
 	border-style		  : solid;
     border-width		  : 1px;
@@ -1560,29 +1591,118 @@ MEDIA LAYOUTS
 	color: #fff;
 }
 
+.mediaBrowserClose{
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	background: url(images/close.png) no-repeat;
+	width: 24px;
+	height: 24px;
+	cursor: hand;
+	cursor: pointer;
+}
+
 .mediaBrowserContent{
 	position: relative;
 	height: 96%;
 	width: 100%;
 }
 
-.mediaBrowserList{
+.mediaBrowserDirectorySelectPalette{
+	position: relative;
+	left: 0px;
+	width: 30%;
+	height: 3%;
+	background-color: #eee;
+}
+
+.mediaBrowserDirectorySelectButton{
 	position				: relative;
 	float					: left;
-	width					: 30%;
+	width					: 25%;
+	background-color		: #eee;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
+	text-align				: center;
 	height					: 100%;
+}
+
+.mediaBrowserSelectedTrack{
+	background-color: red;
+	color: white;
+}
+
+.mediaBrowserDisplayPath{
+	position			  	: relative;
+	left					: 0px;
+	width				  	: 30%;
+	max-width			  	: 30%;
+	top					  	: 0px;
+	height				  	: 3%;
+	overflow 			  	: hidden;
+	background-color	  	: #333;
+	cursor				  	: hand;
+	cursor				  	: pointer;
+	font-family 		  	: Arial;
+	font-size 			  	: 8pt;
+	color 				  	: white;
+	text-indent				: 5px;
+	line-height				: 200%; 	
+}
+
+.box-wrap{
+	position: relative;
+	left: 0px;
+	width: 30%;
+	height: 94%;
 	background-color		: rgba(51, 51, 51, .9);
 	border-bottom-left-radius  : 8px;
 	-webkit-border-bottom-left-radius: 8px;
 	-moz-border-radius-bottomleft: 8px;
 }
 
-.mediaBrowserPreview{
+.list-box, .list-box .antiscroll-inner {
+	width: 100%;
+    height: 100%;
+}
+
+.mediaBrowserList{
 	position				: relative;
-	float 					: right;
+	float					: left;
+	width					: 100%;
+	height					: 100%;
+}
+
+.mediaBrowserUploadWidget{
+	position: relative;
+	width: 100%;
+	height: 7%;
+	background-color: aqua;
+}
+
+.mediaBrowserFileDrag{
+	position: relative;
+	float: right;
+	right: 0px;
+	width: 60%;
+	height: 100%;
+	background-color: red;
+	text-align: center;
+}
+
+.mediaBrowserFileDrag.hover{
+	background-color: pink;
+}
+
+.mediaBrowserPreview{
+	position				: absolute;
+	top						: 0px;
+	right					: 0px;
 	display 				: block;
 	width 					: 70%;
-	height					: 100%;
+	height					: 94%;
 }
 
 .mediaBrowserPreviewMediaHolder{
@@ -1591,35 +1711,18 @@ MEDIA LAYOUTS
 	width					: auto;
 	height					: auto;
 	max-width				: 100%;
-	max-height				: 100%;
+	/*max-height				: 70%;*/
 	margin-right 			: auto !important;
 	margin-left				: auto !important;
-	top						: 50%;
-	-webkit-transform		: translateY(-50%);
-    -ms-transform			: translateY(-50%);
-    transform				: translateY(-50%);
+	top						: 51%;
+	-webkit-transform		: translateY(-49%);
+    -ms-transform			: translateY(-49%);
+    transform				: translateY(-49%);
+    overflow				: hidden;
 }
 
 #mediaBrowserList .loading {
 	background				: #ccc url(images/spinner.gif) no-repeat center center;
-}
-
-.mediaBrowserDisplayPath{
-	position			  	: relative;
-	float				  	: left;
-	width				  	: 95%;
-	max-width			  	: 95%;
-	top					  	: 0px;
-	height				  	: auto;
-	overflow 			  	: hidden;
-    margin-bottom 		  	: 2px;
-    padding 		      	: 5px;
-	background-color	  	: #333;
-	cursor				  	: hand;
-	cursor				  	: pointer;
-	font-family 		  	: Arial;
-	font-size 			  	: 8pt;
-	color 				  	: white;
 }
 
 .mediaBrowserUpDirectory{
@@ -1668,6 +1771,7 @@ MEDIA LAYOUTS
 	width				  	: 90%;
 	max-width			  	: 90%;
 	height				  	: auto;
+	min-height				: 12px;
 	overflow 			  	: hidden;
 	border-style		  	: solid;
     border-width		  	: 1px;
@@ -1680,7 +1784,84 @@ MEDIA LAYOUTS
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
 	font-size 			  	: 8pt;
+	-webkit-transition		: height 1s; /* Safari */
+    transition				: height 1s;
 }
+
+.mediaBrowserFileSelected{
+	color: purple;
+	-webkit-transition: height 1s; /* Safari */
+	background			  	: rgba(255, 255, 255, .9) url(images/file.gif) no-repeat left top;
+    transition: height 1s;
+    height: 70px;
+    cursor: auto; 
+}
+
+.mbItemStatsHolder{
+	
+}
+
+.mbItemControlHolder{
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 300px;
+	height: 20px;
+}
+
+.mediaRemove { 
+	position: relative;
+	float: left;
+	width: 100px;
+	height: 20px;  
+	background: url(images/mbRemove.png) no-repeat;
+	cursor: hand;
+}
+
+.mediaDownload {
+	position: relative;
+	float: left; 
+	width: 100px;
+	height: 20px;
+	background: url(images/mbDownload.png) no-repeat;
+	cursor: hand;
+}
+
+.mediaSelect {
+	position: relative;
+	float: left;
+	width: 100px;
+	height: 20px; 
+	background: url(images/mbSelect.png) no-repeat;
+	cursor: hand;
+}
+
+/*CHARTS*/
+div.chartjs canvas, div.chartjs div.chartjs-legend {
+	display:inline-block;
+}
+div.chartjs div.chartjs-legend span {
+	display: inline-block;
+	width:20px;
+	height:20px;
+	margin-right:10px;
+	margin-bottom:-5px;
+}
+div.chartjs div.chartjs-legend ul {
+	list-style-type:none;
+}
+div.chartjs div.chartjs-legend li {
+	margin-top:10px;
+}
+
+div.chartjs{
+	width: 500px;
+	position: relative;
+	float: right;
+	/*margin-left: auto;
+	margin-right: auto;*/
+}
+/*End of charts*/
 
 .transcriptPane{
 	position				: absolute;
@@ -1769,7 +1950,7 @@ MEDIA LAYOUTS
 .ui-progressbar{
 	position				: relative;
 	margin					: 0 auto;
-	height					: 20px;
+	height					: 20px !important;
 	background				: #f3f3f3;
 	width					: 300px;
 }

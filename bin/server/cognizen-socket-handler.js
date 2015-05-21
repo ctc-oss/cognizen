@@ -296,11 +296,21 @@ var SocketHandler = {
                 if (contentType) {
                     contentType.findById(id, function (err, found) {
                         if (found) {
-                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.path + data.name);
+	                        var trackPath = "";
+	                        if(data.track == "media"){
+		                        trackPath = "/media/";
+	                        }else if(data.track == "core"){
+		                        trackPath = "/../../core-prog/";
+	                        }else if(data.track == "course"){
+		                        trackPath = "/../css/CourseCSS/";
+	                        }else if(data.track == "lesson"){
+		                        trackPath = "/css/";
+	                        }
+                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + data.name);
 							var fileSplit = data.name.split(".");
 							var mediaType = fileSplit[fileSplit.length - 1];
 							
-							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "asf"];
                             var convertableVectorTypes = ["eps"];
                             var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                             var archiveTypes = ["zip"];
@@ -391,11 +401,24 @@ var SocketHandler = {
 		var type = data.type;
         var id = data.id;
         var contentType = _this.Content.objectType(type);
-				
+		var folderPath = "";
+		if(data.track == "media"){
+			folderPath = "/media/"
+		}else if(data.track == "core"){
+			folderPath = "/../../core-prog/"
+		}else if(data.track == "course"){
+			folderPath = "/../css/"
+		}else if(data.track == "lesson"){
+			folderPath = "/css/"
+		}
+/*
+		console.log("folderTrack = " + data.track);
+		console.log("_file = " + data.file);
+*/
         if (contentType) {
         	contentType.findById(id, function (err, found) {
             	if (found) {
-                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + '/media/' + data.file);
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + folderPath + data.file);
                 	fs.unlink(contentPath, function (err) {
 						if (err) throw err;
 						console.log('successfully deleted media file');

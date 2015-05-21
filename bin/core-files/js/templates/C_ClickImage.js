@@ -425,6 +425,7 @@ function C_ClickImage(_type) {
 			msg += "<b>ClickImage "+revealLabel+":</b>";
 			msg += "<label id='revealImage' title='Input your image name.'><br/><b>Image: </b></label>";
 			msg += "<input id='revealImageText' class='dialogInput' type='text' value='"+mediaString+"' defaultValue='"+mediaString+"' style='width:40%;'/>";
+			msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 			if(labeled){
 				var myLabel = $(data).find("page").eq(currentPage).find("reveal").eq(_addID).attr("label");
 				msg += "<label id='revealLabel' title='Input the label text.'><br/><b>Label: </b></label>";
@@ -442,6 +443,12 @@ function C_ClickImage(_type) {
 
 		$("#revealRemove").click(function(){
 			areYouSure();
+		});
+		
+		$("#dialogMediaBrowseButton").click(function(){
+			$(".ui-dialog").hide();
+			$(".ui-widget-overlay").hide();
+			dialogToggleMediaBrowser($("#revealImageText"));					
 		});
 
 		CKEDITOR.replace( "revealContentText", {

@@ -105,7 +105,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
-			$("#preloadholder").remove();
+            $("#preloadholder").remove();
             socket.emit('getProjects', user);
         });
 
@@ -497,8 +497,8 @@ function C_Dashboard(_type) {
     }
 
     function getUserList(_id) {
-        $("#stage").append('<div id="preloadholder"></div>');
-		$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+	    $("#stage").append('<div id="preloadholder"></div>');
+        $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
         socket.emit('getPermissions', {content: {id: _id}});
     }
 
@@ -566,10 +566,8 @@ function C_Dashboard(_type) {
                         },
                         users: user_arr
                     });
-					
 					$("#stage").append('<div id="preloadholder"></div>');
 					$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
-					
                     $(this).dialog("close");
                     $("#dialog-assignUser").remove();
                 }

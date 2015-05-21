@@ -199,7 +199,6 @@ function initScripts(_data){
 					corePath +"js/libs/fancybox/jquery.fancybox.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-					corePath +"js/libs/antiscroll.js",
 					corePath +"js/libs/overthrow.min.js",
 					corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
 					ckpath,
@@ -213,9 +212,12 @@ function initScripts(_data){
 					corePath +"js/libs/jquery.corner.js",
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
+					//corePath +"js/libs/socket.io-stream.js",
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
+					corePath +"js/libs/widget2chart.js",
+					corePath +"js/libs/chart.min.js",
 			//Import Cognizen layout templates
 					corePath +"js/templates/C_Branching.js",
 					corePath +"js/templates/C_Categories.js",
@@ -260,14 +262,23 @@ function initScripts(_data){
 					corePath +"js/util/C_UtilFunctions.js",
 			//Give mouse super powers.
 					corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
+					corePath +"js/libs/antiscroll.js",
 			//Lightbox for media popups and galleries.
 
 					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
-		], startEngine);
+		], loadStreamer);
 	}
 	if((ieUserAgent.renderVersion < 10) || (document.documentMode < 10)){
         oldIE = true;
 	}
+}
+
+function loadStreamer(){
+	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
+   		ss = foo;
+   		ss.forceBase64 = true;
+		startEngine();
+	});
 }
 
 //VROOM VROOM
@@ -419,9 +430,9 @@ function buildInterface(){
 	checkNav();
 	if(mode == "edit"){
 		addEditNav();
-		addMediaDrop();
+		//addMediaDrop();
 		addObjEdit();
-		//addMediaBrowser();											////////////////////////////////////////////////////////// Comment out before push
+		addMediaBrowser();											////////////////////////////////////////////////////////// Comment out before push
 	}
 
 	if(mode == "edit" || mode == "review"){
