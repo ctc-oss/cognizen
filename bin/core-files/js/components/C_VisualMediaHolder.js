@@ -800,6 +800,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 						height: 300,
 						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 					});
+					var urlParams = queryStringParameters();
+						cognizenSocket.emit('contentSaved', {
+						content: {type: urlParams['type'], id: urlParams['id']},
+						user: {id: urlParams['u']}
+					});
 					$(".C_Loader").remove();
 				}
 			});
