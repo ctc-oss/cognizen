@@ -577,11 +577,7 @@ function launchMediaDrop(){
 			else{
 				$(".C_Loader").remove();
 				if(event.success == true){
-					var urlParams = queryStringParameters();
-					cognizenSocket.emit('contentSaved', {
-			            content: {type: urlParams['type'], id: urlParams['id']},
-			            user: {id: urlParams['u']}
-			        });
+					doGitCommit();
 					$("#inputFeedback").append(myFile + " has been uploaded to the media directory so a link can be created in the content.</div>");
 				}
 				else{
@@ -627,11 +623,7 @@ function _mediaInfo(data){
 }
 
 function _mediaConversionComplete(data){
-	var urlParams = queryStringParameters();
-	cognizenSocket.emit('contentSaved', {
-        content: {type: urlParams['type'], id: urlParams['id']},
-        user: {id: urlParams['u']}
-    });
+	doGitCommit();
 
 
 	$("#conversionProgress").remove();
@@ -952,10 +944,7 @@ function launchPrefs(){
 					socket.emit('updateHelpLocation', { my: myFile });
 					sendCourseUpdate();
 				}else{
-					cognizenSocket.emit('contentSaved', {
-				        content: {type: urlParams['type'], id: urlParams['id']},
-				        user: {id: urlParams['u']}
-				    });
+					doGitCommit();
 				}
 			}else{
 				$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
@@ -974,10 +963,7 @@ function launchPrefs(){
 	
 	//If course help - once file moved commit to git
 	socket.on("courseHelpLocationUpdated", function(){
-		cognizenSocket.emit('contentSaved', {
-			content: {type: urlParams['type'], id: urlParams['id']},
-			user: {id: urlParams['u']}
-		});
+		doGitCommit();
 	});
 
 	$("#scormVersion").val($(data).find('scormVersion').attr('value'));
@@ -990,11 +976,7 @@ function launchPrefs(){
 
 function _unzipComplete(){
 	$(".C_Loader").remove();
-	var urlParams = queryStringParameters();
-	cognizenSocket.emit('contentSaved', {
-        content: {type: urlParams['type'], id: urlParams['id']},
-        user: {id: urlParams['u']}
-    });
+	doGitCommit();
 
 	try { cognizenSocket.removeListener("unzipComplete", _unzipComplete);; } catch (e) {}
 	var msg = "<p>Your zip file has been uploaded and it's contents placed in your media folder.</p>";

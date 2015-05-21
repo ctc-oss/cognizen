@@ -570,11 +570,7 @@ function mediaBrowserRemoveMediaComplete(){
 	$("#mediaBrowserList").removeClass('C_Loader');
 	try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
 	//Commit GIT when complete.
-	var urlParams = queryStringParameters();
-	cognizenSocket.emit('contentSaved', {
-        content: {type: urlParams['type'], id: urlParams['id']},
-        user: {id: urlParams['u']}
-    });
+	doGitCommit();
     getMediaDir(relPath);
 }
 
@@ -795,11 +791,7 @@ function mediaBrowserUploadComplete(data){
 		var mediaPath = splitPath[last-1];
 		mediaBrowserPreviewFile(mediaPath);
 		//Commit GIT when complete.
-		var urlParams = queryStringParameters();
-		cognizenSocket.emit('contentSaved', {
-	        content: {type: urlParams['type'], id: urlParams['id']},
-	        user: {id: urlParams['u']}
-	    });
+		doGitCommit();
 	    getMediaDir(relPath);
 	}else{
 		//Load next item

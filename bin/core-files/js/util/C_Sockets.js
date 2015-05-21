@@ -95,11 +95,7 @@ function initializeSockets(){
 	    });
 	    
 	    cognizenSocket.on("packageLinkAlert", function(data){
-		  	var urlParams = queryStringParameters();
-				cognizenSocket.emit('contentSaved', {
-				content: {type: urlParams['type'], id: urlParams['id']},
-				user: {id: urlParams['u']}
-			});
+		  	doGitCommit();
 		    var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+data.path+' target="_blank">GET PACKAGE</a></p></div>';
 			
 			//Add to stage.
@@ -208,10 +204,7 @@ function initializeSockets(){
 		
 		socket.on('updateCourseXMLWithRefreshComplete', function(){
 			if(mode == "edit"){
-		        cognizenSocket.emit('contentSaved', {
-		            content: {type: urlParams['type'], id: urlParams['id']},
-		            user: {id: urlParams['u']}
-		        });
+		        doGitCommit();
 		    }
 		    
 		    if(courseGlossary){
@@ -221,40 +214,28 @@ function initializeSockets(){
 
 		socket.on('updateXMLWithRefreshComplete', function(){
 	        if(mode == "edit"){
-		        cognizenSocket.emit('contentSaved', {
-		            content: {type: urlParams['type'], id: urlParams['id']},
-		            user: {id: urlParams['u']}
-		        });
+		        doGitCommit();
 		    }
 			updateIndex();
 		});
 		
 		socket.on('updateGlossaryComplete', function(){
 			if(mode == "edit"){
-				cognizenSocket.emit('contentSaved', {
-	                content: {type: urlParams['type'], id: urlParams['id']},
-	                user: {id: urlParams['u']}
-	            });
+				doGitCommit();
 	        }
 			updateGlossary();
 		});
 		
 		socket.on('updatePrefsComplete', function(){
 			if(mode == "edit"){
-				cognizenSocket.emit('contentSaved', {
-					content: {type: urlParams['type'], id: urlParams['id']},
-	                user: {id: urlParams['u']}
-				});
+				doGitCommit();
 			}
 			updatePrefs();
 		});
 		
 		socket.on('updatePrefsWithPublishComplete', function(){
 			if(mode == "edit"){
-				cognizenSocket.emit('contentSaved', {
-					content: {type: urlParams['type'], id: urlParams['id']},
-	                user: {id: urlParams['u']}
-				});
+				doGitCommit();
 			}
 			updatePrefs(true);
 		});
@@ -262,10 +243,7 @@ function initializeSockets(){
         socket.on('pushUpdateXMLWithRefreshComplete', function(){
             pushedUpdate = true;
             if(mode == "edit"){
-	            cognizenSocket.emit('contentSaved', {
-	                content: {type: urlParams['type'], id: urlParams['id']},
-	                user: {id: urlParams['u']}
-	            });
+	            doGitCommit();
 	        }
             updateIndex();
         });
@@ -273,4 +251,12 @@ function initializeSockets(){
 		buildInterface();
 	}
 	
+}
+
+function doGitCommit(){
+	var urlParams = queryStringParameters();
+	cognizenSocket.emit('contentSaved', {
+		content: {type: urlParams['type'], id: urlParams['id']},
+		user: {id: urlParams['u']}
+	});
 }
