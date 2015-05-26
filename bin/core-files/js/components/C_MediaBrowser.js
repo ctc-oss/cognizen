@@ -786,7 +786,7 @@ function mediaBrowserUploadComplete(data){
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	if(queueLength == queueCurrent){
 		//queue complete
-		var splitPath = data.split("/");
+		var splitPath = data.replace(/\\/g, '/').split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
 		mediaBrowserPreviewFile(mediaPath);
