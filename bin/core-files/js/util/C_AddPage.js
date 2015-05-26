@@ -254,6 +254,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -288,6 +292,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Path Content");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -316,6 +324,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Path Content");
 			$(data).find("page").eq(newPage).find("branch").eq(1).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -347,6 +359,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(0).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -371,6 +387,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(1).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(1).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(1).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -395,6 +415,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(2).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(2).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(2).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(2).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -419,6 +443,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(3).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(3).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(3).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(3).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
@@ -443,6 +471,10 @@ function createNewPageByType(_myType){
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
 			$(data).find("page").eq(newPage).find("branch").eq(4).find("content").append(contentCDATA);
+			$(data).find("page").eq(newPage).find("branch").eq(4).append($("<caption>"));
+			var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			var captionCDATA = newPageCaption.createCDATASection("My Caption");
+			$(data).find("page").eq(newPage).find("branch").eq(4).find("caption").append(captionCDATA);
 			$(data).find("page").eq(newPage).find("branch").eq(4).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");

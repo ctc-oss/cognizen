@@ -392,7 +392,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	                if(type == "graphicOnly"){
 	                	$('.antiscroll-wrap').antiscroll();
 	                }
-
+					setCaption();
 	            }).attr('src', myImage).attr('alt', $(data).find("page").eq(currentPage).attr('alt')).attr('id', 'myImg');
 			});
 
@@ -545,7 +545,15 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	}
 
 	function setCaption(){
-        var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
+        if(rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
+	        var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
+        }else{
+	        var myCaption = $(data).find("page").eq(currentPage).find("branch").eq(_id).find('caption').first().text();
+	        if(myCaption == "" && mode == "edit"){
+		        myCaption = "add caption here";
+	        }
+        }
+        
         if(hasPop == true || largeImg != ""){
 	    	$('<div id="centerMe" style="position: relative; float: left; height:'+ $("#mediaPop").height()+ 'px; width:'+ $("#mediaPop").width()+ 'px;">&nbsp;</div>').insertAfter("#myImgList");
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#centerMe");
@@ -574,7 +582,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			$('.antiscroll-wrap').antiscroll();
         }
 
-        if(mode == "edit" && rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
+        if(mode == "edit"){
 	        $("#caption").attr('contenteditable', true);
             CKEDITOR.disableAutoInline = true;
 			CKEDITOR.inline( 'caption', {
@@ -600,226 +608,227 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				allowedContent: true//'p b i span div img; p b i div span img [*](*){*}'
 			});
 			//config.protectedSource.push(/<i[^>]*><\/i>/g);
-
-			$("<div id='imgEdit' class='btn_edit_media' title='Edit Media'></div>").insertBefore($("#loader"));
-
-			//Establish it's functionality
-			$("#imgEdit").click(function(){
-				var msg = "<div id='imgDialog' title='Input Media Path'>";
-				msg += "<label id='label' title='input file name - must include file extension.'>file name: </label>";
-				msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
-				msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
-				msg += "<label id='label' title='Input a description of the media for visually impaired users.'>ALT text: </label>";
-            	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
-				msg += "<br/>";
-				msg += "<label id='label' title='Include a large version.  Will place an enlarge icon below your media which when clicked will expand the window.'>large version: </label>";
-				msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
-				msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
-				msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'>transcript: </label>";
-				msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/><br/>";
-				msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
-				msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
-				msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
-				msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
-            	msg += "<br/><br/></div>";
-            	$("#stage").append(msg);
-				
-                if(largeImg == ""){
-					$("#isEnlargeable").removeAttr('checked');
-				}else{
-					$("#isEnlargeable").attr('checked', 'checked');
-				}
-
-				if(popLoop){
-					$("#isLoop").attr('checked', 'checked');
-				}else{
-					$("#isLoop").removeAttr('checked');
-				}
-				
-				if(hasTranscript){
-					$("#isTranscript").attr('checked', 'checked');
-				}else{
-					$("#isTranscript").removeAttr('checked');
-				}
-				$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
-				
-				$("#dialogMediaBrowseButton").click(function(){
-					$(".ui-dialog").hide();
-					$(".ui-widget-overlay").hide();
-					dialogToggleMediaBrowser($("#imgPath"));					
-				});
-				
-				if(!hasTranscript){
-					$('#inputTranscriptLabel').hide();
-					$('#inputTranscript').hide();
-				}else{
-					CKEDITOR.inline( "inputTranscript", {
-						toolbar: contentToolbar,
-						toolbarGroups :contentToolgroup,
-						enterMode : CKEDITOR.ENTER_BR,
-						shiftEnterMode: CKEDITOR.ENTER_P,
-						extraPlugins: 'sourcedialog',
-						on: {
-					    	instanceReady: function(event){
-					        	$(event.editor.element.$).attr("title", "Click here to edit this transcript.");
-					    	}
-					    }
+			if(rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
+				$("<div id='imgEdit' class='btn_edit_media' title='Edit Media'></div>").insertBefore($("#loader"));
+	
+				//Establish it's functionality
+				$("#imgEdit").click(function(){
+					var msg = "<div id='imgDialog' title='Input Media Path'>";
+					msg += "<label id='label' title='input file name - must include file extension.'>file name: </label>";
+					msg += "<input id='imgPath' class='dialogInput' type='text' value="+ mediaLink + " defaultValue="+ mediaLink + " style='width:70%;'/>";
+					msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
+					msg += "<label id='label' title='Input a description of the media for visually impaired users.'>ALT text: </label>";
+	            	msg += "<input id='altTextEdit' class='dialogInput' type='text' value='"+altText+"' defaultValue='"+altText+"' style='width:70%'/>";
+					msg += "<br/>";
+					msg += "<label id='label' title='Include a large version.  Will place an enlarge icon below your media which when clicked will expand the window.'>large version: </label>";
+					msg += "<input id='isEnlargeable' type='checkbox' name='enableLargeIgm' class='radio' value='true'/>";
+					msg += "<input id='lrgImgPath' class='dialogInput' type='text' value='"+ largeImg + "' defaultValue='"+ largeImg +"' style='width:70%;'/><br/>";
+					msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'>transcript: </label>";
+					msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/><br/>";
+					msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
+					msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
+					msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
+					msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
+	            	msg += "<br/><br/></div>";
+	            	$("#stage").append(msg);
+					
+	                if(largeImg == ""){
+						$("#isEnlargeable").removeAttr('checked');
+					}else{
+						$("#isEnlargeable").attr('checked', 'checked');
+					}
+	
+					if(popLoop){
+						$("#isLoop").attr('checked', 'checked');
+					}else{
+						$("#isLoop").removeAttr('checked');
+					}
+					
+					if(hasTranscript){
+						$("#isTranscript").attr('checked', 'checked');
+					}else{
+						$("#isTranscript").removeAttr('checked');
+					}
+					$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
+					
+					$("#dialogMediaBrowseButton").click(function(){
+						$(".ui-dialog").hide();
+						$(".ui-widget-overlay").hide();
+						dialogToggleMediaBrowser($("#imgPath"));					
 					});
-				}
-				
-				$('#isTranscript').change(function(){
-					if($("#isTranscript").prop("checked") == true){
-						$('#inputTranscriptLabel').show();
-						$('#inputTranscript').show();
+					
+					if(!hasTranscript){
+						$('#inputTranscriptLabel').hide();
+						$('#inputTranscript').hide();
+					}else{
 						CKEDITOR.inline( "inputTranscript", {
 							toolbar: contentToolbar,
 							toolbarGroups :contentToolgroup,
 							enterMode : CKEDITOR.ENTER_BR,
 							shiftEnterMode: CKEDITOR.ENTER_P,
 							extraPlugins: 'sourcedialog',
-						   	on: {
-						      instanceReady: function(event){
-						         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+							on: {
+						    	instanceReady: function(event){
+						        	$(event.editor.element.$).attr("title", "Click here to edit this transcript.");
 						    	}
 						    }
 						});
 					}
-					else{
-						try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
-						$('#inputTranscriptLabel').hide();
-						$('#inputTranscript').hide();
-					}
-				});
-
-				for(var i = 0; i < media_arr.length; i++){
-					addGalleryItem(i, false);
-				}
-
-				$("#imgDialog").dialog({
-                    autoOpen: true,
-				   	modal: true,
-				   	width: 550,
-				   	height: 680,
-				   	resizable: false,
-				   	buttons: {
-						Cancel: function(){
-							$("#imgDialog").dialog( "close" );
-						},
-						Add: function(){
-							addGalleryItem(media_arr.length, true);
-						},
-						Save: function(){
-							saveImageEdit($("#imgPath").val());
+					
+					$('#isTranscript').change(function(){
+						if($("#isTranscript").prop("checked") == true){
+							$('#inputTranscriptLabel').show();
+							$('#inputTranscript').show();
+							CKEDITOR.inline( "inputTranscript", {
+								toolbar: contentToolbar,
+								toolbarGroups :contentToolgroup,
+								enterMode : CKEDITOR.ENTER_BR,
+								shiftEnterMode: CKEDITOR.ENTER_P,
+								extraPlugins: 'sourcedialog',
+							   	on: {
+							      instanceReady: function(event){
+							         $(event.editor.element.$).attr("title", "Click here to edit this transcript.");
+							    	}
+							    }
+							});
 						}
-					},
-					close: function(){
-						$("#imgDialog").remove();
-						try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+						else{
+							try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+							$('#inputTranscriptLabel').hide();
+							$('#inputTranscript').hide();
+						}
+					});
+	
+					for(var i = 0; i < media_arr.length; i++){
+						addGalleryItem(i, false);
 					}
-				});
-
-			}).tooltip();
-
-			/*******************************************************
-			* Drag and Drop Upload &&& Click Image for browse to image to upload
-			********************************************************/
-			if(dragFile == true){
-				var $loader = $('#loader');
-				var contentId = urlParams['type'] + '_' + urlParams['id'];
-				$loader.attr('data-content', contentId);
-				$loader.find('*').attr('data-content', contentId);
-
-				$loader.click(function(){
-					try { $("#loader").tooltip("destroy"); } catch (e) {}
-					//$loader.unbind();
-					siofu.prompt($loader.attr('data-content'));
-				});
-
-				siofu.listenOnDrop(document.getElementById("loader"));
-
-				$("#loader").tooltip();
-			}
-
-			siofu.addEventListener("complete", function(event){
-				siofu.removeEventListener("complete");
-				siofu.removeEventListener("load");
-				//if successful upload, else....
-				var myFile = event.file.name;
-				var myExt = getExtension(myFile);
-
-				if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG" || myExt == "html" || myExt == "htm" || myExt == "HTML" || myExt == "HTM"){
-					if(event.success == true){
-						saveImageEdit(myFile, true);
+	
+					$("#imgDialog").dialog({
+	                    autoOpen: true,
+					   	modal: true,
+					   	width: 550,
+					   	height: 680,
+					   	resizable: false,
+					   	buttons: {
+							Cancel: function(){
+								$("#imgDialog").dialog( "close" );
+							},
+							Add: function(){
+								addGalleryItem(media_arr.length, true);
+							},
+							Save: function(){
+								saveImageEdit($("#imgPath").val());
+							}
+						},
+						close: function(){
+							$("#imgDialog").remove();
+							try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
+						}
+					});
+	
+				}).tooltip();
+	
+				/*******************************************************
+				* Drag and Drop Upload &&& Click Image for browse to image to upload
+				********************************************************/
+				if(dragFile == true){
+					var $loader = $('#loader');
+					var contentId = urlParams['type'] + '_' + urlParams['id'];
+					$loader.attr('data-content', contentId);
+					$loader.find('*').attr('data-content', contentId);
+	
+					$loader.click(function(){
+						try { $("#loader").tooltip("destroy"); } catch (e) {}
+						//$loader.unbind();
+						siofu.prompt($loader.attr('data-content'));
+					});
+	
+					siofu.listenOnDrop(document.getElementById("loader"));
+	
+					$("#loader").tooltip();
+				}
+	
+				siofu.addEventListener("complete", function(event){
+					siofu.removeEventListener("complete");
+					siofu.removeEventListener("load");
+					//if successful upload, else....
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+	
+					if(myExt == "mp4" || myExt == "jpg" || myExt == "gif" || myExt == "png" || myExt == "PNG" || myExt == "JPG" || myExt == "jpeg" || myExt == "mp3" || myExt == "MP3" || myExt == "swf" || myExt == "svg" || myExt == "SVG" || myExt == "html" || myExt == "htm" || myExt == "HTML" || myExt == "HTM"){
+						if(event.success == true){
+							saveImageEdit(myFile, true);
+						}else{
+							$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+							//Theres an error
+							//Style it to jQuery UI dialog
+							$("#uploadErrorDialog").dialog({
+						    	autoOpen: true,
+								modal: true,
+								width: 400,
+								height: 200,
+								buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+							});
+						}
+						$(".C_Loader").remove();
+	
+					}else if(myExt == "zip" || myExt == "ZIP"){
+						$(".C_LoaderText").empty();
+						$(".C_LoaderText").append("Your zip file is now being unzipped into your media folder.");
+						cognizenSocket.on('unzipComplete', unzipComplete);
+	
+					}else if(myExt.toLowerCase() == "avi" || myExt.toLowerCase() == "mpg" || myExt.toLowerCase() == "wmv" || myExt.toLowerCase() == "webm" || myExt.toLowerCase() == "mov" || myExt.toLowerCase() == "ogv" || myExt.toLowerCase() == "flv" || myExt.toLowerCase() == "m4v" || myExt.toLowerCase() == "mpeg" || myExt.toLowerCase() == "f4v" || myExt.toLowerCase() == "mkv" || myExt.toLowerCase() == "m1v" || myExt.toLowerCase() == "mpv" || myExt.toLowerCase() == "m2v" || myExt.toLowerCase() == "ts" || myExt.toLowerCase() == "m2p" || myExt.toLowerCase() == "3gp"){
+						$(".C_LoaderText").empty();
+						$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
+						$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
+						$("#conversionProgress").progressbar({
+							value: 0,
+							change: function() {
+								$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
+							},
+							complete: function() {
+								$(".progress-label").text("Complete!");
+							}
+						});
+	
+						$("#conversionProgress > div").css({ 'background': '#3383bb'});
+	
+						cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);
+						cognizenSocket.on('mediaInfo', mediaInfo);
+						cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
+	
 					}else{
-						$("#stage").append("<div id='uploadErrorDialog' title='Upload Error'>There was an error uploading your content. Please try again, if the problem persists, please contact your program administrator.</div>");
+						$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
 						//Theres an error
 						//Style it to jQuery UI dialog
 						$("#uploadErrorDialog").dialog({
 					    	autoOpen: true,
 							modal: true,
 							width: 400,
-							height: 200,
+							height: 300,
 							buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
 						});
+						doGitCommit();
+						$(".C_Loader").remove();
 					}
-					$(".C_Loader").remove();
-
-				}else if(myExt == "zip" || myExt == "ZIP"){
-					$(".C_LoaderText").empty();
-					$(".C_LoaderText").append("Your zip file is now being unzipped into your media folder.");
-					cognizenSocket.on('unzipComplete', unzipComplete);
-
-				}else if(myExt.toLowerCase() == "avi" || myExt.toLowerCase() == "mpg" || myExt.toLowerCase() == "wmv" || myExt.toLowerCase() == "webm" || myExt.toLowerCase() == "mov" || myExt.toLowerCase() == "ogv" || myExt.toLowerCase() == "flv" || myExt.toLowerCase() == "m4v" || myExt.toLowerCase() == "mpeg" || myExt.toLowerCase() == "f4v" || myExt.toLowerCase() == "mkv" || myExt.toLowerCase() == "m1v" || myExt.toLowerCase() == "mpv" || myExt.toLowerCase() == "m2v" || myExt.toLowerCase() == "ts" || myExt.toLowerCase() == "m2p" || myExt.toLowerCase() == "3gp"){
-					$(".C_LoaderText").empty();
-					$(".C_LoaderText").append("The file format that you uploaded can't be played in most browsers. Not to fear though - we are converting it to a compatibile format for you!<br/><br/>Larger files may take a few moments.<br/><br/>");
-					$(".C_LoaderText").append("<div id='conversionProgress'><div class='progress-label'>Converting...</div></div>");
-					$("#conversionProgress").progressbar({
-						value: 0,
-						change: function() {
-							$(".progress-label").text($("#conversionProgress").progressbar("value") + "%");
-						},
-						complete: function() {
-							$(".progress-label").text("Complete!");
+				});
+	
+				siofu.addEventListener("start", function(event){
+					try { $("#loader").tooltip("destroy"); } catch (e) {}
+					var myFile = event.file.name;
+					var myExt = getExtension(myFile);
+					if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
+						try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
+						if (type != "top" && type != "bottom"){
+							$("#stage").append("<div id='C_Loader' class='C_Loader'></div>");
+						}else{
+							$("#contentHolder").append("<div id='C_Loader' class='C_Loader'></div>");
 						}
-					});
-
-					$("#conversionProgress > div").css({ 'background': '#3383bb'});
-
-					cognizenSocket.on('mediaConversionProgress', mediaConversionProgress);
-					cognizenSocket.on('mediaInfo', mediaInfo);
-					cognizenSocket.on('mediaConversionComplete', mediaConversionComplete);
-
-				}else{
-					$("#stage").append("<div id='uploadErrorDialog' title='Upload Link Type Warning'>You uploaded a file type that can not be displayed in the content.  The file has been uploaded to the media directory so a link can be created in the content. Use 'media/filename.ext' to create the link.</div>");
-					//Theres an error
-					//Style it to jQuery UI dialog
-					$("#uploadErrorDialog").dialog({
-				    	autoOpen: true,
-						modal: true,
-						width: 400,
-						height: 300,
-						buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
-					});
-					doGitCommit();
-					$(".C_Loader").remove();
-				}
-			});
-
-			siofu.addEventListener("start", function(event){
-				try { $("#loader").tooltip("destroy"); } catch (e) {}
-				var myFile = event.file.name;
-				var myExt = getExtension(myFile);
-				if(myExt.toLowerCase() == "mp3" || myExt.toLowerCase() == "wav" || myExt.toLowerCase() == "ogg" || myExt.toLowerCase() == "aiff" || myExt.toLowerCase() == "m4a" || myExt.toLowerCase() == "wma"){
-					try { $("#audioDrop").tooltip("destroy"); } catch (e) {}
-					if (type != "top" && type != "bottom"){
-						$("#stage").append("<div id='C_Loader' class='C_Loader'></div>");
 					}else{
-						$("#contentHolder").append("<div id='C_Loader' class='C_Loader'></div>");
+						$("#loader").append("<div class='C_Loader'><div class='C_LoaderText'> Uploading "+ myFile +" to the media directory. Larger files may take a few moments.</div></div>");
 					}
-				}else{
-					$("#loader").append("<div class='C_Loader'><div class='C_LoaderText'> Uploading "+ myFile +" to the media directory. Larger files may take a few moments.</div></div>");
-				}
-			});
+				});
+			}
         }
         doAccess(pageAccess_arr);
         callback;
@@ -882,11 +891,21 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
     function saveCaptionEdit(_data){
-        var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
-        var newCDATA=docu.createCDATASection(_data);
-        $(data).find("page").eq(currentPage).find("caption").first().empty();
-        $(data).find("page").eq(currentPage).find("caption").first().append(newCDATA);
-        sendUpdate();
+        if(_data != "add caption here"){
+	        var docu = new DOMParser().parseFromString('<caption></caption>',  "application/xml")
+	        var newCDATA=docu.createCDATASection(_data);
+	        console.log(_data);
+	        if(rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
+		        $(data).find("page").eq(currentPage).find("caption").first().empty();
+		        $(data).find("page").eq(currentPage).find("caption").first().append(newCDATA);
+		    }else{
+			    $(data).find("page").eq(currentPage).find("branch").eq(_id).append($("<caption>"));
+			    var newPageCaption = new DOMParser().parseFromString('<caption></caption>',  "text/xml");
+			    $(data).find("page").eq(currentPage).find("branch").eq(_id).find("caption").first().empty();
+		        $(data).find("page").eq(currentPage).find("branch").eq(_id).find("caption").first().append(newCDATA);
+			}
+	        sendUpdate();
+	    }
     };
 
 	/**********************************************************************
