@@ -402,6 +402,8 @@ function updatePageIssues(){
 											alert(err);
 										}
 										else{
+											updateIndexCommentFlags();
+											updateRedmineCommentIcon();
 											setTimeout(updatePageIssues(), 3000);
 										}
 									});
@@ -488,7 +490,8 @@ function closeAllPageIssues(_currentPage){
 		lessontitle: $(data).find('lessonTitle').attr('value'),
 		id: $(data).find("page").eq(_currentPage).attr("id")
 	};
-	cognizenSocket.emit('getRedmineIssues', _page, function(fdata){
+
+	cognizenSocket.emit('getRedminePageIssues', _page, function(fdata){
 		_issues = fdata;
 		if(_issues.total_count != 0){
 			var issuesMsg = '';
@@ -497,7 +500,7 @@ function closeAllPageIssues(_currentPage){
 
 				_issues.issues[h].status_id = 5;
 
-				cognizenSocket.emit('updateRedmineIssue', _issues.issues[h], function(err){
+				cognizenSocket.emit('updateRedmineIssue', _issues.issues[h], username, function(err){
 					if(err){
 						alert(err);
 					}
@@ -514,7 +517,7 @@ function updateIndexCommentFlags(){
 		});
 	}
 	else{
-		cognizenSocket.emit('getRedmineLessonIssues', $(data).find('lessonTitle').attr('value'));		
+		cognizenSocket.emit('getRedmineLessonIssuesForIndex', $(data).find('lessonTitle').attr('value'));		
 	}
 }
 

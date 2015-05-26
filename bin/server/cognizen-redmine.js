@@ -1,4 +1,5 @@
 var promised = require('promised-redmine');
+var Utils = require('./cognizen-utils');
 
 var REDMINE = {
 	logger: {},
@@ -96,7 +97,7 @@ var REDMINE = {
 //         console.log(data)
 //     })
 // ;         
-// this.promisedAPI.get('/projects/6/memberships', {})
+// this.promisedAPI.get('/projects/59/memberships', {})
 //     .then(function(data){
 //         console.log("mem:");
 //         console.log(data);
@@ -233,7 +234,7 @@ var REDMINE = {
 		var _this = this;
 		var project = {
             name: Name,
-            identifier: "rm" + Name.toLowerCase().replace(/ /g,''),
+            identifier: "rm" + Name.toLowerCase().replace(/ /g,'')+Utils.timestamp(),
             is_public: false
         };
 		_this.promisedAPI.post("projects", {project: project})
@@ -256,7 +257,7 @@ var REDMINE = {
             else{
                 var project = {
                     name: Name,
-                    identifier: "rm" + Name.toLowerCase().replace(/ /g,''),
+                    identifier: "rm" + Name.toLowerCase().replace(/ /g,'')+Utils.timestamp(),
                     parent_id: data.id,
                     inherit_members: true,
                     is_public: false
@@ -283,7 +284,7 @@ var REDMINE = {
             else{
                 var project = {
                     name: Name,
-                    identifier: "rm" +Name.toLowerCase().replace(/ /g,''),
+                    identifier: "rm" +Name.toLowerCase().replace(/ /g,'')+Utils.timestamp(),
                     parent_id: data.id,
                     inherit_members: true,
                     is_public: false
@@ -438,7 +439,6 @@ var REDMINE = {
     },
     updateIssue: function(Issue, username, callback){
        var _this = this;
-       
         _this.promisedAPI.updateIssue(Issue.id, Issue, username)
             .error(function(err){
                 callback(err);
@@ -467,46 +467,81 @@ var REDMINE = {
     updateProjectMembership: function(Permissions, callback){
         var _this = this;
 
-        _this.getProjectMembership(Permissions.content.name, Permissions.content.parent, function(data, err){
+        _this.getProjectMembership(Permissions.content.name, Permissions.content.parent, function(data, projId, err){
             if(err){
                 _this.logger.error("Error getting project membership " + err);
                 callback(err);
             }
             else{
                 var _membership_arr = data.memberships;
-                _this._assignMembership(_projectId, _membership_arr, Permissions.users, 0, function(err){
-                    if(err){
-                        callback(err);
-                    }
-                    else{
-                        callback();
-                    }
-                });                       
+
+                if(Permissions.users[0].username != undefined){
+                    _this._assignMembership(projId, _membership_arr, Permissions.users, 0, function(err){
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+                            callback();
+                        }
+                    });                    
+                }
+                                         
             }
         });
       
     },
     getProjectMembership: function(Project, ProjectParent, callback){
         var _this = this;
-        _this._findProjectIdWithParent(Project, ProjectParent, function(data, err){
+        _this.findProjectIdWithParent(Project, ProjectParent, function(data, err){
             if(err){
                 _this.logger.error("Error " + err);
-                callback(err);
+                callback(null, null, err);
             }
             else{
                 var _projectId = data.id;
                 _this.promisedAPI.get('/projects/'+_projectId+'/memberships', {})
                     .then(function(data){
-                        callback(data, null);
+                        callback(data, _projectId, null);
                     },
                     function(err) {
                         _this.logger.error("Error in _getProjectMembership: " + err.message);
-                        callback(null, err);
+                        callback(null, null, err);
                     }
                 );  
             }
         });      
-    },        
+    },     
+    findProjectIdWithParent: function(Project, Parent, callback){
+        var _this = this;
+        _this.promisedAPI.getProjects()
+            .then(function(data){
+                var found = false;
+                var _projects = data.projects;
+                for (var i = 0; i < _projects.length; i++) {
+                    if(_projects[i].name === Project){
+                        if(Parent == undefined || Parent === ''){
+                            found = true;
+                            callback(_projects[i], null);                            
+                        }
+                        else if(_projects[i].parent.name === Parent){
+                            found = true;
+                            callback(_projects[i], null);
+                        }
+                    }
+                };
+
+                if(!found){
+                    callback(null, "_findProjectIdWithParent No project was found with the " + Project + " name!" );
+                }
+
+            },
+            function(err) {
+                _this.logger.error("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        ); 
+
+    },
     _findUserId: function(Username, callback){
         var _this = this;
 
@@ -529,37 +564,7 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );  
-    },
-    _findProjectIdWithParent: function(Project, Parent, callback){
-        var _this = this;
-
-        _this.promisedAPI.getProjects()
-            .then(function(data){
-                var found = false;
-                var _projects = data.projects;
-                for (var i = 0; i < _projects.length; i++) {
-                    if(_projects[i].name === Project){
-                        if(Parent === ''){
-                            found = true;
-                            callback(_projects[i], null);                            
-                        }
-                        else if(_projects[i].parent.name === Parent){
-                            found = true;
-                            callback(_projects[i], null);
-                        }
-                    }
-                };
-                if(!found){
-                    callback(null, "No project was found with the " + Project + " name!" );
-                }
-            },
-            function(err) {
-                _this.logger.error("Error: " + err.message);
-                callback(null, "Error: " + err.message);
-            }
-        ); 
-
-    },    
+    },        
     _findProjectId: function(Project, callback){
         var _this = this;
         
@@ -574,7 +579,7 @@ var REDMINE = {
                     }
                 };
                 if(!found){
-                    callback(null, "No project was found with the " + Project + " name!" );
+                    callback(null, "_findProjectId No project was found with the " + Project + " name!" );
                 }
             },
             function(err) {
@@ -632,12 +637,10 @@ var REDMINE = {
         var _this = this;
 
         if(Index < Users.length){
-
             _this._findUserId(Users[Index].username, function(data, err){
                 if(err){
                     ///if user not found then create the user and do stuff
                     if(data === '404'){
-                        //console.log('404, '+ err);
                         //no reason to change anything if permission is none
                         if(Users[Index].permission != 'none'){
                             //require password reset on first login / default password is cognizen
@@ -670,7 +673,6 @@ var REDMINE = {
                     //add the user id and role id to the projects membership
                     var userId = data.id;
                     var _membershipId = _this._getMembershipId(Membership_arr, userId);
-
                     _this._setMembership(_membershipId, ProjectId, userId, Users[Index].permission, function(data, err){
                         if(err){
                             _this.logger.error("Error in setMembership " + err);

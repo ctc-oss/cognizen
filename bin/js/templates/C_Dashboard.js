@@ -671,6 +671,7 @@ function C_Dashboard(_type) {
     function submitRemoveContent() {
         var content = {
             id: currentParent.attr('id'),
+            name: currentParent.find("span").first().text(),
             type: currentLevel,
             user: user,
             loc: 'dashboard'

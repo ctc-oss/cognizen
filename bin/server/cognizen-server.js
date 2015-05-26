@@ -599,8 +599,14 @@ var Content = {
                 });
             });             
 
-            socket.on('getRedmineLessonIssues', function (data){
-                SocketHandler.socket(socket).getRedmineLessonIssues(data);
+            socket.on('getRedmineLessonIssues', function (data, callback){
+                SocketHandler.socket(socket).getRedmineLessonIssues(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
+            socket.on('getRedmineLessonIssuesForIndex', function (data){
+                SocketHandler.socket(socket).getRedmineLessonIssuesForIndex(data);
             }); 
 
             socket.on('updateRedmineIssue', function (data, username, callback){
@@ -619,7 +625,13 @@ var Content = {
                 SocketHandler.socket(socket).getRedmineProjectMembership(data, function (fdata){
                     callback(fdata);
                 });
-            }); 
+            });             
+
+            socket.on('findRedmineProjectIdWithParent', function (data, callback){
+                SocketHandler.socket(socket).findRedmineProjectIdWithParent(data, function (fdata){
+                    callback(fdata);
+                });
+            });
 
             socket.on('sendPackageMail', function (data) {
                 SocketHandler.socket(socket).sendPackageMail(data);
