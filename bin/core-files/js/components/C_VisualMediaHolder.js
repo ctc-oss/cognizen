@@ -546,17 +546,17 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 	function setCaption(){
         var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
-
         if(hasPop == true || largeImg != ""){
 	    	$('<div id="centerMe" style="position: relative; float: left; height:'+ $("#mediaPop").height()+ 'px; width:'+ $("#mediaPop").width()+ 'px;">&nbsp;</div>').insertAfter("#myImgList");
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#centerMe");
 	    }else{
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#loader");
 	    }
-
-	    //$("#caption").attr("aria-label", "Media caption: " + $("#caption").text());
-	    //pageAccess_arr.push($("#caption"));
-
+		
+		if(type == "graphicOnly"){
+			$("#mediaHolder").css({'height': $("#loader").height() + $("#caption").height()});
+		}
+		
 		/***********************************************************
 		CREATES A TOOLTIP on .tooltip class members.
 		***********************************************************/
