@@ -224,7 +224,7 @@ function C_Pathing(_type) {
 			
 
 
-			var buttonLabel = "Back";
+			var buttonLabel = "Previous";
 			var buttonID = "";
 			var pathComplete = false;
 
@@ -265,7 +265,7 @@ function C_Pathing(_type) {
 				}
 			}
 
-			buttonLabel = 'Next';
+			buttonLabel = 'Continue';
 
 			if(h == branchCount){
 				//buttonLabel = 'Home';//$(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
