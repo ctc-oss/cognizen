@@ -1784,17 +1784,13 @@ MEDIA LAYOUTS
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
 	font-size 			  	: 8pt;
-	-webkit-transition		: height 1s; /* Safari */
-    transition				: height 1s;
 }
 
 .mediaBrowserFileSelected{
-	color: purple;
-	-webkit-transition: height 1s; /* Safari */
+	color					: purple;
 	background			  	: rgba(255, 255, 255, .9) url(images/file.gif) no-repeat left top;
-    transition: height 1s;
-    height: 70px;
-    cursor: auto; 
+    height					: 70px;
+    cursor					: auto; 
 }
 
 .mbItemStatsHolder{

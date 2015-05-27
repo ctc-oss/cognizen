@@ -435,7 +435,7 @@ function loadMedia(_me){
 		}); } catch (e) {}
 		currentSelectedMediaPreview = _me;
 		currentSelectedMediaPreview.addClass("mediaBrowserFileSelected");
-		currentSelectedMediaPreview.one('otransitionend oTransitionEnd msTransitionEnd transitionend', showItemStats);
+		showItemStats();
 		mediaBrowserPreviewFile(_me.attr('data'));
 	}
 }
@@ -445,7 +445,7 @@ function loadMedia(_me){
 * @method showItemStats
 * @type {Event}
 */
-function showItemStats(event){
+function showItemStats(){
 	var obj = currentSelectedMediaPreview.attr("data");
 	//Disable button action for selected media
 	currentSelectedMediaPreview.off('click');
