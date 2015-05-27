@@ -292,7 +292,7 @@ function C_Pathing(_type) {
 			paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 
-			$("#pageTitle").text($("#pageTitle").text() + " ( " + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");				
+			$("#pageTitle").text($("#pageTitle").text() + " (" + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");				
 		}
 		$("#buttonPalette").width(paletteWidth);
 
