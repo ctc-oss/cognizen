@@ -108,7 +108,6 @@ function C_ClickImage(_type) {
 			
 			if(interact == "click"){
 				$("#" + revID).click(function(){
-					useKeyboard = true;
 					updateRevealContent($(this));
 				}).keypress(function(event) {
 			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
