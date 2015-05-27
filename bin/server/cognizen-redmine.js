@@ -249,6 +249,7 @@ var REDMINE = {
 	},
     createCourse: function(Name, Project, callback){
         var _this = this;
+        //finds the id of the parent project
         _this._findProjectId(Project.name, function(data, err){
             if(err){
                 _this.logger.error("Error " + err);
@@ -274,9 +275,10 @@ var REDMINE = {
             }
         });        
     },
-    createLesson: function(Name, Course, callback){
+    createLesson: function(Name, Course, Program, callback){
         var _this = this;
-        _this._findProjectId(Course.name, function(data, err){
+
+        _this.findProjectIdWithParent(Course.name, Program.name, function(data, err){
             if(err){
                 _this.logger.error("Error " + err);
                 callback(err);
@@ -301,9 +303,10 @@ var REDMINE = {
             }
         });        
     },
-    updateProjectName: function(Original, New, callback){
+    updateProjectName: function(Original, Parent, New, callback){
         var _this = this;
-        _this._findProjectId(Original, function(data, err){
+
+        _this.findProjectIdWithParent(Original, Parent, function(data, err){            
             if(err){
                 _this.logger.error("Error " + err);
                 callback(err);
@@ -328,7 +331,7 @@ var REDMINE = {
     createIssue: function(Comment, callback){
         var _this = this;
         //find project id
-        _this._findProjectId(Comment.lessontitle, function(data, err){
+        _this.findProjectIdWithParent(Comment.lessontitle, Comment.coursetitle, function(data, err){  
             if(err){
                 _this.logger.error("Error " + err);
                 callback(err);
@@ -381,7 +384,7 @@ var REDMINE = {
     },
     getIssuesByPageId: function(Page, callback){
         var _this = this;
-        _this._findProjectId(Page.lessontitle, function(data, err){
+        _this.findProjectIdWithParent(Page.lessontitle, Page.coursetitle, function(data, err){             
             if(err){
                 _this.logger.error("Error " + err);
                 callback(null, err);
@@ -412,10 +415,9 @@ var REDMINE = {
             }
         });
     },
-    getIssuesByLessonId: function(lessontitle, callback){
+    getIssuesByLessonId: function(Lesson, callback){
         var _this = this;
-
-        _this._findProjectId(lessontitle, function(data, err){
+        _this.findProjectIdWithParent(Lesson.lessontitle, Lesson.coursetitle, function(data, err){ 
             if(err){
                 _this.logger.error("Error " + err);
                 callback(null, err);

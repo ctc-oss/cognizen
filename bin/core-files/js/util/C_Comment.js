@@ -383,6 +383,7 @@ function updatePageIssues(){
 										user: {id: urlParams['u'], username: username},
 										content: {type: urlParams['type'], id: urlParams['id']},
 										lessontitle: $(data).find('lessonTitle').attr('value'),
+										coursetitle: $(data).find('courseTitle').attr('value'),
 										page: {
 											id: _id,
 											title: _title
@@ -488,6 +489,7 @@ function closeAllPageIssues(_currentPage){
 	//get issues for the page
 	var _page = {
 		lessontitle: $(data).find('lessonTitle').attr('value'),
+		coursetitle: $(data).find('courseTitle').attr('value'),
 		id: $(data).find("page").eq(_currentPage).attr("id")
 	};
 
@@ -517,7 +519,11 @@ function updateIndexCommentFlags(){
 		});
 	}
 	else{
-		cognizenSocket.emit('getRedmineLessonIssuesForIndex', $(data).find('lessonTitle').attr('value'));		
+		var _data = {
+			lessontitle: $(data).find('lessonTitle').attr('value'),
+			coursetitle: $(data).find('courseTitle').attr('value') 
+		};
+		cognizenSocket.emit('getRedmineLessonIssuesForIndex', _data);		
 	}
 }
 

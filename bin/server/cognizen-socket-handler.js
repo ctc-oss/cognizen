@@ -902,7 +902,8 @@ var SocketHandler = {
                     else {
                         _this._copyContentFiles(callbackData, function () {
                             _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                                _this._createRedmineLesson(data.name, data.course, function(){
+
+                                _this._createRedmineLesson(data.name, data.course, callbackData.fullProgram, function(){
                                     _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', data.name, function (err) {
                                         if (err) {
                                             _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
@@ -929,10 +930,10 @@ var SocketHandler = {
         });
     },
 
-    _createRedmineLesson: function(name, courseName, callback){
+    _createRedmineLesson: function(name, courseName, programName, callback){
         var _this = this;
         //create Redmine project for the lesson
-        redmine.createLesson(name, courseName, function(err){
+        redmine.createLesson(name, courseName, programName, function(err){
             if(err){
                 _this.logger.error("Error creating redmine lesson project: " + err);
                 callback();
@@ -969,7 +970,8 @@ var SocketHandler = {
                         }
                         else {
                             //close redmine comments for the program
-                            _this._closeAllRedmineIssues(data.name, data.user.username, function(err){
+                            //parent is empty
+                            _this._closeAllRedmineIssues(data.name, '', data.user.username, function(err){
                                 if(err){
                                     _this.logger.error(err);
                                     _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
@@ -1027,7 +1029,7 @@ var SocketHandler = {
                         }
                         else {
                             //close redmine comments for the program
-                            _this._closeAllRedmineIssues(data.name, data.user.username, function(err){
+                            _this._closeAllRedmineIssues(data.name, found.getParent().name, data.user.username, function(err){
                                 if(err){
                                     _this.logger.error(err);
                                     _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
@@ -1048,10 +1050,15 @@ var SocketHandler = {
         return this.Content.DELETED_SUFFIX + Utils.timestamp();
     },
 
-    _closeAllRedmineIssues: function(name, username, callback){
+    _closeAllRedmineIssues: function(name, parentname, username, callback){
         var _this = this;
 
-        redmine.getIssuesByLessonId(name, function(fdata){    
+        var _lesson = {
+            lessontitle: name,
+            coursetitle: parentname
+        };
+
+        redmine.getIssuesByLessonId(_lesson, function(fdata){    
             var _issues = fdata;
             if(_issues.total_count != 0){
                 var issuesMsg = '';
@@ -1066,7 +1073,7 @@ var SocketHandler = {
                         }
                         else{
                             //rename Redmine project for the project
-                            redmine.updateProjectName(name, name+_this._fullDeletedSuffix(), function(err){
+                            redmine.updateProjectName(name, parentname, name+_this._fullDeletedSuffix(), function(err){
                                 if(err){
                                     callback(err)
                                 }
@@ -1081,7 +1088,7 @@ var SocketHandler = {
             }
             else{
                 //rename Redmine project for the project
-                redmine.updateProjectName(name, name+_this._fullDeletedSuffix(), function(err){
+                redmine.updateProjectName(name, parentname, name+_this._fullDeletedSuffix(), function(err){
                     if(err){
                         callback(err)
                     }
@@ -1785,6 +1792,7 @@ var SocketHandler = {
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
+                    var parentName = found.getParent().name;
                     var newDiskPath = _this.Content.diskPath(found.path);
                     var parentDir = path.resolve(process.cwd(), newDiskPath);
 					var myxml = parentDir + '/xml/content.xml';
@@ -1821,7 +1829,7 @@ var SocketHandler = {
                                     }
                                     else {
                                         //rename Redmine project for the course or lesson
-                                        redmine.updateProjectName(oldName, found.name, function(err){
+                                        redmine.updateProjectName(oldName, parentName, found.name, function(err){
                                             if(err){
                                                 _this.logger.error("Error renaming redmine "+ data.content.type +" project: " + err);
                                             }
@@ -1832,7 +1840,7 @@ var SocketHandler = {
 
                                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                             var parent = content.getParent();
-                                            console.log("parent : " + parent.name + " content : " + content.name);
+                                            //console.log("parent : " + parent.name + " content : " + content.name);
                                             etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
                                             etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                                             etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
@@ -1896,22 +1904,22 @@ var SocketHandler = {
         }); 
     },
 
-    getRedmineLessonIssues: function (_lessontitle, callback){
-        var _this = this;
-        redmine.getIssuesByLessonId(_lessontitle, function(data, err){
-            if(err){
-                _this.logger.error("Error finding issues: " + err);
-                callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
-            }
-            else{
-                callback(data);
-            }
-        }); 
-    }, 
+    // getRedmineLessonIssues: function (_lessontitle, callback){
+    //     var _this = this;
+    //     redmine.getIssuesByLessonId(_lessontitle, function(data, err){
+    //         if(err){
+    //             _this.logger.error("Error finding issues: " + err);
+    //             callback({ issues: [], total_count: 0, offset: 0, limit: 25 });
+    //         }
+    //         else{
+    //             callback(data);
+    //         }
+    //     }); 
+    // }, 
 
-    getRedmineLessonIssuesForIndex: function (_lessontitle){
+    getRedmineLessonIssuesForIndex: function (_lesson){
         var _this = this;
-        redmine.getIssuesByLessonId(_lessontitle, function(data, err){
+        redmine.getIssuesByLessonId(_lesson, function(data, err){
             if(err){
                 _this.logger.error("Error finding issues: " + err);
             }

@@ -599,11 +599,11 @@ var Content = {
                 });
             });             
 
-            socket.on('getRedmineLessonIssues', function (data, callback){
-                SocketHandler.socket(socket).getRedmineLessonIssues(data, function (fdata){
-                    callback(fdata);
-                });
-            }); 
+            // socket.on('getRedmineLessonIssues', function (data, callback){
+            //     SocketHandler.socket(socket).getRedmineLessonIssues(data, function (fdata){
+            //         callback(fdata);
+            //     });
+            // }); 
 
             socket.on('getRedmineLessonIssuesForIndex', function (data){
                 SocketHandler.socket(socket).getRedmineLessonIssuesForIndex(data);
