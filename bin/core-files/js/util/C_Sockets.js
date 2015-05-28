@@ -166,6 +166,56 @@ function initializeSockets(){
 			}
 	    });
 
+	    cognizenSocket.on("updateRedmineCommentIndex", function(_data){
+	    	_issues = _data;
+	    	if(_issues.total_count != 0){
+
+	    		var foundIssue_arr = [];
+	    		for(var h = 0; h < _issues.issues.length; h++){
+
+	    			var pageId = '';
+	    			var statusId = 1;
+	    			for (var i = 0; i < _issues.issues[h].custom_fields.length; i++) {
+	    				if(_issues.issues[h].custom_fields[i].name === 'Page Id'){
+	    					pageId = _issues.issues[h].custom_fields[i].value;
+	    					statusId = _issues.issues[h].status.id;
+	    				}
+	    			};
+
+					for(var j = 0; j < indexItem_arr.length; j++){
+						if($.inArray(pageId, foundIssue_arr) == -1){
+							if(pageId == $(indexItem_arr[j]).attr('myID')){
+								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithOpenComment");
+								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithClosedComment");
+								  //if status == Resolved	
+								  if(statusId == 3){
+									$(indexItem_arr[j]).children("#commentSpot").addClass("indexItemWithClosedComment");  
+								  }else{
+								  	$(indexItem_arr[j]).children("#commentSpot").addClass("indexItemWithOpenComment");
+								  	foundIssue_arr.push(pageId);	
+								  }					
+							}
+							else{
+								if($(data).find('page[id="'+$(indexItem_arr[j]).attr('myID')+'"]').find('branch[id="'+pageId+'"]').length > 0){
+								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithOpenComment");
+								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithClosedComment");
+								  //if status == Resolved	
+								  if(statusId == 3){
+									$(indexItem_arr[j]).children("#commentSpot").addClass("indexItemWithClosedComment");  
+								  }else{
+								  	$(indexItem_arr[j]).children("#commentSpot").addClass("indexItemWithOpenComment");
+								  	foundIssue_arr.push(pageId);	
+								  }										
+								}
+							}
+						}
+
+					}
+	    		}
+	    	}
+
+	    });
+
 	    cognizenSocket.on('commentNotAdded', function (data) {
 	        //console.log('FOO');
 	    });

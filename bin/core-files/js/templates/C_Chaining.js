@@ -16,7 +16,7 @@ function C_Chaining(_type) {
 	var branchCount = 0;
 	var branchType = type;
 	var currentMedia;
-	var currentBranch = 0;
+	//var currentBranch = 0;
 	var mandatory = true;
 	var currentEditBankMember = 0;
 	var currentStep = 0;
@@ -97,6 +97,11 @@ function C_Chaining(_type) {
 
 		buildBranchOptions(_id);
 		checkMode();
+
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
+			updateRedmineCommentIcon();		
+		}
+
 		doAccess(pageAccess_arr);
 	}
 

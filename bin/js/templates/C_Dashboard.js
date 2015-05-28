@@ -553,16 +553,21 @@ function C_Dashboard(_type) {
 	                    if (myPermission == "null"){
 		                    myPermission = null;
 	                    }
-                    	var tmpObj = {id: data[i].id, permission: myPermission};
+                    	var tmpObj = {id: data[i].id, username: data[i].username, first: data[i].firstName, last: data[i].lastName, permission: myPermission};
 	                    user_arr.push(tmpObj)
-	                    //console.log(tmpObj);
                     }
 
+                    var parentName = '';
+                    if(assignParent.data('type') != 'program'){
+                        parentName = assignParent.parent().parent().find("span").first().text();
+                    }
 
                     socket.emit('assignContentToUsers', {
                         content: {
                             type: assignParent.data('type'),
-                            id: assignParent.data('id')
+                            id: assignParent.data('id'),
+                            name: assignParent.find("span").first().text(),
+                            parent: parentName
                         },
                         users: user_arr
                     });
@@ -669,6 +674,7 @@ function C_Dashboard(_type) {
     function submitRemoveContent() {
         var content = {
             id: currentParent.attr('id'),
+            name: currentParent.find("span").first().text(),
             type: currentLevel,
             user: user,
             loc: 'dashboard'

@@ -7,10 +7,11 @@ var httpProxy = require('http-proxy');
 var path = require("path");
 var et = require('elementtree');
 var express = require('express');
-var session = require('express-session')
+var session = require('express-session');
 var cookie = require("cookie");
 var connect = require("connect");
 var cookieParser = require("cookie-parser");
+var cookieParser = require('cookie-parser');
 var socketIo = require('socket.io');
 
 var fs = require('fs-extra');
@@ -586,6 +587,58 @@ var Content = {
 
             socket.on('getCourseCommentPages', function (data) {
                 SocketHandler.socket(socket).getCourseCommentPages(data);
+            });
+
+            socket.on('retrieveRedmineHost', function (callback){
+                SocketHandler.socket(socket).retrieveRedmineHost(function (fdata){
+                    callback(fdata);
+                });
+            });
+
+            socket.on('addRedmineIssue', function (data, callback){
+                SocketHandler.socket(socket).addRedmineIssue(data, function (fdata){
+                    callback(fdata);
+                });
+            });
+
+            socket.on('getRedminePageIssues', function (data, callback){
+                SocketHandler.socket(socket).getRedminePageIssues(data, function (fdata){
+                    callback(fdata);
+                });
+            });             
+
+            // socket.on('getRedmineLessonIssues', function (data, callback){
+            //     SocketHandler.socket(socket).getRedmineLessonIssues(data, function (fdata){
+            //         callback(fdata);
+            //     });
+            // }); 
+
+            socket.on('getRedmineLessonIssuesForIndex', function (data){
+                SocketHandler.socket(socket).getRedmineLessonIssuesForIndex(data);
+            }); 
+
+            socket.on('updateRedmineIssue', function (data, username, callback){
+                SocketHandler.socket(socket).updateRedmineIssue(data, username, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
+            socket.on('getRedmineIssueJournal', function (data, callback){
+                SocketHandler.socket(socket).getRedmineIssueJournal(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
+            socket.on('getRedmineProjectMembership', function (data, callback){
+                SocketHandler.socket(socket).getRedmineProjectMembership(data, function (fdata){
+                    callback(fdata);
+                });
+            });             
+
+            socket.on('findRedmineProjectIdWithParent', function (data, callback){
+                SocketHandler.socket(socket).findRedmineProjectIdWithParent(data, function (fdata){
+                    callback(fdata);
+                });
             });
 
             socket.on('sendPackageMail', function (data) {

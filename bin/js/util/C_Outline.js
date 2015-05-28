@@ -548,6 +548,7 @@ function C_Outline(_myItem) {
 			 var moveFrom = startNode.node;
 			 var startModule = startNode.module;
 			 var startModuleID = module_arr[startNode.module].id;
+			 var startModuleName = module_arr[startNode.module].name;
 			 var startNodeLevel = startNode.level;
 
 			 var endNode;
@@ -586,6 +587,7 @@ function C_Outline(_myItem) {
 			 var moveTo = endNode.node;
 			 var endModule = endNode.module;
 			 var endModuleID = module_arr[endNode.module].id;
+			 var endModuleName = module_arr[endNode.module].name;
 			 var endNodeLevel = endNode.level;
 
 			 //Make sure that module levels are not changed.
@@ -649,6 +651,7 @@ function C_Outline(_myItem) {
 				 	else if (startNodeLevel == "page" && endNodeLevel == "page"){
 				 	if(endModule != startModule){
 					 	updateModuleXML(startModule, false);
+					 	moveAllRedmineIssuesForPage($('#' + currentDragID).attr("id"), startModuleName, endModuleName);
 					 }
 				 	 updateModuleXML(endModule, true);
 				 }
@@ -662,6 +665,51 @@ function C_Outline(_myItem) {
 			 }
 		}
      }
+
+	function moveAllRedmineIssuesForPage(_pageId, _lessonTitle, _newLessonTitle){
+
+		var _issues = {};
+		var _page = {
+			lessontitle: _lessonTitle ,
+			id: _pageId,
+			coursetitle: $(courseData).find('course').first().attr("name")
+		};
+
+		socket.emit('getRedminePageIssues', _page, function(fdata){
+			_issues = fdata;
+			if(_issues.total_count != 0){
+				_page.lessontitle = _newLessonTitle;
+				socket.emit('findRedmineProjectIdWithParent', _page, function(fdata){
+					var _newProject = fdata;
+					if(_newProject.length != 0){
+						updateMovedIssues(_issues, _newProject.id, 0);
+					}
+					else{
+						alert("The project id of the lesson the page was moved to was not found so no comments were moved. ");
+					}
+				});
+
+
+			}
+		});	
+	} 
+
+	// recursive function that moves each issue/comment on a page when a page is moved between lessons
+	function updateMovedIssues(_issues, _newProjectId, index){
+		if(index < _issues.total_count){
+			_issues.issues[index].project_id = _newProjectId;
+
+			socket.emit('updateRedmineIssue', _issues.issues[index], user.username, function(err){
+				if(err){
+					alert(err);
+				}
+				else{
+					updateMovedIssues(_issues, _newProjectId, index+1);
+				}
+			});			
+		}	
+	}
+
 
      function getNode(_nodeID){
          var nodeData = new Object();
@@ -3322,8 +3370,13 @@ function C_Outline(_myItem) {
 	               $("#"+myID).remove();									//Have to call twice - not sure why...
 	               var myNode = getNode(myID);								//Find node in course.xml as object
 	               var myRemove = myNode.node;								//Define the actual node in course.xml
+
+				   var myModule = myNode.module;						
+				   var myModuleName = module_arr[myNode.module].name;
+
 	               myRemove.remove();										//Remove from xml
 	               updateCourseXML(false);									//Push xml without commit
+
 				   for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr
 					   if (module_arr[i].id == myID){
 						   module_arr.splice(i, 1);							//remove from module_arr
@@ -3332,11 +3385,13 @@ function C_Outline(_myItem) {
 	               var content = {											//Create data to send to node server
 			            id: myID,
 			            type: "lesson",
+			            name: myModuleName,
 			            user: user,
 			            loc: 'outliner'
 			        };
 
 			        socket.emit('removeContent', content);					//Call to server to remove content ------ must add to function to remove module from course.xml...
+			        
 			        $(this).dialog("close");								//Close dialog.
                 },
                  No: function () {
@@ -3378,6 +3433,11 @@ function C_Outline(_myItem) {
 						myRemove.remove();									//remove the node from the xml
 						$("#"+myID).remove();								//Remove the item from the menu
 						updateModuleXML(myModule, true);					//update the xml
+
+						if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
+							closeAllRedmineIssuesForPage(myID, $(module_arr[myModule].xml).find('lessonTitle').attr('value'));
+						}
+
 						$(this).dialog("close");							//close the dialog
 					}else{
 						$(this).dialog("close");
@@ -3403,6 +3463,33 @@ function C_Outline(_myItem) {
 			}
 		});
 	}
+
+	function closeAllRedmineIssuesForPage(_pageId, _lessonTitle){
+		//close redmine comments for page
+		var _issues = {};
+		var _page = {
+			lessontitle: _lessonTitle ,
+			id: _pageId
+		};
+
+		socket.emit('getRedminePageIssues', _page, function(fdata){
+			_issues = fdata;
+			if(_issues.total_count != 0){
+				for(var h = 0; h < _issues.issues.length; h++){
+					_issues.issues[h].notes = 'This page was deleted in Cognizen so the issue was closed.';
+
+					_issues.issues[h].status_id = 5;
+
+					socket.emit('updateRedmineIssue', _issues.issues[h], user.username, function(err){
+						if(err){
+							alert(err);
+						}
+					});
+				}
+			}
+		});		
+	} 
+
 
 	/************************************************************************************************
 	Function: 		s4
