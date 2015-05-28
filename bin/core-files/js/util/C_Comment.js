@@ -16,6 +16,9 @@
 var commentsOpen = false;
 var pageComments;
 var currentIssueBankMember = 0;
+var issueMenu_arr = [];
+var _issues = {};
+var scroller;
 
 function checkComment(){
 	$("#myCanvas").append("<div id='comment' class='btn_comment' title='Add a Page Comment'></div>");
@@ -108,20 +111,20 @@ function checkComment(){
 	}
 	else{
 		$("#comment").tooltip().click(function(){
-			updatePageIssues();
+			updatePageIssues(true);
 		});		
 
 	}
 
 }
 
-function updatePageIssues(){
+function updatePageIssues(create){
 
 	var redmineHost = '';
 	cognizenSocket.emit('retrieveRedmineHost', function(fdata){
 		redmineHost = fdata;
 	
-		var _issues = {};
+		//var _issues = {};
 
 		//gets title and id for templates with subpages (branches)
 		var layout = $(data).find('page').eq(currentPage).attr('layout');
@@ -143,14 +146,24 @@ function updatePageIssues(){
 			var pageNumber = currentPage + 1;
 
 			//Create the Comment Dialog
-			var msg = "<div id='commentDialog' title='Comments for Page "+ pageNumber + ": " + _title + "'>";
-			msg += "<div id='commentDisplayHolder'>";
-			msg += "<div id='pageComments' class='editItemContainer '></div>";
+			var msg = '';
+			if(create == true){
+				msg += "<div id='commentDialog' title='Comments for Page "+ pageNumber + ": " + _title + "'>";
+			}
+			//style needs moved to css
+			// msg += "<div id='commentDisplayHolder' class='box-wrap antiscroll-wrap' style='height:450px'>";
+			// msg += "<div class='box' style='width:auto; height:450px'><div id='pageComments' class='editItemContainer overthrow antiscroll-inner' style='height:440px'></div></div>";
+			// msg += "</div>";//contentDisplayHolder
+			msg += "<div id='commentDisplayHolder' style='height:450px'>";
+			msg += "<div id='pageComments' style='height:440px'></div>";
 			msg += "</div>";//contentDisplayHolder
-			msg += "<label for='commentInputSubject'>Comment Subject: *</label>";
+			msg += "<div id='newComment' class='editItemContainer'>";
+			msg += '<div id="addLabel" style="text-align:center;font-weight:bold">Add Comment Here</div>';
+			msg += "<label for='commentInputSubject'>Subject: *</label>";
 			msg += "<input type='text' id='commentInputSubject' name='commentInputSubject' type='text' title='Add comment subject here.''/><br/>";
-			msg += "<label for='commentInputText'>Comment Description: </label>";
-			msg += '<textarea rows="4" cols="50" name="commentInputText" id="commentInputText" title="Add comment description here." class="text ui-widget-content ui-corner-all"></textarea><br/>';
+			msg += "<label for='commentInputText'>Description: </label>";
+			msg += '<div name="commentInputText" id="commentInputText" title="Add comment description here." class="dialogInput" contenteditable="true"></div><br/>';
+			//msg += '<textarea rows="4" cols="50" name="commentInputText" id="commentInputText" title="Add comment description here." class="text ui-widget-content ui-corner-all"></textarea><br/>';
 
 			msg += '<div id="dropdowns" >';		
 
@@ -174,41 +187,87 @@ function updatePageIssues(){
 
 		 	msg += '</div>'; //end assignee div
 		 	msg += '</div><br/>'; //end dropdowns div
-					     		
-			msg += "</div>";//commentDialog
-			$("#stage").append(msg);			
+		 	msg += '</div>'; //end newComment
+			if(create == true){		     		
+				msg += "</div>";//commentDialog
+				$("#stage").append(msg);
+			}
+			else{
+				$('#commentDialog').append(msg);
+			}
+						
+			$('#newComment').append('<div id="addIssueBtn" title="Adds new issue">Add</div>');
+
+			$("#addIssueBtn").button().click(function(){
+				if($('#commentInputSubject').val().length != 0){
+					var inputStatusId = findStatusId($('#commentInputStatus option:selected').text());
+					var _id = $(data).find("page").eq(currentPage).attr("id");
+					var _title = $(data).find('page').eq(currentPage).find("title").first().text().trim();
+					if(layout === 'branching' || layout === 'chaining' || layout === 'pathing'){
+						_title = $(data).find("page").eq(currentPage).find('branch').eq(currentBranch).find('title').first().text().trim();
+						_id = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).attr("id");
+					}									
+					var pageData = {
+						user: {id: urlParams['u'], username: username},
+						content: {type: urlParams['type'], id: urlParams['id']},
+						lessontitle: $(data).find('lessonTitle').attr('value'),
+						coursetitle: $(data).find('courseTitle').attr('value'),
+						page: {
+							id: _id,
+							title: _title
+						},
+						subject: $('#commentInputSubject').val().replace('<p>', '').replace('</p>', '').trim(),
+						text: CKEDITOR.instances['commentInputText'].getData(),
+						status: inputStatusId,
+						assigned_to_id: $('#assigneeInput option:selected').val()
+					};
+
+					try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
+					try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
+					try { CKEDITOR.instances["commentInputText"].destroy() } catch (e) {}
+					$("#commentDisplayHolder").remove();
+					$("#newComment").remove();
+
+					cognizenSocket.emit('addRedmineIssue', pageData, function(err){
+						if(err){
+							alert(err);
+						}
+						else{
+
+							updateIndexCommentFlags();
+							updateRedmineCommentIcon();
+
+							setTimeout(updatePageIssues(false), 3000);
+						}
+					});
+					
+				}
+				else{
+					alert("A subject must be provided to add a comment.");
+				}
+			}).tooltip();
+
+			//Add and style commentInputText button
+	        $("#commentInputText").attr('contenteditable', true);
+	        CKEDITOR.disableAutoInline = true;
+			CKEDITOR.inline( 'commentInputText', {
+				toolbar: pageTitleToolbar,
+				toolbarGroups : pageTitleToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P
+			});	
+
 
 			cognizenSocket.emit('getRedminePageIssues', _page, function(fdata){
 				_issues = fdata;
 
-				console.log(_issues);
-				var issueMenu_arr = [];
 				if(_issues.total_count != 0){
 					var issuesMsg = '';
-					for(var h = 0; h < _issues.issues.length; h++){
-						var label = h + 1;
-						var tmpID = "bankItem"+h;
-						console.log(tmpID);
-						issuesMsg += "<div id='"+tmpID+"' class='questionBankItem";
-						if(currentIssueBankMember == h){
-							issuesMsg += " selectedEditBankMember";
-						}
-						else{
-							issuesMsg += " unselectedEditBankMember";
-						}
-						issuesMsg += "' style='";
 
-						if(h < 100){
-							issuesMsg += "width:30px;";
-						}else if(h > 99){
-							issuesMsg += "width:45px;";
-						}
-
-						issuesMsg += "' data-myID='" + h + "' title='" + _issues.issues[h].subject + "'>" + label + "</div>";
-
-						issueMenu_arr.push(tmpID);
-					}
-					issuesMsg += "</div><br/><br/>";
+					issuesMsg += "</div>";
+			issuesMsg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Comment Menu: </b></label></div><br/><br/>";					
+			issuesMsg += "<div id='commentHolder' class='box-wrap antiscroll-wrap' style='width:100%'>";
+			issuesMsg += "<div class='box' style='height:410px;width:auto'><div id='page' class='editItemContainer overthrow antiscroll-inner' style='height:390px;width:auto;'>";
 
 					issuesMsg += "<label for='commentSubject'>Comment Subject: </label>";
 					issuesMsg += "<input type='text' id='commentSubject' name='commentSubject' type='text' title='Edit comment subject here.'' value='"+_issues.issues[currentIssueBankMember].subject+"'/><br/>";
@@ -240,6 +299,7 @@ function updatePageIssues(){
 			     	issuesMsg += '<div id="issueNotes" name="issueNotes"></div>';
 			     	issuesMsg += "<div id='label'>Add Note: </div>";
 					issuesMsg += '<div name="commentNote" id="commentNote" title="Add note to comment here." class="dialogInput" contenteditable="true"></div><br/>';					
+			issuesMsg += "</div></div></div>";//box page contentHolder
 
 					$("#pageComments").append(issuesMsg);
 
@@ -278,28 +338,12 @@ function updatePageIssues(){
 							$('#assignee option[value='+currentAssignee+']').attr('selected', 'selected');							
 						}
 
-						//console.log(_issues.issues[currentIssueBankMember]);
-						for(var j = 0; j < issueMenu_arr.length; j++){
-							if(currentIssueBankMember != j){
-								var tmpID = "#" + issueMenu_arr[j];
-								$(tmpID).click(function(){
-									// var tmpObj = makeQuestionDataStore();
-									// saveQuestionEdit(tmpObj);
-									$('#bankItem'+ currentIssueBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
-									currentIssueBankMember = parseInt($(this).attr("data-myID"));
-									$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
-									try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
-									try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
-									$(".questionBankItem").remove();
-									$("#commentDialog").remove();
-									updatePageIssues();
-								}).tooltip();
-							}
-						}
+						updateBankMenu();
+
 
 						//TODO: hide link to redmine for client reviewers
 						// if(mode != 'review'){
-						$("#pageComments").append('<div><div id="updateIssueBtn" style="float:left;">Submit</div>&nbsp;&nbsp;<div id="redmineLink" style="float:right;"><a href="http://'+redmineHost+'/issues/'+_issues.issues[currentIssueBankMember].id+'" target="_blank">Link to Redmine</a></div></div><br/>');
+						$("#page").append('<div><div id="updateIssueBtn" style="float:left;" title="Updates current issue">Submit</div>&nbsp;&nbsp;<div id="redmineLink" style="float:right;"><a href="http://'+redmineHost+'/issues/'+_issues.issues[currentIssueBankMember].id+'" target="_blank">Link to Redmine</a></div></div><br/>');
 						// }
 						// else{
 						// 	$("#pageComments").append('<div id="updateIssueBtn" style="float:left;">Submit</div><br/><br/>');
@@ -318,17 +362,20 @@ function updatePageIssues(){
 
 							try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
 							try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
-							$("#commentDialog").remove();
+							try { CKEDITOR.instances["commentInputText"].destroy() } catch (e) {}
+							
+							$("#commentDisplayHolder").remove();
+							$("#newComment").remove();
 
 							cognizenSocket.emit('updateRedmineIssue', _issues.issues[currentIssueBankMember], username, function(err){
 								if(err){
 									alert(err);
 								}
 								else{
-									setTimeout(updatePageIssues(), 3000);
+									setTimeout(updatePageIssues(false), 3000);
 								}
 							});				
-						});
+						}).tooltip();
 
 						//Add and style contentEdit button
 				        $("#commentText").attr('contenteditable', true);
@@ -360,82 +407,89 @@ function updatePageIssues(){
 				}
 
 				//Style it to jQuery UI dialog
-				$("#commentDialog").dialog({
-					autoOpen: true,
-					modal: true,
-					width: 600,
-					height: 625,
-					dialogClass: "no-close",
-					buttons:[		
-						{
-							text: "Add",
-							title: "Adds a new issue.",
-							click: function(){
-								if($('#commentInputSubject').val().length != 0){
-									var inputStatusId = findStatusId($('#commentInputStatus option:selected').text());
-									var _id = $(data).find("page").eq(currentPage).attr("id");
-									var _title = $(data).find('page').eq(currentPage).find("title").first().text().trim();
-									if(layout === 'branching' || layout === 'chaining' || layout === 'pathing'){
-										_title = $(data).find("page").eq(currentPage).find('branch').eq(currentBranch).find('title').first().text().trim();
-										_id = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).attr("id");
-									}									
-									var pageData = {
-										user: {id: urlParams['u'], username: username},
-										content: {type: urlParams['type'], id: urlParams['id']},
-										lessontitle: $(data).find('lessonTitle').attr('value'),
-										coursetitle: $(data).find('courseTitle').attr('value'),
-										page: {
-											id: _id,
-											title: _title
-										},
-										subject: $('#commentInputSubject').val().replace('<p>', '').replace('</p>', '').trim(),
-										text: $('#commentInputText').val().replace('<p>', '').replace('</p>', '').trim(),
-										status: inputStatusId,
-										assigned_to_id: $('#assigneeInput option:selected').val()
-									};
+				if(create == true){
+					$("#commentDialog").dialog({
+						autoOpen: true,
+						modal: true,
+						width: 700,
+						height: 750,
+						dialogClass: "no-close",
+						buttons:[		
+							{
+								text: "Done",
+								title: "Saves and closes the edit dialog.",
+								click: function(){
 
 									try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
 									try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
+									try { CKEDITOR.instances["commentInputText"].destroy() } catch (e) {}
+									$( this ).dialog( "close" );
 									$("#commentDialog").remove();
-
-									cognizenSocket.emit('addRedmineIssue', pageData, function(err){
-										if(err){
-											alert(err);
-										}
-										else{
-											updateIndexCommentFlags();
-											updateRedmineCommentIcon();
-											setTimeout(updatePageIssues(), 3000);
-										}
-									});
-									
 								}
-								else{
-									alert("A subject must be provided to add a comment.");
-								}
-							}	
-						},
-						{
-							text: "Done",
-							title: "Saves and closes the edit dialog.",
-							click: function(){
-
-								try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
-								try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
-								$( this ).dialog( "close" );
-								$("#commentDialog").remove();
-							}
-						}					
-					] 					
-				});				
-
+							}					
+						] 					
+					});				
+				}
 
 			});	
 		});
 
 	});		
 
-	$('.antiscroll-wrap').antiscroll();		
+	//$('.box-wrap').antiscroll().data('antiscroll');
+	scroller = $('.box-wrap').antiscroll().data('antiscroll');
+
+}
+
+function updateBankMenu(){
+	issueMenu_arr = [];
+	var issuesMsg = '';
+	for(var h = 0; h < _issues.issues.length; h++){
+		var label = h + 1;
+		var tmpID = "bankItem"+h;
+		issuesMsg += "<div id='"+tmpID+"' class='questionBankItem";
+		if(currentIssueBankMember == h){
+			issuesMsg += " selectedEditBankMember";
+		}
+		else{
+			issuesMsg += " unselectedEditBankMember";
+		}
+		issuesMsg += "' style='";
+
+		if(h < 100){
+			issuesMsg += "width:30px;";
+		}else if(h > 99){
+			issuesMsg += "width:45px;";
+		}
+
+		issuesMsg += "' data-myID='" + h + "' title='" + _issues.issues[h].subject + "'>" + label + "</div>";
+
+		issueMenu_arr.push(tmpID);
+	}
+
+	$("#questionMenu").append(issuesMsg);
+
+	for(var j = 0; j < issueMenu_arr.length; j++){
+		if(currentIssueBankMember != j){
+			var tmpID = "#" + issueMenu_arr[j];
+			$(tmpID).click(function(){
+
+				$('#bankItem'+ currentIssueBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
+				currentIssueBankMember = parseInt($(this).attr("data-myID"));
+				$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
+				try { CKEDITOR.instances["commentText"].destroy() } catch (e) {}
+				try { CKEDITOR.instances["commentNote"].destroy() } catch (e) {}
+				try { CKEDITOR.instances["commentInputText"].destroy() } catch (e) {}
+				$(".questionBankItem").remove();
+				$("#commentDisplayHolder").remove();
+				$("#newComment").remove();
+		
+				updatePageIssues(false);
+
+			}).tooltip();
+		}
+	}
+
 }
 
 function findStatusId(name){
