@@ -159,7 +159,7 @@ function addIndex(){
 				primary: 'ui-icon-circle-plus'
 			}
 		}).click(function(){
-			connected = socket.socket.connected;
+			connected = socket.connected;
 
 			if(connected){
 				addPage();

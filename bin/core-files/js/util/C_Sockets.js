@@ -19,14 +19,25 @@ var siofu, siofuAudio, siofuHelp, siofuMedia;
 var siofuInitialized = {};
 var forcedReviewer = false;
 var activeEditor;
- 
+//var io;
+
 function initializeSockets(){
 	if(mode != "prod" && mode != "production"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server.
 	    //Add a check for IE < 10...
-	    cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
-	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+	    /*cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
+	                             io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});	*/    					  
+	   
+	    cognizenSocket = io.connect(null, {
+							resource: 'server', 
+							transports: ["websockets", "polling"], 
+							'sync disconnect on unload' : true, 
+							'forceNew': true, 
+							secure: secureSocket,
+							'connect timeout': 1000
+						});
+	                             
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
 			user: {id: urlParams['u']}
