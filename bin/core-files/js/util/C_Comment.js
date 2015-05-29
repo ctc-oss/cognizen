@@ -266,7 +266,7 @@ function updatePageIssues(create){
 
 					issuesMsg += "</div>";
 			issuesMsg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Comment Menu: </b></label></div><br/><br/>";					
-			issuesMsg += "<div id='commentHolder' class='box-wrap antiscroll-wrap' style='width:100%'>";
+			issuesMsg += "<div id='commentHolder' class='box-wrap antiscroll-wrap' style='width:100%; background-color:rgba(51, 51, 51, 0);'>";
 			issuesMsg += "<div class='box' style='height:410px;width:auto'><div id='page' class='editItemContainer overthrow antiscroll-inner' style='height:390px;width:auto;'>";
 
 					issuesMsg += "<label for='commentSubject'>Comment Subject: </label>";
