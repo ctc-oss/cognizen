@@ -17,8 +17,7 @@ var Utils = require('./cognizen-utils'),
     unzip = require('adm-zip'),
     util = require('util'),
 	readdirp = require('readdirp'),
-	et = require('elementtree'),
-    redmine = require('./cognizen-redmine');
+	et = require('elementtree');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -455,12 +454,9 @@ var SocketHandler = {
     },
 
     checkLoginStatus: function() {
-        var _this = this;
         var status = {};
         var sessionId = this.SocketSessions.sessionIdFromSocket(this._socket);
         status.user = this.SocketSessions.socketUsers[sessionId];
-        //cognizen-redmine init
-        redmine.init(_this.logger, _this.config.redmineHost, _this.config.redmineApiKey, _this.config.redmineProtocal);
         this._socket.emit('loadDashboardPage', status);
     },
 
@@ -569,15 +565,6 @@ var SocketHandler = {
                     if (err) {
                         _this.logger.info("Problem Houston - can't save new password." + err);
                     } else {
-                        //update user password in Redmine
-                        redmine.updateUserPassword(data.user, data.pass, function(err){
-                            if(err){
-                                _this.logger.error("Error updating redmine user: " + err);
-                            }
-                            else{
-                                _this.logger.info("User updated to redmine");
-                            }
-                        });                        
                         _this._socket.emit('passwordUpdated');
                     }
                 });
@@ -627,6 +614,8 @@ var SocketHandler = {
                     //if already exists - kick the registration failed
                     _this._socket.emit('registrationFailed');
                 } else {
+<<<<<<< HEAD
+=======
                     //create user in Redmine
                     redmine.createUser(data.user, data.firstName, data.lastName, data.pass, false, function(err){
                         if(err){
@@ -637,6 +626,7 @@ var SocketHandler = {
                         }
                     });
                     
+>>>>>>> 3462-update_commenting_system
                     _this._socket.emit('registrationSuccess');
                     _this.Mail.send({
                         user: data.user,
@@ -906,6 +896,11 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
+<<<<<<< HEAD
+                            item.set("coursedisplaytitle", content.name);
+=======
+                            
+>>>>>>> 3462-update_commenting_system
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");
@@ -1045,6 +1040,17 @@ var SocketHandler = {
                 _this.Git.initializeProgramRepo(callbackData, function () {
                     _this._copyProgramFiles(callbackData, function () {
                         _this.Git.commitProgramContent(callbackData, data.user, function () {
+<<<<<<< HEAD
+                            _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
+                                if (err) {
+                                    _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
+                                    _this.logger.error(err);
+                                }
+                                else {
+                                    _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    if (nameHadInvalidChars) {
+                                        _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
+=======
                             //create project in Redmine
                             _this._createRedmineProject(data.name, function(){
 
@@ -1059,6 +1065,7 @@ var SocketHandler = {
                                         if (nameHadInvalidChars) {
                                             _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
                                         }
+>>>>>>> 3462-update_commenting_system
                                     }
                                 });                                
                             });                             
@@ -1111,6 +1118,17 @@ var SocketHandler = {
                             } else {
                             	 _this._copyCourseFiles(callbackData, function () {
 	                                _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+<<<<<<< HEAD
+	                                    _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', function (err) {
+	                                        if (err) {
+	                                            _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+	                                            _this.logger.error(err);
+	                                        }
+	                                        else {
+	                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+	                                        }
+	                                    });
+=======
                                         _this._createRedmineCourse(data.name, data.program, function(){
                                             _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', data.name, function (err) {
                                                 if (err) {
@@ -1124,6 +1142,7 @@ var SocketHandler = {
                                             });
                                         });
 
+>>>>>>> 3462-update_commenting_system
 	                                }, function (message) {
 	                                    _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
 	                                    _this.logger.info("Error committing program content: " + message)
@@ -1168,6 +1187,16 @@ var SocketHandler = {
                     else {
                         _this._copyContentFiles(callbackData, function () {
                             _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+<<<<<<< HEAD
+                                _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', function (err) {
+                                    if (err) {
+                                        _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                        _this.logger.error(err);
+                                    }
+                                    else {
+                                        _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                    }
+=======
 
                                 _this._createRedmineLesson(data.name, data.course, callbackData.fullProgram, function(){
                                     _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', data.name, function (err) {
@@ -1180,6 +1209,7 @@ var SocketHandler = {
                                             _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
                                         }
                                     });
+>>>>>>> 3462-update_commenting_system
                                 });
 
                             }, function (message) {
@@ -2054,7 +2084,6 @@ var SocketHandler = {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
                 	var serverDetails = _this.Content.serverDetails(found);
-                    var oldName = found.name;
 
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
@@ -2094,6 +2123,10 @@ var SocketHandler = {
                                         _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (2)'});
                                     }
                                     else {
+<<<<<<< HEAD
+                                        _this.Content.updateAllXml(itemsToSave, function(content, etree) {
+                                            var parent = content.getParent();
+=======
                                         //rename Redmine project for the course or lesson
                                         redmine.updateProjectName(oldName, parentName, found.name, function(err){
                                             if(err){
@@ -2107,6 +2140,7 @@ var SocketHandler = {
                                         _this.Content.updateAllXml(itemsToSave, function(content, etree) {
                                             var parent = content.getParent();
                                             //console.log("parent : " + parent.name + " content : " + content.name);
+>>>>>>> 3462-update_commenting_system
                                             etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
                                             etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
                                             etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
@@ -2135,6 +2169,8 @@ var SocketHandler = {
     	ContentComment.find({contentId: lesson.lesson}).remove()
     },
 
+<<<<<<< HEAD
+=======
     retrieveRedmineHost: function(callback){
         var _this = this;
         callback(_this.config.redmineHost);
@@ -2254,6 +2290,7 @@ var SocketHandler = {
         });
     },
 
+>>>>>>> 3462-update_commenting_system
     addComment: function (comment) {
         //comment.user
         //comment.content.type
