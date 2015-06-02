@@ -23,6 +23,7 @@ var SCORM = {
     cssCourseResources_arr: [],
     reviewLines: '',
     reviewLines_arr: [],
+    courseDisplayTitle: '',
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -113,8 +114,16 @@ var SCORM = {
 				                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
 				                    if (err) callback(err, null);
 
-								    _this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+									_this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 
+				                    var lessondisplaytitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+				                    if(lessondisplaytitle == '' || lessondisplaytitle == undefined){
+				                    	_this.courseDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+				                    }
+				                    else{
+				                    	_this.courseDisplayTitle = lessondisplaytitle;
+				                    }
+								    
 								    //find the objectives in the pages.
 								    var pageCount = etree.findall('./pages/page').length;
 
@@ -148,6 +157,7 @@ var SCORM = {
 								    	var mySeq = myNode.find('.sequencing');
 								    	mySeq.set('testReview', 'false');
 								    }
+
 					                
 					                var xmlCourse = _this.courseData.write({'xml_decleration': false});
 					                fs.outputFile(tempCourseXmlFile, xmlCourse, function (err) {
@@ -262,9 +272,9 @@ var SCORM = {
 	            "   </metadata>\n";
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
 	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
-	            "           <title>"+_this.courseName+"</title>\n"+
+	            "           <title>"+_this.courseDisplayTitle+"</title>\n"+
 	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
-	            "               <title>"+_this.courseName+"</title>\n"+
+	            "               <title>"+_this.courseDisplayTitle+"</title>\n"+
 	            "               <adlnav:presentation>\n"+
 	            "                   <adlnav:navigationInterface>\n"+
 	            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
@@ -317,9 +327,9 @@ var SCORM = {
 	            "   </metadata>\n";
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
 	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
-	            "           <title>"+_this.courseName+"</title>\n"+
+	            "           <title>"+_this.courseDisplayTitle+"</title>\n"+
 	            "           <item identifier=\"Home\" identifierref=\"RES-common-files\">\n"+
-	            "               <title>"+_this.courseName+"</title>\n"+
+	            "               <title>"+_this.courseDisplayTitle+"</title>\n"+
 	            "               <adlnav:presentation>\n"+
 	            "                   <adlnav:navigationInterface>\n"+
 	            "                       <adlnav:hideLMSUI>continue</adlnav:hideLMSUI>\n"+
@@ -368,9 +378,9 @@ var SCORM = {
 	            '</metadata>\n';
 	        manifest +='<organizations default="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
 	            '   <organization identifier="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
-	            '		<title>'+_this.courseName+'</title>\n'+
+	            '		<title>'+_this.courseDisplayTitle+'</title>\n'+
 	            '		<item identifier="Home" identifierref="RES-common-files">\n'+
-	            '			<title>'+_this.courseName+'</title>\n'+
+	            '			<title>'+_this.courseDisplayTitle+'</title>\n'+
 	            '		</item>\n'+
 	            '	</organization>\n'+
 	            '</organizations>\n';
@@ -692,11 +702,10 @@ var SCORM = {
         	return;
         }
 
-        etree = _this.courseData;
+        //etree = _this.courseData;
 
 	    //var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 	    var itemCount = _this.courseData.findall('./item').length;
-
 	    //stop publish if no items are found
 	    if(itemCount == 0){
 	    	callback("A Course must have at least 1 lesson to be published.", null);
@@ -730,7 +739,17 @@ var SCORM = {
         data = fs.readFileSync(lessonXmlContentFile).toString();
         etree = et.parse(data);
 
-	    _this.courseName = etree.find('.courseInfo/preferences/courseTitle').get('value');
+        _this.courseName = etree.find('.courseInfo/preferences/courseTitle').get('value');
+
+		var courseAttrs = _this._parseCourseAttr();
+		
+		if(courseAttrs.displaytitle == '' || courseAttrs.displaytitle == undefined){
+			_this.courseDisplayTitle = courseAttrs.name;
+		}
+		else{
+			_this.courseDisplayTitle = courseAttrs.displaytitle;
+		}
+	    
 
 
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
@@ -776,26 +795,6 @@ var SCORM = {
 
 			}
 		);
-			// }
-			// else{
-			// 	//old stuff that will not be needed once course.xml files are created for all existing courses
-			// 	//will only throw error call back here if course.xml file doesn't exist
-
-			//     //do not need to do scorm files if publishing to "none"
-			// 	if(_this.scormVersion != "none"){
-			//     	manifestFile = _this._startManifestOld();
-			//     }
-
-			// 	_this._recurseLessonsOld(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
-			// }
-        //});
-        // 	}
-        // });
-
-
-
-
-
 
     //end of generateSCORMCourse
 	},
@@ -884,6 +883,17 @@ var SCORM = {
 	                //add item & item sequencing (objectives)
 	                var _lessonTitle = lessonsName[count];//etree.find('.courseInfo/preferences/lessonTitle').get('value');
 	                //lessonsName.push(_lessonTitle);
+
+	                //populate lessondisplaytitle #3633
+                    var lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+                    if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
+                    	// _this.lessonDisplayTitles_arr.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
+                    	lessonDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+                    }
+                    // else{
+                    // 	_this.lessonDisplayTitles_arr.push(lessondisplaytitle);
+
+                    // }	                
 
 				    //find the objectives in the pages.
 				    //////////////////////////////////////////////////
@@ -975,7 +985,7 @@ var SCORM = {
 
 				    //do not need to do scorm files if publishing to "none"
     				if(_this.scormVersion != "none"){
-	                	manifestFile += _this._add2004Item(lessonsName[count], count, lArray.length, res);
+	                	manifestFile += _this._add2004Item(lessonsName[count], lessonDisplayTitle, count, lArray.length, res);
 	            	}
 
 	                //add resources
@@ -1534,12 +1544,12 @@ var SCORM = {
         	manifest += "adlseq:objectivesGlobalToSystem=\"false\">\n";
         }
 
-        manifest += "           <title>"+_this.courseName+"</title>\n";
+        manifest += "           <title>"+_this.courseDisplayTitle+"</title>\n";
 
 	    return manifest;
 	},
 
-	_add2004Item: function(lessonName, lessonCount, totalLessons){
+	_add2004Item: function(lessonName, lessonTitle, lessonCount, totalLessons){
 		var _this = this;
 		var lessonNameTrim = lessonName.replace(/\s+/g, '');
 		//console.log(lessonNameTrim);
@@ -1576,7 +1586,7 @@ var SCORM = {
 
 
         var item = "           <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\">\n"+
-            "               <title>"+lessonName+"</title>\n";
+            "               <title>"+lessonTitle+"</title>\n";
 
         //setting LMS UI hide controls
          if(itemSeq.previous || itemSeq.continue || itemSeq.exit || itemSeq.exitAll ||
@@ -1799,7 +1809,8 @@ var SCORM = {
 			name : myNode.get('name'),
 			lms : myNode.get('lms'),
 			survey : myNode.get('survey'),
-			certificate : myNode.get('certificate')
+			certificate : myNode.get('certificate'),
+			displaytitle : myNode.get('coursedisplaytitle')
 		};
 
 		return courseAttr;
