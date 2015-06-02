@@ -389,7 +389,6 @@ var Content = {
     io.set('log level', 1);
 
     if(!process.env.NODE_ENV){
-		console.log("funky dittles");
     	io.set('connect timeout', 1000);
         io.set('heartbeat timeout', 5);
         //io.set('close timeout', 25);

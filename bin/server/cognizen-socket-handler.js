@@ -574,9 +574,10 @@ var SocketHandler = {
 
     processForgotPassword: function (data) {
         var _this = this;
+        
         User.findOne({ username: data.user }, 'username token firstName', function (err, user) {
             if (err) throw err;
-
+			console.log(user.firstName + ",<br/><br/><p>To reset your password, please click on the link below.</p><p><a href=" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + ">" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + "</a></p>");
             if (user == null) {
                 _this._socket.emit('forgetFailed');
             } else {
@@ -2093,9 +2094,7 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                    _this.logger.info("Before runwithlock in publishContent");
                     _this.Git.lock.runwithlock(function () {
-                        _this.logger.info("in runwithlock in publishContent");
                         if(data.content.type === 'course'){
                             var scormPath = path.normalize('../core-files/scorm/');
                             var scormDir = path.resolve(process.cwd(), scormPath);
