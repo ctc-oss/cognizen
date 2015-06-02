@@ -469,8 +469,7 @@ function C_Dashboard(_type) {
         windowWidth = screen.width; //window.innerWidth; -------- Currently not used - locking to 1024
         windowHeight = screen.height //window.innerHeight; -------- Currently not used - locking to 768
         moduleLessonWindow = window.open(myPath, "AlertLesson", "toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=1, width=" + w + ", height=" + h);
-
-        try{moduleLessonWindow.focus();} catch(e){};        
+		try{moduleLessonWindow.focus();} catch(e){};        
     }
 
 	//If closing the dashboard, close the lesson....

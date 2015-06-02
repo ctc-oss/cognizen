@@ -280,7 +280,7 @@ function initScripts(_data){
 function loadStreamer(){
 	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
    		ss = foo;
-   		ss.forceBase64 = true;
+   		//ss.forceBase64 = true;
 		startEngine();
 	});
 }
@@ -469,9 +469,11 @@ function buildInterface(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(_type){
+	console.log("sendUpdateWithRefresh(" + _type + ")");
 	connected = socket.connected;
-
+	
 	if(connected){
+		console.log("says I'm connected....");
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
 		var myData = $(data);
