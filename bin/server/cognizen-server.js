@@ -635,8 +635,14 @@ var Content = {
                 });
             });             
 
-            socket.on('findRedmineProjectIdWithParent', function (data, callback){
-                SocketHandler.socket(socket).findRedmineProjectIdWithParent(data, function (fdata){
+            socket.on('findRedmineProjectId', function (data, callback){
+                SocketHandler.socket(socket).findRedmineProjectId(data, function (fdata){
+                    callback(fdata);
+                });
+            });
+
+            socket.on('checkRedmineProjectStructure', function (data, callback){
+                SocketHandler.socket(socket).checkRedmineProjectStructure(data, function (fdata){
                     callback(fdata);
                 });
             });

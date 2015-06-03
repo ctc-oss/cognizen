@@ -138,8 +138,10 @@ function updatePageIssues(create){
 		var _page = {
 			lessontitle: $(data).find('lessonTitle').attr('value'),
 			coursetitle: $(data).find('courseTitle').attr('value'),
+			lessonid: $(data).find('id').attr('value'),
 			id: _id
 		};
+
 
 		cognizenSocket.emit('getRedmineProjectMembership', _page, function(fdata){
 			var _membership_arr = fdata.memberships;
@@ -212,6 +214,7 @@ function updatePageIssues(create){
 						content: {type: urlParams['type'], id: urlParams['id']},
 						lessontitle: $(data).find('lessonTitle').attr('value'),
 						coursetitle: $(data).find('courseTitle').attr('value'),
+						lessonid: $(data).find('id').attr('value'),
 						page: {
 							id: _id,
 							title: _title
@@ -544,6 +547,7 @@ function closeAllPageIssues(_currentPage){
 	var _page = {
 		lessontitle: $(data).find('lessonTitle').attr('value'),
 		coursetitle: $(data).find('courseTitle').attr('value'),
+		lessonid: $(data).find('id').attr('value'),
 		id: $(data).find("page").eq(_currentPage).attr("id")
 	};
 
@@ -575,7 +579,8 @@ function updateIndexCommentFlags(){
 	else{
 		var _data = {
 			lessontitle: $(data).find('lessonTitle').attr('value'),
-			coursetitle: $(data).find('courseTitle').attr('value') 
+			coursetitle: $(data).find('courseTitle').attr('value'),
+			id: $(data).find('id').attr('value') 
 		};
 		cognizenSocket.emit('getRedmineLessonIssuesForIndex', _data);		
 	}
@@ -593,6 +598,7 @@ function updateRedmineCommentIcon(){
 	var _page = {
 		lessontitle: $(data).find('lessonTitle').attr('value'),
 		coursetitle: $(data).find('courseTitle').attr('value'),
+		lessonid: $(data).find('id').attr('value'),
 		id: _id
 	};			
 	cognizenSocket.emit('getRedminePageIssues', _page, function(fdata){
