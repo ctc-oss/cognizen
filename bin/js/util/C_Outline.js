@@ -651,7 +651,7 @@ function C_Outline(_myItem) {
 				 	else if (startNodeLevel == "page" && endNodeLevel == "page"){
 				 	if(endModule != startModule){
 					 	updateModuleXML(startModule, false);
-					 	moveAllRedmineIssuesForPage($('#' + currentDragID).attr("id"), startModuleName, endModuleName);
+					 	moveAllRedmineIssuesForPage($('#' + currentDragID).attr("id"), startModuleName, startModuleID, endModuleID);
 					 }
 				 	 updateModuleXML(endModule, true);
 				 }
@@ -666,20 +666,22 @@ function C_Outline(_myItem) {
 		}
      }
 
-	function moveAllRedmineIssuesForPage(_pageId, _lessonTitle, _newLessonTitle){
+	function moveAllRedmineIssuesForPage(_pageId, _lessonTitle, _lessonId, _newLessonId){
 
 		var _issues = {};
 		var _page = {
 			lessontitle: _lessonTitle ,
+			lessonid: _lessonId,
 			id: _pageId,
 			coursetitle: $(courseData).find('course').first().attr("name")
 		};
 
 		socket.emit('getRedminePageIssues', _page, function(fdata){
 			_issues = fdata;
+
 			if(_issues.total_count != 0){
-				_page.lessontitle = _newLessonTitle;
-				socket.emit('findRedmineProjectIdWithParent', _page, function(fdata){
+				// _page.lessonid = _newLessonid;
+				socket.emit('findRedmineProjectId', _newLessonId, function(fdata){
 					var _newProject = fdata;
 					if(_newProject.length != 0){
 						updateMovedIssues(_issues, _newProject.id, 0);
@@ -698,7 +700,6 @@ function C_Outline(_myItem) {
 	function updateMovedIssues(_issues, _newProjectId, index){
 		if(index < _issues.total_count){
 			_issues.issues[index].project_id = _newProjectId;
-
 			socket.emit('updateRedmineIssue', _issues.issues[index], user.username, function(err){
 				if(err){
 					alert(err);
@@ -798,6 +799,7 @@ function C_Outline(_myItem) {
 			}
 			else if($(courseData).find("course").attr("redmine") === "true"){
 				$('#redmine').prop('checked', true);
+				checkRedmineStructure($(courseData).find('course').first().attr("id"));
 			}
 			else{
 				$('#redmine').prop('checked', false);
@@ -807,6 +809,7 @@ function C_Outline(_myItem) {
 			$('#redmine').on('change', function(){
 				if($('#redmine').prop('checked')){
 					$(courseData).find("course").attr("redmine", "true");
+					checkRedmineStructure($(courseData).find('course').first().attr("id"));
 				}
 				else{
 					$(courseData).find("course").attr("redmine", "false");
@@ -1012,6 +1015,17 @@ function C_Outline(_myItem) {
      	});
 
      }
+
+     function checkRedmineStructure(_courseId){
+
+		socket.emit('checkRedmineProjectStructure', _courseId, function(err){
+			if(err){
+				alert('There was an error creating the Redmine project structure.');
+			}
+		});	
+
+     }
+
 
 	function setLmsAccord(){
 		if($("#lms").val() == "JKO"){
@@ -3460,7 +3474,7 @@ function C_Outline(_myItem) {
 						updateModuleXML(myModule, true);					//update the xml
 
 						if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
-							closeAllRedmineIssuesForPage(myID, $(module_arr[myModule].xml).find('lessonTitle').attr('value'));
+							closeAllRedmineIssuesForPage(myID, $(module_arr[myModule].xml).find('id').attr('value'));
 						}
 
 						$(this).dialog("close");							//close the dialog
@@ -3489,11 +3503,11 @@ function C_Outline(_myItem) {
 		});
 	}
 
-	function closeAllRedmineIssuesForPage(_pageId, _lessonTitle){
+	function closeAllRedmineIssuesForPage(_pageId, _lessonId){
 		//close redmine comments for page
 		var _issues = {};
 		var _page = {
-			lessontitle: _lessonTitle ,
+			lessonid: _lessonId ,
 			id: _pageId
 		};
 

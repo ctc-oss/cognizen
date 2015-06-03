@@ -1050,7 +1050,7 @@ var SocketHandler = {
                     _this._copyProgramFiles(callbackData, function () {
                         _this.Git.commitProgramContent(callbackData, data.user, function () {
                             //create project in Redmine
-                            _this._createRedmineProject(data.name, function(){
+                            _this._createRedmineProject(data.name, callbackData._id, function(){
 
                                 _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', data.name, function (err) {
                                     if (err) {
@@ -1083,10 +1083,10 @@ var SocketHandler = {
         });
     },
 
-    _createRedmineProject: function(name, callback){
+    _createRedmineProject: function(name, id, callback){
         //create project in Redmine
         var _this = this;
-        redmine.createProject(name, function(err){
+        redmine.createProject(name, id, function(err){
             if(err){
                 _this.logger.error("Error creating redmine project: " + err);
                 callback();
@@ -1115,7 +1115,7 @@ var SocketHandler = {
                             } else {
                             	 _this._copyCourseFiles(callbackData, function () {
 	                                _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
-                                        _this._createRedmineCourse(data.name, data.program, function(){
+                                        _this._createRedmineCourse(data.name, callbackData._id, data.program.id, function(){
                                             _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', data.name, function (err) {
                                                 if (err) {
                                                     _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
@@ -1145,10 +1145,10 @@ var SocketHandler = {
         });
     },
 
-    _createRedmineCourse: function(courseName, projectName, callback){
+    _createRedmineCourse: function(courseName, courseId, projectId, callback){
         var _this = this;
         //create Redmine project for the course
-        redmine.createCourse(courseName, projectName, function(err){
+        redmine.createCourse(courseName, courseId, projectId, function(err){
             if(err){
                 _this.logger.error("Error creating redmine course project: " + err);
                 callback();
@@ -1173,7 +1173,7 @@ var SocketHandler = {
                         _this._copyContentFiles(callbackData, function () {
                             _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
 
-                                _this._createRedmineLesson(data.name, data.course, callbackData.fullProgram, function(){
+                                _this._createRedmineLesson(data.name, callbackData._id, data.course, function(){
                                     _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', data.name, function (err) {
                                         if (err) {
                                             _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
@@ -1200,10 +1200,10 @@ var SocketHandler = {
         });
     },
 
-    _createRedmineLesson: function(name, courseName, programName, callback){
+    _createRedmineLesson: function(name, id, course, callback){
         var _this = this;
         //create Redmine project for the lesson
-        redmine.createLesson(name, courseName, programName, function(err){
+        redmine.createLesson(name, id, course, function(err){
             if(err){
                 _this.logger.error("Error creating redmine lesson project: " + err);
                 callback();
@@ -1225,7 +1225,7 @@ var SocketHandler = {
         // Then, drill down through all its children and children's children, and mark them as well.
         // For now, retain the files on the disk.
         var contentType = _this.Content.objectType(data.type);
-        //_this.logger.info("ID " + data.id + " TYPE " + data.type + " loc " + data.loc);
+        _this.logger.info("ID " + data.id + " TYPE " + data.type + " loc " + data.loc);
 		var _dataId = data.id;
         var _dataType = data.type;
         var _orgLoc = data.loc;
@@ -1241,7 +1241,7 @@ var SocketHandler = {
                         else {
                             //close redmine comments for the program
                             //parent is empty
-                            _this._closeAllRedmineIssues(data.name, '', data.user.username, function(err){
+                            _this._closeAllRedmineIssues(data.name, found._id, data.user.username, function(err){
                                 if(err){
                                     _this.logger.error(err);
                                     _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
@@ -1299,7 +1299,7 @@ var SocketHandler = {
                         }
                         else {
                             //close redmine comments for the program
-                            _this._closeAllRedmineIssues(data.name, found.getParent().name, data.user.username, function(err){
+                            _this._closeAllRedmineIssues(data.name, _dataId, data.user.username, function(err){
                                 if(err){
                                     _this.logger.error(err);
                                     _this._socket.emit('generalError', {title: 'Content Removal Error', message: 'Error occurred when removing content.'});
@@ -1320,12 +1320,12 @@ var SocketHandler = {
         return this.Content.DELETED_SUFFIX + Utils.timestamp();
     },
 
-    _closeAllRedmineIssues: function(name, parentname, username, callback){
+    _closeAllRedmineIssues: function(name, id, username, callback){
         var _this = this;
 
         var _lesson = {
             lessontitle: name,
-            coursetitle: parentname
+            id: id
         };
 
         redmine.getIssuesByLessonId(_lesson, function(fdata){    
@@ -1343,7 +1343,7 @@ var SocketHandler = {
                         }
                         else{
                             //rename Redmine project for the project
-                            redmine.updateProjectName(name, parentname, name+_this._fullDeletedSuffix(), function(err){
+                            redmine.updateProjectName(name, id, name+_this._fullDeletedSuffix(), function(err){
                                 if(err){
                                     callback(err)
                                 }
@@ -1358,7 +1358,7 @@ var SocketHandler = {
             }
             else{
                 //rename Redmine project for the project
-                redmine.updateProjectName(name, parentname, name+_this._fullDeletedSuffix(), function(err){
+                redmine.updateProjectName(name, id, name+_this._fullDeletedSuffix(), function(err){
                     if(err){
                         callback(err)
                     }
@@ -2063,7 +2063,7 @@ var SocketHandler = {
                     var oldDiskPath = _this.Content.diskPath(found.path);
                     found.name = data.content.name;
                     found.generatePath();
-                    var parentName = found.getParent().name;
+
                     var newDiskPath = _this.Content.diskPath(found.path);
                     var parentDir = path.resolve(process.cwd(), newDiskPath);
 					var myxml = parentDir + '/xml/content.xml';
@@ -2099,7 +2099,7 @@ var SocketHandler = {
                                     }
                                     else {
                                         //rename Redmine project for the course or lesson
-                                        redmine.updateProjectName(oldName, parentName, found.name, function(err){
+                                        redmine.updateProjectName(oldName, found._id, found.name, function(err){
                                             if(err){
                                                 _this.logger.error("Error renaming redmine "+ data.content.type +" project: " + err);
                                             }
@@ -2231,7 +2231,7 @@ var SocketHandler = {
     getRedmineProjectMembership: function(page, callback){
         var _this = this;
 
-        redmine.getProjectMembership(page.lessontitle, page.coursetitle, function(data, projId, err){
+        redmine.getProjectMembership(page.lessonid, function(data, projId, err){
             if(err){
                 _this.logger.error("Error finding project membership: " + err.message);
                 var emptyMembership = [];
@@ -2243,19 +2243,159 @@ var SocketHandler = {
         });
     },
 
-    findRedmineProjectIdWithParent: function(page, callback){
+    findRedmineProjectId: function(projectId, callback){
         var _this = this;
 
-        redmine.findProjectIdWithParent(page.lessontitle, page.coursetitle, function(data, err){
+        redmine.findProjectId(projectId, function(data, err){
             if(err){
-                _this.logger.error("Error finding project id: " + err.message);
-                var emptyProject = [];
+                //_this.logger.error("Error finding project id: " + err.message);
+                var emptyProject = {};
                 callback(emptyProject);
             }
             else{
                 callback(data);
             }
         });
+    },
+
+    checkRedmineProjectStructure: function(courseid, callback){
+        var _this = this;
+
+        var structure_arr = [];
+        Course.findAndPopulate(courseid, function (err, found) {
+            //console.log(found.getProgram().name);
+            if(err){
+                _this.logger.error('Error in Course findAndPopulate');
+                callback(err);
+            }
+            else{
+                var page = {
+                    programtitle : found.getProgram().name,
+                    programid: found.getProgram()._id,
+                    contenttype : 'program'
+                };
+                structure_arr.push(page);
+
+                page = {
+                    coursetitle : found.name,
+                    courseid: found._id,
+                    programtitle : found.getProgram().name,
+                    programid : found.getProgram()._id,
+                    contenttype : 'course'
+                }
+                structure_arr.push(page);
+
+                found.getChildren(function(err, children) {
+                    if (err) {
+                        _this.logger.error('found.getChildren(): ' + err);
+                       callback(err);//_this._socket.emit('generalError', {title: 'GetChildren Error', message: 'Error occurred when checking redmine project structure. (1)'});
+                    }
+                    else {
+                        // Make sure children paths are re-generated as well.
+                        children.forEach(function(child){
+                            //console.log(child.name);
+                            page = {
+                                lessontitle : child.name,
+                                lessonid: child._id,
+                                coursetitle : found.name,
+                                courseid: found._id,
+                                programtitle : found.getProgram().name,
+                                programid : found.getProgram()._id,
+                                contenttype : 'lesson'
+                            };
+                            structure_arr.push(page);
+                        });  
+                    }
+                    _this._findAndCreateRedmineProject(structure_arr, 0, function(err){
+                        if(err)
+                        {
+                            _this.logger.error('Error in _findAndCreateRedmineProject');
+                            callback(err);
+                        }
+                    });                    
+                });          
+
+
+            }
+        });
+    },
+
+    _findAndCreateRedmineProject: function(_structure_arr, index, callback){
+        var _this = this;
+
+        var _project = {};
+
+        if(index < _structure_arr.length ){
+            var testid = '';
+            if(_structure_arr[index].contenttype == 'program'){
+                testid = _structure_arr[index].programid;
+            }
+            else if(_structure_arr[index].contenttype == 'course'){
+                testid = _structure_arr[index].courseid
+            }
+            else{
+                testid = _structure_arr[index].lessonid
+            }
+            _this.findRedmineProjectId(testid, function(data){
+                _project = data;
+
+                //if no id create project
+                if(_project.id == undefined){
+                    if(_structure_arr[index].contenttype == 'program'){
+                        _this._createRedmineProject(_structure_arr[index].programtitle, _structure_arr[index].programid, function(){
+                            _this.logger.info('Redmine project created for '+ _structure_arr[index].lessontitle);
+                            _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
+                                if(err){
+                                    callback(err);
+                                }
+                            });                            
+                        });
+                    }
+                    else if(_structure_arr[index].contenttype == 'course'){
+                        // var _program = {
+                        //     name : _structure_arr[index].coursetitle
+                        // };
+                        _this._createRedmineCourse(_structure_arr[index].coursetitle, _structure_arr[index].courseid, _structure_arr[index].programid, function(){
+                            _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
+                                if(err){
+                                    callback(err);
+                                }
+                            });                            
+                        });
+                    }
+                    else{
+
+                        var _course = {
+                            id : _structure_arr[index].courseid
+                        };
+                        // var _program = {
+                        //     name : _structure_arr[index].programtitle
+                        // };
+
+                        _this._createRedmineLesson(_structure_arr[index].lessontitle, _structure_arr[index].lessonid, _course, function(){
+                            _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
+                                if(err){
+                                    callback(err);
+                                }
+                            }); 
+                        });
+
+                    }
+                }
+                else{
+                    _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
+                        if(err){
+                            callback(err);
+                        }
+                    });                       
+                }
+
+
+            });
+        }
+        else{
+            callback();
+        }
     },
 
     addComment: function (comment) {
