@@ -525,10 +525,14 @@ var SocketHandler = {
             } else {
                 user.comparePassword(data.pass, function (err, isMatch) {
                     if (err) throw err;
-
                     if (isMatch == true) {
-                        _this.SocketSessions.socketUsers[_this.SocketSessions.sessionIdFromSocket(_this._socket)] = user;
-                        _this._socket.emit('loginAttemptSuccess', user);
+	                    if(data.pass.length > 7){
+                        	_this.SocketSessions.socketUsers[_this.SocketSessions.sessionIdFromSocket(_this._socket)] = user;
+							_this._socket.emit('loginAttemptSuccess', user);
+						}else{
+							_this.logger.info(data.user + "'s password is too short - sending them alert");
+							_this._socket.emit('loginPasswordTooShort', user);
+						}
                     } else {
                         _this._socket.emit('loginPasswordFailed');
                     }

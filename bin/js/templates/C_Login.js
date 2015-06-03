@@ -78,6 +78,13 @@ function C_Login(_type) {
 			var myMessage = "Your login attempt failed!<br/>The provided username does not exist in our records.<br/>Please check your credentials and try again or select 'Register' below, to register a new user.";
 			doError(myTitle, myMessage);
 		});
+		
+		//Message sent from the server when they have a password shorter than 8 characters
+		socket.on('loginPasswordTooShort', function(data){
+			resUser = data.username;
+			resToken = data.token;
+			doResetPassword($("#username").val(), data.token, "Your password must now be at least 8 characters long.<br/>");
+		});
 
 		//Message sent from the server when they have an incorrect password.
 		socket.on('loginPasswordFailed', function(){
@@ -346,8 +353,11 @@ function C_Login(_type) {
 
 
     //reset password
-    function doResetPassword(_myUser, _myToken){
-	    $("#stage").append('<div id="dialog-resetPass" title="Reset password for: ' + _myUser + '"><p class="validateTips">Enter a new password and verify it.</p><label for="resPass" class="regField">password: </label><input type="password" name="resPass" id="resPass" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="resPassVer" class="regField">verify password: </label><input type="password" name="resPassVer" id="resPassVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>');
+    function doResetPassword(_myUser, _myToken, _msg){
+	    if(_msg == undefined){
+		    _msg = "";
+	    }
+	    $("#stage").append('<div id="dialog-resetPass" title="Reset password for: ' + _myUser + '">'+_msg+'<p class="validateTips">Enter a new password and verify it.</p><label for="resPass" class="regField">password: </label><input type="password" name="resPass" id="resPass" value="" class="regText text ui-widget-content ui-corner-all" /><br/><label for="resPassVer" class="regField">verify password: </label><input type="password" name="resPassVer" id="resPassVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>');
 		$("#resPass").focus();
 		$( "#dialog-resetPass" ).dialog({
 			modal: true,
@@ -370,7 +380,6 @@ function C_Login(_type) {
 				Submit: submitResetPass
 			}
 		});
-
     }
 
     //Set 508 accessibility
@@ -388,7 +397,7 @@ function C_Login(_type) {
     	if($("#username").val() != null && $("#pass").val() != "" && $("#pass").val() != null && $("#pass").val() != ""){
     		socket.emit('attemptLogin', { user: $("#username").val().toLowerCase(), pass: $("#pass").val()});
     	}else{
-	    		var myTitle = "Failed Login Attempt";
+	    	var myTitle = "Failed Login Attempt";
 			var myMessage = "All form fields are required.</p><p>You must enter e-mail address and password before continuing.";
 			doError(myTitle, myMessage);
 		};
@@ -414,7 +423,6 @@ function C_Login(_type) {
         	registerString += '<input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
 
         $("#stage").append(registerString);
-
         $("#firstName").alphanum();
         $("#lastName").alphanum();
 
@@ -431,6 +439,7 @@ function C_Login(_type) {
 				},
             buttons: {
                 Cancel: function () {
+	                
                 	$("#firstName").remove();
                     $("#lastName").remove();
                     $("#regEmail").remove();
@@ -474,7 +483,11 @@ function C_Login(_type) {
     function checkResetPass(){
 	    $("#resError").remove();
 	    if($("#resPass").val() == $("#resPassVer").val()){
-		    return true;
+		    if($("#resPass").val().length > 7){
+			    return true;
+		    }else{
+			    $("#dialog-resetPass").append("<div id='resError' style='color:#FF0000'><br/><br/><br/>* Your new password must be at least 8 characters long.</div>");
+		    }  
 	    }else{
 		    $("#dialog-resetPass").append("<div id='resError' style='color:#FF0000'><br/><br/><br/>* Your password entries must match.</div>");
 	    }
