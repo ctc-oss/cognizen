@@ -196,7 +196,7 @@ function initializeSockets(){
 		//socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'forceNew': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
                          //io.connect(null, {resource: urlParams['id'], 'forceNew': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
         socket = io.connect({
-						resource: urlParams['id'], 
+						path: '/'+urlParams['id'], 
 						//transports: ["websockets", "polling"], 
 						'sync disconnect on unload' : true, 
 						'forceNew': true 
