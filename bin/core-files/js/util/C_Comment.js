@@ -375,6 +375,8 @@ function updatePageIssues(create){
 									alert(err);
 								}
 								else{
+									updateIndexCommentFlags();
+									updateRedmineCommentIcon();
 									setTimeout(updatePageIssues(false), 3000);
 								}
 							});				
