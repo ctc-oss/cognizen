@@ -1,10 +1,12 @@
-/*jshint strict:false, node:true, indent:false, forin:false, -W052*/
+/*jshint strict:false, node:true, indent:false, forin:false, bitwise:false*/
+/*global JSON*/
 var http = require('http')
 	, https = require('https')
 	, querystring = require('querystring')
 	, D = require('d.js')
 	, packageJson = require('../package.json')
 	, fs = require('fs')
+	, splitca = require('split-ca')
 	, keyPassphrases = []
 ;
 
@@ -30,6 +32,7 @@ function Redmine(config) {
 	config || (config = {});
 	this.keyPassId = keyPassphrases.length;
 	keyPassphrases.push({key:null, passphrase:null});
+	this.verbose = false;
 	this.setApiKey(config.apiKey)
 		.setHost(config.host)
 		.setProtocol(config.protocol || 'http')
@@ -39,6 +42,8 @@ function Redmine(config) {
 		.setSslCaCert(config.sslCaCert || null)
 		.setSslClientCert(config.sslClientCert || null)
 		.setSslClientKey(config.sslClientKey || null, config.sslClientPassphrase || null)
+		.setMaxTry(config.maxTry||1)
+		.setMaxDelay(config.maxDelay)
 	;
 }
 var proto = {
@@ -68,7 +73,7 @@ var proto = {
 		return this;
 	}
 	, getPathPrefix: function(){ return this.pathPrefix; }
-	, setSslCaCert: function(c){ this.sslCaCert = c ? fs.readFileSync(c) : null; return this; }
+	, setSslCaCert: function(c){ this.sslCaCert = c ? splitca(c) : null; return this; }
 	, getSslCaCert: function(){ return this.sslCaCert; }
 	, setSslClientCert: function(c){ this.sslClientCert = c ? fs.readFileSync(c) : null; return this; }
 	, getSslClientCert: function(){ return this.sslClientCert; }
@@ -77,16 +82,35 @@ var proto = {
 		keyPassphrases[this.keyPassId].passphrase = k && p || null;
 		return this;
 	}
+	, setMaxTry: function(maxTry){ this.maxTry = maxTry < 1 ? 1 : maxTry; return this; }
+	, getMaxTry: function(){ return this.maxTry; }
+	, setMaxDelay: function(maxDelay){ this.maxDelay = maxDelay ? maxDelay : 2000; return this; }
+	, getMaxDelay: function() { return this.maxDelay; }
+	, setVerbose: function(v) { this.verbose = v!==undefined ? !!v : true; }
+	, getVerbose: function() { return this.verbose; }
 	, generatePath: function(path, params) {
 		return path + '?' + querystring.stringify(params||{});
 	}
 	, request: function(method, path, params){
-		//- console.log(arguments)
-		var self = this, d = D(), options, req, keyPass = keyPassphrases[this.keyPassId];
+		var self = this
+			, d = D()
+			, keyPass  = keyPassphrases[this.keyPassId]
+			//, retry = params.retry || {}
+			, options
+			, req
+		;
+		// if( params.retry ){
+		// 	delete params.retry;
+		// }
+		// retry.count || (retry.count = 0);
+		// retry.maxTry || (retry.maxTry = self.maxTry);
+		// retry.maxDelay || (retry.maxDelay = self.maxDelay);
+
 		if (! (this.apiKey && this.host)) {
 			d.reject('Error: apiKey and host must be configured.');
 			return d.promise;
 		}
+
 		params || (params = {});
 		path.slice(0, 1) !== '/' && (path = '/' + path);
 		self.pathPrefix && (path = self.pathPrefix + path);
@@ -113,21 +137,27 @@ var proto = {
 				body += chunk;
 			});
 			res.on('end', function() {
+				if( !~([200,201]).indexOf(res.statusCode) ){
+					this.verbose && console.log('STATUSCODE REJECTION:', res.statusCode, '\n' + body);
+					d.reject('STATUSCODE_REJECTION ' + res.statusCode);
+					return;
+				}
 				try {
 					var data = JSON.parse(body || res.statusCode);
 					d.resolve(data);
 				}catch(e){
+					this.verbose && console.log("Error: Broken json in response:\n", body);
 					d.reject("Error: Broken json in response");
 				}
 			});
-			if ( !~([200,201]).indexOf(res.statusCode) ) {
-				console.log('STATUSCODE REJECTIONS', res.statusCode);
-				d.reject('Server returns stats code: ' + res.statusCode);
-				return;
-			}
+
 		});
 
-		req.on('error', d.reject );
+		req.on('error', function(e){
+			this.verbose && console.log('Error: request error', e);
+			d.reject('ERROR_REQUEST');
+		});
+
 		req.setHeader('Content-Type', 'application/json');
 
 		if (method !== 'GET') {
@@ -137,17 +167,41 @@ var proto = {
 			req.write(body);
 		}
 		req.end();
-		d.promise.rethrow(function(e){ console.log('ERROR', e, req); });
-		return d.promise;
+
+		return d.promise.error(function(e){
+			if ( e.message === 'ERROR_REQUEST' && retry.count < retry.maxTry ) {
+				this.verbose && console.log('retry previous request');
+				return D.wait(Math.min(1 << retry.count, retry.maxDelay)).then(function(){
+					retry.count++;
+					params.retry = retry;
+					return self.request(method, path, params);
+				});
+			}
+			this.verbose && console.log('ERROR', e, req);
+			throw e;
+		});
 	}
 
 	, requestUser: function(method, path, params, user){
-		//- console.log(arguments)
-		var self = this, d = D(), options, req, keyPass = keyPassphrases[this.keyPassId];
+		var self = this
+			, d = D()
+			, keyPass  = keyPassphrases[this.keyPassId]
+			//, retry = params.retry || {}
+			, options
+			, req
+		;
+		// if( params.retry ){
+		// 	delete params.retry;
+		// }
+		// retry.count || (retry.count = 0);
+		// retry.maxTry || (retry.maxTry = self.maxTry);
+		// retry.maxDelay || (retry.maxDelay = self.maxDelay);
+
 		if (! (this.apiKey && this.host)) {
 			d.reject('Error: apiKey and host must be configured.');
 			return d.promise;
 		}
+
 		params || (params = {});
 		path.slice(0, 1) !== '/' && (path = '/' + path);
 		self.pathPrefix && (path = self.pathPrefix + path);
@@ -175,21 +229,27 @@ var proto = {
 				body += chunk;
 			});
 			res.on('end', function() {
+				if( !~([200,201]).indexOf(res.statusCode) ){
+					this.verbose && console.log('STATUSCODE REJECTION:', res.statusCode, '\n' + body);
+					d.reject('STATUSCODE_REJECTION ' + res.statusCode);
+					return;
+				}
 				try {
 					var data = JSON.parse(body || res.statusCode);
 					d.resolve(data);
 				}catch(e){
+					this.verbose && console.log("Error: Broken json in response:\n", body);
 					d.reject("Error: Broken json in response");
 				}
 			});
-			if ( !~([200,201]).indexOf(res.statusCode) ) {
-				console.log('STATUSCODE REJECTIONS', res.statusCode);
-				d.reject('Server returns stats code: ' + res.statusCode);
-				return;
-			}
+
 		});
 
-		req.on('error', d.reject );
+		req.on('error', function(e){
+			this.verbose && console.log('Error: request error', e);
+			d.reject('ERROR_REQUEST');
+		});
+
 		req.setHeader('Content-Type', 'application/json');
 
 		if (method !== 'GET') {
@@ -199,9 +259,21 @@ var proto = {
 			req.write(body);
 		}
 		req.end();
-		d.promise.rethrow(function(e){ console.log('ERROR', e, req); });
-		return d.promise;
-	}
+
+		return d.promise.error(function(e){
+			if ( e.message === 'ERROR_REQUEST' && retry.count < retry.maxTry ) {
+				this.verbose && console.log('retry previous request');
+				return D.wait(Math.min(1 << retry.count, retry.maxDelay)).then(function(){
+					retry.count++;
+					params.retry = retry;
+					return self.request(method, path, params);
+				});
+			}
+			this.verbose && console.log('ERROR', e, req);
+			throw e;
+		});
+	}	
+
 	/// GENERIC CRUD METHODS ///
 	/**
 	* @param {string} path without .json extension and leading / e.g. issues or issues/5
@@ -312,6 +384,7 @@ var proto = {
 	,updateTimeEntry: function(id,params) { return this.put('time_entries/' + id, {time_entry: params}); }
 	,deleteTimeEntry: function(id) { return this.del('time_entries/' + id); }
 };
+
 
 for( var prop in proto){ Redmine.prototype[prop] = proto[prop]; }
 
