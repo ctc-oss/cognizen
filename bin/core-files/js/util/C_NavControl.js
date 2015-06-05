@@ -1577,7 +1577,7 @@ function checkNavButtons(){
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
-		if($(data).find("page").eq(currentPage).attr('layout') == "pathing"){
+		if($(data).find("page").eq(currentPage).attr('layout') == "pathing" && mandatoryInteraction == true){
 			disableIndex();
 			disableBack();
 		}
