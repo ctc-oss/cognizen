@@ -782,7 +782,8 @@ var SocketHandler = {
     },
 
     _copyProgramFiles: function (program, callback) {
-        var baseWritePath = path.normalize(this.Content.diskPath(program.path) + '/core-prog');
+        var _this = this;
+        var baseWritePath = path.normalize(_this.Content.diskPath(program.path) + '/core-prog');
         var root = path.normalize('../core-files');
 
         FileUtils.rmdir(baseWritePath);
@@ -793,7 +794,16 @@ var SocketHandler = {
             FileUtils.copyDir(root + '/css/jqueryui', baseWritePath + '/jqueryui', function (path) {
 	            return (path.endsWith('jqueryui') || path.contains("images") || path.endsWith('jquery-ui.min.css'));
 	        }, function (err) {
-	            callback(err);
+                fs.copy(path.normalize('../.gitignore'), path.normalize(_this.Content.diskPath(program.path) +'/.gitignore'), function(err){
+                    if(err){
+                        _this.logger.error("Error copying .gitignore file " + err);
+                        callback(err);                        
+                    }
+                    else{
+                        callback(err);
+                    }
+                });
+	            
 	        });
         });
     },
