@@ -782,6 +782,7 @@ function mediaBrowserConversionProgress(data){
 */
 function mediaBrowserUploadComplete(data){
 	$("#C_Loader").remove();
+	doGitCommit();
 	queueCurrent++;
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	if(queueLength == queueCurrent){
@@ -791,7 +792,7 @@ function mediaBrowserUploadComplete(data){
 		var mediaPath = splitPath[last-1];
 		mediaBrowserPreviewFile(mediaPath);
 		//Commit GIT when complete.
-		doGitCommit();
+		//doGitCommit();
 	    getMediaDir(relPath);
 	}else{
 		//Load next item
