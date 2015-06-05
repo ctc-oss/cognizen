@@ -1425,7 +1425,7 @@ var SocketHandler = {
     },
 
     getContentServerUrl: function (data) {
-        this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
+        this._socket.emit('contentServerUrlReceived', {path: data.content.id})
     },
 
     getCoursePath: function (data){

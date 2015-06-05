@@ -30,7 +30,7 @@ function initializeSockets(){
 	                             //io.connect({resource: "server", /*'sync disconnect on unload' : true,*/ 'forceNew': true, 'connect timeout': 1000});    					  
 	   
 	    cognizenSocket = io.connect({
-					resource: 'server', 
+					path: '/server', 
 							//transports: ["websockets", "polling"], 
 					'sync disconnect on unload' : true, 
 					'forceNew': true 

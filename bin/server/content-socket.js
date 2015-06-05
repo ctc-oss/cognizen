@@ -44,7 +44,7 @@ var ContentSocket = {
         }
 
         if (_path) {
-            io.set('resource', '/' + _path);
+            io.set('path', '/' + _path);
             io.set('log level', 1);
 //          io.set('polling duration', 600);
             logger.info('Socket.io resource set to /' + _path);

@@ -268,6 +268,7 @@ var Content = {
             var idMatches = req.url.match(/\/[0-9a-f]{24}/);
 
             if (req.url.indexOf(Ports.server.path) == 0) {
+                req.url = req.url.replace('server', 'socket.io');
                 backendPort = Ports.server.port;
             }
             else if (req.url.indexOf(Ports.git.path) == 0) {
@@ -276,9 +277,7 @@ var Content = {
             }
             else if (idMatches && idMatches.length == 1) {
                 var id = idMatches[0].substring(1);
-                console.log(req.url);
                 req.url = req.url.replace(id, 'socket.io');
-                console.log(req.url);
                 // Lookup the content ID in the port map, and send it to that one.
                 // Pull the id out of the url by removing the first slash
                 var details = Content.serverDetails({id: id});
@@ -388,7 +387,7 @@ var Content = {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
     }));
-    io.set('resource', Ports.server.path);
+    io.set('path', '/'+Ports.server.path);
     io.set('log level', 1);
 
     if(!process.env.NODE_ENV){
