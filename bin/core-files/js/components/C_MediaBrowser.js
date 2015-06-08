@@ -210,7 +210,7 @@ function addDisplay(){
 					msg += "<strong>UPLOAD WIDGET:</strong>";
 					msg += "<input id='file' type='file' multiple='multiple'/>";
 					if (window.File && window.FileList && window.FileReader) {
-						msg += "or drag files from your computer to this window.";
+						msg += "or drag (multiple) files to this window.";
 					}
 				msg += "</div>";
 				msg += "<div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div>";
