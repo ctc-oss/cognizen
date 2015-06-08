@@ -207,11 +207,11 @@ function addDisplay(){
 			msg += "</div>";
 			msg += "<div id='mediaBrowserPreview' class='mediaBrowserPreview'>";
 				msg += "<div id='mediaBrowserUploadWidget' class='mediaBrowserUploadWidget'>";
-					if (window.File && window.FileList && window.FileReader) {
-						msg += "<div id='mediaBrowserFileDrag' class='mediaBrowserFileDrag'>or drop files here</div>";
-					}
-					msg += "<strong>UPLOAD WIDGET:</strong><br/>";
+					msg += "<strong>UPLOAD WIDGET:</strong>";
 					msg += "<input id='file' type='file' multiple='multiple'/>";
+					if (window.File && window.FileList && window.FileReader) {
+						msg += "or drag files from your computer to this window.";
+					}
 				msg += "</div>";
 				msg += "<div id='mediaBrowserPreviewMediaHolder' class='mediaBrowserPreviewMediaHolder'></div>";
 			msg += "</div>";
@@ -241,9 +241,9 @@ function addDisplay(){
 	if (window.File && window.FileList && window.FileReader) {
 		//alert("adding events")
 		// file drop
-		$("#mediaBrowserFileDrag").on("dragover", FileDragHover);
-		$("#mediaBrowserFileDrag").on("dragleave", FileDragLeave);
-		$("#mediaBrowserFileDrag").on("drop", FileSelectHandler);
+		$("#mediaBrowserDisplay").on("dragover", FileDragHover);
+		$("#mediaBrowserDisplay").on("dragleave", FileDragLeave);
+		$("#mediaBrowserDisplay").on("drop", FileSelectHandler);
 	}
 	
 	currentSelectedTrack = $("#mediaButton");
