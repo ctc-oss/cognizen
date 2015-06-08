@@ -239,7 +239,6 @@ function addDisplay(){
 	});
 	
 	if (window.File && window.FileList && window.FileReader) {
-		//alert("adding events")
 		// file drop
 		$("#mediaBrowserDisplay").on("dragover", FileDragHover);
 		$("#mediaBrowserDisplay").on("dragleave", FileDragLeave);
@@ -355,7 +354,6 @@ function updateMediaBrowserDir(_data){
 	$("#mediaBrowserList").removeClass('C_Loader');
 	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
-	//console.log(res);
 	//Add "up a directory" (../media) button if needed.
 	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS"){
 		if(res[res.length-2] == "css" && folderTrack != "lesson"){
@@ -460,10 +458,17 @@ function showItemStats(){
 	currentSelectedMediaPreview.append(msg);
 	
 	//Button Actions for interactives
-	$(".mediaRemove").click(function(){
-		var myItem = relPath + obj;	
-		checkRemoveMedia(myItem);	   
-	});
+	//console.log(obj);
+	var untouchableFiles = ["defaultLeft.png", "defaultTop.png", "defaultReveal.png", "loadingIcon.gif"];
+    if (untouchableFiles.indexOf(obj) >= 0 ){
+	//if(obj == "defaultLeft.png"){
+		$(".mediaRemove").css({'opacity': .5});
+	}else{
+		$(".mediaRemove").click(function(){
+			var myItem = relPath + obj;	
+			checkRemoveMedia(myItem);	   
+		});
+	}
 	   
 	$(".mediaDownload").click(function(){
 		var myItem = folderTrackPath + mediaBrowserDisplayPath +obj;
