@@ -285,7 +285,8 @@ var SocketHandler = {
         });
         
         ss(this._socket).on('upload-media', function(stream, data){
-			var filename = uploader.dir + "/" + data.name;
+			var cleanName = data.name.replace(/ /g,"_");
+			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));
 			
 			//Complete upload callback
@@ -307,8 +308,8 @@ var SocketHandler = {
 	                        }else if(data.track == "lesson"){
 		                        trackPath = "/css/";
 	                        }
-                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + data.name);
-							var fileSplit = data.name.split(".");
+                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + cleanName);
+							var fileSplit = cleanName.split(".");
 							var mediaType = fileSplit[fileSplit.length - 1];
 							
 							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "asf"];
@@ -323,7 +324,7 @@ var SocketHandler = {
                                 var convertedPath;
                                 //VIDEO CONVERSION
                                 if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                	convertedFileName = data.name.replace(/\.[^/.]+$/, '') + '.mp4';
+                                	convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp4';
 									convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp4';
 									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
                                 	var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
