@@ -51,7 +51,7 @@ function C_PageTitle(_id){
         var titleUpdate = _data.replace('<p>', '').replace('</p>', '');
 	   	var docu = new DOMParser().parseFromString('<title></title>',  "application/xml");
 	   	var newCDATA=docu.createCDATASection(titleUpdate);
-	   	if(rootType == "branching" /*&& _id != undefined*/){
+	   	if(rootType == "branching" || rootType == "chaining" || rootType == "pathing" /*&& _id != undefined*/){
 	   		$(data).find("page").eq(currentPage).find("branch").eq(_id).find("title").first().empty();
 	   		$(data).find("page").eq(currentPage).find("branch").eq(_id).find("title").first().append(newCDATA);
 	   	}else{
