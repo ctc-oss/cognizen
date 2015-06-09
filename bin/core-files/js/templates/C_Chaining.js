@@ -685,7 +685,7 @@ function C_Chaining(_type) {
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
 			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
 		}
-		msg += "<br/>";
+		msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
 		if(currentLayout != "graphicOnly"){
@@ -699,6 +699,14 @@ function C_Chaining(_type) {
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
+		
+		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
+			$("#dialogMediaBrowseButton").click(function(){
+				$(".ui-dialog").hide();
+				$(".ui-widget-overlay").hide();
+				dialogToggleMediaBrowser($("#mediaLink"));					
+			});
+		}
 				
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());

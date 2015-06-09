@@ -484,7 +484,7 @@ function showItemStats(){
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "imgPath"){
+			if(fileTarget.attr("id") == "imgPath" || fileTarget.attr("id") == "mediaLink"){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
