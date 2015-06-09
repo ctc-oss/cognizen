@@ -342,10 +342,10 @@ var SocketHandler = {
                                    //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
 
 								}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-									convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
-									convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
+									convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp3';
+									convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp3';
 									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
-									var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+									var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
                                     	.toFormat('mp3')
 										.withAudioCodec('libmp3lame')
 										.withAudioChannels(2)
