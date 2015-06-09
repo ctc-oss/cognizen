@@ -1869,7 +1869,7 @@ function C_Outline(_myItem) {
 		var opt_arr = ["application", "analysis", "comprehension", "evaluation", "knowledge", "problem solving", "synthesis"];
 		var content_arr = ["concepts", "facts", "principle", "procedures", "process"];
 		var demoapp_arr = ["demonstration", "practice, testing"];
-		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider", "chaining", "branching"]
+		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider", "chaining", "branching", "pathing"]
 		
 		var pages= [
 			{
