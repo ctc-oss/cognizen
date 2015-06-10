@@ -331,6 +331,17 @@ function addEditNav(){
 			fireConnectionError();
 		}
 	});
+	
+	$("#myCanvas").append("<div id='addPage' class='btn_addPage' title='add new page'></div>");
+	$("#addPage").click(function(){
+		connected = socket.connected;
+
+		if(connected){
+			addPage();
+		}else{
+			fireConnectionError();
+		}
+	});
 }
 
 function addObjEdit(){

@@ -226,7 +226,7 @@ h1#lessonTitle{
 .btn_preferences{
 	position:absolute;
 	bottom :8px;
-	left: 45px;
+	left: 80px;
 	width: 30px;
 	height: 30px;
 	background: url(images/prefs.png) no-repeat;
@@ -234,10 +234,21 @@ h1#lessonTitle{
 	cursor: pointer;
 }
 
+.btn_addPage{
+	position:absolute;
+	bottom :8px;
+	left: 185px;
+	width: 30px;
+	height: 30px;
+	background: url(images/btn_addPage.png) no-repeat;
+	cursor: hand;
+	cursor: pointer;
+}
+
 .btn_passLock{
 	position:absolute;
 	bottom :8px;
-	left: 80px;
+	left: 45px;
 	width: 30px;
 	height: 30px;
 	background: url(images/lockActive.png) no-repeat;
@@ -2579,12 +2590,12 @@ ESSAY COMPARE LAYOUTS
 	height: 600px !important;
 }
 
-#addPage{
+/*#addPage{
 	position: absolute;
 	top: 605px;
 	width: 400px;
 	left: 0px;
-}
+}(/
 
 /*NESTABLE*/
 .dd { position: relative; display: block; margin: 0; padding: 0; max-width: 600px; list-style: none; font-size: 13px; line-height: 20px; }

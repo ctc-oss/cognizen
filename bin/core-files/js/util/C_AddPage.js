@@ -54,7 +54,9 @@ function addPage(){
 			Add: function(){
 				var newPageType = $("#pageTypeList").val();
 				createNewPageByType(newPageType);
-				toggleIndex();
+				if(indexState == true){
+					toggleIndex();
+				}
 				$(this).dialog("close");
 
 			}

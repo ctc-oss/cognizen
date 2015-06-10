@@ -153,6 +153,7 @@ function addIndex(){
 
 	if(mode == "edit"){
 		$("#indexContent").addClass('indexContentEdit');
+/*
 		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");
 		$("#addPage").button({
 			icons:{
@@ -167,6 +168,7 @@ function addIndex(){
 				fireConnectionError();
 			}
 		});
+*/
 	}
 
 	//loop through the xml and add items to index.
@@ -589,7 +591,7 @@ function updateIndex(){
 	    		data = _data;
 	    		$("#indexContent").remove();
 	    		if(mode == "edit"){
-		    		$("#addPage").remove();
+		    		//$("#addPage").remove();
 		    		$("#removePage").remove();
 		    	}
 		    	//Update the current page value to avoid editing the wrong page!
