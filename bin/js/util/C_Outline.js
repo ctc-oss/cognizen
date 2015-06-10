@@ -3450,6 +3450,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).find("option").attr("path", "1");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).find("option").attr("img", "");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).find("option").attr("active", "false");
+			$(myXML).find("page").eq(newPage).find("branch").eq(0).find("option").attr("altbtntitle", "");
 
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
