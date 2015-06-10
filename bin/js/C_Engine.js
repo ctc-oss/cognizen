@@ -159,12 +159,17 @@ function initScripts(_data){
     require.config({
         waitSeconds: 0
     });
+    
+    require(['js/libs/socket.io-client/socket.io.js'], function(foo){
+		io = foo;
+	})
+	
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	require([	//Already included in require.js
 				//Funtionality
 				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
 				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-				"js/libs/socket.io-client/dist/socket.io.js",
+				//"js/libs/socket.io-client/dist/socket.io.js",
 				"js/libs/underscore-min.js",
 				"js/libs/jquery.nestable.js",
 				"js/libs/pretty-data.js",
@@ -215,13 +220,13 @@ function buildInterface(){
 	//socket = (xhr) ? io.connect(null, {resource: "server", 'sync disconnect on unload' : true, transports: ["websockets", "xhr-polling"]}) :
                      //io.connect(null, {resource: "server", 'sync disconnect on unload' : true});
 
-	if (isOldIE()){
-		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
+	//if (isOldIE()){
+	//	socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
 		//console.log("saying is IE");
-	}else{
+	//}else{
 		//console.log("not IE");
 		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
-	}
+	//}
 	//Simple listener checking connectivity
 	socket.on('onConnect', function (data) {
 	  	//console.log(data.bankPath);

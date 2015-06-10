@@ -48,7 +48,7 @@ var mediaHolder;
 var audioHolder;
 
 var counter;//For any timed countdowns. (set interval).
-
+var io;
 //Accessibility control arrays.
 var pageAccess_arr = [];
 var globalAccess_arr = [];
@@ -192,6 +192,10 @@ function initScripts(_data){
 	    require.config({
 	        waitSeconds: 0
 	    });
+	    
+	    require([corePath + 'js/libs/socket.io-client/socket.io.js'], function(foo){
+			io = foo;
+		});
 		//GATHERING AND LOADING ALL OF THE ENGINE PARTS
 		require([
 			//Funtionality/utilities
@@ -200,7 +204,7 @@ function initScripts(_data){
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 					corePath +"js/libs/overthrow.min.js",
-					corePath +"js/libs/socket-client/socket.io.min.js", //required for edit mode.
+					//corePath +"js/libs/socket-client/socket.io.js", //required for edit mode.
 					ckpath,
 					ckAdapath,
 					corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
@@ -276,7 +280,7 @@ function initScripts(_data){
 function loadStreamer(){
 	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
    		ss = foo;
-   		ss.forceBase64 = true;
+   		//ss.forceBase64 = true;
 		startEngine();
 	});
 }
@@ -448,7 +452,7 @@ function buildInterface(){
 	loadPage();
 
 	if(mode == "edit" || mode == "review"){
-		connected = socket.socket.connected;
+		connected = socket.connected;
 
 		if(!connected){
 			fireConnectionError();
@@ -465,9 +469,11 @@ function buildInterface(){
 * @description Sends xml to the server to update and refreshes the xml upon success.
 */
 function sendUpdateWithRefresh(_type){
-	connected = socket.socket.connected;
-
+	console.log("sendUpdateWithRefresh(" + _type + ")");
+	connected = socket.connected;
+	
 	if(connected){
+		console.log("says I'm connected....");
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
 		var myData = $(data);
@@ -499,7 +505,7 @@ function sendUpdateWithRefresh(_type){
 }
 
 function sendCourseUpdate(){
-	connected = socket.socket.connected;
+	connected = socket.connected;
 
 	if(connected){
 		//Serialize the xml and send it to nodejs using socket.
@@ -525,7 +531,7 @@ function sendCourseUpdate(){
 }
 
 function sendUpdate(){
-	connected = socket.socket.connected;
+	connected = socket.connected;
 
 	if(connected){
 		updateTotalGradedQuestions();

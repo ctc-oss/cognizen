@@ -592,9 +592,10 @@ var SocketHandler = {
 
     processForgotPassword: function (data) {
         var _this = this;
+        
         User.findOne({ username: data.user }, 'username token firstName', function (err, user) {
             if (err) throw err;
-
+			console.log(user.firstName + ",<br/><br/><p>To reset your password, please click on the link below.</p><p><a href=" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + ">" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + "</a></p>");
             if (user == null) {
                 _this._socket.emit('forgetFailed');
             } else {
@@ -1607,7 +1608,7 @@ var SocketHandler = {
     },
 
     getContentServerUrl: function (data) {
-        this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
+        this._socket.emit('contentServerUrlReceived', {path: data.content.id})
     },
 
     getCoursePath: function (data){
@@ -1883,6 +1884,7 @@ var SocketHandler = {
     },
 
 	disconnect: function (socket) {
+	    console.log("disconnect called");
 	    var _this = this;
 	    var disconnectingLessonID = null;
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
@@ -1893,7 +1895,6 @@ var SocketHandler = {
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.
 			for(var i = 0; i < activeEdit_arr.length; i++){
-				//_this.logger.info("activeEdit_arr[i].sessionID = " + activeEdit_arr[i].sessionID);
 				if(sessionId == activeEdit_arr[i].sessionID){
 					disconnectingLessonID = activeEdit_arr[i].lessonID;
 					if(activeEdit_arr[i].isEditor){
@@ -2548,9 +2549,7 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                    _this.logger.info("Before runwithlock in publishContent");
                     _this.Git.lock.runwithlock(function () {
-                        _this.logger.info("in runwithlock in publishContent");
                         if(data.content.type === 'course'){
                             var scormPath = path.normalize('../core-files/scorm/');
                             var scormDir = path.resolve(process.cwd(), scormPath);
