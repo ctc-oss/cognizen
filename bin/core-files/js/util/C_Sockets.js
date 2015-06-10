@@ -31,12 +31,12 @@ function initializeSockets(){
 	   
 	    cognizenSocket = io.connect({
 					path: '/server', 
-							//transports: ["websockets", "polling"], 
+					transports: ["websockets", "polling"], 
 					'sync disconnect on unload' : true, 
-					'forceNew': true 
-							//secure: secureSocket,
-							//'connect timeout': 1000
-					});
+					'forceNew': true, 
+					secure: secureSocket,
+					'connect timeout': 1000
+				});
 	                             
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -247,16 +247,14 @@ function initializeSockets(){
                          //io.connect(null, {resource: urlParams['id'], 'forceNew': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
         socket = io.connect({
 						path: '/'+urlParams['id'], 
-						//transports: ["websockets", "polling"], 
+						transports: ["websockets", "polling"], 
 						'sync disconnect on unload' : true, 
-						'forceNew': true 
-						//secure: secureSocket,
-						//'connect timeout': 1000
+						'forceNew': true, 
+						secure: secureSocket,
+						'connect timeout': 1000
 					});
 		console.log("socket = ");
 		console.log(socket);
-		console.log("io = ");
-		console.log(io);
 		
 		socket.on('siofu_progress', function (data) {
             //console.log('progress data: ' + data);

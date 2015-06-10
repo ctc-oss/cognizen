@@ -34,7 +34,7 @@ var ContentSocket = {
 
         if (port) {
             app.listen(port);
-            io = require('socket.io').listen(app);
+            io = require('socket.io')(app);
             logger.info('C_Server started successfully');
         }
         else {
@@ -44,8 +44,8 @@ var ContentSocket = {
         }
 
         if (_path) {
-            io.set('path', '/' + _path);
-            io.set('log level', 1);
+            //io.set('path', '/' + _path);
+            //io.set('log level', 1);
 //          io.set('polling duration', 600);
             logger.info('Socket.io resource set to /' + _path);
         }
