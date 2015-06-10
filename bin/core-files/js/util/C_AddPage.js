@@ -306,6 +306,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("path", "1");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("img", "");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("active", "false");
+			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("altbtntitle", "");
 
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");

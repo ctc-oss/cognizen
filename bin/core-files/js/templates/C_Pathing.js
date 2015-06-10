@@ -180,10 +180,14 @@ function C_Pathing(_type) {
 			var allCompleted = true;
 			for (var i = 0; i < homePage_arr.length; i++) {
 				var _btnId = homePage_arr[i].index;
+				var altBtnTitle = $(data).find("page").eq(currentPage).find("branch").eq(0).find('option').eq(i).attr("altbtntitle");
 				var buttonLabel = '';
 				if($(data).find("page").eq(currentPage).find("branch").eq(0).find('option').eq(i).attr("active") == "true"){
 					buttonLabel = '<img src="media/'+$(data).find("page").eq(currentPage).find("branch").eq(0).find('option').eq(i).attr("img")+'" ';
 					buttonLabel += 'alt ="' +$(data).find("page").eq(currentPage).find("branch").eq(_btnId).find("title").text() +'">';
+				}
+				else if(altBtnTitle != undefined && altBtnTitle != ''){
+					buttonLabel = altBtnTitle;
 				}
 				else{
 					buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_btnId).find("title").text();
@@ -622,6 +626,7 @@ function C_Pathing(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("active", "false");
 			}
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("img", $("#optionImg" + i).val());
+			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("altbtntitle", $("#optionAlt" + i).val());
 		} 		
 	}
 	
@@ -879,14 +884,20 @@ function C_Pathing(_type) {
 		else{
 
 			var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
-			$("#optionContainer").append("<div id='editBranchOptionHolder'><b>image path buttons (optional) :</b><br/></div>");
+			$("#optionContainer").append("<div id='editBranchOptionHolder'><b>path buttons (optional) :</b><br/></div>");
 			for(var i = 0; i < branchOptionLength; i++){
 				var optionText = $.trim($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text());
 				var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
 				var optionImage = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("img");
-				var msg = "<div id='myBranchOption"+ i +"' style='width:80%; margin-bottom:5px;'>";
-					msg += "<label for='optionLabel'><b>path : "+$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("path")+"</b></label>";
+				var optionAlt = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("altbtntitle");
+				if(optionAlt == undefined){ optionAlt = '';}
+				var msg = "<div id='myBranchOption"+ i +"' style='width:90%; margin-bottom:5px;'>";
+					msg += "<label><b>path "+$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("path")+" : </b></label>";
+					msg += "<label for='optionLabel' id='optionAltLabel"+ i + "'><b>Alt Title: </b></label>";
+					msg += "<input type='text' name='optionAlt' id='optionAlt"+ i + "' title='Alternative page title to be used for the button. Leave blank to not use.' value='"+ optionAlt + "' class='dialogInput' style='width:250px;'/>";
+					msg += "<label for='optionActive'><b>Activate image: </b></label>";
 					msg += "<input id='optionActive"+i+"' type='checkbox' name='optionActive"+i+"' class='radio' title='Activate image button.'/>";
+					msg += "<label for='optionImg' id='optionImgLabel"+ i + "' style='display:none' data='"+i+"'><b>Image: </b></label>";
 					msg += "<input type='text' name='optionImg' id='optionImg"+ i + "' title='Image to be used for button.' value='"+ optionImage + "' data='"+i+"' class='dialogInput' style='width:250px;display:none'/>";
 					msg += "</div>";
 				$("#editBranchOptionHolder").append(msg);
@@ -895,6 +906,9 @@ function C_Pathing(_type) {
 				if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("active") === "true"){
 					$('#optionActive'+i).prop('checked', true);
 					$('#optionImg'+i).toggle();
+					$('#optionImgLabel'+i).toggle();
+					$('#optionAlt'+i).toggle();
+					$('#optionAltLabel'+i).toggle();					
 				}
 				var activeString = 'optionActive'+i;
 				$('#'+activeString).change(toggle_handler(i));				
@@ -1129,6 +1143,9 @@ function C_Pathing(_type) {
 	function toggle_handler( j ) {
 	    return function(event) { 
 	        $('#optionImg'+j).toggle();
+	        $('#optionImgLabel'+j).toggle();
+	        $('#optionAlt'+j).toggle();
+	        $('#optionAltLabel'+j).toggle();
 	    };
 	}
 	
@@ -1190,6 +1207,7 @@ function C_Pathing(_type) {
 		$(data).find("page").eq(currentPage).find("branch").eq(0).find("option").last().attr("path", newPathId);
 		$(data).find("page").eq(currentPage).find("branch").eq(0).find("option").last().attr("img", "");
 		$(data).find("page").eq(currentPage).find("branch").eq(0).find("option").last().attr("active", "false");
+		$(data).find("page").eq(currentPage).find("branch").eq(0).find("option").attr("altbtntitle", "");
 
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", pathGuid);
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
