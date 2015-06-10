@@ -262,13 +262,11 @@ function addDisplay(){
 function FileDragHover(e){
 	e.preventDefault();
     e.stopPropagation();
-	e.addClass("hover");
 }
 
 function FileDragLeave(e){
 	e.preventDefault();
     e.stopPropagation();
-	e.removeClass("hover");
 }
 
 // file selection
