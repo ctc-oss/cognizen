@@ -1240,13 +1240,20 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		var msg = "<div id='"+galleryItemID+"' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='"+removeID+"' value='"+_addID+"' class='removeMedia' title='Remove this image'/>";
 		msg += "<label id='label'><b>Gallery Item: </b><br/></label>";
-		msg += "<label id='label'>Media: </label><input id='imgPath" + _addID + "' class='dialogInput' type='text' value='"+media_arr[_addID]+"' defaultValue='"+media_arr[_addID]+"' style='width:80%;'/><br/>";
+		msg += "<label id='label'>Media: </label><input id='imgPath" + _addID + "' class='dialogInput' type='text' value='"+media_arr[_addID]+"' defaultValue='"+media_arr[_addID]+"' style='width:60%;'/>";
+		msg += "<button id='browseMB" + _addID + "'>browse</button><br/>";
 		msg += "<label id='label'>Caption:</label><input id='"+captionTextID+"' type='text' class='dialogInput' value='"+caption_arr[_addID]+"' defaultValue='"+caption_arr[_addID]+"'  style='width:80%;'/><br/>";
 		msg += "<label id='label'>ALT text: </label>";
 		msg += "<input id='"+altTextID+"' class='dialogInput' type='text' value='"+alt_arr[_addID]+"' defaultValue='"+alt_arr[_addID]+"' style='width:70%'/>";
 		msg += "</div>"
 		$("#imgDialog").append(msg);
-
+		
+		$("#browseMB" + _addID).click(function(){
+			$(".ui-dialog").hide();
+			$(".ui-widget-overlay").hide();
+			dialogToggleMediaBrowser($("#imgPath" + _addID));					
+		});
+		
 		$("#" + removeID).click(function(){
 			removeGalleryItem($(this).attr("value"));
 		});

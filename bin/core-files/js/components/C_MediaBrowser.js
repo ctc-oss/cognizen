@@ -484,8 +484,8 @@ function showItemStats(){
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "imgPath"){
-				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf"];
+			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0){
+				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
 			}else if(fileTarget.attr("id") == "audioPath"){

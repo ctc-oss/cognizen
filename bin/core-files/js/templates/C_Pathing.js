@@ -784,7 +784,8 @@ function C_Pathing(_type) {
 			var subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('subs');
 	     	
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
-			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/><br/>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+			msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 			msg += "<label id='mediaWidthLabel'>Media Width:</label>";
 			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
 			msg += "<label id='mediaHeightLabel'>Media Height:</label>";
@@ -815,6 +816,14 @@ function C_Pathing(_type) {
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
+		
+		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
+			$("#dialogMediaBrowseButton").click(function(){
+				$(".ui-dialog").hide();
+				$(".ui-widget-overlay").hide();
+				dialogToggleMediaBrowser($("#mediaLink"));					
+			});
+		}
 		
 		var tempType = getFileType($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img'));
 		if(tempType == "mp4" || tempType == "swf"){

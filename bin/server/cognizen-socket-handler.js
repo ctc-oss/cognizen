@@ -184,7 +184,7 @@ var SocketHandler = {
                                     //Handle our favorite media types
                                     //var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg", "pdf", "doc", "docx", "pptx", "ppt", "xls", "xlsx"];
 
-                                    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+                                    var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "mkv"];
                                     var convertableVectorTypes = ["eps"];
                                     var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                                     var archiveTypes = ["zip"];
