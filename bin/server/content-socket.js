@@ -162,7 +162,6 @@ var ContentSocket = {
 			
             //Set listener to update the content.xml file
             socket.on('updateXMLWithRefresh', function (data) {
-                console.log("CALLED UPDATECONTENTXML");
                 fs.outputFile(/*getXMLContentFile()*/xmlContentFile, data.my, function(err) {
                     
                     //Refresh the index if successfully updating the content.xml
