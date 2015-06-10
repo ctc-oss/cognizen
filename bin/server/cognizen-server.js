@@ -392,7 +392,7 @@ var Content = {
 
     if(!process.env.NODE_ENV){
     	io.set('connect timeout', 1000);
-        io.set('heartbeat timeout', 5);
+        //io.set('heartbeat timeout', 5);
         //io.set('close timeout', 25);
 	    io.set('transports', [
 	        'websocket',
