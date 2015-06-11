@@ -34,7 +34,7 @@ var ContentSocket = {
 
         if (port) {
             app.listen(port);
-            io = require('socket.io')(app);
+            io = require('socket.io').listen(app);
             logger.info('C_Server started successfully');
         }
         else {
@@ -44,8 +44,8 @@ var ContentSocket = {
         }
 
         if (_path) {
-            //io.set('path', '/' + _path);
-            //io.set('log level', 1);
+            io.set('resource', '/' + _path);
+            io.set('log level', 1);
 //          io.set('polling duration', 600);
             logger.info('Socket.io resource set to /' + _path);
         }
@@ -76,11 +76,10 @@ var ContentSocket = {
         }
 
         io.sockets.on('connection', function (socket) {
-            socket.emit('onConnect', { hello: 'node connection established!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' });
+            socket.emit('onConnect', { hello: 'node connection established' });
 			
 			//Set listener to update the course.xml file
 			socket.on('updateCourseXMLWithRefresh', function (data) {
-				
 				fs.outputFile(xmlCourseFile, data.my, function(err) {
 					//Refresh the index if successfully updating the content.xml
                     if(err == null){

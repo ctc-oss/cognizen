@@ -151,26 +151,6 @@ function addIndex(){
 	totalPages = $(data).find('page').length;
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
 
-	if(mode == "edit"){
-		$("#indexContent").addClass('indexContentEdit');
-/*
-		$("#indexPane").append("<div id='addPage'>Add a New Page</div>");
-		$("#addPage").button({
-			icons:{
-				primary: 'ui-icon-circle-plus'
-			}
-		}).click(function(){
-			connected = socket.connected;
-
-			if(connected){
-				addPage();
-			}else{
-				fireConnectionError();
-			}
-		});
-*/
-	}
-
 	//loop through the xml and add items to index.
 	var thisID;
 	var groupMode;
@@ -185,7 +165,7 @@ function addIndex(){
 		indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
 
 		if(mode == "edit"){
-			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			indexString += '<div class="dd-handle dd3-handle"></div>';
 			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
 			//check if item should be hidden

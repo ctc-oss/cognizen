@@ -7,10 +7,11 @@ var httpProxy = require('http-proxy');
 var path = require("path");
 var et = require('elementtree');
 var express = require('express');
-var session = require('express-session')
+var session = require('express-session');
 var cookie = require("cookie");
 var connect = require("connect");
 var cookieParser = require("cookie-parser");
+var cookieParser = require('cookie-parser');
 var socketIo = require('socket.io');
 
 var fs = require('fs-extra');
@@ -33,7 +34,7 @@ var Course = ContentModel.Course;
 var Lesson = ContentModel.Lesson;
 var ContentComment = ContentModel.ContentComment;
 var io;
-var socketData = {};
+
 var logFolder = Utils.defaultValue(config.logFolder, './');
 var logger = new (winston.Logger)({
     transports: [
@@ -268,7 +269,6 @@ var Content = {
             var idMatches = req.url.match(/\/[0-9a-f]{24}/);
 
             if (req.url.indexOf(Ports.server.path) == 0) {
-                req.url = req.url.replace('server', 'socket.io');
                 backendPort = Ports.server.port;
             }
             else if (req.url.indexOf(Ports.git.path) == 0) {
@@ -277,7 +277,6 @@ var Content = {
             }
             else if (idMatches && idMatches.length == 1) {
                 var id = idMatches[0].substring(1);
-                req.url = req.url.replace(id, 'socket.io');
                 // Lookup the content ID in the port map, and send it to that one.
                 // Pull the id out of the url by removing the first slash
                 var details = Content.serverDetails({id: id});
@@ -383,22 +382,50 @@ var Content = {
         res.redirect('/');
     });
 
-    io = socketIo(app.listen(Ports.server.port, null, null, function () {
-        logger.info(Ports.server.port);
+    io = socketIo.listen(app.listen(Ports.server.port, null, null, function () {
         logger.info('Cognizen Server Started');
-    }), { pingTimeout: 10000});
-    //io.set('path', '/'+Ports.server.path);
-    //io.set('log level', 1);
+    }));
+    io.set('resource', Ports.server.path);
+    io.set('log level', 1);
 
-    if(!process.env.NODE_ENV){
-    	//io.set('connect timeout', 1000);
-        //io.set('heartbeat timeout', 5);
+//    io.set('authorization', function (handshakeData, accept) {
+//        if (handshakeData.headers.cookie) {
+//            handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
+//            handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['connect.sid'], 'cognizen');
+//            console.log('SID:::::' + handshakeData.sessionID);
+//            if (handshakeData.cookie['connect.sid'] == handshakeData.sessionID) {
+//                return accept('Cookie is invalid.', false);
+//            }
+//        } else {
+//            return accept('No cookie transmitted.', false);
+//        }
+//
+//        return accept(null, true);
+//    });
+
+
+    //io.enable('browser client minification');  // send minified client
+    //io.enable('browser client etag');          // apply etag caching logic based on version number
+    //io.enable('browser client gzip');          // gzip the file
+    //io.set('log level', 1);                    // reduce logging
+
+    // enable all transports (optional if you want flashsocket support, please note that some hosting
+    // providers do not allow you to create servers that listen on a port different than 80 or their
+    // default port)
+    
+    //io.set('polling duration', 600);
+    io.configure(function () {
+    	io.set('connect timeout', 1000);
+        io.set('heartbeat timeout', 5);
         //io.set('close timeout', 25);
-	    /*io.set('transports', [
+	    io.set('transports', [
 	        'websocket',
-	        'polling'
-	    ]);*/
-    };
+	        'xhr-polling',
+	        'jsonp-polling',
+	        'flashsocket',
+	        'htmlfile'
+	    ]);
+    });
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);
     var SocketHandler = require('./cognizen-socket-handler').init(config, logger, SocketSessions, Mail, Content, Git, io);

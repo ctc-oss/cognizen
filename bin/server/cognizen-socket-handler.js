@@ -29,6 +29,101 @@ var request = require('request');
 var activeEdit_arr = [];
 var activeOutline_arr = [];
 
+/*function processUpload{
+	var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg"];
+    var convertableVectorTypes = ["eps"];
+    var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+    var archiveTypes = ["zip"];
+    if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+        //Convert files
+        var convertedFileName;
+        var convertedPathName;
+        var convertedPath;
+        //VIDEO CONVERSION
+        if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
+        	convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp4';
+			convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp4';
+			convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+        	var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+            	.toFormat('mp4')
+				.withVideoBitrate('1200k')
+				.withVideoCodec('libx264')
+				.withAudioBitrate('160k')
+				.withAudioCodec('libfaac')
+				.withAudioChannels(2)
+				.onCodecData(function (codecinfo) {
+                	_this.logger.info(codecinfo);
+					_this._socket.emit('mediaInfo', codecinfo);
+				})
+           //used for ffmpeg on windows machine
+           //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
+
+		}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+			convertedFileName = event.file.name.replace(/\.[^/.]+$/, '') + '.mp3';
+			convertedPathName = event.file.pathName.replace(/\.[^/.]+$/, '') + '.mp3';
+			convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
+			var proc = new ffmpeg({ source: event.file.pathName, timeout: 300, priority: 2 })
+            	.toFormat('mp3')
+				.withAudioCodec('libmp3lame')
+				.withAudioChannels(2)
+				.onCodecData(function (codecinfo) {
+                	_this.logger.info(codecinfo);
+					_this._socket.emit('mediaInfo', codecinfo);
+				})
+		}
+        proc.onProgress(function (progress) {
+        	_this._socket.emit('mediaConversionProgress', progress);
+		})
+		.saveToFile(convertedPathName, function (stdout, stderr) {
+        	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+            if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+
+			var stream = fs.createReadStream(convertedPathName);
+            stream.pipe(fs.createWriteStream(convertedPath));
+
+			var had_error = false;
+			stream.on('error', function(err){
+				had_error = true;
+			});
+
+			stream.on('close', function(){
+                if (!had_error) fs.unlink(event.file.pathName);
+                fs.unlink(convertedPathName, function (err) {
+                	_this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
+                	_this._socket.emit('mediaConversionComplete', convertedPath);
+                });
+			})
+		});
+    }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+    	var zip = new unzip(event.file.pathName);
+    	var zipEntries = zip.getEntries();
+
+    	zipEntries.forEach(function(entry) {
+		    var entryName = entry.entryName;
+		    zip.extractEntryTo(entryName, path.normalize(_this.Content.diskPath(found.path) + '/media/'), true, true);
+		});
+
+		fs.unlink(event.file.pathName, function (err) {
+        	_this._socket.emit('unzipComplete', convertedPath);
+        });
+    }
+    //if (favoriteTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+    else{
+        var stream = fs.createReadStream(event.file.pathName);
+        stream.pipe(fs.createWriteStream(contentPath));
+        var had_error = false;
+        stream.on('error', function(err){
+            had_error = true;
+        });
+
+        stream.on('close', function(){
+            _this.logger.info("wrote to location - now trying to delete file from tmp");
+            if (!had_error) fs.unlink(event.file.pathName);
+        });
+        //Git commit
+    }
+}*/
+
 var SocketHandler = {
     config: {},
     logger: {},
@@ -497,10 +592,9 @@ var SocketHandler = {
 
     processForgotPassword: function (data) {
         var _this = this;
-        
         User.findOne({ username: data.user }, 'username token firstName', function (err, user) {
             if (err) throw err;
-			console.log(user.firstName + ",<br/><br/><p>To reset your password, please click on the link below.</p><p><a href=" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + ">" + _this.config.url + "index.html?reset=" + user.username + "&token=" + user.token + "</a></p>");
+
             if (user == null) {
                 _this._socket.emit('forgetFailed');
             } else {
@@ -756,7 +850,8 @@ var SocketHandler = {
 					        var xml = etree.write({'xml_decleration': false});
 					        fs.outputFile(newCourseXML, xml, function (err) {
 					        	if (err) callback(err, null);
-                                fs.copy(path.normalize('../.gitignore'), baseWritePath +'/.gitignore', function(err){
+					         	callback(err);
+					         	 fs.copy(path.normalize('../.gitignore'), baseWritePath +'/.gitignore', function(err){
                                     if(err){
                                         _this.logger.error("Error copying .gitignore file " + err);
                                         callback(err);                        
@@ -835,7 +930,6 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
-                            item.set("coursedisplaytitle", content.name);
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");
@@ -1522,7 +1616,7 @@ var SocketHandler = {
     },
 
     getContentServerUrl: function (data) {
-        this._socket.emit('contentServerUrlReceived', {path: data.content.id})
+        this._socket.emit('contentServerUrlReceived', {resource: data.content.id})
     },
 
     getCoursePath: function (data){
@@ -1798,7 +1892,6 @@ var SocketHandler = {
     },
 
 	disconnect: function (socket) {
-	    console.log("disconnect called");
 	    var _this = this;
 	    var disconnectingLessonID = null;
 	    var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
@@ -1809,6 +1902,7 @@ var SocketHandler = {
 	    	var wasEditor = false;
 			//Remove the current lock from lesson.
 			for(var i = 0; i < activeEdit_arr.length; i++){
+				//_this.logger.info("activeEdit_arr[i].sessionID = " + activeEdit_arr[i].sessionID);
 				if(sessionId == activeEdit_arr[i].sessionID){
 					disconnectingLessonID = activeEdit_arr[i].lessonID;
 					if(activeEdit_arr[i].isEditor){
@@ -2214,7 +2308,7 @@ var SocketHandler = {
                 found.getChildren(function(err, children) {
                     if (err) {
                         _this.logger.error('found.getChildren(): ' + err);
-                       callback(err);
+                       callback(err);//_this._socket.emit('generalError', {title: 'GetChildren Error', message: 'Error occurred when checking redmine project structure. (1)'});
                     }
                     else {
                         // Make sure children paths are re-generated as well.
@@ -2463,7 +2557,9 @@ var SocketHandler = {
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
+                    _this.logger.info("Before runwithlock in publishContent");
                     _this.Git.lock.runwithlock(function () {
+                        _this.logger.info("in runwithlock in publishContent");
                         if(data.content.type === 'course'){
                             var scormPath = path.normalize('../core-files/scorm/');
                             var scormDir = path.resolve(process.cwd(), scormPath);

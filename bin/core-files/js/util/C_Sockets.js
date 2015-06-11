@@ -25,17 +25,20 @@ function initializeSockets(){
 	if(mode != "prod" && mode != "production"){
 	    urlParams = queryStringParameters();
 		//if we are in edit or review mode establish a socket to the server 					  
-	   cognizenSocket = io.connect({
-					path: '/server', 
-					transports: ["websockets", "polling"], 
-					'sync disconnect on unload' : true, 
+	   cognizenSocket = (xhr) ? io.connect(null, {resource: 'server', transports: ["websockets", "xhr-polling"], 'sync disconnect on unload' : true, 'force new connection': true, secure: secureSocket, 'connect timeout': 1000}) :
+	                             io.connect(null, {resource: 'server', 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+	   
+	   /*cognizenSocket = io.connect({
+					resource: 'server', 
+					transports: ["websockets", "xhr-polling"], 
+					//'sync disconnect on unload' : true, 
 					'forceNew': true, 
-					secure: secureSocket,
-					'connect timeout': 1000,
-					'reconnect': true,
-					'reconnection delay': 500,
-					'max reconnection attempts': 10
-				});
+					secure: secureSocket
+					//'connect timeout': 1000,
+					//'reconnect': true,
+					//'reconnection delay': 500,
+					//'max reconnection attempts': 10
+				});*/
 	                             
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -241,18 +244,21 @@ function initializeSockets(){
 
 	    //used in C_VisualMediaHolder.js, C_NavControl.js and C_AudioHolder.js
 	    siofu = new SocketIOFileUpload(cognizenSocket);   
-
-        socket = io.connect({
-						path: '/'+urlParams['id'], 
-						transports: ["websockets", "polling"], 
-						'sync disconnect on unload' : true, 
+		
+		socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
+                         io.connect(null, {resource: urlParams['id'], 'force new connection': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
+		
+        /*socket = io.connect({
+						resource: urlParams['id'], 
+						transports: ["websockets", "xhr-polling"], 
+						//'sync disconnect on unload' : true, 
 						'forceNew': true, 
-						secure: secureSocket,
-						'connect timeout': 1000,
-						'reconnect': true,
-						'reconnection delay': 500,
-						'max reconnection attempts': 10
-					});
+						//secure: secureSocket
+						//'connect timeout': 1000,
+						//'reconnect': true,
+						//'reconnection delay': 500,
+						//'max reconnection attempts': 10
+					});*/
 		console.log("socket = ");
 		console.log(socket);
 		
