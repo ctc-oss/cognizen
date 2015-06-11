@@ -193,9 +193,9 @@ function initScripts(_data){
 	        waitSeconds: 0
 	    });
 	    
-	    require([corePath + 'js/libs/socket.io.js'], function(foo){
+	    /*require([corePath + 'js/libs/socket.io.js'], function(foo){
 			io = foo;
-		});
+		});*/
 		//GATHERING AND LOADING ALL OF THE ENGINE PARTS
 		require([
 			//Funtionality/utilities
@@ -215,7 +215,7 @@ function initScripts(_data){
 					corePath +"js/libs/jquery.corner.js",
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
-					//corePath +"js/libs/socket.io-stream.js",
+					corePath +"js/libs/socket.io/socket.io.js",
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
@@ -279,7 +279,7 @@ function initScripts(_data){
 function loadStreamer(){
 	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
    		ss = foo;
-   		ss.forceBase64 = false;
+   		ss.forceBase64 = true;
 		startEngine();
 	});
 }

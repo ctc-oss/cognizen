@@ -160,16 +160,16 @@ function initScripts(_data){
         waitSeconds: 0
     });
     
-    require(['js/libs/socket.io.js'], function(foo){
+    /*require(['js/libs/socket.io.js'], function(foo){
 		io = foo;
-	})
+	})*/
 	
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	require([	//Already included in require.js
 				//Funtionality
 				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
 				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-				//"js/libs/socket.io-client/dist/socket.io.js",
+				"js/libs/socket.io/socket.io.js",
 				"js/libs/underscore-min.js",
 				"js/libs/jquery.nestable.js",
 				"js/libs/pretty-data.js",
