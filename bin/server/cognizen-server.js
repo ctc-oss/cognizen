@@ -391,13 +391,13 @@ var Content = {
     //io.set('log level', 1);
 
     if(!process.env.NODE_ENV){
-    	io.set('connect timeout', 1000);
+    	//io.set('connect timeout', 1000);
         //io.set('heartbeat timeout', 5);
         //io.set('close timeout', 25);
-	    io.set('transports', [
+	    /*io.set('transports', [
 	        'websocket',
 	        'polling'
-	    ]);
+	    ]);*/
     };
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);
