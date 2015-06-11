@@ -323,7 +323,7 @@ function checkNav(){
 function addEditNav(){
 	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
 	$("#preferences").tooltip().click(function(){
-		connected = socket.connected;
+		connected = socket.socket.connected;
 
 		if(connected){
 			launchPrefs();
@@ -334,7 +334,7 @@ function addEditNav(){
 	
 	$("#myCanvas").append("<div id='addPage' class='btn_addPage' title='add new page'></div>");
 	$("#addPage").click(function(){
-		connected = socket.connected;
+		connected = socket.socket.connected;
 
 		if(connected){
 			addPage();
@@ -1362,7 +1362,7 @@ function checkLockMode(){
 	$("#passLock").tooltip().click(function(){
 		//Relinquish Edit Control
 		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer);
-		connected = socket.connected;
+		connected = socket.socket.connected;
 
 		if(connected){
 			if(!forcedReviewer){

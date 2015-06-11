@@ -169,7 +169,7 @@ function initScripts(_data){
 				//Funtionality
 				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
 				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
-				"js/libs/socket.io/socket.io.js",
+				"js/libs/socket.io/socket.io.min.js",
 				"js/libs/underscore-min.js",
 				"js/libs/jquery.nestable.js",
 				"js/libs/pretty-data.js",
@@ -214,14 +214,18 @@ function isOldIE() {
 ****************************************************/
 //Place all permanent items in the UI - background - title - nav
 function buildInterface(){
-
-	socket = io.connect(null, {	path: "/server", 
+	if (isOldIE()){
+		socket = io.connect(null, {resource: "server", transports: ["flashsocket", "xhr-polling"], 'sync disconnect on unload' : true, 'connect timeout': 1000});
+	}else{
+		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
+	}
+	/*socket = io.connect(null, {	path: "/server", 
 								//'sync disconnect on unload' : true, 
 								'connect timeout': 1000,
 								'reconnect': true,
 								'reconnection delay': 500,
 								'max reconnection attempts': 10
-							});
+							});*/
 	
 	//Simple listener checking connectivity
 	socket.on('onConnect', function (data) {

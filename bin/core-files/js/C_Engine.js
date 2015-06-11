@@ -48,7 +48,7 @@ var mediaHolder;
 var audioHolder;
 
 var counter;//For any timed countdowns. (set interval).
-var io;
+//var io;
 //Accessibility control arrays.
 var pageAccess_arr = [];
 var globalAccess_arr = [];
@@ -215,7 +215,7 @@ function initScripts(_data){
 					corePath +"js/libs/jquery.corner.js",
 					corePath +"js/libs/modernizr.js",
 					corePath +"js/libs/siofu/client.js",
-					corePath +"js/libs/socket.io/socket.io.js",
+					corePath +"js/libs/socket.io/socket.io.min.js",
 					corePath +"js/libs/underscore-min.js",
 					corePath +"js/libs/pretty-data.js",
 					corePath +"js/libs/jquery.alphanum.js",
@@ -451,7 +451,7 @@ function buildInterface(){
 	loadPage();
 
 	if(mode == "edit" || mode == "review"){
-		connected = socket.connected;
+		connected = socket.socket.connected;
 
 		if(!connected){
 			fireConnectionError();
@@ -469,7 +469,7 @@ function buildInterface(){
 */
 function sendUpdateWithRefresh(_type){
 	console.log("sendUpdateWithRefresh(" + _type + ")");
-	connected = socket.connected;
+	connected = socket.socket.connected;
 	
 	if(connected){
 		console.log("says I'm connected....");
@@ -504,7 +504,7 @@ function sendUpdateWithRefresh(_type){
 }
 
 function sendCourseUpdate(){
-	connected = socket.connected;
+	connected = socket.socket.connected;
 
 	if(connected){
 		//Serialize the xml and send it to nodejs using socket.
@@ -530,7 +530,7 @@ function sendCourseUpdate(){
 }
 
 function sendUpdate(){
-	connected = socket.connected;
+	connected = socket.socket.connected;
 
 	if(connected){
 		updateTotalGradedQuestions();
