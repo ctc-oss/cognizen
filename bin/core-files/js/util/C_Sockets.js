@@ -27,9 +27,9 @@ function initializeSockets(){
 		//if we are in edit or review mode establish a socket to the server 					  
 	   cognizenSocket = io.connect({
 					path: '/server', 
-					//transports: ["websockets", "polling"], 
-					//'sync disconnect on unload' : true, 
-					//'forceNew': true, 
+					transports: ["websockets", "polling"], 
+					'sync disconnect on unload' : true, 
+					'forceNew': true, 
 					secure: secureSocket,
 					'connect timeout': 1000,
 					'reconnect': true,
@@ -244,9 +244,9 @@ function initializeSockets(){
 
         socket = io.connect({
 						path: '/'+urlParams['id'], 
-						//transports: ["websockets", "polling"], 
-						//'sync disconnect on unload' : true, 
-						//'forceNew': true, 
+						transports: ["websockets", "polling"], 
+						'sync disconnect on unload' : true, 
+						'forceNew': true, 
 						secure: secureSocket,
 						'connect timeout': 1000,
 						'reconnect': true,

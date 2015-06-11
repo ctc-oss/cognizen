@@ -383,10 +383,10 @@ var Content = {
         res.redirect('/');
     });
 
-    io = socketIo.listen(app.listen(Ports.server.port, null, null, function () {
+    io = socketIo(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
-    }));
+    }), { pingTimeout: 60000});
     //io.set('path', '/'+Ports.server.path);
     //io.set('log level', 1);
 

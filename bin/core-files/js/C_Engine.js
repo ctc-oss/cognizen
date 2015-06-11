@@ -279,7 +279,7 @@ function initScripts(_data){
 function loadStreamer(){
 	require([corePath + 'js/libs/socket.io-stream'], function (foo) {
    		ss = foo;
-   		//ss.forceBase64 = true;
+   		ss.forceBase64 = false;
 		startEngine();
 	});
 }
