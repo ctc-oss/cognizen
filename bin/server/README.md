@@ -1,13 +1,12 @@
 nodeSetup Instructions
 ------------------
-!!!!!! IF INSTALLING ON node 10.26 or later, skip steps 2-4 and replace with:
-!!!!!!  npm install --link !!!!! - this line does 1-4 below on node 10.26 and later.
+!!!!!! IF INSTALLING ON node 10.26 or later, skip steps 1-5 and replace with:
+!!!!!!  npm install --link !!!!! - this line does 1-5 below on node 10.26 and later.
 1. From a terminal window in this directory, run the following command:
-        On older (node 10.15):
-                npm install -g
+		On older (node 10.15):
+        npm install -g
         On new hosted server install:
-                cd /apache/vhosts/cognizen-dev.ctc.com/docs/cognizen/bin/server && \
-                /opt/node.js/v0.12.2/bin/npm install --link
+        node installs //cd /apache/vhosts/cognizen-dev.ctc.com/docs/cognizen/bin/server/opt/node.js/v0.10.26/bin/npm install --link
 
 2. This should globally install all of the node packages necessary to run the cognizen-server.js
 3. To link those node modules to our project here, run the following command

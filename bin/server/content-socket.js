@@ -17,7 +17,7 @@ var walkerOptions = {
 
 var ContentSocket = {
 	
-    start: function(port, path, contentPath, scormPath, logger, callback) {
+    start: function(port, _path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
         var xmlCourseFile = contentPath + '/../course.xml';
         
@@ -43,11 +43,11 @@ var ContentSocket = {
             return;
         }
 
-         if (path) {
-            io.set('path', '/' + path);
+        if (_path) {
+            io.set('resource', '/' + _path);
             io.set('log level', 1);
 //          io.set('polling duration', 600);
-            logger.info('Socket.io resource set to /' + path);
+            logger.info('Socket.io resource set to /' + _path);
         }
         else {
             logger.error('Path must be provided as an argument');
@@ -61,7 +61,7 @@ var ContentSocket = {
         
         var serverObj = new Object();
         serverObj.app = app;
-        serverObj.id = path;
+        serverObj.id = _path;
         serverObj.port = port;
         serverObj.xml = xmlContentFile;
         openServers.push(serverObj);
@@ -76,11 +76,10 @@ var ContentSocket = {
         }
 
         io.sockets.on('connection', function (socket) {
-            socket.emit('onConnect', { hello: 'node connection established!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' });
+            socket.emit('onConnect', { hello: 'node connection established' });
 			
 			//Set listener to update the course.xml file
 			socket.on('updateCourseXMLWithRefresh', function (data) {
-				
 				fs.outputFile(xmlCourseFile, data.my, function(err) {
 					//Refresh the index if successfully updating the content.xml
                     if(err == null){

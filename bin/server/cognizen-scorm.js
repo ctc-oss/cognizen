@@ -268,11 +268,8 @@ var SCORM = {
 	        manifest += '\">\n';    			
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
-	            "       <schemaversion>2004 3rd Edition</schemaversion>\n";
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
-	        }    
-	        manifest += "   </metadata>\n";
+	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
+	            "   </metadata>\n";
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
 	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
 	            "           <title>"+_this.courseDisplayTitle+"</title>\n"+
@@ -326,11 +323,8 @@ var SCORM = {
 	        manifest += '\">\n';	
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
-	            "       <schemaversion>2004 4th Edition</schemaversion>\n";
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
-	        }    
-	        manifest += "   </metadata>\n";	            
+	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
+	            "   </metadata>\n";
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
 	            "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\">\n"+
 	            "           <title>"+_this.courseDisplayTitle+"</title>\n"+
@@ -380,11 +374,8 @@ var SCORM = {
 	        manifest += '\">\n';
 	        manifest +='<metadata>\n'+
 	            '   <schema>ADL SCORM</schema>\n'+
-	            '   <schemaversion>1.2</schemaversion>\n';
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
-	        }    
-	        manifest += "   </metadata>\n";	            
+	            '   <schemaversion>1.2</schemaversion>\n'+
+	            '</metadata>\n';
 	        manifest +='<organizations default="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
 	            '   <organization identifier="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
 	            '		<title>'+_this.courseDisplayTitle+'</title>\n'+
@@ -1511,10 +1502,6 @@ var SCORM = {
 
 	    var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 
-	   	var courseAttr = _this._parseCourseAttr();
-
-	         
-
         var manifest;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
@@ -1534,20 +1521,19 @@ var SCORM = {
 	    if (_this.scormVersion === '2004_3rd' || _this.scormVersion === '2004_3rd_USSOCOM'){
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
-	            "       <schemaversion>2004 3rd Edition</schemaversion>\n";
+	            "       <schemaversion>2004 3rd Edition</schemaversion>\n"+
+	            "   </metadata>\n";
 	    }
 	    else if(_this.scormVersion === "2004_4th" || _this.scormVersion === '2004_4th_USSOCOM'){
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
-	            "       <schemaversion>2004 4th Edition</schemaversion>\n";
+	            "       <schemaversion>2004 4th Edition</schemaversion>\n"+
+	            "   </metadata>\n";
 	    }
 	    else{
 	    	// Courses currently can not be published to 1.2, probably remove else
+
 	    }
-	    if(courseAttr.lms === "NEL"){
-	    	manifest += "		<adlcp:location>course_metadata.xml</adlcp:location>\n";
-	    }  
-	    manifest += "   </metadata>\n";
         manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
             "       <organization identifier=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, ""))+"\" structure=\"hierarchical\" ";
         //set objectivesGlobalToSystem based off of course.xml file

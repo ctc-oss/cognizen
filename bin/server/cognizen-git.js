@@ -58,7 +58,10 @@ var Git = {
 
                 var command = commands.join(Utils.chainCommands());
 
-				_this.lock.runwithlock(function () {
+                _this.logger.info('Git Commit: ' + command);
+             _this.logger.info("before runwithlock _gitCommit");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Runwithlock start _gitCommit"); 
                 exec(command, {cwd: path}, function (err, stdout, stderr) {
                    
                     if (stdout) _this.logger.error('STDOUT: ' + stdout);
@@ -80,7 +83,9 @@ var Git = {
                     else {
                         success();
                     }
+                _this.logger.info("Before release _gitCommit");                
                 _this.lock.release();
+                _this.logger.info("after release _gitCommit");
             });                    
                 });
 
@@ -100,13 +105,21 @@ var Git = {
                 var exec = require('child_process').exec;
 
                 var commands = [];
+                commands.push('echo 1');
                 commands.push(Utils.rmCommand() + ' ' + _this.indexLockFile());
+                commands.push('echo 2');
                 commands.push('git add . 2>&1');
+                commands.push('echo 3');
                 commands.push('git fetch --all 2>&1');
+                commands.push('echo 4');
                 commands.push('git reset --hard origin/master 2>&1');
+                commands.push('echo 5');
 
                 var command = commands.join(Utils.chainCommands());
-	            _this.lock.runwithlock(function () {
+                _this.logger.info('Git Update: ' + command);
+            _this.logger.info("before runwithlock _gitUpdateLocal");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Runwithlock start _gitUpdateLocal"); 
                 exec(command, {cwd: path}, function (err, stdout, stderr) {
                    
                     if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
@@ -120,9 +133,12 @@ var Git = {
                         callback(stderr);
                     }
                     else {
+                        _this.logger.info('Local Git Content is up to date.');
                         callback();
                     }
+                _this.logger.info("Before release _gitUpdateLocal");                
                 _this.lock.release();
+                _this.logger.info("after release _gitUpdateLocal");
             });                      
                 });
           
@@ -246,7 +262,10 @@ var Git = {
                 commands.push('git add .');
 
                 var command = commands.join(Utils.chainCommands());
-				_this.lock.runwithlock(function () {
+                _this.logger.info('Git Fix Small Index File: ' + command);
+            _this.logger.info("before runwithlock fixSmallIndexIssue");
+            _this.lock.runwithlock(function () {
+            _this.logger.info("Start runwithlock fixSmallIndexIssue");   
                 exec(command, {cwd: path}, function (err, stdout, stderr) {
                  
                     if (stdout) _this.logger.info('Git-STDOUT: ' + stdout);
@@ -260,9 +279,12 @@ var Git = {
                         callback(stderr);
                     }
                     else {
+                        _this.logger.info('Index file removed and content readded');
                         callback();
                     }
+                _this.logger.info("Before release fixSmallIndexIssue");
                 _this.lock.release();
+                _this.logger.info("after release in fixSmallIndexIssue");
             });                     
                 });
            
