@@ -6,7 +6,7 @@ var readdirp = require('readdirp');
 var archiver = require('archiver');
 var scorm = require('./cognizen-scorm');
 var openServers = [];
-//var io;
+var io;
 /*var walk = require('walk');				///////////////////Comment before push
 var walker;								///////////////////Comment before push	
 var walkerOptions = {
@@ -17,7 +17,7 @@ var walkerOptions = {
 
 var ContentSocket = {
 	
-    start: function(port, _path, contentPath, scormPath, logger, callback) {
+    start: function(port, path, contentPath, scormPath, logger, callback) {
         var xmlContentFile = contentPath + '/xml/content.xml';
         var xmlCourseFile = contentPath + '/../course.xml';
         
@@ -43,11 +43,11 @@ var ContentSocket = {
             return;
         }
 
-         if (_path) {
-            io.set('path', '/' + _path);
+         if (path) {
+            io.set('path', '/' + path);
             io.set('log level', 1);
 //          io.set('polling duration', 600);
-            logger.info('Socket.io resource set to /' + _path);
+            logger.info('Socket.io resource set to /' + path);
         }
         else {
             logger.error('Path must be provided as an argument');
@@ -61,7 +61,7 @@ var ContentSocket = {
         
         var serverObj = new Object();
         serverObj.app = app;
-        serverObj.id = _path;
+        serverObj.id = path;
         serverObj.port = port;
         serverObj.xml = xmlContentFile;
         openServers.push(serverObj);
