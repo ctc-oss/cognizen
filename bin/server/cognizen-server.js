@@ -1,6 +1,5 @@
 var config = require('./config.json');
 var Utils = require('./cognizen-utils');
-
 var http = require('http');
 var https = require('https');
 var httpProxy = require('http-proxy');
@@ -386,7 +385,7 @@ var Content = {
     io = socketIo(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
-    }));
+    }){path: '/'+Ports.server.path});
     
     //io.set('path', '/'+Ports.server.path);
     //io.set('log level', 1);
