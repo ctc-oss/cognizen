@@ -1543,7 +1543,6 @@ var SCORM = {
 	    }
 	    else{
 	    	// Courses currently can not be published to 1.2, probably remove else
-
 	    }
 	    if(courseAttr.lms === "NEL"){
 	    	manifest += "		<adlcp:location>course_metadata.xml</adlcp:location>\n";
