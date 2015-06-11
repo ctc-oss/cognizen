@@ -756,7 +756,15 @@ var SocketHandler = {
 					        var xml = etree.write({'xml_decleration': false});
 					        fs.outputFile(newCourseXML, xml, function (err) {
 					        	if (err) callback(err, null);
-					         	callback(err);
+                                fs.copy(path.normalize('../.gitignore'), baseWritePath +'/.gitignore', function(err){
+                                    if(err){
+                                        _this.logger.error("Error copying .gitignore file " + err);
+                                        callback(err);                        
+                                    }
+                                    else{
+                                        callback(err);
+                                    }
+                                });
 					        });
 					    });
 				    });
