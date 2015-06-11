@@ -193,7 +193,7 @@ function initScripts(_data){
 	        waitSeconds: 0
 	    });
 	    
-	    require([corePath + 'js/libs/socket.io-client/socket.io.js'], function(foo){
+	    require([corePath + 'js/libs/socket.io.js'], function(foo){
 			io = foo;
 		});
 		//GATHERING AND LOADING ALL OF THE ENGINE PARTS
@@ -204,7 +204,6 @@ function initScripts(_data){
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 					corePath +"js/libs/overthrow.min.js",
-					//corePath +"js/libs/socket-client/socket.io.js", //required for edit mode.
 					ckpath,
 					ckAdapath,
 					corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers

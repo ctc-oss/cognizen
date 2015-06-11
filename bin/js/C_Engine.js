@@ -160,7 +160,7 @@ function initScripts(_data){
         waitSeconds: 0
     });
     
-    require(['js/libs/socket.io-client/socket.io.js'], function(foo){
+    require(['js/libs/socket.io.js'], function(foo){
 		io = foo;
 	})
 	

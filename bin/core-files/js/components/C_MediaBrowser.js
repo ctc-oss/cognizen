@@ -323,36 +323,6 @@ function uploadFile(_file){
 	blobStream.pipe(stream);
 }
 
-/*
-var io = require('socket.io-client');
-var ss = require('socket.io-stream');
-
-var socket = io.connect('http://example.com/user');
-var stream = ss.createStream();
-var filename = 'profile.jpg';
-var through = require('through');
-
-var compressed_data = 'some-long-string';
-var l = compressed_data .length;
-var total_progress = 0;
-
-//pass the stream trough throug, giving feedback for each chunk passed
-var tr = through(function (chunk) {
-    total_progress += chunk.toString().length;
-    client.socket.emit('progress', l, total_progress);
-    this.queue(chunk)
-}, function () {
-    client.socket.emit('progress', l, l);
-})
-
-//use the streaming version of socket.io
-ss(socket).emit('profile-image', stream, {name: filename});
-
-//get a stream for the compressed_data
-//filter it trough tr for the progress indication
-//and pass it to the socket stream
-fs.createReadStream(compressed_data ).pipe(tr).pipe(stream);*/
-
 /**
 * Node call to hit server and get list of files in the current directory
 *
