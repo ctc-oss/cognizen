@@ -267,7 +267,7 @@ var Content = {
             var idMatches = req.url.match(/\/[0-9a-f]{24}/);
 
             if (req.url.indexOf(Ports.server.path) == 0) {
-                req.url = req.url.replace('server', 'socket.io');
+                //req.url = req.url.replace('server', 'socket.io');
                 backendPort = Ports.server.port;
             }
             else if (req.url.indexOf(Ports.git.path) == 0) {
@@ -276,7 +276,7 @@ var Content = {
             }
             else if (idMatches && idMatches.length == 1) {
                 var id = idMatches[0].substring(1);
-                req.url = req.url.replace(id, 'socket.io');
+                //req.url = req.url.replace(id, 'socket.io');
                 // Lookup the content ID in the port map, and send it to that one.
                 // Pull the id out of the url by removing the first slash
                 var details = Content.serverDetails({id: id});
@@ -382,23 +382,31 @@ var Content = {
         res.redirect('/');
     });
 
-    io = socketIo(app.listen(Ports.server.port, null, null, function () {
+    io = socketIo.listen(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
     }));
     
+     io.set('resource', Ports.server.path);
     //io.set('path', '/'+Ports.server.path);
-    //io.set('log level', 1);
+    io.set('log level', 1);
 
-    if(!process.env.NODE_ENV){
-    	//io.set('connect timeout', 1000);
-        //io.set('heartbeat timeout', 5);
-        //io.set('close timeout', 25);
-	    /*io.set('transports', [
-	        'websocket',
-	        'polling'
-	    ]);*/
-    };
+    io.configure(function () {
+	    if(!process.env.NODE_ENV){
+	    	io.set('connect timeout', 1000);
+	        io.set('heartbeat timeout', 5);
+	        io.set('close timeout', 25);
+		    io.set('transports', [
+		        'websocket',
+		        'xhr-polling',
+		        'jsonp-polling',
+		        'flashsocket',
+		        'htmlfile'
+		    ]);
+	    };
+	});
+	
+	
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);
     var SocketHandler = require('./cognizen-socket-handler').init(config, logger, SocketSessions, Mail, Content, Git, io);

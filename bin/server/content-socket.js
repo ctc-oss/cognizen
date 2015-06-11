@@ -6,7 +6,7 @@ var readdirp = require('readdirp');
 var archiver = require('archiver');
 var scorm = require('./cognizen-scorm');
 var openServers = [];
-var io;
+//var io;
 /*var walk = require('walk');				///////////////////Comment before push
 var walker;								///////////////////Comment before push	
 var walkerOptions = {
@@ -34,7 +34,7 @@ var ContentSocket = {
 
         if (port) {
             app.listen(port);
-            io = require('socket.io')(app);
+            io = require('socket.io');
             logger.info('C_Server started successfully');
         }
         else {
@@ -43,9 +43,9 @@ var ContentSocket = {
             return;
         }
 
-        if (_path) {
-            //io.set('path', '/' + _path);
-            //io.set('log level', 1);
+         if (_path) {
+            io.set('resource', '/' + _path);
+            io.set('log level', 1);
 //          io.set('polling duration', 600);
             logger.info('Socket.io resource set to /' + _path);
         }
