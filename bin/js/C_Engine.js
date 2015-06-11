@@ -215,8 +215,8 @@ function isOldIE() {
 //Place all permanent items in the UI - background - title - nav
 function buildInterface(){
 
-	socket = io.connect(null, {	path: "server", 
-								'sync disconnect on unload' : true, 
+	socket = io.connect(null, {	path: "/server", 
+								//'sync disconnect on unload' : true, 
 								'connect timeout': 1000,
 								'reconnect': true,
 								'reconnection delay': 500,
