@@ -30,11 +30,11 @@ function initializeSockets(){
 					transports: ["websockets", "polling"], 
 					'sync disconnect on unload' : true, 
 					'forceNew': true, 
-					secure: secureSocket,
-					'connect timeout': 1000,
-					'reconnect': true,
-					'reconnection delay': 500,
-					'max reconnection attempts': 10
+					secure: secureSocket
+					//'connect timeout': 1000,
+					//'reconnect': true,
+					//'reconnection delay': 500,
+					//'max reconnection attempts': 10
 				});
 	                             
 	    cognizenSocket.emit('userPermissionForContent', {
@@ -247,11 +247,11 @@ function initializeSockets(){
 						transports: ["websockets", "polling"], 
 						'sync disconnect on unload' : true, 
 						'forceNew': true, 
-						secure: secureSocket,
-						'connect timeout': 1000,
-						'reconnect': true,
-						'reconnection delay': 500,
-						'max reconnection attempts': 10
+						secure: secureSocket
+						//'connect timeout': 1000,
+						//'reconnect': true,
+						//'reconnection delay': 500,
+						//'max reconnection attempts': 10
 					});
 		console.log("socket = ");
 		console.log(socket);
