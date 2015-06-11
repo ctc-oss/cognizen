@@ -387,6 +387,7 @@ var Content = {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
     }));
+    
     //io.set('path', '/'+Ports.server.path);
     //io.set('log level', 1);
 
