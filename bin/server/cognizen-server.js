@@ -7,11 +7,10 @@ var httpProxy = require('http-proxy');
 var path = require("path");
 var et = require('elementtree');
 var express = require('express');
-var session = require('express-session');
+var session = require('express-session')
 var cookie = require("cookie");
 var connect = require("connect");
 var cookieParser = require("cookie-parser");
-var cookieParser = require('cookie-parser');
 var socketIo = require('socket.io');
 
 var fs = require('fs-extra');
@@ -384,21 +383,21 @@ var Content = {
         res.redirect('/');
     });
 
-    io = socketIo.listen(app.listen(Ports.server.port, null, null, function () {
+    io = socketIo(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
-    }));
-    io.set('path', '/'+Ports.server.path);
-    io.set('log level', 1);
+    }), { pingTimeout: 60000});
+    //io.set('path', '/'+Ports.server.path);
+    //io.set('log level', 1);
 
     if(!process.env.NODE_ENV){
-    	io.set('connect timeout', 1000);
+    	//io.set('connect timeout', 1000);
         //io.set('heartbeat timeout', 5);
         //io.set('close timeout', 25);
-	    io.set('transports', [
+	    /*io.set('transports', [
 	        'websocket',
 	        'polling'
-	    ]);
+	    ]);*/
     };
 
     var Git = require('./cognizen-git').init(logger, Ports, Content);

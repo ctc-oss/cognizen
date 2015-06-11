@@ -262,13 +262,11 @@ function addDisplay(){
 function FileDragHover(e){
 	e.preventDefault();
     e.stopPropagation();
-	e.addClass("hover");
 }
 
 function FileDragLeave(e){
 	e.preventDefault();
     e.stopPropagation();
-	e.removeClass("hover");
 }
 
 // file selection
@@ -314,9 +312,9 @@ function uploadFile(_file){
 	$("#uploadProgress > div").css({ 'background': '#3383bb'});
 	
 	var file = _file;
-	var stream = ss.createStream();
+	var stream = ss.createStream({hightWaterMark: 16 * 1024});
 	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
-	var blobStream = ss.createBlobReadStream(file);
+	var blobStream = ss.createBlobReadStream(file, {hightWaterMark: 16 * 1024});
 	var size = 0;
 	blobStream.on('data', function(chunk) {
 		size += chunk.length;

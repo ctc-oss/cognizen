@@ -24,19 +24,18 @@ var activeEditor;
 function initializeSockets(){
 	if(mode != "prod" && mode != "production"){
 	    urlParams = queryStringParameters();
-		//if we are in edit or review mode establish a socket to the server.
-	    //Add a check for IE < 10...
-	    //cognizenSocket = (xhr) ? io.connect({resource: 'server', transports: ["websockets", "polling"], /*'sync disconnect on unload' : true,*/ 'forceNew': true, secure: secureSocket, 'connect timeout': 1000}) :
-	                             //io.connect({resource: "server", /*'sync disconnect on unload' : true,*/ 'forceNew': true, 'connect timeout': 1000});    					  
-	   
-	    cognizenSocket = io.connect({
+		//if we are in edit or review mode establish a socket to the server 					  
+	   cognizenSocket = io.connect({
 					path: '/server', 
-							//transports: ["websockets", "polling"], 
+					transports: ["websockets", "polling"], 
 					'sync disconnect on unload' : true, 
-					'forceNew': true 
-							//secure: secureSocket,
-							//'connect timeout': 1000
-					});
+					'forceNew': true, 
+					secure: secureSocket,
+					'connect timeout': 1000,
+					'reconnect': true,
+					'reconnection delay': 500,
+					'max reconnection attempts': 10
+				});
 	                             
 	    cognizenSocket.emit('userPermissionForContent', {
         	content: {type: urlParams['type'], id: urlParams['id']},
@@ -243,20 +242,19 @@ function initializeSockets(){
 	    //used in C_VisualMediaHolder.js, C_NavControl.js and C_AudioHolder.js
 	    siofu = new SocketIOFileUpload(cognizenSocket);   
 
-		//socket = (xhr) ? io.connect(null, {resource: urlParams['id'], transports: ["websockets", "xhr-polling"], 'forceNew': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000}) :
-                         //io.connect(null, {resource: urlParams['id'], 'forceNew': true, 'sync disconnect on unload' : true, secure: secureSocket, 'connect timeout': 1000});
         socket = io.connect({
 						path: '/'+urlParams['id'], 
-						//transports: ["websockets", "polling"], 
+						transports: ["websockets", "polling"], 
 						'sync disconnect on unload' : true, 
-						'forceNew': true 
-						//secure: secureSocket,
-						//'connect timeout': 1000
+						'forceNew': true, 
+						secure: secureSocket,
+						'connect timeout': 1000,
+						'reconnect': true,
+						'reconnection delay': 500,
+						'max reconnection attempts': 10
 					});
 		console.log("socket = ");
 		console.log(socket);
-		console.log("io = ");
-		console.log(io);
 		
 		socket.on('siofu_progress', function (data) {
             //console.log('progress data: ' + data);
