@@ -28,7 +28,7 @@ function initializeSockets(){
 	   cognizenSocket = io.connect({
 					path: '/server', 
 					transports: ["websockets", "polling"], 
-					'sync disconnect on unload' : true, 
+					//'sync disconnect on unload' : true, 
 					'forceNew': true, 
 					secure: secureSocket
 					//'connect timeout': 1000,
@@ -245,7 +245,7 @@ function initializeSockets(){
         socket = io.connect({
 						path: '/'+urlParams['id'], 
 						transports: ["websockets", "polling"], 
-						'sync disconnect on unload' : true, 
+						//'sync disconnect on unload' : true, 
 						'forceNew': true, 
 						secure: secureSocket
 						//'connect timeout': 1000,
