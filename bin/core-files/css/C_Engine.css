@@ -2550,7 +2550,7 @@ ESSAY COMPARE LAYOUTS
 }
 
 #indexContent{
-	overflow: scroll;
+	overflow: auto;
 	left:0px;
 	top:0px;
 	width: 400px;
