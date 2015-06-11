@@ -385,7 +385,7 @@ var Content = {
     io = socketIo(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
-    }){path: '/'+Ports.server.path});
+    }),{path: '/'+Ports.server.path});
     
     //io.set('path', '/'+Ports.server.path);
     //io.set('log level', 1);
