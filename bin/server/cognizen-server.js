@@ -386,7 +386,7 @@ var Content = {
     io = socketIo(app.listen(Ports.server.port, null, null, function () {
         logger.info(Ports.server.port);
         logger.info('Cognizen Server Started');
-    }), { pingTimeout: 60000});
+    }), { pingTimeout: 10000});
     //io.set('path', '/'+Ports.server.path);
     //io.set('log level', 1);
 
