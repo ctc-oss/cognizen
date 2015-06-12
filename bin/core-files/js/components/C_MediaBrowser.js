@@ -312,9 +312,9 @@ function uploadFile(_file){
 	$("#uploadProgress > div").css({ 'background': '#3383bb'});
 	
 	var file = _file;
-	var stream = ss.createStream({hightWaterMark: 16 * 1024});
+	var stream = ss.createStream();
 	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
-	var blobStream = ss.createBlobReadStream(file, {hightWaterMark: 16 * 1024});
+	var blobStream = ss.createBlobReadStream(file);
 	var size = 0;
 	blobStream.on('data', function(chunk) {
 		size += chunk.length;
