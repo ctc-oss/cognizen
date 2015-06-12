@@ -10,7 +10,8 @@ var REDMINE = {
         var config = {
             host: Host,
             apiKey: ApiKey,
-            protocol: Protocol
+            protocol: Protocol//,
+            //sslCaCert: 'C:\\TEMP\\server.13.redmine.pem'
         };
         this.promisedAPI = new promised(config);
         console.log("In cognizen-redmine");
@@ -25,18 +26,18 @@ var REDMINE = {
         //         return;
         //     }
         // ); 
-        // this.promisedAPI.getUsers()
-        //     .then(function(data){
-        //         console.log(data);
-        //         console.log(data.total_count);
-        //         console.log(data.users);
-        //         console.log(data.users.length);
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //         return;
-        //     }
-        // );   
+        this.promisedAPI.getUsers()
+            .then(function(data){
+                console.log(data);
+                console.log(data.total_count);
+                console.log(data.users);
+                console.log(data.users.length);
+            },
+            function(err) {
+                console.log("Error: " + err.message);
+                return;
+            }
+        );   
   //      var user = {
 		// 	login: "shuie28@gmail.com", 
 		// 	firstname: "Luke",
