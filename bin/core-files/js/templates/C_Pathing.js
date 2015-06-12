@@ -908,20 +908,25 @@ function C_Pathing(_type) {
 					msg += "<input id='optionActive"+i+"' type='checkbox' name='optionActive"+i+"' class='radio' title='Activate image button.'/>";
 					msg += "<label for='optionImg' id='optionImgLabel"+ i + "' style='display:none' data='"+i+"'><b>Image: </b></label>";
 					msg += "<input type='text' name='optionImg' id='optionImg"+ i + "' title='Image to be used for button.' value='"+ optionImage + "' data='"+i+"' class='dialogInput' style='width:250px;display:none'/>";
+					msg += "<button id='browseMB" + i + "' style='display:none;'>browse</button>";
 					msg += "</div>";
 				$("#editBranchOptionHolder").append(msg);
 				
-
 				if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("active") === "true"){
 					$('#optionActive'+i).prop('checked', true);
 					$('#optionImg'+i).toggle();
 					$('#optionImgLabel'+i).toggle();
 					$('#optionAlt'+i).toggle();
-					$('#optionAltLabel'+i).toggle();					
+					$('#optionAltLabel'+i).toggle();
+					$("#browseMB" + i).toggle();
+					$("#browseMB" + i).click(function(){
+						$(".ui-dialog").hide();
+						$(".ui-widget-overlay").hide();
+						dialogToggleMediaBrowser($("#optionImg" + i));					
+					});					
 				}
 				var activeString = 'optionActive'+i;
 				$('#'+activeString).change(toggle_handler(i));				
-
 			}
 
 			//add path button
@@ -1155,6 +1160,12 @@ function C_Pathing(_type) {
 	        $('#optionImgLabel'+j).toggle();
 	        $('#optionAlt'+j).toggle();
 	        $('#optionAltLabel'+j).toggle();
+	        $("#browseMB" + j).toggle();
+			$("#browseMB" + j).click(function(){
+				$(".ui-dialog").hide();
+				$(".ui-widget-overlay").hide();
+				dialogToggleMediaBrowser($("#optionImg" + j));					
+			});
 	    };
 	}
 	
