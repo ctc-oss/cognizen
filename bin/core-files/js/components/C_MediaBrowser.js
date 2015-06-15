@@ -89,6 +89,8 @@ var currentSelectedTrack;
 var queue;
 var queueLength;
 var queueCurrent = 0;
+var fromDialog = false;
+var fileTarget = null;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -107,9 +109,6 @@ function addMediaBrowser(){
 	    }
     });															
 }
-
-var fromDialog = false;
-var fileTarget = null;
 
 //function dialogToggleMediaBrowser(){
 this.dialogToggleMediaBrowser = function(_target){
@@ -353,32 +352,43 @@ function updateMediaBrowserDir(_data){
 	$("#mediaBrowserDisplayPath").text(mediaBrowserDisplayPath);
 	var res = mediaBrowserDisplayPath.split("/");
 	//Add "up a directory" (../media) button if needed.
-	if(res[res.length-2] != "media" && res[res.length-2] != "core-prog" && res[res.length-2] != "CourseCSS"){
-		if(res[res.length-2] == "css" && folderTrack != "lesson"){
-			$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
-			
-			$("#mediaBrowserUpDirectory").click(function(){
-			   $("#mediaBrowserList").empty();
-			   //update the path display string
-			   var tempString_arr = mediaBrowserDisplayPath.split("/");
-			   tempString_arr.pop();
-			   tempString_arr.pop();
-			   mediaBrowserDisplayPath = "";
-			   for(var i = 0; i < tempString_arr.length; i++){
-				   mediaBrowserDisplayPath += tempString_arr[i] + "/";
-			   }
-			   //rewrite the relative path
-			   var tempRel = relPath.split("/");
-			   tempRel.pop();
-			   tempRel.pop();
-			   relPath = "";
-			   for(var j = 0; j < tempRel.length; j++){
-				   relPath += tempRel[j] + "/";
-			   }
-			   //Load the new path
-			   getMediaDir(relPath);
-		   });
-		}
+	var directoryUp = true;
+	
+	//Define when NOT to show ../folder
+	if(res[res.length-2] == "media" && folderTrack == "media"){
+		directoryUp = false;
+	}else if(res[res.length-2] == "core-prog"){
+		directoryUp = false;
+	}else if(res[res.length-2] == "CourseCSS"){
+		directoryUp = false;
+	}else if(res[res.length-3] == undefined){
+		directoryUp = false;
+	}
+	
+	if(directoryUp){
+		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
+		
+		$("#mediaBrowserUpDirectory").click(function(){
+		   $("#mediaBrowserList").empty();
+		   //update the path display string
+		   var tempString_arr = mediaBrowserDisplayPath.split("/");
+		   tempString_arr.pop();
+		   tempString_arr.pop();
+		   mediaBrowserDisplayPath = "";
+		   for(var i = 0; i < tempString_arr.length; i++){
+			   mediaBrowserDisplayPath += tempString_arr[i] + "/";
+		   }
+		   //rewrite the relative path
+		   var tempRel = relPath.split("/");
+		   tempRel.pop();
+		   tempRel.pop();
+		   relPath = "";
+		   for(var j = 0; j < tempRel.length; j++){
+			   relPath += tempRel[j] + "/";
+		   }
+		   //Load the new path
+		   getMediaDir(relPath);
+	   });
 	}
 	
 	//Add directories
