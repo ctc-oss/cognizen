@@ -28,11 +28,15 @@ function C_PageTitle(_id){
 					}
 					enableNext();
 					enableBack();
+					$('.btn_branch').attr('aria-disabled', 'false');
+					$('.btn_branch').button('option', 'disabled', false);						
 				},
 				focus: function(event){
 					cachedTextPreEdit = event.editor.getData();
 					disableNext();
 					disableBack();
+					$('.btn_branch').attr('aria-disabled', 'true');
+					$('.btn_branch').button('option', 'disabled', true);					
 				}
 			},
 			toolbar: pageTitleToolbar,
