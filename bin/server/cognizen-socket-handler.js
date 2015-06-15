@@ -295,7 +295,9 @@ var SocketHandler = {
 				var type = data.type;
                 var id = data.id;
                 var contentType = _this.Content.objectType(type);
-				
+				_this.logger.info("type = " + data.type);
+				_this.logger.info("id = " + data.id);
+				_this.logger.info("contentType = " + contentType);
                 if (contentType) {
                     contentType.findById(id, function (err, found) {
                         if (found) {
@@ -382,6 +384,8 @@ var SocketHandler = {
 	                             _this.logger.info("No conversion needed----------------------------------------------------");
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
+	                            _this.logger.info("filename = " + filename);
+	                            _this.logger.info("contentPath = " + contentPath);
 	                            var had_error = false;
 	                            stream.on('error', function(err){
 	                                had_error = true;
@@ -390,7 +394,9 @@ var SocketHandler = {
 	                            stream.on('close', function(){
 		                            //Remove item from tmp folder after moving it over.
 	                                if (!had_error) fs.unlink(filename);
+	                                _this.logger.info
 	                                _this._socket.emit('mediaBrowserUploadComplete', contentPath);
+	                                _this.logger.info('mediaBrowserUploadComplete');
 	                            });
                             }
 						}
