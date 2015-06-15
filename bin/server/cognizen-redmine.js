@@ -26,18 +26,18 @@ var REDMINE = {
         //         return;
         //     }
         // ); 
-        this.promisedAPI.getUsers()
-            .then(function(data){
-                console.log(data);
-                console.log(data.total_count);
-                console.log(data.users);
-                console.log(data.users.length);
-            },
-            function(err) {
-                console.log("Error: " + err.message);
-                return;
-            }
-        );   
+        // this.promisedAPI.getUsers()
+        //     .then(function(data){
+        //         console.log(data);
+        //         console.log(data.total_count);
+        //         console.log(data.users);
+        //         console.log(data.users.length);
+        //     },
+        //     function(err) {
+        //         console.log("Error: " + err.message);
+        //         return;
+        //     }
+        // );   
   //      var user = {
 		// 	login: "shuie28@gmail.com", 
 		// 	firstname: "Luke",
@@ -376,8 +376,9 @@ var REDMINE = {
                                         ],
                                     status_id: Comment.status,
                                     assigned_to_id: Comment.assigned_to_id   
-                                };            
-                                _this.promisedAPI.postIssue(issue, Comment.user.username)
+                                }; 
+                                var params = {impersonate: Comment.user.username};           
+                                _this.promisedAPI.postIssue(issue, params)
                                     .error(function(err){
                                         _this.logger.error("Error: " + err.message);
                                         callback(err);
@@ -454,7 +455,8 @@ var REDMINE = {
     },
     updateIssue: function(Issue, username, callback){
        var _this = this;
-        _this.promisedAPI.updateIssue(Issue.id, Issue, username)
+       var params = {impersonate: username};  
+        _this.promisedAPI.updateIssue(Issue.id, Issue, params)
             .error(function(err){
                 callback(err);
             })
