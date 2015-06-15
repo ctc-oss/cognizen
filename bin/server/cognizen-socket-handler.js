@@ -284,7 +284,7 @@ var SocketHandler = {
             }
         });
         
-        ss(this._socket).on('upload-media', function(stream, data){
+        ss(_this._socket).on('upload-media', function(stream, data){
 			var cleanName = data.name.replace(/ /g,"_");
 			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));
