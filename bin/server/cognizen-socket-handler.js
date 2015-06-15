@@ -394,7 +394,7 @@ var SocketHandler = {
 	                            stream.on('close', function(){
 		                            //Remove item from tmp folder after moving it over.
 	                                if (!had_error) fs.unlink(filename);
-	                                _this.logger.info("removing file")
+	                                _this.logger.info("removing file");
 	                                _this._socket.emit('mediaBrowserUploadComplete', contentPath);
 	                                _this.logger.info('mediaBrowserUploadComplete');
 	                            });

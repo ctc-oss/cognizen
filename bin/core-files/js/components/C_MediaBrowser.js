@@ -794,7 +794,7 @@ function mediaBrowserConversionProgress(data){
 * @param {object} data regarding converted file.
 */
 function mediaBrowserUploadComplete(data){
-	console.log("mediaBrowserUploadComplete");
+	alert("mediaBrowserUploadComplete");
 	console.log(data);
 	$("#C_Loader").remove();
 	doGitCommit();
@@ -806,8 +806,6 @@ function mediaBrowserUploadComplete(data){
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
 		mediaBrowserPreviewFile(mediaPath);
-		//Commit GIT when complete.
-		//doGitCommit();
 	    getMediaDir(relPath);
 	}else{
 		//Load next item
