@@ -318,7 +318,7 @@ var SocketHandler = {
                             var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                             var archiveTypes = ["zip"];
                             if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                _this._socket.emit("mediaBrowserConversionStart----------------------------------------------------");
+                                _this.logger.info("mediaBrowserConversionStart----------------------------------------------------");
                                 //Convert files
                                 var convertedFileName;
                                 var convertedPathName;
@@ -379,7 +379,7 @@ var SocketHandler = {
 									})
 								});
                             }else{
-	                             _this._socket.emit("No conversion needed----------------------------------------------------");
+	                             _this.logger.info("No conversion needed----------------------------------------------------");
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
 	                            var had_error = false;
