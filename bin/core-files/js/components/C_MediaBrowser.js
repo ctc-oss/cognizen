@@ -784,6 +784,8 @@ function mediaBrowserConversionProgress(data){
 * @param {object} data regarding converted file.
 */
 function mediaBrowserUploadComplete(data){
+	console.log("mediaBrowserUploadComplete");
+	console.log(data);
 	$("#C_Loader").remove();
 	doGitCommit();
 	queueCurrent++;
