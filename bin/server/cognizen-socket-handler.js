@@ -291,6 +291,7 @@ var SocketHandler = {
 			
 			//Complete upload callback
 			mediaStream.on('close', function(){
+				_this.logger.info("upload completed-----------------------------------------------------");
 				var type = data.type;
                 var id = data.id;
                 var contentType = _this.Content.objectType(type);
@@ -317,7 +318,7 @@ var SocketHandler = {
                             var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                             var archiveTypes = ["zip"];
                             if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                _this._socket.emit("mediaBrowserConversionStart");
+                                _this._socket.emit("mediaBrowserConversionStart----------------------------------------------------");
                                 //Convert files
                                 var convertedFileName;
                                 var convertedPathName;
@@ -378,6 +379,7 @@ var SocketHandler = {
 									})
 								});
                             }else{
+	                             _this._socket.emit("No conversion needed----------------------------------------------------");
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
 	                            var had_error = false;
