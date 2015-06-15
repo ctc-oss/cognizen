@@ -284,7 +284,7 @@ var SocketHandler = {
             }
         });
         
-        ss(this._socket).on('upload-media', function(stream, data){
+        ss(_this._socket).on('upload-media', function(stream, data){
 			var cleanName = data.name.replace(/ /g,"_");
 			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));
@@ -394,7 +394,7 @@ var SocketHandler = {
 	                            stream.on('close', function(){
 		                            //Remove item from tmp folder after moving it over.
 	                                if (!had_error) fs.unlink(filename);
-	                                _this.logger.info("removing file")
+	                                _this.logger.info("removing file");
 	                                _this._socket.emit('mediaBrowserUploadComplete', contentPath);
 	                                _this.logger.info('mediaBrowserUploadComplete');
 	                            });
