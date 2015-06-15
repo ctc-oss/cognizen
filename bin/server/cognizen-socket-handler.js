@@ -291,10 +291,13 @@ var SocketHandler = {
 			
 			//Complete upload callback
 			mediaStream.on('close', function(){
+				_this.logger.info("upload completed-----------------------------------------------------");
 				var type = data.type;
                 var id = data.id;
                 var contentType = _this.Content.objectType(type);
-				
+				_this.logger.info("type = " + data.type);
+				_this.logger.info("id = " + data.id);
+				_this.logger.info("contentType = " + contentType);
                 if (contentType) {
                     contentType.findById(id, function (err, found) {
                         if (found) {
@@ -317,7 +320,7 @@ var SocketHandler = {
                             var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
                             var archiveTypes = ["zip"];
                             if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                _this._socket.emit("mediaBrowserConversionStart");
+                                _this.logger.info("mediaBrowserConversionStart----------------------------------------------------");
                                 //Convert files
                                 var convertedFileName;
                                 var convertedPathName;
@@ -378,8 +381,11 @@ var SocketHandler = {
 									})
 								});
                             }else{
+	                             _this.logger.info("No conversion needed----------------------------------------------------");
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
+	                            _this.logger.info("filename = " + filename);
+	                            _this.logger.info("contentPath = " + contentPath);
 	                            var had_error = false;
 	                            stream.on('error', function(err){
 	                                had_error = true;
@@ -388,7 +394,9 @@ var SocketHandler = {
 	                            stream.on('close', function(){
 		                            //Remove item from tmp folder after moving it over.
 	                                if (!had_error) fs.unlink(filename);
+	                                _this.logger.info("removing file")
 	                                _this._socket.emit('mediaBrowserUploadComplete', contentPath);
+	                                _this.logger.info('mediaBrowserUploadComplete');
 	                            });
                             }
 						}
