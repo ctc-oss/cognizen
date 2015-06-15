@@ -251,7 +251,7 @@ function addDisplay(){
 	$('#file').change(function(e) {
 		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
-
+		try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener in file deal"); } catch (e) {alert("big problem man")}
     	queueFileUpload(e.target.files);
 	});
 	
@@ -795,11 +795,10 @@ function mediaBrowserConversionProgress(data){
 */
 function mediaBrowserUploadComplete(data){
 	alert("mediaBrowserUploadComplete");
-	console.log(data);
 	$("#C_Loader").remove();
 	doGitCommit();
 	queueCurrent++;
-	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener"); } catch (e) {alert("big problem man")}
 	if(queueLength == queueCurrent){
 		//queue complete
 		var splitPath = data.replace(/\\/g, '/').split("/");
