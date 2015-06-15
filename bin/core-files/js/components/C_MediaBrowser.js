@@ -107,7 +107,12 @@ function addMediaBrowser(){
         if (chCode == 32 || chCode == 13){
 	        $(this).click();
 	    }
-    });															
+    });	
+    
+    cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
+	cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+	cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
+	cognizenSocket.on('mediaInfo', mediaInfo);														
 }
 
 //function dialogToggleMediaBrowser(){
@@ -249,9 +254,9 @@ function addDisplay(){
 	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
 	
 	$('#file').change(function(e) {
-		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
-		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
-		try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener in file deal"); } catch (e) {alert("big problem man")}
+		//try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
+		//try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
+		//try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener in file deal"); } catch (e) {alert("big problem man")}
     	queueFileUpload(e.target.files);
 	});
 	
@@ -294,8 +299,7 @@ function queueFileUpload(_fl){
 * @param _files File to be uploaded.
 */
 function uploadFile(_file){
-	cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
-	cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+	
 	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content:<br/><strong>name: </strong>" + _file.name+ "<br/><strong>size:</strong> "+ _file.size + "<br/><strong>type:</strong> "+_file.type+"</div></div>");
 	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
 	$("#uploadProgress").progressbar({
@@ -566,7 +570,7 @@ function checkRemoveMedia(_file){
 * @param _file {Boolean} path to file to remove
 */
 function removeMedia(_file){
-	cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
+	//cognizenSocket.on('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete);
 	$("#mediaBrowserList").addClass('C_Loader');
 	$("#mediaBrowserList").empty();
 	$("#mediaBrowserPreviewMediaHolder").empty();
@@ -581,7 +585,7 @@ function removeMedia(_file){
 */
 function mediaBrowserRemoveMediaComplete(){
 	$("#mediaBrowserList").removeClass('C_Loader');
-	try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
+	//try { cognizenSocket.removeListener('mediaBrowserRemoveMediaComplete', mediaBrowserRemoveMediaComplete); } catch (e) {}
 	//Commit GIT when complete.
 	doGitCommit();
     getMediaDir(relPath);
@@ -773,8 +777,8 @@ function mediaBrowserConversionStart(data){
 
 	$("#conversionProgress > div").css({ 'background': '#3383bb'});
 
-	cognizenSocket.on('mediaBrowserConversionProgress', mediaBrowserConversionProgress);
-	cognizenSocket.on('mediaInfo', mediaInfo);
+	//cognizenSocket.on('mediaBrowserConversionProgress', mediaBrowserConversionProgress);
+	//cognizenSocket.on('mediaInfo', mediaInfo);
 }
 
 /**
@@ -798,7 +802,7 @@ function mediaBrowserUploadComplete(data){
 	$("#C_Loader").remove();
 	doGitCommit();
 	queueCurrent++;
-	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener"); } catch (e) {alert("big problem man")}
+	//try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener"); } catch (e) {alert("big problem man")}
 	if(queueLength == queueCurrent){
 		//queue complete
 		var splitPath = data.replace(/\\/g, '/').split("/");
