@@ -251,7 +251,7 @@ function addDisplay(){
 	$('#file').change(function(e) {
 		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
-		try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener in file deal"); } catch (e) {alert("big problem man")}
+		try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete);} catch (e) {}
     	queueFileUpload(e.target.files);
 	});
 	
@@ -794,11 +794,10 @@ function mediaBrowserConversionProgress(data){
 * @param {object} data regarding converted file.
 */
 function mediaBrowserUploadComplete(data){
-	alert("mediaBrowserUploadComplete");
 	$("#C_Loader").remove();
 	doGitCommit();
 	queueCurrent++;
-	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); alert("removing listener"); } catch (e) {alert("big problem man")}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete);} catch (e) {}
 	if(queueLength == queueCurrent){
 		//queue complete
 		var splitPath = data.replace(/\\/g, '/').split("/");
