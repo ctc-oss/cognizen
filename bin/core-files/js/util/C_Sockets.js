@@ -44,7 +44,7 @@ function initializeSockets(){
         	content: {type: urlParams['type'], id: urlParams['id']},
 			user: {id: urlParams['u']}
         });
-
+        
 	    cognizenSocket.on("contentPermissionFound", function(data){
 			if(data.permission == "admin" || data.permission == "editor"){
 				mode = "edit";
@@ -259,16 +259,12 @@ function initializeSockets(){
 						//'reconnection delay': 500,
 						//'max reconnection attempts': 10
 					});*/
-		console.log("socket = ");
-		console.log(socket);
-		
 		socket.on('siofu_progress', function (data) {
             //console.log('progress data: ' + data);
 		});
 		
 		socket.on('onConnect', function(data){
-			console.log("socket onConnect with data =")
-			console.log(data);
+			
 		});
 		
 		socket.on('pushUpdateCourseXMLWithRefreshComplete', function(){

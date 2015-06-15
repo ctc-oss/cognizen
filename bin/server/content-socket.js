@@ -83,7 +83,6 @@ var ContentSocket = {
 				fs.outputFile(xmlCourseFile, data.my, function(err) {
 					//Refresh the index if successfully updating the content.xml
                     if(err == null){
-                        logger.debug("successfully updated course.xml - sending refresh ----------------------------------------------------------------------------");
                         socket.emit('updateCourseXMLWithRefreshComplete');
                         socket.broadcast.emit('pushUpdateCourseXMLWithRefreshComplete'); //Updates other connected clients
                     }else{
@@ -165,7 +164,6 @@ var ContentSocket = {
                     
                     //Refresh the index if successfully updating the content.xml
                     if(err == null){
-                        logger.debug("successfully updated content.xml - sending refresh ----------------------------------------------------------------------------");
                         socket.emit('updateXMLWithRefreshComplete');
                         socket.broadcast.emit('pushUpdateXMLWithRefreshComplete'); //Updates other connected clients
                     }else{

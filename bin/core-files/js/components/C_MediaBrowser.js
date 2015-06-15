@@ -89,8 +89,6 @@ var currentSelectedTrack;
 var queue;
 var queueLength;
 var queueCurrent = 0;
-var fromDialog = false;
-var fileTarget = null;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
 *
@@ -109,6 +107,9 @@ function addMediaBrowser(){
 	    }
     });															
 }
+
+var fromDialog = false;
+var fileTarget = null;
 
 //function dialogToggleMediaBrowser(){
 this.dialogToggleMediaBrowser = function(_target){
@@ -251,7 +252,7 @@ function addDisplay(){
 	$('#file').change(function(e) {
 		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
-		try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete);} catch (e) {}
+
     	queueFileUpload(e.target.files);
 	});
 	
@@ -311,9 +312,9 @@ function uploadFile(_file){
 	$("#uploadProgress > div").css({ 'background': '#3383bb'});
 	
 	var file = _file;
-	var stream = ss.createStream();
+	var stream = ss.createStream(/* {hightWaterMark: 16 * 1024} */);
 	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
-	var blobStream = ss.createBlobReadStream(file);
+	var blobStream = ss.createBlobReadStream(file/* , {hightWaterMark: 16 * 1024} */);
 	var size = 0;
 	blobStream.on('data', function(chunk) {
 		size += chunk.length;
@@ -366,7 +367,8 @@ function updateMediaBrowserDir(_data){
 	}
 	
 	if(directoryUp){
-		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+res[res.length-3]+"'>../"+res[res.length-3]+"</div>");
+		var myLabel = res[res.length-3];
+		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+myLabel+"'>../"+myLabel+"</div>");
 		
 		$("#mediaBrowserUpDirectory").click(function(){
 		   $("#mediaBrowserList").empty();
@@ -492,7 +494,7 @@ function showItemStats(){
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0 || fileTarget.attr("id").indexOf("optionImg") >= 0){
+			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
@@ -797,13 +799,15 @@ function mediaBrowserUploadComplete(data){
 	$("#C_Loader").remove();
 	doGitCommit();
 	queueCurrent++;
-	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete);} catch (e) {}
+	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	if(queueLength == queueCurrent){
 		//queue complete
 		var splitPath = data.replace(/\\/g, '/').split("/");
 		var last = splitPath.length;
 		var mediaPath = splitPath[last-1];
 		mediaBrowserPreviewFile(mediaPath);
+		//Commit GIT when complete.
+		//doGitCommit();
 	    getMediaDir(relPath);
 	}else{
 		//Load next item
@@ -822,7 +826,6 @@ function mediaInfo(data){
 		var splitDim = data.video_details[2].split("x");
 		var mediaWidth = splitDim[0];
 		var mediaHeight = splitDim[1];
-		console.log(data);
 	}
 }
 
