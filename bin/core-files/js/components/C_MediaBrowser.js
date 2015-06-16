@@ -490,17 +490,11 @@ function showItemStats(){
 		var myType = getFileType(obj).toLowerCase();
 		var permitted = true;
 		var failType = null;
+		
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
-			var chromeString = fileTarget.selector.toString();
-			console.log(chromeString);
-			console.log(typeof chromeString);
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "mediaLink"
-			|| chromeString.indexOf("optionImg") >= 0 
-			|| fileTarget.attr("id").indexOf("imgPath") >= 0 
-			|| fileTarget.attr("id").indexOf("optionImg") >= 0
-			){
+			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0 || fileTarget.attr("id").indexOf("optionImg") >= 0){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
@@ -515,7 +509,7 @@ function showItemStats(){
 			}
 			
 			if(permitted){
-				$(chromeString).attr('value', myItem);
+				fileTarget.attr('value', myItem);
 				$(".ui-dialog").show();
 				$(".ui-widget-overlay").show();
 				toggleMediaBrowser();
