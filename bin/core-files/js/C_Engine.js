@@ -472,7 +472,6 @@ function sendUpdateWithRefresh(_type){
 	connected = socket.socket.connected;
 	
 	if(connected){
-		console.log("says I'm connected....");
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
 		var myData = $(data);
