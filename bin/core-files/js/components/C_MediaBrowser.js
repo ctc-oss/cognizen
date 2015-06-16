@@ -515,7 +515,7 @@ function showItemStats(){
 			}
 			
 			if(permitted){
-				fileTarget.attr('value', myItem);
+				$(chromeString).attr('value', myItem);
 				$(".ui-dialog").show();
 				$(".ui-widget-overlay").show();
 				toggleMediaBrowser();
