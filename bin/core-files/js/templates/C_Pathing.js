@@ -911,18 +911,20 @@ function C_Pathing(_type) {
 					msg += "<button id='browseMB" + i + "' style='display:none;'>browse</button>";
 					msg += "</div>";
 				$("#editBranchOptionHolder").append(msg);
-				
+				console.log("#browseMB" + i);
+				var tmpID = "#browseMB" + i;
+				var tmpIMG = "#optionImg" + i;
 				if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("active") === "true"){
 					$('#optionActive'+i).prop('checked', true);
 					$('#optionImg'+i).toggle();
 					$('#optionImgLabel'+i).toggle();
 					$('#optionAlt'+i).toggle();
 					$('#optionAltLabel'+i).toggle();
-					$("#browseMB" + i).toggle();
-					$("#browseMB" + i).click(function(){
+					$(tmpID).toggle();
+					$(tmpID).click(function(){
 						$(".ui-dialog").hide();
 						$(".ui-widget-overlay").hide();
-						dialogToggleMediaBrowser($("#optionImg" + i));					
+						dialogToggleMediaBrowser($(tmpIMG));					
 					});					
 				}
 				var activeString = 'optionActive'+i;
