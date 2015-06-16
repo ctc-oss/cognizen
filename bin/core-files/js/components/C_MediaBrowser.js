@@ -494,7 +494,7 @@ function showItemStats(){
 		if(fileTarget != null){
 			var chromeString = fileTarget.selector.toString();
 			console.log(chromeString);
-			console.log(chromeString.type);
+			console.log(typeof chromeString);
 			//Check if file is permitted in this input.
 			if(fileTarget.attr("id") == "mediaLink" 
 			|| fileTarget.attr("id").indexOf("imgPath") >= 0 
