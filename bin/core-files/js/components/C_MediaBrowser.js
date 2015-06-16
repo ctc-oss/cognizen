@@ -497,7 +497,10 @@ function showItemStats(){
 			console.log(fileTarget.selector);
 			console.log(fileTarget.attr("selector"));
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0 || fileTarget.attr("id").indexOf("optionImg") >= 0){
+			if(fileTarget.attr("id") == "mediaLink" 
+			|| fileTarget.attr("id").indexOf("imgPath") >= 0 
+			|| fileTarget.attr("id").indexOf("optionImg") >= 0
+			|| fileTarget.selector.indexOf("optionImg") >= 0){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
