@@ -490,9 +490,10 @@ function showItemStats(){
 		var myType = getFileType(obj).toLowerCase();
 		var permitted = true;
 		var failType = null;
-		
+		console.log(fileTarget);
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
+			console.log(fileTarget);
 			//Check if file is permitted in this input.
 			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0 || fileTarget.attr("id").indexOf("optionImg") >= 0){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
