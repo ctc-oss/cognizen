@@ -114,6 +114,7 @@ var fileTarget = null;
 //function dialogToggleMediaBrowser(){
 this.dialogToggleMediaBrowser = function(_target){
 	fromDialog = true;
+	console.log(_target);
 	fileTarget = _target;
 	toggleMediaBrowser();
 }
