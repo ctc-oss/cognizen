@@ -230,7 +230,10 @@ function C_Pathing(_type) {
 					
 		}
 		else{
-
+			if(homePage_arr.length == 0){
+				createHomePageArray(1);
+			}
+			
 			var buttonLabel = "Previous";
 			var buttonID = "";
 			var pathComplete = false;
