@@ -496,10 +496,11 @@ function showItemStats(){
 			console.log(chromeString);
 			console.log(typeof chromeString);
 			//Check if file is permitted in this input.
-			if(fileTarget.attr("id") == "mediaLink" 
+			if(fileTarget.attr("id") == "mediaLink"
+			|| chromeString.indexOf("optionImg") >= 0 
 			|| fileTarget.attr("id").indexOf("imgPath") >= 0 
 			|| fileTarget.attr("id").indexOf("optionImg") >= 0
-			|| chromeString.indexOf("optionImg") >= 0){
+			){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
