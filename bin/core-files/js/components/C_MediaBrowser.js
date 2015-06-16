@@ -802,13 +802,13 @@ function mediaBrowserUploadComplete(data){
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	if(queueLength == queueCurrent){
 		//queue complete
-		var splitPath = data.replace(/\\/g, '/').split("/");
-		var last = splitPath.length;
-		var mediaPath = splitPath[last-1];
-		mediaBrowserPreviewFile(mediaPath);
-		//Commit GIT when complete.
-		//doGitCommit();
-	    getMediaDir(relPath);
+		if(data != "zip"){
+			var splitPath = data.replace(/\\/g, '/').split("/");
+			var last = splitPath.length;
+			var mediaPath = splitPath[last-1];
+			mediaBrowserPreviewFile(mediaPath);
+		}
+		getMediaDir(relPath);
 	}else{
 		//Load next item
 		uploadFile(queue[queueCurrent]);

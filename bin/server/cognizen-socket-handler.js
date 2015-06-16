@@ -154,6 +154,8 @@ var SocketHandler = {
 											})
 										});
                                     }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+                                    	console.log("old way");
+                                    	console.log(event.file.pathName)
                                     	var zip = new unzip(event.file.pathName);
                                     	var zipEntries = zip.getEntries();
 
@@ -194,8 +196,6 @@ var SocketHandler = {
 			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));
 			var tmpSock = stream.socket
-			console.log(data);
-			
 			
 			//Complete upload callback
 			mediaStream.on('close', function(){
@@ -287,6 +287,22 @@ var SocketHandler = {
                                         });
 									})
 								});
+							}else if(archiveTypes.indexOf(mediaType.toLowerCase()) >= 0){
+								var zip = new unzip(filename);
+                            	var zipEntries = zip.getEntries();
+                            	zipEntries.forEach(function(entry) {
+								    var entryName = entry.entryName;
+								    var pathSplit = contentPath.split("/");
+								    pathSplit.pop();
+								    var extractPath = "";
+								    for(var i = 0; i < pathSplit.length; i++){
+									    extractPath += (pathSplit[i] + "/");
+								    }
+								    zip.extractEntryTo(entryName, path.normalize(extractPath), true, true);
+								});
+								fs.unlink(filename, function (err) {
+                                	tmpSock.sio.emit('mediaBrowserUploadComplete', "zip");
+                                });
                             }else{
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
