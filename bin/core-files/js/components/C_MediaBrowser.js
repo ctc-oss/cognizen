@@ -114,7 +114,6 @@ var fileTarget = null;
 //function dialogToggleMediaBrowser(){
 this.dialogToggleMediaBrowser = function(_target){
 	fromDialog = true;
-	console.log(_target);
 	fileTarget = _target;
 	toggleMediaBrowser();
 }
@@ -491,17 +490,16 @@ function showItemStats(){
 		var myType = getFileType(obj).toLowerCase();
 		var permitted = true;
 		var failType = null;
-		console.log(fileTarget);
 		var myItem = relPath + obj;	
 		if(fileTarget != null){
-			console.log(fileTarget);
-			console.log(fileTarget.selector);
-			console.log(fileTarget.attr("selector"));
+			var chromeString = fileTarget.selector.toString();
+			console.log(chromeString);
+			console.log(chromeString.type);
 			//Check if file is permitted in this input.
 			if(fileTarget.attr("id") == "mediaLink" 
 			|| fileTarget.attr("id").indexOf("imgPath") >= 0 
 			|| fileTarget.attr("id").indexOf("optionImg") >= 0
-			|| fileTarget.selector.toString().indexOf("optionImg") >= 0){
+			|| chromeString.indexOf("optionImg") >= 0){
 				var acceptedTypes = ["png", "jpg", "gif", "mp4", "svg", "swf", "html", "htm"];
 			}else if(fileTarget.attr("id") == "revealImageText"){
 				var acceptedTypes = ["png", "jpg", "gif"];
