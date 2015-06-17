@@ -213,7 +213,7 @@ function addDisplay(){
 				msg += "<div id='lessoncssButton' class='mediaBrowserDirectorySelectButton' data='lesson'>lesson css</div>";
 			msg += "</div>";
 			msg += "<div id='mediaBrowserDisplayPath' class='mediaBrowserDisplayPath'>"+mediaBrowserDisplayPath+"</div>";
-			msg += "<div class='box-wrap antiscroll-wrap'>";
+			msg += "<div id='mediaBrowserListWrapper' class='box-wrap antiscroll-wrap'>";
 				msg += "<div class='list-box'>";
 					msg += "<div class='antiscroll-inner'>";
 						msg += "<div id='mediaBrowserList' class='mediaBrowserList C_Loader'></div>";
@@ -633,7 +633,7 @@ function mediaBrowserRemoveMediaComplete(){
 * @param {String} _file File to be loaded and displayed.
 */
 function mediaBrowserPreviewFile(_file){
-	$("#mediaBrowserPreview").addClass("C_Loader");
+	$("#mediaBrowserPreview").addClass("mediaBrowserLoader");
 	var imageTypes = ["png", "jpg", "gif"];
 	var fp = folderTrackPath + mediaBrowserDisplayPath + _file;
 	$("#mediaBrowserPreviewMediaHolder").empty();
@@ -648,7 +648,7 @@ function mediaBrowserPreviewFile(_file){
 	}else if(imageTypes.indexOf(myType) > -1) {
 		mediaBrowserLoadImagePreview(fp);
 	}else{
-		$("#mediaBrowserPreview").removeClass("C_Loader");
+		$("#mediaBrowserPreview").removeClass("mediaBrowserLoader");
 		//alert("You can't preview this file type.");
 		$("#mediaBrowserPreviewMediaHolder").append("<p><b>You can't preview this file type from within the system.</b></p><p>It has been opened in a new window. Check how your browser handles different file types to see if it has been downloaded.</p>");
 		$("#mediaBrowserPreviewMediaHolder").css({'opacity': 1, 'text-align': 'center'});
@@ -693,7 +693,7 @@ function mediaBrowserLoadAudioPreview(_fp){
             }, false);
             
             player.addEventListener('loadeddata', function(e){
-	            $("#mediaBrowserPreview").removeClass("C_Loader");
+	            $("#mediaBrowserPreview").removeClass("mediaBrowserLoader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
             }, false);
             
@@ -738,7 +738,7 @@ function mediaBrowserLoadVideoPreview(_fp){
 		        }*/
 				
 				//tween after loaded and positioned.
-				$("#mediaBrowserPreview").removeClass("C_Loader");
+				$("#mediaBrowserPreview").removeClass("mediaBrowserLoader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
 			}, false);
 		}
@@ -753,7 +753,7 @@ function mediaBrowserLoadVideoPreview(_fp){
 */
 function mediaBrowserLoadSWFPreview(_fp){
     $("#mediaBrowserPreviewMediaHolder").flash({swf:_fp,width:300,height:200});
-    $("#mediaBrowserPreview").removeClass("C_Loader");
+    $("#mediaBrowserPreview").removeClass("mediaBrowserLoader");
     TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
 }
 
@@ -771,7 +771,7 @@ function mediaBrowserLoadImagePreview(_fp){
 	});
 
     $(img).load(function(){
-	    $("#mediaBrowserPreview").removeClass("C_Loader");
+	    $("#mediaBrowserPreview").removeClass("mediaBrowserLoader");
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
         
