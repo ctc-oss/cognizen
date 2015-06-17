@@ -14,8 +14,8 @@ var REDMINE = {
             //sslCaCert: 'C:\\TEMP\\server.13.redmine.pem'
         };
         this.promisedAPI = new promised(config);
-        console.log("In cognizen-redmine");
-        console.log(config);
+        // console.log("In cognizen-redmine");
+        // console.log(config);
         // this.promisedAPI.getUserCurrent()
         //     .then(function(data){
         //         console.log("Current user:");
@@ -38,163 +38,7 @@ var REDMINE = {
         //         return;
         //     }
         // );
-  //      var user = {
-		// 	login: "shuie28@gmail.com", 
-		// 	firstname: "Luke",
-		//  	lastname: "Shumaker",
-		//  	mail: "shuie28@gmail.com",
-		//  	password: "test8888"
-		// };
 
-		// this.promisedAPI.put("users/5",{user:user})
-		// 	.error(function(err){
-		// 		callback(err);
-		// 	})
-		// 	.success(function(data){
-		// 		_this.logger.info(data)
-		// 	})
-		// ;  
-        // this.promisedAPI.getProjects()
-        //     .then(function(data){
-        //         var found = false;
-        //         var _projects = data.projects;
-        //         for (var i = 0; i < _projects.length; i++) {
-        //             console.log(_projects[i]);
-        //         };
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //     }
-        // );  
-//+'?include=journals'
-//'GET', '/' + path + '.json', params
-           //this.promisedAPI.getIssues({project_id: 2, include: "journals"})
-        //    this.promisedAPI.request('GET', '/issues/2.json', {include: 'journals'})
-        //     .then(function(data){
-        //         console.log("Issues:");
-        //         console.log(data);
-        //         var journals = data.issue.journals;
-        //         for (var i = 0; i < journals.length; i++) {
-        //             console.log(journals[i].user);
-        //             console.log(journals[i].notes);
-        //             console.log(journals[i].created_on);
-        //         };
-        //         // console.log(data.issues[0].project);
-        //         // console.log(data.issues[0].status);
-        //         // console.log(data.issues[0].custom_fields);
-        //     },
-        //     function(err) {
-        //         console.log("Error: " + err.message);
-        //         return;
-        //     }
-        // ); 
-        //
-// this.promisedAPI.post('/projects/6/memberships', {"membership": {"user_id": 5, "role_ids": [4]}})
-//     .error(function(err){
-//         console.log("Error: " + err.message);
-//     })
-
-//     .success(function(data){
-//         console.log(data)
-//     })
-// ;         
-// this.promisedAPI.get('/projects/rm556f55c5a1572b000000000a', {})
-//     .then(function(data){
-//         console.log("mem:");
-//         console.log(data);
-//         console.log(data.memberships[0].project);
-//         console.log(data.memberships[0].user);
-//         console.log(data.memberships[0].roles[0]);
-//     },
-//     function(err) {
-//         console.log("Error: " + err.message);
-//         return;
-//     }
-// );
-
-// this.promisedAPI.get('/projects/rm556f1b93ca58d400000000071', {})
-//     .then(function(data){
-//         console.log("mem:");
-//         console.log(data);
-//         console.log(data.memberships[0].project);
-//         console.log(data.memberships[0].user);
-//         console.log(data.memberships[0].roles[0]);
-//     },
-//     function(err) {
-//         console.log("Error:  No project found" + err);
-//         return;
-//     }
-// );
-        // var issue = {
-        //     project_id: 6,
-        //     subject: "Fix the pageEE",
-        //     description: "More stuff",
-        //     custom_fields:
-        //         [
-        //             {value: "blah", id: 2},
-        //             {value: "blahid", id: 3}
-        //         ]
-        // }            
-        // this.promisedAPI.postIssue(issue)
-        //     .error(function(err){
-        //         console.log("Error: " + err.message);
-        //     })
-
-        //     .success(function(data){
-        //         console.log(data)
-        //     })
-        // ; 
-        // var comment = {
-        //     subject: "Here is the subject.",
-        //     text: "This stuff isn't right",
-        //     page:{
-        //         id: "ojwmf209mmmspomdos23"
-        //     }
-        // };
-        // this.createIssue("Cognizen - Page", comment, "page Title test", function(err){
-        //     if(err){
-        //         _this.logger.error("Error creating redmine issue: " + err);
-        //     }
-        //     else{
-        //         _this.logger.info(" issue created in redmine");
-        //     }
-        // }); 
-        // var page = {
-        //     lessontitle: "101 GlovesW",
-        //     id: "3d4aeb42-7bb7-5b90-e375-b47c098175b3"
-        // }; 
-        // this.getIssueByPageId(page, function(data, err){
-        //     if(err){
-        //         console.log("Error finding issues: " + err);
-        //     }
-        //     else{
-        //         console.log(" issues found");
-        //         console.log(data);
-        //     }
-        // });
-        // var issue = {
-        //     id: 6,
-        //     project_id: 6,
-        //     //subject: "Fix the pageEEXXX"
-        //     description: "More stuff for tommy t"
-        // };
-        // this.updateIssue(issue, function(err){
-        //     if(err){
-        //         console.log("error: " + err);
-        //     }
-        //     else{
-        //         console.log("issue updated");
-        //     }
-        // }) ;         
-        // this.promisedAPI.updateIssue(6, issue)
-        //     .error(function(err){
-        //         callback(err);
-        //     })
-        //     .success(function(data){
-        //         console("done good");
-        //         console(data)
-        //     })
-        // ;                         	
         return this;
 	},
 	createUser: function(Username, FirstName, LastName, _Password, MustChange, callback){
@@ -751,9 +595,10 @@ var REDMINE = {
                 if(err){
                     ///if user not found then create the user and do stuff
                     if(data === '404'){
-                        //no reason to change anything if permission is none
-                        if(Users[Index].permission != 'none'){
+                        //no reason to change anything if permission is null
+                        if(Users[Index].permission != null){
                             //require password reset on first login / default password is cognizen
+                            console.log('_assignMembership create user debug : ' + Users[Index].username + ' ' + Users[Index].first + ' ' + Users[Index].last);
                             _this.createUser(Users[Index].username, Users[Index].first, Users[Index].last, 'cognizen', true, function(err){
                                 if(err){
                                     _this.logger.error("Error creating redmine user: " + err);
@@ -772,6 +617,17 @@ var REDMINE = {
 
                                 }
                             });
+                        }
+                        else{
+                            //now call assignMembership with the same index
+                            _this._assignMembership(ProjectId, Membership_arr, Users, Index+1, function(err){
+                                if(err){
+                                    callback(err);
+                                }
+                                else{
+                                    callback();
+                                }
+                            });                             
                         }
                     }
                     else{
