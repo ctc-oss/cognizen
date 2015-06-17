@@ -37,7 +37,7 @@ var REDMINE = {
         //         console.log("Error: " + err.message);
         //         return;
         //     }
-        // );   
+        // );
   //      var user = {
 		// 	login: "shuie28@gmail.com", 
 		// 	firstname: "Luke",
@@ -256,7 +256,15 @@ var REDMINE = {
 			})
 			.success(function(data){
 				_this.logger.info(data)
-                callback();
+                //#3735
+                _this._addCognizenAdmins(id, function(err){
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        callback();
+                    }
+                }); 
 			})
 		;        
 	},
@@ -282,7 +290,15 @@ var REDMINE = {
                     })
                     .success(function(data){
                         _this.logger.info(data);
-                        callback();
+                        //#3735
+                        _this._addCognizenAdmins(id, function(err){
+                            if(err){
+                                callback(err);
+                            }
+                            else{
+                                callback();
+                            }
+                        });                        
                     })
                 ;                                 
             }
@@ -310,7 +326,15 @@ var REDMINE = {
                     })
                     .success(function(data){
                         _this.logger.info(data);
-                        callback();
+                        //#3735
+                        _this._addCognizenAdmins(id, function(err){
+                            if(err){
+                                callback(err);
+                            }
+                            else{
+                                callback();
+                            }
+                        }); 
                     })
                 ;                                 
             }
@@ -510,7 +534,7 @@ var REDMINE = {
     getProjectMembership: function(id, callback){
         var _this = this;
         //console.log('^^^^^^ ' + Project + ' : ' + ProjectParent);
-        console.log(id);
+        //console.log(id);
         _this.findProjectId(id, function(data, err){
             if(err){
                 _this.logger.error("Error " + err);
@@ -610,6 +634,114 @@ var REDMINE = {
                 callback(null, "Error: " + err.message);
             }
         );        
+    },
+    _addCognizenAdmins: function(ProjectIdentifier, callback){
+        var _this = this;
+        //console.log('_addCognizenAdmins ' + ProjectIdentifier);
+        _this._findGroupId('Cognizen Admins', function(data, err){
+            if(err){
+                _this.logger.error("Error " + err);
+                callback(err);
+            }
+            else{
+                var _groupId = data.id;
+                //console.log('_groupId ' + _groupId);
+                _this._getGroupUsers(_groupId, function(data, err){
+                    if(err){
+                        _this.logger.error("Error " + err);
+                        callback(err);
+                    }
+                    else{
+                        var _users = data;
+                        //console.log('_users ' + _users);
+                        _this.getProjectMembership(ProjectIdentifier, function(data, projId, err){
+                            if(err){
+                                _this.logger.error("Error getting project membership " + err);
+                                callback(err);
+                            }
+                            else{
+                                var _membership_arr = data.memberships;
+                                //console.log(_membership_arr);
+                                _this._assignGroupMembership(_users, _membership_arr, projId, 0, function(err){
+                                    if(err){
+                                        callback(err);
+                                    }
+                                    else{
+                                        callback();
+                                    }
+                                });      
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+    },
+    _assignGroupMembership: function(Users, Membership_arr, ProjectId, Index, callback){
+        var _this = this;
+
+        if(Index < Users.length){
+            var _userId = Users[Index].id;
+            var _membershipId = _this._getMembershipId(Membership_arr, _userId);
+            _this._setMembership(_membershipId, ProjectId, _userId, 'admin', function(data, err){
+                if(err){
+                    _this.logger.error("Error in setMembership " + err);
+                    callback(err);
+                }
+                else{
+                    _this._assignGroupMembership(Users, Membership_arr, ProjectId, Index+1, function(err){
+                        if(err){
+                            callback(err);
+                        }
+                        else{
+                            callback();
+                        }
+                    }); 
+                }
+            }); 
+
+        }
+        else{
+            callback();
+        }
+    },
+    _findGroupId: function(Name, callback){
+        var _this = this;
+
+        _this.promisedAPI.get('groups')
+            .then(function(data){
+                var found = false;
+                var _groups = data.groups;
+                for (var i = 0; i < _groups.length; i++) {
+                    if(_groups[i].name === Name){
+                        found = true;
+                        callback(_groups[i], null);
+                    }
+                };
+                if(!found){
+                    callback(null, "No group was found with the " + Name + " name!" );
+                }                
+            },
+            function(err) {
+                _this.logger.error("Error: " + err.message);
+                callback(null, "Error: " + err.message);
+            }
+        );  
+    },
+    _getGroupUsers: function(GroupId, callback){
+        var _this = this;
+
+       _this.promisedAPI.request('GET', '/groups/'+GroupId+'.json', {include: 'users'})
+            .then(function(data){
+                callback(data.group.users, null);
+            },
+            function(err) {
+                _this.logger.error("Error in _getGroupUsers: " + err.message);
+                callback(null, err);
+            }
+        ); 
+
     },
     _assignMembership: function(ProjectId, Membership_arr, Users, Index, callback){
         var _this = this;
