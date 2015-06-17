@@ -154,6 +154,8 @@ var SocketHandler = {
 											})
 										});
                                     }else if (archiveTypes.indexOf(mediaType.toLowerCase()) >= 0) {
+                                    	console.log("old way");
+                                    	console.log(event.file.pathName)
                                     	var zip = new unzip(event.file.pathName);
                                     	var zipEntries = zip.getEntries();
 
@@ -194,13 +196,9 @@ var SocketHandler = {
 			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));
 			var tmpSock = stream.socket
-			console.log(data);
-			
 			
 			//Complete upload callback
 			mediaStream.on('close', function(){
-				//console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-				//console.log(stream)
 				var type = data.type;
                 var id = data.id;
                 var contentType = _this.Content.objectType(type);
@@ -287,6 +285,22 @@ var SocketHandler = {
                                         });
 									})
 								});
+							}else if(archiveTypes.indexOf(mediaType.toLowerCase()) >= 0){
+								var zip = new unzip(filename);
+                            	var zipEntries = zip.getEntries();
+                            	zipEntries.forEach(function(entry) {
+								    var entryName = entry.entryName;
+								    var pathSplit = contentPath.split("/");
+								    pathSplit.pop();
+								    var extractPath = "";
+								    for(var i = 0; i < pathSplit.length; i++){
+									    extractPath += (pathSplit[i] + "/");
+								    }
+								    zip.extractEntryTo(entryName, path.normalize(extractPath), true, true);
+								});
+								fs.unlink(filename, function (err) {
+                                	tmpSock.sio.emit('mediaBrowserUploadComplete', "zip");
+                                });
                             }else{
 	                            var stream = fs.createReadStream(filename);
 	                            stream.pipe(fs.createWriteStream(contentPath));
@@ -323,17 +337,14 @@ var SocketHandler = {
 		}else if(data.track == "lesson"){
 			folderPath = "/css/"
 		}
-/*
-		console.log("folderTrack = " + data.track);
-		console.log("_file = " + data.file);
-*/
+
         if (contentType) {
         	contentType.findById(id, function (err, found) {
             	if (found) {
                 	var contentPath = path.normalize(_this.Content.diskPath(found.path) + folderPath + data.file);
                 	fs.unlink(contentPath, function (err) {
 						if (err) throw err;
-						console.log('successfully deleted media file');
+						console.log('successfully deleted media file at: ' + contentPath);
 						_this._socket.emit('mediaBrowserRemoveMediaComplete');
 					});
                 }
@@ -1693,13 +1704,7 @@ var SocketHandler = {
 		                            	var alreadyIn = false;
 		                            	var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 										var user = _this.SocketSessions.socketUsers[sessionId];
-										/*
-										console.log(found);
-										_this.logger.info("----------------------------------------------------");
-										_this.logger.info(found.course.id);
-										_this.logger.info("----------------------------------------------------");
-										_this.logger.info(found.id);
-										*/
+										
 										//This shouldn't be needed anymore BUT will hold off until sure - it checks if the user is in....
 		                            	for(var i = 0; i < activeEdit_arr.length; i++){
 		                            		if(activeEdit_arr[i].user == user.username){

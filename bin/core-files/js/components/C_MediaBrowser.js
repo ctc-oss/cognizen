@@ -273,6 +273,7 @@ function FileDragLeave(e){
 function FileSelectHandler(e) {
 	if(e.originalEvent.dataTransfer){
 		if(e.originalEvent.dataTransfer.files.length) {
+			$("#mediaBrowserDisplay").off("drop", FileSelectHandler);
 			e.preventDefault();
 			e.stopPropagation();
 			/*UPLOAD FILES HERE*/
@@ -468,7 +469,6 @@ function showItemStats(){
 	currentSelectedMediaPreview.append(msg);
 	
 	//Button Actions for interactives
-	//console.log(obj);
 	var untouchableFiles = ["defaultLeft.png", "defaultTop.png", "defaultReveal.png", "loadingIcon.gif"];
     if (untouchableFiles.indexOf(obj) >= 0 ){
 	//if(obj == "defaultLeft.png"){
@@ -482,7 +482,6 @@ function showItemStats(){
 	   
 	$(".mediaDownload").click(function(){
 		var myItem = folderTrackPath + mediaBrowserDisplayPath +obj;
-		//console.log(myItem)	
 		//downloadMedia(myItem);	   
 	});
 	
@@ -801,14 +800,15 @@ function mediaBrowserUploadComplete(data){
 	queueCurrent++;
 	try { cognizenSocket.removeListener('mediaBrowserUploadComplete', mediaBrowserUploadComplete); } catch (e) {}
 	if(queueLength == queueCurrent){
+		$("#mediaBrowserDisplay").on("drop", FileSelectHandler);
 		//queue complete
-		var splitPath = data.replace(/\\/g, '/').split("/");
-		var last = splitPath.length;
-		var mediaPath = splitPath[last-1];
-		mediaBrowserPreviewFile(mediaPath);
-		//Commit GIT when complete.
-		//doGitCommit();
-	    getMediaDir(relPath);
+		if(data != "zip"){
+			var splitPath = data.replace(/\\/g, '/').split("/");
+			var last = splitPath.length;
+			var mediaPath = splitPath[last-1];
+			mediaBrowserPreviewFile(mediaPath);
+		}
+		getMediaDir(relPath);
 	}else{
 		//Load next item
 		uploadFile(queue[queueCurrent]);
