@@ -86,8 +86,23 @@ var folderTrackPath = "./";
 * @type {String}
 */
 var currentSelectedTrack;
+/**
+* Variable to hold queued upload file list.
+* 
+* @type {Array}
+*/
 var queue;
+/**
+* Variable to hold length of queue.
+* 
+* @type {Number}
+*/
 var queueLength;
+/**
+* Variable to hold current queue member.
+* 
+* @type {Number}
+*/
 var queueCurrent = 0;
 /**
 * Adds the MediaBrowser icon to the stage at the position assigned in the css.
@@ -259,17 +274,34 @@ function addDisplay(){
 	getMediaDir();
 }
 
+/**
+* remove default drag over behaviors
+*
+* @method FileDragHover
+* @param e event
+*/
 function FileDragHover(e){
 	e.preventDefault();
     e.stopPropagation();
 }
 
+/**
+* remove default drag out behaviors
+*
+* @method FileDragLeave
+* @param e event
+*/
 function FileDragLeave(e){
 	e.preventDefault();
     e.stopPropagation();
 }
 
-// file selection
+/**
+* Get upload file info and add to queue
+*
+* @method FileSelectHandler
+* @param e drop event
+*/
 function FileSelectHandler(e) {
 	if(e.originalEvent.dataTransfer){
 		if(e.originalEvent.dataTransfer.files.length) {
@@ -282,6 +314,12 @@ function FileSelectHandler(e) {
 	}
 }
 
+/**
+* Add files to queue
+*
+* @method queueFileUpload
+* @param _fl FileList
+*/
 function queueFileUpload(_fl){
 	queue = _fl;
 	queueLength = _fl.length;
