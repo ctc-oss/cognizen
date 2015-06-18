@@ -413,18 +413,13 @@ var REDMINE = {
     },      
     _findUserId: function(Username, callback){
         var _this = this;
-
-        _this.promisedAPI.getUsers()
+        var params = {name: Username};
+        _this.promisedAPI.getUsers(params)
             .then(function(data){
-                var found = false;
-                var _users = data.users;
-                for (var i = 0; i < _users.length; i++) {
-                    if(_users[i].login === Username){
-                        found = true;
-                        callback(_users[i], null);
-                    }
-                };
-                if(!found){
+                if(data.total_count > 0){
+                    callback(data.users[0]);
+                }
+                else{
                     callback("404", "No user was found with the " + Username + " username!" );
                 }
             },
