@@ -727,9 +727,6 @@ function mediaBrowserLoadVideoPreview(_fp){
         
 		        if(imageWidth > $("#mediaBrowserPreview").width()){
 			        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
-			        //e.target.videoWidth = e.target.videoWidth * widthScale;
-			        //$("#mb_videoplayer").css({'max-width': "100%"});
-			        //$("#mb_videoplayer").css({'max-width': "100%"});
 					$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
 		        }
 				//tween fade in after loaded and positioned.
