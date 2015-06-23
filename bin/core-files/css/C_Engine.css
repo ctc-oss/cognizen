@@ -1715,6 +1715,7 @@ MEDIA LAYOUTS
 	position				: absolute;
 	top						: 0px;
 	right					: 0px;
+	left					: auto;
 	display 				: block;
 	width 					: 70%;
 	height					: 94%;

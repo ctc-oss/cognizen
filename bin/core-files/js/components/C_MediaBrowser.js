@@ -727,22 +727,15 @@ function mediaBrowserLoadVideoPreview(_fp){
         
 		        if(imageWidth > $("#mediaBrowserPreview").width()){
 			        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
-			        e.target.videoWidth = e.target.videoWidth * widthScale;
 					$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
 		        }
-		        var imageHeight = e.target.videoHeight;
-		        /*if(imageHeight > $("#mediaBrowserPreview").height()){
-			        var heightScale = $("#mediaBrowserPreview").height()/imageHeight;
-					//e.target.videoHeight = e.target.videoHeight * heightScale;
-			        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
-		        }*/
-				
-				//tween after loaded and positioned.
+				//tween fade in after loaded and positioned.
 				$("#mediaBrowserPreview").removeClass("C_Loader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
 			}, false);
 		}
 	});
+	$("#mb_videoplayer").css({'max-width': "100%", 'max-height': "100%"});
 }
 
 /**
