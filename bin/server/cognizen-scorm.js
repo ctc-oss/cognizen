@@ -1,8 +1,9 @@
-var fs = require('fs-extra');
-var et = require('elementtree');
-var readdirp = require('readdirp');
-var archiver = require('archiver');
-var path = require('path');
+var fs = require('fs-extra')
+	,et = require('elementtree')
+	,readdirp = require('readdirp')
+	,archiver = require('archiver')
+	,path = require('path')
+	,D = require('d.js');
 
 var SCORM = {
     logger: {},
@@ -24,13 +25,14 @@ var SCORM = {
     reviewLines: '',
     reviewLines_arr: [],
     courseDisplayTitle: '',
-    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion) {
+    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion, ManifestOnly) {
         this.logger = logger;
         this.scormPath = ScormPath;
         this.contentPath = ContentPath;
         this.xmlContentFile = XmlContentPath;
         this.found = Found;
         this.scormVersion = ScormVersion;
+        this.manonly = ManifestOnly;
         return this;
     },
 
@@ -83,7 +85,7 @@ var SCORM = {
 
 				            	//copy content.xml file to temp location
 				            	_this.packageFolder = _this.contentPath + '/packages/';
-				            	_this.tempXmlContentFile = _this.PackageFolder + 'content.xml';
+				            	_this.tempXmlContentFile = _this.packageFolder + 'content.xml';
 						        try{
 							        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
 							    }
@@ -163,6 +165,7 @@ var SCORM = {
 					                fs.outputFile(tempCourseXmlFile, xmlCourse, function (err) {
 					                    if (err) callback(err, null);
 
+				                    	var returnPath = '';
 									    var imsManifestFilePath = '';
 									    //do not need to do scorm files if publishing to "none"
 				        				if(_this.scormVersion != "none"){
@@ -182,26 +185,38 @@ var SCORM = {
 							                        callback(err, null);
 							                    }
 							                    else {
-							                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-							                    		if(err){
-							                    			callback(err, null);
-							                    		}
+							                    	if(_this.manonly){
 
-														fs.remove(_this.tempXmlContentFile, function(err){
-															if(err){
-																_this.logger.error(err);
-																callback(err, null);
-															}
-															_this.logger.info('temp content.xml file removed.');
-												            _this.logger.debug("packageFolder = " + _this.packageFolder);
-												            //tells the engine that it is done writing the zip file
-												            callback(null, output);
-														});
+							                    		_this._writeManifest(_this.contentPath+ '/packages/', imsManifestFilePath)
+								                    		.then(function(data){
+								                    			returnPath = data;
+																_this._cleanAndReturn()
+																	.then(function(data){callback(null, returnPath);}
+																		,function(err){callback(err, null);}
+																	);								                    			
+								                    		}
+								                    			,function(err){callback(err,null);}
+								                    		);
+							                    	}
+							                    	else{
 
-							                    	});
+								                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+								                    		if(err){
+								                    			callback(err, null);
+								                    		}
+								                    		else{
+																_this.logger.debug("packageFolder = " + _this.packageFolder);
+																returnPath = output;
+																_this._cleanAndReturn()
+																	.then(function(data){callback(null, returnPath);}
+																		,function(err){callback(err, null);}
+																	);																								                    			
+								                    		}
+
+								                    	});
+													}												
 
 							                    }
-
 
 							                });
 						                }
@@ -210,19 +225,18 @@ var SCORM = {
 					                    		if(err){
 					                    			callback(err, null);
 					                    		}
+					                    		else{
+													_this.logger.debug("packageFolder = " + _this.packageFolder);
+													returnPath = output;
+													_this._cleanAndReturn()
+														.then(function(data){callback(null, returnPath);}
+															,function(err){callback(err, null);}
+														);				                    			
+					                    		}
 
-												fs.remove(_this.tempXmlContentFile, function(err){
-													if(err){
-														_this.logger.error(err);
-														callback(err, null);
-													}
-													_this.logger.info('temp content.xml file removed.');
-										            _this.logger.debug("packageFolder = " + _this.packageFolder);
-										            //tells the engine that it is done writing the zip file
-										            callback(null, output);
-												});
 						                	});
 						                }
+							                
 						            //close of tempcourse write function    
 						            });
 				                //close of temp countent write function
@@ -446,6 +460,71 @@ var SCORM = {
 	    return manifest;
 	},
 
+	_cleanAndReturn: function(){
+		var _this = this;
+		var deferred = D();
+
+        //delete remove imsmanifestfile from SCORM dir
+		_this._removeTempFile(_this.scormPath + '/' + _this.scormVersion + '/' + 'imsmanifest.xml')
+			.then(function(data){}
+				,function(err){deferred.reject(err);}
+			);	
+
+        //delete tempCourseXmlFile
+		_this._removeTempFile(_this.contentPath + '/packages/tempCourse.xml')
+			.then(function(data){}
+				,function(err){deferred.reject(err);}
+			);	
+
+		//delete temp content file	
+		_this._removeTempFile(_this.tempXmlContentFile)
+			.then(function(data){
+				deferred.resolve(data);
+			}
+				,function(err){deferred.reject(err);}
+			);
+			
+		return deferred.promise;			
+	},
+
+	_removeTempFile: function(filePath){
+		var _this = this;
+		var deferred = D();
+
+		fs.remove(filePath, function(err){
+			if(err){
+				_this.logger.error(err);
+				deferred.reject(err);
+			}
+			else{
+				_this.logger.info(filePath + ' temp removed.');
+	            //_this.logger.debug("packageFolder = " + _this.packageFolder);
+	            deferred.resolve('removed');
+	        }
+
+		});
+		return deferred.promise;		
+	},
+
+	_writeManifest: function(path, imsManifestFilePath){
+		var _this = this;
+		var deferred = D();
+
+        var outputXmlFile = path +_this.scormVersion+'/imsmanifest.xml';
+        try{
+            fs.copySync(imsManifestFilePath, outputXmlFile);//, function(err){
+        }
+        catch(err){
+            _this.logger.error("Copy course xml file error : " + err);
+            //callback(err, null);
+            deferred.reject(err);
+        }
+
+        deferred.resolve(outputXmlFile);
+
+		return deferred.promise;
+	},
+
 	_zipScormPackage: function(res, scormBasePath, imsManifestFilePath, callback) {
 		var _this = this;
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
@@ -555,61 +634,16 @@ var SCORM = {
 
                 });
 
-
-
 	        }
 
 	        //add imsmanifest.xml file
 	        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
-
-	        //remove imsmanifestfile from SCORM dir
-	        try{
-	        	fs.removeSync(imsManifestFilePath);
-	    	}
-	    	catch(err){
-				_this.logger.error("Error removing imsManifestFile :" + err);
-				callback(err, null);
-	    	}
-
-			_this.logger.info('imsmanifest.xml file removed.');
-
-			// //remove temp content.xml
-			// try{
-			// 	fs.removeSync(_this.tempXmlContentFile);
-			// }
-			// catch(err){
-			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
-			// }
-
-			// //remove temp course.xml
-			// try{
-			// 	fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
-			// }
-			// catch(err){
-			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
-			// }
-
-			
+		
 	        archive.finalize();
 
     	}
     	else{
-
-			// //remove temp content.xml
-			// try{
-			// 	fs.removeSync(_this.tempXmlContentFile);
-			// }
-			// catch(err){
-			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
-			// }
-
-			// //remove temp course.xml
-			// try{
-			// 	fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
-			// }
-			// catch(err){
-			// 	_this.logger.error("Error deleting tempCourse.xml file :" + err );
-			// }    		
+ 		
 	        archive.finalize();
     	}
 
@@ -763,27 +797,35 @@ var SCORM = {
 
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
         _this.packageFolder = _this.contentPath + '/packages/';
-        var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
-        var output = fs.createWriteStream(outputFile);
-        var archive = archiver('zip');
 
-        //fired when the archiver finalized is finished
-        output.on('close', function(){
-        	_this.logger.info("archiver has finalized. ");
-        	_this.logger.debug("packageFolder = " + outputFile);
-        	callback(null, outputFile);
-        	return;
-        });
+        //#2764
+    	var outputFile = '';
+    	var archive = null;
+    	if(!_this.manonly){
+	        outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
+	        var output = fs.createWriteStream(outputFile);
+	        archive = archiver('zip');
 
-        archive.on('error', function(err) {
-            //throw err;
-			callback(err, null);
-			return;            
-        });
+	        //fired when the archiver finalized is finished
+	        output.on('close', function(){
+	        	_this.logger.info("archiver has finalized. ");
+	        	_this.logger.debug("packageFolder = " + outputFile);
+	        	callback(null, outputFile);
+	        	return;
+	        });
 
-        archive.pipe(output);
+	        archive.on('error', function(err) {
+	            //throw err;
+				callback(err, null);
+				return;            
+	        });
 
-			//if(exists){
+	        archive.pipe(output);
+	    }
+	    else{
+	    	outputFile = _this.packageFolder+_this.scormVersion+'/imsmanifest.xml';
+	    }
+
 		_this.courseXmlExists = true;
 
         //add js directory to root of package
@@ -925,69 +967,71 @@ var SCORM = {
 				        	lines: _this.reviewLines
 				        };
 				        _this.reviewLines_arr.push(reviewMap_obj);
-				        res.files.forEach(function(file) {
-				            var localFile = file.path.replace(/\\/g,"/");
-				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
-				            	var inputFile = _lessonPath + '/' + localFile;
-				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
-				        	}
-				        });
-				        //add index.html from server incase changes were made after the course was created
-				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
+				        if(!_this.manonly){
+					        res.files.forEach(function(file) {
+					            var localFile = file.path.replace(/\\/g,"/");
+					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
+					            	var inputFile = _lessonPath + '/' + localFile;
+					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
+					        	}
+					        });
+					        //add index.html from server incase changes were made after the course was created
+					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
 
-				        //add warning icon 
-				        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+					        //add warning icon 
+					        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+					    
+							//updating temp review content.xml file
+							////////////////////////////////////////////////////////////////
+					        var _review_data, _review_etree;
+					        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
+			            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
+			            	// console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
+			            	// console.log('tempReviewFile : ' + _tempReviewFile);
+					        try{
+						        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
+						    }
+						    catch(err){
+						    	_this.logger.error("Copy review content xml file error : " + err);
+						    	callback(err, null);
+						    	return;
+						    }
 
-						//updating temp review content.xml file
-						////////////////////////////////////////////////////////////////
-				        var _review_data, _review_etree;
-				        var _reviewXmlContentFile = _this.scormPath + '/review/content.xml';
-		            	var _tempReviewFile = _this.packageFolder + 'review' +count+'content.xml';
-		            	// console.log('reviewXmlContentFile : ' +_reviewXmlContentFile);
-		            	// console.log('tempReviewFile : ' + _tempReviewFile);
-				        try{
-					        fs.copySync(_reviewXmlContentFile, _tempReviewFile);//, function(err){
-					    }
-					    catch(err){
-					    	_this.logger.error("Copy review content xml file error : " + err);
-					    	callback(err, null);
-					    	return;
-					    }
+					       	try{
+								_review_data = fs.readFileSync(_tempReviewFile).toString();
+						        _review_etree = et.parse(_review_data);
+					        }
+					        catch(err){
+					        	_this.logger.error("Error reading temp course xml file : " + err);
+					        	callback(err,null);
+					        	return;
+					        }
 
-				       	try{
-							_review_data = fs.readFileSync(_tempReviewFile).toString();
-					        _review_etree = et.parse(_review_data);
-				        }
-				        catch(err){
-				        	_this.logger.error("Error reading temp course xml file : " + err);
-				        	callback(err,null);
-				        	return;
-				        }
+			                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+			                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
+			                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
 
-		                _review_etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
-		                _review_etree.find('./courseInfo/preferences/courseTitle').set('value', _this.courseName);
-		                _review_etree.find('./courseInfo/preferences/lessonTitle').set('value', _lessonTitle + ' Review');
+			              	if(_this.scormVersion === 'none'){
+			                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
+			                }
+			                if(count+1 == lArray.length){
+			                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+			                }
 
-		              	if(_this.scormVersion === 'none'){
-		                	_review_etree.find('./courseInfo/preferences/scorm').set('value','false');
-		                }
-		                if(count+1 == lArray.length){
-		                	_review_etree.find('./courseInfo/preferences/finalLesson').set('value','true');
-		                }
+			                var xml = _review_etree.write({'xml_decleration': false});
+			                fs.outputFile(_tempReviewFile, xml, function (err) {
+			                    if (err) callback(err, null);
+			                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
 
-		                var xml = _review_etree.write({'xml_decleration': false});
-		                fs.outputFile(_tempReviewFile, xml, function (err) {
-		                    if (err) callback(err, null);
-		                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+			        			try{
+			        				fs.removeSync(_tempReviewFile);
+			        			}
+			        			catch(err){
+			        				_this.logger.error("Error deleting temp review content.xml file :" + err );
+			        			}
 
-		        			try{
-		        				fs.removeSync(_tempReviewFile);
-		        			}
-		        			catch(err){
-		        				_this.logger.error("Error deleting temp review content.xml file :" + err );
-		        			}
-
-			            });
+				            });
+			            }//end !_this.manonly
 
 					}
 
@@ -999,17 +1043,20 @@ var SCORM = {
 
 	                //add resources
 	                resourceLines.push(_this._addResources(res, lessonsName[count]+'/'));
-			        //builds the cognizen directory
-			        res.files.forEach(function(file) {
-			            var localFile = file.path.replace(/\\/g,"/");
-			            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html")){
-			            	var inputFile = _lessonPath + '/' + localFile;
-			            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+lessonsName[count]+'/'+localFile });
-			        	}
-			        });
+			        
+			        if(!_this.manonly){
+				        //builds the cognizen directory
+				        res.files.forEach(function(file) {
+				            var localFile = file.path.replace(/\\/g,"/");
+				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html")){
+				            	var inputFile = _lessonPath + '/' + localFile;
+				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+lessonsName[count]+'/'+localFile });
+				        	}
+				        });
 
-			        //add index.html from server incase changes were made after the course was created
-			        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});
+				        //add index.html from server incase changes were made after the course was created
+				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});
+				    }
 
 	                if(count+1 == lArray.length){
 				        if(manifestFile != ''){
@@ -1023,7 +1070,9 @@ var SCORM = {
 						        //add completion  and survey files
 						        if(courseAttr.survey === "true"){
 					                manifestFile += _this._addUSSOCOMExtra('survey');
-					                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});
+					                if(!_this.manonly){
+						                archive.append(fs.createReadStream(_this.scormPath + '/survey/survey.html'), { name: _this.binDir + '/survey/survey.html'});
+						            }
 						        }
 
 						        readdirp({
@@ -1038,25 +1087,27 @@ var SCORM = {
 						                if(courseAttr.certificate === "true"){
 						                	manifestFile += _this._addUSSOCOMExtra('completion');
 						                	completionLines = _this._addResources(res, 'completion-files/');
-							                res.files.forEach(function(file) {
-							                    var localFile = file.path.replace(/\\/g,"/")
-							                    var inputFile = _this.scormPath + '/completion-files/' + localFile;
-							                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
-							                });	
+						                	if(!_this.manonly){
+								                res.files.forEach(function(file) {
+								                    var localFile = file.path.replace(/\\/g,"/")
+								                    var inputFile = _this.scormPath + '/completion-files/' + localFile;
+								                    archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/completion-files/' + localFile });
+								                });	
 
-							                //add upper level js files
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/APIWrapper.js'), { name: _this.binDir+'/compjs/APIWrapper.js' });
-							                //completionLines.push(_this.binDir+'/compjs/APIWrapper.js');
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });
-							                //completionLines.push(_this.binDir+'/compjs/common.js');	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });
-							                //completionLines.push(_this.binDir+'/compjs/flashobject.js');	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });
-							                //completionLines.push(_this.binDir+'/compjs/KnowledgeCheck.js');	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });
-							                //completionLines.push(_this.binDir+'/compjs/prototype.js');	
-							                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });
-							                //completionLines.push(_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js');						                	
+								                //add upper level js files
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/APIWrapper.js'), { name: _this.binDir+'/compjs/APIWrapper.js' });
+								                //completionLines.push(_this.binDir+'/compjs/APIWrapper.js');
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/common.js'), { name: _this.binDir+'/compjs/common.js' });
+								                //completionLines.push(_this.binDir+'/compjs/common.js');	
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/flashobject.js'), { name: _this.binDir+'/compjs/flashobject.js' });
+								                //completionLines.push(_this.binDir+'/compjs/flashobject.js');	
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/KnowledgeCheck.js'), { name: _this.binDir+'/compjs/KnowledgeCheck.js' });
+								                //completionLines.push(_this.binDir+'/compjs/KnowledgeCheck.js');	
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/prototype.js'), { name: _this.binDir+'/compjs/prototype.js' });
+								                //completionLines.push(_this.binDir+'/compjs/prototype.js');	
+								                archive.append(fs.createReadStream(_this.scormPath + '/compjs/soundmanager2-nodebug-jsmin.js'), { name: _this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js' });
+								                //completionLines.push(_this.binDir+'/compjs/soundmanager2-nodebug-jsmin.js');
+							                }						                	
 						            	}
 
 						                manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
@@ -1082,52 +1133,61 @@ var SCORM = {
 									                return;
 									            }
 									            else {
+													if(!_this.manonly){
+												        //add SCORM files
+												        readdirp({
+												                root: scormBasePath,
+												                directoryFilter: ['*'],
+												                fileFilter: [ '!.DS_Store' ]
+												            },
+												            function(fileInfo) {},
+												            function (err, res) {
+												                res.files.forEach(function(file) {
+												                    var localFile = file.path.replace(/\\/g,"/")
+												                    var inputFile = scormBasePath + localFile;
+												                    archive.append(fs.createReadStream(inputFile), { name: localFile });
+												                });
 
-											        //add SCORM files
-											        readdirp({
-											                root: scormBasePath,
-											                directoryFilter: ['*'],
-											                fileFilter: [ '!.DS_Store' ]
-											            },
-											            function(fileInfo) {},
-											            function (err, res) {
-											                res.files.forEach(function(file) {
-											                    var localFile = file.path.replace(/\\/g,"/")
-											                    var inputFile = scormBasePath + localFile;
-											                    archive.append(fs.createReadStream(inputFile), { name: localFile });
-											                });
+												            }
+												        );
 
-											            }
-											        );
+														//add js directory to root of package
+												        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+												             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+												        };
 
-													//add js directory to root of package
-											        for (var i = 0; i < _this.jsResources_arr.length; i++) {
-											             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
-											        };
+												        for (var i = 0; i < _this.cssResources_arr.length; i++) {
+												             archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+												        };
 
-											        for (var i = 0; i < _this.cssResources_arr.length; i++) {
-											             archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
-											        };
+												        for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
+												             archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+												        };
 
-											        for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
-											             archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
-											        };
+												        //add imsmanifest.xml file
+												        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
-											        //add imsmanifest.xml file
-											        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+												        //add course.xml file
+												        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
-											        //add course.xml file
-											        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+									        			//adds temp content.xml file to zip
+									        			for(var j=0; j<lArray.length; j++){
+									        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+									        			}
 
-								        			//adds temp content.xml file to zip
-								        			for(var j=0; j<lArray.length; j++){
-								        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
-								        			}
-
-								        			// //add review content.xml file to zip
-								        			// if(_this.reviewLines != ''){
-								        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
-								        			// }
+									        			// //add review content.xml file to zip
+									        			// if(_this.reviewLines != ''){
+									        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
+									        			// }
+							        				}
+							        				else{
+							                    		_this._writeManifest(_this.packageFolder, imsManifestFilePath)
+								                    		.then(function(data){
+								                    			callback(null, data);
+								                    		}
+								                    			,function(err){callback(err,null);}
+								                    		);							        					
+							        				}
 
 								        			//remove temp course.xml
 								        			try{
@@ -1147,7 +1207,9 @@ var SCORM = {
 															return;
 														}
 														_this.logger.info('imsmanifest.xml file removed.');
-												        archive.finalize();
+														if(!_this.manonly){
+													        archive.finalize();
+													    }
 
 													});
 
@@ -1183,53 +1245,61 @@ var SCORM = {
 							                return;
 							            }
 							            else {
+											if(!_this.manonly){
+										        //add SCORM files
+										        readdirp({
+										                root: scormBasePath,
+										                directoryFilter: ['*'],
+										                fileFilter: [ '!.DS_Store' ]
+										            },
+										            function(fileInfo) {},
+										            function (err, res) {
+										                res.files.forEach(function(file) {
+										                    var localFile = file.path.replace(/\\/g,"/")
+										                    var inputFile = scormBasePath + localFile;
+										                    archive.append(fs.createReadStream(inputFile), { name: localFile });
+										                });
 
-									        //add SCORM files
-									        readdirp({
-									                root: scormBasePath,
-									                directoryFilter: ['*'],
-									                fileFilter: [ '!.DS_Store' ]
-									            },
-									            function(fileInfo) {},
-									            function (err, res) {
-									                res.files.forEach(function(file) {
-									                    var localFile = file.path.replace(/\\/g,"/")
-									                    var inputFile = scormBasePath + localFile;
-									                    archive.append(fs.createReadStream(inputFile), { name: localFile });
-									                });
+										            }
+										        );
 
-									            }
-									        );
+												//add js directory to root of package
+										        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+										             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+										        };
 
-											//add js directory to root of package
-									        for (var i = 0; i < _this.jsResources_arr.length; i++) {
-									             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
-									        };
+										        for (var i = 0; i < _this.cssResources_arr.length; i++) {
+												    archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+												};
 
-									        for (var i = 0; i < _this.cssResources_arr.length; i++) {
-											    archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
-											};
+												for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
+												    archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+												};
 
-											for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
-											    archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
-											};
+										        //add imsmanifest.xml file
+										        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
-									        //add imsmanifest.xml file
-									        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+										        //add course.xml file
+										        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
-									        //add course.xml file
-									        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+							        			//adds temp content.xml file to zip
+							        			for(var j=0; j<lArray.length; j++){
+							        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+							        			}
 
-						        			//adds temp content.xml file to zip
-						        			for(var j=0; j<lArray.length; j++){
-						        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
-						        			}
-
-						        			//add review content.xml file to zip
-						        			// if(_this.reviewLines != ''){
-						        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
-						        			// }
-
+							        			//add review content.xml file to zip
+							        			// if(_this.reviewLines != ''){
+							        			// 	archive.append(fs.createReadStream(_this.scormPath + '/review/content.xml'), { name: _this.binDir+'/Review-files/xml/content.xml'});
+							        			// }
+							        		}
+					        				else{
+					                    		_this._writeManifest(_this.packageFolder, imsManifestFilePath)
+						                    		.then(function(data){
+						                    			callback(null, data);
+						                    		}
+						                    			,function(err){callback(err,null);}
+						                    		);							        					
+					        				}
 						        			//remove temp course.xml
 						        			try{
 						        				fs.removeSync(_this.contentPath + '/packages/tempCourse.xml');
@@ -1248,10 +1318,11 @@ var SCORM = {
 													return;
 												}
 												_this.logger.info('imsmanifest.xml file removed.');
+												if(!_this.manonly){
+											        archive.finalize();
+											    }
 
-										        archive.finalize();
-
-											});
+											});							
 
 							            }
 

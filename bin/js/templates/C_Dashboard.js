@@ -738,8 +738,8 @@ function C_Dashboard(_type) {
             //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
             //msg += '</p>';
             msg += "<br/><p>";
-            msg += "<form id='scormform' title='Set SCORM Version'>";
-            msg += "<label id='label'>SCORM Version: </label>";
+            msg += "<form id='scormform' >";
+            msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
             msg += "<select id='scormVersion'>";
             msg += "<option>2004_4th</option>";
             msg += "<option>2004_3rd</option>";
@@ -747,6 +747,10 @@ function C_Dashboard(_type) {
             // msg += "<option>2004_3rd_USSOCOM</option>";
             msg += "<option>none</option>";
             msg += "</select></form>";
+            msg += '<div id="manonlyHolder">';
+            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
+            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
+            msg += '</div>';        
             msg += "</p>";
             msg += '</div>';
             enableRenameContentKeyEvents()
@@ -758,8 +762,8 @@ function C_Dashboard(_type) {
             //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
             //msg += '</p>';
             msg += "<br/><p>";
-            msg += "<form id='scormform' title='Set SCORM Version'>";
-            msg += "<label id='label'>SCORM Version: </label>";
+            msg += "<form id='scormform' >";
+            msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
             msg += "<select id='scormVersion'>";
             msg += "<option>2004_4th</option>";
             msg += "<option>2004_3rd</option>";
@@ -767,6 +771,10 @@ function C_Dashboard(_type) {
             //msg += "<option>1.2_CTCU</option>";
             msg += "<option>none</option>";
             msg += "</select></form>";
+            msg += '<div id="manonlyHolder">';
+            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
+            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
+            msg += '</div>';             
             msg += "</p>";
             msg += '</div>';
             enableRenameContentKeyEvents()
@@ -774,6 +782,16 @@ function C_Dashboard(_type) {
 
          //Append the string to the stage
         $("#stage").append(msg);
+
+        $('#scormVersion').on("change", function(){
+            if($('#scormVersion').find(':selected').text() == 'none'){
+                $('#manifestOnly').prop('checked', false);
+                $('#manonlyHolder').hide();
+            }
+            else{
+                $('#manonlyHolder').show();
+            }
+        });  
 
         $("#dialog-updatePrefs").dialog({
             modal: true,
@@ -798,7 +816,8 @@ function C_Dashboard(_type) {
                 },*/
                 Publish: function(){
                     var selectedScorm = $('#scormVersion').find(':selected').text();
-                    clickPublish(myParent, currentLevel, selectedScorm);
+                    var manifestOnly = $('#manifestOnly').is(':checked');
+                    clickPublish(myParent, currentLevel, selectedScorm, manifestOnly);
                     $(this).dialog("close");
                     /*$("#myName").remove();*/
                     $("#myType").remove();
@@ -807,10 +826,10 @@ function C_Dashboard(_type) {
             }
         });
 
-        $("#scormform").tooltip();
+        $("#dialog-updatePrefs").tooltip();
     }
 
-    function clickPublish(parent, level, selectedScorm){
+    function clickPublish(parent, level, selectedScorm, manifestOnly){
 
 
         if(level === 'course'){
@@ -827,6 +846,7 @@ function C_Dashboard(_type) {
                 },
                 scorm: {
                     version: selectedScorm,
+                    manifestonly: manifestOnly 
                 }
             };
         }
@@ -845,6 +865,7 @@ function C_Dashboard(_type) {
                 },
                 scorm: {
                     version: selectedScorm,
+                    manifestonly: manifestOnly 
                 }
             };
 

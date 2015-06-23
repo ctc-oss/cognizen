@@ -682,6 +682,10 @@ function launchPrefs(){
 	msg += "<option>1.2</option>";
 	msg += "<option>none</option>";
 	msg += "</select></form>";
+    msg += '<div id="manonlyHolder">';
+    msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
+    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
+    msg += '</div>'; 	
 	msg += "</p>";
 	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
 	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
@@ -729,7 +733,15 @@ function launchPrefs(){
 
 	$("#stage").append(msg);
 
-
+    $('#scormVersion').on("change", function(){
+        if($('#scormVersion').find(':selected').text() == 'none'){
+            $('#manifestOnly').prop('checked', false);
+            $('#manonlyHolder').hide();
+        }
+        else{
+            $('#manonlyHolder').show();
+        }
+    }); 
 
 	//Make it a dialog
 	$("#dialog-lessonPrefs").dialog({
@@ -1193,10 +1205,11 @@ function clickPublish(){
 	$('#myCanvas').append('<div class="C_Loader"><div class="C_LoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
+	var manifestOnly = $('#manifestOnly').is(':checked');
 	var publishData = {
 		content: {type: urlParams['type'], id: urlParams['id']},
 		user: {id: userID, username: username},
-		scorm: {version : myScormVersion}
+		scorm: {version : myScormVersion, manifestonly: manifestOnly }
 	};
 
 	cognizenSocket.emit('publishContent', publishData, function(fdata) {
