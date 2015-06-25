@@ -1160,6 +1160,8 @@ function C_Outline(_myItem) {
      	msg += "<div><b>restartOnFail</b></div>";
 		msg += "<label id='label' for='restartOnFail'>restartOnFail: </label>";
 		msg += "<input id='restartOnFail' type='checkbox' name='restartOnFail' class='radio'/><br/><br/>";
+     	msg += "<div><b>exclude from publish</b></div>";
+		msg += addToggle("excludeFromPublish", "Exclude this lesson from being published with the course");		
      	msg += "</div>";
      	//end general div
      	msg += '</div>';
@@ -1394,6 +1396,7 @@ function C_Outline(_myItem) {
 		//setToggle("choice", modIndex);
 		//setToggle("flow", modIndex);
 		//setToggle("forwardOnly", modIndex);
+		setToggle("excludeFromPublish", modIndex-1, "item");
 		setToggle("choiceExit", modIndex);
 		setToggle("previous", modIndex);
 		setToggle("continue", modIndex);
@@ -1420,6 +1423,7 @@ function C_Outline(_myItem) {
 		//toggleChange("choice", modIndex);
 		//toggleChange("flow", modIndex);
 		//toggleChange("forwardOnly", modIndex);
+		toggleChange("excludeFromPublish", modIndex-1, "item");
 		toggleChange("choiceExit", modIndex);
 		toggleChange("previous", modIndex);
 		toggleChange("continue", modIndex);
@@ -1499,7 +1503,7 @@ function C_Outline(_myItem) {
 		return msg;
      }
 
-     function setToggle(_id, index){
+     function setToggle(_id, index, element){
      	if(index == -1){
 			if($(courseData).find("course").attr(_id) === "true"){
 				$('#'+_id).prop('checked',true);
@@ -1509,7 +1513,10 @@ function C_Outline(_myItem) {
 			}
      	}
      	else{
-			if($(courseData).find('sequencing').eq(index).attr(_id) === "true"){
+     		//if element parameter not defined then default to sequencing
+     		var _xmlElement = (element === undefined) ? 'sequencing' : element;
+
+			if($(courseData).find(_xmlElement).eq(index).attr(_id) === "true"){
 				$('#'+_id).prop('checked',true);
 			}
 			else{
@@ -1519,7 +1526,7 @@ function C_Outline(_myItem) {
 
      }
 
-     function toggleChange(_id, index){
+     function toggleChange(_id, index, element){
      	if(index == -1){
 			$('#'+_id+'Radio').on("change", function(){
 			   if($('#'+_id).prop('checked')){
@@ -1531,11 +1538,19 @@ function C_Outline(_myItem) {
 			});
      	}
      	else{
+     		//if element parameter not defined then default to sequencing
+     		var _xmlElement = (element === undefined) ? 'sequencing' : element;
+
+     		//check attr exists
+     		if(!$(courseData).find(_xmlElement).eq(index).attr(_id)){
+				$(courseData).find(_xmlElement).eq(index).attr(_id, "false");
+     		}
+
 			$('#'+_id+'Radio').on("change", function(){
 			   if($('#'+_id).prop('checked')){
-				   $(courseData).find('sequencing').eq(index).attr(_id, "true");
+				   $(courseData).find(_xmlElement).eq(index).attr(_id, "true");
 			   } else{
-				   $(courseData).find('sequencing').eq(index).attr(_id, "false");
+				   $(courseData).find(_xmlElement).eq(index).attr(_id, "false");
 			   }
 			   updateCourseXML();
 			});

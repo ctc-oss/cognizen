@@ -844,6 +844,7 @@ var SocketHandler = {
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
                             item.set("coursedisplaytitle", content.name);
+                            item.set("excludeFromPublish", 'false');
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");

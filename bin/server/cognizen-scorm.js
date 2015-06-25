@@ -757,24 +757,34 @@ var SCORM = {
 
 	    for (var i = 0; i < itemCount; i++) {
 	    	var myNode = _this.courseData.findall('./item')[i];
-	    	var itemName = myNode.get('name');//.replace(/\s+/g, '');
+	    	var itemName = myNode.get('name');
 
-            var lessonPath = _this.contentPath + "/" + itemName;
-            lessonsArray.push(lessonPath);
-            lessonsName.push(itemName);
-            //console.log(lessonPath);
-	        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
-        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
+	    	//#3356 - do not include in publish if excludeFromPublish attribute == true
+	    	var _exclude = myNode.get('excludeFromPublish');
+	    	if(_exclude === undefined || _exclude === 'false'){
+	            var lessonPath = _this.contentPath + "/" + itemName;
+	            lessonsArray.push(lessonPath);
+	            lessonsName.push(itemName);
+	            //console.log('Lesson Path : ' + lessonPath);
+		        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
+	        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
 
-        	try{
-        		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
-        	}
-        	catch(err){
-    			_this.logger.error("Error copying content.xml file " + err);
-    			callback(err, null);
-    			return;
-        	}
+	        	try{
+	        		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
+	        	}
+	        	catch(err){
+	    			_this.logger.error("Error copying content.xml file " + err);
+	    			callback(err, null);
+	    			return;
+	        	}
+	        }
 	    }        
+
+	    //#3356 error if all lessons have excludeFromPublish set to true
+	    if(lessonsArray.length == 0){
+	    	callback("A Course must have at least 1 lesson that is not 'excluded from publish' to be published.", null);
+	    	return;	    	
+	    }
 
         //fs.exists(courseXmlFile, function(exists){
         var data, etree;
