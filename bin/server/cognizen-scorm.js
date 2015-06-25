@@ -755,6 +755,7 @@ var SCORM = {
 	    	return;
 	    }
 
+	    var _contentCounter = 0;
 	    for (var i = 0; i < itemCount; i++) {
 	    	var myNode = _this.courseData.findall('./item')[i];
 	    	var itemName = myNode.get('name');
@@ -767,8 +768,8 @@ var SCORM = {
 	            lessonsName.push(itemName);
 	            //console.log('Lesson Path : ' + lessonPath);
 		        var lessonXmlContentFile = lessonPath + '/xml/content.xml';
-	        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +i+'content.xml';
-
+	        	_this.tempXmlContentFile = _this.contentPath + '/packages/' +_contentCounter+'content.xml';
+	        	_contentCounter++;
 	        	try{
 	        		fs.copySync(lessonXmlContentFile, _this.tempXmlContentFile);//, function(err){
 	        	}
@@ -1759,7 +1760,7 @@ var SCORM = {
         	if(!itemSeq.rollupProgressCompletion){
         		item += " rollupProgressCompletion=\"false\"";
         	}
-        	if(itemSeq.rollupObjectiveMeasureWeight != "1.0"){
+        	if(itemSeq.rollupObjectiveMeasureWeight != "1.0" ){
         		item += " objectiveMeasureWeight=\""+itemSeq.rollupObjectiveMeasureWeight+"\"";
         	}
         	item += " ></imsss:rollupRules>\n";
