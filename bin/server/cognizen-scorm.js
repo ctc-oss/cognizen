@@ -1760,7 +1760,7 @@ var SCORM = {
         	if(!itemSeq.rollupProgressCompletion){
         		item += " rollupProgressCompletion=\"false\"";
         	}
-        	if(itemSeq.rollupObjectiveMeasureWeight != "1.0" ){
+        	if(itemSeq.rollupObjectiveMeasureWeight != "1.0" && itemSeq.rollupObjectiveMeasureWeight != "1"){
         		item += " objectiveMeasureWeight=\""+itemSeq.rollupObjectiveMeasureWeight+"\"";
         	}
         	item += " ></imsss:rollupRules>\n";
