@@ -3,7 +3,8 @@ var fs = require('fs-extra')
 	,readdirp = require('readdirp')
 	,archiver = require('archiver')
 	,path = require('path')
-	,D = require('d.js');
+	,D = require('d.js')
+	,Utils = require('./cognizen-utils');
 
 var SCORM = {
     logger: {},
@@ -25,14 +26,16 @@ var SCORM = {
     reviewLines: '',
     reviewLines_arr: [],
     courseDisplayTitle: '',
-    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, ScormVersion, ManifestOnly) {
+    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, Scorm, Deliverable) {
         this.logger = logger;
         this.scormPath = ScormPath;
         this.contentPath = ContentPath;
         this.xmlContentFile = XmlContentPath;
         this.found = Found;
-        this.scormVersion = ScormVersion;
-        this.manonly = ManifestOnly;
+        this.scormVersion = Scorm.version;
+        this.manonly = Scorm.manifestonly; //#2764
+        this.isDeliverable = Deliverable.isDeliverable; //#2816
+        this.deliverableVersion = Deliverable.version; //#2816
         return this;
     },
 
@@ -528,7 +531,12 @@ var SCORM = {
 	_zipScormPackage: function(res, scormBasePath, imsManifestFilePath, callback) {
 		var _this = this;
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
-        //var packageFolder = _this.contentPath + '/packages/';
+        
+        //#2816
+        if(_this.isDeliverable == true){
+        	scormFileVersion += '_'+ _this.deliverableVersion +'_'+ Utils.timestamp();
+        }
+
         var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
         var output = fs.createWriteStream(outputFile);
         var archive = archiver('zip');
@@ -636,8 +644,9 @@ var SCORM = {
 
 	        }
 
-	        //add imsmanifest.xml file
-	        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+	        //Commented out - not needed, creating dup imsmanifest.xml files in package
+	        //add imsmanifest.xml file 
+	        //archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 		
 	        archive.finalize();
 
@@ -813,6 +822,11 @@ var SCORM = {
     	var outputFile = '';
     	var archive = null;
     	if(!_this.manonly){
+    		//#2816
+	        if(_this.isDeliverable == true){
+	        	scormFileVersion += '_'+ _this.deliverableVersion +'_'+ Utils.timestamp();
+	        }
+
 	        outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
 	        var output = fs.createWriteStream(outputFile);
 	        archive = archiver('zip');

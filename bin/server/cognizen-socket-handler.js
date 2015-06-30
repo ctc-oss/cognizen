@@ -2481,7 +2481,7 @@ var SocketHandler = {
                             });
 
                             //init SCORM (itemsToSave may need to be passed into init)
-                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm.version, data.scorm.manifestonly );
+                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm, data.deliverable );
 
                             _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){
@@ -2547,7 +2547,7 @@ var SocketHandler = {
                             var contentPath = path.resolve(process.cwd(), programPath);
                             var xmlContentFile = contentPath + '/xml/content.xml';
 
-                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm.version, data.scorm.manifestonly );
+                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm, data.deliverable );
 
                             _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){

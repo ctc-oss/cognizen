@@ -684,8 +684,14 @@ function launchPrefs(){
 	msg += "</select></form>";
     msg += '<div id="manonlyHolder">';
     msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
-    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
+    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>";       
     msg += '</div>'; 	
+    msg += '<div id="deliverableHolder">';
+    msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
+    msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
+    msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
+    msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";             
+    msg += '</div>';
 	msg += "</p>";
 	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
 	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
@@ -737,11 +743,35 @@ function launchPrefs(){
         if($('#scormVersion').find(':selected').text() == 'none'){
             $('#manifestOnly').prop('checked', false);
             $('#manonlyHolder').hide();
+            $('#deliverableHolder').show();
         }
         else{
-            $('#manonlyHolder').show();
+            if(!$('#deliverableActive').is(':checked')){
+                $('#manonlyHolder').show();
+            }                    
         }
-    }); 
+    });  
+
+    $('#deliverableActive').on('change', function(){
+        $('#deliverableVersionLabel').toggle();
+        $('#deliverableVersion').toggle();
+        if($('#scormVersion').find(':selected').text() == 'none'){
+            $('#manonlyHolder').hide();
+        }
+        else{
+            $('#manonlyHolder').toggle();
+        }
+    });
+
+    $('#manifestOnly').on('change', function(){
+        if($('#manifestOnly').prop('checked')){
+            $('#deliverableActive').prop('checked', false);
+            $('#deliverableHolder').hide();
+        }
+        else{
+            $('#deliverableHolder').show();
+        }
+    });
 
 	//Make it a dialog
 	$("#dialog-lessonPrefs").dialog({
@@ -1206,10 +1236,15 @@ function clickPublish(){
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	var manifestOnly = $('#manifestOnly').is(':checked');
+    var deliverable = {
+        isDeliverable : $('#deliverableActive').is(':checked'),
+        version : $('#deliverableVersion').val()
+    };
 	var publishData = {
 		content: {type: urlParams['type'], id: urlParams['id']},
 		user: {id: userID, username: username},
-		scorm: {version : myScormVersion, manifestonly: manifestOnly }
+		scorm: {version : myScormVersion, manifestonly: manifestOnly },
+		deliverable : deliverable
 	};
 
 	cognizenSocket.emit('publishContent', publishData, function(fdata) {

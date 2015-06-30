@@ -730,55 +730,54 @@ function C_Dashboard(_type) {
             msg += '<p class="validateTips">Customize your publish preferences below:</p>';
             msg += '<p>Functionalities to be added shortly.</p>';
             msg += '</div>';
-	    } else if (currentLevel == "course") {
-            msg = '<div id="dialog-updatePrefs" title="Update Publish Prefs">';
-            msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
-            //msg += '<p>';
-            //msg += '<label for="myName" class="regField">name: </label>';
-            //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
-            //msg += '</p>';
-            msg += "<br/><p>";
-            msg += "<form id='scormform' >";
-            msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
-            msg += "<select id='scormVersion'>";
-            msg += "<option>2004_4th</option>";
-            msg += "<option>2004_3rd</option>";
-            // msg += "<option>2004_4th_USSOCOM</option>";
-            // msg += "<option>2004_3rd_USSOCOM</option>";
-            msg += "<option>none</option>";
+	    }
+        else{
+            if (currentLevel == "course") {
+                msg = '<div id="dialog-updatePrefs" title="Update Publish Prefs">';
+                msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
+                msg += "<br/><p>";
+                msg += "<form id='scormform' >";
+                msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
+                msg += "<select id='scormVersion'>";
+                msg += "<option>2004_4th</option>";
+                msg += "<option>2004_3rd</option>";
+                // msg += "<option>2004_4th_USSOCOM</option>";
+                // msg += "<option>2004_3rd_USSOCOM</option>";
+                msg += "<option>none</option>";
+                msg += "</select></form>";
+
+            } 
+            else if (currentLevel == "lesson") {
+                msg = '<div id="dialog-updatePrefs" title="Publish Settings">';
+                msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
+                msg += "<br/><p>";
+                msg += "<form id='scormform' >";
+                msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
+                msg += "<select id='scormVersion'>";
+                msg += "<option>2004_4th</option>";
+                msg += "<option>2004_3rd</option>";
+                msg += "<option>1.2</option>";
+                //msg += "<option>1.2_CTCU</option>";
+                msg += "<option>none</option>";
+
+            }
+
+            //common dialog options for courses and lessons
             msg += "</select></form>";
             msg += '<div id="manonlyHolder">';
-            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
-            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
-            msg += '</div>';        
-            msg += "</p>";
+            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only : </label>";
+            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>"; 
             msg += '</div>';
-            enableRenameContentKeyEvents()
-	    } else if (currentLevel == "lesson") {
-            msg = '<div id="dialog-updatePrefs" title="Publish Settings">';
-            msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
-            //msg += '<p>';
-            //msg += '<label for="myName" class="regField">name: </label>';
-            //msg += '<input type="text" name="myName" id="myName" value="'+ myParent.find("span").first().text() + '" class="regText text ui-widget-content ui-corner-all" />';
-            //msg += '</p>';
-            msg += "<br/><p>";
-            msg += "<form id='scormform' >";
-            msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
-            msg += "<select id='scormVersion'>";
-            msg += "<option>2004_4th</option>";
-            msg += "<option>2004_3rd</option>";
-            msg += "<option>1.2</option>";
-            //msg += "<option>1.2_CTCU</option>";
-            msg += "<option>none</option>";
-            msg += "</select></form>";
-            msg += '<div id="manonlyHolder">';
-            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
-            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/><br/><br/>"; 
-            msg += '</div>';             
+            msg += '<div id="deliverableHolder">';
+            msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
+            msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
+            msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
+            msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";             
+            msg += '</div>';                           
             msg += "</p>";
-            msg += '</div>';
-            enableRenameContentKeyEvents()
-        }
+            msg += '</div>';//end dialog-updatePrefs
+            enableRenameContentKeyEvents();           
+        } 
 
          //Append the string to the stage
         $("#stage").append(msg);
@@ -787,11 +786,35 @@ function C_Dashboard(_type) {
             if($('#scormVersion').find(':selected').text() == 'none'){
                 $('#manifestOnly').prop('checked', false);
                 $('#manonlyHolder').hide();
+                $('#deliverableHolder').show();
             }
             else{
-                $('#manonlyHolder').show();
+                if(!$('#deliverableActive').is(':checked')){
+                    $('#manonlyHolder').show();
+                }                    
             }
         });  
+
+        $('#deliverableActive').on('change', function(){
+            $('#deliverableVersionLabel').toggle();
+            $('#deliverableVersion').toggle();
+            if($('#scormVersion').find(':selected').text() == 'none'){
+                $('#manonlyHolder').hide();
+            }
+            else{
+                $('#manonlyHolder').toggle();
+            }
+        });
+
+        $('#manifestOnly').on('change', function(){
+            if($('#manifestOnly').prop('checked')){
+                $('#deliverableActive').prop('checked', false);
+                $('#deliverableHolder').hide();
+            }
+            else{
+                $('#deliverableHolder').show();
+            }
+        });
 
         $("#dialog-updatePrefs").dialog({
             modal: true,
@@ -815,13 +838,27 @@ function C_Dashboard(_type) {
                 	submitPrefUpdate(myParent, currentLevel);
                 },*/
                 Publish: function(){
-                    var selectedScorm = $('#scormVersion').find(':selected').text();
-                    var manifestOnly = $('#manifestOnly').is(':checked');
-                    clickPublish(myParent, currentLevel, selectedScorm, manifestOnly);
-                    $(this).dialog("close");
-                    /*$("#myName").remove();*/
-                    $("#myType").remove();
+                    var publish = true;
+                    //if deliverableActive is checked then deliverableVersion must have a value
+                    if($('#deliverableActive').prop('checked') && $('#deliverableVersion').val().length == 0){
+                        publish = false;
+                    }
 
+                    if(publish){
+                        var selectedScorm = $('#scormVersion').find(':selected').text();
+                        var manifestOnly = $('#manifestOnly').is(':checked');
+                        var deliverable = {
+                            isDeliverable : $('#deliverableActive').is(':checked'),
+                            version : $('#deliverableVersion').val()
+                        };
+                        clickPublish(myParent, currentLevel, selectedScorm, manifestOnly, deliverable);
+                        $(this).dialog("close");
+                        /*$("#myName").remove();*/
+                        $("#myType").remove();                        
+                    }
+                    else{
+                        alert('Please indicate a deliverable version value.');
+                    }
                 }
             }
         });
@@ -829,47 +866,33 @@ function C_Dashboard(_type) {
         $("#dialog-updatePrefs").tooltip();
     }
 
-    function clickPublish(parent, level, selectedScorm, manifestOnly){
+    function clickPublish(parent, level, selectedScorm, manifestOnly, deliverable){
 
 
         if(level === 'course'){
             $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-            disableRenameContentKeyEvents()
-            var data = {
-                content: {
-                    id: currentParent.attr('id'),
-                    type: currentLevel
-                },
-                user: {
-                    id: user._id,
-                    username: user.username
-                },
-                scorm: {
-                    version: selectedScorm,
-                    manifestonly: manifestOnly 
-                }
-            };
+            disableRenameContentKeyEvents();
         }
 
         else{
             $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-            disableRenameContentKeyEvents()
-            var data = {
-                content: {
-                    id: currentParent.attr('id'),
-                    type: currentLevel
-                },
-                user: {
-                    id: user._id,
-                    username: user.username
-                },
-                scorm: {
-                    version: selectedScorm,
-                    manifestonly: manifestOnly 
-                }
-            };
-
+            disableRenameContentKeyEvents();
         }
+        var data = {
+            content: {
+                id: currentParent.attr('id'),
+                type: currentLevel
+            },
+            user: {
+                id: user._id,
+                username: user.username
+            },
+            scorm: {
+                version: selectedScorm,
+                manifestonly: manifestOnly 
+            },
+            deliverable: deliverable
+        };
 
         socket.emit('publishContent', data, function(fdata){
             if(fdata == ''){
