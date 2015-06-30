@@ -3508,7 +3508,7 @@ a.fancybox-expand {
 }
 
 
-@media only screen and (orientation:landscape) {
+@media screen and (min-aspect-ratio: 13/9) {
 	/* show rotate device message on phones in landscape orientation */
 	#landscape{
 		visibility: visible;
