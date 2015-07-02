@@ -4312,9 +4312,9 @@ a.fancybox-expand {
 		#back{
 			top: auto;
 			bottom: 0px;
-			left: 25%;
+			left: 40%;
 			right: auto;
-			width: 25%;
+			width: 20%;
 			height: 40px;
 			margin: 0px;
 		}
@@ -4322,9 +4322,9 @@ a.fancybox-expand {
 		#next{
 			top: auto;
 			bottom: 0px;
-			left: 75%;
+			left: 80%;
 			right: auto;
-			width: 25%;
+			width: 20%;
 			height: 40px;
 			margin: 0px;
 		}
@@ -4332,18 +4332,23 @@ a.fancybox-expand {
 		#help{
 			top: auto;
 			bottom: 0px;
-			left: 0px;
+			left: 20%;
 			right: auto;
-			width: 25%;
+			width: 20%;
 			height: 40px;
 			margin: 0px;
 		}
 
-		#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
+		#back .ui-button-text, #next .ui-button-text, #help .ui-button-text, #glossaryTab .ui-button-text{
 			font-size: 80%;
+			padding: 0px;
 		}		
 	
-		#back .ui-icon, #next .ui-icon, #help .ui-icon{
+		#back .ui-icon, #next .ui-icon, #help .ui-icon, #glossaryTab .ui-icon{
+			position: relative;
+			left: auto;
+			right: auto;
+			margin: auto;
 			margin-top: 3px;
 			margin-bottom: -2px;
 		}
@@ -4351,11 +4356,12 @@ a.fancybox-expand {
 		#pageCount{
 			top: auto;
 			bottom: 0px;
-			left: 50%;
+			left: 60%;
 			right: auto;
-			width: 25%;
+			width: 20%;
 			height: 40px;
-			line-height: 2.5em;
+			font-size: 85%;
+			line-height: 40px;
 			background-color: #b2b2b2;
 			margin: 0px;
 		}
@@ -4406,15 +4412,33 @@ a.fancybox-expand {
 		/*glossary pane specific*/
 		#glossaryPane{
 			left: -366px;
+			bottom: 40px;
+			width: 100%;
 		}
 
 		#glossaryTab{
-			left: 369px;
+			position: fixed;
+			top: auto;
+			bottom: 0px;
+			left: 1px !important;
+			right: auto;
+			width: 20%;
 			height: 40px;
+			margin: 0px;
+			background: #eee url(images/ui-bg_glass_0_eeeeee_1x400.png) 50% 50% repeat-x;
+			border-radius: 0px;
+			border: 1px solid #9DA6AB;
 		}
 
+		#glossaryTerms{
+			width: 100%;
+			max-width: none;
+		}
+		
 		#glossaryContent{
-			width: 360px;
+			width: 100%;
+			max-width: none;
+			left: 0px;
 		}
 
 		#addPage{
@@ -4635,20 +4659,6 @@ a.fancybox-expand {
 		}
 
 		#indexContent{
-			width: 276px;
-		}
-
-		/*glossary pane specific*/
-		#glossaryPane{
-			left: -283px;
-		}
-
-		#glossaryTab{
-			left: 289px;
-			width: 42px;
-		}
-
-		#glossaryContent{
 			width: 276px;
 		}
 

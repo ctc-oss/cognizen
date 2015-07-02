@@ -6,13 +6,12 @@
  *  	Version: 0.5
  *		Date Created: 10/19/13
  *		Created by: Philip Double
- *		Date Updated: 1/6/15
+ *		Date Updated: 7/2/15
  *		Updated by: Ryan Dingman
  *		History: 	Updates to make glossary work on tablets
  					Moved all glossary functionality into its own js file.
  *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
  *				- Optimize code.
- 				- Needs different functionality for phones, where the screen is too small for the current two pane setup.
  */
 
 var glossary = false;
@@ -36,15 +35,18 @@ function checkGlossary(){
 	if($(data).find('glossary').attr('courseGlossary') == "true"){
 		courseGlossary = true;
 	}
-	if(($(data).find('glossary').attr('value') == "true") && !isMobilePhone){  // needs to be rewritten for phones, disable on phones for now
+	if($(data).find('glossary').attr('value') == "true"){
 		glossary = true;
 		var msg = "<div id='glossaryPane' class='pane'>";
+		if(isMobilePhone){
+			msg += "<button id='glossaryTab' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary' role='button' aria-label='click here to toggle the glossary' title='click here to toggle the glossary'><span class='ui-button-icon-primary ui-icon ui-icon-note'></span><span class='ui-button-text'>glossary</span></button>";
+		}else{
 			msg += "<div id='glossaryTab' class='paneTab' role='button' aria-label='click here to toggle the glossary currently closed' title='click here to toggle the glossary'/>";
+		}
 			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
 			msg += "<div id='glossaryContent' class='glossaryContent'>";
 			msg += "<div id='glossaryClose' title='click here to close the glossary' tabindex='1' role='button' aria-label='click here to close glossary'/>";
 			msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
-			
 		$('#panes').append(msg);
 		$('#glossaryTab').click(toggleGlossary).keypress(function(event) {
 			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -53,12 +55,21 @@ function checkGlossary(){
 			}
 	    });
 
-		$('#glossaryClose').click(toggleGlossary).keypress(function(event) {
-			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-		    if (chCode == 32 || chCode == 13){
-			    $(this).click();
-			}
-	    });;
+		if(isMobilePhone){
+			$('#glossaryClose').click(hideTerm).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+				if (chCode == 32 || chCode == 13){
+					$(this).click();
+				}
+			});;
+		}else{
+			$('#glossaryClose').click(toggleGlossary).keypress(function(event) {
+				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+				if (chCode == 32 || chCode == 13){
+					$(this).click();
+				}
+			});;
+	    }
 
 		if(!isMobile){
 			$('#glossaryTab').tooltip();  // don't attach tooltip on mobile devices
@@ -177,6 +188,8 @@ function addGlossary(){
 			if(hoverSubNav == false){
 				$("#glossaryDef").html("<p class='term'><span class='label'>Term: </span>" + $(this).text() + "</p><p class='definition'><span class='label'>Definition: </span>" + $(this).data("definition") + "</p>");
 				$("#glossaryDef").focus();
+				$("#glossaryContent").css("visibility", "visible");
+				$("#glossaryClose").css("visibility", "visible");
 			}
 		}).hover(function(){
 			$(this).addClass("glossaryItemHover");
@@ -533,10 +546,24 @@ function toggleGlossary(){
 	}
 }
 
+
+/************************************************************************************************
+Function: 		closeTerm
+Param: 			none
+Description:	Hides the glossaryContent pane.
+************************************************************************************************/
+function hideTerm(){
+	$("#glossaryContent").css("visibility", "hidden");
+	$("#glossaryClose").css("visibility", "hidden");
+}
+
+
 function accShowGlossary(){
 	$("#glossaryTerms").css("visibility", "visible");
-	$("#glossaryContent").css("visibility", "visible");
-	$("#glossaryClose").css("visibility", "visible");
+	if(!isMobilePhone){
+		$("#glossaryContent").css("visibility", "visible");
+		$("#glossaryClose").css("visibility", "visible");
+	}
 }
 
 function accHideGlossary(){
