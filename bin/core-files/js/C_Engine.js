@@ -339,7 +339,7 @@ function doOnOrientationChange(){
 	stageY = $("#stage").position().top;
 	stageW = $("#stage").width();
 	stageH = $("#stage").height();
-	if( (currentTemplateType!="essayCompare") && (currentTemplateType!="chaining") && (currentTemplateType!="branching") && (currentTemplateType!="questionBank") ){
+	if( (currentTemplateType!="essayCompare") && (currentTemplateType!="chaining") && (currentTemplateType!="branching") && (currentTemplateType!="questionBank") && (currentTemplateType!="pathing") ){
 		loadPageFromID(currentPageID);
 	}
 }
