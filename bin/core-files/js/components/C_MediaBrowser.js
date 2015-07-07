@@ -7,7 +7,7 @@
 
 /**
 * Defines whether the media browser is open or closed.
-* 
+*
 * @property browserState
 * @type {Boolean}
 * @default "false"
@@ -15,7 +15,7 @@
 var mediaBrowserState = false;
 /**
 * Defines whether the media browser is displaying the root level.
-* 
+*
 * @property browserRoot
 * @type {Boolean}
 * @default "true"
@@ -23,7 +23,7 @@ var mediaBrowserState = false;
 var mediaBrowserRoot = true;
 /**
 * Defines the base media path.
-* 
+*
 * @property mediaBrowserDisplayPath
 * @type {String}
 * @default "media/"
@@ -31,7 +31,7 @@ var mediaBrowserRoot = true;
 var mediaBrowserDisplayPath = "media/";
 /**
 * Defines folder level depth.
-* 
+*
 * @property dirDepth
 * @type {Integer}
 * @default "0"
@@ -39,7 +39,7 @@ var mediaBrowserDisplayPath = "media/";
 var dirDepth = 0;
 /**
 * Defines the relative path being displayed to users for the current folder.
-* 
+*
 * @property relPath
 * @type {String}
 * @default ""
@@ -47,20 +47,20 @@ var dirDepth = 0;
 var relPath = "";
 /**
 * Variable to hold socket stream.
-* 
+*
 * @type {String}
 * @default ""
 */
 var ss;
 /**
 * Variable to hold current preview menu item.
-* 
+*
 * @type {Object}
 */
 var currentSelectedMediaPreview;
 /**
 * Variable to hold if removeMedia button was clicked.
-* 
+*
 * @type {Boolean}
 */
 var removeClicked = false;
@@ -70,37 +70,37 @@ var removeClicked = false;
 var listScroller;
 /**
 * Variable to hold folder track. Options are "media", "core", "course" and "lesson".
-* 
+*
 * @type {String}
 */
 var folderTrack = "media";
 /**
 * Variable to hold folder track path.
-* 
+*
 * @type {String}
 */
 var folderTrackPath = "./";
 /**
 * Variable to hold folder track label.
-* 
+*
 * @type {String}
 */
 var currentSelectedTrack;
 /**
 * Variable to hold queued upload file list.
-* 
+*
 * @type {Array}
 */
 var queue;
 /**
 * Variable to hold length of queue.
-* 
+*
 * @type {Number}
 */
 var queueLength;
 /**
 * Variable to hold current queue member.
-* 
+*
 * @type {Number}
 */
 var queueCurrent = 0;
@@ -111,16 +111,16 @@ var queueCurrent = 0;
 */
 function addMediaBrowser(){
 	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>").tooltip();
-									
-	$("#mediaBrowserButton").click(function(){							
-		
+
+	$("#mediaBrowserButton").click(function(){
+
 		toggleMediaBrowser();
 	}).keypress(function(event) {
         var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
         if (chCode == 32 || chCode == 13){
 	        $(this).click();
 	    }
-    });															
+    });
 }
 
 var fromDialog = false;
@@ -146,7 +146,7 @@ function toggleMediaBrowser(){
 		$("#mediaBrowserButton").addClass('C_MediaBrowserButtonActive');
 		mediaBrowserState = true;
 	}
-	
+
 	if(mediaBrowserState){
 		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
 		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
@@ -189,10 +189,10 @@ function updateFolderTrack(_track){
 		folderTrackPath = "./";
 		mediaBrowserDisplayPath = "media/"
 	}
-	
+
 	dirDepth = 0;
 	relPath = "";
-	
+
 	getMediaDir();
 }
 
@@ -232,45 +232,45 @@ function addDisplay(){
 			msg += "</div>";
 		msg += "</div>";
 	$("#mediaBrowserDisplay").append(msg);
-	
+
 	$("#mediaBrowserClose").click(function(){
 		toggleMediaBrowser();
 	});
-	
+
 	$("#mediaButton").click(function(){
 		updateFolderTrack($(this));
 	});
-	
+
 	$("#coreprogButton").click(function(){
 		updateFolderTrack($(this));
 	});
-	
+
 	$("#coursecssButton").click(function(){
 		updateFolderTrack($(this));
 	});
-	
+
 	$("#lessoncssButton").click(function(){
 		updateFolderTrack($(this));
 	});
-	
+
 	if (window.File && window.FileList && window.FileReader) {
 		// file drop
 		$("#mediaBrowserDisplay").on("dragover", FileDragHover);
 		$("#mediaBrowserDisplay").on("dragleave", FileDragLeave);
 		$("#mediaBrowserDisplay").on("drop", FileSelectHandler);
 	}
-	
+
 	currentSelectedTrack = $("#mediaButton");
-	
+
 	listScroller = $('.box-wrap').antiscroll().data('antiscroll');
-	
+
 	$('#file').change(function(e) {
 		try { cognizenSocket.removeListener('mediaBrowserConversionProgress', mediaBrowserConversionProgress); } catch (e) {}
 		try { cognizenSocket.removeListener('mediaInfo', mediaInfo);} catch (e) {}
 
     	queueFileUpload(e.target.files);
 	});
-	
+
 	getMediaDir();
 }
 
@@ -349,7 +349,7 @@ function uploadFile(_file){
 	});
 
 	$("#uploadProgress > div").css({ 'background': '#3383bb'});
-	
+
 	var file = _file;
 	var stream = ss.createStream(/* {hightWaterMark: 16 * 1024} */);
 	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
@@ -370,10 +370,10 @@ function uploadFile(_file){
 */
 function getMediaDir(_dir){
 	$("#mediaBrowserList").empty();
-	
+
 	if(_dir){
 		//Get media directory sub folder.
-		
+
 		socket.emit('getMediaDir',  {loc: folderTrack, path: _dir});
 	}else{
 		//Just get media folder
@@ -393,7 +393,7 @@ function updateMediaBrowserDir(_data){
 	var res = mediaBrowserDisplayPath.split("/");
 	//Add "up a directory" (../media) button if needed.
 	var directoryUp = true;
-	
+
 	//Define when NOT to show ../folder
 	if(res[res.length-2] == "media" && folderTrack == "media"){
 		directoryUp = false;
@@ -404,11 +404,11 @@ function updateMediaBrowserDir(_data){
 	}else if(res[res.length-3] == undefined){
 		directoryUp = false;
 	}
-	
+
 	if(directoryUp){
 		var myLabel = res[res.length-3];
 		$("#mediaBrowserList").append("<div id='mediaBrowserUpDirectory' class='mediaBrowserUpDirectory' data='"+myLabel+"'>../"+myLabel+"</div>");
-		
+
 		$("#mediaBrowserUpDirectory").click(function(){
 		   $("#mediaBrowserList").empty();
 		   //update the path display string
@@ -431,14 +431,14 @@ function updateMediaBrowserDir(_data){
 		   getMediaDir(relPath);
 	   });
 	}
-	
+
 	//Add directories
 	for (var key in _data.dirs) {
 	   var obj = _data.dirs[key];
 	   var tempID = "folder"+key;
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
-	   
+
 	   $("#"+tempID).click(function(){
 		   $("#mediaBrowserList").addClass('C_Loader');
 		   $("#mediaBrowserList").empty();
@@ -449,14 +449,14 @@ function updateMediaBrowserDir(_data){
 		   getMediaDir(relPath);
 	   });
 	}
-	
+
 	//Add files display
 	for (var key in _data.files) {
 	   var obj = _data.files[key];
 	   var tempID = "file"+key;
 	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
 	   $("#mediaBrowserList").append(msg);
-	   
+
 	   $("#"+tempID).click(function(){
 			loadMedia($(this));
 	   });
@@ -505,7 +505,7 @@ function showItemStats(){
 		}
 		msg += "</div>"
 	currentSelectedMediaPreview.append(msg);
-	
+
 	//Button Actions for interactives
 	var untouchableFiles = ["defaultLeft.png", "defaultTop.png", "defaultReveal.png", "loadingIcon.gif"];
     if (untouchableFiles.indexOf(obj) >= 0 ){
@@ -513,22 +513,22 @@ function showItemStats(){
 		$(".mediaRemove").css({'opacity': .5});
 	}else{
 		$(".mediaRemove").click(function(){
-			var myItem = relPath + obj;	
-			checkRemoveMedia(myItem);	   
+			var myItem = relPath + obj;
+			checkRemoveMedia(myItem);
 		});
 	}
-	   
+
 	$(".mediaDownload").click(function(){
 		var myItem = folderTrackPath + mediaBrowserDisplayPath +obj;
-		//downloadMedia(myItem);	   
+		//downloadMedia(myItem);
 	});
-	
+
 	$(".mediaSelect").click(function(){
 		var myType = getFileType(obj).toLowerCase();
 		var permitted = true;
 		var failType = null;
-		
-		var myItem = relPath + obj;	
+
+		var myItem = relPath + obj;
 		if(fileTarget != null){
 			//Check if file is permitted in this input.
 			if(fileTarget.attr("id") == "mediaLink" || fileTarget.attr("id").indexOf("imgPath") >= 0 || fileTarget.attr("id").indexOf("optionImg") >= 0){
@@ -538,15 +538,15 @@ function showItemStats(){
 			}else if(fileTarget.attr("id") == "audioPath"){
 				var acceptedTypes = ["mp3"];
 			}
-			
+
 			if(acceptedTypes.indexOf(myType) > -1){
 				permitted = true;
 			}else{
 				permitted = false;
 			}
-			
+
 			if(permitted){
-				fileTarget.attr('value', myItem);
+				fileTarget.attr('value', myItem).change();
 				$(".ui-dialog").show();
 				$(".ui-widget-overlay").show();
 				toggleMediaBrowser();
@@ -563,7 +563,7 @@ function showItemStats(){
 
 /**
 * Variable to hold if removeMedia button was clicked.
-* 
+*
 * @param _file {String} - file name
 */
 function downloadMedia(_file){
@@ -600,7 +600,7 @@ function checkRemoveMedia(_file){
 
 /**
 * Function to remove selected media.
-* 
+*
 * @method removeMedia
 * @param _file {Boolean} path to file to remove
 */
@@ -615,7 +615,7 @@ function removeMedia(_file){
 
 /**
 * Function to to update once removal of media is complete.
-* 
+*
 * @method mediaBrowserRemoveMediaComplete
 */
 function mediaBrowserRemoveMediaComplete(){
@@ -681,7 +681,7 @@ function mediaBrowserLoadAudioPreview(_fp){
 
 	$('#mb_audioplayer').mediaelementplayer({
         success: function(player, node) {
-			
+
 			// set volume and mute from persistant variable
 			player.setVolume(audioVolume);
 			player.setMuted(audioMute);
@@ -691,12 +691,12 @@ function mediaBrowserLoadAudioPreview(_fp){
             	audioVolume = player.volume;
             	audioMute = player.muted;
             }, false);
-            
+
             player.addEventListener('loadeddata', function(e){
 	            $("#mediaBrowserPreview").removeClass("C_Loader");
 				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
             }, false);
-            
+
             player.addEventListener('loadedmetadata', function(e){
 
             }, false);
@@ -716,7 +716,7 @@ function mediaBrowserLoadVideoPreview(_fp){
 		vidHTMLString += "</video>";
 
     $("#mediaBrowserPreviewMediaHolder").append(vidHTMLString);
-	//$('#mediaBrowserPreviewMediaHolder').css({'opacity': .1})	
+	//$('#mediaBrowserPreviewMediaHolder').css({'opacity': .1})
 	// decent browser - prefer HTML5 video
 	$('#mb_videoplayer').mediaelementplayer({
 		enablePluginSmoothing: true,
@@ -724,7 +724,7 @@ function mediaBrowserLoadVideoPreview(_fp){
 		success: function(player, node){
 			player.addEventListener('loadeddata', function(e) {
 				var imageWidth = e.target.videoWidth;
-        
+
 		        if(imageWidth > $("#mediaBrowserPreview").width()){
 			        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
 					$("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(widthScale * 100) + "% to fit preview area.");
@@ -767,7 +767,7 @@ function mediaBrowserLoadImagePreview(_fp){
 	    $("#mediaBrowserPreview").removeClass("C_Loader");
         $("#mediaBrowserPreviewMediaHolder").append(img);
         var imageWidth = $(img).width();
-        
+
         if(imageWidth > $("#mediaBrowserPreview").width()){
 	        var widthScale = $("#mediaBrowserPreview").width()/imageWidth;
 	        $(img).width($(img).width() * widthScale);

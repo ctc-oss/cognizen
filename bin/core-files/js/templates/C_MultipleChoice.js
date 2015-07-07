@@ -63,7 +63,7 @@ function C_MultipleChoice(_type) {
 	var currentItem;
 	var isTimed = false;
 	var timerLength = 0;
-	
+
 	var countdown = 0;
 
     //Defines a public method - notice the difference between the private definition below.
@@ -74,7 +74,7 @@ function C_MultipleChoice(_type) {
 	//Defines a private method - notice the difference between the public definitions above.
 	var buildTemplate = function() {
 		try { clearInterval(counter); } catch (e){}
-		
+
 		if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
@@ -104,23 +104,23 @@ function C_MultipleChoice(_type) {
 		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
 			randomize = true;
 		}
-		
+
 		if($(data).find("page").eq(currentPage).attr('timed') == "true"){
 			isTimed = true;
 			timerLength = $(data).find("page").eq(currentPage).attr('timerlength')
 		}
 
 		pageTitle = new C_PageTitle();
-		
+
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
-		
+
 		if(isTimed){
 			if(mode == "edit"){
 				$('<div id="timerDisplay" class="timer">Timer disabled in edit mode.</div>').insertAfter($("#question"));
 			}else{
 				$('<div id="timerDisplay" class="timer" aria-label="This question is timed. To disable timer, click here.">Time Remaining: '+timerLength+'</div>').insertAfter($("#question"));
 			}
-			
+
 			$("#timerDisplay").click(function(){
 				clearInterval(counter);
 			}).keypress(function(event) {
@@ -323,7 +323,7 @@ function C_MultipleChoice(_type) {
 			counter=setInterval(timer, 1000);
 		}
 	}
-	
+
 	function timer()
 	{
 	  	countdown = countdown-1;
@@ -335,15 +335,15 @@ function C_MultipleChoice(_type) {
 	     	}
 		 	return;
 	  	}
-	  	
+
 	  	if(countdown <= 5){
 	  		$("#timerDisplay").css("color", "red");
 		}else{
 			$("#timerDisplay").css("color", "black");
 		}
-	  	
+
 	  	$("#timerDisplay").text("Time Remaining: " + countdown)
-	  	
+
 	  	//document.getElementById("timer").innerHTML=count + " secs"; // watch for spelling
 	}
 
@@ -391,7 +391,7 @@ function C_MultipleChoice(_type) {
 	function checkAnswer(){
 		//////////////////////////CHECK CORRECT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 		try { clearInterval(counter); } catch (e){}
-		
+
 		var tempCorrect = true;
 		attemptsMade++;
 		var _title = pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '');
@@ -647,25 +647,29 @@ function C_MultipleChoice(_type) {
 
 	function updateOptionDialog(){
 		clearCKInstances();
-		
+
 		try { clearInterval(counter); } catch (e){}
 		try { $("#questionEditDialog").remove(); } catch (e) {}
 
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 
 		var msg = "<div id='questionEditDialog' title='Create Multiple Choice Question'>";
-		msg += "<label id='label' title='Define the number of attempts.'><b>no. of attempts: </b></label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Define the number of attempts.'><b>no. of attempts: </b></label>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>";
+		msg += '<span id="attemptsError" class="error">The value must be a numeric value</span><br/>';
+
 		msg += "<label id='label'  title='Indicates if the order of the options are randomized on this page.'><b>randomize options: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label'  title='Indicates if this question is timed.'><b>timed: </b></label>";
 		msg += "<input id='isTimed' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Define the length of the timer.'><b>timer length: </b></label>";
-		msg += "<input type='text' name='myName' id='inputTimerLength' value='"+ timerLength +"' class='dialogInput' style='width:35px;'/><br/>";
+		msg += "<input type='text' name='myName' id='inputTimerLength' value='"+ timerLength +"' class='dialogInput' style='width:35px;'/>";
+      msg += '<span id="timerLengthError" class="error">The value must be a numeric value</span><br/>';
+
 		msg += "<div id='feedbackTypeGroup'>";
 		msg += "<label id='label'><b>feedback type: </b></label>";
 		msg += "<input id='standardized' type='radio' name='manageFeedbackType' value='standardized' title='Standard feedback is used.'>standardized  </input>";
@@ -699,7 +703,7 @@ function C_MultipleChoice(_type) {
 		}else{
 			$("#isRandom").attr('checked', 'checked');
 		}
-		
+
 		if(!isTimed){
 			$("#isTimed").removeAttr('checked');
 		}else{
@@ -731,6 +735,32 @@ function C_MultipleChoice(_type) {
 			optionEdit_arr = [];
 			updateOptionDialog();
 		});
+
+		//#3230 -----------------------------------
+		$('#inputAttempts').on('change', function(){
+			if(!$.isNumeric($('#inputAttempts').val())){
+				$('#attemptsError').removeClass('error').addClass('error_show');
+				$('#inputAttempts').val(attemptsAllowed);
+			}
+			else{
+				if($('#attemptsError').hasClass('error_show')){
+					$('#attemptsError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+      $('#inputTimerLength').on('change', function(){
+			if(!$.isNumeric($('#inputTimerLength').val())){
+				$('#timerLengthError').removeClass('error').addClass('error_show');
+				$('#inputTimerLength').val(timerLength);
+			}
+			else{
+				if($('#timerLengthError').hasClass('error_show')){
+					$('#timerLengthError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+      //--------------------------------------------
 
 		updateRevealMenu();
 
@@ -820,7 +850,7 @@ function C_MultipleChoice(_type) {
 		}else{
 			$(data).find("page").eq(currentPage).attr("randomize", "false");
 		}
-		
+
 		if($("#isTimed").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("timed", "true");
 			$(data).find("page").eq(currentPage).attr("timerlength", $("#inputTimerLength").val());

@@ -26,7 +26,7 @@ function C_ClickImage(_type) {
 	var labeled = false;
 	var scroller;
     var scrollTimer;
-	
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
 		if(transition == true){
@@ -49,7 +49,7 @@ function C_ClickImage(_type) {
 		if($(data).find("page").eq(currentPage).attr('objItemId')){
 			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
 		}
-		
+
 		if($(data).find("page").eq(currentPage).attr('labeled') == "true"){
 			labeled = true;
 		}
@@ -92,20 +92,20 @@ function C_ClickImage(_type) {
 			var revID = "revID" + i;
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
-			
+
 			var msg = "<div id='"+ revID +"' class='clickImg' aria-label='"+currentAlt+"' role='button' myContent='"+ tmpContent +"'>";
 				msg += "<img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/>";
 				if(labeled){
 					msg += "<div id='mediaLabel' class='mediaLabel'>"+$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("label")+"</div>";
 				}
 				msg += "</div";
-			
+
 			$("#imgPalette").append(msg);
-			
+
 			if(labeled){
 				$(".mediaLabel").css("width", mediaWidth);
 			}
-			
+
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					updateRevealContent($(this));
@@ -114,7 +114,7 @@ function C_ClickImage(_type) {
 			        if (chCode == 32 || chCode == 13){
 				        useKeyboard = true;
 				        $(this).click();
-				        
+
 				    }
 		        });
 			}else if(interact == "hover"){
@@ -163,7 +163,7 @@ function C_ClickImage(_type) {
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 		//Select the first one...
-		
+
 		if(interact == "hover"){
 			$("#revID0").mouseover();
 		}else{
@@ -183,7 +183,7 @@ function C_ClickImage(_type) {
 		$("#clickImgText").empty();
 
 		$("#clickImgText").append(_myItem.attr("myContent"));
-		
+
 		if(isFirst){
 			isFirst = false;
 		}else{
@@ -244,17 +244,23 @@ function C_ClickImage(_type) {
 	function updateRevealDialog(){
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
+		var imageWidth = $(data).find("page").eq(currentPage).attr('w');
+		var imageHeight = $(data).find("page").eq(currentPage).attr('h');
+
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
-		msg += "<label title='Input width of images to be used.'> <b>ClickImage Image Width: </b></label>";
-		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
-		msg += "<label title='Input height of images to be used.'> <b>ClickImage Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/>  ";
 		msg += "<label id='hover' title='Define whether users click or hover over images.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
 		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
-		
-		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>ClickImage Item Menu: </b></label></div><br/><br/>";
+		msg += "<br/><label title='Input width of images to be used.'> <b>Image Width: </b></label>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + imageWidth + "' defaultValue='" + imageWidth + "' style='width:10%;'/>";
+		msg += '<span id="imageWidthError" class="error">The value must be a numeric value</span><br/>';
+		msg += "<label title='Input height of images to be used.'> <b>Image Height: </b></label>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + imageHeight + "' defaultValue='" + imageHeight + "' style='width:10%;'/>  ";
+		msg += '<span id="imageHeightError" class="error">The value must be a numeric value</span><br/>';
+
+
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
 
 		updateRevealMenu();
@@ -262,16 +268,42 @@ function C_ClickImage(_type) {
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
 		}
-		
+
 		if(labeled){
 			$("#isLabeled").attr("checked", "checked");
 		}
-		
+
 		$("#isLabeled").change(function(){
 			makeRevealDataStore();
 			//clearCKInstances();
 			try { $("#revealContainer").remove(); } catch (e) {}
 			addReveal(currentEditBankMember, false);
+		});
+
+		//#3230
+		$('#imageWidth').on('change', function(){
+			if(!$.isNumeric($('#imageWidth').val())){
+				$('#imageWidthError').removeClass('error').addClass('error_show');
+				$('#imageWidth').val(imageWidth);
+			}
+			else{
+				if($('#imageWidthError').hasClass('error_show')){
+					$('#imageWidthError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+		//#3230
+		$('#imageHeight').on('change', function(){
+			if(!$.isNumeric($('#imageHeight').val())){
+				$('#imageHeightError').removeClass('error').addClass('error_show');
+				$('#imageHeight').val(imageHeight);
+			}
+			else{
+				if($('#imageHeightError').hasClass('error_show')){
+					$('#imageHeightError').removeClass('error_show').addClass('error');
+				}
+			}
 		});
 
 		addReveal(currentEditBankMember, false);
@@ -375,7 +407,7 @@ function C_ClickImage(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
-		
+
 		if($("#isLabeled").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("labeled", "true");
 			labeled = true;
@@ -443,11 +475,11 @@ function C_ClickImage(_type) {
 		$("#revealRemove").click(function(){
 			areYouSure();
 		});
-		
+
 		$("#dialogMediaBrowseButton").click(function(){
 			$(".ui-dialog").hide();
 			$(".ui-widget-overlay").hide();
-			dialogToggleMediaBrowser($("#revealImageText"));					
+			dialogToggleMediaBrowser($("#revealImageText"));
 		});
 
 		CKEDITOR.replace( "revealContentText", {

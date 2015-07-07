@@ -416,6 +416,7 @@ function C_Sequencing(_type) {
 		var msg = "<div id='questionEditDialog' title='Create Sequencing Assessment'>";
 		msg += "<label id='label' title='Increase the number of attempts'><b>no. of attempts: </b></label>";
 		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += '<span id="attemptsError" class="error">The value must be a numeric value</span><br/>';
 		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label' title='Mandatory means that interactives on this page must be completed before proceeding. (disabled in edit mode).'><b>mandatory: </b></label>";
@@ -451,6 +452,19 @@ function C_Sequencing(_type) {
 					}
 				}
 		});} catch (e) {}
+
+		//#3230
+		$('#inputAttempts').on('change', function(){
+			if(!$.isNumeric($('#inputAttempts').val())){
+				$('#attemptsError').removeClass('error').addClass('error_show');
+				$('#inputAttempts').val(attemptsAllowed);		
+			}
+			else{
+				if($('#attemptsError').hasClass('error_show')){
+					$('#attemptsError').removeClass('error_show').addClass('error');
+				}
+			}		
+		});
 
 		updateRevealMenu();
 

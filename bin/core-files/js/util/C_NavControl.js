@@ -83,19 +83,19 @@ function ncInitialize(){
 						}else{
 							question_obj.objective = $(data).find("page").eq(i).attr('objective');
 						}
-				
+
 						if($(data).find("page").eq(i).attr('objItemId') == undefined  || $(data).find("page").eq(i).attr('objItemId') == "undefined"){
 							question_obj.objItemId = "undefined";
 						}else{
 							question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
 						}
-				
+
 						if($(data).find("page").eq(i).attr('graded') == 'true'){
 							question_obj.graded = true;
 						}else{
 							question_obj.graded = false;
 						}
-				
+
 						question_obj.id = $(data).find('page').eq(i).attr('id');
 						question_obj.subID = j;
 						question_obj.userAnswer = userSelection_arr;
@@ -111,24 +111,24 @@ function ncInitialize(){
 					}else{
 						question_obj.objective = $(data).find("page").eq(i).attr('objective');
 					}
-			
+
 					if($(data).find("page").eq(i).attr('objItemId') == undefined  || $(data).find("page").eq(i).attr('objItemId') == "undefined"){
 						question_obj.objItemId = "undefined";
 					}else{
 						question_obj.objItemId = $(data).find("page").eq(i).attr('objItemId');
 					}
-			
+
 					if($(data).find("page").eq(i).attr('graded') == 'true'){
 						question_obj.graded = true;
 					}else{
 						question_obj.graded = false;
 					}
-			
+
 					if($(data).find("page").eq(i).attr('layout') == 'textInput'){
 						var _textInputQuestions = [];
 						question_obj.textInputQuestions = _textInputQuestions;
 					}
-			
+
 					question_obj.id = $(data).find('page').eq(i).attr('id');
 					question_obj.subID = 0;
 					question_obj.userAnswer = userSelection_arr;
@@ -146,7 +146,7 @@ function ncInitialize(){
 	}
 	passScore = $(data).find('minScore').attr("value") / 100;
 
-	//END OF SCORING SET UP.	
+	//END OF SCORING SET UP.
 
 	//If the course is linear - must complete page by page - setup a page completion tracking array.
 	if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
@@ -172,8 +172,8 @@ function checkNav(){
 		$('#myCanvas').append("<div id='pageCount'></div>");
 		updatePageCount();
 	}
-	
-	
+
+
 	if(!$(data).find('closelesson').attr('value')){
 
 		$(data).find("preferences").append($('<closelesson>', data));
@@ -187,11 +187,11 @@ function checkNav(){
 			closeLesson = true;
 		}
 	}
-	
+
 	//Check if we are using help button - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
 	//helpButton = $(data).find('help').attr('value');
-	
+
 	if(!$(data).find('help').attr('value')){
 		if(mode === "edit"){
 			$(data).find("preferences").append($('<help>', data));
@@ -224,7 +224,7 @@ function checkNav(){
 			$(data).find("help").attr("height", helpHeight);
 		}
 	}
-	
+
 
 	checkHelp();
 	checkSurvey();
@@ -331,7 +331,7 @@ function addEditNav(){
 			fireConnectionError();
 		}
 	});
-	
+
 	$("#myCanvas").append("<div id='addPage' class='btn_addPage' title='add new page'></div>");
 	$("#addPage").click(function(){
 		connected = socket.socket.connected;
@@ -432,19 +432,19 @@ function launchObjEdit(){
 	}
 
 	// update the xml when the enabling is changed
-    $("#eo").on("change", function(){
-	    $(data).find('page').eq(currentPage).attr("eo", $.trim($("#eo").val().replace('<p>', '').replace('</p>', '')));
-	    //updateModuleXML(currentPageParentModule);
-    }).css({'width': '500px', 'color': '#3383bb;'});
+	$("#eo").on("change", function(){
+		$(data).find('page').eq(currentPage).attr("eo", $.trim($("#eo").val().replace('<p>', '').replace('</p>', '')));
+	 //updateModuleXML(currentPageParentModule);
+	}).css({'width': '500px', 'color': '#3383bb;'});
 
-    $("#out_pageObjective").on("change", function(){
-     	var objUpdate = $.trim($("#out_pageObjective").val());
-	   	$(data).find('page').eq(currentPage).attr('objective', objUpdate);
-	   	if($(data).find('page').eq(currentPage).attr("type") == "kc"){
-	   		questionResponse_arr[questionResponseIndex].objective = objUpdate;
-	   	}
-		//updateModuleXML(currentPageParentModule);
-    }).css({'width': '500px', 'color': '#3383bb;'});
+	$("#out_pageObjective").on("change", function(){
+		var objUpdate = $.trim($("#out_pageObjective").val());
+		$(data).find('page').eq(currentPage).attr('objective', objUpdate);
+		if($(data).find('page').eq(currentPage).attr("type") == "kc"){
+			questionResponse_arr[questionResponseIndex].objective = objUpdate;
+		}
+	//updateModuleXML(currentPageParentModule);
+	}).css({'width': '500px', 'color': '#3383bb;'});
 
 	//Make it a dialog
 	$("#dialog-objEdit").dialog({
@@ -456,6 +456,16 @@ function launchObjEdit(){
 	            text: "Done",
 	            title: "Saves and closes the media drop dialog.",
 	            click: function(){
+						//ensures input values are saved
+						$(data).find('page').eq(currentPage).attr("objItemId",$('#objItemId option:selected').val());
+						questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
+						$(data).find('page').eq(currentPage).attr("eo", $.trim($("#eo").val().replace('<p>', '').replace('</p>', '')));
+						var objUpdate = $.trim($("#out_pageObjective").val());
+						$(data).find('page').eq(currentPage).attr('objective', objUpdate);
+						if($(data).find('page').eq(currentPage).attr("type") == "kc"){
+							questionResponse_arr[questionResponseIndex].objective = objUpdate;
+						}
+						
 	            	sendUpdateWithRefresh();
 		            $(this).dialog("close");
 		            $("#dialog-objEdit").remove();
@@ -656,7 +666,7 @@ function launchPrefs(){
 			testOutOption_arr.push(tempObj);
 		}
 	}
-	
+
 	var selectedHelp = '';
 	if(courseHelp === true){
 
@@ -684,13 +694,13 @@ function launchPrefs(){
 	msg += "</select></form>";
     msg += '<div id="manonlyHolder">';
     msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
-    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>";       
-    msg += '</div>'; 	
+    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>";
+    msg += '</div>';
     msg += '<div id="deliverableHolder">';
     msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
     msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
     msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
-    msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";             
+    msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";
     msg += '</div>';
 	msg += "</p>";
 	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
@@ -717,10 +727,10 @@ function launchPrefs(){
 	//msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
 	//msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
     msg += "<select id='testOutSelect'></select></br>";
-    
+
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
-    
+
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
@@ -730,14 +740,42 @@ function launchPrefs(){
 	msg += "<div id='selectedHelp' title='Current file used for help section.'>"+selectedHelp+"</div>";
 	msg += "<label id='helpWidthLabel'>Help window width: </label>";
 	msg += "<input id='helpWidth' type='text' name='helpWidth' value='"+helpWidth+"' disabled='disabled' size='4'>";
+	msg += '<span id="helpWidthError" class="error">The value must be a numeric value</span><br/>';
 	msg += "<br/><label id='helpHeightLabel'>Help window height: </label>";
 	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";
+	msg += '<span id="helpHeightError" class="error">The value must be a numeric value</span><br/>';
 	msg += "</div><br/>";
 	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
 
 	$("#stage").append(msg);
+
+	//#3230
+	$('#helpWidth').on('change', function(){
+		if(!$.isNumeric($('#helpWidth').val())){
+			$('#helpWidthError').removeClass('error').addClass('error_show');
+			$('#helpWidth').val(helpWidth);
+		}
+		else{
+			if($('#helpWidthError').hasClass('error_show')){
+				$('#helpWidthError').removeClass('error_show').addClass('error');
+			}
+		}
+	});
+
+	//#3230
+	$('#helpHeight').on('change', function(){
+		if(!$.isNumeric($('#helpHeight').val())){
+			$('#helpHeightError').removeClass('error').addClass('error_show');
+			$('#helpHeight').val(helpHeight);
+		}
+		else{
+			if($('#helpHeightError').hasClass('error_show')){
+				$('#helpHeightError').removeClass('error_show').addClass('error');
+			}
+		}
+	});
 
     $('#scormVersion').on("change", function(){
         if($('#scormVersion').find(':selected').text() == 'none'){
@@ -748,9 +786,9 @@ function launchPrefs(){
         else{
             if(!$('#deliverableActive').is(':checked')){
                 $('#manonlyHolder').show();
-            }                    
+            }
         }
-    });  
+    });
 
     $('#deliverableActive').on('change', function(){
         $('#deliverableVersionLabel').toggle();
@@ -809,7 +847,7 @@ function launchPrefs(){
 		]
 	});
 
-	
+
 
 	$("#clearLessonComments").button().click(function(){
 		openCommentKillerDialog();
@@ -825,13 +863,13 @@ function launchPrefs(){
 		$("#hasGlossary").attr('checked', false);
 		$("#hasCourseGlossary").attr("disabled", true);
 	}
-	
+
 	if(courseGlossary == true){
 		$("#hasCourseGlossary").attr('checked', true);
 	} else{
 		$("#hasCourseGlossary").attr('checked', false);
 	}
-	
+
 	$("#hasGlossary").change(function(){
 		if($(this).prop("checked") == true){
 			$("#hasCourseGlossary").removeAttr("disabled");
@@ -839,7 +877,7 @@ function launchPrefs(){
 			$("#hasCourseGlossary").attr("disabled", true);
 		}
 	});
-	
+
 	$("#hasCourseGlossary").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("glossary").attr("courseGlossary", "true");
@@ -847,7 +885,7 @@ function launchPrefs(){
 			$(data).find("glossary").attr("courseGlossary", "false");
 		}
 	});
-	
+
 	if(hasSurvey == true){
 		$("#hasSurvey").attr('checked', true);
 	} else{
@@ -855,7 +893,7 @@ function launchPrefs(){
 		$("#inputSurveyLinkLabel").hide();
 		$("#inputSurveyLink").hide();
 	}
-	
+
 	$("#hasSurvey").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("survey").attr("value", "true");
@@ -869,13 +907,13 @@ function launchPrefs(){
 			hasSurvey = false;
 		}
 	});
-	
+
 	if(closeLesson == true){
 		$("#hasCloseLesson").attr('checked', true);
 	}else{
 		$("#hasCloseLesson").attr('checked', false);
 	}
-	
+
 	$("#hasCloseLesson").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("closelesson").attr("value", "true");
@@ -885,26 +923,26 @@ function launchPrefs(){
 			closeLesson = false;
 		}
 	});
-	
+
 	if(testOut == true){
 		$("#hasTestOut").attr('checked', true);
 	}else{
 		$("#hasTestOut").attr('checked', false);
 		$("#testOutSelect").hide();
 	}
-	
+
 	$(testOutOption_arr).each(function(){
 		$("#testOutSelect").append($("<option>").attr('value', this.id).text(this.title));
 	});
-	
+
 	if($(data).find("testout").attr("link") != "null"){
 		$("#testOutSelect").val($(data).find("testout").attr("link"));
 	}
-	
+
 	$("#testOutSelect").change(function(){
 		console.log($("#testOutSelect option:selected").val());
 	});
-	
+
 	$("#hasTestOut").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("testout").attr("value", "true");
@@ -913,10 +951,10 @@ function launchPrefs(){
 		}else{
 			$(data).find("testout").attr("value", "false");
 			$("#testOutSelect").hide();
-			testOut = false;	
+			testOut = false;
 		}
 	});
-	
+
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 
 	$("#inputHelp").attr('data-content', contentId);
@@ -931,13 +969,13 @@ function launchPrefs(){
 		$("#helpWidth").attr('disabled', true);
 		$("#helpHeight").attr('disabled', true);
 	}
-	
+
 	if(courseHelp == true){
 		$("#hasCourseHelp").attr('checked', true);
 	}else{
 		$("#hasCourseHelp").attr('checked', false);
 	}
-	
+
 	$("#hasCourseHelp").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("help").attr("course", "true");
@@ -946,7 +984,7 @@ function launchPrefs(){
 				var tmpURL = "../" + $(data).find("help").attr("url");
 				$(courseData).find("course").attr("help", tmpURL);
 				sendCourseUpdate();
-				$("#selectedHelp").text(tmpURL); 				
+				$("#selectedHelp").text(tmpURL);
 			}
 			else{
 				$("#selectedHelp").text($(courseData).find("course").attr("help"));
@@ -960,12 +998,26 @@ function launchPrefs(){
 			$("#selectedHelp").text(tmpURL);
 			$(data).find("help").attr("url", tmpURL);
 		}
-		
+
 		forceUpdateOnSave = true;
 	});
 
 	$("#hasHelp").click(function() {
 		$("#inputHelp").toggle(this.checked);
+
+		if($("#helpWidth").prop('disabled')){
+			$("#helpWidth").attr('disabled', false);
+		}
+		else{
+			$("#helpWidth").attr('disabled', true);
+		}
+
+		if($("#helpHeight").prop('disabled')){
+			$("#helpHeight").attr('disabled', false);
+		}
+		else{
+			$("#helpHeight").attr('disabled', true);
+		}
 	});
 
 	$("#inputHelp").click(function(){
@@ -1014,7 +1066,7 @@ function launchPrefs(){
 			}
 		}
 	});
-	
+
 	//If course help - once file moved commit to git
 	socket.on("courseHelpLocationUpdated", function(){
 		doGitCommit();
@@ -1075,8 +1127,8 @@ function savePreferences(_pub){
 	var glossarySelected = $("#hasGlossary").is(':checked');
 	var courseGlossarySelected = $("#hasCourseGlossary").is(':checked');
 	var updateNeeded = false;
-	
-	
+
+
 	courseTitle = $("#altCourseTitle").val();
 	if(courseTitle != $(courseData).find('course').attr('coursedisplaytitle')){
 		updateNeeded = true;
@@ -1085,7 +1137,7 @@ function savePreferences(_pub){
 	$(courseData).find('course').attr('coursedisplaytitle', courseTitle);
 	sendCourseUpdate();
 	$("#courseTitle").text(courseTitle);
-	
+
 	lessonTitle = $("#altLessonTitle").val();
 	if(lessonTitle != $(data).find("lessondisplaytitle").attr("value")){
 		updateNeeded = true;
@@ -1093,21 +1145,21 @@ function savePreferences(_pub){
 	$(data).find("lessondisplaytitle").attr("value", lessonTitle);
 	$("#lessonTitle").text(lessonTitle);
 	document.title = lessonTitle;
-	
+
 	if(glossary != glossarySelected){
 		glossary = glossarySelected;
 		$(data).find('glossary').attr('value', glossarySelected);
 		updateNeeded = true;
 	}
-	
+
 	if(courseGlossary != courseGlossarySelected){
 		courseGlossary = courseGlossarySelected;
 		$(data).find('glossary').attr('courseGlossary', courseGlossarySelected);
 		updateNeeded = true;
 	}
-	
+
 	var surveySelected = $("#hasSurvey").is(':checked');
-	
+
 	if(hasSurvey){
 		$(data).find('survey').attr('value', surveySelected);
 		hasSurvey = surveySelected;
@@ -1115,9 +1167,9 @@ function savePreferences(_pub){
 		$(data).find('survey').attr('link', $("#inputSurveyLink").val());
 		updateNeeded = true;
 	}
-	
+
 	var testoutSelected = $("#hasTestOut").is(':checked');
-	
+
 	if(testOut != undefined){
 		$(data).find('testout').attr('value', testoutSelected);
 		testOut = testoutSelected;
@@ -1125,14 +1177,14 @@ function savePreferences(_pub){
 		$(data).find('testout').attr('link', $("#testOutSelect option:selected").val());
 		updateNeeded = true;
 	}
-	
+
 	var closeLessonSelected = $("#hasCloseLesson").is(':checked');
 	//console.log(closeLessonSelected);
 	if(closeLesson){
 		$(data).find('closelesson').attr('value', closeLessonSelected);
 		updateNeeded = true;
 	}
-	
+
 	var selectedScorm = $('#scormVersion').find(':selected').text();
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	if(selectedScorm != myScormVersion){
@@ -1154,16 +1206,16 @@ function savePreferences(_pub){
 
 	if(helpSelected){
 		helpButton = true;
-	}else{ 
-		helpButton = false; 
+	}else{
+		helpButton = false;
 	}
-	
+
 	//Force an update to the xml if a new help file is uploaded.
 	if(forceUpdateOnSave == true){
 		updateNeeded = true;
 		forceUpdateOnSave = false;
 	}
-	
+
 	if(updateNeeded == true && _pub != true){
 		sendUpdateWithRefresh("updatePrefs");
 		$("#dialog-lessonPrefs").dialog("close");
@@ -1190,27 +1242,27 @@ function updatePrefs(_pub){
 	    	data = _data;
 	    	$("#glossaryPane").remove();
 			if($(data).find('glossary').attr('value') == "true"){
-				glossary = true;				
+				glossary = true;
 			}else{
 				glossary = false;
 			}
-			
+
 			if($(data).find('survey').attr('value') == "true"){
-				hasSurvey = true;	
-				surveyLink = $(data).find('survey').attr('link');			
+				hasSurvey = true;
+				surveyLink = $(data).find('survey').attr('link');
 			}else{
 				hasSurvey = false;
 			}
-			
+
 			if($(data).find('testout').attr('value') == "true"){
-				testOut = true;	
-				testLink = $(data).find('testout').attr('link');			
+				testOut = true;
+				testLink = $(data).find('testout').attr('link');
 			}else{
 				testOut = false;
 			}
-			
+
 			if($(data).find('closelesson').attr('value') == "true"){
-				closeLesson = true;				
+				closeLesson = true;
 			}else{
 				closeLesson = false;
 			}
@@ -1218,7 +1270,7 @@ function updatePrefs(_pub){
 			if(_pub == true){
 				clickPublish();
 			}
-			
+
 			checkGlossary();
 			checkHelp();
 			checkSurvey();
@@ -1267,7 +1319,7 @@ function checkSurvey(){
 		}else{
 			hasSurvey = false;
 		}
-		
+
 		$("#survey").button().click(function(){
 			if(surveyLink == "null"){
 				alert("The link for the survey has not been set.");
@@ -1292,7 +1344,7 @@ function checkTestOut(){
 		}else{
 			testOut = false;
 		}
-		
+
 		$("#testOut").button().click(function(){
 			if(testLink == "null"){
 				alert("The link for the test has not been set.");
@@ -1315,7 +1367,7 @@ function checkCloseLesson(){
 	try{ $("#closeLesson").remove();} catch(e){}
 	if(closeLesson){
 		$("#myCanvas").append("<button id='closeLesson' title='Click here close your lesson.'>CLOSE LESSON</button>");
-		
+
 		$("#closeLesson").button().click(function(){
 			//#3550 updated to call scorm call.
 			//#3568
@@ -1346,17 +1398,17 @@ function checkCloseLesson(){
 				}
 				else{
 			        switch(scorm.version){
-			            case "1.2" : 
-							scorm.API.getHandle().LMSFinish("");	
+			            case "1.2" :
+							scorm.API.getHandle().LMSFinish("");
 			            	break;
-			            //2004	
-			            default : 
+			            //2004
+			            default :
 							scorm.API.getHandle().Terminate("");
 			            	break;
-			        }					
+			        }
 
 				}
-				
+
 			}
 			window.close();
 		});
@@ -1364,7 +1416,7 @@ function checkCloseLesson(){
 }
 
 function checkHelp(){
-	if($(data).find('help').attr('course') === 'true'){	
+	if($(data).find('help').attr('course') === 'true'){
 		if(!$(courseData).find("course").attr("help")){
 			helpButton = false;
 		}
@@ -1383,8 +1435,8 @@ function checkHelp(){
 
 		var loc = window.location.pathname;
 		var dir = loc.substring(0, loc.lastIndexOf('/'));
-		
-		if($(data).find('help').attr('course') === 'true'){	
+
+		if($(data).find('help').attr('course') === 'true'){
 			helpURL = $(courseData).find("course").attr("help");
 		}
 		else{
@@ -1615,7 +1667,7 @@ function checkNavButtons(){
 		enableIndex();
 		enableHome();
 	}
-	
+
 	if(mode == "edit" && indexDisabled == true){
 		mandatoryInteraction = false;
 		enableIndex();
@@ -1724,12 +1776,12 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 				isMatch = true;
 			}
 		}
-		
+
 		if(isMatch){
 			if(mode != "edit"){
 				questionResponse_arr[i].complete = true;
 			}
-			
+
 			questionResponse_arr[i].userAnswer = [];
 			for(var j = 0; j < _userSelection.length; j++){
 				questionResponse_arr[i].userAnswer.push(_userSelection[j]);
@@ -1739,7 +1791,7 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 			if(_order){
 				questionResponse_arr[i].order = _order;
 			}
-			
+
 			//Show proper bank item, if a bank...
 			if(_bankID != undefined){
 				questionResponse_arr[i].bankID = _bankID;
@@ -1753,11 +1805,11 @@ function updateScoring(_userSelection, _correct, _order, _bankID, _subID){
 
 		//NWC (NEL) courses do not persist score of tests
 		if($(courseData).find("course").attr("lms") != 'NEL'){
-			//create string version of questionResponse_arr to be used in suspend_data	
+			//create string version of questionResponse_arr to be used in suspend_data
 			var qrString = '';
 			for(var i = 0; i < questionResponse_arr.length; i++){
-				qrString += JSON.stringify(questionResponse_arr[i]) + "|";	
-			}	
+				qrString += JSON.stringify(questionResponse_arr[i]) + "|";
+			}
 
 			scorm.set("cmi.suspend_data", qrString);
 		}
@@ -1874,7 +1926,7 @@ function markIncomplete(){
 				// 	questionResponse_arr[i].textInputQuestions[j].feedback = '';
 				// 	questionResponse_arr[i].textInputQuestions[j].userAttempts = 0;
 				// 	questionResponse_arr[i].textInputQuestions[j].dropDownComplete = false;
-				// 	questionResponse_arr[i].textInputQuestions[j].dropDownAnswer = '';					
+				// 	questionResponse_arr[i].textInputQuestions[j].dropDownAnswer = '';
 
 				// }
 			}
@@ -1883,7 +1935,7 @@ function markIncomplete(){
 }
 
 function addPathingTracking(_id){
-	
+
 	var paths_arr = [];
 	var pathingPage = {
 		id: _id,
@@ -1977,7 +2029,7 @@ this.loadPage = function(){
 			});
 		}
 		else{
-			updateRedmineCommentIcon();		
+			updateRedmineCommentIcon();
 		}
 	}
 
@@ -2003,9 +2055,9 @@ this.loadPage = function(){
 
 	if(mode == "edit"){
 		//clear the page comments from last page
-		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top" 
-			|| currentTemplateType == "left" || currentTemplateType == "bottom" 
-			|| currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia" 
+		if(currentTemplateType == "graphicOnly" || currentTemplateType == "top"
+			|| currentTemplateType == "left" || currentTemplateType == "bottom"
+			|| currentTemplateType == "right" || currentTemplateType == "multipleChoiceMedia"
 			|| currentTemplateType == "tabsLeft"){
 
 			$("#mediaDrop").css("visibility","hidden");
@@ -2067,11 +2119,11 @@ this.loadPage = function(){
 		case "pathing":
 			currentTemplate = new C_Pathing(currentTemplateType);
 			currentTemplate.initialize();
-			break;			
+			break;
 		case "chaining":
 			currentTemplate = new C_Chaining(currentTemplateType);
 			currentTemplate.initialize();
-			break;			
+			break;
 		case "clickImage":
 			currentTemplate = new C_ClickImage(currentTemplateType);
 			currentTemplate.initialize();
@@ -2164,7 +2216,7 @@ this.loadPage = function(){
 		case "slider":
 			currentTemplate = new C_Slider(currentTemplateType);
 			currentTemplate.initialize();
-			break;	
+			break;
 		//UNITY SWF Layouts
 		case "unity":
 			currentTemplate = new C_Unity3D(currentTemplateType);

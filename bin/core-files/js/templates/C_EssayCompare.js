@@ -6,12 +6,12 @@
  * DATE: 2014-4-28
  * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved. 
- * 
+ * Copyright (c) 2014, CTC. All rights reserved.
+ *
  * @author: Tyler Shumaker, shumaket@ctc.com
- * 
+ *
  * This function allows for multiple parameters including:
- * 		1. 
+ * 		1.
  */
 function C_EssayCompare(_type) {
 	var type = _type;
@@ -19,18 +19,18 @@ function C_EssayCompare(_type) {
     var questionCount = 0;
     var graded = false;
     var mandatory = true;
-    var myObjective = "undefined";
-    var myObjItemId = "undefined";
+   //  var myObjective = "undefined";
+   //  var myObjItemId = "undefined";
     var feedbackDisplay;
     var scormVersion;
 	var isComplete = false;
- 
+
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-		
+
 		buildTemplate();
 	}
 
@@ -51,14 +51,14 @@ function C_EssayCompare(_type) {
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false" || $(data).find("page").eq(currentPage).attr('mandatory') == undefined){
 			mandatory = false;
 		}
-		
-		if($(data).find("page").eq(currentPage).attr('objective')){
-			myObjective = $(data).find("page").eq(currentPage).attr('objective');
-		}
-		
-		if($(data).find("page").eq(currentPage).attr('objItemId')){
-			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
-		}	
+
+		// if($(data).find("page").eq(currentPage).attr('objective')){
+		// 	myObjective = $(data).find("page").eq(currentPage).attr('objective');
+		// }
+		//
+		// if($(data).find("page").eq(currentPage).attr('objItemId')){
+		// 	myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
+		// }
 
 		pageTitle = new C_PageTitle();
 
@@ -67,13 +67,15 @@ function C_EssayCompare(_type) {
 		msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 		msg += '<div id="questionHolder"></div>';
 		msg += '<div id="essayCompareHolder" class="essayCompareHolder">';
-		msg += '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
-		msg += '</div></div></div></div>';		
+		//msg += '<div id="essayInputHolder"><textarea rows="12" cols="50" name="essayInput" id="essayInput"></textarea></div>';
+		msg += '<div id="essayInputHolder"><div type="text" name="essayInput" id="essayInput" contenteditable="true" class="dialogInput"></div></div>';
+		//"
+		msg += '</div></div></div></div>';
 
 		try { audioHolder.destroy(); } catch (e) {}
-		
+
 		audioHolder = new C_AudioHolder();
-		
+
 		$('#stage').append(msg);
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
 		if(isIE){
@@ -90,7 +92,7 @@ function C_EssayCompare(_type) {
 		if(isComplete){
 			for(var i = 0; i < questionResponse_arr.length; i++){
 				if(currentPageID == questionResponse_arr[i].id){
-					$("#essayInput").val(questionResponse_arr[i].userAnswer[0]);
+					$("#essayInput").text(questionResponse_arr[i].userAnswer[0]);
 					$("#essayInput").attr('readonly','readonly');
 				}
 			}
@@ -101,16 +103,16 @@ function C_EssayCompare(_type) {
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 			//$('#mcSubmit').css({"top": "300px"});
-			$("#mcSubmit").click(checkEssay);	
+			$("#mcSubmit").click(checkEssay);
 		}
 		else{
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
-		
+
 		pageAccess_arr.push($("#essayInput"));
 		pageAccess_arr.push($("#mcSubmit"));
-		
+
 		checkMode();
 
 		if(transition == true){
@@ -121,8 +123,8 @@ function C_EssayCompare(_type) {
 
 	function checkEssay(){
 		var msg = '';
-		if($('#essayInput').val() === ""){
-			msg = '<div id="dialog-attemptResponse" class="correct" >Please answer the question in the text box.</div>';	
+		if($("#essayInput").text() === ""){
+			msg = '<div id="dialog-attemptResponse" class="correct" >Please answer the question in the text box.</div>';
 		}
 		else{
 			$("#mcSubmit").remove();
@@ -134,42 +136,43 @@ function C_EssayCompare(_type) {
 			$("#essayInput").attr('readonly','readonly');
 
 			var _selected_arr = [];
-			_selected_arr.push($('#essayInput').val());
+			_selected_arr.push($("#essayInput").text());
 
 			//set SCORM objectives
-			var _objId = "";
-	    	if(myObjective != undefined && myObjective !== "undefined"){
-	    		//console.log(i + " : " + pageObj);
-	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
-	 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
-	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
-	 						myObjective.replace(/\s+/g, '_');
-
-	    	}
-
-	    	if(myObjItemId != undefined && myObjItemId !== "undefined"){
-	    		if(_objId.length > 0){
-	    			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
-	    		}
-	    		else{
-		 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
-	 						pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
-	 						myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');						    			
-	    		}
-	    	}
-
-			if(_objId.length > 0){	
-				_objId += "_id";
-				if(graded){
-					setObjectiveSuccess(_objId, true);
-				}
-			}	
-
+			// var _objId = "";
+			//   	if(myObjective != undefined && myObjective !== "undefined"){
+	    // 		//console.log(i + " : " + pageObj);
+	 	// 		//check for duplicates; manipulate objective name if so (this may not work!!!!)
+	 	// 		_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 	// 					myObjective.replace(/\s+/g, '_');
+			//
+			//   	}
+			//
+			//   	if(myObjItemId != undefined && myObjItemId !== "undefined"){
+	    // 		if(_objId.length > 0){
+	    // 			_objId += "." + myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+	    // 		}
+	    // 		else{
+		 // 			_objId = $(data).find("lessonTitle").attr("value").replace(/\s+/g, '') +"."+
+	 	// 					pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '')+"."+
+	 	// 					myObjItemId.replace(/\s+/g, '_').replace(/:/g, '');
+	    // 		}
+			//   	}
+			//
+			// if(_objId.length > 0){
+			// 	_objId += "_id";
+			// 	if(graded){
+			// 		setObjectiveSuccess(_objId, true);
+			// 	}
+			// }
+			//set SCORM objective for page - C_SCORM.js
+			setPageObjective(true, graded);
 
 			updateScoring(_selected_arr, true);
 
 			mandatoryInteraction = false;
-			checkNavButtons();	
+			checkNavButtons();
 
 		}
 
@@ -188,7 +191,7 @@ function C_EssayCompare(_type) {
 					OK: function(){
 						$( this ).dialog( "close" );
 						$("#dialog-attemptResponse").remove();
-						if($('#essayInput').val() === ""){
+						if($("#essayInput").text() === ""){
 							$("#essayInput").focus();
 						}else{
 							$("#expertResponse").focus();
@@ -198,15 +201,15 @@ function C_EssayCompare(_type) {
 			});
 			$( "#dialog-attemptResponse" ).focus();
 		}else if(feedbackDisplay == "inline"){
-			
-		}				
+
+		}
 	}
 
 	function _addExpertResponse(){
 		var correctResponse = $.trim($(data).find("page").eq(currentPage).find('correctresponse').text()).replace("<![CDATA[", "").replace("]]>", "").replace(/<br.*?>/g, "\u2028");
 		//var expert = '<div id="expertResponseHolder"><textarea rows="12" cols="50" name="expertResponse" id="expertResponse" tabindex=0 readOnly="readonly">'+ correctResponse +'</textarea></div>';
 		var expert = '<div id="expertResponseHolder"><div id="expertResponse">'+ correctResponse +'</div></div>';
-		$("#essayCompareHolder").append(expert);		
+		$("#essayCompareHolder").append(expert);
 	}
 
 	///////////////////////////////////////////////
@@ -215,7 +218,7 @@ function C_EssayCompare(_type) {
 		$('.antiscroll-wrap').antiscroll();
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		//
-		if(mode == "edit"){		
+		if(mode == "edit"){
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -225,7 +228,7 @@ function C_EssayCompare(_type) {
 				updateQuestionEditDialog();
 			}).tooltip();
 		}
-	}	
+	}
 
 	function updateQuestionEditDialog(){
 		var msg = "<div id='questionEditDialog' title='Create Essay Compare Question'>";
@@ -233,16 +236,12 @@ function C_EssayCompare(_type) {
 		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'><b>mandatory: </b></label>";
 		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</br>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>question objective: </label>";
-		msg += "<input type='text' name='myName' id='inputObjective' value='"+ myObjective +"' class='dialogInput' style='width: 440px;' title='Unique description of the objective.'/><br/><br/>";
-		msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ myObjItemId +"' class='dialogInput' style='width: 440px;' title='Name of the modules or lesson the objective is mapped to.'/><br/><br/>";		
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputCRLabel'><b>Expert Response: </b></div>";
 		msg += "<div id='inputCorrectResponse' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='inputFeedbackLabel'><b>Feedback: </b></div>";
-		msg += "<div id='inputFeedback' class='dialogInput' contenteditable='true'></div>";			
+		msg += "<div id='inputFeedback' class='dialogInput' contenteditable='true'></div>";
 		msg += "</div><br/>"
 
 		$("#stage").append(msg);
@@ -274,7 +273,7 @@ function C_EssayCompare(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit the expert response.");
 		    	}
-		    }			
+		    }
 		});
 
 		CKEDITOR.inline( "inputFeedback", {
@@ -287,8 +286,8 @@ function C_EssayCompare(_type) {
 		      instanceReady: function(event){
 		         $(event.editor.element.$).attr("title", "Click here to edit the feedback.");
 		    	}
-		    }			
-		});		
+		    }
+		});
 
         if(!graded){
 			$("#isGraded").removeAttr('checked');
@@ -319,7 +318,7 @@ function C_EssayCompare(_type) {
 			close: function(){
 				$("#questionEditDialog").remove();
 			}
-		});	
+		});
 
 		//adds tooltips to the edit dialog buttons
 	    $('button').eq(3).attr('title', 'Saves and closes the edit dialog.');
@@ -327,17 +326,15 @@ function C_EssayCompare(_type) {
 	        $(document).tooltip();
 	    });
 
-	}	
+	}
 
 	function makeQuestionDataStore(){
 		var tmpObj = new Object();
-		tmpObj.objective = $("#inputObjective").val();
-		tmpObj.objItemId = $("#inputObjItemId").val();
 		tmpObj.correctResponse = CKEDITOR.instances["inputCorrectResponse"].getData();
 		try{ CKEDITOR.instances["inputCorrectResponse"].destroy() } catch (e) {}
 
 		tmpObj.feedback = CKEDITOR.instances["inputFeedback"].getData();
-		try{ CKEDITOR.instances["inputFeedback"].destroy() } catch (e) {}		
+		try{ CKEDITOR.instances["inputFeedback"].destroy() } catch (e) {}
 
 		if($("#isGraded").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("graded", "true");
@@ -360,12 +357,12 @@ function C_EssayCompare(_type) {
 	}
 
 	function saveQuestionEdit(_data){
-		
+
 		var questionUpdate = _data.question;
 		var questionDoc = new DOMParser().parseFromString('<question></question>', 'text/xml')
 		var questionCDATA = questionDoc.createCDATASection(questionUpdate);
 		$(data).find("page").eq(currentPage).find("question").empty();
-		$(data).find("page").eq(currentPage).find("question").append(questionCDATA);				
+		$(data).find("page").eq(currentPage).find("question").append(questionCDATA);
 
 		var correctResponseUpdate = _data.correctResponse;
 		var correctResponseDoc = new DOMParser().parseFromString('<correctresponse></correctresponse>', 'text/xml')
@@ -377,15 +374,11 @@ function C_EssayCompare(_type) {
 		var feedbackDoc = new DOMParser().parseFromString('<feedback></feedback>', 'text/xml')
 		var feedbackCDATA = feedbackDoc.createCDATASection(feedbackUpdate);
 		$(data).find("page").eq(currentPage).find('feedback').eq(0).empty();
-		$(data).find("page").eq(currentPage).find('feedback').eq(0).append(feedbackCDATA);		
+		$(data).find("page").eq(currentPage).find('feedback').eq(0).append(feedbackCDATA);
 
-		$(data).find("page").eq(currentPage).attr("objective", _data.objective);
-		$(data).find("page").eq(currentPage).attr("objItemId", _data.objItemId);
 		for(var j = 0; j < questionResponse_arr.length; j++){
 			if(questionResponse_arr[j].id == $(data).find('page').eq(currentPage).attr('id')){
 				questionResponse_arr[j].graded = _data.graded;
-				questionResponse_arr[j].objective = _data.objective;
-				questionResponse_arr[j].objItemId = _data.objItemId;
 			}
 		}
 		$(data).find("page").eq(currentPage).attr("graded", _data.graded);
@@ -393,7 +386,7 @@ function C_EssayCompare(_type) {
 
 		sendUpdateWithRefresh();
 		fadeComplete();
-		
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////END ACCESSIBILITY
@@ -401,8 +394,8 @@ function C_EssayCompare(_type) {
 	this.destroySelf = function() {
 		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
     }
-    
+
     this.fadeComplete = function(){
         	fadeComplete();
-	}			
+	}
 }

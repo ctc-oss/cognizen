@@ -1027,7 +1027,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			var msg = "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
-			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div><br/>";
+			msg += '<span id="videoWidthError" class="error">The value must be a numeric value</span><br/>';
+			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div>";
+			msg += '<span id="videoHeightError" class="error">The value must be a numeric value</span><br/>';
 			msg += "<label id='label'>autoplay: </label>";
 			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
 			msg += "<label id='label'>autonext: </label>";
@@ -1079,6 +1081,32 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					$('#posterFile').hide();
 				}
 			});
+
+			//#3230
+			$('#videoWidth').on('change', function(){
+				if(!$.isNumeric($('#videoWidth').val())){
+					$('#videoWidthError').removeClass('error').addClass('error_show');
+					$('#videoWidth').val(mediaWidth);		
+				}
+				else{
+					if($('#videoWidthError').hasClass('error_show')){
+						$('#videoWidthError').removeClass('error_show').addClass('error');
+					}
+				}						
+			});
+
+			//#3230
+			$('#videoHeight').on('change', function(){
+				if(!$.isNumeric($('#videoHeight').val())){
+					$('#videoHeightError').removeClass('error').addClass('error_show');
+					$('#videoHeight').val(mediaHeight);		
+				}
+				else{
+					if($('#videoHeightError').hasClass('error_show')){
+						$('#videoHeightError').removeClass('error_show').addClass('error');
+					}
+				}						
+			});	
 
 			$("#videoDialog").dialog({
             	autoOpen: true,

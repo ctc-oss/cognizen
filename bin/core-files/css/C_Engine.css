@@ -1568,7 +1568,7 @@ MEDIA LAYOUTS
 	float				  : left;
 	left				  : -147px;
 	bottom				  : 43px;
-	overflow 			  : hidden;	
+	overflow 			  : hidden;
 	background-color      : rgba(255, 255, 255, .95);
 	-moz-border-radius    : 8px;
 	-webkit-border-radius : 8px;
@@ -1662,7 +1662,7 @@ MEDIA LAYOUTS
 	font-size 			  	: 8pt;
 	color 				  	: white;
 	text-indent				: 5px;
-	line-height				: 200%; 	
+	line-height				: 200%;
 }
 
 .box-wrap{
@@ -1806,11 +1806,11 @@ MEDIA LAYOUTS
 	color					: purple;
 	background			  	: rgba(255, 255, 255, 1) url(images/file.gif) no-repeat left top;
     height					: 80px;
-    cursor					: auto; 
+    cursor					: auto;
 }
 
 .mbItemStatsHolder{
-	
+
 }
 
 .mbItemControlHolder{
@@ -1821,12 +1821,12 @@ MEDIA LAYOUTS
 	height: 30px;
 }
 
-.mediaRemove { 
+.mediaRemove {
 	position: relative;
 	float: right;
 	width: 30px;
-	height: 30px; 
-	margin-left: 5px; 
+	height: 30px;
+	margin-left: 5px;
 	background: url(images/mbRemove.png) no-repeat;
 	cursor: hand;
 }
@@ -1835,7 +1835,7 @@ MEDIA LAYOUTS
 	position: relative;
 	float: right;
 	right: 5px;
-	margin-left: 5px; 
+	margin-left: 5px;
 	width: 30px;
 	height: 30px;
 	background: url(images/mbDownload.png) no-repeat;
@@ -1846,7 +1846,7 @@ MEDIA LAYOUTS
 	position: relative;
 	float: right;
 	width: 30px;
-	height: 30px; 
+	height: 30px;
 	background: url(images/mbSelect.png) no-repeat;
 	cursor: hand;
 }
@@ -2343,8 +2343,7 @@ ESSAY COMPARE LAYOUTS
 
 #essayInput, #expertResponse{
 	width: 100%;
-	height: 210px;
-	padding: 5px;
+	padding: 5px 0 210px 5px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 100%;
 	border: 1px solid #ccc;
@@ -2782,7 +2781,7 @@ ESSAY COMPARE LAYOUTS
 
 #glossaryContent:before{
 	content: "Glossary";
-	color: #9da6ab; 
+	color: #9da6ab;
 	display: block;
 	margin: 10px !important;
 	font-size: 1.64em;
@@ -2796,7 +2795,17 @@ p.term span.label{
 p.term{
 	margin: 0px 0px 5px 0px;
 }
-	 
+
+.error{
+    display: none;
+    margin-left: 10px;
+}
+
+.error_show{
+    color: red;
+    margin-left: 10px;
+}
+
 p.definition span.label{
 	font-weight: bold;
 }
@@ -2818,7 +2827,7 @@ p.definition span.label{
 	width: 24px;
 	height: 24px;
 	position: relative;
-	float: right;	
+	float: right;
 }
 
 .glossaryItem{
@@ -3717,7 +3726,7 @@ a.fancybox-expand {
 	#scrollableListPalette .box{
 		width: 318px;
 	}
-	
+
 	.buttonPalette{
 		max-width: 100%;
 	}
@@ -3789,7 +3798,7 @@ a.fancybox-expand {
 	#transcriptHolder{
 		height: 195px;
 	}
-	
+
 	#transcriptHolder p{
 		margin-top: 0px;
 	}
@@ -4153,7 +4162,7 @@ a.fancybox-expand {
 		max-width: 350px;
 		height: 100%;
 	}
-	
+
 	#glossaryContent{
 		left: 50%;
 		width: 50%;
@@ -4198,9 +4207,10 @@ a.fancybox-expand {
 			width: 245px;
 		}
 
-		#essayInput, #expertResponse{
+		/*#essayInput, #expertResponse{
 			height: 280px;
-		}
+			padding: 5px 0 210px 5px;
+		}*/
 
 	}
 
@@ -4341,8 +4351,8 @@ a.fancybox-expand {
 
 		#back .ui-button-text, #next .ui-button-text, #help .ui-button-text{
 			font-size: 80%;
-		}		
-	
+		}
+
 		#back .ui-icon, #next .ui-icon, #help .ui-icon{
 			margin-top: 3px;
 			margin-bottom: -2px;
@@ -4382,13 +4392,13 @@ a.fancybox-expand {
 		}
 
 		#essayInput, #expertResponse{
-			height: auto;
+			padding: 5px;
 		}
 
 		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect{
 			max-width: 95%;
 		}
-		
+
 	/*index pane specific*/
 		#indexPane{
 			left: -368px;
@@ -4472,7 +4482,7 @@ a.fancybox-expand {
 			margin-top: 3px;
 			margin-bottom: 5px;
 		}
-		
+
 		.clickListTextHolder .box{
 			width: 100%;
 		}
@@ -4480,7 +4490,7 @@ a.fancybox-expand {
 		.transcriptDisplay{
 			max-width: 360px;
 		}
-		
+
 		.transcriptbox{
 			width: 347px;
 		}
@@ -4575,7 +4585,7 @@ a.fancybox-expand {
 		.transcriptDisplay{
 			max-width: 320px;
 		}
-		
+
 		.transcriptbox{
 			width: 307px;
 		}
@@ -4609,7 +4619,7 @@ a.fancybox-expand {
 		.transcriptDisplay{
 			max-width: 305px;
 		}
-		
+
 		.transcriptbox{
 			width: 292px;
 		}
@@ -4666,7 +4676,7 @@ a.fancybox-expand {
 		.transcriptDisplay{
 			max-width: 265px;
 		}
-		
+
 		.transcriptbox{
 			width: 252px;
 		}

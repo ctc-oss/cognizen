@@ -36,7 +36,7 @@ function C_Pathing(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-		
+
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
@@ -78,7 +78,7 @@ function C_Pathing(_type) {
 		try { $("#sidebarHolder").remove(); } catch (e) {}
 		try { $("#buttonPalette").remove(); } catch (e) {}
 		try { $("#transcriptPane").remove(); } catch (e) {}
-		
+
 		clearMainCKEInstances();
 
 		//remove existing scrollable content.
@@ -89,15 +89,15 @@ function C_Pathing(_type) {
 		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
 
 		pageTitle = new C_PageTitle(_id);
-		
+
 		buildContentText(_id);
-		
+
 		buildBranchOptions(_id);
 		checkMode();
 
 		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
-			updateRedmineCommentIcon();		
-		}	
+			updateRedmineCommentIcon();
+		}
 
 		doAccess(pageAccess_arr);
 	}
@@ -118,7 +118,7 @@ function C_Pathing(_type) {
 		    // scrollableContent.position.top changes after contentHolder.height is set for the first time
 		    // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		    
+
 		    if(isMobilePhone){
 				$("#contentHolder").prepend(myContent);
 			}else{
@@ -146,13 +146,13 @@ function C_Pathing(_type) {
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
 			if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-			}		
+			}
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
 	    }
-	    
+
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -200,11 +200,11 @@ function C_Pathing(_type) {
 				var widthAdjust = 35;
 
 				//check object for when running in SCORM
-				var scormObjSuccess = getObjectiveSuccess(pageId + "_" + homePage_arr[i].pathid.toString()) 
+				var scormObjSuccess = getObjectiveSuccess(pageId + "_" + homePage_arr[i].pathid.toString())
 				if(scormObjSuccess == "passed"){
 					pathBtnComplete = true;
 					pathCompletion_arr.push({pathid: pathId, completion: pathComplete});
-					updatePathingTracking(pageId, pathCompletion_arr);					
+					updatePathingTracking(pageId, pathCompletion_arr);
 				}
 
 				if(pathBtnComplete){
@@ -215,25 +215,25 @@ function C_Pathing(_type) {
 					allCompleted = false;
 					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				}
-				
+
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
 				});
 				paletteWidth += $("#"+myOption).width() + widthAdjust;
-				pageAccess_arr.push($("#"+myOption));				
+				pageAccess_arr.push($("#"+myOption));
 			};
 
 			if(mandatory && allCompleted){
 				mandatoryInteraction = false;
-				checkNavButtons();				
+				checkNavButtons();
 			}
-					
+
 		}
 		else{
 			if(homePage_arr.length == 0){
 				createHomePageArray(1);
 			}
-			
+
 			var buttonLabel = "Previous";
 			var buttonID = "";
 			var pathComplete = false;
@@ -246,14 +246,14 @@ function C_Pathing(_type) {
 					break;
 				}
 			}
-			
+
 			if(w == 0){
 				//buttonLabel = 'Home';//$(data).find("page").eq(currentPage).find("branch").eq(0).find("title").text();
 				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id");
 			}
 			else{
 				//buttonLabel = 'Back';//$(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
-				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(w).attr("id");		
+				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(w).attr("id");
 			}
 
 			var myOption = "option0";
@@ -263,7 +263,7 @@ function C_Pathing(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			});
 			paletteWidth += $("#"+myOption).width() + 5;
-			pageAccess_arr.push($("#"+myOption));	
+			pageAccess_arr.push($("#"+myOption));
 
 			//next button
 
@@ -284,7 +284,7 @@ function C_Pathing(_type) {
 			}
 			else{
 				//buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text();
-				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(h).attr("id");				
+				buttonID = $(data).find("page").eq(currentPage).find("branch").eq(h).attr("id");
 			}
 
 			myOption = "option1";
@@ -302,7 +302,7 @@ function C_Pathing(_type) {
 			paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 
-			$("#pageTitle").text($("#pageTitle").text() + " (" + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");				
+			$("#pageTitle").text($("#pageTitle").text() + " (" + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");
 		}
 		$("#buttonPalette").width(paletteWidth);
 
@@ -330,7 +330,7 @@ function C_Pathing(_type) {
 				if(!exists){
 					homePage_arr.push({index: _id, pathid: pathId});
 				}
-				
+
 				createHomePageArray(_id+1);
 			}
 		}
@@ -372,7 +372,7 @@ function C_Pathing(_type) {
 			}
 		}
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     checkMode - Check if authoring is needed and enable it...
@@ -399,14 +399,14 @@ function C_Pathing(_type) {
 							enableNext();
 							enableBack();
 							$('.btn_branch').attr('aria-disabled', 'false');
-							$('.btn_branch').button('option', 'disabled', false);							
+							$('.btn_branch').button('option', 'disabled', false);
 						},
 						focus: function (event){
 							cachedTextPreEdit = event.editor.getData();
 							disableNext();
 							disableBack();
 							$('.btn_branch').attr('aria-disabled', 'true');
-							$('.btn_branch').button('option', 'disabled', true);						
+							$('.btn_branch').button('option', 'disabled', true);
 						}
 					},
 					toolbar: contentToolbar,
@@ -415,7 +415,7 @@ function C_Pathing(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Content
 			********************************************************/
@@ -432,8 +432,8 @@ function C_Pathing(_type) {
 							enableNext();
 							enableBack();
 							$('.btn_branch').attr('aria-disabled', 'false');
-							$('.btn_branch').button('option', 'disabled', false);						
-						
+							$('.btn_branch').button('option', 'disabled', false);
+
 						},
 						focus: function (event){
 							cachedTextPreEdit = event.editor.getData();
@@ -449,7 +449,7 @@ function C_Pathing(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -465,7 +465,7 @@ function C_Pathing(_type) {
 			}).tooltip();
 		}
     }
-    
+
     function updateBranchDialog(){
 	    var msg = "<div id='branchEditDialog' title='Create Pathing Exercise'>";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
@@ -474,17 +474,17 @@ function C_Pathing(_type) {
 		msg += "<div id='branchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Path Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
-		
+
 		if(!mandatory){
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		updateRevealMenu();
 
 		addOption(currentEditBankMember, false);
-		
+
 		//#3321 fixes dialog jumping issue
 		$.ui.dialog.prototype._focusTabbable = function(){};
 
@@ -501,7 +501,7 @@ function C_Pathing(_type) {
 					title: "Saves and closes the edit dialog.",
 					click: function(){
 						pathCompletion_arr = [];
-						updatePathingTracking(pageId, pathCompletion_arr);							
+						updatePathingTracking(pageId, pathCompletion_arr);
 				        makeRevealDataStore();
 						saveBranchingEdit();
 						clearCKInstances();
@@ -519,7 +519,7 @@ function C_Pathing(_type) {
 	        $(document).tooltip();
 	    });
     }
-    
+
     function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -543,10 +543,10 @@ function C_Pathing(_type) {
 
 		for(var h = 0; h < homePage_arr.length; h++){
 			var label = "path" + homePage_arr[h].pathid;
-			var pageIndex = homePage_arr[h].index; 
+			var pageIndex = homePage_arr[h].index;
 			var tmpID = "revealItem"+(h+1);
 			msg += "<div id='"+tmpID+"' class='questionBankItem";
-			if(currentEditBankMember == pageIndex || 
+			if(currentEditBankMember == pageIndex ||
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("pathid") ==  homePage_arr[h].pathid){
 				msg += " selectedEditBankMember";
 			}else{
@@ -580,7 +580,7 @@ function C_Pathing(_type) {
 			}).tooltip();
 		}
 	}
-	
+
 	function makeRevealDataStore(){
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
@@ -599,7 +599,7 @@ function C_Pathing(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		}
-		
+
 		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
@@ -617,7 +617,7 @@ function C_Pathing(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
 			}
 		}
-		
+
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 
@@ -630,9 +630,9 @@ function C_Pathing(_type) {
 			}
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("img", $("#optionImg" + i).val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("altbtntitle", $("#optionAlt" + i).val());
-		} 		
+		}
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
@@ -662,13 +662,13 @@ function C_Pathing(_type) {
 			clearCKInstances();
 			var tempID = $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("id");
 			var optionLength = $(data).find("page").eq(currentPage).find("option").length;
-			
+
 			//CLEAR OUT ALL LINKS TO THIS BRANCH IN THE XML...
 			for(var i = optionLength - 1; i >= 0; i--){
 				if($(data).find("page").eq(currentPage).find("option").eq(i).attr("id") == tempID){
 					$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 				}
-			} 
+			}
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
@@ -676,7 +676,7 @@ function C_Pathing(_type) {
 			$("#branchEditDialog").dialog("close");
 			$("#branchEditDialog").remove();
 			homePage_arr = [];
-			createHomePageArray(1);				
+			createHomePageArray(1);
 			updateBranchDialog();
 		}else{
 			alert("you must have at least one bank item.");
@@ -687,9 +687,9 @@ function C_Pathing(_type) {
 		var optionLabel = parseInt(_addID) + 1;
 		var currentPageType = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype");
 		var currentPathId = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathid");
-		
+
 		if(_isNew == true){
-			
+
 			_addID = branchCount;
 			$(data).find("page").eq(currentPage).append($("<branch>"));
 			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
@@ -710,11 +710,11 @@ function C_Pathing(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathid", currentPathId);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype", "branch");			
+			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype", "branch");
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
-		
+
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != ""){
 			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text();
 		}else{
@@ -731,31 +731,31 @@ function C_Pathing(_type) {
 
 		var transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").text();
 		//alert("coming in " + transcriptText);
-		
+
 		var autoNext = false;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autonext") == "true"){
 			autoNext = true;
 		}
-		
+
 		var autoPlay = false;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autoplay") == "true"){
 			autoPlay = true;
 		}
-		
+
 		var hasPoster = false;
 		var posterLink = "input poster path";
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "input poster path"){
 	    	hasPoster = true;
 	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
 	    }
-		
+
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 
 		if(currentPageType != "home"){
-			msg += "<div id='pageBranchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Page Branch Menu: </b></label></div><br/><hr/>";				
+			msg += "<div id='pageBranchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Page Branch Menu: </b></label></div><br/><hr/>";
 			msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
 		}
-		
+
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
@@ -774,32 +774,38 @@ function C_Pathing(_type) {
 				var mediaWidth = 0;
 				var mediaHeight = 0;
 			}
-			
+
 			/*if(posterLink == null){
 				posterLink = "null";
 			}*/
-			
+
 			var hasTranscript = false;
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
 				hasTranscript = true;
 			}
-			
+
 			var subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('subs');
-	     	
+
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
 			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
 			msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
+			msg += '<div id="mediaSize">';
 			msg += "<label id='mediaWidthLabel'>Media Width:</label>";
-			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
+			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:35px;'/>";
+			msg += '<span id="widthError" class="error">The value must be a numeric value</span><br/>';
 			msg += "<label id='mediaHeightLabel'>Media Height:</label>";
-			msg += "<input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/>";
+			msg += "<input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:35px;'/>";
+			msg += '<span id="heightError" class="error">The value must be a numeric value</span>';
+			msg += '</div>';//end mediaSize
+			msg += '<div id="mediaCheckboxs">';
 			msg += "<label id='autoplayLabel'>autoplay: </label>";
-			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>&nbsp;&nbsp;";
 			msg += "<label id='autonextLabel'>autonext: </label>";
-			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input>&nbsp;&nbsp;";
 			msg += "<label id='posterLabel'>poster: </label>";
-			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
-			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/><br/>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>&nbsp;&nbsp;";
+			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/>";
+			msg += '</div>';//end mediaCheckboxs
 			msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'><b>Transcript:</b> </label>";
 			msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/>";
 			msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
@@ -812,53 +818,69 @@ function C_Pathing(_type) {
 			msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
 			msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		}
-		
+
 		if(currentLayout == "sidebar"){
 			msg += "<div id='sidebarInput' style='padding-bottom:5px;'><b>edit branch sidebar: </b></div>";
 			msg += "<div id='sidebarText' contenteditable='true' class='dialogInput'>" + branchSidebar + "</div>";
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
-		
+
 		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 			$("#dialogMediaBrowseButton").click(function(){
 				$(".ui-dialog").hide();
 				$(".ui-widget-overlay").hide();
-				dialogToggleMediaBrowser($("#mediaLink"));					
+				dialogToggleMediaBrowser($("#mediaLink"));
 			});
 		}
-		
+		//#3230
+		$('#mediaWidth').on('change', function(){
+			if(!$.isNumeric($('#mediaWidth').val())){
+				$('#widthError').removeClass('error').addClass('error_show');
+				$('#mediaWidth').val(mediaWidth);
+			}
+			else{
+				if($('#widthError').hasClass('error_show')){
+					$('#widthError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+		//#3230
+		$('#mediaHeight').on('change', function(){
+			if(!$.isNumeric($('#mediaHeight').val())){
+				$('#heightError').removeClass('error').addClass('error_show');
+				$('#mediaHeight').val(mediaHeight);
+			}
+			else{
+				if($('#heightError').hasClass('error_show')){
+					$('#heightError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+		$('#poster').on('change', function(){
+			if($('#poster').prop("checked") == true){
+				$('#posterFile').show();
+			}
+			else{
+				$('#posterFile').hide();
+			}
+		});
+
 		var tempType = getFileType($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img'));
 		if(tempType == "mp4" || tempType == "swf"){
-			$("#mediaWidthLabel").show();
-			$("#mediaWidth").show();
-			$("#mediaHeightLabel").show();
-			$("#mediaHeight").show();
+			$("#mediaSize").show();
 		}else{
-			$("#mediaWidthLabel").hide();
-			$("#mediaWidth").hide();
-			$("#mediaHeightLabel").hide();
-			$("#mediaHeight").hide();
+			$("#mediaSize").hide();
 		}
-		
+
 		if(tempType == "mp4"){
-			$("#posterLabel").show();
-			$("#poster").show();
-			$("#posterFile").show();
-			$("#autoplayLabel").show();
-			$("#autoplay").show();
-			$("#autonextLabel").show();
-			$("#autonext").show();
+			$("#mediaCheckboxs").show();
 		}else{
-			$("#posterLabel").hide();
-			$("#poster").hide();
-			$("#posterFile").hide();
-			$("#autoplayLabel").hide();
-			$("#autoplay").hide();
-			$("#autonextLabel").hide();
-			$("#autonext").hide();
+			$("#mediaCheckboxs").hide();
 		}
-		
+
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
@@ -882,15 +904,15 @@ function C_Pathing(_type) {
 					currentEditBankMember = $(this).attr("data-myID");
 					updateBranchDialog();
 				}).tooltip();
-			}			
+			}
 
 			$("#optionContainer").append("<br/><div id='addPathPage' value='"+_addID+"'>add page</div><br/><br/>");
-			
+
 			$("#addPathPage").button().click(function(){
 				makeRevealDataStore();
 				clearCKInstances();
 				try { $("#optionContainer").remove(); } catch (e) {}
-				addOption(currentEditBankMember, true);	
+				addOption(currentEditBankMember, true);
 			});
 		}
 		else{
@@ -927,16 +949,16 @@ function C_Pathing(_type) {
 					$(tmpID).click(function(){
 						$(".ui-dialog").hide();
 						$(".ui-widget-overlay").hide();
-						dialogToggleMediaBrowser($(tmpIMG));					
-					});					
+						dialogToggleMediaBrowser($(tmpIMG));
+					});
 				}
 				var activeString = 'optionActive'+i;
-				$('#'+activeString).change(toggle_handler(i));				
+				$('#'+activeString).change(toggle_handler(i));
 			}
 
 			//add path button
 			$("#optionContainer").append("<br/><div id='addPath' value='"+_addID+"'>add path</div><br/><br/>");
-			
+
 			$("#addPath").button().click(function(){
 				makeRevealDataStore();
 				clearCKInstances();
@@ -944,37 +966,39 @@ function C_Pathing(_type) {
 				$("#branchEditDialog").remove();
 				addPath(revealMenu_arr.length);
 				homePage_arr = [];
-				createHomePageArray(1);				
-				updateBranchDialog();		
-			});			
+				createHomePageArray(1);
+				updateBranchDialog();
+			});
 		}
-			
+
 		if(!autoNext){
 			$("#autonext").removeAttr('checked');
 		}else{
 			$("#autonext").attr('checked', 'checked');
 		}
-		
+
 		if(!hasTranscript){
 			$("#isTranscript").removeAttr('checked');
 		}else{
 			$("#isTranscript").attr('checked', 'checked');
 		}
-		
+
 		$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
-		
+
 		if(!hasPoster){
 			$("#poster").removeAttr('checked');
+			$('#posterFile').hide();
 		}else{
 			$("#poster").attr('checked', 'checked');
+			$('#posterFile').show();
 		}
-		
+
 		if(!autoPlay){
 			$("#autoplay").removeAttr('checked');
 		}else{
 			$("#autoplay").attr('checked', 'checked');
-		}		
-		
+		}
+
 		if(!hasTranscript){
 			$('#inputTranscriptLabel').hide();
 			$('#inputTranscript').hide();
@@ -992,41 +1016,23 @@ function C_Pathing(_type) {
 			    }
 			});
 		}
-		
+
 		$("#mediaLink").change(function(){
 			var myType = getFileType($(this).val());
-			
+
 			if(myType == "mp4" || myType == "swf"){
-				$("#mediaWidthLabel").show();
-				$("#mediaWidth").show();
-				$("#mediaHeightLabel").show();
-				$("#mediaHeight").show();
+				$("#mediaSize").show();
 			}else{
-				$("#mediaWidthLabel").hide();
-				$("#mediaWidth").hide();
-				$("#mediaHeightLabel").hide();
-				$("#mediaHeight").hide();
+				$("#mediaSize").hide();
 			}
-			
+
 			if(myType == "mp4"){
-				$("#posterLabel").show();
-				$("#poster").show();
-				$("#posterFile").show();
-				$("#autoplayLabel").show();
-				$("#autoplay").show();
-				$("#autonextLabel").show();
-				$("#autonext").show();
+				$("#mediaCheckboxs").show();
 			}else{
-				$("#posterLabel").hide();
-				$("#poster").hide();
-				$("#posterFile").hide();
-				$("#autoplayLabel").hide();
-				$("#autoplay").hide();
-				$("#autonextLabel").hide();
-				$("#autonext").hide();
+				$("#mediaCheckboxs").hide();
 			}
 		});
-		
+
 		$('#isTranscript').change(function(){
 			if($("#isTranscript").prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "true");
@@ -1052,7 +1058,7 @@ function C_Pathing(_type) {
 				$('#inputTranscript').hide();
 			}
 		});
-			
+
 		$("#autonext").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "true");
@@ -1060,7 +1066,7 @@ function C_Pathing(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "false");
 			}
 		});
-		
+
 		$("#autoplay").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "true");
@@ -1072,7 +1078,7 @@ function C_Pathing(_type) {
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-		
+
 		if(currentLayout != "graphicOnly"){
 			CKEDITOR.inline( "optionText", {
 				toolbar: contentToolbar,
@@ -1096,7 +1102,7 @@ function C_Pathing(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
-		
+
 		if(currentLayout == "sidebar"){
 			CKEDITOR.inline( "sidebarText", {
 				toolbar: contentToolbar,
@@ -1111,7 +1117,7 @@ function C_Pathing(_type) {
 			    }
 			});
 		}
-		
+
 		//CKEDITOR.instances.editor1.on('blur', function() {
          //alert('onblur fired');
       //});
@@ -1143,7 +1149,7 @@ function C_Pathing(_type) {
 				updateBranchDialog();
 			});
 		}
-		
+
 		if(currentLayout != "graphicOnly"){
 			CKEDITOR.instances.optionText.on('blur', function(){
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
@@ -1160,7 +1166,7 @@ function C_Pathing(_type) {
 	}
 
 	function toggle_handler( j ) {
-	    return function(event) { 
+	    return function(event) {
 	        $('#optionImg'+j).toggle();
 	        $('#optionImgLabel'+j).toggle();
 	        $('#optionAlt'+j).toggle();
@@ -1169,17 +1175,17 @@ function C_Pathing(_type) {
 			$("#browseMB" + j).click(function(){
 				$(".ui-dialog").hide();
 				$(".ui-widget-overlay").hide();
-				dialogToggleMediaBrowser($("#optionImg" + j));					
+				dialogToggleMediaBrowser($("#optionImg" + j));
 			});
 	    };
 	}
-	
+
 	function createPathBank(_id){
 		revealPageMenu_arr = [];
 		var msg = '';
 		var counter = 1;
 		for(var h = 0; h < branchCount; h++){
-			if($(data).find("page").eq(currentPage).find("branch").eq(h).attr('pathid') == _id){		
+			if($(data).find("page").eq(currentPage).find("branch").eq(h).attr('pathid') == _id){
 				var label = counter;
 				var tmpID = "revealItemPage"+h;
 				msg += "<div id='"+tmpID+"' class='questionBankItem";
@@ -1204,8 +1210,8 @@ function C_Pathing(_type) {
 		}
 
 
-			
-		return msg;		
+
+		return msg;
 	}
 
 	function addPath(_id){
@@ -1238,24 +1244,24 @@ function C_Pathing(_type) {
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathid", newPathId);
-		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype", "branch");			
+		$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype", "branch");
 		//currentEditBankMember = _addID;
 		branchCount++;
 	}
-   
+
     function clearCKInstances(){
 
 		if (CKEDITOR.instances['sidebarText']) {
             CKEDITOR.instances.sidebarText.destroy();
         }
 	}
-	
+
 	function clearMainCKEInstances(){
 		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
-    
+
      /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -1277,7 +1283,7 @@ function C_Pathing(_type) {
 	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
-	
+
 	/**********************************************************************
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
@@ -1293,7 +1299,7 @@ function C_Pathing(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM

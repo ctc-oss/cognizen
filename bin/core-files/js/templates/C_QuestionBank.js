@@ -59,35 +59,35 @@ function C_QuestionBank(_type) {
     var questionDisplay_arr = [];
     var questionsComplete = 0; //
     var score_arr = [];
-    
+
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize= function(){
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
-        
+
         if(transition == true){
 			$('#stage').css({'opacity':0});
 		}
-		
+
 		if($(data).find("page").eq(currentPage).attr('graded') == "true"){
 			graded = true;
 		}
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
 			mandatory = false;
 		}
-		
+
 		selectbankitems();
 	}
-	
+
 	function showCompleteResult(){
 		mandatory = false;
 		mandatoryInteraction = false;
 		checkNavButtons();
 		pageTitle = new C_PageTitle();
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content" class="contentTop"></div></div></div>');
-		
+
 		var numberCorrect = 0;
 		for(var i = 0; i < questionResponse_arr.length; i++){
 			if(currentPageID == questionResponse_arr[i].id){
@@ -96,35 +96,35 @@ function C_QuestionBank(_type) {
 				}
 			}
 		}
-		
+
 		var msg = "<p>You have already completed this question bank.</p>.";
 			msg += "<p>You got " + numberCorrect + " out of " + toComplete + " correct.</p>";
 			msg += "<button id='done'>Proceed</button>";
-		
+
 		$("#content").append(msg);
-		
-		
+
+
 		$("#done").click(function(){
 			$("#next").click();
 		});
-		
+
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
 	}
-	
+
 	function selectbankitems(){
 		if(mode != "edit"){
 			isComplete = checkQuestionComplete();
 		}
-				
+
 		bankLength = $(data).find("page").eq(currentPage).find("bankitem").length;
-		
+
 		//This is undefined for old question banks so always false.
 		if($(data).find("page").eq(currentPage).attr("tocomplete")){
 			toComplete = parseInt($(data).find("page").eq(currentPage).attr("tocomplete"));
 		}
-		
+
 		//This is undefined for old question banks so always false.
 		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
 			showAll = true;
@@ -190,7 +190,7 @@ function C_QuestionBank(_type) {
 		if(toComplete > 1){
 			$("#pageTitle").text($("#pageTitle").text() + " (question " + (questionsComplete + 1)  + " of " + toComplete + ")");
 		}
-		
+
 		$('#stage').append('<div id="scrollableContent" class="antiscroll-wrap top"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="question" class="questionTop"></div><div id="answerOptions"></div></div></div></div>');
 
 		audioHolder = new C_AudioHolder();
@@ -216,7 +216,7 @@ function C_QuestionBank(_type) {
 		}else{
 			$("#question").append(myContent);
 		}
-		
+
 		//var ariaText = $("#question").text().replace(/\'/g, "").replace(/\"/g, "");
 		//$("#question").attr("aria-label", ariaText);
 		//pageAccess_arr.push($("#question"));
@@ -238,7 +238,7 @@ function C_QuestionBank(_type) {
 		if(randomize){
 			var order_arr = shuffleArray(order_arr);
 		}
-		
+
 		//find every option in the xml - place them on the screen.
 		for(var j = 0; j < order_arr.length; j++){
 			var myNode = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).find("option").eq(order_arr[j]);
@@ -318,10 +318,10 @@ function C_QuestionBank(_type) {
 
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr("btnText"), disabled: true });
 		$("#mcSubmit").click(checkAnswer);
-		
+
 		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
 		pageAccess_arr.push($("#mcSubmit"));
-		
+
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
 			$("#contentHolder").css("margin-bottom", "-16px");
@@ -346,7 +346,7 @@ function C_QuestionBank(_type) {
 		if(transition == true){
 			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
 		}
-		
+
 		doAccess(pageAccess_arr);
 	}
 
@@ -683,24 +683,26 @@ function C_QuestionBank(_type) {
 
 	function updateQuestionEditDialog(){
 		try { $("#questionEditDialog").remove(); } catch (e) {}
-		
+
 		var tempToComplete;
 		if($(data).find("page").eq(currentPage).attr("tocomplete")){
 			tempToComplete = $(data).find("page").eq(currentPage).attr("tocomplete");
 		}else{
 			tempToComplete = 1;
 		}
-		
+
 		var msg = "<div id='questionEditDialog' title='Edit Question Bank'>";
 		msg += "<label style='position: relative; float: left; margin-right:20px;'><b>Bank Preferences: </b></label>";
 		msg += "<label id='label' title='Indicates if this page is graded.'>graded: </label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'>mandatory: </label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' />&nbsp;&nbsp;";
 		msg += "<label id='label' title='Indicates if ALL questions should be presented.'>show all: </label>";
-		msg += "<input id='isShowAll' type='checkbox' name='showAll' class='radio' value='true' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label' title='Indicates number of questions to be presented.'>ask how many: </label>";
-		msg += "<input type='text' name='inputNumberToPresent' id='inputNumberToPresent' value='"+ tempToComplete +"' class='dialogInput' style='width:35px;'/><br/>";
+		msg += "<input id='isShowAll' type='checkbox' name='showAll' class='radio' value='true' /><br/>";
+		msg += "<div id='inputNumberHolder'><label id='label' title='Indicates number of questions to be presented.'>ask how many: </label>";
+		msg += "<input type='text' name='inputNumberToPresent' id='inputNumberToPresent' value='"+ tempToComplete +"' class='dialogInput' style='width:35px;'/>";
+		msg += '<span id="inputNumberToPresentError" class="error">The value must be a numeric value</span></div><br/>';
+
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Questions Menu: </b></label>";
 		var questionMenu_arr = [];
 		for(var h = 0; h < bankLength; h++){
@@ -728,16 +730,18 @@ function C_QuestionBank(_type) {
 		}
 		msg += "</div><br/><br/>";
 		var labelNumber = parseInt(currentEditBankMember) + 1;
+		var inputAttemptsAllowed = $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts');
 		msg += "<div><b>Edit Question #" + labelNumber + ":</b></div>";
 		msg += "<div id='currentEditQuestion' class='editItemContainer'>"
 
 		msg += "<div id='removeBankItem' class='removeMedia' title='Click to remove this bank item'/>";
 
 		msg += "<div><label style='margin-right:20px;'><b>Question Preferences: </b></label>";
-		msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ $(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).attr('attempts') +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		msg += "<label id='label'>randomize options: </label>";
-		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this question.'/><br/>";
+		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true' title='Indicates if the order of the options are randomized on this question.'/>&nbsp;&nbsp;";
+		msg += "<label id='label'>no. of attempts: </label>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ inputAttemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>";
+		msg += '<span id="attemptsError" class="error">The value must be a numeric value</span><br/>';
 		msg += "<div id='label'><b>Input your question: </b></div>";
 		msg += "<div id='questionEditText' class='dialogInput' contenteditable='true'></div>";
 		msg += "<div id='feedbackTypeGroup'>";
@@ -799,22 +803,22 @@ function C_QuestionBank(_type) {
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
 			$("#isShowAll").attr('checked', 'checked');
-			$('#inputNumberToPresent').prop('disabled', true);
+			$('#inputNumberHolder').hide();
 		}else{
 			$("#isShowAll").removeAttr('checked');
-			$('#inputNumberToPresent').prop('disabled', false);
+			$('#inputNumberHolder').show();
 		}
 
-		//disables inputNumberToPresent if isShowAll is checked. 
+		//disables inputNumberToPresent if isShowAll is checked.
 		$('#isShowAll').change(function(){
 			if($("#isShowAll").prop("checked") == true){
-				$('#inputNumberToPresent').prop('disabled', true);
+				$('#inputNumberHolder').hide();
 			}
 			else{
-				$('#inputNumberToPresent').prop('disabled', false);
+				$('#inputNumberHolder').show();
 			}
 		});
 
@@ -822,19 +826,39 @@ function C_QuestionBank(_type) {
 		$('#inputNumberToPresent').change(function(){
 
 			if(!$.isNumeric($("#inputNumberToPresent").val())){
-				alert("The number of question to present must be a numeric value.");
-				$("#inputNumberToPresent").val("1");				
+				$('#inputNumberToPresentError').html('The value must be a numeric value');
+				$('#inputNumberToPresentError').removeClass('error').addClass('error_show');
+				$("#inputNumberToPresent").val(tempToComplete);
 			}
 			else{
+				if($('#inputNumberToPresentError').hasClass('error_show')){
+					$('#inputNumberToPresentError').removeClass('error_show').addClass('error');
+				}
+
 				var _inputValue = parseInt($("#inputNumberToPresent").val());
 
 				if(_inputValue > bankLength){
-					alert("The number of question to present cannot be more then the number of questions in the question bank.");
+					$('#inputNumberToPresentError').html('The number of question to present cannot be more then the number of questions in the question bank');
+					$('#inputNumberToPresentError').removeClass('error').addClass('error_show');
 					$("#inputNumberToPresent").val(bankLength.toString());
 				}
 				else if(_inputValue < 1){
-					alert("The number of question to present must be at least 1.");
-					$("#inputNumberToPresent").val("1");				
+					$('#inputNumberToPresentError').html('The number of question to present must be at least 1');
+					$('#inputNumberToPresentError').removeClass('error').addClass('error_show');
+					$("#inputNumberToPresent").val("1");
+				}
+			}
+		});
+
+		//#3230
+		$('#inputAttempts').on('change', function(){
+			if(!$.isNumeric($('#inputAttempts').val())){
+				$('#attemptsError').removeClass('error').addClass('error_show');
+				$('#inputAttempts').val(inputAttemptsAllowed);
+			}
+			else{
+				if($('#attemptsError').hasClass('error_show')){
+					$('#attemptsError').removeClass('error_show').addClass('error');
 				}
 			}
 		});
@@ -884,7 +908,7 @@ function C_QuestionBank(_type) {
 			width: 800,
 			height: 650,
 			dialogClass: "no-close",
-			buttons:[		
+			buttons:[
 				{
 					text: "Add Question",
 					title: "Adds a new question.",
@@ -892,7 +916,7 @@ function C_QuestionBank(_type) {
 						var tmpObj = makeQuestionDataStore();
 						saveQuestionEdit(tmpObj);
 						addQuestion(bankLength);
-					}	
+					}
 				},
 				{
 					text: "Add Option",
@@ -910,8 +934,8 @@ function C_QuestionBank(_type) {
 						$("#questionEditDialog").dialog("close");
 						$("#questionEditDialog").remove();
 					}
-				}					
-			] 
+				}
+			]
 			// {
 			// 	AddQuestion: function(){
 			// 		var tmpObj = makeQuestionDataStore();
@@ -1086,7 +1110,7 @@ function C_QuestionBank(_type) {
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("btnText", "Submit");
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("attempts", 2);
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("randomize", false);
-		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("objective", "undefined"); 
+		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("objective", "undefined");
 		$(data).find("page").eq(currentPage).find("bankitem").eq(_addID).attr("objItemId", "undefined");
 
 		bankLength++;

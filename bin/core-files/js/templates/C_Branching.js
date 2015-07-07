@@ -31,7 +31,7 @@ function C_Branching(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-		
+
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
@@ -68,7 +68,7 @@ function C_Branching(_type) {
 		try { $("#sidebarHolder").remove(); } catch (e) {}
 		try { $("#buttonPalette").remove(); } catch (e) {}
 		try { $("#transcriptPane").remove(); } catch (e) {}
-		
+
 		clearMainCKEInstances();
 
 		//remove existing scrollable content.
@@ -84,15 +84,15 @@ function C_Branching(_type) {
 		}
 
 		pageTitle = new C_PageTitle(_id);
-		
+
 		buildContentText(_id);
-		
+
 		buildBranchOptions(_id);
 		checkMode();
 
 		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
-			updateRedmineCommentIcon();		
-		}		
+			updateRedmineCommentIcon();
+		}
 
 		doAccess(pageAccess_arr);
 	}
@@ -113,7 +113,7 @@ function C_Branching(_type) {
 		    // WTF?  scrollableContent.position.top changes after contentHolder.height is set for the first time
 		    // So we do it twice to get the right value  -- Dingman's famous quantum variable!
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
-		    
+
 		    if(isMobilePhone){
 				$("#contentHolder").prepend(myContent);
 			}else{
@@ -141,13 +141,13 @@ function C_Branching(_type) {
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
 			if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-			}		
+			}
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
 	    }
-	    
+
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -216,7 +216,7 @@ function C_Branching(_type) {
 			}
 		}
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     checkMode - Check if authoring is needed and enable it...
@@ -243,14 +243,14 @@ function C_Branching(_type) {
 							enableNext();
 							enableBack();
 							$('.btn_branch').attr('aria-disabled', 'false');
-							$('.btn_branch').button('option', 'disabled', false);							
+							$('.btn_branch').button('option', 'disabled', false);
 						},
 						focus: function (event){
 							cachedTextPreEdit = event.editor.getData();
 							disableNext();
 							disableBack();
 							$('.btn_branch').attr('aria-disabled', 'true');
-							$('.btn_branch').button('option', 'disabled', true);						
+							$('.btn_branch').button('option', 'disabled', true);
 						}
 					},
 					toolbar: contentToolbar,
@@ -259,7 +259,7 @@ function C_Branching(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Content
 			********************************************************/
@@ -276,14 +276,14 @@ function C_Branching(_type) {
 							enableNext();
 							enableBack();
 							$('.btn_branch').attr('aria-disabled', 'false');
-							$('.btn_branch').button('option', 'disabled', false);						
+							$('.btn_branch').button('option', 'disabled', false);
 						},
 						focus: function (event){
 							cachedTextPreEdit = event.editor.getData();
 							disableNext();
 							disableBack();
 							$('.btn_branch').attr('aria-disabled', 'true');
-							$('.btn_branch').button('option', 'disabled', true);						
+							$('.btn_branch').button('option', 'disabled', true);
 						}
 					},
 					toolbar: contentToolbar,
@@ -292,7 +292,7 @@ function C_Branching(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -308,7 +308,7 @@ function C_Branching(_type) {
 			}).tooltip();
 		}
     }
-    
+
     function updateBranchDialog(){
 	    var msg = "<div id='branchEditDialog' title='Create Branching Exercise'>";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
@@ -317,17 +317,17 @@ function C_Branching(_type) {
 		msg += "<div id='branchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Branch Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
-		
+
 		if(!mandatory){
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		updateRevealMenu();
 
 		addOption(currentEditBankMember, false);
-		
+
 		//#3321 fixes dialog jumping issue
 		$.ui.dialog.prototype._focusTabbable = function(){};
 
@@ -371,7 +371,7 @@ function C_Branching(_type) {
 	        $(document).tooltip();
 	    });
     }
-    
+
     function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -415,7 +415,7 @@ function C_Branching(_type) {
 			}
 		}
 	}
-	
+
 	function makeRevealDataStore(){
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
@@ -434,7 +434,7 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		}
-		
+
 		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
@@ -452,7 +452,7 @@ function C_Branching(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
 			}
 		}
-		
+
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
@@ -460,9 +460,9 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).empty();
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).append(optionCDATA);
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("id", $("#myBranchOption" + i).find("#branchDrop option:selected").val());
-		} 
+		}
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
@@ -492,13 +492,13 @@ function C_Branching(_type) {
 			clearCKInstances();
 			var tempID = $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("id");
 			var optionLength = $(data).find("page").eq(currentPage).find("option").length;
-			
+
 			//CLEAR OUT ALL LINKS TO THIS BRANCH IN THE XML...
 			for(var i = optionLength - 1; i >= 0; i--){
 				if($(data).find("page").eq(currentPage).find("option").eq(i).attr("id") == tempID){
 					$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 				}
-			} 
+			}
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
@@ -542,7 +542,7 @@ function C_Branching(_type) {
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
-		
+
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != ""){
 			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text();
 		}else{
@@ -560,34 +560,34 @@ function C_Branching(_type) {
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
 			success = false;
 		}
-		
+
 		var transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").text();
 		//alert("coming in " + transcriptText);
 		var complete = true;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete") == "false"){
 			complete = false;
 		}
-		
+
 		var autoNext = false;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autonext") == "true"){
 			autoNext = true;
 		}
-		
+
 		var autoPlay = false;
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autoplay") == "true"){
 			autoPlay = true;
 		}
-		
+
 		var hasPoster = false;
 		var posterLink = "input poster path";
 		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "input poster path"){
 	    	hasPoster = true;
 	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
 	    }
-		
+
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
-		
+
 		msg += "<label id='label' title='Arrival at this page represents a completion of a branch.'><b>complete: </b></label>";
 		msg += "<input id='isComplete' type='checkbox' name='isComplete' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Arrival at this page represents a successful outcome of the scenario.'><b>success: </b></label>";
@@ -610,32 +610,38 @@ function C_Branching(_type) {
 				var mediaWidth = 0;
 				var mediaHeight = 0;
 			}
-			
+
 			/*if(posterLink == null){
 				posterLink = "null";
 			}*/
-			
+
 			var hasTranscript = false;
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
 				hasTranscript = true;
 			}
-			
+
 			var subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('subs');
-	     	
+
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
 			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
 			msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
+			msg += '<div id="mediaSize">';
 			msg += "<label id='mediaWidthLabel'>Media Width:</label>";
-			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/>";
+			msg += "<input id='mediaWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:35px;'/>";
+			msg += '<span id="widthError" class="error">The value must be a numeric value</span><br/>';
 			msg += "<label id='mediaHeightLabel'>Media Height:</label>";
-			msg += "<input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/>";
+			msg += "<input id='mediaHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:35px;'/>";
+			msg += '<span id="heightError" class="error">The value must be a numeric value</span>';
+			msg += '</div>';//end mediaSize
+			msg += '<div id="mediaCheckboxs">';
 			msg += "<label id='autoplayLabel'>autoplay: </label>";
-			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>&nbsp;&nbsp;";
 			msg += "<label id='autonextLabel'>autonext: </label>";
-			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input>&nbsp;&nbsp;";
 			msg += "<label id='posterLabel'>poster: </label>";
-			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
-			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/><br/>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>&nbsp;&nbsp;";
+			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ posterLink + "' defaultValue='"+ posterLink + "' style='width:40%;'/>";
+			msg += '</div>';//end mediaCheckboxs
 			msg += "<label id='label' title='Selecting adds a transcript button to page which reveals the transcript text below.'><b>Transcript:</b> </label>";
 			msg += "<input id='isTranscript' type='checkbox' name='enableTranscript' class='radio' value='true'/>";
 			msg += "<label id='inputTranscriptLabel' title='Input text to appear in transcript.'><b>Input your transcript:</b></label>";
@@ -648,55 +654,72 @@ function C_Branching(_type) {
 			msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
 			msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		}
-		
+
 		if(currentLayout == "sidebar"){
 			msg += "<div id='sidebarInput' style='padding-bottom:5px;'><b>edit branch sidebar: </b></div>";
 			msg += "<div id='sidebarText' contenteditable='true' class='dialogInput'>" + branchSidebar + "</div>";
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
-		
+
 		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 			$("#dialogMediaBrowseButton").click(function(){
 				$(".ui-dialog").hide();
 				$(".ui-widget-overlay").hide();
-				dialogToggleMediaBrowser($("#mediaLink"));					
+				dialogToggleMediaBrowser($("#mediaLink"));
 			});
 		}
-		
+
+		//#3230
+		$('#mediaWidth').on('change', function(){
+			if(!$.isNumeric($('#mediaWidth').val())){
+				$('#widthError').removeClass('error').addClass('error_show');
+				$('#mediaWidth').val(mediaWidth);
+			}
+			else{
+				if($('#widthError').hasClass('error_show')){
+					$('#widthError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+		//#3230
+		$('#mediaHeight').on('change', function(){
+			if(!$.isNumeric($('#mediaHeight').val())){
+				$('#heightError').removeClass('error').addClass('error_show');
+				$('#mediaHeight').val(mediaHeight);
+			}
+			else{
+				if($('#heightError').hasClass('error_show')){
+					$('#heightError').removeClass('error_show').addClass('error');
+				}
+			}
+		});
+
+		$('#poster').on('change', function(){
+			if($('#poster').prop("checked") == true){
+				$('#posterFile').show();
+			}
+			else{
+				$('#posterFile').hide();
+			}
+		});
+
 		var tempType = getFileType($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img'));
 		if(tempType == "mp4" || tempType == "swf"){
-			$("#mediaWidthLabel").show();
-			$("#mediaWidth").show();
-			$("#mediaHeightLabel").show();
-			$("#mediaHeight").show();
+			$("#mediaSize").show();
 		}else{
-			$("#mediaWidthLabel").hide();
-			$("#mediaWidth").hide();
-			$("#mediaHeightLabel").hide();
-			$("#mediaHeight").hide();
+			$("#mediaSize").hide();
 		}
-		
+
 		if(tempType == "mp4"){
-			$("#posterLabel").show();
-			$("#poster").show();
-			$("#posterFile").show();
-			$("#autoplayLabel").show();
-			$("#autoplay").show();
-			$("#autonextLabel").show();
-			$("#autonext").show();
+			$("#mediaCheckboxs").show();
 		}else{
-			$("#posterLabel").hide();
-			$("#poster").hide();
-			$("#posterFile").hide();
-			$("#autoplayLabel").hide();
-			$("#autoplay").hide();
-			$("#autonextLabel").hide();
-			$("#autonext").hide();
+			$("#mediaCheckboxs").hide();
 		}
-		
+
 		var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
-		
+
 		$("#optionContainer").append("<div id='editBranchOptionHolder'><b>branch buttons:</b><br/></div>");
 		//addBranchOptions/selectors
 		for(var i = 0; i < branchOptionLength; i++){
@@ -714,61 +737,43 @@ function C_Branching(_type) {
 				msg += "<div id='branchOptionRemove' class='removeMedia' data='"+i+"' value='"+optionID+"' title='Click to remove this branch option'/>";
 				msg += "</div>";
 			$("#editBranchOptionHolder").append(msg);
-			
+
 			for(var m = 0; m < $(data).find("page").eq(currentPage).find("branch").length; m++){
 				if(optionID == $("#myBranchOption"+i).find($("option")).eq(m).val()){
 					$("#myBranchOption"+i).find($("option")).eq(m).attr('selected','selected');
 				}
 			}
-			
+
 			$("#myBranchOption" + i).find(".removeMedia").click(function(){
 				removeBranchOption(_addID, $(this).attr("data"), $(this).attr("value"));
 			});
-			
+
 			$("#myBranchOption" + i).find(".dialogInput").focusout(function(){
 				console.log("focusout with value = " + $(this).val());
 				updateBranchOption(_addID, $(this).attr("data"));
 			});
-			
+
 			$("#myBranchOption" + i).find("#branchDrop").change(function() {
 				updateBranchOption(_addID, $(this).attr("data"));
 			});
 		}
-		
+
 		$("#mediaLink").change(function(){
 			var myType = getFileType($(this).val());
-			
+
 			if(myType == "mp4" || myType == "swf"){
-				$("#mediaWidthLabel").show();
-				$("#mediaWidth").show();
-				$("#mediaHeightLabel").show();
-				$("#mediaHeight").show();
+				$("#mediaSize").show();
 			}else{
-				$("#mediaWidthLabel").hide();
-				$("#mediaWidth").hide();
-				$("#mediaHeightLabel").hide();
-				$("#mediaHeight").hide();
+				$("#mediaSize").hide();
 			}
-			
+
 			if(myType == "mp4"){
-				$("#posterLabel").show();
-				$("#poster").show();
-				$("#posterFile").show();
-				$("#autoplayLabel").show();
-				$("#autoplay").show();
-				$("#autonextLabel").show();
-				$("#autonext").show();
+				$("#mediaCheckboxs").show();
 			}else{
-				$("#posterLabel").hide();
-				$("#poster").hide();
-				$("#posterFile").hide();
-				$("#autoplayLabel").hide();
-				$("#autoplay").hide();
-				$("#autonextLabel").hide();
-				$("#autonext").hide();
+				$("#mediaCheckboxs").hide();
 			}
 		});
-		
+
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
@@ -777,51 +782,53 @@ function C_Branching(_type) {
 			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
-		
+
 		$("#optionContainer").append("<div id='addBranchOption' value='"+_addID+"'>add button</div><br/><br/>");
-		
+
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
-		
+
 		if(!complete){
 			$("#isComplete").removeAttr('checked');
 		}else{
 			$("#isComplete").attr('checked', 'checked');
 		}
-		
+
 		if(!autoNext){
 			$("#autonext").removeAttr('checked');
 		}else{
 			$("#autonext").attr('checked', 'checked');
 		}
-		
+
 		if(!hasTranscript){
 			$("#isTranscript").removeAttr('checked');
 		}else{
 			$("#isTranscript").attr('checked', 'checked');
 		}
-		
+
 		$("#inputTranscript").css("max-height", 150).css("overflow", "scroll");
-		
+
 		if(!hasPoster){
 			$("#poster").removeAttr('checked');
+			$('#posterFile').hide();
 		}else{
 			$("#poster").attr('checked', 'checked');
+			$('#posterFile').show();
 		}
-		
+
 		if(!autoPlay){
 			$("#autoplay").removeAttr('checked');
 		}else{
 			$("#autoplay").attr('checked', 'checked');
 		}
-		
+
 		if(!success){
 			$("#isSuccess").removeAttr('checked');
 		}else{
 			$("#isSuccess").attr('checked', 'checked');
 		}
-		
+
 		if(!hasTranscript){
 			$('#inputTranscriptLabel').hide();
 			$('#inputTranscript').hide();
@@ -839,7 +846,7 @@ function C_Branching(_type) {
 			    }
 			});
 		}
-		
+
 		$('#isTranscript').change(function(){
 			if($("#isTranscript").prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "true");
@@ -865,7 +872,7 @@ function C_Branching(_type) {
 				$('#inputTranscript').hide();
 			}
 		});
-		
+
 		$("#isSuccess").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "true");
@@ -873,7 +880,7 @@ function C_Branching(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "false");
 			}
 		});
-		
+
 		$("#autonext").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "true");
@@ -881,7 +888,7 @@ function C_Branching(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "false");
 			}
 		});
-		
+
 		$("#autoplay").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "true");
@@ -889,7 +896,7 @@ function C_Branching(_type) {
 				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "false");
 			}
 		});
-		
+
 		$("#isComplete").change(function(){
 			if($(this).prop("checked") == true){
 				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "true");
@@ -901,7 +908,7 @@ function C_Branching(_type) {
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
-		
+
 		if(currentLayout != "graphicOnly"){
 			CKEDITOR.inline( "optionText", {
 				toolbar: contentToolbar,
@@ -925,7 +932,7 @@ function C_Branching(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
-		
+
 		if(currentLayout == "sidebar"){
 			CKEDITOR.inline( "sidebarText", {
 				toolbar: contentToolbar,
@@ -940,7 +947,7 @@ function C_Branching(_type) {
 			    }
 			});
 		}
-		
+
 		//CKEDITOR.instances.editor1.on('blur', function() {
          //alert('onblur fired');
       //});
@@ -972,7 +979,7 @@ function C_Branching(_type) {
 				updateBranchDialog();
 			});
 		}
-		
+
 		if(currentLayout != "graphicOnly"){
 			CKEDITOR.instances.optionText.on('blur', function(){
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
@@ -987,16 +994,16 @@ function C_Branching(_type) {
 			});
 		}
 	}
-	
+
 	function updateBranchOption(_branchID, _optionNum){
-		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");		
+		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");
 		var optionCDATA = newRevealContent.createCDATASection($("#myBranchOption" + _optionNum).find(".dialogInput").val());
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).empty();
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).append(optionCDATA);
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).attr("id", $("#myBranchOption" + _optionNum).find("#branchDrop option:selected").val());
-		
+
 	}
-	
+
 	function addNewBranchOption(_addID){
 		var newPos = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
 		$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
@@ -1010,7 +1017,7 @@ function C_Branching(_type) {
 		clearCKInstances();
 		updateBranchDialog();
 	}
-	
+
 	function removeBranchOption(_branchID, _optionNum, _optionID){
 		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).remove();
 		$("#optionContainer").remove();
@@ -1019,7 +1026,7 @@ function C_Branching(_type) {
 		clearCKInstances();
 		updateBranchDialog();
 	}
-    
+
     function clearCKInstances(){
 		if (CKEDITOR.instances['optionText']) {
             CKEDITOR.instances.optionText.destroy();
@@ -1031,13 +1038,13 @@ function C_Branching(_type) {
             CKEDITOR.instances.sidebarText.destroy();
         }
 	}
-	
+
 	function clearMainCKEInstances(){
 		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
-    
+
      /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -1059,7 +1066,7 @@ function C_Branching(_type) {
 	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
-	
+
 	/**********************************************************************
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
@@ -1075,7 +1082,7 @@ function C_Branching(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM

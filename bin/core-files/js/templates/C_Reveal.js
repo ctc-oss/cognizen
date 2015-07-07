@@ -343,15 +343,20 @@ function C_Reveal(_type) {
 		clearCKInstances();
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
+		var imageWidth = $(data).find("page").eq(currentPage).attr('w');
+		var imageHeight = $(data).find("page").eq(currentPage).attr('h');
+
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
-		msg += "<label title='Set width for images.'> <b>Reveal Image Width: </b></label>";
-		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('w') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('w') + "' style='width:10%;'/>";
-		msg += "<label title='Set height for images.'> <b>Reveal Image Height: </b></label>";
-		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + $(data).find("page").eq(currentPage).attr('h') + "' defaultValue='" + $(data).find("page").eq(currentPage).attr('h') + "' style='width:10%;'/>&nbsp;&nbsp";
-		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
-		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
-		
+		msg += "<label title='Set width for images.'> <b>Image Width: </b></label>";
+		msg += "<input id='imageWidth'  class='dialogInput' type='text' value='" + imageWidth + "' defaultValue='" + imageWidth + "' style='width:10%;'/>";
+		msg += '<span id="imageWidthError" class="error">The value must be a numeric value</span><br/>';
+		msg += "<label title='Set height for images.'> <b>Image Height: </b></label>";
+		msg += "<input id='imageHeight'  class='dialogInput' type='text' value='" + imageHeight + "' defaultValue='" + imageHeight + "' style='width:10%;'/>&nbsp;&nbsp";
+		msg += '<span id="imageHeightError" class="error">The value must be a numeric value</span><br/>';
+
 		msg += "<div id='revealTypeGroup'>";
+		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
+		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";		
 		msg += "<label id='hover' title='Set whether users click or hover to reveal.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' />";
 		msg += "<label id='label'>           <b>Reveal Direction: </b></label>";
@@ -359,7 +364,7 @@ function C_Reveal(_type) {
 		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft'><span  title='Set reveals to open from right to left.'>open left</span>  </input>";
 		msg += "<input id='revealBottom' type='radio' name='manageRevealType' value='revealBottom'><span title='Set reveals to open from top to bottom.'>open down</span>  </input>";
 		msg += "</div><br/>"
-		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
+		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
 
 		$('#' + type).prop('checked', true);
@@ -384,6 +389,32 @@ function C_Reveal(_type) {
 			clearCKInstances();
 			try { $("#revealContainer").remove(); } catch (e) {}
 			addReveal(currentEditBankMember, false);
+		});
+
+		//#3230
+		$('#imageWidth').on('change', function(){
+			if(!$.isNumeric($('#imageWidth').val())){
+				$('#imageWidthError').removeClass('error').addClass('error_show');
+				$('#imageWidth').val(imageWidth);		
+			}
+			else{
+				if($('#imageWidthError').hasClass('error_show')){
+					$('#imageWidthError').removeClass('error_show').addClass('error');
+				}
+			}		
+		});
+
+		//#3230
+		$('#imageHeight').on('change', function(){
+			if(!$.isNumeric($('#imageHeight').val())){
+				$('#imageHeightError').removeClass('error').addClass('error_show');
+				$('#imageHeight').val(imageHeight);		
+			}
+			else{
+				if($('#imageHeightError').hasClass('error_show')){
+					$('#imageHeightError').removeClass('error_show').addClass('error');
+				}
+			}					
 		});
 
 		addReveal(currentEditBankMember, false);

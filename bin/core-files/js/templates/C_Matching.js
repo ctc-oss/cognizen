@@ -677,16 +677,18 @@ function C_Matching(_type) {
 	}
 	function updateQuestionEditDialog(){
 		//Create the Content Edit Dialog
-        var msg = "<div id='questionEditDialog' title='Set Question Preferences'>";
-        msg += "<label id='label'>no. of attempts: </label>";
-		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' title='Increase the number of attempts.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>graded: </b></label>";
-		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true' title='Indicates if this page is graded.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		msg += "<label id='label'><b>mandatory: </b></label>";
-		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' title='Indicates if this page is must be completed before going to the next page.'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-        msg += "<label id='label'>drag and drop: </label>";
-		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true' title='Check for drag and drop functionality.'/><br/><br/>";
-		msg += "<div id='feedbackLabel'>Input your feedback:</div>";
+		var msg = "<div id='questionEditDialog' title='Set Matching Question Preferences'>";
+		msg += "<label id='label' title='Indicates if this page is graded.'><b>graded: </b></label>";
+		msg += "<input id='isGraded' type='checkbox' name='graded' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
+		msg += "<input id='isMandatory' type='checkbox' name='mandatory' class='radio' value='true' />&nbsp;&nbsp;";
+		msg += "<label id='label' title='Check for drag and drop functionality.'>drag and drop: </label>";
+		msg += "<input id='dragAndDrop' type='checkbox' name='dragAndDrop' class='radio' value='true' />&nbsp;&nbsp;";
+		msg += "<label id='label' title='Increase the number of attempts.'>no. of attempts: </label>";
+		msg += "<input type='text' name='myName' id='inputAttempts' value='"+ attemptsAllowed +"' class='dialogInput' style='width:35px;' />";
+		msg += '<span id="attemptsError" class="error">The value must be a numeric value</span><br/><br/>';
+
+		msg += "<div id='feedbackLabel'><b>Input your feedback: </b></div>";
 		msg += "<div id='feedbackEditText' type='text' contenteditable='true' class='dialogInput'>" + feedback + "</div><br/>";
 		msg += "<b>Options:</b><br/><div id='myOptionList'></div><br/>";
 		msg += "<b>Answers:</b><br/><div id='myAnswerList'></div>";
@@ -733,6 +735,19 @@ function C_Matching(_type) {
 		         $(event.editor.element.$).attr("title", "Click here to edit this feedback.");
 		    	}
 		    }
+		});
+
+		//#3230
+		$('#inputAttempts').on('change', function(){
+			if(!$.isNumeric($('#inputAttempts').val())){
+				$('#attemptsError').removeClass('error').addClass('error_show');
+				$('#inputAttempts').val(attemptsAllowed);
+			}
+			else{
+				if($('#attemptsError').hasClass('error_show')){
+					$('#attemptsError').removeClass('error_show').addClass('error');
+				}
+			}
 		});
 
 		//find every option in the xml - place them on the screen.
@@ -830,7 +845,7 @@ function C_Matching(_type) {
 							}
 							tmpOptionArray.push(tmpOptionObj);
 						}
-						
+
 						tmpObj.option_arr = tmpOptionArray;
 
 						var tmpAnswerArray = new Array();
@@ -851,7 +866,7 @@ function C_Matching(_type) {
 							tmpAnswerArray.push(tmpAnswerObj);
 						}
 						tmpObj.answer_arr = tmpAnswerArray;
-						
+
 						if(cleananswers == true){
 							saveQuestionEdit(tmpObj);
 							$("#questionEditDialog").dialog("close");
@@ -861,7 +876,7 @@ function C_Matching(_type) {
 								msg += "<p>Please resolve your issue and try saving again.</p>";
 								msg += "</div>";
 							$("#stage").append(msg);
-							
+
 							$("#matchingEditError").dialog({
 								autoOpen: true,
 								modal: true,
@@ -957,11 +972,11 @@ function C_Matching(_type) {
 			answerCount--;
 			var arrIndex = $(this).attr('value');
 			$(data).find("page").eq(currentPage).find("answer").eq(arrIndex).remove();
-			
+
 			$("#"+answerEdit_arr[arrIndex]+"Container").remove();
-			
+
 			answerEdit_arr.splice(arrIndex, 1);
-			
+
 			for(var i = 0; i < answerEdit_arr.length; i++){
 				$("#" +answerEdit_arr[i]+"Remove").attr("value", i);
 			}
@@ -1007,7 +1022,7 @@ function C_Matching(_type) {
 		    	}
 		    }
 		});
-		
+
 		//#3392
 		$('#'+optionID+'Match').alpha();
 		$('#'+optionID+'Match').change(function(){
@@ -1024,7 +1039,7 @@ function C_Matching(_type) {
 				$("#"+optionEdit_arr[i]+"Remove").attr("value", i);
 			}
 		});
-		
+
 		optionCount++;
 		optionEdit_arr.push(optionID);
 	}
@@ -1068,7 +1083,7 @@ function C_Matching(_type) {
 			$(data).find("page").eq(currentPage).find("option").eq(i).append(optionCDATA);
 			$(data).find("page").eq(currentPage).find("option").eq(i).attr("correct", optionCorrect);
 		}
-		
+
 		var optionOverage = $(data).find("page").eq(currentPage).find("option").length;
 		for(var i = optionEdit_arr.length; i < optionOverage; i++){
 			$(data).find("page").eq(currentPage).find("option").eq(i).remove();
@@ -1087,9 +1102,9 @@ function C_Matching(_type) {
 			}
 			$(data).find("page").eq(currentPage).find("answer").eq(i).attr("correct", answerCorrect);
 		}
-		
+
 		var answerOverage = $(data).find("page").eq(currentPage).find("answer").length;
-		
+
 		for(var i = answerEdit_arr.length; i < answerOverage; i++){
 			$(data).find("page").eq(currentPage).find("answer").eq(i).remove();
 		}
