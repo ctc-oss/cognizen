@@ -135,6 +135,7 @@ function checkForGroup(_id){
 function clickIndexItem(){
 	if(hoverSubNav == false){
 		try{$("#" + currentIndexItem).removeClass('indexActive');} catch(e){}
+		currentBranch = 0;
 		loadPageFromID($(this).attr("myID"));
 		currentIndexItem = $(this).attr("id");
 		if(indexState){

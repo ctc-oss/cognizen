@@ -1584,6 +1584,7 @@ function clickBack(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	currentBranch = 0;
 	currentPage--;
 	currentTemplate.destroySelf();
 }
@@ -1596,6 +1597,7 @@ function clickNext(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	currentBranch = 0;
 	currentPage++;
 	currentTemplate.destroySelf();
 }
@@ -1606,7 +1608,8 @@ function clickHome(){
 	}
 	if(glossaryState == true){
 		toggleGlossary();
-	}	
+	}
+	currentBranch = 0;	
 	currentPage = 0;
 	currentTemplate.destroySelf();
 }
@@ -2042,7 +2045,7 @@ this.loadPage = function(){
 		}
 	}
 
-	currentBranch = 0;
+	//currentBranch = 0;
 	//Check if nave buttons should be disabled.
 	checkNavButtons();
 	updatePageCount();
