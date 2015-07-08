@@ -1581,6 +1581,9 @@ function clickBack(){
 	if(indexState == true){
 		toggleIndex();
 	}
+	if(glossaryState == true){
+		toggleGlossary();
+	}
 	currentPage--;
 	currentTemplate.destroySelf();
 }
@@ -1590,6 +1593,9 @@ function clickNext(){
 	if(indexState == true){
 		toggleIndex();
 	}
+	if(glossaryState == true){
+		toggleGlossary();
+	}
 	currentPage++;
 	currentTemplate.destroySelf();
 }
@@ -1598,6 +1604,9 @@ function clickHome(){
 	if(indexState == true){
 		toggleIndex();
 	}
+	if(glossaryState == true){
+		toggleGlossary();
+	}	
 	currentPage = 0;
 	currentTemplate.destroySelf();
 }
