@@ -2042,7 +2042,7 @@ this.loadPage = function(){
 		}
 	}
 
-
+	currentBranch = 0;
 	//Check if nave buttons should be disabled.
 	checkNavButtons();
 	updatePageCount();
