@@ -651,12 +651,14 @@ function C_Sequencing(_type) {
 		}
 
 		var optionContent = $(data).find("page").eq(currentPage).find("option").eq(_addID).find("content").text();
+		var correctOption = $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct");
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this option'/>";
 		msg += "<div id='optionInput' style='padding-bottom:5px;'><b>Option " + optionLabel + ":</b></div>";
 		msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + optionContent + "</div>";
 		msg += "<label id='label' title='Indicates the correct position of the option in the sequence order.'><b>Correct position in sequence:</b> </label>";
-		msg += "<input type='text' name='myMatch' id='optionCorrect' value='"+ $(data).find("page").eq(currentPage).find("option").eq(_addID).attr("correct") +"' class='dialogInput' style='width:35px; text-align:center;'/><br/>";
+		msg += "<input type='text' name='myMatch' id='optionCorrect' value='"+ correctOption +"' class='dialogInput' style='width:35px; text-align:center;'/>";
+		msg += '<span id="optionCorrectError" class="error">The value must be a numeric value</span><br/>';
 
 		msg += "</div>";
 
@@ -664,6 +666,19 @@ function C_Sequencing(_type) {
 
 		$("#optionRemove").on('click', function(){
 			areYouSure();
+		});
+
+		//#3230
+		$('#optionCorrect').on('change', function(){
+			if(!$.isNumeric($('#optionCorrect').val())){
+				$('#optionCorrectError').removeClass('error').addClass('error_show');
+				$('#optionCorrect').val(correctOption);		
+			}
+			else{
+				if($('#optionCorrectError').hasClass('error_show')){
+					$('#optionCorrectError').removeClass('error_show').addClass('error');
+				}
+			}		
 		});
 
 		CKEDITOR.inline( "optionText", {
