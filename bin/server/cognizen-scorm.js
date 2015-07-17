@@ -1493,7 +1493,7 @@ var SCORM = {
 	    			_this.objectives_arr.push(tmpObjId);
 	    		}
 	    		else{
-	    			_this.objectives_arr.push(tmpObjId+i);
+	    			_this.objectives_arr.push(tmpObjId+index);
 	    		}
 	    	}
 
