@@ -165,7 +165,7 @@ function C_Pathing(_type) {
 		var pathId = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathid");
 		var pathType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathtype");
 
-		var paletteWidth = 0;
+		//var paletteWidth = 0;
 		if(branchType == "top" || branchType == "graphicOnly"){
 			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
 		}else{
@@ -219,7 +219,7 @@ function C_Pathing(_type) {
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
 				});
-				paletteWidth += $("#"+myOption).width() + widthAdjust;
+				//paletteWidth += $("#"+myOption).width() + widthAdjust;
 				pageAccess_arr.push($("#"+myOption));
 			};
 
@@ -262,7 +262,7 @@ function C_Pathing(_type) {
 				pathPageTracker--;
 				loadBranchByID($(this).attr("mylink"));
 			});
-			paletteWidth += $("#"+myOption).width() + 5;
+			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 
 			//next button
@@ -299,12 +299,12 @@ function C_Pathing(_type) {
 				pathPageTracker++;
 				loadBranchByID($(this).attr("mylink"));
 			});
-			paletteWidth += $("#"+myOption).width() + 5;
+			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 
 			$("#pageTitle").text($("#pageTitle").text() + " (" + pathPageTracker  + " of " + $(data).find("page").eq(currentPage).find('branch[pathid="'+pathId+'"]').length+ ")");
 		}
-		$("#buttonPalette").width(paletteWidth);
+		//$("#buttonPalette").width(paletteWidth);
 
 	}
 
@@ -575,7 +575,7 @@ function C_Pathing(_type) {
 				$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 				$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 				$("#branchEditDialog").remove();
-				currentEditBankMember = $(this).attr("data-myID");
+				currentEditBankMember = parseInt($(this).attr("data-myID"));
 				updateBranchDialog();
 			}).tooltip();
 		}
@@ -672,7 +672,7 @@ function C_Pathing(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
-			currentEditBankMember = 0;
+			currentEditBankMember--;// = 0;
 			$("#branchEditDialog").dialog("close");
 			$("#branchEditDialog").remove();
 			homePage_arr = [];

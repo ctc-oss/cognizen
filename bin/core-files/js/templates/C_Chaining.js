@@ -169,7 +169,7 @@ function C_Chaining(_type) {
 		var branchStepNum = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("stepnumber");
 		var branchStepType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("steptype");
 
-		var paletteWidth = 0;
+		//var paletteWidth = 0;
 		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
 			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
 		}else{
@@ -187,7 +187,7 @@ function C_Chaining(_type) {
 				pageTracker--;
 				loadBranchByID($(this).attr("mylink"));
 			});
-			paletteWidth += $("#"+myOption).width() + 5;
+			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
 
@@ -201,10 +201,10 @@ function C_Chaining(_type) {
 				pageTracker++;
 				loadBranchByID($(this).attr("mylink"));
 			});
-			paletteWidth += $("#"+myOption).width() + 5;
+			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
-		$("#buttonPalette").width(paletteWidth);
+		//$("#buttonPalette").width(paletteWidth);
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -504,7 +504,7 @@ function C_Chaining(_type) {
 					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 					$("#branchEditDialog").remove();
-					currentEditBankMember = $(this).attr("data-myID");
+					currentEditBankMember = parseInt($(this).attr("data-myID"));
 					updateBranchDialog();
 				}).tooltip();
 			}
@@ -572,14 +572,15 @@ function C_Chaining(_type) {
 				if(_stepType === "teach"){
 					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
+					currentEditBankMember--;
 				}
 				else{
 					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember-1).remove();
+					currentEditBankMember = currentEditBankMember - 2;
 				}
 
 				branchCount = branchCount-2;
-				currentEditBankMember = 0;
 				$("#branchEditDialog").dialog("close");
 				$("#branchEditDialog").remove();
 				updateBranchDialog();
