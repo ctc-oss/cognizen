@@ -1284,7 +1284,7 @@ function updatePrefs(_pub){
 }
 
 function clickPublish(){
-	$('#myCanvas').append('<div class="C_Loader"><div class="C_LoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
+	$('#myCanvas').append('<div class="C_Loader"><div class="C_LoaderText">Please Wait.<br/><br/>The content is being packaged, this may take a couple of minutes.</div></div>');
 
 	var myScormVersion = $(data).find('scormVersion').attr('value');
 	var manifestOnly = $('#manifestOnly').is(':checked');

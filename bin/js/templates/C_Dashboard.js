@@ -869,15 +869,9 @@ function C_Dashboard(_type) {
     function clickPublish(parent, level, selectedScorm, manifestOnly, deliverable){
 
 
-        if(level === 'course'){
-            $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-            disableRenameContentKeyEvents();
-        }
+        $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The content is being packaged, this may take a couple of minutes</div></div>');
+        disableRenameContentKeyEvents();
 
-        else{
-            $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The little gnomes at our server facility are casting all kinds of spells to ensure that your content will work perfectly in any SCORM ' + $(data).find('scormVersion').attr('value') + ' conformant LMS as well as run nicely on your android or iOS mobile device.<br/><br/>These guys are artisans, this may take a couple of minutes.</div></div>');
-            disableRenameContentKeyEvents();
-        }
         var data = {
             content: {
                 id: currentParent.attr('id'),
