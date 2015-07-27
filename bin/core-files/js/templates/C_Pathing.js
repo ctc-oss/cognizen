@@ -672,8 +672,9 @@ function C_Pathing(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
+			currentBranch--;
 			currentEditBankMember--;// = 0;
-			$("#branchEditDialog").dialog("close");
+			
 			$("#branchEditDialog").remove();
 			homePage_arr = [];
 			createHomePageArray(1);
@@ -711,7 +712,7 @@ function C_Pathing(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathid", currentPathId);
 			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathtype", "branch");
-			currentEditBankMember = _addID;
+			currentEditBankMember = parseInt(_addID);
 			branchCount++;
 		}
 
@@ -901,7 +902,7 @@ function C_Pathing(_type) {
 					$('#bankItem'+ currentEditBankMember).removeClass("selectedEditBankMember").addClass("unselectedEditBankMember");
 					$(this).removeClass("unselectedEditBankMember").addClass("selectedEditBankMember");
 					$("#branchEditDialog").remove();
-					currentEditBankMember = $(this).attr("data-myID");
+					currentEditBankMember = parseInt($(this).attr("data-myID"));
 					updateBranchDialog();
 				}).tooltip();
 			}

@@ -502,6 +502,7 @@ function C_Branching(_type) {
 			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
+			currentBranch--;
 			currentEditBankMember--;// = 0;
 			$("#branchEditDialog").dialog("close");
 			$("#branchEditDialog").remove();
