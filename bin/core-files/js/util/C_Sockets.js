@@ -209,7 +209,7 @@ function initializeSockets(){
 								  }					
 							}
 							else{
-								if($(data).find('page[id="'+$(indexItem_arr[j]).attr('myID')+'"]').find('branch[id="'+pageId+'"]').length > 0){
+								if($(data).find('page[id="'+$(indexItem_arr[j]).attr('myID')+'"]').children('branch[id="'+pageId+'"]').length > 0){
 								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithOpenComment");
 								  $(indexItem_arr[j]).children("#commentSpot").removeClass("indexItemWithClosedComment");
 								  //if status == Resolved	
