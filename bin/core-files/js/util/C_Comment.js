@@ -266,7 +266,6 @@ function updatePageIssues(create){
 
 				if(_issues.total_count != 0){
 					var issuesMsg = '';
-
 					issuesMsg += "</div>";
 			issuesMsg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Comment Menu: </b></label></div><br/><br/>";					
 			issuesMsg += "<div id='commentHolder' class='box-wrap antiscroll-wrap' style='width:100%; background-color:rgba(51, 51, 51, 0);'>";
@@ -375,6 +374,9 @@ function updatePageIssues(create){
 									alert(err);
 								}
 								else{
+									if (currentStatus == 'Closed' || currentStatus == 'Rejected'){
+										currentIssueBankMember = 0;
+									} 
 									updateIndexCommentFlags();
 									updateRedmineCommentIcon();
 									setTimeout(updatePageIssues(false), 3000);
