@@ -26,6 +26,8 @@ function C_ClickImage(_type) {
 	var labeled = false;
 	var scroller;
     var scrollTimer;
+    var clickAll = false;
+    var clickCount = 0;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -53,6 +55,17 @@ function C_ClickImage(_type) {
 		if($(data).find("page").eq(currentPage).attr('labeled') == "true"){
 			labeled = true;
 		}
+		
+		if($(data).find("page").eq(currentPage).attr("clickall") == undefined){
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+		}else if ($(data).find("page").eq(currentPage).attr("clickall") == "true"){
+			clickAll = true;
+		}
+		
+		if(clickAll == true && mode != "edit"){
+			disableNext();
+		}
+				
 		pageTitle = new C_PageTitle();
 		audioHolder = new C_AudioHolder();
 
@@ -108,6 +121,13 @@ function C_ClickImage(_type) {
 
 			if(interact == "click"){
 				$("#" + revID).click(function(){
+					if(clickAll == true){
+						clickCount++;
+						
+						if(clickCount == revealCount){
+							enableNext();
+						}
+					}
 					updateRevealContent($(this));
 				}).keypress(function(event) {
 			        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -119,6 +139,13 @@ function C_ClickImage(_type) {
 		        });
 			}else if(interact == "hover"){
 				$("#" + revID).hover(function(){
+					if(clickAll == true){
+						clickCount++;
+						
+						if(clickCount == revealCount){
+							enableNext();
+						}
+					}
 					updateRevealContent($(this));
 				});
 			}
@@ -250,6 +277,8 @@ function C_ClickImage(_type) {
 		var msg = "<div id='contentEditDialog' title='Update Image Hotspots'>";
 		msg += "<label id='hover' title='Define whether users click or hover over images.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>&nbsp;&nbsp;";
+		msg += "<label id='clickalllabel'  title='Define whether users must select all items before advancing.'><b>Click all: </b></label>";
+		msg += "<input id='isClickAll' type='checkbox' name='isClickAll' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
 		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<br/><label title='Input width of images to be used.'> <b>Image Width: </b></label>";
@@ -267,6 +296,10 @@ function C_ClickImage(_type) {
 
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
+		}
+		
+		if(clickAll){
+			$("#isClickAll").attr("checked", "checked");
 		}
 
 		if(labeled){
@@ -391,12 +424,6 @@ function C_ClickImage(_type) {
 	}
 
 	function makeRevealDataStore(){
-		//myObjective = $("#inputObjective").val();
-		//myObjItemId = $("#inputObjItemId").val();
-
-		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-
 		$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
 		$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
 
@@ -406,6 +433,14 @@ function C_ClickImage(_type) {
 		}else{
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
+		}
+		
+		if($("#isClickAll").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("clickall", "true");
+			clickAll = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+			clickAll = false;
 		}
 
 		if($("#isLabeled").prop("checked") == true){

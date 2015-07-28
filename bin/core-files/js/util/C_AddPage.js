@@ -539,6 +539,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "tabsLeft":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -570,6 +571,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "revealRight":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -614,6 +616,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 		case "revealLeft":
@@ -659,7 +662,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
-
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "revealTop":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -704,7 +707,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
-
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "revealBottom":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -749,7 +752,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
-
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "flashcard":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -778,7 +781,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("mandatory", false);
 			$(data).find("page").eq(newPage).attr("randomize", false);
 			$(data).find("page").eq(newPage).attr("type", "static");
-			
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 			
 		case "clickImage":
@@ -822,7 +825,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("h", "150");
 			$(data).find("page").eq(newPage).attr("labeled", "false");
 			$(data).find("page").eq(newPage).attr("type", "static");
-
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 			
 		case "clickListRevealText":
@@ -859,6 +862,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("interact", "click");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("clickall", "false");
 			break;
 			
 		case "questionBank":

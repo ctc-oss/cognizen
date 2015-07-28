@@ -24,6 +24,8 @@ function C_Reveal(_type) {
     var labeled = false;
     var scroller;
     var scrollTimer;
+    var clickAll = false;
+    var clickCount = 0;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -41,6 +43,17 @@ function C_Reveal(_type) {
 		mediaWidth = $(data).find("page").eq(currentPage).attr('w');
 		mediaHeight = $(data).find("page").eq(currentPage).attr('h');
 		interact = $(data).find("page").eq(currentPage).attr("interact");
+		
+		if($(data).find("page").eq(currentPage).attr("clickall") == undefined){
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+		}else if ($(data).find("page").eq(currentPage).attr("clickall") == "true"){
+			clickAll = true;
+		}
+		
+		if(clickAll == true && mode != "edit"){
+			disableNext();
+		}
+		
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');
 		}
@@ -150,6 +163,13 @@ function C_Reveal(_type) {
 					}
 				//CLICK FUNCTIONALITY FOR CLICK INTERACT ----- ANIMATE THE OPENING
 				}).click(function(){
+					if(clickAll == true){
+						clickCount++;
+						
+						if(clickCount == revealCount){
+							enableNext();
+						}
+					}
 					$(this).unbind('mouseenter mouseleave click');
 					//REVEAL RIGHT CLICK
 					if(type == "revealRight" || type == "revealLeft"){
@@ -187,6 +207,13 @@ function C_Reveal(_type) {
 			}else if(interact == "hover"){
 				//REVEAL RIGHT HOVER
 				$("#"+revID).hover(function(){
+					if(clickAll == true){
+						clickCount++;
+						
+						if(clickCount == revealCount){
+							enableNext();
+						}
+					}
 					$(this).unbind('mouseenter mouseleave');
 					if(type == "revealRight" || type == "revealLeft"){
 						TweenMax.to(
@@ -358,7 +385,9 @@ function C_Reveal(_type) {
 		msg += "<label id='label'  title='Indicates if text labels should appear over the images.'><b>Labeled: </b></label>";
 		msg += "<input id='isLabeled' type='checkbox' name='random' class='radio' value='true'/>&nbsp;&nbsp;";		
 		msg += "<label id='hover' title='Set whether users click or hover to reveal.'><b>Hover: </b></label>";
-		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' />";
+		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true' />&nbsp;&nbsp;";
+		msg += "<label id='clickalllabel'  title='Define whether users must select all items before advancing.'><b>Click all: </b></label>";
+		msg += "<input id='isClickAll' type='checkbox' name='isClickAll' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label'>           <b>Reveal Direction: </b></label>";
 		msg += "<input id='revealRight' type='radio' name='manageRevealType' value='revealRight'><span title='Set reveals to open from left to right.'>open right</span>  </input>";
 		msg += "<input id='revealLeft' type='radio' name='manageRevealType' value='revealLeft'><span  title='Set reveals to open from right to left.'>open left</span>  </input>";
@@ -378,6 +407,10 @@ function C_Reveal(_type) {
 
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
+		}
+		
+		if(clickAll){
+			$("#isClickAll").attr("checked", "checked");
 		}
 		
 		if(labeled){
@@ -516,6 +549,14 @@ function C_Reveal(_type) {
 		}else{
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
+		}
+		
+		if($("#isClickAll").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("clickall", "true");
+			clickAll = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+			clickAll = false;
 		}
 		
 		if($("#isLabeled").prop("checked") == true){

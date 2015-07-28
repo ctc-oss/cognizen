@@ -11,7 +11,7 @@
  */
 function C_ClickListRevealText(_type) {
 	var type = _type;
-	var revealCount//number of tabs.
+	var revealCount;//number of tabs.
 	var myContent;//Body
 	var mediaWidth;
 	var mediaHeight;
@@ -24,6 +24,8 @@ function C_ClickListRevealText(_type) {
     var isFirst = true;
 	var scroller;
     var scrollTimer;
+    var clickAll = false;
+    var clickCount = 0;
 
      //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -46,6 +48,17 @@ function C_ClickListRevealText(_type) {
 		if($(data).find("page").eq(currentPage).attr('objItemId')){
 			myObjItemId = $(data).find("page").eq(currentPage).attr('objItemId');
 		}
+		
+		if($(data).find("page").eq(currentPage).attr("clickall") == undefined){
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+		}else if ($(data).find("page").eq(currentPage).attr("clickall") == "true"){
+			clickAll = true;
+		}
+		
+		if(clickAll == true && mode != "edit"){
+			disableNext();
+		}
+
 		pageTitle = new C_PageTitle();
 		audioHolder = new C_AudioHolder();
 
@@ -84,6 +97,13 @@ function C_ClickListRevealText(_type) {
 
 				if(interact == "click"){
 					$("#" + revID).click(function(){
+						if(clickAll == true){
+							clickCount++;
+							
+							if(clickCount == revealCount){
+								enableNext();
+							}
+						}
 						updateRevealContent($(this));
 					}).keypress(function(event) {
 						var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -93,6 +113,13 @@ function C_ClickListRevealText(_type) {
 					});
 				}else if(interact == "hover"){
 					$("#" + revID).hover(function(){
+						if(clickAll == true){
+							clickCount++;
+							
+							if(clickCount == revealCount){
+								enableNext();
+							}
+						}
 						updateRevealContent($(this));
 					});
 				}
@@ -190,6 +217,8 @@ function C_ClickListRevealText(_type) {
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update click list contents'>";
+		msg += "<label id='clickalllabel'  title='Define whether users must select all items before advancing.'><b>Click all: </b></label>";
+		msg += "<input id='isClickAll' type='checkbox' name='isClickAll' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='hover' title='Define whether users click or hover over the items.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
@@ -199,6 +228,10 @@ function C_ClickListRevealText(_type) {
 
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
+		}
+		
+		if(clickAll){
+			$("#isClickAll").attr("checked", "checked");
 		}
 
 		addReveal(currentEditBankMember, false);
@@ -263,7 +296,7 @@ function C_ClickListRevealText(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).find("reveal").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 
 			revealMenu_arr.push(tmpID);
@@ -287,15 +320,6 @@ function C_ClickListRevealText(_type) {
 	}
 
 	function makeRevealDataStore(){
-		//myObjective = $("#inputObjective").val();
-		//myObjItemId = $("#inputObjItemId").val();
-
-		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-
-		//$(data).find("page").eq(currentPage).attr('w', $("#imageWidth").val());
-		//$(data).find("page").eq(currentPage).attr('h', $("#imageHeight").val());
-
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");
 			interact = "hover";
@@ -303,12 +327,19 @@ function C_ClickListRevealText(_type) {
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
 		}
+		
+		if($("#isClickAll").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("clickall", "true");
+			clickAll = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+			clickAll = false;
+		}
 
 		var newRevealContent = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
 		var revealItemCDATA = newRevealContent.createCDATASection($("#revealTermText").val());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("title").append(revealItemCDATA);
-//		console.log(revealItemCDATA);
 		var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["revealContentText"].getData());
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").empty();
 		$(data).find("page").eq(currentPage).find("reveal").eq(currentEditBankMember).find("content").append(revealCDATA);

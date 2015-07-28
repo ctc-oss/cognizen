@@ -22,6 +22,8 @@ function C_TabbedContent(_type) {
     var myObjItemId = "undefined";
     var currentSelected;
     var scroller;
+    var clickAll = false;
+    var clickCount = 1;
 
     //Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -35,11 +37,23 @@ function C_TabbedContent(_type) {
 
 		revealCount = $(data).find("page").eq(currentPage).find("tab").length;
 		myContent = $(data).find("page").eq(currentPage).find("content").text();
+		
 		if($(data).find("page").eq(currentPage).attr("interact") != undefined){
 			interact = $(data).find("page").eq(currentPage).attr("interact");
 		}else{
 			interact = "click";
 		}
+		
+		if($(data).find("page").eq(currentPage).attr("clickall") == undefined){
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+		}else if ($(data).find("page").eq(currentPage).attr("clickall") == "true"){
+			clickAll = true;
+		}
+		
+		if(clickAll == true && mode != "edit"){
+			disableNext();
+		}
+		
 		pageTitle = new C_PageTitle();
 		audioHolder = new C_AudioHolder();
 
@@ -110,6 +124,10 @@ function C_TabbedContent(_type) {
 			$tabis.eq(i).find('a').attr("aria-expanded", "false");
 			$tabis.eq(i).find('a').removeAttr("role");
 			$tabis.eq(i).find('a').click(function(){
+				clickCount++;
+				if(clickCount == revealCount){
+					enableNext();
+				}
 				currentSelected.attr("aria-expanded", "false");
 				currentSelected.attr("aria-selected", "false");
 				currentSelected = $(this);
@@ -216,12 +234,11 @@ function C_TabbedContent(_type) {
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Update Tabs'>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>page objective: </label>";
-		//msg += "<input type='text' name='myName' id='inputObjective' value='"+ $(data).find('page').eq(currentPage).attr('objective') +"' class='dialogInput' style='width: 440px;'/><br/>";
-		//msg += "<label style='position: relative; float: left; vertical-align:middle; line-height:30px;'>module or lesson mapped (highest level): </label>";
-		//msg += "<input type='text' name='myName' id='inputObjItemId' value='"+ $(data).find('page').eq(currentPage).attr('objItemId') +"' class='dialogInput' style='width: 440px;'/><br/>";
 		msg += "<label id='hover'  title='Define whether users click or hover over tabs.'><b>Hover: </b></label>";
 		msg += "<input id='isHover' type='checkbox' name='hover' class='radio' value='true'/>";
+		msg += "<br/>"
+		msg += "<label id='clickalllabel'  title='Define whether users must select all items before advancing.'><b>Click all: </b></label>";
+		msg += "<input id='isClickAll' type='checkbox' name='isClickAll' class='radio' value='true'/>";
 		msg += "<br/>"
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
 		$("#stage").append(msg);
@@ -230,6 +247,10 @@ function C_TabbedContent(_type) {
 
 		if(interact == "hover"){
 			$("#isHover").attr("checked", "checked");
+		}
+		
+		if(clickAll){
+			$("#isClickAll").attr("checked", "checked");
 		}
 
 		addReveal(currentEditBankMember, false);
@@ -321,18 +342,20 @@ function C_TabbedContent(_type) {
 	}
 
 	function makeRevealDataStore(){
-		//myObjective = $("#inputObjective").val();
-		//myObjItemId = $("#inputObjItemId").val();
-
-		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-
 		if($("#isHover").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("interact", "hover");
 			interact = "hover";
 		}else{
 			$(data).find("page").eq(currentPage).attr("interact", "click");
 			interact = "click";
+		}
+		
+		if($("#isClickAll").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("clickall", "true");
+			clickAll = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+			clickAll = false;
 		}
 
 		var newRevealContent = new DOMParser().parseFromString('<tab></tab>',  "text/xml");
