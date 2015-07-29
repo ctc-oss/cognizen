@@ -668,7 +668,7 @@ var REDMINE = {
         else if(Permission === 'editor'){
             redmineRole = 'Developer';
         }
-        else if(Permission === 'reviewer'){
+        else if(Permission === 'reviewer' || Permission === 'client'){
             redmineRole = 'Reporter';
         }
 

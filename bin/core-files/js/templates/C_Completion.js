@@ -629,6 +629,10 @@ function C_Completion(_type) {
 			});
 	
 		}
+		else if(mode == 'review'){
+			enableBack();
+			enableIndex();
+		}
 	}
 
 	function showScoreEdit(){
