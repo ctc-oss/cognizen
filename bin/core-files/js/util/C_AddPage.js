@@ -128,6 +128,24 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("type", "completion");
 			$(data).find("page").eq(newPage).attr("indexhide", "false");
 			$(data).find("page").eq(newPage).attr("retainscore", "false");
+			$(data).find("page").eq(newPage).attr("subs", "null");
+			$(data).find("page").eq(newPage).attr("poster", "null");
+			$(data).find("page").eq(newPage).attr("popup", "defaultTop.png");
+			$(data).find("page").eq(newPage).attr("popcaps", " ");
+			$(data).find("page").eq(newPage).attr("popalt", " ");
+			$(data).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(data).find("page").eq(newPage).attr("w", "350");
+			$(data).find("page").eq(newPage).attr("h", "260");
+			$(data).find("page").eq(newPage).attr("enlarge", "");
+			$(data).find("page").eq(newPage).attr("controlType", "bar");
+			$(data).find("page").eq(newPage).attr("autoplay", "false");
+			$(data).find("page").eq(newPage).attr("autonext", "false");
+			$(data).find("page").eq(newPage).attr("alt", "image description");
+			$(data).find("page").eq(newPage).attr("mediaLinkType", "");
+			$(data).find("page").eq(newPage).attr("objectItemId", "undefined");
+			$(data).find("page").eq(newPage).attr("objective", "undefined");
+			$(data).find("page").eq(newPage).attr("poploop", "true");
+			$(data).find("page").eq(newPage).attr("withmedia", "false");
 			break;
 		case "textOnly":
 			$(data).find("page").eq(newPage).append($("<content>"));

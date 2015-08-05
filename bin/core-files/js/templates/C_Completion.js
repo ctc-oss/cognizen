@@ -224,8 +224,14 @@ function C_Completion(_type) {
 		pageTitle = new C_PageTitle();
 
         //Add classes for page layouts - updatable in css
-	    $("#stage").append('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner">'+
-	    	'<div id="content"></div><div id="instructionMsg"></div><div id="scoreFeedback"></div></div></div></div>');
+	    var msg = '<div id="scrollableContent" class="antiscroll-wrap">';
+	    	msg += '<div class="box">';
+	    	msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
+	    	msg += '<div id="content"></div>';
+	    	msg += '<div id="instructionMsg"></div>';
+	    	msg += '<div id="scoreFeedback"></div>';
+	    	msg += '</div></div></div>';
+	    $("#stage").append(msg);
 		//$("#scrollableContent").addClass("top");
         $("#scrollableContent").addClass("text");
         $("#contentHolder").addClass("text");
