@@ -50,6 +50,9 @@ function initializeSockets(){
 				mode = "edit";
 			}else if(data.permission == "reviewer"){
 				mode = "review";
+			}else if(data.permission == "client"){
+				mode = "review";
+				clientReview = true;				
 			}else if(data.permission == "forcedReviewer"){
 				mode = "review";
 //				if(!isIE){

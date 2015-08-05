@@ -19,7 +19,7 @@ var UserPermissionSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     contentType: { type: String, required: true},
     contentId: {type: String, required: true},
-    permission: {type: String, enum: ['admin', 'editor', 'reviewer']}
+    permission: {type: String, enum: ['admin', 'editor', 'reviewer', 'client']}
 });
  
 UserSchema.pre('save', function(next) {

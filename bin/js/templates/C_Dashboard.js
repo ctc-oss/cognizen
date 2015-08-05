@@ -508,17 +508,19 @@ function C_Dashboard(_type) {
 		$("#preloadholder").remove();
     	var userData = data;
     	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
-    	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>none</th></tr>';
+    	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>client</th><th>none</th></tr>';
     	for (var i = 0; i < data.length; i++){
 	    	var adminChecked = data[i].permission == 'admin' ? ' checked' : '';
 	    	var editorChecked = data[i].permission == 'editor' ? ' checked' : '';
 	    	var reviewerChecked = data[i].permission == 'reviewer' ? ' checked' : '';
+            var clientChecked = data[i].permission == 'client' ? ' checked' : '';
 	    	var noneChecked = data[i].permission == null ? ' checked' : '';
 
 		    msg += '<tr><td id="user'+ i+ '" class="assignUserName" title="'+data[i].username +'">' + data[i].firstName + ' ' + data[i].lastName + '</td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" ' + adminChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" ' + editorChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" ' + reviewerChecked + '></td>';
+            msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="client" ' + clientChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" ' + noneChecked + '></td></tr>';
     	}
 

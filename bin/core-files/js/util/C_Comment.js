@@ -167,28 +167,31 @@ function updatePageIssues(create){
 			msg += '<div name="commentInputText" id="commentInputText" title="Add comment description here." class="dialogInput" contenteditable="true"></div><br/>';
 			//msg += '<textarea rows="4" cols="50" name="commentInputText" id="commentInputText" title="Add comment description here." class="text ui-widget-content ui-corner-all"></textarea><br/>';
 
-			msg += '<div id="dropdowns" >';		
+			if(!clientReview){
+				msg += '<div id="dropdowns" >';		
 
-		 	msg += "<div name='commentInputStatus' id='commentInputStatus' title='Set the status of the issue.' style='float:left; margin-right:20px;'>";
-		 	msg += "<label for='commentInputStatus'>Status: </label><select>";
-		 	msg += "<option>New</option>";
-		 	msg += "<option>In Progress</option>";
-		 	msg += "<option>Resolved</option>";
-		 	msg += "<option>Feedback</option>";
-		 	msg += "<option>Closed</option>";
-		 	msg += "<option>Rejected</option>";
-		 	msg += "</select></div> ";
-		 
-		 	msg += '<div name="assigneeInput" id="assigneeInput" title="Set whom the comment is assigned to." >';
-		 	msg += '<label for="assigneeInput">Assignee: </label><select>';
-		 	msg += '<option value=""> </option>';
-		 	for (var i = 0; i < _membership_arr.length; i++) {
-		 		msg += '<option value="'+_membership_arr[i].user.id+'">'+_membership_arr[i].user.name+'</option>';
-		 	};
-		 	msg += '</select>';
+			 	msg += "<div name='commentInputStatus' id='commentInputStatus' title='Set the status of the issue.' style='float:left; margin-right:20px;'>";
+			 	msg += "<label for='commentInputStatus'>Status: </label><select>";
+			 	msg += "<option>New</option>";
+			 	msg += "<option>In Progress</option>";
+			 	msg += "<option>Resolved</option>";
+			 	msg += "<option>Feedback</option>";
+			 	msg += "<option>Closed</option>";
+			 	msg += "<option>Rejected</option>";
+			 	msg += "</select></div> ";
+			 
+			 	msg += '<div name="assigneeInput" id="assigneeInput" title="Set whom the comment is assigned to." >';
+			 	msg += '<label for="assigneeInput">Assignee: </label><select>';
+			 	msg += '<option value=""> </option>';
+			 	for (var i = 0; i < _membership_arr.length; i++) {
+			 		msg += '<option value="'+_membership_arr[i].user.id+'">'+_membership_arr[i].user.name+'</option>';
+			 	};
+			 	msg += '</select>';
 
-		 	msg += '</div>'; //end assignee div
-		 	msg += '</div><br/>'; //end dropdowns div
+			 	msg += '</div>'; //end assignee div
+			 	msg += '</div><br/>'; //end dropdowns div
+			}
+
 		 	msg += '</div>'; //end newComment
 			if(create == true){		     		
 				msg += "</div>";//commentDialog
@@ -202,7 +205,7 @@ function updatePageIssues(create){
 
 			$("#addIssueBtn").button().click(function(){
 				if($('#commentInputSubject').val().length != 0){
-					var inputStatusId = findStatusId($('#commentInputStatus option:selected').text());
+					var inputStatusId = clientReview == true ? 'New' : findStatusId($('#commentInputStatus option:selected').text());
 					var _id = $(data).find("page").eq(currentPage).attr("id");
 					var _title = $(data).find('page').eq(currentPage).find("title").first().text().trim();
 					if(layout === 'branching' || layout === 'chaining' || layout === 'pathing'){
@@ -266,7 +269,6 @@ function updatePageIssues(create){
 
 				if(_issues.total_count != 0){
 					var issuesMsg = '';
-
 					issuesMsg += "</div>";
 			issuesMsg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Comment Menu: </b></label></div><br/><br/>";					
 			issuesMsg += "<div id='commentHolder' class='box-wrap antiscroll-wrap' style='width:100%; background-color:rgba(51, 51, 51, 0);'>";
@@ -277,28 +279,30 @@ function updatePageIssues(create){
 					issuesMsg += "<div id='label'>Comment Description: </div>";
 					issuesMsg += '<div name="commentText" id="commentText" title="Edit comment description here." class="dialogInput" contenteditable="true"></div><br/>';	
 					
-					issuesMsg += '<div id="dropdowns" >';		
-		
-			     	issuesMsg += "<div name='commentStatus' id='commentStatus' title='Edit the status of the issue.' style='float:left; margin-right:20px;'>";
-			     	issuesMsg += "<label for='commentStatus'>Status: </label><select>";
-			     	issuesMsg += "<option>New</option>";
-			     	issuesMsg += "<option>In Progress</option>";
-			     	issuesMsg += "<option>Resolved</option>";
-			     	issuesMsg += "<option>Feedback</option>";
-			     	issuesMsg += "<option>Closed</option>";
-			     	issuesMsg += "<option>Rejected</option>";
-			     	issuesMsg += "</select></div> ";
-			     
-			     	issuesMsg += '<div name="assignee" id="assignee" title="Edit who comment is assigned to." >';
-			     	issuesMsg += '<label for="assignee">Assignee: </label><select>';
-			     	issuesMsg += '<option value=""> </option>';
-			     	for (var i = 0; i < _membership_arr.length; i++) {
-			     		issuesMsg += '<option value="'+_membership_arr[i].user.id+'">'+_membership_arr[i].user.name+'</option>';
-			     	};
-			     	issuesMsg += '</select>';
+					if(!clientReview){
+						issuesMsg += '<div id="dropdowns" >';		
+			
+				     	issuesMsg += "<div name='commentStatus' id='commentStatus' title='Edit the status of the issue.' style='float:left; margin-right:20px;'>";
+				     	issuesMsg += "<label for='commentStatus'>Status: </label><select>";
+				     	issuesMsg += "<option>New</option>";
+				     	issuesMsg += "<option>In Progress</option>";
+				     	issuesMsg += "<option>Resolved</option>";
+				     	issuesMsg += "<option>Feedback</option>";
+				     	issuesMsg += "<option>Closed</option>";
+				     	issuesMsg += "<option>Rejected</option>";
+				     	issuesMsg += "</select></div> ";
+				     
+				     	issuesMsg += '<div name="assignee" id="assignee" title="Edit who comment is assigned to." >';
+				     	issuesMsg += '<label for="assignee">Assignee: </label><select>';
+				     	issuesMsg += '<option value=""> </option>';
+				     	for (var i = 0; i < _membership_arr.length; i++) {
+				     		issuesMsg += '<option value="'+_membership_arr[i].user.id+'">'+_membership_arr[i].user.name+'</option>';
+				     	};
+				     	issuesMsg += '</select>';
 
-			     	issuesMsg += '</div>'; //end assignee div
-			     	issuesMsg += '</div><br/>'; //end dropdowns div
+				     	issuesMsg += '</div>'; //end assignee div
+				     	issuesMsg += '</div><br/>'; //end dropdowns div
+				     }
 			     	issuesMsg += '<div id="issueNotes" name="issueNotes"></div>';
 			     	issuesMsg += "<div id='label'>Add Note: </div>";
 					issuesMsg += '<div name="commentNote" id="commentNote" title="Add note to comment here." class="dialogInput" contenteditable="true"></div><br/>';					
@@ -344,13 +348,13 @@ function updatePageIssues(create){
 						updateBankMenu();
 
 
-						//TODO: hide link to redmine for client reviewers
-						// if(mode != 'review'){
-						$("#page").append('<div><div id="updateIssueBtn" style="float:left;" title="Updates current issue">Submit</div>&nbsp;&nbsp;<div id="redmineLink" style="float:right;"><a href="http://'+redmineHost+'/issues/'+_issues.issues[currentIssueBankMember].id+'" target="_blank">Link to Redmine</a></div></div><br/>');
-						// }
-						// else{
-						// 	$("#pageComments").append('<div id="updateIssueBtn" style="float:left;">Submit</div><br/><br/>');
-						// }
+						//#3667
+						if(!clientReview){
+							$("#page").append('<div><div id="updateIssueBtn" style="float:left;" title="Updates current issue">Submit</div>&nbsp;&nbsp;<div id="redmineLink" style="float:right;"><a href="http://'+redmineHost+'/issues/'+_issues.issues[currentIssueBankMember].id+'" target="_blank">Link to Redmine</a></div></div><br/>');
+						}
+						else{
+							$("#page").append('<div id="updateIssueBtn" style="float:left;">Submit</div><br/><br/>');
+						}
 									
 						$("#updateIssueBtn").button().click(function(){
 							_issues.issues[currentIssueBankMember].subject = $('#commentSubject').val();
@@ -375,6 +379,9 @@ function updatePageIssues(create){
 									alert(err);
 								}
 								else{
+									if (currentStatus == 'Closed' || currentStatus == 'Rejected'){
+										currentIssueBankMember = 0;
+									} 
 									updateIndexCommentFlags();
 									updateRedmineCommentIcon();
 									setTimeout(updatePageIssues(false), 3000);

@@ -20,6 +20,7 @@ var stageW;
 var username;
 var userID;
 var mode = "production";//mode can be set to production, edit and review.
+var clientReview = false;
 
 var windowWidth = $('body').width();
 windowHeight = $(window).height();  //this can be inaccurate and probably needs to go
