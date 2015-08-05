@@ -37,6 +37,7 @@ function C_Completion(_type) {
 	var hideIndex = false;
 	var retainScore = false;
 	var passedPreviously = false;
+	var hasMedia = false;
     /*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     INITIALIZE AND BUILD TEMPLATE
@@ -83,7 +84,35 @@ function C_Completion(_type) {
 				showRemediate = false;
 			}
 		}
-
+		
+		//Additional code to check if pre-media enabled completion page and update if so...  PD- 08/05/15
+		if($(data).find("page").eq(currentPage).attr("subs") == undefined){
+			$(data).find("page").eq(currentPage).attr("subs", "null");
+			$(data).find("page").eq(currentPage).attr("poster", "null");
+			$(data).find("page").eq(currentPage).attr("popup", "defaultTop.png");
+			$(data).find("page").eq(currentPage).attr("popcaps", " ");
+			$(data).find("page").eq(currentPage).attr("popalt", " ");
+			$(data).find("page").eq(currentPage).attr("img", "defaultTop.png");
+			$(data).find("page").eq(currentPage).attr("w", "350");
+			$(data).find("page").eq(currentPage).attr("h", "260");
+			$(data).find("page").eq(currentPage).attr("enlarge", "");
+			$(data).find("page").eq(currentPage).attr("controlType", "bar");
+			$(data).find("page").eq(currentPage).attr("autoplay", "false");
+			$(data).find("page").eq(currentPage).attr("autonext", "false");
+			$(data).find("page").eq(currentPage).attr("alt", "image description");
+			$(data).find("page").eq(currentPage).attr("mediaLinkType", "");
+			$(data).find("page").eq(currentPage).attr("objectItemId", "undefined");
+			$(data).find("page").eq(currentPage).attr("objective", "undefined");
+			$(data).find("page").eq(currentPage).attr("poploop", "true");
+			$(data).find("page").eq(currentPage).attr("withmedia", "false");
+		}
+		
+		if($(data).find("page").eq(currentPage).attr("withmedia") == "true"){
+			hasMedia = true;
+		}else{
+			hasMedia = false;
+		}
+		
 		//evaluate score
 		for(var k = 0; k < $(data).find("page").length; k++){
 			if($(data).find("page").eq(k).attr('graded') === "true" &&
@@ -228,13 +257,22 @@ function C_Completion(_type) {
 	    	msg += '<div class="box">';
 	    	msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 	    	msg += '<div id="content"></div>';
+	    	if(hasMedia){
+		    	mediaHolder = new C_VisualMediaHolder();
+				mediaHolder.loadVisualMedia();
+	    	}
 	    	msg += '<div id="instructionMsg"></div>';
 	    	msg += '<div id="scoreFeedback"></div>';
 	    	msg += '</div></div></div>';
 	    $("#stage").append(msg);
-		//$("#scrollableContent").addClass("top");
-        $("#scrollableContent").addClass("text");
-        $("#contentHolder").addClass("text");
+		if(hasMedia){
+			$("#scrollableContent").addClass("top");
+			$("#contentHolder").addClass("top");
+		}else{
+			$("#scrollableContent").addClass("text");
+			$("#contentHolder").addClass("text");
+		}
+
 		determineReviewList();
 
 		$("#content").append(myContent);
@@ -417,6 +455,7 @@ function C_Completion(_type) {
         checkMode();
 
         if(transition == true){
+			console.log("This should get called");
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:removeLoader});
         }else{
 	        $(".C_Loader").remove();
@@ -425,6 +464,7 @@ function C_Completion(_type) {
     }
 
     function removeLoader(){
+	    console.log("remove loader");
 	    $(".C_Loader").remove();
     }
 
@@ -633,12 +673,68 @@ function C_Completion(_type) {
 				extraPlugins: 'sourcedialog',
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
+			
+			$('#scrollableContent').prepend("<div id='completionEdit' class='btn_edit_text' title='Update completion settings.'></div>");
+
+			$("#completionEdit").click(function(){
+				updateCompletionDialog();
+			}).tooltip();
 	
 		}
 		else if(mode == 'review'){
 			enableBack();
 			enableIndex();
 		}
+	}
+	
+	function updateCompletionDialog(){
+		try { $("#completionEditDialog").remove(); } catch (e) {}
+		
+		var msg = "<div id='completionEditDialog' title='Set completion preferences.'>";
+		msg += "<label id='label' title='Indicates if this page should have a media element.'><b>media: </b></label>";
+		msg += "<input id='hasMedia' type='checkbox' name='hasMedia' class='radio' value='true'/>";
+		msg += "</div>";
+		$("#stage").append(msg);
+		
+		if(!hasMedia){
+			$("#hasMedia").removeAttr('checked');
+		}else{
+			$("#hasMedia").attr('checked', 'checked');
+		}
+		
+		//Style it to jQuery UI dialog
+		$("#completionEditDialog").dialog({
+			autoOpen: true,
+			modal: true,
+			width: 500,
+			height: 350,
+			dialogClass: "no-close",
+			buttons: [
+				{
+					text: "Done",
+					title: "Saves and closes the edit dialog.",
+					click: function(){
+				        if($("#hasMedia").prop("checked") == true){
+				        	$(data).find("page").eq(currentPage).attr("withmedia", "true");
+				        	hasMedia = true;
+				        }else{
+					        $(data).find("page").eq(currentPage).attr("withmedia", "false");
+				        	hasMedia = false;
+				        }
+						$("#completionEditDialog").dialog("close");
+						$("#completionEditDialog").remove();
+						sendUpdateWithRefresh();
+						fadeComplete();
+					}
+				}
+			]
+
+		});
+
+		//adds tooltips to the edit dialog buttons
+	    $(function () {
+	        $(document).tooltip();
+	    });
 	}
 
 	function showScoreEdit(){

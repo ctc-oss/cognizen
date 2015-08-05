@@ -203,7 +203,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
             $("#mediaHolder").addClass("right");
         }else if(type == "top"){
             $("#mediaHolder").addClass("bottom");
-        }else if(type == "bottom"){
+        }else if(type == "bottom" || type == "completion"){
             $("#mediaHolder").addClass("top");
         }else if(type == "right"){
             $("#mediaHolder").addClass("left");
@@ -574,7 +574,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			})
 		})
 
-		if(transition == true){
+		if(transition == true && type != "completion"){
         	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
         }
 
