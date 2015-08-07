@@ -673,68 +673,12 @@ function C_Completion(_type) {
 				extraPlugins: 'sourcedialog',
 				allowedContent: true//'p b i li ol ul table tr td th tbody thead span div img; p b i li ol ul table tr td th tbody thead div span img [*](*){*}'
 			});
-			
-			$('#scrollableContent').prepend("<div id='completionEdit' class='btn_edit_text' title='Update completion settings.'></div>");
-
-			$("#completionEdit").click(function(){
-				updateCompletionDialog();
-			}).tooltip();
 	
 		}
 		else if(mode == 'review'){
 			enableBack();
 			enableIndex();
 		}
-	}
-	
-	function updateCompletionDialog(){
-		try { $("#completionEditDialog").remove(); } catch (e) {}
-		
-		var msg = "<div id='completionEditDialog' title='Set completion preferences.'>";
-		msg += "<label id='label' title='Indicates if this page should have a media element.'><b>media: </b></label>";
-		msg += "<input id='hasMedia' type='checkbox' name='hasMedia' class='radio' value='true'/>";
-		msg += "</div>";
-		$("#stage").append(msg);
-		
-		if(!hasMedia){
-			$("#hasMedia").removeAttr('checked');
-		}else{
-			$("#hasMedia").attr('checked', 'checked');
-		}
-		
-		//Style it to jQuery UI dialog
-		$("#completionEditDialog").dialog({
-			autoOpen: true,
-			modal: true,
-			width: 500,
-			height: 350,
-			dialogClass: "no-close",
-			buttons: [
-				{
-					text: "Done",
-					title: "Saves and closes the edit dialog.",
-					click: function(){
-				        if($("#hasMedia").prop("checked") == true){
-				        	$(data).find("page").eq(currentPage).attr("withmedia", "true");
-				        	hasMedia = true;
-				        }else{
-					        $(data).find("page").eq(currentPage).attr("withmedia", "false");
-				        	hasMedia = false;
-				        }
-						$("#completionEditDialog").dialog("close");
-						$("#completionEditDialog").remove();
-						sendUpdateWithRefresh();
-						fadeComplete();
-					}
-				}
-			]
-
-		});
-
-		//adds tooltips to the edit dialog buttons
-	    $(function () {
-	        $(document).tooltip();
-	    });
 	}
 
 	function showScoreEdit(){
@@ -761,6 +705,8 @@ function C_Completion(_type) {
 		feedback = $(data).find("page").eq(currentPage).find('feedback').text();
 
 		var msg = "<div id='questionEditDialog' title='Completion Edit Dialog'>";
+		msg += "<label id='label' title='Indicates if this page should have a media element.'><b>media: </b></label>";
+		msg += "<input id='hasMedia' type='checkbox' name='hasMedia' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
 		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Prevent completion page from showing up in the Index.'><b>Hide in Index: </b></label>";
@@ -773,6 +719,12 @@ function C_Completion(_type) {
 		msg += "<div id='inputFailedResponse' class='dialogInput' contenteditable='true'></div>";				
 		msg += "</div>";
 		$("#stage").append(msg);	
+		
+		if(!hasMedia){
+			$("#hasMedia").removeAttr('checked');
+		}else{
+			$("#hasMedia").attr('checked', 'checked');
+		}
 		
 		if(hideIndex){
 			$("#hideFromIndex").attr('checked', 'checked');
@@ -862,6 +814,14 @@ function C_Completion(_type) {
 	}
 
 	function makeRevealDataStore(){
+		if($("#hasMedia").prop("checked") == true){
+        	$(data).find("page").eq(currentPage).attr("withmedia", "true");
+        	hasMedia = true;
+        }else{
+	        $(data).find("page").eq(currentPage).attr("withmedia", "false");
+        	hasMedia = false;
+        }
+		
 		if($("#isRemediate").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("showremediate", "true");
 			showRemediate = true;
