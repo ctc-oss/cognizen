@@ -121,18 +121,27 @@ function C_TabbedContent(_type) {
 			var currentTab = $(data).find("page").eq(currentPage).find("tab").eq(i).attr("title");
 			var currentTabContent = $("#tab"+i).text();
 			$tabis.eq(i).removeAttr("role");
+			if(i == 0){
+				$tabis.eq(i).find('a').attr("beenClicked", "true");
+			}else{
+				$tabis.eq(i).find('a').attr("beenClicked", "false");
+			}
 			$tabis.eq(i).find('a').attr("aria-expanded", "false");
 			$tabis.eq(i).find('a').removeAttr("role");
 			$tabis.eq(i).find('a').click(function(){
-				clickCount++;
-				if(clickCount == revealCount){
-					enableNext();
-				}
 				currentSelected.attr("aria-expanded", "false");
 				currentSelected.attr("aria-selected", "false");
 				currentSelected = $(this);
 				currentSelected.attr("aria-expanded", "true");
 				currentSelected.attr("aria-selected", "true");
+				console.log(currentSelected.attr("beenClicked"));
+				if(currentSelected.attr("beenClicked") == "false"){
+					currentSelected.attr("beenClicked", "true");
+					clickCount++;
+					if(clickCount == revealCount){
+						enableNext();
+					}
+				}
 				var temp = $(this).parent().attr("aria-controls");
 				if(!$(courseData).find('course').attr('section508')){
 					$("#"+temp).focus();

@@ -91,8 +91,6 @@ function C_ClickImage(_type) {
 		}else{
 			$("#content").append(myContent);
 		}
-        //$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
-        //pageAccess_arr.push($("#content"));
 
 		$("<div id='imgPalette' class='imgPalette'></div>").insertAfter("#content");
 
@@ -106,7 +104,7 @@ function C_ClickImage(_type) {
 
 			var ariaText = tmpContent.replace(/\'/g, "").replace(/\"/g, "");
 
-			var msg = "<div id='"+ revID +"' class='clickImg' aria-label='"+currentAlt+"' role='button' myContent='"+ tmpContent +"'>";
+			var msg = "<div id='"+ revID +"' class='clickImg' aria-label='"+currentAlt+"' role='button' myContent='"+ tmpContent +"' beenClicked='false'>";
 				msg += "<img src='media/"+currentImg+"' alt='"+ currentAlt +"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/>";
 				if(labeled){
 					msg += "<div id='mediaLabel' class='mediaLabel'>"+$(data).find("page").eq(currentPage).find("reveal").eq(i).attr("label")+"</div>";
@@ -122,10 +120,13 @@ function C_ClickImage(_type) {
 			if(interact == "click"){
 				$("#" + revID).click(function(){
 					if(clickAll == true){
-						clickCount++;
-						
-						if(clickCount == revealCount){
-							enableNext();
+						if($(this).attr("beenClicked") == "false"){
+							$(this).attr("beenClicked", "true");
+							clickCount++;
+							
+							if(clickCount == revealCount){
+								enableNext();
+							}
 						}
 					}
 					updateRevealContent($(this));

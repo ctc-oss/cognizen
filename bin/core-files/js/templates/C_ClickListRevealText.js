@@ -93,15 +93,18 @@ function C_ClickListRevealText(_type) {
 			if(isMobilePhone){
 				$("#listPaletteMenu").append("<option id='"+ revID +"' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</option>");
 			}else{
-				$("#listPalette").append("<div id='"+ revID +"' class='listItem' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</div>");
+				$("#listPalette").append("<div id='"+ revID +"' class='listItem' beenClicked='false' myContent='"+ tmpContent +"' role='button'>"+currentItem+"</div>");
 
 				if(interact == "click"){
 					$("#" + revID).click(function(){
 						if(clickAll == true){
-							clickCount++;
-							
-							if(clickCount == revealCount){
-								enableNext();
+							if($(this).attr("beenClicked") == "false"){
+								$(this).attr("beenClicked", "true");
+								clickCount++;
+								
+								if(clickCount == revealCount){
+									enableNext();
+								}
 							}
 						}
 						updateRevealContent($(this));
