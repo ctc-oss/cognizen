@@ -51,29 +51,63 @@ function C_Outline(_myItem) {
     var currentDragID;
     var currentDragItem;
 
+	var pageType_arr = ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText",
+	 "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "flashcard", "dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching",
+	 "questionBank", "completion", "branchingDecisions", "branchingLinearPaths", "branchingPractice", "inputAnswer", "inputExpertCompare",
+	 "clickListFullText", "dragSlider"];
+
+	var templateNameMap = {};	
+	//#3600 Updated template names
+	//format templateNameMap[Name User Sees] = Name of template file
+	templateNameMap[pageType_arr[0]] = 'textOnly';
+	templateNameMap[pageType_arr[1]] = 'graphicOnly';
+	templateNameMap[pageType_arr[2]] = 'top';
+	templateNameMap[pageType_arr[3]] = 'left';
+	templateNameMap[pageType_arr[4]] = 'right';
+	templateNameMap[pageType_arr[5]] = 'bottom';
+	templateNameMap[pageType_arr[6]] = 'sidebar';
+	templateNameMap[pageType_arr[7]] = 'clickImage';
+	templateNameMap[pageType_arr[8]] = 'tabsOnly';
+	templateNameMap[pageType_arr[9]] = 'tabsLeft';
+	templateNameMap[pageType_arr[10]] = 'revealRight';
+	templateNameMap[pageType_arr[11]] = 'flashcard';
+	templateNameMap[pageType_arr[12]] = 'sequence';
+	templateNameMap[pageType_arr[13]] = 'multipleChoice';
+	templateNameMap[pageType_arr[14]] = 'multipleChoiceMedia';
+	templateNameMap[pageType_arr[15]] = 'matching';
+	templateNameMap[pageType_arr[16]] = 'questionBank';
+	templateNameMap[pageType_arr[17]] = 'completion';
+	templateNameMap[pageType_arr[18]] = 'branching';
+	templateNameMap[pageType_arr[19]] = 'pathing';
+	templateNameMap[pageType_arr[20]] = 'chaining';
+	templateNameMap[pageType_arr[21]] = 'textInput';
+	templateNameMap[pageType_arr[22]] = 'essayCompare';
+	templateNameMap[pageType_arr[23]] = 'clickListRevealText';
+	templateNameMap[pageType_arr[24]] = 'slider';	
+
     var pageTypeExamples = [
 		{
 			"type" : "textOnly",
 			"images" : ["ex_textOnly.png", "ex_TextOnly1.png"]
 		},
 		{
-			"type" : "graphicOnly",
+			"type" : "mediaOnly",
 			"images" : ["ex_graphicOnly.png", "ex_GraphicOnly_Video.png", "ex_GraphicOnly1.png"]
 		},
 		{
-			"type" : "top",
+			"type" : "textAboveMedia",
 			"images" : ["ex_TextTop.png", "ex_TextTop1.png", "ex_TextTop2.png",  "ex_TextTop3.png"]
 		},
 		{
-			"type" : "left",
+			"type" : "textLeftofMedia",
 			"images" : ["ex_TextLeft.png","ex_TextLeft1.png", "ex_TextLeft2.png", "ex_TextLeft3.png", "ex_TextLeft4.png", "ex_TextLeft5.png", "ex_TextLeft6.png",]
 		},
 		{
-			"type" : "right",
+			"type" : "textRightofMedia",
 			"images" : ["ex_TextRight.png", "ex_TextRight_VideoLeft.png", "ex_TextRight1.png", "ex_TextRight2.png", "ex_TextRight3.png",]
 		},
 		{
-			"type" : "bottom",
+			"type" : "textBelowMedia",
 			"images" : ["ex_TextBottom.png"]
 		},
 		{
@@ -81,35 +115,27 @@ function C_Outline(_myItem) {
 			"images" : ["ex_sidebar.png"]
 		},
 		{
-			"type" : "clickImage",
+			"type" : "clickImageFullText",
 			"images" : ["ex_clickImage.png", "ex_ClickImage1.png", "ex_ClickImage2.png"]
 		},
 		{
-			"type" : "tabsOnly",
+			"type" : "textAboveTabs",
 			"images" : ["ex_Tabs.png", "ex_Tabs_1.png", "ex_Tabs_1a.png", "ex_Tabs_2.png", "ex_Tabs_3.png", "ex_Tabs_A.png"]
 		},
 		{
-			"type" : "tabsLeft",
+			"type" : "tabsLeftMediaRight",
 			"images" : ["ex_tabsLeft.png", "ex_TabsLeft1.png"]
 		},
 		{
-			"type" : "revealRight",
-			"images" : ["ex_revealRight.png", "ex_RevealRight1.png"]
-		},
-		{
-			"type" : "revealLeft",
-			"images" : ["ex_RevealLeft_1A.png", "ex_RevealLeft_1B.png"]
-		},
-		{
-			"type" : "revealBottom",
-			"images" : ["ex_RevealBottom0.png", "ex_RevealBottom.png", "ex_RevealBottom2.png"]
+			"type" : "clickImageRevealText",
+			"images" : ["ex_revealRight.png", "ex_RevealRight1.png", "ex_RevealLeft_1A.png", "ex_RevealLeft_1B.png", "ex_RevealBottom0.png", "ex_RevealBottom.png", "ex_RevealBottom2.png"]
 		},
 		{
 			"type" : "flashcard",
 			"images" : ["ex_flashCards.png", "ex_FlashCards1.png", "ex_GraphicFlashCards.png"]
 		},
 		{
-			"type" : "sequence",
+			"type" : "dragOrdering",
 			"images" : ["ex_sequence.png", "ex_Sequence1.png", "ex_Sequence2.png"]
 		},
 		{
@@ -133,28 +159,32 @@ function C_Outline(_myItem) {
 			"images" : ["ex_completion.png", "ex_Completion1.png"]
 		},
 		{
-			"type" : "textInput",
+			"type" : "inputAnswer",
 			"images" : ["ex_textInput.png"]
 		},
 		{
-			"type" : "essayCompare",
+			"type" : "inputExpertCompare",
 			"images" : ["ex_essayCompare.png", "ex_EssayCompare_Answers3.png"]
 		},
 		{
-			"type" : "clickListRevealText",
+			"type" : "clickListFullText",
 			"images" : ["ex_clickListRevealText.png", "ex_ClickListRevealText1.png"]
 		},
 		{
-			"type" : "branching",
+			"type" : "branchingDecisions",
 			"images" : ["Ex_Branching1.PNG", "Ex_Branching2.PNG", "Ex_Branching3.PNG", "Ex_Branching4.PNG", "Ex_Branching5.PNG", "Ex_Branching6.PNG", "Ex_Branching7.PNG", "Ex_Branching8.PNG", "Ex_Branching9.PNG"]
 		},
 		{
-			"type" : "slider",
+			"type" : "dragSlider",
 			"images" : ["ex_Slider.png"]
 		},
 		{
-			"type" : "chaining",
+			"type" : "branchingPractice",
 			"images" : ["ex_Chaining.PNG", "ex_Chaining1.PNG", "ex_Chaining2.PNG"]
+		},
+		{
+			"type" : "branchingLinearPaths",
+			"images" : ["ex_Pathing1.png", "ex_Pathing2.png", "ex_Pathing3.png"]
 		}		
 
 	];
@@ -1625,9 +1655,6 @@ function C_Outline(_myItem) {
 		});
      }
 
-
-
-
      function displayPageData(_id){
      	var matched = false;
      	for(var i = 0; i < module_arr.length; i++){
@@ -1637,10 +1664,12 @@ function C_Outline(_myItem) {
 			    	currentPageParentModule = i;
 			    	currentPage = j;
 
+			    	var userTemplateName = getKey($(module_arr[i].xml).find('page').eq(j).attr("layout"));
+
 			     	$("#outlinePagePrefPane").empty();
 				 	var msg = "<div class='outlinePageEditHeader'><b>Page Preferences: " + $(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim() + "</div>";
 				 	msg += "<div><b>Details:</b></div>";
-				 	msg += "<b>page type: </b>" + $(module_arr[i].xml).find('page').eq(j).attr("layout") + "  <button id='panePagePreview'>preview</button><br/>";
+				 	msg += "<b>page type: </b>" + userTemplateName + "  <button id='panePagePreview'>preview</button><br/>";
 			     	msg += "<label for='out_pageTitle' title='Update the page title.'>page title: </label>";
 			        msg += '<input type="text" name="out_pageTitle" id="out_pageTitle" value="'+$(module_arr[i].xml).find('page').eq(j).find("title").first().text().trim()+'" class="text ui-widget-content ui-corner-all" /> <br/>';
 			        //display tlo
@@ -1699,7 +1728,7 @@ function C_Outline(_myItem) {
 			     	});
 
 				 	$("#panePagePreview").button().click(function(){
-						clickPreview($(module_arr[i].xml).find('page').eq(j).attr("layout"));
+						clickPreview(userTemplateName);
 					});
 
 					//set enabling based off value in xml
@@ -1884,113 +1913,113 @@ function C_Outline(_myItem) {
 		var opt_arr = ["application", "analysis", "comprehension", "evaluation", "knowledge", "problem solving", "synthesis"];
 		var content_arr = ["concepts", "facts", "principle", "procedures", "process"];
 		var demoapp_arr = ["demonstration", "practice, testing"];
-		var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "textInput", "essayCompare", "clickListRevealText", "slider", "chaining", "branching", "pathing"]
-		
+
+
 		var pages= [
 			{
-				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "completion"],
 				"opt" : ["comprehension", "knowledge"],
 				"content" : ["facts"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "slider", "completion" ],
+				"capability" : ["flashcard", "dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "dragSlider", "completion" ],
 				"opt" : ["comprehension", "knowledge"],
 				"content" : ["facts"],
 				"demoapp" : "practice, testing"
 			},			
 			{
-				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "completion"],
+				"capability" : ["textOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["concepts"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["flashcard", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "completion" ],
+				"capability" : ["flashcard", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["concepts"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["procedures"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["procedures"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["process"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["process"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["textOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["textOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["application", "analysis"],
 				"content" : ["principle"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["application", "analysis"],
 				"content" : ["principle"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["procedures"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["procedures"],
 				"demoapp" : "practice, testing"
 			},
 			{
-				"capability" : ["graphicOnly", "top", "left", "right", "bottom", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["process"],
 				"demoapp" : "demonstration"
 			},
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["process"],
 				"demoapp" : "practice, testing"
 			},	
 			{
-				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["principle"],
 				"demoapp" : "demonstration"
 			},																										
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["problem solving", "synthesis"],
 				"content" : ["principle"],
 				"demoapp" : "practice, testing"
 			},	
 			{
-				"capability" : ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealLeft", "revealBottom", "revealRight", "clickListRevealText", "chaining", "completion"],
+				"capability" : ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText", "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "clickListFullText", "branchingPractice", "completion"],
 				"opt" : ["evaluation"],
 				"content" : ["procedures", "process", "principle"],
 				"demoapp" : "demonstration"
 			},																										
 			{
-				"capability" : ["sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "textInput", "essayCompare", "slider", "chaining", "branching", "completion" ],
+				"capability" : ["dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "inputAnswer", "inputExpertCompare", "dragSlider", "branchingPractice", "branchingDecisions", "branchingLinearPaths", "completion" ],
 				"opt" : ["evaluation"],
 				"content" : ["procedures", "process", "principle"],
 				"demoapp" : "practice, testing"
@@ -2090,11 +2119,13 @@ function C_Outline(_myItem) {
                 Submit: function(){
                 	//detect active accordion to know which values to use on submit
                 	if($("#addPageAccordion").accordion("option", "active") == 0){
-						createNewPageByType($("#pageTypeList").val(), $("#myName").val(), $('#elo').val(), _id);
+                		var newPageType = $("#pageTypeList").val();
+						createNewPageByType(getTemplate(newPageType), $("#myName").val(), $('#elo').val(), _id);
 	                	$(this).dialog("close");
                 	}
                 	else{
-  						createNewPageByType($("#basicPageTypeList").val(), $("#basicMyName").val(), $('#basicElo').val(), _id);
+                		var newBasicPageType = $("#basicPageTypeList").val();
+  						createNewPageByType(getTemplate(newBasicPageType), $("#basicMyName").val(), $('#basicElo').val(), _id);
 	                	$(this).dialog("close");              		
                 	}
                 },
@@ -2159,6 +2190,26 @@ function C_Outline(_myItem) {
 			}
 		});
 	}
+
+	/**
+	* #3600 Util function to get template file name from key
+	**/
+	function getTemplate(key){
+		return templateNameMap[key];
+	}
+
+	/**
+	* #3600 util function to get the key (User template name) from the template file name (code template name)
+	**/
+	function getKey(template){
+		for( var prop in templateNameMap){
+			if( templateNameMap.hasOwnProperty( prop )){
+				if(templateNameMap[ prop ] == template){
+					return prop;
+				}
+			}
+		}
+	}	
 
 	function setActionVerbsList(){
 		$("select#actionVerbsList option").remove();
@@ -2558,132 +2609,6 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
-			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(myXML).find("page").eq(newPage).attr("interact", "click");
-			$(myXML).find("page").eq(newPage).attr("w", "150");
-			$(myXML).find("page").eq(newPage).attr("h", "150");
-			$(myXML).find("page").eq(newPage).attr("type", "static");
-
-			break;
-		case "revealLeft":
-			$(myXML).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
-			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(myXML).find("page").eq(newPage).attr("interact", "click");
-			$(myXML).find("page").eq(newPage).attr("w", "150");
-			$(myXML).find("page").eq(newPage).attr("h", "150");
-			$(myXML).find("page").eq(newPage).attr("type", "static");
-
-			break;
-		case "revealTop":
-			$(myXML).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-
-			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
-			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(myXML).find("page").eq(newPage).attr("interact", "click");
-			$(myXML).find("page").eq(newPage).attr("w", "150");
-			$(myXML).find("page").eq(newPage).attr("h", "150");
-			$(myXML).find("page").eq(newPage).attr("type", "static");
-
-			break;
-		case "revealBottom":
-			$(myXML).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(myXML).find("page").eq(newPage).find("content").append(contentCDATA);
-
-			$(myXML).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
 
 			$(myXML).find("page").eq(newPage).append($("<reveal>"));
@@ -3365,6 +3290,50 @@ function C_Outline(_myItem) {
 
 			break;
 
+		case "slider":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input instructions or a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+
+			$(myXML).find("page").eq(newPage).append($("<slider>"));
+			var mySlider = new DOMParser().parseFromString('<slider></slider>',  "text/xml");
+
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("max", 10);
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("min", 0);
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("step", 1);
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("start", 5);
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("orientation", "horizontal");
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("attempts", 1);
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).attr("correctanswer", 5);
+			//content
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var question1CDATA = content1.createCDATASection("Input a question.");
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).find("content").append(question1CDATA);
+			//diffeed
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).find("diffeed").append(difFeed1CDATA);
+			//correctresponse
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("slider").eq(0).find("correctresponse").append(myCorrectResponseCDATA);
+					
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "differentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+						
+			break;
 		case "clickListRevealText":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");

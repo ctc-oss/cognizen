@@ -13,8 +13,38 @@
  *				- Optimize code.
  */
 
-var pageType_arr = ["textOnly", "graphicOnly", "top", "left", "right", "bottom", "sidebar", "clickImage", "tabsOnly", "tabsLeft", "revealRight", "revealBottom", "revealLeft", "flashcard", "sequence", "multipleChoice", "multipleChoiceMedia", "matching", "questionBank", "completion", "branching", "pathing", "chaining", "textInput", "essayCompare", "clickListRevealText", "slider"];
-
+var pageType_arr = ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText",
+ "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "flashcard", "dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching",
+ "questionBank", "completion", "branchingDecisions", "branchingLinearPaths", "branchingPractice", "inputAnswer", "inputExpertCompare",
+ "clickListFullText", "dragSlider"];
+var templateNameMap = {};
+//#3600 Updated template names
+//format templateNameMap[Name User Sees] = Name of template file
+templateNameMap[pageType_arr[0]] = 'textOnly';
+templateNameMap[pageType_arr[1]] = 'graphicOnly';
+templateNameMap[pageType_arr[2]] = 'top';
+templateNameMap[pageType_arr[3]] = 'left';
+templateNameMap[pageType_arr[4]] = 'right';
+templateNameMap[pageType_arr[5]] = 'bottom';
+templateNameMap[pageType_arr[6]] = 'sidebar';
+templateNameMap[pageType_arr[7]] = 'clickImage';
+templateNameMap[pageType_arr[8]] = 'tabsOnly';
+templateNameMap[pageType_arr[9]] = 'tabsLeft';
+templateNameMap[pageType_arr[10]] = 'revealRight';
+templateNameMap[pageType_arr[11]] = 'flashcard';
+templateNameMap[pageType_arr[12]] = 'sequence';
+templateNameMap[pageType_arr[13]] = 'multipleChoice';
+templateNameMap[pageType_arr[14]] = 'multipleChoiceMedia';
+templateNameMap[pageType_arr[15]] = 'matching';
+templateNameMap[pageType_arr[16]] = 'questionBank';
+templateNameMap[pageType_arr[17]] = 'completion';
+templateNameMap[pageType_arr[18]] = 'branching';
+templateNameMap[pageType_arr[19]] = 'pathing';
+templateNameMap[pageType_arr[20]] = 'chaining';
+templateNameMap[pageType_arr[21]] = 'textInput';
+templateNameMap[pageType_arr[22]] = 'essayCompare';
+templateNameMap[pageType_arr[23]] = 'clickListRevealText';
+templateNameMap[pageType_arr[24]] = 'slider';
 
 /************************************************************************************
 ADD NEW PAGE
@@ -53,7 +83,8 @@ function addPage(){
 			},
 			Add: function(){
 				var newPageType = $("#pageTypeList").val();
-				createNewPageByType(newPageType);
+
+				createNewPageByType(getTemplate(newPageType));
 				if(indexState == true){
 					toggleIndex();
 				}
@@ -62,6 +93,13 @@ function addPage(){
 			}
 		}
 	});
+}
+
+/**
+* #3600 Util function to get template file name from key
+**/
+function getTemplate(key){
+	return templateNameMap[key];
 }
 
 function createNewPageByType(_myType){
@@ -598,141 +636,141 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("type", "static");
 
 			break;
-		case "revealLeft":
-			$(data).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+		// case "revealLeft":
+		// 	$(data).find("page").eq(newPage).append($("<content>"));
+		// 	var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+		// 	var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+		// 	$(data).find("page").eq(newPage).find("content").append(contentCDATA);
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+		// 	var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+		// 	var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+		// 	var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+		// 	var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
-			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(data).find("page").eq(newPage).attr("interact", "click");
-			$(data).find("page").eq(newPage).attr("w", "150");
-			$(data).find("page").eq(newPage).attr("h", "150");
-			$(data).find("page").eq(newPage).attr("labeled", "false");
-			$(data).find("page").eq(newPage).attr("type", "static");
+		// 	$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+		// 	$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+		// 	$(data).find("page").eq(newPage).attr("interact", "click");
+		// 	$(data).find("page").eq(newPage).attr("w", "150");
+		// 	$(data).find("page").eq(newPage).attr("h", "150");
+		// 	$(data).find("page").eq(newPage).attr("labeled", "false");
+		// 	$(data).find("page").eq(newPage).attr("type", "static");
 
-			break;
-		case "revealTop":
-			$(data).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+		// 	break;
+		// case "revealTop":
+		// 	$(data).find("page").eq(newPage).append($("<content>"));
+		// 	var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+		// 	var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+		// 	$(data).find("page").eq(newPage).find("content").append(contentCDATA);
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+		// 	var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+		// 	var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+		// 	var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+		// 	var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
-			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(data).find("page").eq(newPage).attr("interact", "click");
-			$(data).find("page").eq(newPage).attr("w", "150");
-			$(data).find("page").eq(newPage).attr("h", "150");
-			$(data).find("page").eq(newPage).attr("labeled", "false");
-			$(data).find("page").eq(newPage).attr("type", "static");
+		// 	$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+		// 	$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+		// 	$(data).find("page").eq(newPage).attr("interact", "click");
+		// 	$(data).find("page").eq(newPage).attr("w", "150");
+		// 	$(data).find("page").eq(newPage).attr("h", "150");
+		// 	$(data).find("page").eq(newPage).attr("labeled", "false");
+		// 	$(data).find("page").eq(newPage).attr("type", "static");
 
-			break;
-		case "revealBottom":
-			$(data).find("page").eq(newPage).append($("<content>"));
-			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
-			var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
-			$(data).find("page").eq(newPage).find("content").append(contentCDATA);
+		// 	break;
+		// case "revealBottom":
+		// 	$(data).find("page").eq(newPage).append($("<content>"));
+		// 	var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
+		// 	var contentCDATA = newPageContent.createCDATASection("<p>New Page Content</p>");
+		// 	$(data).find("page").eq(newPage).find("content").append(contentCDATA);
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
-			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
-			var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option1 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<content>"));
+		// 	var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option1CDATA = content1.createCDATASection("<p>New Image Reveal Text Content 1</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("content").append(option1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).append($("<caption>"));
+		// 	var diffFeed1 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).find("caption").append(difFeed1CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(0).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).append($("<reveal>"));
-			var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
-			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
-			var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
-			var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
-			$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
+		// 	$(data).find("page").eq(newPage).append($("<reveal>"));
+		// 	var option2 = new DOMParser().parseFromString('<reveal></reveal>',  "text/xml");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
+		// 	var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+		// 	var option2CDATA = content2.createCDATASection("<p>New Image Reveal Text Content 2</p>");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).append($("<caption>"));
+		// 	var diffFeed2 = new DOMParser().parseFromString('<caption></caption>', "text/xml");
+		// 	var difFeed2CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).find("caption").append(difFeed2CDATA);
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("img", "defaultReveal.png");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("title", "default title");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("alt", "Default alt text");
+		// 	$(data).find("page").eq(newPage).find("reveal").eq(1).attr("label", "label text");
 			
-			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
-			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
-			$(data).find("page").eq(newPage).attr("interact", "click");
-			$(data).find("page").eq(newPage).attr("w", "150");
-			$(data).find("page").eq(newPage).attr("h", "150");
-			$(data).find("page").eq(newPage).attr("labeled", "false");
-			$(data).find("page").eq(newPage).attr("type", "static");
+		// 	$(data).find("page").eq(newPage).attr("objective", "undefined"); 
+		// 	$(data).find("page").eq(newPage).attr("objItemId", "undefined");
+		// 	$(data).find("page").eq(newPage).attr("interact", "click");
+		// 	$(data).find("page").eq(newPage).attr("w", "150");
+		// 	$(data).find("page").eq(newPage).attr("h", "150");
+		// 	$(data).find("page").eq(newPage).attr("labeled", "false");
+		// 	$(data).find("page").eq(newPage).attr("type", "static");
 
-			break;
+		// 	break;
 		case "flashcard":
 			$(data).find("page").eq(newPage).append($("<content>"));
 			var newPageContent = new DOMParser().parseFromString('<content></content>',  "text/xml");
