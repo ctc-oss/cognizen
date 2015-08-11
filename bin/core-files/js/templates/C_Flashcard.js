@@ -30,6 +30,8 @@ function C_Flashcard(_type) {
     var myObjItemId = "undefined";
     var cardClicks = 0;
     var isVirgin = true;
+    var clickAll = false;
+    var clickCount = 0;
 
 	//Defines a public method - notice the difference between the private definition below.
 	this.initialize = function(){
@@ -45,6 +47,16 @@ function C_Flashcard(_type) {
 
 		if($(data).find("page").eq(currentPage).attr('randomize') == "true"){
 			randomize = true;
+		}
+		
+		if($(data).find("page").eq(currentPage).attr("clickall") == undefined){
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+		}else if ($(data).find("page").eq(currentPage).attr("clickall") == "true"){
+			clickAll = true;
+		}
+		
+		if(clickAll == true && mode != "edit"){
+			disableNext();
 		}
 
 		//Position the page text
@@ -168,6 +180,13 @@ function C_Flashcard(_type) {
 			},function(){
 				$(this).removeClass("flashcardHover");
 			}).click(function(){
+				if(clickAll == true){
+					clickCount++;
+					
+					if(clickCount == revealCount){
+						enableNext();
+					}
+				}
 				$(this).unbind('mouseenter mouseleave click');
 				$(this).removeClass("flashcardHover");
 				
@@ -273,7 +292,8 @@ function C_Flashcard(_type) {
 		try { $("#contentEditDialog").remove(); } catch (e) {}
 		//Create the Content Edit Dialog
 		var msg = "<div id='contentEditDialog' title='Input Card Content'>";
-
+		msg += "<label id='clickalllabel'  title='Define whether users must select all items before advancing.'><b>Click all: </b></label>";
+		msg += "<input id='isClickAll' type='checkbox' name='isClickAll' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Randomize card order.'><b>randomize cards: </b></label>";
 		msg += "<input id='isRandom' type='checkbox' name='random' class='radio' value='true'/><br/><br/>";
 		msg += "<div id='questionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Reveal Item Menu: </b></label></div><br/><br/>";
@@ -287,6 +307,10 @@ function C_Flashcard(_type) {
 			$("#isRandom").removeAttr('checked');
 		}else{
 			$("#isRandom").attr('checked', 'checked');
+		}
+		
+		if(clickAll){
+			$("#isClickAll").attr("checked", "checked");
 		}
 
 		addReveal(currentEditBankMember, false);
@@ -471,18 +495,20 @@ function C_Flashcard(_type) {
 	}
 
 	function makeRevealDataStore(){
-		//myObjective = $("#inputObjective").val();
-		//myObjItemId = $("#inputObjItemId").val();
-
-		//$(data).find("page").eq(currentPage).attr('objective', myObjective);
-		//$(data).find("page").eq(currentPage).attr('objItemId', myObjItemId);
-
 		if($("#isRandom").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("randomize", "true");
 			randomize = true;
 		}else{
 			$(data).find("page").eq(currentPage).attr("randomize", "false");
 			randomize = false;
+		}
+		
+		if($("#isClickAll").prop("checked") == true){
+			$(data).find("page").eq(currentPage).attr("clickall", "true");
+			clickAll = true;
+		}else{
+			$(data).find("page").eq(currentPage).attr("clickall", "false");
+			clickAll = false;
 		}
 
 		var newRevealContent = new DOMParser().parseFromString('<card></card>',  "text/xml");
