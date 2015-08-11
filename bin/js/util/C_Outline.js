@@ -2369,6 +2369,29 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("graded", "true");
 			$(myXML).find("page").eq(newPage).attr("mandatory", "true");
 			$(myXML).find("page").eq(newPage).attr("type", "completion");
+			$(myXML).find("page").eq(newPage).attr("graded", "true");
+			$(myXML).find("page").eq(newPage).attr("mandatory", "true");
+			$(myXML).find("page").eq(newPage).attr("type", "completion");
+			$(myXML).find("page").eq(newPage).attr("indexhide", "false");
+			$(myXML).find("page").eq(newPage).attr("retainscore", "false");
+			$(myXML).find("page").eq(newPage).attr("subs", "null");
+			$(myXML).find("page").eq(newPage).attr("poster", "null");
+			$(myXML).find("page").eq(newPage).attr("popup", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("popcaps", " ");
+			$(myXML).find("page").eq(newPage).attr("popalt", " ");
+			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("w", "350");
+			$(myXML).find("page").eq(newPage).attr("h", "260");
+			$(myXML).find("page").eq(newPage).attr("enlarge", "");
+			$(myXML).find("page").eq(newPage).attr("controlType", "bar");
+			$(myXML).find("page").eq(newPage).attr("autoplay", "false");
+			$(myXML).find("page").eq(newPage).attr("autonext", "false");
+			$(myXML).find("page").eq(newPage).attr("alt", "image description");
+			$(myXML).find("page").eq(newPage).attr("mediaLinkType", "");
+			$(myXML).find("page").eq(newPage).attr("objectItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
+			$(myXML).find("page").eq(newPage).attr("withmedia", "false");
 			break;
 		case "textOnly":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
@@ -2508,6 +2531,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "tabsLeft":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
@@ -2539,6 +2563,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 			break;
 		case "revealRight":
 			$(myXML).find("page").eq(newPage).append($("<content>"));
@@ -2580,6 +2605,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("w", "150");
 			$(myXML).find("page").eq(newPage).attr("h", "150");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 		case "revealLeft":
@@ -2622,6 +2648,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("w", "150");
 			$(myXML).find("page").eq(newPage).attr("h", "150");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 		case "revealTop":
@@ -2664,6 +2691,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("w", "150");
 			$(myXML).find("page").eq(newPage).attr("h", "150");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 		case "revealBottom":
@@ -2706,6 +2734,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("w", "150");
 			$(myXML).find("page").eq(newPage).attr("h", "150");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 		case "flashcard":
@@ -2735,6 +2764,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("mandatory", false);
 			$(myXML).find("page").eq(newPage).attr("randomize", false);
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 
@@ -2776,6 +2806,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("w", "150");
 			$(myXML).find("page").eq(newPage).attr("h", "150");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 
 			break;
 
@@ -3399,6 +3430,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(myXML).find("page").eq(newPage).attr("interact", "click");
 			$(myXML).find("page").eq(newPage).attr("type", "static");
+			$(myXML).find("page").eq(newPage).attr("clickall", "false");
 			break;
 			
 		case "branching":
