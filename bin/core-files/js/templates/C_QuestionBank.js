@@ -901,6 +901,9 @@ function C_QuestionBank(_type) {
 			addOption(i, false);
 		};
 
+		//#3857 fixes dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,

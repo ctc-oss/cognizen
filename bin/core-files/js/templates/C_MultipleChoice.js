@@ -766,6 +766,9 @@ function C_MultipleChoice(_type) {
 
 		addOption(currentEditBankMember, false);
 
+		//#3857 fixes dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};
+
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
 			autoOpen: true,
