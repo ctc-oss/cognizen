@@ -168,7 +168,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("retainscore", "false");
 			$(data).find("page").eq(newPage).attr("subs", "null");
 			$(data).find("page").eq(newPage).attr("poster", "null");
-			$(data).find("page").eq(newPage).attr("popup", "defaultTop.png");
+			$(data).find("page").eq(newPage).attr("popup", "");
 			$(data).find("page").eq(newPage).attr("popcaps", " ");
 			$(data).find("page").eq(newPage).attr("popalt", " ");
 			$(data).find("page").eq(newPage).attr("img", "defaultTop.png");

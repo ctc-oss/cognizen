@@ -2427,7 +2427,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).attr("retainscore", "false");
 			$(myXML).find("page").eq(newPage).attr("subs", "null");
 			$(myXML).find("page").eq(newPage).attr("poster", "null");
-			$(myXML).find("page").eq(newPage).attr("popup", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", " ");
 			$(myXML).find("page").eq(newPage).attr("popalt", " ");
 			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");

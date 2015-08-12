@@ -257,21 +257,22 @@ function C_Completion(_type) {
 	    	msg += '<div class="box">';
 	    	msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
 	    	msg += '<div id="content"></div>';
-	    	if(hasMedia){
-		    	mediaHolder = new C_VisualMediaHolder();
-				mediaHolder.loadVisualMedia();
-	    	}
+
 	    	msg += '<div id="instructionMsg"></div>';
 	    	msg += '<div id="scoreFeedback"></div>';
 	    	msg += '</div></div></div>';
 	    $("#stage").append(msg);
 		if(hasMedia){
+	    	mediaHolder = new C_VisualMediaHolder();
+			mediaHolder.loadVisualMedia();
 			$("#scrollableContent").addClass("top");
-			$("#contentHolder").addClass("top");
+			//$("#contentHolder").addClass("top");
 		}else{
 			$("#scrollableContent").addClass("text");
 			$("#contentHolder").addClass("text");
 		}
+
+		showScoreEdit();
 
 		determineReviewList();
 
@@ -449,9 +450,7 @@ function C_Completion(_type) {
         pageAccess_arr.push($("#completionButton"));
 
         audioHolder = new C_AudioHolder();
-        if(isScored === "true"){
-        	showScoreEdit();
-    	}
+
         checkMode();
 
         if(transition == true){
@@ -707,16 +706,21 @@ function C_Completion(_type) {
 		var msg = "<div id='questionEditDialog' title='Completion Edit Dialog'>";
 		msg += "<label id='label' title='Indicates if this page should have a media element.'><b>media: </b></label>";
 		msg += "<input id='hasMedia' type='checkbox' name='hasMedia' class='radio' value='true'/>&nbsp;&nbsp;";
-		msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
-		msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
 		msg += "<label id='label' title='Prevent completion page from showing up in the Index.'><b>Hide in Index: </b></label>";
-		msg += "<input id='hideFromIndex' type='checkbox' name='hideFromIndex' class='radio' value='true'/>&nbsp;&nbsp;";
-		msg += "<label id='label' title='Retains a passing score for the lesson once it has been achieved on retry.'><b>Retain passing score on retry: </b></label>";
-		msg += "<input id='retainScore' type='checkbox' name='retainScore' class='radio' value='true'/>&nbsp;&nbsp;";		
-		msg += "<div id='inputPRLabel'><b>Passed Response Feedback: </b></div>";
-		msg += "<div id='inputPassedResponse' class='dialogInput' contenteditable='true'></div>";
-		msg += "<div id='inputFRLabel'><b>Failed Response Feedback: </b></div>";
-		msg += "<div id='inputFailedResponse' class='dialogInput' contenteditable='true'></div>";				
+		msg += "<input id='hideFromIndex' type='checkbox' name='hideFromIndex' class='radio' value='true'/><br/>";
+
+		if(isScored === "true"){
+			msg += "<label id='label' title='Display remediation objectives.'><b>Show Remediation: </b></label>";
+			msg += "<input id='isRemediate' type='checkbox' name='isRemediate' class='radio' value='true'/>&nbsp;&nbsp;";
+
+			msg += "<label id='label' title='Retains a passing score for the lesson once it has been achieved on retry.'><b>Retain passing score on retry: </b></label>";
+			msg += "<input id='retainScore' type='checkbox' name='retainScore' class='radio' value='true'/>&nbsp;&nbsp;";		
+			msg += "<div id='inputPRLabel'><b>Passed Response Feedback: </b></div>";
+			msg += "<div id='inputPassedResponse' class='dialogInput' contenteditable='true'></div>";
+			msg += "<div id='inputFRLabel'><b>Failed Response Feedback: </b></div>";
+			msg += "<div id='inputFailedResponse' class='dialogInput' contenteditable='true'></div>";
+		}	
+
 		msg += "</div>";
 		$("#stage").append(msg);	
 		
@@ -732,57 +736,62 @@ function C_Completion(_type) {
 			$("#hideFromIndex").removeAttr('checked');
 		}
 		
-        if(!showRemediate){
-			$("#isRemediate").removeAttr('checked');
-		}else{
-			$("#isRemediate").attr('checked', 'checked');
+		if(isScored === "true"){
+	        if(!showRemediate){
+				$("#isRemediate").removeAttr('checked');
+			}else{
+				$("#isRemediate").attr('checked', 'checked');
+			}
+
+			if(!retainScore){
+				$('#retainScore').removeAttr('checked');
+			}else{
+				$('#retainScore').attr('checked', 'checked');
+			}
+
+			if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
+				$("#inputPassedResponse").append("You received a passing score for this lesson.");
+			}
+			else{
+				$("#inputPassedResponse").append($(data).find("page").eq(currentPage).find("passedresponse").eq(0).text());
+			}
+
+			if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
+				$("#inputFailedResponse").append("You did not receive a passing score for this lesson.");
+			}
+			else{
+				$("#inputFailedResponse").append($(data).find("page").eq(currentPage).find("failedresponse").eq(0).text());
+			}
+
+			CKEDITOR.inline( "inputPassedResponse", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit the passed feedback given.");
+			    	}
+			    }			
+			});
+
+			CKEDITOR.inline( "inputFailedResponse", {
+				toolbar: contentToolbar,
+				toolbarGroups :contentToolgroup,
+				enterMode : CKEDITOR.ENTER_BR,
+				shiftEnterMode: CKEDITOR.ENTER_P,
+				extraPlugins: 'sourcedialog',
+			   	on: {
+			      instanceReady: function(event){
+			         $(event.editor.element.$).attr("title", "Click here to edit the failed feedback given.");
+			    	}
+			    }			
+			});	
 		}
 
-		if(!retainScore){
-			$('#retainScore').removeAttr('checked');
-		}else{
-			$('#retainScore').attr('checked', 'checked');
-		}
-
-		if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
-			$("#inputPassedResponse").append("You received a passing score for this lesson.");
-		}
-		else{
-			$("#inputPassedResponse").append($(data).find("page").eq(currentPage).find("passedresponse").eq(0).text());
-		}
-
-		if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
-			$("#inputFailedResponse").append("You did not receive a passing score for this lesson.");
-		}
-		else{
-			$("#inputFailedResponse").append($(data).find("page").eq(currentPage).find("failedresponse").eq(0).text());
-		}
-
-		CKEDITOR.inline( "inputPassedResponse", {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-		   	on: {
-		      instanceReady: function(event){
-		         $(event.editor.element.$).attr("title", "Click here to edit the passed feedback given.");
-		    	}
-		    }			
-		});
-
-		CKEDITOR.inline( "inputFailedResponse", {
-			toolbar: contentToolbar,
-			toolbarGroups :contentToolgroup,
-			enterMode : CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
-			extraPlugins: 'sourcedialog',
-		   	on: {
-		      instanceReady: function(event){
-		         $(event.editor.element.$).attr("title", "Click here to edit the failed feedback given.");
-		    	}
-		    }			
-		});	
+		//prevents dialog jumping issue
+		$.ui.dialog.prototype._focusTabbable = function(){};		
 
 		//Style it to jQuery UI dialog
 		$("#questionEditDialog").dialog({
@@ -821,15 +830,7 @@ function C_Completion(_type) {
 	        $(data).find("page").eq(currentPage).attr("withmedia", "false");
         	hasMedia = false;
         }
-		
-		if($("#isRemediate").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("showremediate", "true");
-			showRemediate = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("showremediate", "false");
-			showRemediate = false;
-		}
-		
+
 		if($("#hideFromIndex").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("indexhide", "true");
 			hideIndex = true;
@@ -837,39 +838,48 @@ function C_Completion(_type) {
 			$(data).find("page").eq(currentPage).attr("indexhide", "false");
 			hideIndex = false;
 		}
+		
+		if(isScored === "true"){		
+			if($("#isRemediate").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("showremediate", "true");
+				showRemediate = true;
+			}else{
+				$(data).find("page").eq(currentPage).attr("showremediate", "false");
+				showRemediate = false;
+			}
+			
+			if($("#retainScore").prop("checked") == true){
+				$(data).find("page").eq(currentPage).attr("retainscore", "true");
+				retainScore = true;
+			}else{
+				$(data).find("page").eq(currentPage).attr("retainscore", "false");
+				retainScore = false;
+			}
 
-		if($("#retainScore").prop("checked") == true){
-			$(data).find("page").eq(currentPage).attr("retainscore", "true");
-			retainScore = true;
-		}else{
-			$(data).find("page").eq(currentPage).attr("retainscore", "false");
-			retainScore = false;
+			var passedResponseUpdate = CKEDITOR.instances["inputPassedResponse"].getData();
+			try{ CKEDITOR.instances["inputPassedResponse"].destroy() } catch (e) {}
+			var passedResponseDoc = new DOMParser().parseFromString('<passedresponse></passedresponse>', 'text/xml')
+			var passedResponseCDATA = passedResponseDoc.createCDATASection(passedResponseUpdate);
+			if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
+				$(data).find("page").eq(currentPage).append($("<passedresponse>"));
+			}
+			else{
+				$(data).find("page").eq(currentPage).find('passedresponse').empty();
+			}		
+			$(data).find("page").eq(currentPage).find('passedresponse').append(passedResponseCDATA);	
+
+			var failedResponseUpdate = CKEDITOR.instances["inputFailedResponse"].getData();
+			try{ CKEDITOR.instances["inputFailedResponse"].destroy() } catch (e) {}
+			var failedResponseDoc = new DOMParser().parseFromString('<failedresponse></failedresponse>', 'text/xml')
+			var failedResponseCDATA = failedResponseDoc.createCDATASection(failedResponseUpdate);
+			if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
+				$(data).find("page").eq(currentPage).append($("<failedresponse>"));
+			}
+			else{
+				$(data).find("page").eq(currentPage).find('failedresponse').empty();
+			}		
+			$(data).find("page").eq(currentPage).find('failedresponse').append(failedResponseCDATA);				
 		}
-
-		var passedResponseUpdate = CKEDITOR.instances["inputPassedResponse"].getData();
-		try{ CKEDITOR.instances["inputPassedResponse"].destroy() } catch (e) {}
-		var passedResponseDoc = new DOMParser().parseFromString('<passedresponse></passedresponse>', 'text/xml')
-		var passedResponseCDATA = passedResponseDoc.createCDATASection(passedResponseUpdate);
-		if($(data).find("page").eq(currentPage).find("passedresponse").length == 0){
-			$(data).find("page").eq(currentPage).append($("<passedresponse>"));
-		}
-		else{
-			$(data).find("page").eq(currentPage).find('passedresponse').empty();
-		}		
-		$(data).find("page").eq(currentPage).find('passedresponse').append(passedResponseCDATA);	
-
-		var failedResponseUpdate = CKEDITOR.instances["inputFailedResponse"].getData();
-		try{ CKEDITOR.instances["inputFailedResponse"].destroy() } catch (e) {}
-		var failedResponseDoc = new DOMParser().parseFromString('<failedresponse></failedresponse>', 'text/xml')
-		var failedResponseCDATA = failedResponseDoc.createCDATASection(failedResponseUpdate);
-		if($(data).find("page").eq(currentPage).find("failedresponse").length == 0){
-			$(data).find("page").eq(currentPage).append($("<failedresponse>"));
-		}
-		else{
-			$(data).find("page").eq(currentPage).find('failedresponse').empty();
-		}		
-		$(data).find("page").eq(currentPage).find('failedresponse').append(failedResponseCDATA);				
-
 	}
 
 	function saveEditDialog(){

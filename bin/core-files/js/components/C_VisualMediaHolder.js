@@ -185,7 +185,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     	$('#stage').append('<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div></div></div>');
     	$("#graphicHolder").height(stageH - ($("#graphicHolder").position().top + audioHolder.getAudioShim()));
     	//$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
-	}else {
+	}
+	else if(type == "completion"){
+		$('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>').insertBefore($("#content"));
+	}
+	else {
     	$('#stage').append('<div id="mediaHolder"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(currentPage).attr('alt') + '"></div></div>');
 	}
 
@@ -376,7 +380,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
             $(img).bind('error', function() {
 				alert("Your media was not found and is being replaced by a default image.")
 
-				if(type == "top" || type == "bottom" || type == "graphicOnly"){
+				if(type == "top" || type == "bottom" || type == "graphicOnly" || type == "completion"){
 	            	myImage = "media/defaultTop.png";
 	            }else if(type == "left" || type == "right" || type == "multipleChoiceMedia" || type == "tabsLeft"){
 		            myImage = "media/defaultLeft.png";
