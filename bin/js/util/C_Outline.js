@@ -3390,7 +3390,7 @@ function C_Outline(_myItem) {
 
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).append($("<content>"));
 			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
-			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 1</p>");
+			var option2CDATA = content1.createCDATASection("<p>New Reveal Text Content 2</p>");
 			$(myXML).find("page").eq(newPage).find("reveal").eq(1).find("content").append(option2CDATA);
 
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
