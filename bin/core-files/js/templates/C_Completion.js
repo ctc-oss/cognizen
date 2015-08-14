@@ -454,7 +454,6 @@ function C_Completion(_type) {
         checkMode();
 
         if(transition == true){
-			console.log("This should get called");
 			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:removeLoader});
         }else{
 	        $(".C_Loader").remove();
@@ -463,7 +462,6 @@ function C_Completion(_type) {
     }
 
     function removeLoader(){
-	    console.log("remove loader");
 	    $(".C_Loader").remove();
     }
 
