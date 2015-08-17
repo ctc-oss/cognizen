@@ -157,32 +157,34 @@ function C_ClickImage(_type) {
 		//Figure out columns and rows if not enough space to fit all images...
 		//Need to find an exact width so that it centers properly...
 		//This ugliness allows designers not to have to have exactly divisible width to media width and padding to center properly...
-		var heightSpacer = $("#"+revID).height() + parseInt($("#"+revID).css('margin-top')) + parseInt($("#"+revID).css('margin-bottom'));
-		var totalWidth = revealCount * ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
-		var maxWidth = parseInt($("#imgPalette").css('max-width'));
-		var rows = 1;
+		$("#"+revID + " > img").on("load", function() { // wait for the image to load before grabbing sizes
+			var heightSpacer = $("#"+revID).height() + parseInt($("#"+revID).css('margin-top')) + parseInt($("#"+revID).css('margin-bottom'));
+			var totalWidth = revealCount * ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
+			var maxWidth = parseInt($("#imgPalette").css('max-width'));
+			var rows = 1;
 
-		if(totalWidth > maxWidth){
-			rows = Math.ceil(totalWidth/maxWidth);
-		}
-
-		if(rows > 1){
-			var itemsPerRow = 0;
-			var itemSpace = ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
-			for(var j = 0; j < revealCount; j++){
-				if(j * itemSpace <= maxWidth){
-					itemsPerRow = j;
-				}else{
-					break;
-				}
+			if(totalWidth > maxWidth){
+				rows = Math.ceil(totalWidth/maxWidth);
 			}
-			var rowWidth = itemsPerRow * itemSpace;
-			$("#imgPalette").width(rowWidth);
-		}else{
-			$("#imgPalette").width(totalWidth);
-		}
 
-		$("#imgPalette").height(heightSpacer * rows);
+			if(rows > 1){
+				var itemsPerRow = 0;
+				var itemSpace = ($("#" + revID).width() + parseInt($("#"+revID).css('margin-right')) + parseInt($("#"+revID).css('margin-left')) + 10);
+				for(var j = 0; j < revealCount; j++){
+					if(j * itemSpace <= maxWidth){
+						itemsPerRow = j;
+					}else{
+						break;
+					}
+				}
+				var rowWidth = itemsPerRow * itemSpace;
+				$("#imgPalette").width(rowWidth);
+			}else{
+				$("#imgPalette").width(totalWidth);
+			}
+
+			$("#imgPalette").height(heightSpacer * rows);
+		});
 
 		//Insert the Text Display area.
 		$("<div class='clickImgTextHolder'><div id='clickImgText' class='clickImgText' tabindex=-1></div></div><br/><br/>").insertAfter("#imgPalette");
