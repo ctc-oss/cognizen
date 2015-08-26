@@ -1,3 +1,13 @@
+@font-face {
+  font-family: hnl;
+  src: url('./fonts/helveticaneuelight-webfont.eot');
+  src: url('./fonts/helveticaneuelight-webfont.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/helveticaneuelight-webfont.woff2') format('woff2'),
+       url('./fonts/helveticaneuelight-webfont.woff') format('woff'),
+       url('./fonts/helveticaneuelight-webfont.ttf') format('truetype'),
+       url('./fonts/helveticaneuelight-webfont.svg#helveticaneuelight-webfont') format('svg');
+}
+
 body{
 	position: static;
 	background-color:#FEFEFE;
@@ -42,7 +52,7 @@ body{
 	font-size : 200%;
 	font-weight: bold;
 	color:	#666666;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	text-align: center;
 }
 
@@ -53,7 +63,7 @@ body{
 	font-size: 50pt;
 	text-align: left;
 	margin-left: 30px;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 }
 
 .ui-widget-content{
@@ -61,7 +71,7 @@ body{
 	font-weight: lighter;
 	font-size:150%;
 	color: #CCCCCC;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 }
 
 
@@ -71,7 +81,7 @@ body{
 	left:50px;
 	width:924px;
 	color: #666666;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	overflow: auto;
 	text-align: center;
 }
@@ -82,7 +92,7 @@ body{
 	right: 120px;
 	width: 430px;
 	font-weight: lighter;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	color: white;
 	padding-top: 5px;
 	
@@ -134,7 +144,7 @@ td{
 	float: left;
 	font-weight: lighter;
 	font-size:100%;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	padding-right: 5px;
 	padding-top: 3px;
 	color: #9DA6AB;
@@ -145,20 +155,20 @@ td{
 	width: 130px;
 	float: left;
 	font-weight: normal;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	font-size: 12pt;
 	padding-right: 5px;
 }
 
 .ui-button-text{
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	font-weight: lighter;
 	font-size: 12pt;
 }
 
 .ui-dialog-content{
 	color: #666666;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	font-size: 12pt;
 	font-weight: lighter;
 	background: white !important;
@@ -166,7 +176,7 @@ td{
 
 .ui-dialog-titlebar{
 	color: #9DA6AB;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	font-size: 16pt;
 	font-weight: lighter;
 }
@@ -174,7 +184,7 @@ td{
 input.loginText{
 	background:#eeeeee;
 	font-size: 12pt;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	width: 300px;
 	float: left;
 	color: #3383bb;
@@ -183,7 +193,7 @@ input.loginText{
 input.regText{
 	background:#eeeeee;
 	font-size: 100%;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	width: 300px;
 	float: left;
 	color: #3383bb;
@@ -234,7 +244,7 @@ div#loader {
 #publishLoaderText{
 	position: absolute;
 	text-align: center;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif;
+	font-family: hnl;
 	color: #333333;
 	top: 395px;
 }
@@ -266,7 +276,7 @@ TREE MENU STYLES
 	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 34pt;
-	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
+	font-family: hnl;
 }
 
 #logout{
@@ -278,7 +288,7 @@ TREE MENU STYLES
 	font-weight: normal;
 	font-style: normal;
 	font-size: 14pt;
-	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue Ultra Light", "Arial", sans-serif;
+	font-family: hnl;
 }
 
 #logout a{
@@ -339,7 +349,7 @@ TREE MENU STYLES
 	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 14pt;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial"
+	font-family: hnl;
 }
 
 .treeview ul {
@@ -362,7 +372,7 @@ TREE MENU STYLES
 
 .treeview li {
 	font-weight: normal;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial";
+	font-family: hnl;
 	margin: 0px;
 	padding: 14px 0pt 0px 0px;
 }
@@ -384,7 +394,7 @@ TREE MENU STYLES
 .projectRemove {position: relative; top: -38px; left: 462px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
 .projectUserAdd {position: relative; top: -57px; left: 482px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
-.ui-tooltip{font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Arial", sans-serif; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
+.ui-tooltip{font-family: hnl; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
 
 
 .treeview a.selected {
