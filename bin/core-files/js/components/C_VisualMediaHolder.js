@@ -443,12 +443,17 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			tempCaption = caption_arr[0];
 		}
 		var hasSWF = false;
+		var hasHTML = false;
 
 		var checkFile = tempItem.split('.'), i, l;
         var last = checkFile.length;
         var thisType = (checkFile[last - 1]);
 		if(thisType == "swf"){
 			hasSWF = true;
+		}
+		
+		if(thisType == "html"){
+			hasHTML = true;
 		}
 
 		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
@@ -467,12 +472,20 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				//var accID = "acc" + i;
 				//$("#acc_gallery").append("<div id='"+accID+"' aria-label='Picture Alt Text: "+alt_arr[i]+" With a Caption reading:"+caption_arr[i]+"'></div>");
 				//pageAccess_arr.push($("#"+accID));
-				mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+				if(hasHTML){
+					mediaPopString += "<a rel='mediaPop' class='iframe' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+				}else{
+					mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
+				}
 				var checkFile = media_arr[i].split('.'), i, l;
 		        var last = checkFile.length;
 		        var thisType = (checkFile[last - 1]);
 				if(thisType == "swf"){
 					hasSWF = true;
+				}
+				
+				if(thisType == "html"){
+					hasHTML = true;
 				}
 			}
 			mediaPopString += "</span>";
@@ -481,7 +494,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		mediaPopString += "</div>";
 		$(mediaPopString).insertAfter("#loader");
 		pageAccess_arr.push($("#mediaPop"));
-		if(!hasSWF){
+		if(!hasSWF && !hasHTML){
 			$("[rel='mediaPop']").fancybox({
 				caption : {
 					type : 'inside'
@@ -533,6 +546,19 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
 			});
 		}
+		
+		if(hasHTML){
+			console.log("hasHTML")
+			$("[rel='mediaPop']").fancybox({
+				'width'         : '75%',
+			    'height'        : '75%',
+			    'autoScale'     : false,
+			    'transitionIn'  : 'none',
+			    'transitionOut' : 'none',
+			    'type'          : 'iframe'
+			});
+		}
+		
 		if(!hasTouch){
 			$("#myImgList").tooltip();
 		}
@@ -1177,10 +1203,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 autoOpen: true,
                 dialogClass: "no-close",
 				modal: true,
-				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-				close: function(){
+				buttons: [ { text: "Save", click: function() {
 					$(data).find("page").eq(currentPage).attr("w", $("#swfWidth").val());
 					$(data).find("page").eq(currentPage).attr("h", $("#swfHeight").val());
+					$( this ).dialog( "close" ); 
+				} }],
+				close: function(){
 					sendUpdateWithRefresh();
 					currentTemplate.fadeComplete();
 				}
@@ -1201,10 +1229,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			 $("#htmlDialog").dialog({
                 autoOpen: true,
 				modal: true,
-				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
-				close: function(){
+				buttons: [ { text: "Save", click: function() {
 					$(data).find("page").eq(currentPage).attr("w", $("#htmlWidth").val());
 					$(data).find("page").eq(currentPage).attr("h", $("#htmlHeight").val());
+					$( this ).dialog( "close" ); 
+				} }],
+				close: function(){
+					
 					sendUpdateWithRefresh();
 					currentTemplate.fadeComplete();
 				}
