@@ -55,6 +55,7 @@ var pageAccess_arr = [];
 var globalAccess_arr = [];
 var audioAccess_arr = [];
 var courseData;
+var searchEnabled = false; // #3559
 /****************************************************
 *********************************** STEP 1 - LOAD XML
 ****************************************************/
@@ -444,6 +445,21 @@ function buildInterface(){
 	if(mode == "edit" || mode == "review"){
 		checkComment();
 		checkLockMode();
+	}
+
+	//check if search is enabled.  if so set it up. #3559
+	if(!$(data).find('search').attr('value')){
+
+		$(data).find("preferences").append($('<search>', data));
+		$(data).find("closelesson").attr("value", "false");
+
+		searchEnabled = false;
+	}else{
+		if($(data).find('search').attr('value') == "false"){
+			searchEnabled = false;
+		}else{
+			searchEnabled = true;
+		}
 	}
 
 	checkIndex();

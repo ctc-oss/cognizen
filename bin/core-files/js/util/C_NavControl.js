@@ -723,7 +723,10 @@ function launchPrefs(){
 	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/><br/>";
 	//Test out
 	msg += "<label id='label' for='hasTestOut' title='Add a test out option'>Test out: </label>";
-	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/>";
+	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/><br/>";
+	//Search
+	msg += "<label id='label' for='hasSearch' title='Add the search option'>Search: </label>";
+	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/>";	
 	//msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
 	//msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
     msg += "<select id='testOutSelect'></select></br>";
@@ -954,6 +957,25 @@ function launchPrefs(){
 			testOut = false;
 		}
 	});
+
+	//search #3559
+	if(searchEnabled){
+		$("#hasSearch").attr('checked', true);
+	}
+	else{
+		$("#hasSearch").attr('checked', false);
+	}
+
+	$("#hasSearch").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("search").attr("value", "true");
+			searchEnabled = true;
+		}else{
+			$(data).find("search").attr("value", "false");
+			searchEnabled = false;
+		}
+		updateIndex();
+	});	
 
 	var contentId = urlParams['type'] + '_' + urlParams['id'];
 

@@ -145,6 +145,7 @@ function findNodeByID(myID){
 }
 
 function loadPageFromID(_id){
+	debugger;
 	for(var i = 0; i < totalPages; i++){
 		if($(data).find("page").eq(i).attr("id") == _id){
 			currentPage = i;
