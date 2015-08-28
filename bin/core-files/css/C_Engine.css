@@ -3526,7 +3526,7 @@ a.fancybox-expand {
 }
 
 
-@media screen and (max-device-width: 1023px) {
+@media (max-device-width: 1023px), (max-device-height: 699px) {
    /* css for small screens */
 
 	body{
