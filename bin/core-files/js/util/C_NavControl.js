@@ -748,7 +748,10 @@ function launchPrefs(){
 	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";
 	msg += '<span id="helpHeightError" class="error">The value must be a numeric value</span><br/>';
 	msg += "</div><br/>";
-	msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
+	//#3886
+	if(!$(courseData).find("course").attr("redmine") || $(courseData).find("course").attr("redmine") == "false"){
+		msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
+	}
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
 
@@ -851,11 +854,13 @@ function launchPrefs(){
 	});
 
 
-
-	$("#clearLessonComments").button().click(function(){
-		openCommentKillerDialog();
-		//cognizenSocket.emit("clearLessonComments", {lesson: urlParams['id']})
-	});
+	//#3886
+	if(!$(courseData).find("course").attr("redmine") || $(courseData).find("course").attr("redmine") == "false"){
+		$("#clearLessonComments").button().click(function(){
+			openCommentKillerDialog();
+			//cognizenSocket.emit("clearLessonComments", {lesson: urlParams['id']})
+		});
+	}
 
 	$("#scormform").tooltip();
 
