@@ -570,6 +570,13 @@ var SCORM = {
              archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/../js/'+_this.jsResources_arr[i] });
         };
 
+		var courseAttr = _this._parseCourseAttr();
+
+        //#3866
+        if(courseAttr.help != ''){
+	        archive.append(fs.createReadStream(_this.contentPath + '/' +courseAttr.help), {name: _this.binDir + '/' +courseAttr.help});
+        }
+
         //add index.html from server incase changes were made after the course was created
         archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/index.html'});
 
@@ -1175,6 +1182,11 @@ var SCORM = {
 
 												            }
 												        );
+												        //#3866
+												        if(courseAttr.help != ''){
+												        	var helpPathSplit = courseAttr.help.split('..');
+													        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+												        }
 
 														//add js directory to root of package
 												        for (var i = 0; i < _this.jsResources_arr.length; i++) {
@@ -1288,6 +1300,12 @@ var SCORM = {
 										            }
 										        );
 
+										        //#3866
+										        if(courseAttr.help != ''){
+										        	var helpPathSplit = courseAttr.help.split('..');
+											        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+										        }
+
 												//add js directory to root of package
 										        for (var i = 0; i < _this.jsResources_arr.length; i++) {
 										             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
@@ -1387,6 +1405,12 @@ var SCORM = {
 
 						        //add course.xml file
 						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+
+							    //#3866
+						        if(courseAttr.help != ''){
+						        	var helpPathSplit = courseAttr.help.split('..');
+							        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+						        }
 
 								//add js directory to root of package
 						        for (var i = 0; i < _this.jsResources_arr.length; i++) {
@@ -1920,7 +1944,8 @@ var SCORM = {
 			lms : myNode.get('lms'),
 			survey : myNode.get('survey'),
 			certificate : myNode.get('certificate'),
-			displaytitle : myNode.get('coursedisplaytitle')
+			displaytitle : myNode.get('coursedisplaytitle'),
+			help : myNode.get('help')
 		};
 
 		return courseAttr;
@@ -2056,6 +2081,13 @@ var SCORM = {
 
 		//added course.xml file here, figured it would cover it
 		resource += "				<file href=\""+_prefix+"course.xml\"/>\n";
+
+		//#3866 global help
+		var courseAttr = _this._parseCourseAttr();
+		if(courseAttr.help != ''){
+			var helpPathSplit = courseAttr.help.split('../');
+			resource += "				<file href=\""+_prefix+helpPathSplit[1]+"\"/>\n";
+		}				
         resource += "		</resource>\n";
         //_this.logger.info(resource);
         return resource;
