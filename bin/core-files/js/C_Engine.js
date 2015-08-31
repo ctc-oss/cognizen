@@ -312,7 +312,7 @@ function checkFF(){
 // MOBILE DETECTION
 function checkMobile(){
 	if(!oldIE){
-		if(window.matchMedia("screen and (max-device-width: 1023px)").matches) {
+		if(window.matchMedia("(max-device-width: 1023px), (max-device-height: 699px)").matches) {
 			isMobile = true;
 			//console.log("mobile device detected");
 		}
