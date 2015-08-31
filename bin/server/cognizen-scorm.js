@@ -1857,7 +1857,7 @@ var SCORM = {
 
         if(itemSeq.testReview){
 			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-"+lessonNameTrim+"-Review-files\">\n"+// isvisible=\"false\">\n"+
-			"                 <title>"+lessonName+" Review</title>\n"+
+			"                 <title>"+lessonTitle+" Review</title>\n"+
 			"                 <adlnav:presentation>\n"+
 			"                     <adlnav:navigationInterface>\n"+
 			"                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
