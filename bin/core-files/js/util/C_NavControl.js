@@ -682,40 +682,16 @@ function launchPrefs(){
 	}
 
 	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
-	//Add the scorm form
-	msg += "<p>";
-	msg += "<form id='scormform'>";
-	msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
-	msg += "<select id='scormVersion'>";
-	msg += "<option>2004_4th</option>";
-	msg += "<option>2004_3rd</option>";
-	msg += "<option>1.2</option>";
-	msg += "<option>none</option>";
-	msg += "</select></form>";
-    msg += '<div id="manonlyHolder">';
-    msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
-    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>";
-    msg += '</div>';
-    msg += '<div id="deliverableHolder">';
-    msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
-    msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
-    msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
-    msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";
-    msg += '</div>';
-	msg += "</p>";
-	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
-	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
-	tmpLessonTitleText = $('#lessonTitle').text().replace(/'/g, "\&#8217;");
-	msg += "<input id='altCourseTitle' class='dialogInput' type='text' value='"+ tmpCourseTitleText + "' defaultValue='"+ tmpCourseTitleText + "' style='width:70%;'/><br/>";
-	msg += "<label id='label' title='Input lesson title as you would like it to appear.'>Alt Lesson Title: </label>";
-	msg += "<input id='altLessonTitle' class='dialogInput' type='text' value='"+ tmpLessonTitleText + "' defaultValue='"+ tmpLessonTitleText + "' style='width:70%;'/><br/>";
+    msg += "<div id='accordion'>";
+ 	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Nav Button Options</h3>";
+ 	msg += '<div id="rest" style="font-size:100%; padding: 1em 1em; color:#666666">';
 	//Add the glossary checkbox.
 	msg += "<div class='preferences_option' id='hasGlossaryDialog'>";
 	msg += "<label id='label' title='Add/Remove Glossary'>Glossary: </label>";
 	msg += "<input id='hasGlossary' type='checkbox' name='hasGlossary' class='radio'/>";
 	msg += "<label id='label' for='hasCourseGlossary' title='Set Course/Module Level Glossary'>Course glossary: </label>";
 	msg += "<input id='hasCourseGlossary' type='checkbox' name='hasCourseGlossary' class='radio'/>";
-	msg += "</div><br/>";
+	msg += "</div>";
 	//Survey
 	msg += "<label id='label' for='hasSurvey' title='Add a survey'>Survey: </label>";
 	msg += "<input id='hasSurvey' type='checkbox' name='hasSurvey' class='radio'/>";
@@ -727,13 +703,28 @@ function launchPrefs(){
 	//Search
 	msg += "<label id='label' for='hasSearch' title='Add the search option'>Search: </label>";
 	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/>";	
-	//msg += "<label id='inputTestOutLinkLabel' for='inputTestOutLink' title='Input a link for your test.'>Test page: </label>";
-	//msg += "<input id='inputTestOutLink' type='text' name='inputTestOutLink' class='dialogInput' value='"+ testLink +"' defaultvalue='"+testLink+"'/>";
     msg += "<select id='testOutSelect'></select></br>";
-
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
 
+	//#3886
+	if(!$(courseData).find("course").attr("redmine") || $(courseData).find("course").attr("redmine") == "false"){
+		msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
+	}
+	msg += "</div>";//rest
+
+ 	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Alt Titles</h3>";
+ 	msg += '<div id="alttiltes" style="font-size:100%; padding: 1em 1em; color:#666666">';				
+	msg += "<label id='label' title='Input course title as you would like it to appear.'>Alt Course Title: </label>";
+	tmpCourseTitleText = $('#courseTitle').text().replace(/'/g, "\&#8217;");
+	tmpLessonTitleText = $('#lessonTitle').text().replace(/'/g, "\&#8217;");
+	msg += "<input id='altCourseTitle' class='dialogInput' type='text' value='"+ tmpCourseTitleText + "' defaultValue='"+ tmpCourseTitleText + "' style='width:70%;'/><br/>";
+	msg += "<label id='label' title='Input lesson title as you would like it to appear.'>Alt Lesson Title: </label>";
+	msg += "<input id='altLessonTitle' class='dialogInput' type='text' value='"+ tmpLessonTitleText + "' defaultValue='"+ tmpLessonTitleText + "' style='width:70%;'/><br/>";
+	msg += "</div>";//alttiltes
+
+ 	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Help Options</h3>";
+ 	msg += '<div id="helpoptions" style="font-size:100%; padding: 1em 1em; color:#666666">';
 	msg += "<div class='preferences_option' id='helpDialog' title='Add/Remove Help Button'>"
 	msg += "<label id='helpLabel'>Help: </label>";
 	msg += "<input id='hasHelp' type='checkbox' name='hasHelp'>";
@@ -748,12 +739,32 @@ function launchPrefs(){
 	msg += "<input id='helpHeight' type='text' name='helpHeight' value='"+helpHeight+"' disabled='disabled' size='4'>";
 	msg += '<span id="helpHeightError" class="error">The value must be a numeric value</span><br/>';
 	msg += "</div><br/>";
-	//#3886
-	if(!$(courseData).find("course").attr("redmine") || $(courseData).find("course").attr("redmine") == "false"){
-		msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
-	}
-	//Add the resources/docs checkbox.   -------TODO
-	msg += "</div>";
+	msg += "</div>"; //helpoptions
+
+ 	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Publish</h3>";
+ 	msg += '<div id="publish" style="font-size:100%; padding: 1em 1em; color:#666666">';	
+	msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
+	msg += "<select id='scormVersion'>";
+	msg += "<option>2004_4th</option>";
+	msg += "<option>2004_3rd</option>";
+	msg += "<option>1.2</option>";
+	msg += "<option>none</option>";
+	msg += "</select>";
+    msg += '<div id="manonlyHolder">';
+    msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only: </label>";
+    msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>";
+    msg += '</div>';
+    msg += '<div id="deliverableHolder">';
+    msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
+    msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
+    msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
+    msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";
+    msg += '</div>';//deliverableHolder
+    msg += "<div id='publishButton' title='Publishes the lesson to the chosen format.'>Publish</div>"    
+	msg += "</div>"; //publish	
+	
+	msg += "</div>"; //accordion
+	msg += "</div>"; //dialog-lessonPrefs
 
 	$("#stage").append(msg);
 
@@ -817,14 +828,17 @@ function launchPrefs(){
         }
     });
 
+    //publish button
+	$("#publishButton").button().click(function(){
+        savePreferences(true);
+        $(this).dialog("close");
+	}).tooltip();    
+
 	//Make it a dialog
 	$("#dialog-lessonPrefs").dialog({
 		dialogClass: "no-close",
 		modal: true,
 		width: 550,
-		// close: function(event, ui){
-		// 		$("#dialog-lessonPrefs").remove();
-		// 	},
 		buttons: [
 			{
 				text: "Cancel",
@@ -832,15 +846,6 @@ function launchPrefs(){
 				click: function () {
 	            	$(this).dialog("close");
 	            	$("#dialog-lessonPrefs").remove();
-	            }
-            },
-            {
-	            text: "Publish",
-	            title: "Publishes the lesson to the chosen format.",
-	            click: function(){
-		            //clickPublish();
-		            savePreferences(true);
-		            $(this).dialog("close");
 	            }
             },
             {
@@ -1104,6 +1109,11 @@ function launchPrefs(){
 	//adds tooltips to the edit dialog buttons
     $(function () {
         $(document).tooltip();
+		//set up jquerui accordion
+		$("#accordion").accordion({
+			collapsible: true,
+			heightStyle: "content"
+		});   
     });
 }
 
