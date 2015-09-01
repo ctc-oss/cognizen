@@ -28,7 +28,7 @@
     "optimist": "0.6.x",
     "padlock": "1.1.x",
     "pretty-data": "0.40.x",
-    "promised-redmine" : "0.3.x",
+    "promised-redmine": "0.3.x",
     "readdirp": "0.3.x",
     "request": "2.x",
     "socket.io": "0.9.x",
@@ -39,5 +39,8 @@
     "unzip": "0.1.x",
     "walk": "^2.3.9",
     "winston": "0.7.x"
+  },
+  "devDependencies": {
+    "d.js": "^0.7.3"
   }
 }
