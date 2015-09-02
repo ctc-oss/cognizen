@@ -158,6 +158,7 @@ var indexGroupID_arr;
 function addIndex(reset){
 
 	var $pages = $(data).find("page");
+	totalPages = $(data).find('page').length;
 	var indexString = populateIndex(totalPages, $pages, "", false );
 	$("#indexContent").append(indexString);
 
@@ -459,7 +460,7 @@ function configureIndex(){
 		}
 		//$(indexItem_arr[i]).css("visibility", "hidden");
 		//clear old click events
-		$(indexItem_arr[i]).off();
+		//$(indexItem_arr[i]).off();
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){
@@ -506,7 +507,8 @@ function removePage(myNode){
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
 						fadeComplete();
 					}
-					sendUpdateWithRefresh();
+
+					sendUpdateWithRefresh();		
 				}else{
 					$("#stage").append("<div id='dialog-removePageError' title='Error Removing Page'><p>Your content must have at least one page.</p><p>If you would like to remove this page you must first create another and then remove it.</p></div>");
 					$("#dialog-removePageError").dialog({
