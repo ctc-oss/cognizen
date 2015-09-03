@@ -337,7 +337,7 @@ function buildPageObjectiveId(){
 		var _objId = "";
 		var myObjective = 'undefined';
 		var myObjItemId = 'undefined';
-		var _pgTitle = encodeURIComponent(pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '');
+		var _pgTitle = encodeURIComponent(pageTitle.getPageTitle().replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '').replace(/&nbsp;/g, '')).replace('.', '');
 
 		if($(data).find("page").eq(currentPage).attr('objective')){
 			myObjective = $(data).find("page").eq(currentPage).attr('objective');

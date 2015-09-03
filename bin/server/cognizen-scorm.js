@@ -1495,7 +1495,7 @@ var SCORM = {
 	    		//console.log(i + " : " + pageObj);
 	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 	 			tmpObjId = lessonIndictor +"."+
-	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '').replace(/&nbsp;/g, '')).replace('.', '')+"."+
 	 						pageObj.replace(/\s+/g, '_').replace('.', '');
 
 	    	}
@@ -1506,7 +1506,7 @@ var SCORM = {
 	    		}
 	    		else{
 		 			tmpObjId = lessonIndictor +"."+
-	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '').replace(/&nbsp;/g, '')).replace('.', '')+"."+
 	 						pageObjId.replace(/\s+/g, '_').replace('.', '');
 	    		}
 	    	}
