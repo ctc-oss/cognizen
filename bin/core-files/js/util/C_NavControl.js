@@ -699,11 +699,12 @@ function launchPrefs(){
 	msg += "<input id='inputSurveyLink' type='text' name='inputSurveyLink' class='dialogInput' value='"+surveyLink+"' defaultvalue='"+surveyLink+"'/><br/>";
 	//Test out
 	msg += "<label id='label' for='hasTestOut' title='Add a test out option'>Test out: </label>";
-	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/><br/>";
+	msg += "<input id='hasTestOut' type='checkbox' name='hasTestOut' class='radio'/>";
+	msg += "<select id='testOutSelect'></select></br>";
 	//Search
 	msg += "<label id='label' for='hasSearch' title='Add the search option'>Search: </label>";
-	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/>";	
-    msg += "<select id='testOutSelect'></select></br>";
+	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/><br/>";	
+
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
 
