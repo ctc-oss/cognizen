@@ -1215,6 +1215,16 @@ function savePreferences(_pub){
 		updateNeeded = true;
 	}
 
+	var searchSelected = $("#hasSearch").is(":checked");
+
+	if(searchEnabled != undefined){
+		$(data).find('search').attr('value', searchSelected);
+		console.log($(data).find("search").attr("value"));
+		searchEnbled = searchSelected;
+		updateNeeded = true;
+	}
+
+
 	var closeLessonSelected = $("#hasCloseLesson").is(':checked');
 	//console.log(closeLessonSelected);
 	if(closeLesson){
