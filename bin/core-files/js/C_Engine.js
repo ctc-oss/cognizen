@@ -415,7 +415,7 @@ function buildInterface(){
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle;
 	
-	if($(data).find("lessondisplaytitle").attr("value")){
+	if($(data).find("lessondisplaytitle").length != 0 ){
 		if($(data).find("lessondisplaytitle").attr("value") == ""){
 			$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));		
 		}
@@ -448,7 +448,7 @@ function buildInterface(){
 	}
 
 	//check if search is enabled.  if so set it up. #3559
-	if(!$(data).find('search').attr('value')){
+	if($(data).find('search').length == 0){
 
 		$(data).find("preferences").append($('<search>', data));
 		$(data).find("closelesson").attr("value", "false");
