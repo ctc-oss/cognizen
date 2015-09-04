@@ -121,12 +121,21 @@ var SCORM = {
 
 									_this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 
-				                    var lessondisplaytitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
-				                    if(lessondisplaytitle == '' || lessondisplaytitle == undefined){
+				                    var lessonDisplayTitle = '';
+
+				                    //#3904
+				                    try{
+				                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+				                    }
+				                    catch(err){
+				                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
+				                    }
+
+				                    if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
 				                    	_this.courseDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 				                    }
 				                    else{
-				                    	_this.courseDisplayTitle = lessondisplaytitle;
+				                    	_this.courseDisplayTitle = lessonDisplayTitle;
 				                    }
 								    
 								    //find the objectives in the pages.
@@ -964,20 +973,24 @@ var SCORM = {
                     if (err) callback(err, null);
 
 	                //add item & item sequencing (objectives)
-	                var _lessonTitle = lessonsName[count];//etree.find('.courseInfo/preferences/lessonTitle').get('value');
-	                //lessonsName.push(_lessonTitle);
+	                var _lessonTitle = lessonsName[count];
 
 	                //populate lessondisplaytitle #3633
-                    var lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+                    var lessonDisplayTitle = '';
+
+                    //#3904
+                    try{
+                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+                    }
+                    catch(err){
+                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
+                    }
+
                     if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
                     	// _this.lessonDisplayTitles_arr.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
                     	lessonDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
                     }
-                    // else{
-                    // 	_this.lessonDisplayTitles_arr.push(lessondisplaytitle);
-
-                    // }	                
-
+                
 				    //find the objectives in the pages.
 				    //////////////////////////////////////////////////
 				    var pageCount = etree.findall('./pages/page').length;
