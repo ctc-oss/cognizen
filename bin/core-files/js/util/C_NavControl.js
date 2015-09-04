@@ -1167,7 +1167,7 @@ function savePreferences(_pub){
 	var updateNeeded = false;
 
 
-	courseTitle = $("#altCourseTitle").val();
+	courseTitle = $("#altCourseTitle").val().trim();
 	if(courseTitle != $(courseData).find('course').attr('coursedisplaytitle')){
 		updateNeeded = true;
 	}
@@ -1176,7 +1176,7 @@ function savePreferences(_pub){
 	sendCourseUpdate();
 	$("#courseTitle").text(courseTitle);
 
-	lessonTitle = $("#altLessonTitle").val();
+	lessonTitle = $("#altLessonTitle").val().trim();
 	if(lessonTitle != $(data).find("lessondisplaytitle").attr("value")){
 		updateNeeded = true;
 	}

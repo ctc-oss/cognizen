@@ -629,7 +629,7 @@ function C_Dashboard(_type) {
 
     function submitRegisterNewContent() {
         var myType = "course";
-        var nameString = $("#myName").val();
+        var nameString = $("#myName").val().trim();
 
         //for root
 

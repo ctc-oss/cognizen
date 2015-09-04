@@ -850,7 +850,7 @@ function C_Outline(_myItem) {
 			//handle seeting of coursedisplaytitle if not set and setting the value based off of the xml
 			if(!$(courseData).find('course').attr('coursedisplaytitle')){
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
 
 			}
@@ -860,7 +860,7 @@ function C_Outline(_myItem) {
 
 			//on change of the section508 toggle update the course xml 
 			$('#out_courseDisplayTitle').on('change', function(){
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
 			}).css({'width': '500px', 'color': '#3383bb;'});
 

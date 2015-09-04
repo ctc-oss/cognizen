@@ -843,7 +843,7 @@ var SocketHandler = {
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
-                            item.set("coursedisplaytitle", content.name);
+                            //item.set("coursedisplaytitle", content.name);
                             item.set("excludeFromPublish", 'false');
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
