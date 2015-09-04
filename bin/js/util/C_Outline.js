@@ -1114,6 +1114,48 @@ function C_Outline(_myItem) {
 				break;
 			}
 		}
+
+		//#3905 ///////////////////////////////
+		//lessondisplaytitle
+		if($(module_arr[_id].xml).find('lessondisplaytitle').length != 0){
+			if($(module_arr[_id].xml).find('lessondisplaytitle').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessondisplaytitle').attr('value', $(module_arr[_id].xml).find('lessonTitle').attr("value"));
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessondisplaytitle>", data));
+			$(module_arr[_id].xml).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
+			updateModuleXML(_id);
+		}
+
+		//lessonWidth
+		if($(module_arr[_id].xml).find('lessonWidth').length != 0){
+			if($(module_arr[_id].xml).find('lessonWidth').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessonWidth').attr('value', '768');
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessonWidth>", data));
+			$(module_arr[_id].xml).find("lessonWidth").attr("value", '768');
+			updateModuleXML(_id);
+		}
+
+		//lessonHeight
+		if($(module_arr[_id].xml).find('lessonHeight').length != 0){
+			if($(module_arr[_id].xml).find('lessonHeight').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessonHeight').attr('value', '1024');
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessonHeight>", data));
+			$(module_arr[_id].xml).find("lessonHeight").attr("value", '1024');
+			updateModuleXML(_id);
+		}
+		/////////////////////////////////////////////////////////////////////
+
      	$("#outlinePagePrefPane").empty();
      	var msg = "<div id='header' class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
      	msg += "<div id='accordion'>";
