@@ -43,7 +43,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     var transcriptState = false;
 
 	var galleryEdit_arr = [];
-
+	var galleryTransitionType = "elastic";
 	var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
 
 	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg"];
@@ -60,6 +60,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 	if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 		autoPlay = true;
+	}
+	if($(data).find("page").eq(currentPage).attr("galTransType")){
+		galleryTransitionType = $(data).find("page").eq(currentPage).attr("galTransType");
+	}else{
+		$(data).find("page").eq(currentPage).attr("galTransType", galleryTransitionType);
 	}
 	
 	if($(data).find("page").eq(currentPage).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find('visualtranscript').text() != ""){
@@ -456,7 +461,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			hasHTML = true;
 		}
 
-		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' href='"+tempItem+"'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
+		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' href='"+tempItem+"' title='click to view enlarged media'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
 
 		if(media_arr.length > 0){
 			mediaPopString += "<span style='display:none;'>";
@@ -501,8 +506,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				},
 				openEffect  : 'elastic',
 				closeEffect : 'elastic',
-				nextEffect  : 'elastic',
-				prevEffect  : 'elastic',
+				nextEffect  : galleryTransitionType,
+				prevEffect  : galleryTransitionType,
 				loop		: popLoop,
 				maxHeight	: 768,
 				maxWidth	: 1024,
@@ -527,8 +532,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				},
 				openEffect  : 'elastic',
 				closeEffect : 'elastic',
-				nextEffect  : 'elastic',
-				prevEffect  : 'elastic',
+				nextEffect  : galleryTransitionType,
+				prevEffect  : galleryTransitionType,
 				loop		: popLoop,
 				maxHeight	: 768,
 				maxWidth	: 1024,
@@ -659,8 +664,16 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
 					msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
 					msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
+					msg += "<label id='label' title='Select the gallery transition type.' for='galTranType'>gallery transition type: </label>";
+					msg += "<select id='galTranType' name='galTranType'>";
+					msg += "<option>elastic</option>";
+					msg += "<option>fade</option>";
+					msg += "<option>none</option>";
+					msg += "</select>";
 	            	msg += "<br/><br/></div>";
 	            	$("#stage").append(msg);
+	            	
+	            	$("#galTranType").val(galleryTransitionType);
 					
 	                if(largeImg == ""){
 						$("#isEnlargeable").removeAttr('checked');
@@ -946,6 +959,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		
 		if(!fromDrop){
 			$(data).find("page").eq(currentPage).attr("alt", $("#altTextEdit").val());
+			
+			$(data).find("page").eq(currentPage).attr("galTransType", $("#galTranType").val());
 			
 			//Check if there is an enlarged image to link
 			if($("#isEnlargeable").prop("checked") == true){

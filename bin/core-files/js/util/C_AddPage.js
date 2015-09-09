@@ -209,6 +209,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			break;
 		case "top":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -228,6 +229,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			break;
 		case "left":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -247,6 +249,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			break;
 		case "right":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -266,6 +269,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			break;
 		case "bottom":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -285,6 +289,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
 			$(data).find("page").eq(newPage).attr("objItemId", "undefined");
 			$(data).find("page").eq(newPage).attr("type", "static");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			break;
 		case "sidebar":
 			$(data).find("page").eq(newPage).append($("<content>"));
@@ -330,6 +335,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathcomplete", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("galTransType", "elastic");
 			
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("id", tempID);
 			$(data).find("page").eq(newPage).attr("graded", "false");
@@ -363,6 +369,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("id", path1Guid);
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("path", "1");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("img", "");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("active", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(0).find("option").attr("altbtntitle", "");
 
@@ -395,6 +402,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("id", path1Guid);
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathid", "1");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathtype", "branch");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathtimg", "");
@@ -432,6 +440,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("pathcomplete", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(0).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("stepnumber", "0");
 			$(data).find("page").eq(newPage).find("branch").eq(0).attr("steptype", "intro");
 			
@@ -460,6 +469,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("pathcomplete", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(1).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("stepnumber", "0");
 			$(data).find("page").eq(newPage).find("branch").eq(1).attr("steptype", "overview");	
 
@@ -488,6 +498,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(2).attr("pathcomplete", "true");
 			$(data).find("page").eq(newPage).find("branch").eq(2).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(2).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(2).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(2).attr("stepnumber", "0");
 			$(data).find("page").eq(newPage).find("branch").eq(2).attr("steptype", "summary");
 
@@ -516,6 +527,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(3).attr("pathcomplete", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(3).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(3).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(3).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(3).attr("stepnumber", "1");
 			$(data).find("page").eq(newPage).find("branch").eq(3).attr("steptype", "teach");
 
@@ -544,6 +556,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("branch").eq(4).attr("pathcomplete", "false");
 			$(data).find("page").eq(newPage).find("branch").eq(4).attr("layout", "textOnly");
 			$(data).find("page").eq(newPage).find("branch").eq(4).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).find("branch").eq(4).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).find("branch").eq(4).attr("stepnumber", "1");
 			$(data).find("page").eq(newPage).find("branch").eq(4).attr("steptype", "practice");													
 
@@ -1048,6 +1061,7 @@ function createNewPageByType(_myType){
 			$(data).find("page").eq(newPage).find("caption").append(captionCDATA);
 
 			$(data).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(data).find("page").eq(newPage).attr("alt", "image description");
 			$(data).find("page").eq(newPage).attr("poploop", "true");
 			$(data).find("page").eq(newPage).attr("objective", "undefined"); 
