@@ -12,6 +12,7 @@
     "connect": "2.8.x",
     "cookie": "0.1.x",
     "cookie-parser": "1.x",
+    "d.js": "^0.7.3",
     "elementtree": "0.1.x",
     "express": "4.x",
     "express-session": "1.x",
