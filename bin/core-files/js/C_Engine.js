@@ -390,7 +390,7 @@ function buildInterface(){
 
 	//Place the course title.
 	var courseTitle;	
-	if($(courseData).find('course').length != 0){
+	if($(courseData).find('course').attr('coursedisplaytitle')){
 		if($(courseData).find('course').attr('coursedisplaytitle') == ""){
 			//$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
 			$(courseData).find('course').attr('coursedisplaytitle', $(data).find("courseTitle").attr("value"));
@@ -400,8 +400,6 @@ function buildInterface(){
 		}
 		courseTitle = $(courseData).find('course').attr('coursedisplaytitle');
 	}else{
-		//$(data).find("preferences").append($("<coursedisplaytitle>", data));
-		//$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
 		$(courseData).find('course').attr('coursedisplaytitle', $(data).find("courseTitle").attr("value"));
 		if(mode== "edit"){
 			sendCourseUpdate();
