@@ -457,8 +457,10 @@ function launchObjEdit(){
 	            title: "Saves and closes the media drop dialog.",
 	            click: function(){
 						//ensures input values are saved
-						$(data).find('page').eq(currentPage).attr("objItemId",$('#objItemId option:selected').val());
-						questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
+						if($(data).find('page').eq(currentPage).attr("type") == "kc"){
+							$(data).find('page').eq(currentPage).attr("objItemId",$('#objItemId option:selected').val());
+							questionResponse_arr[questionResponseIndex].objItemId = $('#objItemId option:selected').val();
+						}
 						$(data).find('page').eq(currentPage).attr("eo", $.trim($("#eo").val().replace('<p>', '').replace('</p>', '')));
 						var objUpdate = $.trim($("#out_pageObjective").val());
 						$(data).find('page').eq(currentPage).attr('objective', objUpdate);
