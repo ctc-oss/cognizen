@@ -613,7 +613,6 @@ CONTENT TEXT LAYOUTS*/
 #scrollableContent.left{
 	position: relative;
 	float: left;
-	width: 536px;
 	left: 50px;
 	border-style: hidden;
 	outline: none;
@@ -622,7 +621,6 @@ CONTENT TEXT LAYOUTS*/
 #scrollableContent.right{
 	position: relative;
 	float: right;
-	width: 536px;
 	right: 14px;
 	border-style: hidden;
 	outline: none;
@@ -631,7 +629,6 @@ CONTENT TEXT LAYOUTS*/
 #scrollableContent.sidebarContent{
 	position: relative;
 	float: left;
-	width: 536px;
 	left: 50px;
 	border-style: hidden;
 	outline: none;
