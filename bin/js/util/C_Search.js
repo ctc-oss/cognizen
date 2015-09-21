@@ -560,11 +560,14 @@ function C_Search(_myItem) {
         }
         else{
         	regex = new RegExp($('#searchTerm').val(),'gi');
-	    	if(/^[A-Z]/.test(highlightedWord)){
+        	if(highlightedWord.toUpperCase() === highlightedWord){
+        		replaceWord = replaceWord.toUpperCase();
+        	}
+	    	else if(/^[A-Z]/.test(highlightedWord)){
 	    		var firstCharUpper = replaceWord[0].toUpperCase();
 	    		var replaceRegex = new RegExp(replaceWord[0]);
 	    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
-	    	}        	
+	    	}   	
         }
 
         var nth = 0;
@@ -625,14 +628,19 @@ function C_Search(_myItem) {
 				        	regex = new RegExp($('#searchTerm').val(),'gi');
 
 					        content = results[w].element.text().trim().replace(regex, function (match){
-						    	var isFirstUpper = false;
-						    	if(/^[A-Z]/.test(match)){
+						    	var isUpper = false;
+						    	if(match.toUpperCase() === match){
+						    		replaceWord = replaceWord.toUpperCase();
+						    		isUpper = true;
+						    	}
+						    	else if(/^[A-Z]/.test(match)){
 						    		var firstCharUpper = replaceWord[0].toUpperCase();
 						    		var replaceRegex = new RegExp(replaceWord[0]);
 						    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
-						    		isFirstUpper = true;
-						    	}				        	
-					        	return(isFirstUpper) ? replaceWord : $('#replaceTerm').val();
+						    		isUpper = true;
+						    	}
+						    				        	
+					        	return(isUpper) ? replaceWord : $('#replaceTerm').val();
 					        });				        	
 			        	
 				        }
