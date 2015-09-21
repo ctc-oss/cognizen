@@ -81,13 +81,14 @@
 				var loc = window.location.pathname;
 				var dir = loc.substring(0, loc.lastIndexOf('/'));
 				var jqueryuiPath = unescape(dir + '/../css/CourseCSS/jqueryui/jquery-ui.min.css');
-				var courseOverridePath =  unescape(dir + '/../css/CourseCSS/CourseOverride.css');
-				var programOverridePath = unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css');
+				var courseOverridePath =  (useMobile ? unescape(dir + '../css/CourseCSS/CourseOverrideMobile.css') : unescape(dir + '/../css/CourseCSS/CourseOverride.css'));
+				var programOverridePath = (useMobile ? unescape(dir + '/../../css/ProgramCSS/ProgramOverrideMobile.css') :unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css'));
+				var moduleOverridePath =  (useMobile ? unescape(dir + 'css/ModuleCSS/ModuleOverrideMobile.css') :unescape('css/ModuleCSS/ModuleOverride.css'));
 				var editPaths = '<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>';
 					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
 					editPaths += '<link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/>';
 					editPaths += '<link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link>';
-					editPaths += '<link href="css/ModuleCSS/ModuleOverride.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+moduleOverridePath+'" rel="stylesheet" type="text/css"></link>';
 					editPaths += '<link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link>';
 					editPaths += '<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script>';
 					editPaths += '<script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>';

@@ -42,6 +42,7 @@
 			<finalLesson value="false"/>
 			<help value="false" course="false" url="media/test.png"/>
 			<tlo value="undefined"/>
+			<search value="false"/>
 			<id value=""/>
 		</preferences>
 		<glossary value="false" courseGlossary="true">

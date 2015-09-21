@@ -548,41 +548,44 @@ function C_Completion(_type) {
 			if(stringQR_arr.length == 0){
 
 				for(var i = 0; i < questionResponse_arr.length; i++){
-					if(questionResponse_arr[i].objective != "undefined" && questionResponse_arr[i].objective != undefined ){
-						trackedObjectives = true;
-						if(!questionResponse_arr[i].correct){
-							//check for duplicates
-							if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
-								remediationObjectives.push(questionResponse_arr[i].objective);
-								if(doScorm() && lms == "JKO"){
-									stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
+					//#3879 only show graded assessment pages in remediation list
+					if($(data).find("page[id='"+questionResponse_arr[i].id+"']").attr('graded') == 'true'){
+						if(questionResponse_arr[i].objective != "undefined" && questionResponse_arr[i].objective != undefined ){
+							trackedObjectives = true;
+							if(!questionResponse_arr[i].correct){
+								//check for duplicates
+								if($.inArray(questionResponse_arr[i].objective, remediationObjectives) == -1){
+									remediationObjectives.push(questionResponse_arr[i].objective);
+									if(doScorm() && lms == "JKO"){
+										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
+									}
+									else{
+										displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+									}
+									//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
+									//stringQR_arr.push(questionResponse_arr[i].objItemId. + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
+									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objective+"</a></li>";
 								}
-								else{
-									displayRemedObj += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
-								}
-								//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objective+"</li>";
-								//stringQR_arr.push(questionResponse_arr[i].objItemId. + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objective.replace(/,/g , '##'));
-								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objective+"</a></li>";
 							}
 						}
-					}
-					else if(questionResponse_arr[i].objItemId != "undefined" && questionResponse_arr[i].objItemId != undefined){
-						trackedObjectives = true;
-						if(!questionResponse_arr[i].correct){
-							//check for duplicates
-							if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
-								remediationObjectives.push(questionResponse_arr[i].objItemId);
-								if(doScorm() && lms == "JKO"){
-									stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+						else if(questionResponse_arr[i].objItemId != "undefined" && questionResponse_arr[i].objItemId != undefined){
+							trackedObjectives = true;
+							if(!questionResponse_arr[i].correct){
+								//check for duplicates
+								if($.inArray(questionResponse_arr[i].objItemId, remediationObjectives) == -1){
+									remediationObjectives.push(questionResponse_arr[i].objItemId);
+									if(doScorm() && lms == "JKO"){
+										stringQR_arr.push(questionResponse_arr[i].objItemId.replace(/:/g , '') + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+									}
+									else{
+									var itemName = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('name');
+									var itemTlo = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('tlo');
+										displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
+									}
+									//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
+									//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
+									//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 								}
-								else{
-								var itemName = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('name');
-								var itemTlo = $(courseData).find('item[id="'+questionResponse_arr[i].objItemId+'"]').attr('tlo');
-									displayRemedObj += "<li class='completionText'>"+itemName+" : "+itemTlo +"</li>";
-								}
-								//displayRemedObjAlt += "<li class='completionText'>"+questionResponse_arr[i].objItemId+"</li>";
-								//stringQR_arr.push(questionResponse_arr[i].objItemId + "|" + score_arr.replace(/,/g , '##') + "|" + attemptCount + "|" + questionResponse_arr[i].objItemId);
-								//displayRemedObj += "<li class='completionText'><a href='javascript:;' onclick='jump(\""+questionResponse_arr[i].objItemId+"\",\""+score_arr+"\", "+attemptCount+")'>"+questionResponse_arr[i].objItemId+"</a></li>";
 							}
 						}
 					}

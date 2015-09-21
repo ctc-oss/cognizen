@@ -50,7 +50,7 @@ function checkIndex(){
 			$('#indexTab').tooltip();  // don't attach tooltip on mobile devices
 		}
 
-		addIndex();
+		addIndex(true);
 		gimmeIndexPos();
 	}
 }
@@ -59,43 +59,50 @@ function checkIndex(){
 function updateMenuItems(){
 	if(isLinear == true){
 		for(var i = 0; i < tracking_arr.length; i++){
-			var thisID = "indexMenuItem"+i;
-			if(tracking_arr[i].complete == true){
-				var myParent = $("#" + thisID).parent().parent().parent().attr("id");
-				var lessonComplete = true;
-				if(myParent == "C_Index"){
-					var children = $(data).find("page").eq(i).find("page").length;
-					if(children > 0){
-						for(var j = 1; j <= children; j++){
-							if(tracking_arr[i+j].complete != true){
-								lessonComplete = false;
+			for(var k = 0; k < tracking_arr.length; k++){
+				var thisID = "indexMenuItem"+k;
+				if(tracking_arr[i].id == $("#" + thisID).attr("myid")){
+					if(tracking_arr[i].complete == true){
+						var myParent = $("#" + thisID).parent().parent().parent().attr("id");
+						var lessonComplete = true;
+						if(myParent == "C_Index"){
+							var children = $(data).find("page").eq(i).find("page").length;
+							if(children > 0){
+								for(var j = 1; j <= children; j++){
+									if(tracking_arr[i+j].complete != true){
+										lessonComplete = false;
+									}
+								}
+							}
+						}
+
+						if($("#" + thisID).parent().parent().parent().attr("id") != "C_Index" || lessonComplete == true){
+							if(progressMode == "lockStep"){
+								$("#" + thisID).removeClass('ui-state-disabled');
+								$("#" + thisID).click(clickIndexItem);
+							}
+							
+							if(mode != "edit"){
+								$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
+								$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
+								if(!oldIE){
+									var newAriaLabelString = "Page Complete " + $("#" + thisID).text().trim();
+									$("#" + thisID).attr("aria-label", newAriaLabelString);
+								}
+							}
+							
+						}
+
+					}else{
+						//IF mode == production AND progressMode == "lockStep" lock users from jumping around course.
+						if(mode != "edit" && mode != "review"){
+							if(progressMode == "lockStep"){
+								$("#" + thisID).addClass('ui-state-disabled');
+								$("#" + thisID).off('click');
 							}
 						}
 					}
-				}
-
-				if($("#" + thisID).parent().parent().parent().attr("id") != "C_Index" || lessonComplete == true){
-					if(progressMode == "lockStep"){
-						$("#" + thisID).removeClass('ui-state-disabled');
-						$("#" + thisID).click(clickIndexItem);
-					}
-					if(mode != "edit"){
-						$("#" + thisID).find("#statusSpot").removeClass('dd-status dd3-status');
-						$("#" + thisID).find("#statusSpot").addClass('dd-visited dd3-visited');
-						if(!oldIE){
-							var newAriaLabelString = "Page Complete " + $("#" + thisID).text().trim();
-							$("#" + thisID).attr("aria-label", newAriaLabelString);
-						}
-					}
-				}
-
-			}else{
-				//IF mode == production AND progressMode == "lockStep" lock users from jumping around course.
-				if(mode != "edit" && mode != "review"){
-					if(progressMode == "lockStep"){
-						$("#" + thisID).addClass('ui-state-disabled');
-						$("#" + thisID).off('click');
-					}
+					break;
 				}
 			}
 		}
@@ -136,6 +143,7 @@ function clickIndexItem(){
 	if(hoverSubNav == false){
 		try{$("#" + currentIndexItem).removeClass('indexActive');} catch(e){}
 		currentBranch = 0;
+		var myid = $(this).attr("myID")
 		loadPageFromID($(this).attr("myID"));
 		currentIndexItem = $(this).attr("id");
 		if(indexState){
@@ -147,68 +155,119 @@ function clickIndexItem(){
 
 var indexGroupID_arr;
 
-function addIndex(){
-	indexItem_arr = [];
+function addIndex(reset){
+
+	var $pages = $(data).find("page");
 	totalPages = $(data).find('page').length;
+	var indexString = populateIndex(totalPages, $pages, "", false );
+	$("#indexContent").append(indexString);
+
+	$("#searchButton").button({
+		icons:{primary: 'ui-icon-search'},
+		text:false
+		}).click(function(){
+			searchLesson($('#searchTerm').val());
+	}).tooltip();
+
+	//$('label[for="searchButton"]').tooltip();	
+
+	configureIndex();
+
+	if(pushedUpdate == true){
+		fadeComplete();
+		pushedUpdate = false;
+	}
+
+	if(mode == "edit" || mode == "review"){
+		updateIndexCommentFlags();
+	}
+
+	updatePageCount();
+	if(reset){
+		if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
+			buildTrackingArray();
+		}
+	}
+
+}
+//Index end.
+
+function populateIndex(pageCount, myData, myTerm, isSearch){
+	indexItem_arr = [];
 	$("#indexPane").append("<div id='indexContent' class='paneContent'></div>");
 
 	//loop through the xml and add items to index.
-	var thisID;
+	var thisId;
 	var groupMode;
 	indexGroupID_arr = [];
 
-	var indexString = '<div class="dd" id="C_Index" role="navigation"><ol class="dd-list">';
-	for(var i = 0; i < totalPages; i++){
-		thisID = "indexMenuItem" + i;
-		var pageID = $(data).find("page").eq(i).attr("id");
-		var childLength = $(data).find("page").eq(i).find("page").length;
+	//temp input dialog added for search #3559
+	var indexString = "";
+	if(searchEnabled){
+		//if search has been done disable input and reset button is used
+		if(isSearch){
+			indexString += "<input id='searchTerm' class='dialogInput' type='text' value='"+myTerm+"' style='width:70%;' /><div id='searchButton' title='Click to search'/><div id='refreshButton' title='Clear search'/><br/>"; 
+		}
+		else{
+			indexString += "<input id='searchTerm' class='dialogInput' type='text' value='' defaultValue='' style='width:70%;'/><div id='searchButton' title='Click to search'/><br/>"; 
+		}
+	}
+	indexString += '<div class="dd" id="C_Index" role="navigation"><ol class="dd-list">';
+	for(var i = 0; i < pageCount; i++){
+		thisId = "indexMenuItem" + i;
+		var pageId = myData.eq(i).attr("id");
+		var childLength = myData.eq(i).find("page").length;
+		var title = myData.eq(i).find("title").first().text();
 
-		indexString += '<li id="'+pageID+'"class="dd-item dd3-item" data-id="'+ i + '">';
+		indexString += '<li id="'+pageId+'"class="dd-item dd3-item" data-id="'+ i + '">';
 
 		if(mode == "edit"){
 			indexString += '<div class="dd-handle dd3-handle"></div>';
-			indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div></div>';
+			indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="commentSpot"></div></div>';
 		}else if(mode == "review"){
 			//check if item should be hidden
 			if($(data).find("page").eq(i).attr("indexhide") != "true"){
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
+				indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
 			}
 		}else{
 			//check if item should be hidden
 			if($(data).find("page").eq(i).attr("indexhide") != "true"){
-				indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+$(data).find("page").eq(i).find("title").first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
+				indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
 			}
 		}
-		indexItem_arr.push("#" + thisID);
+		indexItem_arr.push("#" + thisId);
 
 		if(childLength > 0){
 
 			indexString += '<ol class="dd-list">';
 			for(var j = 0; j < childLength; j++){
 				i++;
-				var pageID = $(data).find("page").eq(i).attr("id");
-				thisID = "indexMenuItem" + i;
+				pageId = myData.eq(i).attr("id");
+				thisId = "indexMenuItem" + i;
+				title = myData.eq(i).find("title").first().text();
 
-				indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+i+'">';
+				indexString += '<li id="'+pageId+'" class="dd-item dd3-item" data-id="'+i+'">';
 
 				if(mode == "edit"){
 					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div></div></li>';
+					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div></div></li>';
 				}else if(mode == "review"){
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
 				}else{
-					indexString += '<div id="'+thisID+'" class="dd3-content" tag="'+i+'" myID="'+$(data).find("page").eq(i).attr("id")+'" role="button" tabindex="1">'+ $(data).find("page").eq(i).find('title').first().text() +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
 				}
 
-				indexItem_arr.push("#" + thisID);
+				indexItem_arr.push("#" + thisId);
 			}
 			indexString += '</ol></li>';
 		}
 	}
 
 	indexString += "</ol></div>";
+	return indexString;	
+}
 
-	$("#indexContent").append(indexString);
+function configureIndex(){
 	var oldNodePos;
 	var newNodePos;
 	var oldParent;
@@ -400,6 +459,8 @@ function addIndex(){
 			addRollovers($(indexItem_arr[i]));
 		}
 		//$(indexItem_arr[i]).css("visibility", "hidden");
+		//clear old click events
+		//$(indexItem_arr[i]).off();
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){
@@ -412,24 +473,8 @@ function addIndex(){
 	    }).attr('aria-label', $(indexItem_arr[i]).text());
 		//Adding new for accessibility 10/7/14 PD
 		indexAccess_arr.push($(indexItem_arr[i]));
-	}
-
-	if(pushedUpdate == true){
-		fadeComplete();
-		pushedUpdate = false;
-	}
-
-	if(mode == "edit" || mode == "review"){
-		updateIndexCommentFlags();
-	}
-
-	updatePageCount();
-	if($(data).find('progressMode').attr("value") == 'linear' || $(data).find('progressMode').attr("value") == 'lockStep'){
-		buildTrackingArray();
-	}
-
+	}	
 }
-//Index end.
 
 function removePage(myNode){
 	if(myNode == undefined){
@@ -462,7 +507,8 @@ function removePage(myNode){
 						currentPageID = $(data).find("page").eq(currentPage).attr("id");
 						fadeComplete();
 					}
-					sendUpdateWithRefresh();
+
+					sendUpdateWithRefresh();		
 				}else{
 					$("#stage").append("<div id='dialog-removePageError' title='Error Removing Page'><p>Your content must have at least one page.</p><p>If you would like to remove this page you must first create another and then remove it.</p></div>");
 					$("#dialog-removePageError").dialog({
@@ -515,6 +561,45 @@ function addRollovers(myItem){
 	});
 }
 
+function searchLesson(myTerm){
+	//search of not case sensitive 
+	var $test = $(data).find('page').filter(function(){
+		return $(this).text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0;
+	});
+
+	displaySearchResults($test, myTerm);
+	
+}
+
+function displaySearchResults(result, myTerm){
+	$("#indexContent").remove();
+	var indexString = populateIndex(result.length, result, myTerm, true);
+	$("#indexContent").append(indexString);
+
+	$("#searchButton").button({
+		icons:{primary: 'ui-icon-search'},
+		text:false
+		}).click(function(){
+			searchLesson($('#searchTerm').val());
+	}).tooltip();
+
+	$("#refreshButton").button({
+		icons:{primary: 'ui-icon-closethick'},
+		text:false
+		}).click(function(){
+			$("#indexContent").remove();
+			addIndex(false);
+			updateMenuItems();
+	}).tooltip();
+
+	configureIndex();	
+
+	if(mode == "edit" || mode == "review"){
+		updateIndexCommentFlags();
+	}
+	updateMenuItems();
+}
+
 /*************************************************************
 ** Index Button Funcitonality
 *************************************************************/
@@ -563,7 +648,8 @@ function gimmeIndexPos(){
 ** EDIT mode Funcitonality
 *************************************************************/
 function updateIndex(){
-	$.ajax({
+	$.ajax(
+		{
 	    	type: "GET",
 	    	url: "xml/content.xml",
 	    	dataType: "xml",
@@ -585,7 +671,7 @@ function updateIndex(){
 		    	}else{
 		    		currentPage = findNodeByID();
 		    	}
-		    	addIndex();
+		    	addIndex(true);
 		},
 		error: function(){
 	    	alert("unable to load content.xml in updateIndex")

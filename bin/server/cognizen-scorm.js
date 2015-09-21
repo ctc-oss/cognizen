@@ -121,12 +121,21 @@ var SCORM = {
 
 									_this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 
-				                    var lessondisplaytitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
-				                    if(lessondisplaytitle == '' || lessondisplaytitle == undefined){
+				                    var lessonDisplayTitle = '';
+
+				                    //#3904
+				                    try{
+				                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+				                    }
+				                    catch(err){
+				                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
+				                    }
+
+				                    if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
 				                    	_this.courseDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
 				                    }
 				                    else{
-				                    	_this.courseDisplayTitle = lessondisplaytitle;
+				                    	_this.courseDisplayTitle = lessonDisplayTitle;
 				                    }
 								    
 								    //find the objectives in the pages.
@@ -570,6 +579,13 @@ var SCORM = {
              archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/../js/'+_this.jsResources_arr[i] });
         };
 
+		var courseAttr = _this._parseCourseAttr();
+
+        //#3866
+        if(courseAttr.help != ''){
+	        archive.append(fs.createReadStream(_this.contentPath + '/' +courseAttr.help), {name: _this.binDir + '/' +courseAttr.help});
+        }
+
         //add index.html from server incase changes were made after the course was created
         archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/index.html'});
 
@@ -957,20 +973,24 @@ var SCORM = {
                     if (err) callback(err, null);
 
 	                //add item & item sequencing (objectives)
-	                var _lessonTitle = lessonsName[count];//etree.find('.courseInfo/preferences/lessonTitle').get('value');
-	                //lessonsName.push(_lessonTitle);
+	                var _lessonTitle = lessonsName[count];
 
 	                //populate lessondisplaytitle #3633
-                    var lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+                    var lessonDisplayTitle = '';
+
+                    //#3904
+                    try{
+                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+                    }
+                    catch(err){
+                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
+                    }
+
                     if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
                     	// _this.lessonDisplayTitles_arr.push(etree.find('.courseInfo/preferences/lessonTitle').get('value'));
                     	lessonDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
                     }
-                    // else{
-                    // 	_this.lessonDisplayTitles_arr.push(lessondisplaytitle);
-
-                    // }	                
-
+                
 				    //find the objectives in the pages.
 				    //////////////////////////////////////////////////
 				    var pageCount = etree.findall('./pages/page').length;
@@ -1175,6 +1195,11 @@ var SCORM = {
 
 												            }
 												        );
+												        //#3866
+												        if(courseAttr.help != ''){
+												        	var helpPathSplit = courseAttr.help.split('..');
+													        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+												        }
 
 														//add js directory to root of package
 												        for (var i = 0; i < _this.jsResources_arr.length; i++) {
@@ -1288,6 +1313,12 @@ var SCORM = {
 										            }
 										        );
 
+										        //#3866
+										        if(courseAttr.help != ''){
+										        	var helpPathSplit = courseAttr.help.split('..');
+											        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+										        }
+
 												//add js directory to root of package
 										        for (var i = 0; i < _this.jsResources_arr.length; i++) {
 										             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
@@ -1388,6 +1419,12 @@ var SCORM = {
 						        //add course.xml file
 						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
+							    //#3866
+						        if(courseAttr.help != ''){
+						        	var helpPathSplit = courseAttr.help.split('..');
+							        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+						        }
+
 								//add js directory to root of package
 						        for (var i = 0; i < _this.jsResources_arr.length; i++) {
 						             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
@@ -1471,7 +1508,7 @@ var SCORM = {
 	    		//console.log(i + " : " + pageObj);
 	 			//check for duplicates; manipulate objective name if so (this may not work!!!!)
 	 			tmpObjId = lessonIndictor +"."+
-	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '').replace(/&nbsp;/g, '')).replace('.', '')+"."+
 	 						pageObj.replace(/\s+/g, '_').replace('.', '');
 
 	    	}
@@ -1482,7 +1519,7 @@ var SCORM = {
 	    		}
 	    		else{
 		 			tmpObjId = lessonIndictor +"."+
-	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '')).replace('.', '')+"."+
+	 						encodeURIComponent(pageTitle.replace("<![CDATA[", "").replace("]]>", "").replace(/\s+/g, '').replace(/:/g, '').replace(/&nbsp;/g, '')).replace('.', '')+"."+
 	 						pageObjId.replace(/\s+/g, '_').replace('.', '');
 	    		}
 	    	}
@@ -1833,7 +1870,7 @@ var SCORM = {
 
         if(itemSeq.testReview){
 			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-"+lessonNameTrim+"-Review-files\">\n"+// isvisible=\"false\">\n"+
-			"                 <title>"+lessonName+" Review</title>\n"+
+			"                 <title>"+lessonTitle+" Review</title>\n"+
 			"                 <adlnav:presentation>\n"+
 			"                     <adlnav:navigationInterface>\n"+
 			"                         <adlnav:hideLMSUI>abandon</adlnav:hideLMSUI>\n"+
@@ -1920,7 +1957,8 @@ var SCORM = {
 			lms : myNode.get('lms'),
 			survey : myNode.get('survey'),
 			certificate : myNode.get('certificate'),
-			displaytitle : myNode.get('coursedisplaytitle')
+			displaytitle : myNode.get('coursedisplaytitle'),
+			help : myNode.get('help')
 		};
 
 		return courseAttr;
@@ -2056,6 +2094,13 @@ var SCORM = {
 
 		//added course.xml file here, figured it would cover it
 		resource += "				<file href=\""+_prefix+"course.xml\"/>\n";
+
+		//#3866 global help
+		var courseAttr = _this._parseCourseAttr();
+		if(courseAttr.help != ''){
+			var helpPathSplit = courseAttr.help.split('../');
+			resource += "				<file href=\""+_prefix+helpPathSplit[1]+"\"/>\n";
+		}				
         resource += "		</resource>\n";
         //_this.logger.info(resource);
         return resource;

@@ -384,7 +384,10 @@ function C_Outline(_myItem) {
             resizable: false,
             close: function (event, ui) {
                 socket.removeAllListeners('receiveCoursePath');
-                socket.emit("closeOutline", courseID);
+                socket.emit("closeTool", {
+                	id : courseID,
+                	tool : 'outline'
+                });
                 $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {
@@ -850,7 +853,7 @@ function C_Outline(_myItem) {
 			//handle seeting of coursedisplaytitle if not set and setting the value based off of the xml
 			if(!$(courseData).find('course').attr('coursedisplaytitle')){
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
 
 			}
@@ -860,7 +863,7 @@ function C_Outline(_myItem) {
 
 			//on change of the section508 toggle update the course xml 
 			$('#out_courseDisplayTitle').on('change', function(){
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val());
+				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
 			}).css({'width': '500px', 'color': '#3383bb;'});
 
@@ -1114,6 +1117,48 @@ function C_Outline(_myItem) {
 				break;
 			}
 		}
+
+		//#3905 ///////////////////////////////
+		//lessondisplaytitle
+		if($(module_arr[_id].xml).find('lessondisplaytitle').length != 0){
+			if($(module_arr[_id].xml).find('lessondisplaytitle').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessondisplaytitle').attr('value', $(module_arr[_id].xml).find('lessonTitle').attr("value"));
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessondisplaytitle>", data));
+			$(module_arr[_id].xml).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
+			updateModuleXML(_id);
+		}
+
+		//lessonWidth
+		if($(module_arr[_id].xml).find('lessonWidth').length != 0){
+			if($(module_arr[_id].xml).find('lessonWidth').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessonWidth').attr('value', '768');
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessonWidth>", data));
+			$(module_arr[_id].xml).find("lessonWidth").attr("value", '768');
+			updateModuleXML(_id);
+		}
+
+		//lessonHeight
+		if($(module_arr[_id].xml).find('lessonHeight').length != 0){
+			if($(module_arr[_id].xml).find('lessonHeight').attr('value') == ""){
+				$(module_arr[_id].xml).find('lessonHeight').attr('value', '1024');
+				updateModuleXML(_id);
+			}
+		}
+		else{
+			$(module_arr[_id].xml).find("preferences").append($("<lessonHeight>", data));
+			$(module_arr[_id].xml).find("lessonHeight").attr("value", '1024');
+			updateModuleXML(_id);
+		}
+		/////////////////////////////////////////////////////////////////////
+
      	$("#outlinePagePrefPane").empty();
      	var msg = "<div id='header' class='outlineModuleEditHeader'><b>Module Preferences: " + $(module_arr[_id].xml).find('lessonTitle').attr("value") + "</b></div><br/>";
      	msg += "<div id='accordion'>";
@@ -2460,6 +2505,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("My Caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
@@ -2479,6 +2525,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("My Caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
@@ -2498,6 +2545,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("My Caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
@@ -2517,6 +2565,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("My Caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
@@ -2536,6 +2585,7 @@ function C_Outline(_myItem) {
 			var captionCDATA = newPageCaption.createCDATASection("My Caption");
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 			$(myXML).find("page").eq(newPage).attr("img", "defaultTop.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("popup", "");
 			$(myXML).find("page").eq(newPage).attr("popcaps", "");
 			$(myXML).find("page").eq(newPage).attr("enlarge", "");
@@ -2986,6 +3036,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("caption").append(captionCDATA);
 
 			$(myXML).find("page").eq(newPage).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).attr("alt", "image description");
 			$(myXML).find("page").eq(newPage).attr("poploop", "true");
 			$(myXML).find("page").eq(newPage).attr("objective", "undefined");
@@ -3469,6 +3520,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("id", guid());
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("pathid", "0");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("pathtype", "home");
 
@@ -3495,6 +3547,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("id", path1Guid);
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("pathid", "1");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("pathtype", "branch");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("pathtimg", "");
@@ -3532,6 +3585,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("pathcomplete", "false");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("stepnumber", "0");
 			$(myXML).find("page").eq(newPage).find("branch").eq(0).attr("steptype", "intro");
 			
@@ -3560,6 +3614,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("pathcomplete", "false");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("stepnumber", "0");
 			$(myXML).find("page").eq(newPage).find("branch").eq(1).attr("steptype", "overview");	
 
@@ -3588,6 +3643,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("pathcomplete", "true");
 			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("stepnumber", "0");
 			$(myXML).find("page").eq(newPage).find("branch").eq(2).attr("steptype", "summary");
 
@@ -3616,6 +3672,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(3).attr("pathcomplete", "false");
 			$(myXML).find("page").eq(newPage).find("branch").eq(3).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(3).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(3).attr("stepnumber", "1");
 			$(myXML).find("page").eq(newPage).find("branch").eq(3).attr("steptype", "teach");
 
@@ -3644,6 +3701,7 @@ function C_Outline(_myItem) {
 			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("pathcomplete", "false");
 			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("layout", "textOnly");
 			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("img", "defaultLeft.png");
+			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("galTransType", "elastic");
 			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("stepnumber", "1");
 			$(myXML).find("page").eq(newPage).find("branch").eq(4).attr("steptype", "practice");													
 
