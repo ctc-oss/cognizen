@@ -1430,7 +1430,8 @@ MEDIA LAYOUTS
 #mediaHolder.graphic{
 	margin-left: auto;
 	margin-right: auto;
-	overflow-y: auto;
+	overflow-x: initial;
+	overflow-y: initial;
 }
 
 #mediaHolder.leftTabs{
