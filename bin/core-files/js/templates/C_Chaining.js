@@ -186,7 +186,14 @@ function C_Chaining(_type) {
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
 				pageTracker--;
 				loadBranchByID($(this).attr("mylink"));
-			});
+			}).keyup(function (event) {
+		        var key = event.keyCode || event.which;
+		
+		        if (key === 13) {
+		            $(this).click();
+		        }
+		        return false;
+		    });
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}

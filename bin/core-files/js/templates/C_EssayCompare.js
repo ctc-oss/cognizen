@@ -103,7 +103,12 @@ function C_EssayCompare(_type) {
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
 			//$('#mcSubmit').css({"top": "300px"});
-			$("#mcSubmit").click(checkEssay);
+			$("#mcSubmit").click(checkEssay).keypress(function(event) {
+			    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32  || chCode == 13){
+				    $(this).click();
+				}
+		    });
 		}
 		else{
 			mandatoryInteraction = false;

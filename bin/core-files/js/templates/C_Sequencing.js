@@ -101,7 +101,6 @@ function C_Sequencing(_type) {
 	}
 
 	function keyboardUp(_id){
-		console.log(_id);
 		isRefresh = true;
 		var holder = order_arr.splice(_id, 1);
 		order_arr.splice(_id+1, 0, holder);
@@ -161,9 +160,9 @@ function C_Sequencing(_type) {
 		//Accessibility stuff
 		for(var j = 0; j < order_arr.length; j++){
 			pageAccess_arr.push($("#option" + j));
-			$("#option" + j).keypress(function(event) {
+			$("#option" + j).keyup(function(event) {
 				var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-				 switch(chCode) {
+				switch(chCode) {
 				    case 117:
 				    	currentAccActive = $(this).attr('value');
 				    	keyboardDown($(this).attr('data'));
@@ -197,8 +196,7 @@ function C_Sequencing(_type) {
 		
 		if(currentAccActive != null){
 			for (var i = 0; i < order_arr.length; i++){
-				console.log($("#option"+i).attr("value"));
-				if(currentAccActive == $("#option"+i).attr("value")){
+					if(currentAccActive == $("#option"+i).attr("value")){
 					$("#option"+i).focus();
 					break;
 				}
@@ -517,7 +515,6 @@ function C_Sequencing(_type) {
 	}
 
 	function updateRevealMenu(){
-		console.log("started");
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
 		var msg = "";
@@ -538,7 +535,6 @@ function C_Sequencing(_type) {
 				msg += "width:45px;";
 			}
 			var cleanText = $(data).find("page").eq(currentPage).find("option").eq(h).find("content").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
-			console.log("cleanText = " + cleanText);
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 
 			revealMenu_arr.push(tmpID);

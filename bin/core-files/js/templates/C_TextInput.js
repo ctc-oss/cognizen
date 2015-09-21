@@ -256,7 +256,12 @@ function C_TextInput(_type) {
 		if(!isComplete){
 			$("#contentHolder").append('<div id="mcSubmit"></div>');
 			$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).attr("btnText")/*, disabled: true*/ });
-			$("#mcSubmit").click(checkTextCombo);
+			$("#mcSubmit").click(checkTextCombo).keypress(function(event) {
+			    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+			    if (chCode == 32  || chCode == 13){
+				    $(this).click();
+				}
+		    });
 		}
 		else{
 			mandatoryInteraction = false;
