@@ -173,11 +173,16 @@ function C_Branching(_type) {
 				$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
-				});
-				//paletteWidth += $("#"+myOption).width() + 5;
+				}).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			
+			        if (key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 				pageAccess_arr.push($("#"+myOption));
 			}
-			//$("#buttonPalette").width(paletteWidth);
 		}
 	}
 
@@ -611,10 +616,6 @@ function C_Branching(_type) {
 				var mediaWidth = 0;
 				var mediaHeight = 0;
 			}
-
-			/*if(posterLink == null){
-				posterLink = "null";
-			}*/
 
 			var hasTranscript = false;
 			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
