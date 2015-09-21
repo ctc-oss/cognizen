@@ -649,11 +649,12 @@ function C_Search(_myItem) {
 						var nodeCDATA = node.createCDATASection(content);
 						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(localNodeName).empty();
 						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(localNodeName).append(nodeCDATA);		
-						updateModuleXML(moduleIndex);	
+						
 
 					}
 				};
 			};
+			updateModuleXML(moduleIndex);	
 	    };
 	
 
@@ -695,7 +696,7 @@ function C_Search(_myItem) {
 			refresh = true;
 		}
 		var pd = new pp();
-		var xmlString  = pd.xml(xmlString);
+		xmlString  = pd.xml(xmlString);
 
 		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
 		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, refresh: refresh, user: user ,content: {
