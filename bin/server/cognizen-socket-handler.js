@@ -27,7 +27,7 @@ var ss = require('socket.io-stream');
 var request = require('request');
 
 var activeEdit_arr = [];
-var activeOutline_arr = [];
+var activeTool_arr = [];
 
 var SocketHandler = {
     config: {},
@@ -1748,14 +1748,15 @@ var SocketHandler = {
 		}
     },
 
-    allowOutline: function (data){
+    allowTool: function (data){
 		var _this = this;
 		var allow = true;
 		var moduleUser_arr = [];
-		var activeOutlineEditor = null;
+		var activeToolEditor = null;
+        var activeTool = null;
 
 		for(var i = 0; i < activeEdit_arr.length; i++){
-			if(data == activeEdit_arr[i].courseID){
+			if(data.id == activeEdit_arr[i].courseID){
 				if(activeEdit_arr[i].isEditor == true){
 					allow = false;
 					moduleUser_arr.push(activeEdit_arr[i].user);
@@ -1763,17 +1764,18 @@ var SocketHandler = {
 			}
 		}
 
-		for(var j = 0; j < activeOutline_arr.length; j++){
-			if(data == activeOutline_arr[j].courseID){
+		for(var j = 0; j < activeTool_arr.length; j++){
+			if(data.id == activeTool_arr[j].courseID){
 				allow = false;
-				activeOutlineEditor = activeOutline_arr[j].username;
+				activeToolEditor = activeTool_arr[j].username;
+                activeTool = activeTool_arr[j].tool;
 			}
 		}
 
 		if(allow == false){
 			var myMessage;
-			if(activeOutlineEditor != null){
-				myMessage = activeOutlineEditor + ' is currently using the outliner on this course. Please contact them to request control or try again later.';
+			if(activeToolEditor != null){
+				myMessage = activeToolEditor + ' is currently using the ' + activeTool + ' on this course. Please contact them to request control or try again later.';
 			}else{
 				myMessage = "This course currently has modules being edited by the following people:<br/>";
 				for(var i = 0; i < moduleUser_arr.length; i++){
@@ -1781,21 +1783,22 @@ var SocketHandler = {
 				}
 				myMessage += "Either contact them all and request that they step out of their lessons or try again later.";
 			}
-			_this._socket.emit('generalError', {title: 'OutlinerLocked', message: myMessage});
+			_this._socket.emit('generalError', {title: 'ToolLocked', message: myMessage});
 		}else{
 			var tmpObj = new Object();
-			tmpObj.courseID = data;
+			tmpObj.courseID = data.id;
 			var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 			tmpObj.username = _this.SocketSessions.socketUsers[sessionId].username;
-			activeOutline_arr.push(tmpObj);
-			_this._socket.emit('allowOutlineLaunch');
+            tmpObj.tool = data.tool;
+			activeTool_arr.push(tmpObj);
+			_this._socket.emit('allowToolLaunch', data.tool);
 		}
     },
 
-    closeOutline: function (data){
-		for(var i = 0; i < activeOutline_arr.length; i++){
-			if(data == activeOutline_arr[i].courseID){
-				activeOutline_arr.splice(i, 1);
+    closeTool: function (data){
+		for(var i = 0; i < activeTool_arr.length; i++){
+			if((data.id == activeTool_arr[i].courseID) && (data.tool == activeTool_arr[i].tool)){
+				activeTool_arr.splice(i, 1);
 			}
 		}
     },
@@ -1840,9 +1843,9 @@ var SocketHandler = {
 				}
 			}
 
-			for(var i = 0; i < activeOutline_arr.length; i++){
-				if(activeOutline_arr[i].username == user.username && disconnectingLessonID == null){
-					activeOutline_arr.splice(i, 1);
+			for(var i = 0; i < activeTool_arr.length; i++){
+				if(activeTool_arr[i].username == user.username && disconnectingLessonID == null){
+					activeTool_arr.splice(i, 1);
 				}
 			}
 	    }
@@ -1879,7 +1882,7 @@ var SocketHandler = {
 		var _this = this;
 		var currentLesson = null;
 		var currentCourse = null;
-		var courseOutlineBeingEdited = false;
+		var courseToolBeingEdited = false;
 		for (var i = 0; i < activeEdit_arr.length; i++){
 			if(activeEdit_arr[i].user == data.me){
 				currentLesson = activeEdit_arr[i].lessonID;
@@ -1888,14 +1891,14 @@ var SocketHandler = {
 			}
 		}
 
-		for (var j = 0; j < activeOutline_arr.length; j++){
-			if(activeOutline_arr[j].courseID == currentCourse){
-				courseOutlineBeingEdited = true;
-				_this._socket.emit('outlineActiveError', {title: 'Course Outline Being Edited', message: 'Sorry, the course outline is currently being edited by '+activeOutline_arr[j].username+' at this time.  Please contact them or try again later.'});
+		for (var j = 0; j < activeTool_arr.length; j++){
+			if(activeTool_arr[j].courseID == currentCourse){
+				courseToolBeingEdited = true;
+				_this._socket.emit('outlineActiveError', {title: 'Course ' + activeTool_arr[j].tool + ' Being Edited', message: 'Sorry, the course outline is currently being edited by '+activeTool_arr[j].username+' at this time.  Please contact them or try again later.'});
 			}
 		}
 
-		if(!courseOutlineBeingEdited){
+		if(!courseToolBeingEdited){
 			if(currentLesson != null){
 				var isSent = false;
 				for(var i = 0; i < activeEdit_arr.length; i++){

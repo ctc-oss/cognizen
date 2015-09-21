@@ -383,11 +383,12 @@ TREE MENU STYLES
 .programUserAdd {position: relative; top: -57px; left: 502px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.courseOutline {position: relative; top: -19px; left: 412px; width: 18px; height: 18px; background: url(images/outline.png) no-repeat;}
-.coursePref {position: relative; top: -38px; left: 432px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
-.courseRemove {position: relative; top: -57px; left: 452px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
-.courseAdd {position: relative; top: -76px; left: 472px; width: 18px; height: 18px; background: url(images/plus.png) no-repeat;}
-.courseUserAdd {position: relative; top: -95px; left: 492px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
+.courseOutline {position: relative; top: -19px; left: 392px; width: 18px; height: 18px; background: url(images/outline.png) no-repeat;}
+.courseSearch {position: relative; top: -37px; left: 412px; width: 18px; height: 18px; background: url(images/outline.png) no-repeat;}
+.coursePref {position: relative; top: -55px; left: 432px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
+.courseRemove {position: relative; top: -73px; left: 452px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
+.courseAdd {position: relative; top: -91px; left: 472px; width: 18px; height: 18px; background: url(images/plus.png) no-repeat;}
+.courseUserAdd {position: relative; top: -109px; left: 492px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
 .projectPref {position: relative; top: -19px; left: 442px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
@@ -443,6 +444,81 @@ TREE MENU STYLES
             border-radius: 3px;
 }
 
+/*Search*/
+
+
+#searchFilterPane{
+	position: relative;
+	width: 1000px;
+	height: 200px;
+	overflow: auto;
+	border-color: #eee;
+	border-width: thin;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+            border-radius: 3px;
+}
+
+#searchResultsPane{
+	position: relative;
+	width: 1000px;
+	height: 400px;
+	overflow: auto;
+	border-color: #eee;
+	border-width: thin;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+            border-radius: 3px;
+}
+
+#searchFilterContainer{
+	margin-top: 1em;
+}
+
+.searchRow{
+	padding : .5em;
+}
+
+#searchTermLabel, #replaceTermLabel{
+	width : 100px;
+	float: left;
+	margin-left: 3em;
+}
+
+#searchTerm, #replaceTerm{
+	width : 40%;
+}
+
+#searchBtn, #replaceBtn {
+	margin-left: 2em;
+}
+
+#replaceAllBtn, #searchPrevBtn, #searchNextBtn, #caseSensitiveBtn{
+	margin-left: 1em;
+}
+
+#searchCount{
+	margin-top: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+#searchResult{
+	margin-top: 1em;
+	margin-left: 1em;
+}
+
+.highlightbox{
+	border-style: solid;
+	border-width: thin;
+}
+
+.highlight{
+	background-color: yellow;
+}
+
+/*end search*/
 .ui-widget-content{
 	background: white;
 }

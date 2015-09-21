@@ -180,6 +180,7 @@ function initScripts(_data){
 				"js/templates/C_Dashboard.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
+				"js/util/C_Search.js",
 				"js/libs/jquery.treeview.js",
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",

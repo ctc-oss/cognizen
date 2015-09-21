@@ -448,8 +448,8 @@ var Content = {
 				SocketHandler.socket(socket).disconnect(socket);
 			});
 			
-			socket.on('allowOutline', function(data){
-				SocketHandler.socket(socket).allowOutline(data);
+			socket.on('allowTool', function(data){
+				SocketHandler.socket(socket).allowTool(data);
 			});
 			
 			socket.on('passLock', function (data){
@@ -556,8 +556,8 @@ var Content = {
                 });
             });
             
-            socket.on('closeOutline', function(data){
-	           SocketHandler.socket(socket).closeOutline(data);
+            socket.on('closeTool', function(data){
+	           SocketHandler.socket(socket).closeTool(data);
 	           io.sockets.emit('refreshDashboard'); 
             });
 

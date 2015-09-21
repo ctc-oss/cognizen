@@ -21,7 +21,7 @@ function C_Dashboard(_type) {
     var parentString = "";
     var assignParent;
     var myTimer;
-    var outlineLaunchItem;
+    var launchItem;
     var scroller;
     var scrollTimer;
 
@@ -39,9 +39,14 @@ function C_Dashboard(_type) {
             userRoster = data;
         });
 
-        socket.on('allowOutlineLaunch', function(data){
-	       window.clearInterval(myTimer);
-	       co = new C_Outline(outlineLaunchItem);
+        socket.on('allowToolLaunch', function(data){
+            window.clearInterval(myTimer);
+            if(data == 'outline'){
+	           co = new C_Outline(launchItem);
+            }
+            else if (data == 'search'){
+                co = new C_Search(launchItem);
+            }
         });
 
         /*socket.on('receiveCoursePath', function (data){
@@ -303,7 +308,8 @@ function C_Dashboard(_type) {
                     $(this).addClass("courseHover");
                     if(myItem.data('permission') == "admin"){
                     	$(this).append("<div id='myOutline' class='courseOutline' title='outline the " + $(this).parent().find("span").first().text() + " course.'></div>");
-	                    $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='mySearch' class='courseSearch' title='search the " + $(this).parent().find("span").first().text() + " course.'></div>");
+                        $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
 	                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
 	                    $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
@@ -322,9 +328,12 @@ function C_Dashboard(_type) {
 				 	myTimer = setInterval(function () {startlaunchtimer()}, 14000);
                     $("#stage").append('<div id="preloadholder"></div>');
 					$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
-				 	outlineLaunchItem = myItem;
+				 	launchItem = myItem;
 				 	//Check if outline is available...
-				 	socket.emit('allowOutline', myItem.data('id'));
+				 	socket.emit('allowTool', {
+                        id : myItem.data('id'),
+                        tool : 'outline'
+                    });
                 }).hover(
                     function () {
                         hoverSubNav = true;
@@ -339,6 +348,32 @@ function C_Dashboard(_type) {
                             duration: 200
                         }
                     });
+
+             $("#mySearch").click(function () {
+                    //Add preloader
+                    myTimer = setInterval(function () {startlaunchtimer()}, 14000);
+                    $("#stage").append('<div id="preloadholder"></div>');
+                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                    launchItem = myItem;
+                    //Check if outline is available...
+                    socket.emit('allowTool', {
+                        id : myItem.data('id'),
+                        tool : 'search'
+                    });
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
+                        show: {
+                            delay: 1500,
+                            effect: "fadeIn",
+                            duration: 200
+                        }
+                    })
 
 			 $("#myPref").click(function () {
                     doPrefs(myItem);
@@ -419,6 +454,7 @@ function C_Dashboard(_type) {
                 $("#myAdd").remove();
                 $("#myUserAdd").remove();
                 $("#myOutline").remove();
+                $("#mySearch").remove();
                 if (myItem.data('type') == "program") {
                     $(this).removeClass("programHover");
                 } else if (myItem.data('type') == "course") {
