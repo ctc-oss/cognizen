@@ -175,8 +175,7 @@ function C_Branching(_type) {
 					loadBranchByID($(this).attr("mylink"));
 				}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
-			        if (key === 13) {
+			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
 			        return false;

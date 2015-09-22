@@ -221,7 +221,7 @@ function C_Pathing(_type) {
 				}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
 			
-			        if (key === 13) {
+			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
 			        return false;
@@ -268,7 +268,14 @@ function C_Pathing(_type) {
 			$("#"+myOption).button().click(function(){
 				pathPageTracker--;
 				loadBranchByID($(this).attr("mylink"));
-			});
+			}).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			
+			        if (key === 32 || key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 
@@ -305,7 +312,14 @@ function C_Pathing(_type) {
 				}
 				pathPageTracker++;
 				loadBranchByID($(this).attr("mylink"));
-			});
+			}).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			
+			        if (key === 32 || key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 

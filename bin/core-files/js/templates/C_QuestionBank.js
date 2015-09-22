@@ -317,7 +317,13 @@ function C_QuestionBank(_type) {
 		$("#answerOptions").append("</div>");
 
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr("btnText"), disabled: true });
-		$("#mcSubmit").click(checkAnswer);
+		$("#mcSubmit").click(checkAnswer).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			        if (key === 32 || key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 
 		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
 		pageAccess_arr.push($("#mcSubmit"));

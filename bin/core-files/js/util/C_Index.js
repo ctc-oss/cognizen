@@ -161,14 +161,14 @@ function addIndex(reset){
 	totalPages = $(data).find('page').length;
 	var indexString = populateIndex(totalPages, $pages, "", false );
 	$("#indexContent").append(indexString);
-
+	
 	$("#searchButton").button({
 		icons:{primary: 'ui-icon-search'},
 		text:false
 		}).click(function(){
 			searchLesson($('#searchTerm').val());
 	}).tooltip();
-
+	
 	//$('label[for="searchButton"]').tooltip();	
 
 	configureIndex();
@@ -206,10 +206,10 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 	if(searchEnabled){
 		//if search has been done disable input and reset button is used
 		if(isSearch){
-			indexString += "<input id='searchTerm' class='dialogInput' type='text' value='"+myTerm+"' style='width:70%;' /><div id='searchButton' title='Click to search'/><div id='refreshButton' title='Clear search'/><br/>"; 
+			indexString += "<input id='searchTerm' tabindex='1' class='dialogInput' type='text' value='"+myTerm+"' style='width:70%;' /><div id='searchButton' title='Click to search' role='button' tabindex='1'/><div id='refreshButton' title='Clear search'/><br/>"; 
 		}
 		else{
-			indexString += "<input id='searchTerm' class='dialogInput' type='text' value='' defaultValue='' style='width:70%;'/><div id='searchButton' title='Click to search'/><br/>"; 
+			indexString += "<input id='searchTerm' class='dialogInput' type='text' tabindex='1' value='' defaultValue='' style='width:70%;'/><div id='searchButton' title='Click to search' role='button' tabindex='1'/><br/>"; 
 		}
 	}
 	indexString += '<div class="dd" id="C_Index" role="navigation"><ol class="dd-list">';
@@ -453,6 +453,8 @@ function configureIndex(){
 		accHideIndex();
 	}
 
+	//indexAccess_arr.push($("#searchTerm"));
+	//indexAccess_arr.push($("#searchButton"));
 	//Set the button functions
 	for (var i = 0; i < indexItem_arr.length; i++){
 		if(mode == "edit"){
@@ -575,7 +577,7 @@ function displaySearchResults(result, myTerm){
 	$("#indexContent").remove();
 	var indexString = populateIndex(result.length, result, myTerm, true);
 	$("#indexContent").append(indexString);
-
+	
 	$("#searchButton").button({
 		icons:{primary: 'ui-icon-search'},
 		text:false
@@ -616,8 +618,10 @@ function toggleIndex(){
 //		gimmeIndexPos(); // moved to checkIndex
 		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
 		$("#C_Index").css("visibility", "visible");
-		$("#indexMenuItem0").focus();
+		$("#searchTerm").css("visibility", "visible");
+		$("#searchButton").css("visibility", "visible");
 		$("#indexTab").attr("aria-label", "click here to close content index currently open");
+		$("#searchTerm").focus();
 	}
 	else{
 		// close
@@ -638,6 +642,8 @@ function closeIndex(){
 function accHideIndex(){
 	$("#indexPane").css({'z-index':0});
 	$("#C_Index").css("visibility", "hidden");
+	$("#searchTerm").css("visibility", "hidden");
+	$("#searchButton").css("visibility", "hidden");
 }
 
 function gimmeIndexPos(){
