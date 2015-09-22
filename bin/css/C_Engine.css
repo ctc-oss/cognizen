@@ -391,9 +391,10 @@ TREE MENU STYLES
 .courseUserAdd {position: relative; top: -109px; left: 492px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.projectPref {position: relative; top: -19px; left: 442px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
-.projectRemove {position: relative; top: -38px; left: 462px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
-.projectUserAdd {position: relative; top: -57px; left: 482px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
+.projectSearch {position: relative; top: -19px; left: 422px; width: 18px; height: 18px; background: url(images/outline.png) no-repeat;}
+.projectPref {position: relative; top: -38px; left: 442px; width: 18px; height: 18px; background: url(images/prefs.png) no-repeat;}
+.projectRemove {position: relative; top: -57px; left: 462px; width: 18px; height: 18px; background: url(images/minus.png) no-repeat;}
+.projectUserAdd {position: relative; top: -75px; left: 482px; width: 18px; height: 18px; background: url(images/user.png) no-repeat;}
 
 .ui-tooltip{font-family: hnl; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
 

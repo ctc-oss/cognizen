@@ -6,7 +6,7 @@
  *  	Version: 0.5
  *		Date Created: 09/11/15
  */
-function C_Search(_myItem) {
+function C_Search(_myItem, _myParent) {
 
 	////////////////////////////////////////////////   COURSE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	var myItem = _myItem;										//The Button that was clicked in the dashboard.
@@ -44,9 +44,6 @@ function C_Search(_myItem) {
 	var isCaseSensitive = false;
 
     $(document).ready(function(){
-	     console.log(currentCourseType);
-	     console.log(courseID);
-
     	initSearch();
     });
 
@@ -84,10 +81,15 @@ function C_Search(_myItem) {
      ************************************************************************************/
      function initSearch(){
      	loadedSearchModules = 0;
+     	var tmpCourseId = courseID;
+     	if(currentCourseType === 'lesson'){
+     		tmpCourseId = _myParent.id;
+     	}
+
 		socket.emit("getCoursePath", {
         	content: {
-            	id: courseID,
-                type: currentCourseType,
+            	id: tmpCourseId,
+                type: 'course',
                 permission: currentCoursePermission
              }
 		});
@@ -121,29 +123,48 @@ function C_Search(_myItem) {
      ************************************************************************************/
      function importSearchItems(_data){
 	     courseData = _data;
-	     totalSearchModules = $(courseData).find("item").length;
-	     console.log(currentCourseType);
-	     console.log(courseID);
 
-	     if(totalSearchModules > 0){
-	     	for(var y = 0; y < totalSearchModules; y++){
-	     		 var moduleObj = new Object();
+		if(currentCourseType === 'course'){
+		    totalSearchModules = $(courseData).find("item").length;
 
-		 		 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
-		 		 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
-		 		 moduleObj.parent = courseID;
-		 		 moduleObj.parentDir = coursePath;
-		 		 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
-		 		 moduleObj.xml = null;
-		 		 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
-		 		 module_arr.push(moduleObj);
+			if(totalSearchModules > 0){
+				for(var y = 0; y < totalSearchModules; y++){
+					 var moduleObj = new Object();
 
-		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
-		 		 importModuleXML(currentXML);
-	     	}
-		 }else{
-			 buildSearchInterface();
-		 }
+					 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
+					 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
+					 moduleObj.parent = courseID;
+					 moduleObj.parentDir = coursePath;
+					 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
+					 moduleObj.xml = null;
+					 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
+					 module_arr.push(moduleObj);
+
+					 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+					 importModuleXML(currentXML);
+				}
+			}
+			else{
+				buildSearchInterface();
+			}
+
+		}
+		else{
+			totalSearchModules = 1;
+			 var moduleObj = new Object();
+
+			 moduleObj.name = $(courseData).find("item[id='"+courseID+"']").attr("name");
+			 moduleObj.id = $(courseData).find("item[id='"+courseID+"']").attr("id");
+			 moduleObj.parent = _myParent.id;
+			 moduleObj.parentDir = coursePath;
+			 moduleObj.path = coursePath + "/" +$(courseData).find("item[id='"+courseID+"']").attr("name");
+			 moduleObj.xml = null;
+			 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item[id='"+courseID+"']").attr("name").trim()), "/xml/content.xml"].join("");
+			 module_arr.push(moduleObj);
+
+			 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item[id='"+courseID+"']").attr("name")), "/xml/content.xml"].join("");
+			 importModuleXML(currentXML);			
+		}
      }
 
 
@@ -197,7 +218,12 @@ function C_Search(_myItem) {
      	var thisID;
      	indexItem_arr = [];
 
-     	msg = '<div id="dialog-search" title="Search '+ $(courseData).find('course').first().attr("name") + ':">';
+     	var searchTitle = $(courseData).find('course').first().attr("name");
+     	if(currentCourseType === 'lesson'){
+     		searchTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
+     	}
+
+     	msg = '<div id="dialog-search" title="Search '+ searchTitle + ':">';
 	    msg += '<div id="searchPane" class="pane">'
 	    msg += '<div id="searchFilterPane" class="paneContent">';
 	    msg += '<div id="searchFilterContainer">';
@@ -319,76 +345,78 @@ function C_Search(_myItem) {
      	totalInstances = 0;
      	currentInstance = 0;
 
-		for(var j = 0; j < module_arr.length; j++){
-			if(isCaseSensitive){
-		     	var page = $(module_arr[j].xml).find('page').filter(function(){
-					return $(this).text().indexOf($('#searchTerm').val()) >= 0;
-				});
-			}
-			else{
-		     	var page = $(module_arr[j].xml).find('page').filter(function(){
-					return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
-				});				
-			}
-
-
-			for (var i = 0; i < page.length; i++) {
-				var lessonTitle;				
-				if($(module_arr[j].xml).find("lessondisplaytitle").length != 0 ){
-					if($(module_arr[j].xml).find("lessondisplaytitle").attr("value") != ""){
-						lessonTitle = $(module_arr[j].xml).find("lessondisplaytitle").attr("value");
-					}				
-				}
-				else{
-					lessonTitle = $(module_arr[j].xml).find("lessonTitle").attr("value");
-				}
-
-				//determine number of instances on the page
-				var $element = null;
-				var instances = 0;
-				var trackIndex = []; //index of node on page
-
+     	if($('#searchTerm').val().length > 0){
+			for(var j = 0; j < module_arr.length; j++){
 				if(isCaseSensitive){
-			      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
-			      		if($(this).text().indexOf($('#searchTerm').val()) >= 0){
-			      			trackIndex.push(index);
-			      		}
+			     	var page = $(module_arr[j].xml).find('page').filter(function(){
 						return $(this).text().indexOf($('#searchTerm').val()) >= 0;
-					});	
-					instances = $element.text().split($('#searchTerm').val());	
+					});
 				}
 				else{
-			      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
-			      		if($(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0){
-			      			trackIndex.push(index);
-			      		}
+			     	var page = $(module_arr[j].xml).find('page').filter(function(){
 						return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
-					});		
-					instances = $element.text().toLowerCase().split($('#searchTerm').val().toLowerCase());			
+					});				
 				}
 
-				totalInstances = totalInstances + (instances.length - 1);			
 
-		      	for (var w = 0; w < $element.length; w++) {
-		      		var elementInstance = 0;
-		      		if(isCaseSensitive){
-		      			elementInstance = $element.eq(w).text().split($('#searchTerm').val()).length - 1
-		      		}
-		      		else{
-		      			elementInstance = $element.eq(w).text().toLowerCase().split($('#searchTerm').val().toLowerCase()).length - 1;
-		      		}
-					var result = {
-						lessontitle : lessonTitle,
-						pagetitle : $(page.eq(i)).find("title").first().text(),
-						pageid : $(page.eq(i)).attr('id'),
-						element : $element.eq(w),
-						instances: elementInstance,
-						index: trackIndex[w]
-					};
-					results.push(result);		      		
-		      	};		
-			};
-	    }
+				for (var i = 0; i < page.length; i++) {
+					var lessonTitle;				
+					if($(module_arr[j].xml).find("lessondisplaytitle").length != 0 ){
+						if($(module_arr[j].xml).find("lessondisplaytitle").attr("value") != ""){
+							lessonTitle = $(module_arr[j].xml).find("lessondisplaytitle").attr("value");
+						}				
+					}
+					else{
+						lessonTitle = $(module_arr[j].xml).find("lessonTitle").attr("value");
+					}
+
+					//determine number of instances on the page
+					var $element = null;
+					var instances = 0;
+					var trackIndex = []; //index of node on page
+
+					if(isCaseSensitive){
+				      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
+				      		if($(this).text().indexOf($('#searchTerm').val()) >= 0){
+				      			trackIndex.push(index);
+				      		}
+							return $(this).text().indexOf($('#searchTerm').val()) >= 0;
+						});	
+						instances = $element.text().split($('#searchTerm').val());	
+					}
+					else{
+				      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
+				      		if($(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0){
+				      			trackIndex.push(index);
+				      		}
+							return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
+						});		
+						instances = $element.text().toLowerCase().split($('#searchTerm').val().toLowerCase());			
+					}
+
+					totalInstances = totalInstances + (instances.length - 1);			
+
+			      	for (var w = 0; w < $element.length; w++) {
+			      		var elementInstance = 0;
+			      		if(isCaseSensitive){
+			      			elementInstance = $element.eq(w).text().split($('#searchTerm').val()).length - 1
+			      		}
+			      		else{
+			      			elementInstance = $element.eq(w).text().toLowerCase().split($('#searchTerm').val().toLowerCase()).length - 1;
+			      		}
+						var result = {
+							lessontitle : lessonTitle,
+							pagetitle : $(page.eq(i)).find("title").first().text(),
+							pageid : $(page.eq(i)).attr('id'),
+							element : $element.eq(w),
+							instances: elementInstance,
+							index: trackIndex[w]
+						};
+						results.push(result);		      		
+			      	};		
+				};
+		    }
+		}
 
 	    displayNewSearchResults();
 
@@ -396,7 +424,13 @@ function C_Search(_myItem) {
 
      function displayNewSearchResults(){
      	if(results.length == 0){
-     		$('#searchCount').text('No results were found!');
+     		if($('#searchTerm').val().length == 0){
+				$('#searchCount').text('Search term must be specified!');
+     		}
+     		else{
+     			$('#searchCount').text('No results were found!');
+     		}
+     		
      		$('#searchResults').empty();
      		$('#searchResultNode').empty();
      		$('#searchNextBtn').button('disable');
@@ -417,6 +451,7 @@ function C_Search(_myItem) {
      			$('#searchNextBtn').button('disable');
      		}
      		
+
      		if($('#replaceTerm').val().length != 0){
      			$('#replaceBtn').button('enable');
      			$('#replaceAllBtn').button('enable');
@@ -722,9 +757,15 @@ function C_Search(_myItem) {
 		xmlString  = pd.xml(xmlString);
 
 		var moduleXMLPath = module_arr[_id].xmlPath.replace(new RegExp("%20", "g"), ' ');
+
+     	var tmpCourseId = courseID;
+     	if(currentCourseType === 'lesson'){
+     		tmpCourseId = _myParent.id;
+     	}
+
 		socket.emit('updateModuleXML', { myXML: xmlString, moduleXMLPath: moduleXMLPath, commit: commit, refresh: refresh, user: user ,content: {
-        	id: courseID,
-            type: currentCourseType,
+        	id: tmpCourseId,
+            type: 'course',
             permission: currentCoursePermission
             }
 		});

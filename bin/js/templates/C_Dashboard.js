@@ -24,6 +24,7 @@ function C_Dashboard(_type) {
     var launchItem;
     var scroller;
     var scrollTimer;
+    var launchItemParent;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -45,7 +46,7 @@ function C_Dashboard(_type) {
 	           co = new C_Outline(launchItem);
             }
             else if (data == 'search'){
-                co = new C_Search(launchItem);
+                co = new C_Search(launchItem, launchItemParent);
             }
         });
 
@@ -317,6 +318,7 @@ function C_Dashboard(_type) {
                 } else {
                     $(this).addClass("projectHover");
                     if(myItem.data('permission') == "admin"){
+                        $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
 	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
 	                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
@@ -355,6 +357,9 @@ function C_Dashboard(_type) {
                     $("#stage").append('<div id="preloadholder"></div>');
                     $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     launchItem = myItem;
+                    //used to send course name in for module search
+                    launchItemParent = { id: myItem.parent().parent().attr('id'),
+                                        name: myItem.parent().parent().find("span").first().text() };
                     //Check if outline is available...
                     socket.emit('allowTool', {
                         id : myItem.data('id'),
