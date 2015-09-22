@@ -42,7 +42,7 @@ function checkIndex(){
 		$('#indexTab').click(toggleIndex).keypress(function(event) {
 			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){
-			    toggleIndex();
+			    $(this).click();
 			}
 	    });
 		
@@ -161,13 +161,23 @@ function addIndex(reset){
 	totalPages = $(data).find('page').length;
 	var indexString = populateIndex(totalPages, $pages, "", false );
 	$("#indexContent").append(indexString);
-	
+	$("#searchTerm").keypress(function(event) {
+		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	    if (chCode == 13){
+		    $("#searchButton").click();
+		}
+    });
 	$("#searchButton").button({
 		icons:{primary: 'ui-icon-search'},
 		text:false
 		}).click(function(){
 			searchLesson($('#searchTerm').val());
-	}).tooltip();
+	}).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $(this).click();
+			}
+	    }).tooltip();
 	
 	//$('label[for="searchButton"]').tooltip();	
 
@@ -206,7 +216,7 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 	if(searchEnabled){
 		//if search has been done disable input and reset button is used
 		if(isSearch){
-			indexString += "<input id='searchTerm' tabindex='1' class='dialogInput' type='text' value='"+myTerm+"' style='width:70%;' /><div id='searchButton' title='Click to search' role='button' tabindex='1'/><div id='refreshButton' title='Clear search'/><br/>"; 
+			indexString += "<input id='searchTerm' tabindex='1' class='dialogInput' type='text' value='"+myTerm+"' style='width:70%;' /><div id='searchButton' title='Click to search' role='button' tabindex='1'/><div id='refreshButton' title='Clear search' role='button' tabindex='1'/><br/>"; 
 		}
 		else{
 			indexString += "<input id='searchTerm' class='dialogInput' type='text' tabindex='1' value='' defaultValue='' style='width:70%;'/><div id='searchButton' title='Click to search' role='button' tabindex='1'/><br/>"; 
@@ -465,9 +475,10 @@ function configureIndex(){
 		//$(indexItem_arr[i]).off();
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    console.log(chCode);
 		    if (chCode == 32 || chCode == 13){
 			    $(this).click();
-			}else if(chCode == 27){
+			}else if(chCode == 88 || chCode == 24){
 				toggleIndex();
 				$("#indexTab").attr("aria-label", "click here to open content index currently closed");
 				$("#indexTab").focus();
@@ -577,13 +588,25 @@ function displaySearchResults(result, myTerm){
 	$("#indexContent").remove();
 	var indexString = populateIndex(result.length, result, myTerm, true);
 	$("#indexContent").append(indexString);
+	$("#searchTerm").focus();
+	$("#searchTerm").keypress(function(event) {
+		var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+	    if (chCode == 13){
+		    $("#searchButton").click();
+		}
+    });
 	
 	$("#searchButton").button({
 		icons:{primary: 'ui-icon-search'},
 		text:false
 		}).click(function(){
 			searchLesson($('#searchTerm').val());
-	}).tooltip();
+	}).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $(this).click();
+			}
+	    }).tooltip();
 
 	$("#refreshButton").button({
 		icons:{primary: 'ui-icon-closethick'},
@@ -592,7 +615,12 @@ function displaySearchResults(result, myTerm){
 			$("#indexContent").remove();
 			addIndex(false);
 			updateMenuItems();
-	}).tooltip();
+	}).keypress(function(event) {
+			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
+		    if (chCode == 32 || chCode == 13){
+			    $(this).click();
+			}
+	    }).tooltip();
 
 	configureIndex();	
 
