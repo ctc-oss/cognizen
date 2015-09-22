@@ -44,6 +44,9 @@ function C_Search(_myItem) {
 	var isCaseSensitive = false;
 
     $(document).ready(function(){
+	     console.log(currentCourseType);
+	     console.log(courseID);
+
     	initSearch();
     });
 
@@ -119,6 +122,8 @@ function C_Search(_myItem) {
      function importSearchItems(_data){
 	     courseData = _data;
 	     totalSearchModules = $(courseData).find("item").length;
+	     console.log(currentCourseType);
+	     console.log(courseID);
 
 	     if(totalSearchModules > 0){
 	     	for(var y = 0; y < totalSearchModules; y++){
@@ -341,20 +346,28 @@ function C_Search(_myItem) {
 				//determine number of instances on the page
 				var $element = null;
 				var instances = 0;
+				var trackIndex = []; //index of node on page
+
 				if(isCaseSensitive){
-			      	$element = $(page.eq(i)).find('*').filter(function(){
+			      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
+			      		if($(this).text().indexOf($('#searchTerm').val()) >= 0){
+			      			trackIndex.push(index);
+			      		}
 						return $(this).text().indexOf($('#searchTerm').val()) >= 0;
 					});	
 					instances = $element.text().split($('#searchTerm').val());	
 				}
 				else{
-			      	$element = $(page.eq(i)).find('*').filter(function(){
+			      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
+			      		if($(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0){
+			      			trackIndex.push(index);
+			      		}
 						return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
 					});		
 					instances = $element.text().toLowerCase().split($('#searchTerm').val().toLowerCase());			
 				}
 
-				totalInstances = totalInstances + (instances.length - 1);
+				totalInstances = totalInstances + (instances.length - 1);			
 
 		      	for (var w = 0; w < $element.length; w++) {
 		      		var elementInstance = 0;
@@ -369,7 +382,8 @@ function C_Search(_myItem) {
 						pagetitle : $(page.eq(i)).find("title").first().text(),
 						pageid : $(page.eq(i)).attr('id'),
 						element : $element.eq(w),
-						instances: elementInstance
+						instances: elementInstance,
+						index: trackIndex[w]
 					};
 					results.push(result);		      		
 		      	};		
@@ -571,7 +585,8 @@ function C_Search(_myItem) {
         }
 
         var nth = 0;
-        var content = $('#searchResults').text().trim().replace(regex, function (match){
+        var content = $(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).html().replace('<![CDATA[', '').replace(']]>','').trim();
+        content = content.replace(regex, function (match){
         	nth++;
         	return(nth === resultSubInstance) ? replaceWord : match;
         });
@@ -585,8 +600,8 @@ function C_Search(_myItem) {
         }
 
 		var nodeCDATA = node.createCDATASection(content);
-		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(nodeName).empty();
-		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(nodeName).append(nodeCDATA);		
+		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).empty();
+		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).append(nodeCDATA);		
 		updateModuleXML(moduleIndex);	
 
 		$('#searchResultNode').text(nodeName + ' instance updated!');
@@ -622,12 +637,12 @@ function C_Search(_myItem) {
 				        var content = null;
 				        if(isCaseSensitive){
 				        	regex = new RegExp($('#searchTerm').val(),'g');
-				        	content = results[w].element.text().trim().replace(regex, replaceWord);
+				        	content = results[w].element.html().replace('<![CDATA[', '').replace(']]>','').trim().replace(regex, replaceWord);
 				        }
 				        else{
 				        	regex = new RegExp($('#searchTerm').val(),'gi');
 
-					        content = results[w].element.text().trim().replace(regex, function (match){
+					        content = results[w].element.html().replace('<![CDATA[', '').replace(']]>','').trim().replace(regex, function (match){
 						    	var isUpper = false;
 						    	if(match.toUpperCase() === match){
 						    		replaceWord = replaceWord.toUpperCase();
@@ -639,7 +654,7 @@ function C_Search(_myItem) {
 						    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
 						    		isUpper = true;
 						    	}
-						    				        	
+
 					        	return(isUpper) ? replaceWord : $('#replaceTerm').val();
 					        });				        	
 			        	
@@ -655,8 +670,8 @@ function C_Search(_myItem) {
 				        	node = new DOMParser().parseFromString('<'+localNodeName+'></'+localNodeName+'>', "text/xml");
 				        }
 						var nodeCDATA = node.createCDATASection(content);
-						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(localNodeName).empty();
-						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find(localNodeName).append(nodeCDATA);		
+						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[w].index).empty();
+						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[w].index).append(nodeCDATA);		
 						
 
 					}
