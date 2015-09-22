@@ -161,7 +161,7 @@ function checkNav(){
 	nextBack = $(data).find('nextBack').attr('value');
 	if(nextBack == "true"){
 		nextBack = true;
-		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.'>back</button><button id='next' aria-label='Next - proceed to the next page.'>next</button>");
+		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.' role='button'>back</button><button id='next' aria-label='Next - proceed to the next page.' role='button' >next</button>");
 	}
 
 	//Check if we are using page counter - if so, set it up.
@@ -1668,6 +1668,7 @@ function disableBack(){
 	$('#back').attr('aria-disabled', 'true');
 	$('#back').addClass('disabled');
 	$('#back').off('click');
+	$("#back").attr("tabindex", "0");
 	backDisabled = true;
 }
 
@@ -1677,6 +1678,7 @@ function enableBack(){
 	//ensure all click events are off on "#back
 	$('#back').off('click');
 	$("#back").click(clickBack);
+	$("#back").attr("tabindex", "1");
 	backDisabled = false;
 }
 
@@ -1684,6 +1686,7 @@ function disableNext(){
 	$('#next').attr('aria-disabled', 'true');
 	$('#next').addClass('disabled');
 	$('#next').off('click');
+	$("#next").attr("tabindex", "0");
 	nextDisabled = true;
 }
 
@@ -1691,6 +1694,7 @@ function enableNext(){
 	$('#next').attr('aria-disabled', 'false');
 	$('#next').removeClass('disabled');
 	$("#next").click(clickNext);
+	$("#next").attr("tabindex", "1");
 	nextDisabled = false;
 }
 

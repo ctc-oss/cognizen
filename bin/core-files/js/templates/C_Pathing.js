@@ -218,7 +218,14 @@ function C_Pathing(_type) {
 
 				$("#"+myOption).button().click(function(){
 					loadBranchByID($(this).attr("mylink"));
-				});
+				}).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			
+			        if (key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 				//paletteWidth += $("#"+myOption).width() + widthAdjust;
 				pageAccess_arr.push($("#"+myOption));
 			};

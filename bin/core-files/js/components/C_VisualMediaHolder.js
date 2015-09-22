@@ -410,7 +410,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
                 imageWidth = $(img).width();
                 imageHeight = $(img).height();
 
-	            $("#mediaHolder").css({'width': imageWidth, 'height': imageHeight});
+	            $("#mediaHolder").css({'width': imageWidth});
                 $("#loader").css({'width': imageWidth, 'height': imageHeight});
 
 				if(hasPop == true || largeImg != ""){
@@ -596,7 +596,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	    	$('<div id="caption">'+myCaption+'</div>').insertAfter("#loader");
 	    }
 		
-		if(type == "graphicOnly"){
+		if((type == "graphicOnly") || (type == "left") || (type == "right")){
 			$("#mediaHolder").css({'height': $("#loader").height() + $("#caption").height()});
 		}
 		
