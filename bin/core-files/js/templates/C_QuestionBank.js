@@ -269,6 +269,10 @@ function C_QuestionBank(_type) {
 			//Add button click action to each option
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
+				$("#mcSubmit").attr("tabindex", 1);
+				pageAccess_arr.push($("#mcSubmit"));
+				doAccess(pageAccess_arr);
+				$(this).focus();
 				if(isMulti){
 					if(iconClicked != true){
 						if($(this).find('input').prop('checked') == true){
@@ -317,10 +321,18 @@ function C_QuestionBank(_type) {
 		$("#answerOptions").append("</div>");
 
 		$("#mcSubmit").button({ label: $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr("btnText"), disabled: true });
-		$("#mcSubmit").click(checkAnswer);
+		$("#mcSubmit").attr("tabindex", 0);
+		//pageAccess_arr.push($("#mcSubmit"));
+		$("#mcSubmit").click(checkAnswer).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			        if (key === 32 || key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });
 
 		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
-		pageAccess_arr.push($("#mcSubmit"));
+		//pageAccess_arr.push($("#mcSubmit"));
 
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		if(isIE){
@@ -348,6 +360,7 @@ function C_QuestionBank(_type) {
 		}
 
 		doAccess(pageAccess_arr);
+		console.log(pageAccess_arr);
 	}
 
 	//Called if the user closes the popup instead of proceed

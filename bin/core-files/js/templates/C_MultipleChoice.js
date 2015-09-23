@@ -224,7 +224,10 @@ function C_MultipleChoice(_type) {
 			//Add button click action to each option
 			$('#' + myOption).click( function(){
 				$("#mcSubmit").button({ disabled: false });
-
+				$("#mcSubmit").attr("tabindex", 1);
+				pageAccess_arr.push($("#mcSubmit"));
+				doAccess(pageAccess_arr);
+				$(this).focus();
 				if(isMulti == false){
 					$(this).find('input').prop('checked', true);
 					for(var i=0; i<option_arr.length; i++){
@@ -293,7 +296,7 @@ function C_MultipleChoice(_type) {
 	    });
 
 		$("#mcSubmit").attr("aria-label", "Submit your answer.").attr("role", "button");
-		pageAccess_arr.push($("#mcSubmit"));
+		//pageAccess_arr.push($("#mcSubmit"));
 
 		$("#contentHolder").height(stageH - ($("#scrollableContent").position().top) + audioHolder.getAudioShim());
 		/*if(isIE){
@@ -311,6 +314,8 @@ function C_MultipleChoice(_type) {
 		if(isComplete){
 			disableOptions();
 			$("#mcSubmit").button({ disabled: true });
+			//pageAccess_arr.push($("#mcSubmit"));
+			$("#mcSubmit").attr("tabindex", 0);
 			showUserAnswer();
 		}
 

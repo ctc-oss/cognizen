@@ -94,6 +94,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		        $(this).click();
 		    }
         });
+        pageAccess_arr.push($("#transcriptButton"));
+		//doAccess(pageAccess_arr);
 	}
 	
 	if(rootType == "branching" || rootType == "pathing" || rootType == "chaining"){
@@ -124,6 +126,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			        $(this).click();
 			    }
 	        });
+			pageAccess_arr.push($("#transcriptButton"));
+			//doAccess(pageAccess_arr);
 		}
 	}
 	

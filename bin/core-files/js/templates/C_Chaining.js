@@ -128,7 +128,7 @@ function C_Chaining(_type) {
 				$("#content").width($("#contentHolder").width()-15);
 				$("#content").append(myContent);
 				$("#content").attr("aria-label", $("#content").text());
-				pageAccess_arr.push($("#content"));
+				//pageAccess_arr.push($("#content"));
 			}
 	    }
 	    if(branchType != "textOnly" && branchType != "sidebar" && branchType != "branching"){
@@ -189,7 +189,7 @@ function C_Chaining(_type) {
 			}).keyup(function (event) {
 		        var key = event.keyCode || event.which;
 		
-		        if (key === 13) {
+		        if (key === 32 || key === 13) {
 		            $(this).click();
 		        }
 		        return false;
@@ -207,7 +207,14 @@ function C_Chaining(_type) {
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
 				pageTracker++;
 				loadBranchByID($(this).attr("mylink"));
-			});
+			}).keyup(function (event) {
+			        var key = event.keyCode || event.which;
+			
+			        if (key === 32 || key === 13) {
+			            $(this).click();
+			        }
+			        return false;
+			    });		
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
