@@ -39,7 +39,7 @@ function checkGlossary(){
 		glossary = true;
 		var msg = "<div id='glossaryPane' class='pane'>";
 		if(isMobilePhone){
-			msg += "<button id='glossaryTab' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary' role='button' aria-label='click here to toggle the glossary' title='click here to toggle the glossary'><span class='ui-button-icon-primary ui-icon ui-icon-note'></span><span class='ui-button-text'>glossary</span></button>";
+			msg += "<button id='glossaryTab' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary' role='button' aria-label='click here to toggle the glossary' title='click here to toggle the glossary'></button>";
 		}else{
 			msg += "<div id='glossaryTab' class='paneTab' role='button' aria-label='click here to toggle the glossary currently closed' title='click here to toggle the glossary'/>";
 		}
