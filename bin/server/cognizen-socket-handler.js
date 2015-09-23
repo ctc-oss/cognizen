@@ -1756,7 +1756,7 @@ var SocketHandler = {
         var activeTool = null;
 
 		for(var i = 0; i < activeEdit_arr.length; i++){
-			if(data.id == activeEdit_arr[i].courseID){
+			if(data.id == activeEdit_arr[i].courseID || data.id == activeEdit_arr[i].lessonID){
 				if(activeEdit_arr[i].isEditor == true){
 					allow = false;
 					moduleUser_arr.push(activeEdit_arr[i].user);
@@ -1765,7 +1765,7 @@ var SocketHandler = {
 		}
 
 		for(var j = 0; j < activeTool_arr.length; j++){
-			if(data.id == activeTool_arr[j].courseID){
+			if(data.id == activeTool_arr[j].courseID || data.id == activeEdit_arr[i].lessonID){
 				allow = false;
 				activeToolEditor = activeTool_arr[j].username;
                 activeTool = activeTool_arr[j].tool;
@@ -1786,7 +1786,14 @@ var SocketHandler = {
 			_this._socket.emit('generalError', {title: 'ToolLocked', message: myMessage});
 		}else{
 			var tmpObj = new Object();
-			tmpObj.courseID = data.id;
+			if(data.level == "projectSearch"){
+				tmpObj.lessonID = data.id;
+				tmpObj.courseID = null;
+			}else{
+				tmpObj.courseID = data.id;
+				tmpObj.lessonID = null;
+			}
+			
 			var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);
 			tmpObj.username = _this.SocketSessions.socketUsers[sessionId].username;
             tmpObj.tool = data.tool;
@@ -1798,6 +1805,9 @@ var SocketHandler = {
     closeTool: function (data){
 		for(var i = 0; i < activeTool_arr.length; i++){
 			if((data.id == activeTool_arr[i].courseID) && (data.tool == activeTool_arr[i].tool)){
+				activeTool_arr.splice(i, 1);
+			}
+			if((data.id == activeTool_arr[i].lessonID) && (data.tool == activeTool_arr[i].tool)){
 				activeTool_arr.splice(i, 1);
 			}
 		}
@@ -1892,7 +1902,7 @@ var SocketHandler = {
 		}
 
 		for (var j = 0; j < activeTool_arr.length; j++){
-			if(activeTool_arr[j].courseID == currentCourse){
+			if(activeTool_arr[j].courseID == currentCourse || currentLesson == activeTool_arr[j].lessonID){
 				courseToolBeingEdited = true;
 				_this._socket.emit('outlineActiveError', {title: 'Course ' + activeTool_arr[j].tool + ' Being Edited', message: 'Sorry, the course outline is currently being edited by '+activeTool_arr[j].username+' at this time.  Please contact them or try again later.'});
 			}
