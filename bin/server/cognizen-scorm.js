@@ -1104,9 +1104,8 @@ var SCORM = {
 				    }
 
 	                if(count+1 == lArray.length){
+	                	var courseAttr = _this._parseCourseAttr();
 				        if(manifestFile != ''){
-
-					        var courseAttr = _this._parseCourseAttr();
 
 					        var completionLines = '';
 
