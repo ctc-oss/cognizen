@@ -111,7 +111,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('refreshDashboard', function() {
-            $("#preloadholder").remove();
+            //$("#preloadholder").remove();
             socket.emit('getProjects', user);
         });
 
@@ -357,13 +357,15 @@ function C_Dashboard(_type) {
                     $("#stage").append('<div id="preloadholder"></div>');
                     $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     launchItem = myItem;
+                    var myLevel = $(this).attr("class");
                     //used to send course name in for module search
                     launchItemParent = { id: myItem.parent().parent().attr('id'),
                                         name: myItem.parent().parent().find("span").first().text() };
                     //Check if outline is available...
                     socket.emit('allowTool', {
                         id : myItem.data('id'),
-                        tool : 'search'
+                        tool : 'search',
+                        level : myLevel
                     });
                 }).hover(
                     function () {
@@ -373,12 +375,12 @@ function C_Dashboard(_type) {
                         hoverSubNav = false;
                     }
                 ).tooltip({
-                        show: {
-                            delay: 1500,
-                            effect: "fadeIn",
-                            duration: 200
-                        }
-                    })
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
 
 			 $("#myPref").click(function () {
                     doPrefs(myItem);
@@ -390,12 +392,12 @@ function C_Dashboard(_type) {
                         hoverSubNav = false;
                     }
                 ).tooltip({
-                        show: {
-                            delay: 1500,
-                            effect: "fadeIn",
-                            duration: 200
-                        }
-                    });
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
 
                 $("#myAdd").click(function () {
                     if (myItem.data('type') == "program") {
@@ -411,12 +413,12 @@ function C_Dashboard(_type) {
                         hoverSubNav = false;
                     }
                 ).tooltip({
-                        show: {
-                            delay: 1500,
-                            effect: "fadeIn",
-                            duration: 200
-                        }
-                    });
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
 
                 $("#myRemove").click(function(){
 		            removeContent(myItem);
@@ -428,12 +430,12 @@ function C_Dashboard(_type) {
                         hoverSubNav = false;
                     }
                 ).tooltip({
-                        show: {
-                            delay: 1500,
-                            effect: "fadeIn",
-                            duration: 200
-                        }
-                    });
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
 
                 $("#myUserAdd").click(function () {
                 	assignParent = myItem;
