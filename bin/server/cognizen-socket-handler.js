@@ -1806,8 +1806,7 @@ var SocketHandler = {
 		for(var i = 0; i < activeTool_arr.length; i++){
 			if((data.id == activeTool_arr[i].courseID) && (data.tool == activeTool_arr[i].tool)){
 				activeTool_arr.splice(i, 1);
-			}
-			if((data.id == activeTool_arr[i].lessonID) && (data.tool == activeTool_arr[i].tool)){
+			}else if((data.id == activeTool_arr[i].lessonID) && (data.tool == activeTool_arr[i].tool)){
 				activeTool_arr.splice(i, 1);
 			}
 		}
