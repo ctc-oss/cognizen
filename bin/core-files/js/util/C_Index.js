@@ -247,29 +247,31 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 		}
 		indexItem_arr.push("#" + thisId);
 
-		if(childLength > 0){
+		if(!isSearch){
+			if(childLength > 0){
 
-			indexString += '<ol class="dd-list">';
-			for(var j = 0; j < childLength; j++){
-				i++;
-				pageId = myData.eq(i).attr("id");
-				thisId = "indexMenuItem" + i;
-				title = myData.eq(i).find("title").first().text();
+				indexString += '<ol class="dd-list">';
+				for(var j = 0; j < childLength; j++){
+					i++;
+					pageId = myData.eq(i).attr("id");
+					thisId = "indexMenuItem" + i;
+					title = myData.eq(i).find("title").first().text();
 
-				indexString += '<li id="'+pageId+'" class="dd-item dd3-item" data-id="'+i+'">';
+					indexString += '<li id="'+pageId+'" class="dd-item dd3-item" data-id="'+i+'">';
 
-				if(mode == "edit"){
-					indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div></div></li>';
-				}else if(mode == "review"){
-					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
-				}else{
-					indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					if(mode == "edit"){
+						indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div></div></li>';
+					}else if(mode == "review"){
+						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
+					}else{
+						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
+					}
+
+					indexItem_arr.push("#" + thisId);
 				}
-
-				indexItem_arr.push("#" + thisId);
+				indexString += '</ol></li>';
 			}
-			indexString += '</ol></li>';
 		}
 	}
 
@@ -577,7 +579,14 @@ function addRollovers(myItem){
 function searchLesson(myTerm){
 	//search of not case sensitive 
 	var $test = $(data).find('page').filter(function(){
-		return $(this).text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0;
+		if($(this).find('page').length > 0){
+			var $tmpNode = $(this).clone();
+			$tmpNode.find('page').remove();
+			return $tmpNode.text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0
+		}
+		else{
+			return $(this).text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0;
+		}
 	});
 
 	displaySearchResults($test, myTerm);
