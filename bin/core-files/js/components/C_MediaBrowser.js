@@ -113,7 +113,6 @@ function addMediaBrowser(){
 	$("#myCanvas").append("<div id='mediaBrowserPane' class='mediaBrowserPane'><div id='mediaBrowserButton' class='C_MediaBrowserButton' role='button' title='view media browser'></div></div>").tooltip();
 
 	$("#mediaBrowserButton").click(function(){
-
 		toggleMediaBrowser();
 	}).keypress(function(event) {
         var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
@@ -324,7 +323,24 @@ function queueFileUpload(_fl){
 	queue = _fl;
 	queueLength = _fl.length;
 	queueCurrent = 0;
-	uploadFile(queue[queueCurrent]);
+	if ((!queue[queueCurrent].type && queue[queueCurrent].size % 136 == 0) || (!queue[queueCurrent].type && queue[queueCurrent].size % 4096 == 0)) {
+		$("#mediaBrowserDisplay").on("drop", FileSelectHandler);
+		var msg = "<div id='uploadErrorDialog' title='Upload Error'>";
+			msg += "You cannot currently upload a folder. If you'd like to upload a folder, zip the folder and upload the zip.";
+			msg += "</div>";
+		$("#stage").append(msg);
+		//Theres an error
+		//Style it to jQuery UI dialog
+		$("#uploadErrorDialog").dialog({
+	    	autoOpen: true,
+			modal: true,
+			width: 400,
+			height: 200,
+			buttons: [ { text: "Close", click: function() {$( this ).dialog( "close" ); $( this ).remove()} }]
+		});
+	}else{
+		uploadFile(queue[queueCurrent]);
+	}
 }
 
 /**
@@ -336,6 +352,8 @@ function queueFileUpload(_fl){
 function uploadFile(_file){
 	cognizenSocket.on('mediaBrowserConversionStart', mediaBrowserConversionStart);
 	cognizenSocket.on('mediaBrowserUploadComplete', mediaBrowserUploadComplete);
+	
+	
 	$("#mediaBrowserDisplay").append("<div id='C_Loader' class='C_Loader'><div class='C_LoaderText'>Uploading content:<br/><strong>name: </strong>" + _file.name+ "<br/><strong>size:</strong> "+ _file.size + "<br/><strong>type:</strong> "+_file.type+"</div></div>");
 	$(".C_LoaderText").append("<div id='uploadProgress'><div class='progress-label'>Uploading...</div></div>");
 	$("#uploadProgress").progressbar({
