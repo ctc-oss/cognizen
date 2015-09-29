@@ -192,6 +192,8 @@ var SocketHandler = {
         });
         
         ss(_this._socket).on('upload-media', function(stream, data){
+			console.log(stream);
+			console.log(data);
 			var cleanName = data.name.replace(/ /g,"_");
 			var filename = uploader.dir + "/" + cleanName;
 			var mediaStream = stream.pipe(fs.createWriteStream(filename));

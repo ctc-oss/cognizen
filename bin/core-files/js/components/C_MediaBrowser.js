@@ -51,7 +51,7 @@ var relPath = "";
 * @type {String}
 * @default ""
 */
-var ss;
+//var ss;
 /**
 * Variable to hold current preview menu item.
 *
