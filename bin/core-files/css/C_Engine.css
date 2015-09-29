@@ -2682,7 +2682,8 @@ ESSAY COMPARE LAYOUTS
     cursor: hand;
 }
 
-.pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+.pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/mb_delete.svg) no-repeat;}
+.dirRemove {position: absolute; top: 1px; right: 2px; width: 20px; height: 20px; background: #fff url(images/mb_delete.svg) no-repeat;}
 .glossaryTermRemove{position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
 .glossaryTermEdit{position: absolute; top: 2.5px; right: 27px; width: 24px; height: 24px; background: #fff url(images/editMenu.png) no-repeat;}
 

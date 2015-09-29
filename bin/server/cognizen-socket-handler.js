@@ -322,6 +322,37 @@ var SocketHandler = {
 		});
     },
     
+    mediaBrowserRemoveDir: function(data){
+	    var _this = this;
+	    var type = data.type;
+	    var id = data.id;
+        var contentType = _this.Content.objectType(type);
+        var folderPath = "";
+		if(data.track == "media"){
+			folderPath = "/media/"
+		}else if(data.track == "core"){
+			folderPath = "/../../core-prog/"
+		}else if(data.track == "course"){
+			folderPath = "/../css/"
+		}else if(data.track == "lesson"){
+			folderPath = "/css/"
+		}
+		
+		if (contentType) {
+        	contentType.findById(id, function (err, found) {
+            	if (found) {
+                	var contentPath = path.normalize(_this.Content.diskPath(found.path) + folderPath + data.path);
+                	console.log(contentPath);
+                	fs.remove(contentPath, function (err) {
+						if (err) throw err;
+						_this._socket.emit('mediaBrowserRemoveDirectoryComplete');
+					});
+                }
+            });
+        }
+	    
+    },
+    
     mediaBrowserRemoveMedia: function(data) {
 		var _this = this;
 		var type = data.type;

@@ -488,6 +488,10 @@ var Content = {
 				SocketHandler.socket(socket).mediaBrowserRemoveMedia(data);
 			});
 			
+			socket.on('mediaBrowserRemoveDir', function(data){
+				SocketHandler.socket(socket).mediaBrowserRemoveDir(data);
+			});
+			
 			socket.on('mediaBrowserDownloadMedia', function(data){
 				SocketHandler.socket(socket).mediaBrowserDownloadMedia(data);
 			});

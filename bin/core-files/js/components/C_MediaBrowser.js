@@ -391,7 +391,6 @@ function getMediaDir(_dir){
 
 	if(_dir){
 		//Get media directory sub folder.
-
 		socket.emit('getMediaDir',  {loc: folderTrack, path: _dir});
 	}else{
 		//Just get media folder
@@ -458,14 +457,18 @@ function updateMediaBrowserDir(_data){
 	   $("#mediaBrowserList").append(msg);
 
 	   $("#"+tempID).click(function(){
-		   $("#mediaBrowserList").addClass('C_Loader');
-		   $("#mediaBrowserList").empty();
-		   dirDepth++;
-		   var addPath = $(this).attr('data') + "/";
-		   relPath += addPath;
-		   mediaBrowserDisplayPath += addPath;
-		   getMediaDir(relPath);
+		   if(!hoverSubNav){
+			   $("#mediaBrowserList").addClass('C_Loader');
+			   $("#mediaBrowserList").empty();
+			   dirDepth++;
+			   var addPath = $(this).attr('data') + "/";
+			   relPath += addPath;
+			   mediaBrowserDisplayPath += addPath;
+			   getMediaDir(relPath);
+			}
 	   });
+	   
+	   addFolderRoll($("#"+tempID));
 	}
 
 	//Add files display
@@ -480,6 +483,82 @@ function updateMediaBrowserDir(_data){
 	   });
 	}
 	listScroller.refresh();
+}
+
+var hoverSubNav = false;
+
+function addFolderRoll(myItem){
+	myItem.hover(
+    	function () {
+            $(this).append("<div id='myRemove' class='dirRemove' title='Remove this directory from your content.'></div>");
+            $("#myRemove").click(function(){
+            	var addPath = $(this).parent().attr('data') + "/";
+				var tempPath = relPath + addPath;
+				checkRemoveMediaDir(tempPath);
+	        }).hover(
+            	function () {
+                	hoverSubNav = true;
+                },
+				function () {
+                	hoverSubNav = false;
+                }
+            ).tooltip({
+            	show: {
+                	delay: 1500,
+                    effect: "fadeIn",
+                    duration: 200
+                }
+           });
+        },
+        function () {
+			$("#myRemove").remove();
+	});
+}
+
+/**
+* Launch Dialog to confirm removal of directory.
+*
+* @method checkRemoveMediaDir
+* @param {String} server path and name of directory to be removed.
+*/
+function checkRemoveMediaDir(_dir){
+	//Create the Dialog
+	$("#stage").append("<div id='dialog-removeDir' title='Remove Media Directory'><p>Are you sure that you want to remove the " + _dir + " directory from this project?</p></div>");
+	//Style it to jQuery UI dialog
+	$("#dialog-removeDir").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("dialog-removeDir").remove();
+		},
+		buttons: {
+			Yes: function(){
+				removeMediaDirectory(_dir);
+				$( this ).dialog( "close" );
+			},
+			No: function(){
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+}
+
+function removeMediaDirectory(_dir){
+	cognizenSocket.on('mediaBrowserRemoveDirectoryComplete', mediaBrowserRemoveDirectoryComplete);
+	$("#mediaBrowserList").addClass('C_Loader');
+	$("#mediaBrowserList").empty();
+	$("#mediaBrowserPreviewMediaHolder").empty();
+	cognizenSocket.emit('mediaBrowserRemoveDir',  {track: folderTrack, path: _dir, type: urlParams['type'], id: urlParams['id']});
+	//cognizenSocket.emit('mediaBrowserRemoveDirectory', {file: _file, type: urlParams['type'], id: urlParams['id'], track: folderTrack});
+}
+
+function mediaBrowserRemoveDirectoryComplete(){
+	$("#mediaBrowserList").removeClass('C_Loader');
+	try { cognizenSocket.removeListener('mediaBrowserRemoveDirectoryComplete', mediaBrowserRemoveDirectoryComplete); } catch (e) {}
+	//Commit GIT when complete.
+	doGitCommit();
+	
+    getMediaDir(relPath);
 }
 
 /**
