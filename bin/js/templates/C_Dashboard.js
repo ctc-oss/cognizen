@@ -550,8 +550,17 @@ function C_Dashboard(_type) {
     function assignUser(data) {
 		$("#preloadholder").remove();
     	var userData = data;
-    	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';   // for ' + $parent.find("span").first().text() + ':</p>';
-    	msg += '<table class="userSelectTable" border="1" align="center"><tr><th>Name</th><th>admin</th><th>editor</th><th>review</th><th>client</th><th>none</th></tr>';
+    	var msg = '<div id="dialog-assignUser" title="Assign User Rights"><p class="validateTips">Assign user roles to '+ assignParent.find("span").first().text() +':</p>';
+    	msg += '<table class="userSelectTable" border="1" align="center">';
+    	msg += '<thead><tr>';
+    	msg += '<th class="USTName">Name</th>';
+    	msg += '<th>admin</th>';
+    	msg += '<th>editor</th>';
+    	msg += '<th>review</th>';
+    	msg += '<th>client</th>';
+    	msg += '<th>none</th>';
+    	msg += '</tr></thead>';
+    	msg += '<tbody>';
     	for (var i = 0; i < data.length; i++){
 	    	var adminChecked = data[i].permission == 'admin' ? ' checked' : '';
 	    	var editorChecked = data[i].permission == 'editor' ? ' checked' : '';
@@ -559,7 +568,7 @@ function C_Dashboard(_type) {
             var clientChecked = data[i].permission == 'client' ? ' checked' : '';
 	    	var noneChecked = data[i].permission == null ? ' checked' : '';
 
-		    msg += '<tr><td id="user'+ i+ '" class="assignUserName" title="'+data[i].username +'">' + data[i].firstName + ' ' + data[i].lastName + '</td>';
+		    msg += '<tr><td id="user'+ i+ '" class="assignUserName USTName" title="'+data[i].username +'">' + data[i].firstName + ' ' + data[i].lastName + '</td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="admin" ' + adminChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="editor" ' + editorChecked + '></td>';
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="reviewer" ' + reviewerChecked + '></td>';
@@ -567,16 +576,34 @@ function C_Dashboard(_type) {
 		    msg += '<td align="center"><input type="radio" name="rightsLevel'+i+'" value="null" ' + noneChecked + '></td></tr>';
     	}
 
-    	msg += '</table></div>';
+    	msg += '</tbody></table></div>';
     	$("#stage").append(msg);
-
+		
+		//Added 9/28/15 PD to 
+		var $table = $('table.userSelectTable');
+		var $bodyCells = $table.find('tbody tr:first').children(), colWidth; 
+	      
+		// Adjust the width of thead cells when window resizes
+		$(window).resize(function() {
+		    // Get the tbody columns width array
+		    colWidth = $bodyCells.map(function() {
+		        return $(this).width();
+		    }).get();
+		    
+		    // Set the width of thead columns
+		    $table.find('thead tr').children().each(function(i, v) {
+		        $(v).width(colWidth[i]);
+		    });    
+		}).resize(); // Trigger resize handler
+    	
     	for(var i = 0; i < data.length; i++){
 	    	$("#user"+i).tooltip();
     	}
     	//Make it a dialog
         $("#dialog-assignUser").dialog({
             modal: true,
-            width: 550,
+            width: 700,
+            height: 710,
             close: function (event, ui) {
                 enableMainKeyEvents();
             },
@@ -622,6 +649,15 @@ function C_Dashboard(_type) {
                 }
             }
         });
+        
+        colWidth = $bodyCells.map(function() {
+	        return $(this).width();
+	    }).get();
+	    
+	    // Set the width of thead columns
+	    $table.find('thead tr').children().each(function(i, v) {
+	        $(v).width(colWidth[i]);
+	    }); 
     }
 
     /***********************************************************************************************
@@ -1007,26 +1043,6 @@ function C_Dashboard(_type) {
         }
     }
 
-
-    /*function submitPrefUpdate(_myParent, _myLevel){
-		disableRenameContentKeyEvents()
-        var data = {
-            content: {
-                id: currentParent.attr('id'),
-                type: currentLevel,
-                name: $("#myName").val() // TODO: Need to prompt for this, in the meantime, this is a random string
-            },
-            user: {
-                id: user._id,
-                username: user.username
-            }
-        };
-
-        socket.emit('renameContent', data);
-
-	    $("#dialog-updatePrefs").remove();
-    }*/
-
     /************************************************************************************END PREFS*/
     /************************************************************************************
      REGISTER NEW CONTENT
@@ -1038,13 +1054,25 @@ function C_Dashboard(_type) {
         var msg;
         //Create html strings for the dialog popups, depending upon menu level.
         if (myParent == "root") {
-            msg = '<div id="dialog-registerContent" title="Add New Program"><p class="validateTips">Add the new program details below.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+            msg = '<div id="dialog-registerContent" title="Add New Program">';
+            msg += '<p class="validateTips">Add the new program details below.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
         } else if (myLevel == "project") {
-            //msg = '<div id="dialog-registerContent" title="Add New Project"><p class="validateTips">You are adding a new project to the ' + myParent.find("span").first().text() + ' program. Fill in the details below for your new project.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/><br/>select a project type:<br/><div id="myType" class="radioSelector"><input type="radio" name="myType" value="course" checked>course<br><input type="radio" name="myType" value="application">application</div></div>';
             //WHEN WE WANT TO TURN APPLICATIONS BACK ON COMMENT OUT THE LINE BELOW AND UNCOMMENT THE LINE ABOVE.
-            msg = '<div id="dialog-registerContent" title="Add New Course"><p class="validateTips">You are adding a new course to the ' + myParent.find("span").first().text() + ' program. Fill in the name for your new course.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+            msg = '<div id="dialog-registerContent" title="Add New Course">';
+            msg += '<p class="validateTips">You are adding a new course to the ' + myParent.find("span").first().text() + ' program. Fill in the name for your new course.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
         } else if (myLevel == "lesson") {
-            msg = '<div id="dialog-registerContent" title="Add New Lesson"><p class="validateTips">You are adding a new lesson to the ' + myParent.find("span").first().text() + ' course.</p> <p>Fill in the details below for your new lesson.</p><label for="myName" class="regField">name: </label><input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
+            msg = '<div id="dialog-registerContent" title="Add New Lesson">';
+            msg += '<p class="validateTips">You are adding a new lesson to the ' + myParent.find("span").first().text() + ' course.</p>';
+            msg += '<p>Fill in the details below for your new lesson.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
         }
 	   if(myParent != "root"){
 	  	 parentString = myParent.find("span").first().text();

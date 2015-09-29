@@ -121,6 +121,15 @@ body{
 	padding: 6px;
 }
 
+table.userSelectTable tbody,
+table.userSelectTable thead { display: block; }
+
+table.userSelectTable tbody {
+    height: 448px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 th{
 	font-weight: lighter;
 	border-style:solid;
@@ -135,6 +144,12 @@ td{
 	border-color: #EEEEEE;
 	border-radius: 6px;
 	border-width: thin;
+	padding: 6px;
+	width: 80px;
+}
+
+.USTName{
+	width: 200px;
 	padding: 6px;
 }
 
