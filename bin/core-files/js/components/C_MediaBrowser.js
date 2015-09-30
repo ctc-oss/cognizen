@@ -251,6 +251,8 @@ function addDisplay(){
 	$("#lessoncssButton").click(function(){
 		updateFolderTrack($(this));
 	});
+	
+	addCreateRoll($("#mediaBrowserDisplayPath"))
 
 	if (window.File && window.FileList && window.FileReader) {
 		// file drop
@@ -448,44 +450,72 @@ function updateMediaBrowserDir(_data){
 		   getMediaDir(relPath);
 	   });
 	}
-
+	
 	//Add directories
-	for (var key in _data.dirs) {
-	   var obj = _data.dirs[key];
-	   var tempID = "folder"+key;
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
-	   $("#mediaBrowserList").append(msg);
-
-	   $("#"+tempID).click(function(){
-		   if(!hoverSubNav){
-			   $("#mediaBrowserList").addClass('C_Loader');
-			   $("#mediaBrowserList").empty();
-			   dirDepth++;
-			   var addPath = $(this).attr('data') + "/";
-			   relPath += addPath;
-			   mediaBrowserDisplayPath += addPath;
-			   getMediaDir(relPath);
-			}
-	   });
-	   
-	   addFolderRoll($("#"+tempID));
+	if(_data != null){
+		for (var key in _data.dirs) {
+		   var obj = _data.dirs[key];
+		   var tempID = "folder"+key;
+		   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
+		   $("#mediaBrowserList").append(msg);
+	
+		   $("#"+tempID).click(function(){
+			   if(!hoverSubNav){
+				   $("#mediaBrowserList").addClass('C_Loader');
+				   $("#mediaBrowserList").empty();
+				   dirDepth++;
+				   var addPath = $(this).attr('data') + "/";
+				   relPath += addPath;
+				   mediaBrowserDisplayPath += addPath;
+				   getMediaDir(relPath);
+				}
+		   });
+		   
+		   addFolderRoll($("#"+tempID));
+		}
+	
+		//Add files display
+		for (var key in _data.files) {
+		   var obj = _data.files[key];
+		   var tempID = "file"+key;
+		   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
+		   $("#mediaBrowserList").append(msg);
+	
+		   $("#"+tempID).click(function(){
+				loadMedia($(this));
+		   });
+		}
+		listScroller.refresh();
 	}
-
-	//Add files display
-	for (var key in _data.files) {
-	   var obj = _data.files[key];
-	   var tempID = "file"+key;
-	   var msg = "<div id='"+tempID+"' class='mediaBrowserFile' data-type='file' data='"+obj+"'>"+obj+"</div>";
-	   $("#mediaBrowserList").append(msg);
-
-	   $("#"+tempID).click(function(){
-			loadMedia($(this));
-	   });
-	}
-	listScroller.refresh();
 }
 
 var hoverSubNav = false;
+
+function addCreateRoll(myItem){
+	myItem.hover(
+    	function () {
+            $(this).append("<div id='myCreate' class='dirCreate' title='Create a directory in this locaion.'></div>");
+            $("#myCreate").click(function(){
+            	createDirectory();
+	        }).hover(
+            	function () {
+                	hoverSubNav = true;
+                },
+				function () {
+                	hoverSubNav = false;
+                }
+            ).tooltip({
+            	show: {
+                	delay: 1500,
+                    effect: "fadeIn",
+                    duration: 200
+                }
+           });
+        },
+        function () {
+			$("#myCreate").remove();
+	});
+}
 
 function addFolderRoll(myItem){
 	myItem.hover(
@@ -543,6 +573,12 @@ function checkRemoveMediaDir(_dir){
 	});
 }
 
+/**
+* Remove directory from server
+*
+* @method removeMediaDir
+* @param {String} _dir server path and name of directory to be removed.
+*/
 function removeMediaDirectory(_dir){
 	cognizenSocket.on('mediaBrowserRemoveDirectoryComplete', mediaBrowserRemoveDirectoryComplete);
 	$("#mediaBrowserList").addClass('C_Loader');
@@ -552,9 +588,62 @@ function removeMediaDirectory(_dir){
 	//cognizenSocket.emit('mediaBrowserRemoveDirectory', {file: _file, type: urlParams['type'], id: urlParams['id'], track: folderTrack});
 }
 
+/**
+* Callback after removal of directory
+*
+* @method mediaBrowserRemoveDirectoryComplete
+*/
 function mediaBrowserRemoveDirectoryComplete(){
 	$("#mediaBrowserList").removeClass('C_Loader');
 	try { cognizenSocket.removeListener('mediaBrowserRemoveDirectoryComplete', mediaBrowserRemoveDirectoryComplete); } catch (e) {}
+	//Commit GIT when complete.
+	doGitCommit();
+	
+    getMediaDir(relPath);
+}
+
+/**
+* Create Directory
+*
+* @method createDirectory
+*/
+function createDirectory(){
+	//Create the Dialog
+	var msg =  "<div id='dialog-createDir' title='Create new directory'>";
+		msg += "<p>Create a new directory in the 'update me folder funk' with the name of:</p>";
+		msg += '<label for="myName" class="regField">name: </label>';
+		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+		msg += '</div>';
+	
+	$("#stage").append(msg);
+	//Style it to jQuery UI dialog
+	$("#dialog-createDir").dialog({
+		modal: true,
+		width: 550,
+		close: function(event, ui){
+			$("#myName").remove();
+			$("dialog-createDir").remove();
+		},
+		buttons: {
+			Apply: function(){
+				cognizenSocket.on('mediaBrowserCreateDirectoryComplete', mediaBrowserCreateDirectoryComplete);
+				$("#mediaBrowserList").addClass('C_Loader');
+				$("#mediaBrowserList").empty();
+				$("#mediaBrowserPreviewMediaHolder").empty();
+				var myName = $("#myName").val();
+				$( this ).dialog( "close" );
+				cognizenSocket.emit('mediaBrowserCreateDir',  {track: folderTrack, path: relPath, name: myName, type: urlParams['type'], id: urlParams['id']});
+			},
+			Cancel: function(){
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+}
+
+function mediaBrowserCreateDirectoryComplete(){
+	$("#mediaBrowserList").removeClass('C_Loader');
+	try { cognizenSocket.removeListener('mediaBrowserCreateDirectoryComplete', mediaBrowserCreateDirectoryComplete); } catch (e) {}
 	//Commit GIT when complete.
 	doGitCommit();
 	

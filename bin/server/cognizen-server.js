@@ -492,6 +492,10 @@ var Content = {
 				SocketHandler.socket(socket).mediaBrowserRemoveDir(data);
 			});
 			
+			socket.on('mediaBrowserCreateDir', function(data){
+				SocketHandler.socket(socket).mediaBrowserCreateDir(data);
+			});
+			
 			socket.on('mediaBrowserDownloadMedia', function(data){
 				SocketHandler.socket(socket).mediaBrowserDownloadMedia(data);
 			});

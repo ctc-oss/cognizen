@@ -277,6 +277,7 @@ function initializeSockets(){
 		socket.on('returnMediaDir', function(data){
 			if(data == null){
 				//Empty directory
+				updateMediaBrowserDir(null);
 			}else{
 				//Do what you do to setup directory...
 				updateMediaBrowserDir(data);
