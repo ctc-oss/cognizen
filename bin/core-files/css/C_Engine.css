@@ -1749,7 +1749,7 @@ MEDIA LAYOUTS
     margin 		  		  	: 2px;
     padding 			  	: 5px;
     padding-left 		  	: 20px;
-    background			  	: rgba(255, 255, 255, .9) url(images/folder.gif) no-repeat left center;
+    background			  	: rgba(255, 255, 255, .9) url(images/folder.png) no-repeat left center;
 	cursor				  	: hand;
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
@@ -1769,7 +1769,7 @@ MEDIA LAYOUTS
     margin 		  		  	: 2px;
     padding 			  	: 5px;
     padding-left 		  	: 20px;
-    background			  	: rgba(255, 255, 255, .9) url(images/folder-closed.gif) no-repeat left center;
+    background			  	: rgba(255, 255, 255, .9) url(images/folder-closed.png) no-repeat left center;
 	cursor				  	: hand;
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
@@ -1790,7 +1790,7 @@ MEDIA LAYOUTS
     margin 		  		  	: 2px;
     padding 			  	: 5px;
     padding-left 		  	: 20px;
-	background			  	: rgba(255, 255, 255, .9) url(images/file.gif) no-repeat left center;
+	background			  	: rgba(255, 255, 255, .9) url(images/file.png) no-repeat left center;
 	cursor				  	: hand;
 	cursor				  	: pointer;
 	font-family 		  	: Arial;
