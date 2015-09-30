@@ -25,14 +25,24 @@ var newPageAdded = false;
 var indexItem_arr = [];
 var progressMode = "linear";
 var indexAccess_arr = [];
-
+var showPageNumbers = false;
 //addIndex
 //If masterIndex == true  add the index.
 function checkIndex(){
 	//Place panels - index, glossary, resources, references, others...
 	if($(data).find('masterIndex').attr('value') == "true"){
 		masterIndex = true;
+		
 		progressMode = $(data).find('progressMode').attr('value');
+		
+		if($(data).find('masterIndex').attr('showpagenumbers') == undefined){
+			$(data).find('masterIndex').attr('showpagenumbers', false);
+		}
+		
+		if($(data).find('masterIndex').attr('showpagenumbers') != "false"){
+			showPageNumbers = true;
+		}
+				
 		if(progressMode == "linear" || progressMode == "lockStep"){
 			isLinear = true;
 		}
@@ -223,6 +233,9 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 		}
 	}
 	indexString += '<div class="dd" id="C_Index" role="navigation"><ol class="dd-list">';
+	
+	var pageNumDisplay;
+	
 	for(var i = 0; i < pageCount; i++){
 		thisId = "indexMenuItem" + i;
 		var pageId = myData.eq(i).attr("id");
@@ -230,21 +243,13 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 		var title = myData.eq(i).find("title").first().text();
 
 		indexString += '<li id="'+pageId+'"class="dd-item dd3-item" data-id="'+ i + '">';
-
-		if(mode == "edit"){
-			indexString += '<div class="dd-handle dd3-handle"></div>';
-			indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="commentSpot"></div></div>';
-		}else if(mode == "review"){
-			//check if item should be hidden
-			if($(data).find("page").eq(i).attr("indexhide") != "true"){
-				indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="commentSpot"></div><div id="statusSpot" class="dd-status dd3-status"></div></div>';
-			}
-		}else{
-			//check if item should be hidden
-			if($(data).find("page").eq(i).attr("indexhide") != "true"){
-				indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+title +'<div id="statusSpot" class="dd-status dd3-status"></div></div>';
-			}
-		}
+		pageNumDisplay = i + 1;
+		
+		//Added function to clean up the spaghetti and duplication.
+		indexString += addItemInfo(pageId, pageNumDisplay, thisId, i, title);	
+		
+		indexString += '</div>';	
+		
 		indexItem_arr.push("#" + thisId);
 
 		if(!isSearch){
@@ -253,20 +258,17 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 				indexString += '<ol class="dd-list">';
 				for(var j = 0; j < childLength; j++){
 					i++;
+					pageNumDisplay = i + 1;
 					pageId = myData.eq(i).attr("id");
 					thisId = "indexMenuItem" + i;
 					title = myData.eq(i).find("title").first().text();
 
 					indexString += '<li id="'+pageId+'" class="dd-item dd3-item" data-id="'+i+'">';
-
-					if(mode == "edit"){
-						indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div></div></li>';
-					}else if(mode == "review"){
-						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="commentSpot"></div><div id="statusSpot" class="dd3-status"></div></div></li>';
-					}else{
-						indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">'+ title +'<div id="statusSpot" class="dd-status dd3-status"></div></div></li>';
-					}
+					
+					//Added function to clean up the spaghetti and duplication.
+					indexString += addItemInfo(pageId, pageNumDisplay, thisId, i, title);					
+					
+					indexString += '</div></li>';
 
 					indexItem_arr.push("#" + thisId);
 				}
@@ -277,6 +279,29 @@ function populateIndex(pageCount, myData, myTerm, isSearch){
 
 	indexString += "</ol></div>";
 	return indexString;	
+}
+
+
+function addItemInfo(pageId, pageNumDisplay, thisId, i, title){
+	var indexString = "";
+	if(mode == "edit"){
+		indexString += '<div class="dd-handle dd3-handle">Drag</div>';	
+	}
+	indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">';
+	
+	if(showPageNumbers){
+		indexString += pageNumDisplay + '. ';
+	}
+	indexString += title;
+	
+	if (mode == "edit" || mode == "review"){
+		indexString += '<div id="commentSpot"></div>';
+	}
+	
+	if (mode != "edit"){
+		indexString += '<div id="statusSpot" class="dd-status dd3-status"></div>';
+	}
+	return indexString;
 }
 
 function configureIndex(){
@@ -477,7 +502,6 @@ function configureIndex(){
 		//$(indexItem_arr[i]).off();
 		$(indexItem_arr[i]).click(clickIndexItem).keypress(function(event) {
 		    var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
-		    console.log(chCode);
 		    if (chCode == 32 || chCode == 13){
 			    $(this).click();
 			}else if(chCode == 88 || chCode == 24){

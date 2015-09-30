@@ -706,13 +706,16 @@ function launchPrefs(){
 	//Search
 	msg += "<label id='label' for='hasSearch' title='Add the search option'>Search: </label>";
 	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/><br/>";	
-
+	//Show page numbers
+	msg += "<label id='label' for='showPageNumbers' title='Turn on page numbers in index.'>Show page # in index: </label>";
+	msg += "<input id='showPageNumbers' type='checkbox' name='showPageNumbers' class='radio'/><br/>";
+	//Close Lesson
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
 
 	//#3886
 	if(!$(courseData).find("course").attr("redmine") || $(courseData).find("course").attr("redmine") == "false"){
-		msg += "<div id='clearLessonComments'>Clear Lesson Comments</div>";
+		msg += "</br><div id='clearLessonComments'>Clear Lesson Comments</div>";
 	}
 	msg += "</div>";//rest
 
@@ -871,7 +874,24 @@ function launchPrefs(){
 	}
 
 	$("#scormform").tooltip();
-
+	
+	if(showPageNumbers == true){
+		$("#showPageNumbers").attr('checked', true);
+	}else{
+		$("#showPageNumbers").attr('checked', false);
+	}
+	
+	$("#showPageNumbers").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find('masterIndex').attr('showpagenumbers', true);
+			showPageNumbers = true;
+		}else{
+			$(data).find('masterIndex').attr('showpagenumbers', false);
+			showPageNumbers = false;
+		}
+		updateIndex();
+	});
+	
 	if(glossary == true){
 		$("#hasGlossary").attr('checked', true);
 		$("#hasCourseGlossary").removeAttr("disabled");
@@ -1168,7 +1188,8 @@ function savePreferences(_pub){
 	var courseGlossarySelected = $("#hasCourseGlossary").is(':checked');
 	var updateNeeded = false;
 
-
+	var indexShowPageNumber = $("#showPageNumbers").is(':checked');
+	
 	courseTitle = $("#altCourseTitle").val().trim();
 	if(courseTitle != $(courseData).find('course').attr('coursedisplaytitle')){
 		updateNeeded = true;
@@ -1185,7 +1206,13 @@ function savePreferences(_pub){
 	$(data).find("lessondisplaytitle").attr("value", lessonTitle);
 	$("#lessonTitle").text(lessonTitle);
 	document.title = lessonTitle;
-
+	
+	if(indexShowPageNumber != undefined){
+		showPageNumbers = indexShowPageNumber;
+		$(data).find('masterIndex').attr('showpagenumbers', indexShowPageNumber);
+		updateNeeded = true;
+	}
+	
 	if(glossary != glossarySelected){
 		glossary = glossarySelected;
 		$(data).find('glossary').attr('value', glossarySelected);
@@ -1222,14 +1249,12 @@ function savePreferences(_pub){
 
 	if(searchEnabled != undefined){
 		$(data).find('search').attr('value', searchSelected);
-		console.log($(data).find("search").attr("value"));
 		searchEnbled = searchSelected;
 		updateNeeded = true;
 	}
 
 
 	var closeLessonSelected = $("#hasCloseLesson").is(':checked');
-	//console.log(closeLessonSelected);
 	if(closeLesson){
 		$(data).find('closelesson').attr('value', closeLessonSelected);
 		updateNeeded = true;
@@ -1310,7 +1335,13 @@ function updatePrefs(_pub){
 			}else{
 				testOut = false;
 			}
-
+			
+			if($(data).find('masterIndex').attr('showpagenumbers') == "true"){
+				showPageNumbers = true;
+			}else{
+				showPageNumbers = false;
+			}
+			
 			if($(data).find('closelesson').attr('value') == "true"){
 				closeLesson = true;
 			}else{
@@ -1511,7 +1542,6 @@ function checkLockMode(){
 	}
 	$("#passLock").tooltip().click(function(){
 		//Relinquish Edit Control
-		//console.log("In checkLockMode(). forcedReviewer = " + forcedReviewer);
 		connected = socket.socket.connected;
 
 		if(connected){
@@ -1568,7 +1598,6 @@ function checkLockMode(){
 					},
 					buttons: {
 						YES: function () {
-							//console.log("username on yes = " + username);
 							cognizenSocket.emit('requestLock', {me: username});
 							$(this).dialog("close");
 						},
@@ -1925,7 +1954,6 @@ function sendRestartOnFail(){
 function getFinalScore(){
 	var score_obj = new Object();
 	score_obj.totalQuestions = totalGradedQuestions;
-//	console.log("totalGradedQuestions = " + totalGradedQuestions);
 	score_obj.correctQuestions = 0;
 	score_obj.score = 0;
 	score_obj.scorePercent = 0;
@@ -1955,7 +1983,6 @@ function checkQuestionComplete(){
 			}
 		}
 	}
-//	console.log("isComplete = " + isComplete);
 	return isComplete;
 }
 

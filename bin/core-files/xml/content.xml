@@ -30,7 +30,7 @@
 			<!-- 1.2, 2004, Tin Can -->
 			<scormVersion value="2004_4th"/>
 			<breadcrumb value="true" x="12" y="80" home="true" id="0"/>
-			<masterIndex value="true"/>
+			<masterIndex value="true" showpagenumbers="false"/>
 			<docs value="false"/>
 			<!-- Enables the page numbering -->
 			<home value="0"/>
