@@ -2684,7 +2684,7 @@ ESSAY COMPARE LAYOUTS
 .dirCreate {position: absolute; top: 1px; right: 2px; width: 20px; height: 20px; background: #262626 url(images/mb_add.svg) no-repeat;}
 .pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/mb_delete.svg) no-repeat;}
 .dirRemove {position: absolute; top: 1px; right: 2px; width: 20px; height: 20px; background: #E8E8E8 url(images/mb_delete.svg) no-repeat;}
-.glossaryTermRemove{position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/minus.png) no-repeat;}
+.glossaryTermRemove{position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/mb_delete.svg) no-repeat;}
 .glossaryTermEdit{position: absolute; top: 2.5px; right: 27px; width: 24px; height: 24px; background: #fff url(images/editMenu.png) no-repeat;}
 
 .dd3-content:hover { color: #2ea8e5; background: #fff; }

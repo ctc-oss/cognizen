@@ -262,6 +262,7 @@ div#loader {
 	font-family: hnl;
 	color: #333333;
 	top: 395px;
+	width: 100%;
 }
 .C_ModalPreloadGraphic{
 	background: url(images/loadingIcon.gif) center center no-repeat;
