@@ -574,7 +574,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 		$("#mediaPop").click(function(){
 			try { $("#myImgList").tooltip("destroy"); } catch (e) {}
-			$(this).attr("title", tempCaption);
 		}).keypress(function(event) {
 	        var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 	        if (chCode == 32 || chCode == 13){

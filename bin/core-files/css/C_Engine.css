@@ -1506,6 +1506,45 @@ MEDIA LAYOUTS
 
 }
 
+#closeLesson{
+	position: absolute;
+	top: 68px;
+	right: 260px;
+	height: 20px;
+}
+
+#closeLesson .ui-button-text{
+	padding: 0em 1em .1em 1em;
+	font-size: 9pt;
+	/*font-family: "Arial Black", Gadget, sans-serif;*/
+}
+
+#survey{
+	position: absolute;
+	top: 68px;
+	right: 20px;
+	height: 20px;
+}
+
+#survey .ui-button-text{
+	padding: 0em 1em .1em 1em;
+	font-size: 9pt;
+	/*font-family: "Arial Black", Gadget, sans-serif;*/
+}
+
+#testOut{
+	position: absolute;
+	top: 68px;
+	right: 140px;
+	height: 20px;
+}
+
+#testOut .ui-button-text{
+	padding: 0em 1em .1em 1em;
+	font-size: 9pt;
+	/*font-family: "Arial Black", Gadget, sans-serif;*/
+}
+
 .mediaBrowserScaleWarning{
 	position: absolute;
 	background-color: rgba(255, 255, 255, .5);
