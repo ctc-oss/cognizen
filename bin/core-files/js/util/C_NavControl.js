@@ -321,7 +321,7 @@ function checkNav(){
 }
 
 function addEditNav(){
-	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Project Preferences'></div>");
+	$("#myCanvas").append("<div id='preferences' class='btn_preferences' title='Set Preferences'></div>");
 	$("#preferences").tooltip().click(function(){
 		connected = socket.socket.connected;
 
@@ -683,7 +683,7 @@ function launchPrefs(){
 		selectedHelp = $(data).find('help').attr('url');
 	}
 
-	var msg = '<div id="dialog-lessonPrefs" title="Set Lesson Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
+	var msg = '<div id="dialog-lessonPrefs" title="Set Preferences"><p class="validateTips">Set your lesson preferences below:</p>';
     msg += "<div id='accordion'>";
  	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Nav Button Options</h3>";
  	msg += '<div id="rest" style="font-size:100%; padding: 1em 1em; color:#666666">';
@@ -1155,7 +1155,7 @@ function _unzipComplete(){
 function openCommentKillerDialog(){
 	var msg = '<div id="dialog-removeComments" title="Remove ALL Lesson Comments"><p class="validateTips">Do you want to remove all lesson comments?</p>';
 	//Add the scorm form
-	msg += "<p>Be 100% sure that this is what you want to do before pressing yes.  This will remove all comments for this lesson and they are recoverable.</p>";
+	msg += "<p>Be 100% sure that this is what you want to do before pressing yes.  This will remove all comments for this lesson and they are not recoverable.</p>";
 
 	//Add the resources/docs checkbox.   -------TODO
 	msg += "</div>";
