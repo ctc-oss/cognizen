@@ -709,6 +709,9 @@ function launchPrefs(){
 	//Show page numbers
 	msg += "<label id='label' for='showPageNumbers' title='Turn on page numbers in index.'>Show page # in index: </label>";
 	msg += "<input id='showPageNumbers' type='checkbox' name='showPageNumbers' class='radio'/><br/>";
+	//Lockstep
+	msg += "<label id='label' for='hasLockstep' title='Set content to only be accessed sequentially.'>Enable lockstop mode: </label>";
+	msg += "<input id='hasLockstep' type='checkbox' name='hasLockstep' class='radio'/><br/>";
 	//Close Lesson
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
@@ -920,6 +923,23 @@ function launchPrefs(){
 		}else{
 			$(data).find("glossary").attr("courseGlossary", "false");
 		}
+	});
+	
+	if(progressMode == "lockStep"){
+		$("#hasLockstep").attr('checked', true);
+	}else{
+		$("#hasLockstep").attr('checked', false);
+	}
+	
+	$("#hasLockstep").change(function(){
+		if($(this).prop("checked") == true){
+			$(data).find("progressMode").attr("value", "lockStep");
+			progressMode = "lockStep";
+		}else{
+			$(data).find("progressMode").attr("value", "linear");
+			progressMode = "linear";
+		}
+		updateIndex();
 	});
 
 	if(hasSurvey == true){
@@ -1190,6 +1210,8 @@ function savePreferences(_pub){
 
 	var indexShowPageNumber = $("#showPageNumbers").is(':checked');
 	
+	var isLockstep = $("#hasLockstep").is(':checked');
+	
 	courseTitle = $("#altCourseTitle").val().trim();
 	if(courseTitle != $(courseData).find('course').attr('coursedisplaytitle')){
 		updateNeeded = true;
@@ -1206,6 +1228,11 @@ function savePreferences(_pub){
 	$(data).find("lessondisplaytitle").attr("value", lessonTitle);
 	$("#lessonTitle").text(lessonTitle);
 	document.title = lessonTitle;
+	
+	if(isLockstep != undefined){
+		$(data).find('progressMode').attr('value', progressMode);
+		updateNeeded = true;
+	}
 	
 	if(indexShowPageNumber != undefined){
 		showPageNumbers = indexShowPageNumber;
@@ -1341,6 +1368,8 @@ function updatePrefs(_pub){
 			}else{
 				showPageNumbers = false;
 			}
+			
+			progressMode = $(data).find('progressMode').attr('value');
 			
 			if($(data).find('closelesson').attr('value') == "true"){
 				closeLesson = true;
