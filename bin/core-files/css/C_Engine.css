@@ -163,7 +163,7 @@ h1#lessonTitle{
 	z-index: 5;
 	width: 18px;
 	height: 18px;
-	background: url(images/editText.png) no-repeat;
+	background: url(images/editMenu.png) no-repeat;
 	cursor: hand;
 	cursor: pointer;
 }
