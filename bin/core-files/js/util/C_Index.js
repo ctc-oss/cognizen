@@ -600,16 +600,37 @@ function addRollovers(myItem){
 	});
 }
 
+function containsSpecialChar(_term){
+	var hasSpecialChar = false;
+	if(/^[a-zA-Z0-9- ]*$/.test(_term) == false) {
+	    hasSpecialChar = true;
+	}
+
+	var scEscape = '';
+	if(hasSpecialChar){
+		scEscape = "\\";
+	}
+
+	return scEscape;     	
+}
+
+function decodeHtml(html) {
+    return $('<div>').html(html).text();
+}
+
 function searchLesson(myTerm){
-	//search of not case sensitive 
+	//search of not case sensitive
+	var regex = new RegExp(containsSpecialChar(myTerm)+myTerm,'gi'); 
 	var $test = $(data).find('page').filter(function(){
 		if($(this).find('page').length > 0){
 			var $tmpNode = $(this).clone();
 			$tmpNode.find('page').remove();
-			return $tmpNode.text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0
+			var matchArr = decodeHtml($tmpNode.text()).match(regex); 						
+			return matchArr != null;			
 		}
 		else{
-			return $(this).text().toLowerCase().indexOf(myTerm.toLowerCase()) >= 0;
+			var matchArr = decodeHtml($(this).text()).match(regex); 						
+			return matchArr != null;				
 		}
 	});
 
