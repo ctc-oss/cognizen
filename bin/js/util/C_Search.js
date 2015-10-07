@@ -42,6 +42,7 @@ function C_Search(_myItem, _myParent) {
 	var elementIndex = 0;
 	var resultRemoved = false;
 	var isCaseSensitive = false;
+	var isWholeWord = false;
 
     $(document).ready(function(){
     	initSearch();
@@ -227,10 +228,16 @@ function C_Search(_myItem, _myParent) {
 	    msg += '<div id="searchPane" class="pane">'
 	    msg += '<div id="searchFilterPane" class="paneContent">';
 	    msg += '<div id="searchFilterContainer">';
-		msg += "<div id='caseSensitiveBtn' title='Toggle case sensitive'>";
-		msg += "<input type='checkbox' id='caseCheckBox'>";
-		msg += "<label for='caseCheckBox'>Aa</label>";
-		msg += "</div>"//end caseSensitivebtn	    
+	    msg += '<div id="optionButtonSet">';
+		// msg += "<div id='caseSensitiveBtn' title='Toggle case sensitive'>";
+		msg += "<input type='checkbox' id='caseCheckBox' >";
+		msg += "<label for='caseCheckBox' title='Toggle case sensitive' >Aa</label>";
+		// msg += "</div>";//end caseSensitivebtn	
+		// msg += "<div id='wholeWordBtn' title='Toggle whole word'>";
+		msg += "<input type='checkbox' id='wholeWordCheckBox' >";
+		msg += "<label for='wholeWordCheckBox' title='Toggle whole word'>\"\"</label>";
+		// msg += "</div>";//end caseSensitivebtn			
+		msg += '</div>';//end optionButtonSet    
 	    msg += '<div class="searchRow">';
 		msg += "<div id='searchTermLabel'>find what:</div>";
 		msg += "<input id='searchTerm' class='dialogInput' type='text' value='' defaultValue=''/>";
@@ -250,6 +257,7 @@ function C_Search(_myItem, _myParent) {
 	    msg += '<div id="searchResultsPane">';
 	    msg += '<div id="searchResultNode" style="text-align: center;"></div>';
 	    msg += '<div id="searchResults"></div>';
+	    msg += '<div id="replaceResults" style="display: none;"></div>';
 	    msg += '</div>';//searchResultsPane
 	    msg += '</div>';//close the search pane
 	    msg += '</div>';//close the dialog
@@ -312,9 +320,23 @@ function C_Search(_myItem, _myParent) {
 			else{
 				isCaseSensitive = true;
 			}
-			console.log(isCaseSensitive);
 		});
-		$('#caseSensitiveBtn').tooltip().off("focusin focusout");					
+
+		$('label[for="caseCheckBox"]').tooltip();
+
+		$("#wholeWordCheckBox").button().click(function(){
+			if(isWholeWord){
+				isWholeWord = false;
+			}
+			else{
+				isWholeWord = true;
+			}
+			console.log(isWholeWord);
+		});
+
+		$('label[for="wholeWordCheckBox"]').tooltip();
+
+		$('#optionButtonSet').buttonset();	
 
      	msg = '<div id="dialog-search" title="Search '+ myItem.find("span").first().text() + ':">';
         $("#dialog-search").dialog({
@@ -339,6 +361,10 @@ function C_Search(_myItem, _myParent) {
 		try{$("#preloadholder").remove();} catch(e){};
      }
 
+	function decodeHtml(html) {
+	    return $('<div>').html(html).text();
+	}
+
      function searchCourse(){
      	results = [];
      	currentResult = 0;
@@ -347,17 +373,31 @@ function C_Search(_myItem, _myParent) {
 
      	if($('#searchTerm').val().length > 0){
 			for(var j = 0; j < module_arr.length; j++){
-				if(isCaseSensitive){
-			     	var page = $(module_arr[j].xml).find('page').filter(function(){
-						return $(this).text().indexOf($('#searchTerm').val()) >= 0;
-					});
+				var regex = null;
+				if(isCaseSensitive && !isWholeWord){
+					regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'g');
+				}
+				else if(!isCaseSensitive && isWholeWord){
+					regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','gi');
+				}
+				else if(isCaseSensitive && isWholeWord){
+					regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','g');
 				}
 				else{
-			     	var page = $(module_arr[j].xml).find('page').filter(function(){
-						return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
-					});				
+					regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'gi');			
 				}
-
+		     	var page = $(module_arr[j].xml).find('page').filter(function(){
+					if($(this).find('page').length > 0){
+						var $tmpNode = $(this).clone();
+						$tmpNode.find('page').remove();	
+						var matchArr = decodeHtml($tmpNode.text()).match(regex); 						
+						return matchArr != null;
+					}
+					else{
+						var matchArr = decodeHtml($(this).text()).match(regex);
+						return matchArr !=  null;
+					}				     		
+				});
 
 				for (var i = 0; i < page.length; i++) {
 					var lessonTitle;				
@@ -372,38 +412,27 @@ function C_Search(_myItem, _myParent) {
 
 					//determine number of instances on the page
 					var $element = null;
-					var instances = 0;
+					//var instances = 0;
 					var trackIndex = []; //index of node on page
 
-					if(isCaseSensitive){
-				      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
-				      		if($(this).text().indexOf($('#searchTerm').val()) >= 0){
-				      			trackIndex.push(index);
-				      		}
-							return $(this).text().indexOf($('#searchTerm').val()) >= 0;
-						});	
-						instances = $element.text().split($('#searchTerm').val());	
-					}
-					else{
-				      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
-				      		if($(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0){
-				      			trackIndex.push(index);
-				      		}
-							return $(this).text().toLowerCase().indexOf($('#searchTerm').val().toLowerCase()) >= 0;
-						});		
-						instances = $element.text().toLowerCase().split($('#searchTerm').val().toLowerCase());			
-					}
+			      	$element = $(page.eq(i)).find('*:not(:has(*))').filter(function(index){
 
-					totalInstances = totalInstances + (instances.length - 1);			
+			      		var matchArr = decodeHtml($(this).text()).match(regex);
+			      		if(matchArr != null){
+			      			trackIndex.push(index);
+			      			totalInstances = totalInstances + matchArr.length;
+			      		}
+						return matchArr !=  null;
+					});
+	
 
 			      	for (var w = 0; w < $element.length; w++) {
 			      		var elementInstance = 0;
-			      		if(isCaseSensitive){
-			      			elementInstance = $element.eq(w).text().split($('#searchTerm').val()).length - 1
+			      		var matchArr = decodeHtml($element.eq(w).text()).match(regex);
+			      		if(matchArr != null){
+			      			elementInstance = matchArr.length;
 			      		}
-			      		else{
-			      			elementInstance = $element.eq(w).text().toLowerCase().split($('#searchTerm').val().toLowerCase()).length - 1;
-			      		}
+
 						var result = {
 							lessontitle : lessonTitle,
 							pagetitle : $(page.eq(i)).find("title").first().text(),
@@ -553,27 +582,59 @@ function C_Search(_myItem, _myParent) {
 
      }
 
+	$.fn.textWalk = function (fn, str) {
+		var func = jQuery.isFunction(fn);
+	    var remove = [];
+
+	    this.contents().each(jwalk);
+
+	    // remove the replaced elements
+	    remove.length && $(remove).remove();
+
+	    function jwalk() {
+	        var nn = this.nodeName.toLowerCase();
+	        if (nn === '#text') {
+	            var newValue;
+	            if (func) {
+	                fn.call(this);
+	            	newValue = this.data;
+	            } else {
+	                newValue = this.data.replace(fn, str);
+	            }
+
+	            $(this).before(newValue);
+	            remove.push(this)
+	        } else if (this.nodeType === 1 && this.childNodes && this.childNodes[0] && nn !== 'script' && nn !== 'textarea') {
+	            $(this).contents().each(jwalk);
+	        }
+	    }
+	    return this;
+	};
+
      function showResult(){
      	$('#searchResults').empty();
-		$('#searchResults').text(results[currentResult].element.text());
+		$('#searchResults').html(results[currentResult].element.html().replace('<![CDATA[', '').replace(']]>',''));
 
 		var regex = null;
-		if(isCaseSensitive){
-			regex = new RegExp($('#searchTerm').val(),'g');
+		if(isCaseSensitive && !isWholeWord){
+			regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'g');
+		}
+		else if(!isCaseSensitive && isWholeWord){
+			regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','gi');
+		}
+		else if(isCaseSensitive && isWholeWord){
+			regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','g');
 		}
 		else{
-			regex = new RegExp($('#searchTerm').val(),'gi');
+			regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'gi');			
 		}
-        
-        var content = $('#searchResults').text().replace(regex, function myReplace(x){
-        	return "<span class='highlightbox'>"+x+"</span>"});
-        var nth = 0;
-        content = content.replace(regex, function (match, i, original){
-        	nth++;
-        	return(nth === resultSubInstance) ? "<span class='highlight'>"+match+"</span>" : match;
-        });
-
-        $('#searchResults').html(content);
+		var nth = 0;
+		$('#searchResults').textWalk(function() {
+		    this.data = this.data.replace(regex, function (match){
+		        nth++;
+		        return(nth === resultSubInstance) ? "<span class='highlight'><span class='highlightbox'>"+match+"</span></span>" : "<span class='highlightbox'>"+match+"</span>";
+		    });
+		});
 
         var nodeIndex = resultSubInstance;
 
@@ -582,7 +643,8 @@ function C_Search(_myItem, _myParent) {
      	}	        
 
         nodeName = results[currentResult].element.eq(nodeIndex-1).prop('nodeName');
-        $('#searchResultNode').text(nodeName);
+        var parentNode = results[currentResult].element.eq(nodeIndex-1).parent().prop('nodeName');
+        $('#searchResultNode').text(parentNode + ': ' +nodeName);
 
      }
 
@@ -604,12 +666,26 @@ function C_Search(_myItem, _myParent) {
 	    var replaceWord = $('#replaceTerm').val();
 
         var regex = null;
-        if(isCaseSensitive){
-        	regex = new RegExp($('#searchTerm').val(),'g');
-        }
+		if(isCaseSensitive && !isWholeWord){
+			regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'g');
+		}
+		else if(!isCaseSensitive && isWholeWord){
+			regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','gi');
+        	if(!containsSpecialChar($('#searchTerm').val()) && highlightedWord.toUpperCase() === highlightedWord){
+        		replaceWord = replaceWord.toUpperCase();
+        	}
+	    	else if(/^[A-Z]/.test(highlightedWord)){
+	    		var firstCharUpper = replaceWord[0].toUpperCase();
+	    		var replaceRegex = new RegExp(replaceWord[0]);
+	    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
+	    	}   			
+		}
+		else if(isCaseSensitive && isWholeWord){
+			regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','g');
+		}
         else{
-        	regex = new RegExp($('#searchTerm').val(),'gi');
-        	if(highlightedWord.toUpperCase() === highlightedWord){
+        	regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'gi');
+        	if(!containsSpecialChar($('#searchTerm').val()) && highlightedWord.toUpperCase() === highlightedWord){
         		replaceWord = replaceWord.toUpperCase();
         	}
 	    	else if(/^[A-Z]/.test(highlightedWord)){
@@ -620,11 +696,21 @@ function C_Search(_myItem, _myParent) {
         }
 
         var nth = 0;
-        var content = $(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).html().replace('<![CDATA[', '').replace(']]>','').trim();
-        content = content.replace(regex, function (match){
-        	nth++;
-        	return(nth === resultSubInstance) ? replaceWord : match;
-        });
+		$('#searchResults').textWalk(function() {
+		    this.data = this.data.replace(regex, function (match){
+		        nth++;
+		        return(nth === resultSubInstance) ? replaceWord : match;
+		    });
+		});        
+
+        $('#replaceResults').html($(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).html().replace('<![CDATA[', '').replace(']]>','').trim());
+		nth = 0;
+		$('#replaceResults').textWalk(function() {
+		    this.data = this.data.replace(regex, function (match){
+		        nth++;
+		        return(nth === resultSubInstance) ? replaceWord : match;
+		    });
+		});
 
         var node = '';
         if(nodeName == 'title'){
@@ -634,13 +720,12 @@ function C_Search(_myItem, _myParent) {
         	node = new DOMParser().parseFromString('<'+nodeName+'></'+nodeName+'>', "text/xml");
         }
 
-		var nodeCDATA = node.createCDATASection(content);
+		var nodeCDATA = node.createCDATASection($('#replaceResults').html());
 		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).empty();
 		$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[currentResult].index).append(nodeCDATA);		
 		updateModuleXML(moduleIndex);	
 
 		$('#searchResultNode').text(nodeName + ' instance updated!');
-		$('#searchResults').html(content);
 		resultReplaced = true;
 
 		if(results[currentResult].instances == 1){
@@ -669,30 +754,56 @@ function C_Search(_myItem, _myParent) {
 					    var replaceWord = $('#replaceTerm').val();
 
 				        var regex = null;
-				        var content = null;
-				        if(isCaseSensitive){
-				        	regex = new RegExp($('#searchTerm').val(),'g');
-				        	content = results[w].element.html().replace('<![CDATA[', '').replace(']]>','').trim().replace(regex, replaceWord);
-				        }
+				        $('#replaceResults').html(results[w].element.html().replace('<![CDATA[', '').replace(']]>','').trim());
+						if(isCaseSensitive && !isWholeWord){
+							regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'g');
+							$('#replaceResults').textWalk(regex, replaceWord);
+						}
+						else if(!isCaseSensitive && isWholeWord){
+							regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','gi');
+							$('#replaceResults').textWalk(function() {
+							    this.data = this.data.replace(regex, function (match){
+							    	var isUpper = false;
+							    	if(!containsSpecialChar($('#searchTerm').val()) && match.toUpperCase() === match){
+							    		replaceWord = replaceWord.toUpperCase();
+							    		isUpper = true;
+							    	}
+							    	else if(/^[A-Z]/.test(match)){
+							    		var firstCharUpper = replaceWord[0].toUpperCase();
+							    		var replaceRegex = new RegExp(replaceWord[0]);
+							    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
+							    		isUpper = true;
+							    	}
+
+						        	return(isUpper) ? replaceWord : $('#replaceTerm').val();
+							    });
+							});							
+						}
+						else if(isCaseSensitive && isWholeWord){
+							regex = new RegExp('\\b'+containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val()+'\\b','g');
+							$('#replaceResults').textWalk(regex, replaceWord);
+						}
 				        else{
-				        	regex = new RegExp($('#searchTerm').val(),'gi');
+				        	regex = new RegExp(containsSpecialChar($('#searchTerm').val())+$('#searchTerm').val(),'gi');
 
-					        content = results[w].element.html().replace('<![CDATA[', '').replace(']]>','').trim().replace(regex, function (match){
-						    	var isUpper = false;
-						    	if(match.toUpperCase() === match){
-						    		replaceWord = replaceWord.toUpperCase();
-						    		isUpper = true;
-						    	}
-						    	else if(/^[A-Z]/.test(match)){
-						    		var firstCharUpper = replaceWord[0].toUpperCase();
-						    		var replaceRegex = new RegExp(replaceWord[0]);
-						    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
-						    		isUpper = true;
-						    	}
+							$('#replaceResults').textWalk(function() {
+							    this.data = this.data.replace(regex, function (match){
+							    	var isUpper = false;
+							    	if(!containsSpecialChar($('#searchTerm').val()) && match.toUpperCase() === match){
+							    		replaceWord = replaceWord.toUpperCase();
+							    		isUpper = true;
+							    	}
+							    	else if(/^[A-Z]/.test(match)){
+							    		var firstCharUpper = replaceWord[0].toUpperCase();
+							    		var replaceRegex = new RegExp(replaceWord[0]);
+							    		replaceWord = replaceWord.replace(replaceRegex, firstCharUpper);
+							    		isUpper = true;
+							    	}
 
-					        	return(isUpper) ? replaceWord : $('#replaceTerm').val();
-					        });				        	
-			        	
+						        	return(isUpper) ? replaceWord : $('#replaceTerm').val();
+							    });
+							});
+
 				        }
 
 						var localNodeName = results[w].element.eq(0).prop('nodeName');
@@ -704,6 +815,8 @@ function C_Search(_myItem, _myParent) {
 				        else{
 				        	node = new DOMParser().parseFromString('<'+localNodeName+'></'+localNodeName+'>', "text/xml");
 				        }
+
+				        var content = $('#replaceResults').html();
 						var nodeCDATA = node.createCDATASection(content);
 						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[w].index).empty();
 						$(module_arr[moduleIndex].xml).find("page").eq(pageIndex).find('*:not(:has(*))').eq(results[w].index).append(nodeCDATA);		
@@ -725,6 +838,20 @@ function C_Search(_myItem, _myParent) {
 		$('#replaceAllBtn').button('disable');
 		results = [];
 
+     }
+
+     function containsSpecialChar(_term){
+		var hasSpecialChar = false;
+		if(/^[a-zA-Z0-9- ]*$/.test(_term) == false) {
+		    hasSpecialChar = true;
+		}
+
+		var scEscape = '';
+		if(hasSpecialChar){
+			scEscape = "\\";
+		}
+
+		return scEscape;     	
      }
 
      /****************************************************************
