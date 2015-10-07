@@ -371,7 +371,7 @@ function C_Search(_myItem, _myParent) {
      	totalInstances = 0;
      	currentInstance = 0;
 
-     	if($('#searchTerm').val().length > 0){
+     	if($('#searchTerm').val().trim().length > 0){
 			for(var j = 0; j < module_arr.length; j++){
 				var regex = null;
 				if(isCaseSensitive && !isWholeWord){
