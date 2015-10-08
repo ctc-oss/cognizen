@@ -2307,6 +2307,10 @@ this.loadPage = function(){
 			currentTemplate = new C_MultipleChoice(currentTemplateType);
 			currentTemplate.initialize();
 			break;
+		case "multipleChoiceFancy":
+			currentTemplate = new C_MultipleChoiceFancy(currentTemplateType);
+			currentTemplate.initialize();
+			break;
 		case "multipleSelect":
 			currentTemplate = new C_MultipleChoice("multipleChoice");
 			currentTemplate.initialize();

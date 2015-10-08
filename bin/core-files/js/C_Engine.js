@@ -237,6 +237,7 @@ function initScripts(_data){
 					corePath +"js/templates/C_Flashcard.js",
 					corePath +"js/templates/C_Unity3D.js", //Template for importing Unity 3D swf files - requires more than regular swf
 			//Import Cognizen Knowledge Check templates
+					corePath +"js/templates/C_MultipleChoiceFancy.js",
 					corePath +"js/templates/C_MultipleChoice.js", //Multiple choice quizzing
 					corePath +"js/templates/C_MultipleChoiceImage.js",
 					corePath +"js/templates/C_Matching.js", //Matching quizzing
