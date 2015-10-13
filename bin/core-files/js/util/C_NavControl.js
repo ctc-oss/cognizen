@@ -705,13 +705,15 @@ function launchPrefs(){
 	msg += "<select id='testOutSelect'></select></br>";
 	//Search
 	msg += "<label id='label' for='hasSearch' title='Add the search option'>Search: </label>";
-	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/><br/>";	
+	msg += "<input id='hasSearch' type='checkbox' name='hasSearch' class='radio'/>";
+	msg += '<span id="searchError" class="error">Search cannot be enabled if lockStep is enabled!</span><br/>';
+	//Lockstep
+	msg += "<label id='label' for='hasLockstep' title='Set content to only be accessed sequentially.'>Enable lockstep mode: </label>";
+	msg += "<input id='hasLockstep' type='checkbox' name='hasLockstep' class='radio'/>";
+	msg += '<span id="lockStepError" class="error">Lockstep cannot be enabled if search is enabled!</span><br/>';
 	//Show page numbers
 	msg += "<label id='label' for='showPageNumbers' title='Turn on page numbers in index.'>Show page # in index: </label>";
-	msg += "<input id='showPageNumbers' type='checkbox' name='showPageNumbers' class='radio'/><br/>";
-	//Lockstep
-	msg += "<label id='label' for='hasLockstep' title='Set content to only be accessed sequentially.'>Enable lockstop mode: </label>";
-	msg += "<input id='hasLockstep' type='checkbox' name='hasLockstep' class='radio'/><br/>";
+	msg += "<input id='showPageNumbers' type='checkbox' name='showPageNumbers' class='radio'/><br/>";	
 	//Close Lesson
     msg += "<label id='label' for='hasCloseLesson' title='Add a close lesson option'>Close Lesson: </label>";
 	msg += "<input id='hasCloseLesson' type='checkbox' name='hasCloseLesson' class='radio'/>";
@@ -927,17 +929,24 @@ function launchPrefs(){
 	
 	if(progressMode == "lockStep"){
 		$("#hasLockstep").attr('checked', true);
+		$("#hasSearch").attr('disabled', true);
+		$('#searchError').removeClass('error').addClass('error_show');
 	}else{
 		$("#hasLockstep").attr('checked', false);
+		$('#searchError').removeClass('error_show').addClass('error');
 	}
 	
 	$("#hasLockstep").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("progressMode").attr("value", "lockStep");
 			progressMode = "lockStep";
+			$("#hasSearch").attr('disabled', true);
+			$('#searchError').removeClass('error').addClass('error_show');
 		}else{
 			$(data).find("progressMode").attr("value", "linear");
 			progressMode = "linear";
+			$("#hasSearch").attr('disabled', false);
+			$('#searchError').removeClass('error_show').addClass('error');
 		}
 		updateIndex();
 	});
@@ -1014,18 +1023,25 @@ function launchPrefs(){
 	//search #3559
 	if(searchEnabled){
 		$("#hasSearch").attr('checked', true);
+		$("#hasLockstep").attr('disabled', true);
+		$('#lockStepError').removeClass('error').addClass('error_show');
 	}
 	else{
 		$("#hasSearch").attr('checked', false);
+		$('#lockStepError').removeClass('error_show').addClass('error');
 	}
 
 	$("#hasSearch").change(function(){
 		if($(this).prop("checked") == true){
 			$(data).find("search").attr("value", "true");
 			searchEnabled = true;
+			$("#hasLockstep").attr('disabled', true);
+			$('#lockStepError').removeClass('error').addClass('error_show');
 		}else{
 			$(data).find("search").attr("value", "false");
 			searchEnabled = false;
+			$("#hasLockstep").attr('disabled', false);
+			$('#lockStepError').removeClass('error_show').addClass('error');
 		}
 		updateIndex();
 	});	
