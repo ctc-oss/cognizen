@@ -2212,6 +2212,114 @@ MULTIPLE CHOICE LAYOUTS
 /************************************************************** MULTIPLE CHOICE LAYOUTS END *****/
 
 /**************************************************************************************
+Fancy Multiple Choice LAYOUTS
+**************************************************************************************/
+.mcf_question{
+	background: #333;
+	width: 950px;
+	height: 294px;
+	margin-bottom: 15px;
+	overflow: hidden;
+	border-radius: 6px;
+}
+
+.mcf_question_text{
+	position: relative;
+	background-color: rgba(255, 255, 255, .7);
+	border-radius: 6px;
+	top: 50%;
+	left: 480px;
+	width: 400px;
+	color: #333;
+	padding: 20px;
+	font-family: CenturyGothic;
+	font-size: small;
+}
+
+.mcf_answerOptions{
+	position: relative;
+	width: auto;
+	height: auto;
+	max-width: 100% !important;
+	margin-left: auto;
+	margin-right: auto;
+	display: inline-block;
+}
+
+.mcf_option{
+	position: relative;
+	float: left;
+	margin-right: 8px;
+	margin-left: 8px;
+	width: 275px;
+	height: 200px;
+	border-radius: 6px;
+	background: -webkit-linear-gradient(#eee, #aaa); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#eee, #aaa); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#eee, #aaa); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#eee, #aaa); /* Standard syntax */
+	font-family: CenturyGothic;
+	font-size: small;
+	padding: 5px;
+	margin-bottom: 5px;
+}
+
+.mcf_option:hover{
+	color: #256DAF;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.mcf_option_two{
+	width: 425px;
+}
+
+.mcf_option_four{
+	width: 200px;
+}
+
+.mcf_option_five{
+	width: 155px;
+}
+
+.mcf_option_label{
+	position: relative;
+	width:24px;
+    height:24px;
+    border-radius:12px;
+    color:#eee;
+    line-height:24px;
+    text-align:center;
+    background:#8B959B;
+    margin-left: -12px;
+    margin-bottom: 8px;
+    left: 50%;
+    right: 50%;
+}
+
+.mcf_option_label_hover{
+	background-color: #256DAF;
+}
+
+.mcf_option_label_selected{
+	background-color: #256DAF;
+}
+
+.mcf_option_text{
+	text-align: center;
+}
+
+.mcf_submit{
+	position: relative;
+	display: block !important;
+	width: 100px;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+	margin-left: auto;
+	margin-right: auto;
+	clear: both;
+}
+/**************************************************************************************
 MATCHING LAYOUTS
 **************************************************************************************/
 .matchingOptions{
