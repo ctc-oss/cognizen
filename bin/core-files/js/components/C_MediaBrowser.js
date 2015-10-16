@@ -609,7 +609,7 @@ function mediaBrowserRemoveDirectoryComplete(){
 function createDirectory(){
 	//Create the Dialog
 	var msg =  "<div id='dialog-createDir' title='Create new directory'>";
-		msg += "<p>Create a new directory in the " + folderTrackPath + mediaBrowserDisplayPath +" directory, with the name of:</p>";
+		msg += "<p>Create a new directory in the " + folderTrackPath + mediaBrowserDisplayPath +" directory.</p>";
 		msg += '<label for="myName" class="regField">name: </label>';
 		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
 		msg += '</div>';
