@@ -585,7 +585,6 @@ function removeMediaDirectory(_dir){
 	$("#mediaBrowserList").empty();
 	$("#mediaBrowserPreviewMediaHolder").empty();
 	cognizenSocket.emit('mediaBrowserRemoveDir',  {track: folderTrack, path: _dir, type: urlParams['type'], id: urlParams['id']});
-	//cognizenSocket.emit('mediaBrowserRemoveDirectory', {file: _file, type: urlParams['type'], id: urlParams['id'], track: folderTrack});
 }
 
 /**
