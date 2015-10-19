@@ -454,24 +454,27 @@ function updateMediaBrowserDir(_data){
 	//Add directories
 	if(_data != null){
 		for (var key in _data.dirs) {
-		   var obj = _data.dirs[key];
-		   var tempID = "folder"+key;
-		   var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
-		   $("#mediaBrowserList").append(msg);
+			var obj = _data.dirs[key];
+			var tempID = "folder"+key;
+			var msg = "<div id='"+tempID+"' class='mediaBrowserFolder' data-type='folder' data='"+obj+"'>"+obj+"</div>";
+			$("#mediaBrowserList").append(msg);
 	
-		   $("#"+tempID).click(function(){
-			   if(!hoverSubNav){
-				   $("#mediaBrowserList").addClass('C_Loader');
-				   $("#mediaBrowserList").empty();
-				   dirDepth++;
-				   var addPath = $(this).attr('data') + "/";
-				   relPath += addPath;
-				   mediaBrowserDisplayPath += addPath;
-				   getMediaDir(relPath);
+			$("#"+tempID).click(function(){
+			   	if(!hoverSubNav){
+					$("#mediaBrowserList").addClass('C_Loader');
+					$("#mediaBrowserList").empty();
+					dirDepth++;
+					var addPath = $(this).attr('data') + "/";
+					relPath += addPath;
+					mediaBrowserDisplayPath += addPath;
+					getMediaDir(relPath);
 				}
-		   });
+			});
 		   
-		   addFolderRoll($("#"+tempID));
+			var untouchableFolders = ["jqueryui", "media", "ProgramCSS", "ModuleCSS"];
+			if(untouchableFolders.indexOf(obj)  < 0){
+				addFolderRoll($("#"+tempID));
+			}
 		}
 	
 		//Add files display
@@ -692,7 +695,7 @@ function showItemStats(){
 	currentSelectedMediaPreview.append(msg);
 
 	//Button Actions for interactives
-	var untouchableFiles = ["defaultLeft.png", "defaultTop.png", "defaultReveal.png", "loadingIcon.gif"];
+	var untouchableFiles = ["defaultLeft.png", "defaultTop.png", "defaultReveal.png", "loadingIcon.gif", "defaultQuestion.png"];
     if (untouchableFiles.indexOf(obj) >= 0 ){
 	//if(obj == "defaultLeft.png"){
 		$(".mediaRemove").css({'opacity': .5});
