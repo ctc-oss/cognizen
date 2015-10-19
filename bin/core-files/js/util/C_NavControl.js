@@ -842,7 +842,6 @@ function launchPrefs(){
     //publish button
 	$("#publishButton").button().click(function(){
         savePreferences(true);
-        $(this).dialog("close");
 	}).tooltip();    
 
 	//Make it a dialog
@@ -1065,6 +1064,8 @@ function launchPrefs(){
 		$("#hasCourseHelp").attr('checked', true);
 	}else{
 		$("#hasCourseHelp").attr('checked', false);
+		$(courseData).find("course").attr("help", "");
+		sendCourseUpdate();	
 	}
 
 	$("#hasCourseHelp").change(function(){
@@ -1088,6 +1089,8 @@ function launchPrefs(){
 			courseHelp = false;
 			$("#selectedHelp").text(tmpURL);
 			$(data).find("help").attr("url", tmpURL);
+			$(courseData).find("course").attr("help", "");
+			sendCourseUpdate();			
 		}
 
 		forceUpdateOnSave = true;
@@ -1432,6 +1435,7 @@ function clickPublish(){
 		parsePackageLocation(fdata);
 	});
 	$("#dialog-lessonPrefs").dialog("close");
+	$("#dialog-lessonPrefs").remove();
 }
 
 function checkSurvey(){
