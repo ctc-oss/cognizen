@@ -582,7 +582,7 @@ var SCORM = {
 		var courseAttr = _this._parseCourseAttr();
 
         //#3866
-        if(courseAttr.help != ''){
+        if(courseAttr.help != '' && courseAttr.help != undefined){
 	        archive.append(fs.createReadStream(_this.contentPath + '/' +courseAttr.help), {name: _this.binDir + '/' +courseAttr.help});
         }
 
@@ -1195,7 +1195,7 @@ var SCORM = {
 												            }
 												        );
 												        //#3866
-												        if(courseAttr.help != ''){
+												        if(courseAttr.help != '' && courseAttr.help != undefined){
 												        	var helpPathSplit = courseAttr.help.split('..');
 													        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
 												        }
@@ -1313,7 +1313,7 @@ var SCORM = {
 										        );
 
 										        //#3866
-										        if(courseAttr.help != ''){
+										        if(courseAttr.help != '' && courseAttr.help != undefined){
 										        	var helpPathSplit = courseAttr.help.split('..');
 											        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
 										        }
@@ -1419,7 +1419,7 @@ var SCORM = {
 						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
 
 							    //#3866
-						        if(courseAttr.help != ''){
+						        if(courseAttr.help != '' && courseAttr.help != undefined){
 						        	var helpPathSplit = courseAttr.help.split('..');
 							        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
 						        }
@@ -2096,7 +2096,7 @@ var SCORM = {
 
 		//#3866 global help
 		var courseAttr = _this._parseCourseAttr();
-		if(courseAttr.help != ''){
+		if(courseAttr.help != '' && courseAttr.help != undefined){
 			var helpPathSplit = courseAttr.help.split('../');
 			resource += "				<file href=\""+_prefix+helpPathSplit[1]+"\"/>\n";
 		}				
