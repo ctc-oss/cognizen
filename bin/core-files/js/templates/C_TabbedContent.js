@@ -50,6 +50,8 @@ function C_TabbedContent(_type) {
 			clickAll = true;
 		}
 		
+		console.log("clickAll = " + clickAll);
+		
 		if(clickAll == true && mode != "edit"){
 			disableNext();
 		}
@@ -138,7 +140,7 @@ function C_TabbedContent(_type) {
 				if(currentSelected.attr("beenClicked") == "false"){
 					currentSelected.attr("beenClicked", "true");
 					clickCount++;
-					if(clickCount == revealCount){
+					if(clickCount == revealCount && clickAll == true){
 						enableNext();
 					}
 				}
