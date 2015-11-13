@@ -30,7 +30,7 @@ var stageW;
 var stageH;
 
 var socket;
-
+var dashMode = "author";
 
 var user = {};
 
@@ -178,6 +178,7 @@ function initScripts(_data){
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
+				"js/templates/C_LMSDash.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
 				"js/util/C_Search.js",
@@ -236,7 +237,11 @@ function buildInterface(){
     socket.on('loadDashboardPage', function(status) {
         user = status.user;
         if (user) {
-            currentTemplate = new C_Dashboard(currentTemplateType);
+            if (dashMode === "author"){
+	            currentTemplate = new C_Dashboard(currentTemplateType);
+            }else{
+	            currentTemplate = new C_LMSDash(currentTemplateType);
+            }   
         }
         else {
             currentTemplate = new C_Login(currentTemplateType);

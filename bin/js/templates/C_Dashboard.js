@@ -277,6 +277,19 @@ function C_Dashboard(_type) {
 
             $("#adminAddUser").click(registerUser);
         }
+        
+        if (admin || programAdmin) {
+
+            //ROOT and admin can add users to the system.
+            $stage.append("<div id='gotoLMS'>view lms page</div>");
+            $("#gotoLMS").button({
+                icons: {
+                    primary: "ui-icon-circle-plus"
+                }
+            });
+
+            $("#gotoLMS").click(showLMS);
+        }
 
         ///////////////////////////////////////////////////////////////END ROOT ONLY ----------------------------STILL NEEDS TO BE SET UP ONCE USER TYPES ARE BEING RETURNED.  SIMPLE IF STATEMENT WILL SUFFICE
 
@@ -289,7 +302,10 @@ function C_Dashboard(_type) {
 
     /************************************************************************************************* END OF buildTemplate*/
 
-
+	function showLMS(){
+		dashMode = 'lms'; 
+		socket.emit('checkLoginStatus');
+	}
     /*****************************************************************************
      ADD ROLOVERS TO THE TREE MENU ITEMS
      *****************************************************************************/
