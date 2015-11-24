@@ -29,25 +29,18 @@ function C_LMSDash(_type) {
 
     //Defines a public method - notice the difference between the private definition below.
     this.initialize = function () {
-        //if (transition == true) {
-            $('#stage').css({'opacity': 1});
-        //}
+        if (transition == true) {
+            $('#stage').css({'opacity': 0});
+        }
+
 		buildTemplate();
         /*****************************************************************************
-         add socket listeners - for server connectivity.
-         *****************************************************************************/
-        /*socket.on('receiveProjectsFromDB', function (data) {
-            $("#preloadholder").remove();
-            proj = data;
-            try{co.refreshOutlineData();} catch(e){};
-            buildTemplate();
-        });*/
-
-        //Call the Server (C_Server.js) to get list of projects associated to the user.
-        //socket.emit('getProjects', user);
-        
-        console.log("user = " + user);
-        
+        add socket listeners - for server connectivity.
+        *****************************************************************************/
+        socket.on('recieveHostedProjectsFromDB', function(data) {
+	        updateMenu(data);
+        });
+        console.log("user = " + user);//Will be used to populate real content as a parameter in the below function
     }
 
 
@@ -61,6 +54,7 @@ function C_LMSDash(_type) {
      *****************************************************************************/
     function buildTemplate(){
 	    var $stage = $('#stage');
+        
         $stage.html('');
 
         $stage.append("<div id='projListHeader'>my courses:</div>");
@@ -68,18 +62,48 @@ function C_LMSDash(_type) {
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
         
         $stage.append("<div id='adminAddProgram'>view authoring page</div>");
+        
+        var msg = '<div id="scrollableContent" class="box-wrap antiscroll-wrap">';
+        	msg += '<div class="box">';
+        	msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
+        	msg += '<div id="projList">';
+        	msg += '</div></div></div></div>';
+        $stage.append(msg);
+        
         $("#adminAddProgram").button({
             icons: {
                 primary: "ui-icon-circle-plus"
             }
-        });
-
-        $("#adminAddProgram").click(function () {
+        }).click(function () {
             dashMode = 'author'; 
 			socket.emit('checkLoginStatus');
         });
+		
+		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
+    }
+    
+    function updateMenu(_data){
+	    //Clear the project list
+	    $("#projList").empty();
+	    if (transition == true) {
+            $('#stage').css({'opacity': 0});
+        }
         
-        socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
+	    var $stage = $('#stage');
+	    
+	    for(var i = 0; i < _data.length; i++){
+			if (_data[i].substring(0, 1) != "."){
+				var msg = '<div class="C_LMSMenuItem">';
+					msg += _data[i];
+					msg += '</div>';
+				$("#projList").append(msg);
+			}
+	    }
+	    
+	    //Once everything is loaded - fade page in.
+        if (transition == true) {
+            TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
+        }
     }
 
     /*************************************************************************************************

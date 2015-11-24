@@ -105,7 +105,7 @@ body{
 }
 
 .assignUserName{
-	color: #6CC7EE;
+	color: #3383bb;;
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 6px;
@@ -197,7 +197,7 @@ td{
 }
 
 ui-button-text{
-	color: #6CC7EE !important;
+	color: #3383bb; !important;
 }
 
 input.loginText{
@@ -206,7 +206,7 @@ input.loginText{
 	font-family: hnl;
 	width: 300px;
 	float: left;
-	color: #6CC7EE;
+	color: #3383bb;;
 }
 
 input.regText{
@@ -215,7 +215,7 @@ input.regText{
 	font-family: hnl;
 	width: 300px;
 	float: left;
-	color: #6CC7EE;
+	color: #3383bb;;
 }
 
 #projType{
@@ -303,7 +303,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 132px;
 	right: 70px;
-	color: #6CC7EE;
+	color: #3383bb;;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -316,7 +316,7 @@ TREE MENU STYLES
 }
 
 #logout a:visited{
-	color: #6CC7EE;
+	color: #3383bb;;
 }
 
 #logout a:hover{
@@ -397,12 +397,12 @@ TREE MENU STYLES
 	padding: 14px 0pt 0px 0px;
 }
 
-.treeview li .programHover{color: #6CC7EE; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
+.treeview li .programHover{color: #3383bb;; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
 .programRemove {position: relative; top: -19px; left: 462px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
 .programAdd {position: relative; top: -37px; left: 482px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
 .programUserAdd {position: relative; top: -55px; left: 502px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
-.treeview li .courseHover{color: #6CC7EE; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
+.treeview li .courseHover{color: #3383bb;; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
 .courseOutline {position: relative; top: -19px; left: 392px; width: 18px; height: 18px; background: url(images/dash_outline.svg) no-repeat;}
 .courseSearch {position: relative; top: -37px; left: 412px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
 .coursePref {position: relative; top: -55px; left: 432px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
@@ -415,7 +415,7 @@ TREE MENU STYLES
 .courseAdd {position: relative; top: -73px; left: 472px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
 .courseUserAdd {position: relative; top: -91px; left: 492px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}*/
 
-.treeview li .projectHover{color: #6CC7EE; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
+.treeview li .projectHover{color: #3383bb;; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
 .projectSearch {position: relative; top: -19px; left: 422px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
 .projectPref {position: relative; top: -37px; left: 442px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
 .projectRemove {position: relative; top: -55px; left: 462px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
@@ -425,7 +425,7 @@ TREE MENU STYLES
 .projectUserAdd {position: relative; top: -55px; left: 482px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 */
 
-.ui-tooltip{font-family: hnl; font-size:12pt; color: #6CC7EE; background-color: #EEEEEE;}
+.ui-tooltip{font-family: hnl; font-size:12pt; color: #3383bb;; background-color: #EEEEEE;}
 
 
 .treeview a.selected {
