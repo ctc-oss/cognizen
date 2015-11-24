@@ -436,6 +436,21 @@ var SocketHandler = {
             });
         }
     },
+    
+    getHostedContent: function(data){
+		var _this = this;
+		//console.log("myPath = " + dir);
+		fs.readdir("../hosted/", function(err, files){
+			/*if (!files.length) {
+	    		console.log("empty directory!")
+	    	}else{
+		    	for(var i = 0; i < files.length; i++){
+			    	console.log(files[i]);
+		    	}
+	    	}*/
+	    	console.log(files);
+		}); 
+    },
 
     checkLoginStatus: function() {
         var _this = this;

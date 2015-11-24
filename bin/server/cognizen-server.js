@@ -507,6 +507,10 @@ var Content = {
             socket.on('getProjects', function (data) {
                 Content.allContentForUser(socket, data);
             });
+            
+            socket.on('getHostedContent', function (data) {
+                SocketHandler.socket(socket).getHostedContent(data);
+            });
 
             socket.on('getPermissions', function (data) {
                 SocketHandler.socket(socket).getPermissions(data);

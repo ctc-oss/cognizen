@@ -78,6 +78,8 @@ function C_LMSDash(_type) {
             dashMode = 'author'; 
 			socket.emit('checkLoginStatus');
         });
+        
+        socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
     }
 
     /*************************************************************************************************
