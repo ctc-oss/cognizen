@@ -114,13 +114,6 @@ function C_LMSDash(_type) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
         }
     }
-    
-    function loadCourse(_course){
-	    console.log(_course);
-	    var coursePath = "../hosted/" + _course + "/test.png";
-	    
-	    
-    }
 
     /*************************************************************************************************
      LEVAE PAGE CODE

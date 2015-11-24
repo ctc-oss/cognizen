@@ -87,6 +87,7 @@ body{
 	padding-bottom: 4px;
 	font-size: 14pt;
 	color: #9DA6AB;
+	border-radius: 8px;
 }
 
 .C_LMSMenuItem:hover{
@@ -95,10 +96,13 @@ body{
 }
 
 .fancybox-wrap{
+		width: 1024 !important;
+
 	min-height: 780px !important;
 }
 
 .fancybox-inner{
+	width: 1024 !important;
 	height: 768px !important;
 }
 
