@@ -93,17 +93,33 @@ function C_LMSDash(_type) {
 	    
 	    for(var i = 0; i < _data.length; i++){
 			if (_data[i].substring(0, 1) != "."){
-				var msg = '<div class="C_LMSMenuItem">';
+				var msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-fancybox-type="iframe" href="../hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
 					msg += _data[i];
 					msg += '</div>';
 				$("#projList").append(msg);
 			}
 	    }
 	    
+	    $(".C_LMSMenuItem").fancybox({
+			maxWidth	: 1024,
+			maxHeight	: 1000,
+			width		: 1024,
+			height		: 768,
+			openEffect	: 'fade',
+			closeEffect	: 'fade'
+		});
+	    
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
         }
+    }
+    
+    function loadCourse(_course){
+	    console.log(_course);
+	    var coursePath = "../hosted/" + _course + "/test.png";
+	    
+	    
     }
 
     /*************************************************************************************************
