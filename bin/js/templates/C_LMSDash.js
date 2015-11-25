@@ -102,11 +102,14 @@ function C_LMSDash(_type) {
 	    
 	    $(".C_LMSMenuItem").fancybox({
 			maxWidth	: 1024,
-			maxHeight	: 1000,
-			width		: 1024,
-			height		: 768,
-			openEffect	: 'fade',
-			closeEffect	: 'fade'
+			maxHeight	: 768,
+			fitToView	: false,
+			width		: '95%',
+			height		: '90%',
+			autoSize	: false,
+			closeClick	: false,
+			openEffect	: 'elastic',
+			closeEffect	: 'elastic'
 		});
 	    
 	    //Once everything is loaded - fade page in.

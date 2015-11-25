@@ -76,13 +76,13 @@ body{
 
 .C_LMSMenuItem{
 	display: block;
-	width: 100%;
+	width: 96%;
 	height: auto;
 	font-family: hnl;
 	background-color: pink;
 	margin-bottom: 2px;
 	margin-top: 2px;
-	padding-left: 4px;
+	padding-left: 4%;
 	padding-top: 4px;
 	padding-bottom: 4px;
 	font-size: 14pt;
@@ -93,17 +93,6 @@ body{
 .C_LMSMenuItem:hover{
 	background-color: orange;
 	color: #333;
-}
-
-.fancybox-wrap{
-		width: 1024 !important;
-
-	min-height: 780px !important;
-}
-
-.fancybox-inner{
-	width: 1024 !important;
-	height: 768px !important;
 }
 
 #content{
