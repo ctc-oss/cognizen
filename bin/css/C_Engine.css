@@ -88,9 +88,84 @@ body{
 	font-size: 14pt;
 	color: #9DA6AB;
 	border-radius: 8px;
+	cursor: pointer;
 }
 
 .C_LMSMenuItem:hover{
+	background-color: orange;
+	color: #333;
+}
+
+.cp-menu{
+	position: relative;
+	float:left;
+	height: 100%;
+	width: 300px;
+	background-color: #333;
+	color: #eee;
+}
+
+.cp-menu-header{
+	font-family: hnl;
+	font-size: 18pt;
+	width: 100%;
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.cp-menu-ul{
+	padding: 0;
+	margin: 0;
+}
+
+.cp-menu-link{
+	list-style: none;
+	font-family: hnl;
+	font-size: 16pt;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	margin-bottom: 2px;
+	border-top-style: solid;
+	border-top-color: #eee;
+	width: 98%;
+	margin-right: auto;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+.cp-menu-link:hover{
+	background-color: red;
+	color: aqua;
+}
+
+.cp-lesson-spot{
+	position: relative;
+	float:left;
+	width: 600px;
+	height: 100%;
+	background-color: #fff;
+}
+
+.C_LMSMenuItem2{
+	display: block;
+	width: 96%;
+	height: auto;
+	font-family: hnl;
+	background-color: blue;
+	margin-bottom: 2px;
+	margin-top: 2px;
+	padding-left: 4%;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	font-size: 14pt;
+	color: #9DA6AB;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.C_LMSMenuItem2:hover{
 	background-color: orange;
 	color: #333;
 }

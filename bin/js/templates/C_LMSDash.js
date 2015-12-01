@@ -25,6 +25,7 @@ function C_LMSDash(_type) {
     var scroller;
     var scrollTimer;
     var launchItemParent;
+    var $stage;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -53,7 +54,7 @@ function C_LMSDash(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate(){
-	    var $stage = $('#stage');
+	    $stage = $('#stage');
         
         $stage.html('');
 
@@ -93,9 +94,15 @@ function C_LMSDash(_type) {
 	    
 	    for(var i = 0; i < _data.length; i++){
 			if (_data[i].substring(0, 1) != "."){
-				var msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-fancybox-type="iframe" href="../hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
-					msg += _data[i];
-					msg += '</div>';
+				var msg;
+				if(i == 1){
+					msg = '<div class="C_LMSMenuItem2" title="'+ _data[i] +'" href="http://localhost:8080/hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
+				}else{
+					msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-fancybox-type="iframe" href="../hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
+				}
+				
+				msg += _data[i];
+				msg += '</div>';
 				$("#projList").append(msg);
 			}
 	    }
@@ -111,11 +118,21 @@ function C_LMSDash(_type) {
 			openEffect	: 'elastic',
 			closeEffect	: 'elastic'
 		});
+		
+		$(".C_LMSMenuItem2").click(function(){
+			loadCourse($(this).attr('href'));
+		});
 	    
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
         }
+    }
+    
+    function loadCourse(_path){
+	    console.log(_path)
+	    $stage.empty();
+	    $stage.load(_path);
     }
 
     /*************************************************************************************************
