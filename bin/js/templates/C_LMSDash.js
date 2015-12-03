@@ -54,6 +54,7 @@ function C_LMSDash(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate(){
+        try { $("#gotoLMS").remove(); } catch (e) {}
 	    $stage = $('#stage');
         
         $stage.html('');
@@ -94,13 +95,7 @@ function C_LMSDash(_type) {
 	    
 	    for(var i = 0; i < _data.length; i++){
 			if (_data[i].substring(0, 1) != "."){
-				var msg;
-				if(i == 1){
-					msg = '<div class="C_LMSMenuItem2" title="'+ _data[i] +'" href="http://localhost:8080/hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
-				}else{
-					msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-fancybox-type="iframe" href="../hosted/' + _data[i] + '/index.html" data-path="'+ _data[i] +'">';
-				}
-				
+			    var msg = '<div class="C_LMSMenuItem2" title="'+ _data[i] +'" data-path="'+ _data[i] +'">';	
 				msg += _data[i];
 				msg += '</div>';
 				$("#projList").append(msg);
@@ -108,20 +103,37 @@ function C_LMSDash(_type) {
 	    }
 	    
 	    $(".C_LMSMenuItem").fancybox({
-			maxWidth	: 1024,
-			maxHeight	: 768,
-			fitToView	: false,
-			width		: '95%',
-			height		: '90%',
-			autoSize	: false,
-			closeClick	: false,
-			openEffect	: 'elastic',
-			closeEffect	: 'elastic'
+			// maxWidth	: '95%',
+			// maxHeight	: '90%',
+			// fitToView	: false,
+			// width		: '95%',
+			// height		: '90%',
+			// autoSize	: false,
+			// closeClick	: false,
+			// openEffect	: 'elastic',
+			// closeEffect	: 'elastic',
+   //          autoResize: true,
+   //         iframe : {
+   //          scrolling : 'no'
+   //         }    
+            maxWidth    : 1054,
+            maxHeight   : 768,
+            fitToView   : false,
+            width       : '100%',
+            height      : '100%',
+            autoSize    : false,
+            closeClick  : false,
+            openEffect  : 'elastic',
+            closeEffect : 'elastic'        
 		});
 		
+
 		$(".C_LMSMenuItem2").click(function(){
-			loadCourse($(this).attr('href'));
-		});
+			//loadCourse($(this).attr('href'));
+            dashMode = "player";
+            currentCourse = $(this).attr('data-path');
+            socket.emit('checkLoginStatus');
+		});   
 	    
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
@@ -129,11 +141,6 @@ function C_LMSDash(_type) {
         }
     }
     
-    function loadCourse(_path){
-	    console.log(_path)
-	    $stage.empty();
-	    $stage.load(_path);
-    }
 
     /*************************************************************************************************
      LEVAE PAGE CODE

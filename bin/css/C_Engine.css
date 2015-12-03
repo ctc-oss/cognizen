@@ -34,6 +34,10 @@ body{
 	background-image: url(images/background.png);
 }
 
+#myCanvas.noBackground{
+	background-image: none;
+}
+
 #stage {
 	overflow: auto;
 	position: absolute;

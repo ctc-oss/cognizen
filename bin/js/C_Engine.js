@@ -31,6 +31,7 @@ var stageH;
 
 var socket;
 var dashMode = "author";
+var currentCourse;
 
 var user = {};
 
@@ -157,7 +158,7 @@ function initScripts(_data){
 
 	// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
     require.config({
-        waitSeconds: 0
+        waitSeconds: 200
     });
     
     /*require(['js/libs/socket.io.js'], function(foo){
@@ -179,6 +180,7 @@ function initScripts(_data){
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
 				"js/templates/C_LMSDash.js",
+				"js/templates/C_CoursePlayer.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
 				"js/util/C_Search.js",
@@ -232,7 +234,11 @@ function buildInterface(){
         if (user) {
             if (dashMode === "author"){
 	            currentTemplate = new C_Dashboard(currentTemplateType);
-            }else{
+            }
+            else if (dashMode === 'player'){
+            	currentTemplate = new C_CoursePlayer(currentCourse);
+            }
+            else{
 	            currentTemplate = new C_LMSDash(currentTemplateType);
             }   
         }
