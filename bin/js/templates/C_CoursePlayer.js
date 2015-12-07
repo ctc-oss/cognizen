@@ -97,10 +97,10 @@ function C_CoursePlayer(_course) {
     
     function updateTOC(_data){
 	    //Clear the project list
-	    // $("#projList").empty();
-	    // if (transition == true) {
-     //        $('#stage').css({'opacity': 0});
-     //    }
+	    //$("#projList").empty();
+	    if (transition == true) {
+			$('#stage').css({'opacity': 0});
+     	}
         
         courseData = _data;
 
@@ -129,18 +129,18 @@ function C_CoursePlayer(_course) {
 
 	    var msg;
         msg = '<h2>'+courseDisplayTitle+'</h2><ul>';
-
+		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
 	    for(var i = 0; i < module_arr.length; i++){
 				
-				msg += '<li><div class="C_LMSMenuItem" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
+				msg += '<div class="C_LMSMenuItem" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
 				
 				msg += module_arr[i].name;
-				msg += '</div></li>';
+				msg += '</div>';
 				
 	    }
 
-        msg += '</ul>';
+        msg += '</ul></div>';
 
         $stage.append(msg);
 	    
@@ -152,8 +152,8 @@ function C_CoursePlayer(_course) {
             height      : '100%',
             autoSize    : false,
             closeClick  : false,
-            openEffect  : 'elastic',
-            closeEffect : 'elastic' 
+            openEffect  : 'fade',
+            closeEffect : 'fade' 
 		});
 		
     

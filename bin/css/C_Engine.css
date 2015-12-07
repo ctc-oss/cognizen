@@ -78,12 +78,23 @@ body{
 	font-family: hnl;
 }
 
+.C_LMSLessonListHolder{
+	width: 90%;
+	height: 80%;
+	border-radius: 8px;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: thin;
+	padding: 10px;
+	text-align: center;
+}
+
 .C_LMSMenuItem{
 	display: block;
 	width: 96%;
 	height: auto;
 	font-family: hnl;
-	background-color: pink;
+	background-color: #eee;
 	margin-bottom: 2px;
 	margin-top: 2px;
 	padding-left: 4%;
@@ -93,11 +104,12 @@ body{
 	color: #9DA6AB;
 	border-radius: 8px;
 	cursor: pointer;
+	list-style-type: none;
 }
 
 .C_LMSMenuItem:hover{
-	background-color: orange;
-	color: #333;
+	background-color: #333;
+	color: orange;
 }
 
 .cp-menu{
