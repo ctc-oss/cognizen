@@ -428,7 +428,13 @@ function C_Completion(_type) {
 			$('<div id="completionButton">Return to Main Menu</div>').insertAfter("#scoreFeedback");
 			$("#completionButton").css({"width": "260px"});  //moved to css file
 			$("#completionButton").button().click(function(){
-				parent.history.back();
+				var ibhosted = true;
+				if(ibhosted){
+					parent.jQuery.fancybox.close();
+				}else{
+					parent.history.back();
+				}
+
 				return false;
 			});
 		}

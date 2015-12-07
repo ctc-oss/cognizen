@@ -113,20 +113,20 @@ function C_CoursePlayer(_course) {
 
         if(totalModules > 0){
             for(var y = 0; y < totalModules; y++){
-                 var moduleObj = new Object();
-
-                 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
-                 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
-                 moduleObj.parent = null;
-                 moduleObj.parentDir = coursePath;
-                 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
-                 moduleObj.xml = null;
-                 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
-                 moduleObj.indexPath = ["../hosted/"+course+"/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/index.html"].join("");
-                 module_arr.push(moduleObj);
-
-                 //var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
-                 //importModuleXML(currentXML);
+				var moduleObj = new Object();
+				
+				moduleObj.name = $(courseData).find("item").eq(y).attr("name");
+				moduleObj.id = $(courseData).find("item").eq(y).attr("id");
+				moduleObj.parent = null;
+				moduleObj.parentDir = coursePath;
+				moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
+				moduleObj.xml = null;
+				moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
+				moduleObj.indexPath = ["../hosted/"+course+"/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/index.html"].join("");
+				module_arr.push(moduleObj);
+				
+				//var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+				//importModuleXML(currentXML);
             }
         }
 
