@@ -105,6 +105,9 @@ function C_CoursePlayer(_course) {
         courseData = _data;
 
         var courseDisplayTitle = $(courseData).find("course").attr("coursedisplaytitle");
+        if(courseDisplayTitle == undefined){
+            courseDisplayTitle = $(courseData).find("course").attr("name");
+        }
 
         var totalModules = $(courseData).find("item").length;
 
