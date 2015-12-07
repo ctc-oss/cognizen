@@ -131,7 +131,7 @@ function C_CoursePlayer(_course) {
         }
 
 	    var msg;
-        msg = '<h2>'+courseDisplayTitle+'</h2><ul>';
+        msg = '<h2 class="C_LMSCourseTitle">'+courseDisplayTitle+'</h2><ul>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
 	    for(var i = 0; i < module_arr.length; i++){
