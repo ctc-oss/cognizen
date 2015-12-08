@@ -39,6 +39,7 @@ function C_LMSDash(_type) {
         add socket listeners - for server connectivity.
         *****************************************************************************/
         socket.on('recieveHostedProjectsFromDB', function(data) {
+	        console.log(data);
 	        updateMenu(data);
         });
         console.log("user = " + user);//Will be used to populate real content as a parameter in the below function
@@ -56,6 +57,8 @@ function C_LMSDash(_type) {
     function buildTemplate(){
         try { $("#gotoLMS").remove(); } catch (e) {}
 	    $stage = $('#stage');
+	    
+	    //$stage.attr('class', ' C_LMSStage');
         
         $stage.html('');
 

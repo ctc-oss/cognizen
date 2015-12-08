@@ -78,9 +78,16 @@ body{
 	font-family: hnl;
 }
 
+.C_LMSStage{
+	position: none;
+	width: 95vw;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .C_LMSLessonListHolder{
-	width: 90%;
-	height: 80%;
+	width: auto;
+	height: auto;
 	border-radius: 8px;
 	border-color: #ccc;
 	border-style: solid;
