@@ -253,6 +253,7 @@ function C_CoursePlayer(_course) {
 
         if(totalModules > 0){
             for(var y = 0; y < totalModules; y++){
+
                  var moduleObj = new Object();
 
                  moduleObj.name = $(courseData).find("item").eq(y).attr("name");
@@ -267,11 +268,12 @@ function C_CoursePlayer(_course) {
 
                  //var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
                  //importModuleXML(currentXML);
+
             }
         }
 
 	    var msg;
-        msg = '<h2>'+courseDisplayTitle+'</h2><ul>';
+        msg = '<h2 class="C_LMSCourseTitle">'+courseDisplayTitle+'</h2><ul>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
 	    for(var i = 0; i < module_arr.length; i++){

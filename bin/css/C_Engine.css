@@ -89,6 +89,10 @@ body{
 	text-align: center;
 }
 
+.C_LMSCourseTitle{
+	font-family: hnl;
+}
+
 .C_LMSMenuItem{
 	display: block;
 	width: 96%;
