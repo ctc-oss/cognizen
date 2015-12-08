@@ -686,6 +686,14 @@ var Content = {
                     callback(err);
                 });
             });
+
+            socket.on('configLrs', function(){
+                SocketHandler.socket(socket).configLrs();
+            });            
+
+            socket.on('sendXapiStatement', function(data){
+                SocketHandler.socket(socket).sendXapiStatement(data);
+            });
         });
     });
 })();

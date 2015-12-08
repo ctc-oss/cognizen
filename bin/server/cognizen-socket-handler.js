@@ -18,7 +18,8 @@ var Utils = require('./cognizen-utils'),
     util = require('util'),
 	readdirp = require('readdirp'),
 	et = require('elementtree'),
-    redmine = require('./cognizen-redmine');
+    redmine = require('./cognizen-redmine'),
+    adl = require('adl-xapiwrapper');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
@@ -28,6 +29,7 @@ var request = require('request');
 
 var activeEdit_arr = [];
 var activeTool_arr = [];
+var mylrs = '';
 
 var SocketHandler = {
     config: {},
@@ -2541,6 +2543,41 @@ var SocketHandler = {
     retrieveServer: function(callback){
         var _this = this;
         callback(_this.config.server);
+    },
+
+    configLrs: function(){
+        var _this = this;
+
+        var myconfig = {
+            "url" : "http://cde-cognizen-vm-2.ctc.com/xapi/",
+            "auth" : {
+                "user" : "cognizen",
+                "pass" : "cognizen"
+            }
+        };
+
+        _this.mylrs = new adl.XAPIWrapper(myconfig);
+    },
+
+    sendXapiStatement: function(_stmt){
+        var _this = this;
+
+        _this.mylrs.sendStatements(_stmt, function (err, resp, bdy) {
+            _this.logger.info(resp.statusCode);
+            _this.logger.info(bdy);
+        });
+
+    },
+
+    sendXapiState: function(data){
+        var _this = this;
+
+        _this.mylrs.sendState();
+    },
+
+    getXapiState: function(data){
+        var _this = this;
+        _this.mylrs.sendState();
     },
 
     publishContent: function (data, callback){
