@@ -217,7 +217,7 @@ function C_CoursePlayer(_course) {
 	    $("body").append("<div id='stage2' class='C_LMSStage'></div>");
 	    $stage = $('#stage2');
         $stage.append("<div id='gotoLMS' style='position:relative;left:80%;'>close course</div>");
-        $('#myCanvas').css('opacity', '0');
+        $('#myCanvas').css('visibility', 'hidden');
         $("#gotoLMS").button({
             icons: {
                 primary: "ui-icon-circle-plus"
@@ -226,7 +226,7 @@ function C_CoursePlayer(_course) {
 
         $("#gotoLMS").click(function(){
             dashMode = 'lms'; 
-            $('#myCanvas').removeClass('noBackground').css('opacity', '1');
+            $('#myCanvas').removeClass('noBackground').css('visibility', 'visible');
             $("#stage2").remove();
             socket.emit('checkLoginStatus');
         });
