@@ -26,14 +26,7 @@ function C_Outline(_myItem) {
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
-	var module_arr = [];										//Array holding all module data
-																/*id: "533edfe1cb89ab0000000001"
-																name: "z9"
-																parent: "531f3654c764a5609d000003"
-																parentDir: "Course 1"
-																path: "VA/Course 1/z9"
-																permission: "admin"
-																type: "lesson"*/
+
 
     ////////////////////////////////////////////////   PAGE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 

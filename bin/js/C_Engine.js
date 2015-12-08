@@ -32,6 +32,17 @@ var stageH;
 var socket;
 var dashMode = "author";
 var currentCourse;
+var currentLesson = {};
+var attemptId = "";
+
+var module_arr = [];										//Array holding all module data
+															/*id: "533edfe1cb89ab0000000001"
+															name: "z9"
+															parent: "531f3654c764a5609d000003"
+															parentDir: "Course 1"
+															path: "VA/Course 1/z9"
+															permission: "admin"
+															type: "lesson"*/
 
 var user = {};
 
@@ -191,7 +202,8 @@ function initScripts(_data){
 				"js/libs/fancybox/jquery.fancybox.js",
 				"js/libs/fancybox/jquery.fancybox-thumbs.js",
 				"js/libs/antiscroll.js",
-				"js/libs/jquery.mousewheel-3.0.6.pack.js"
+				"js/libs/jquery.mousewheel-3.0.6.pack.js",
+				"js/libs/xapiwrapper.min.js"
 				], function($) {
 	    //Once all of the external js has loaded, build the application.
 	    buildInterface();
