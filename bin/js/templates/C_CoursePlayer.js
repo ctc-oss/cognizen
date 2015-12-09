@@ -217,7 +217,7 @@ function C_CoursePlayer(_course) {
 	    $("body").append("<div id='stage2' class='C_LMSStage'></div>");
 	    $stage = $('#stage2');
         $stage.append("<div id='gotoLMS' style='position:relative;left:80%;'>close course</div>");
-        $('#myCanvas').css('visibility', 'hidden');
+        $('#myLogin').css('visibility', 'hidden');
         $("#gotoLMS").button({
             icons: {
                 primary: "ui-icon-circle-plus"
@@ -226,12 +226,12 @@ function C_CoursePlayer(_course) {
 
         $("#gotoLMS").click(function(){
             dashMode = 'lms'; 
-            $('#myCanvas').removeClass('noBackground').css('visibility', 'visible');
+            $('#myLogin').removeClass('noBackground').css('visibility', 'visible');
             $("#stage2").remove();
             socket.emit('checkLoginStatus');
         });
 
-        $('#myCanvas').addClass('noBackground');
+        $('#myLogin').addClass('noBackground');
         //$stage.load(_path);
 		
 		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
@@ -281,7 +281,7 @@ function C_CoursePlayer(_course) {
 	    
 	    for(var i = 0; i < module_arr.length; i++){
 				
-				msg += '<div class="C_LMSMenuItem" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
+				msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
 				
 				msg += module_arr[i].name;
 				msg += '</div>';
@@ -292,7 +292,8 @@ function C_CoursePlayer(_course) {
 
         $stage.append(msg);
 	    
-        $(".C_LMSMenuItem").click(function(){
+        $(".C_LMSMenuItem2").click(function(){
+            alert("Yeah, I clicked it mother-fucker!");
             for(var j = 0; j < module_arr.length; j++){
                 if(module_arr[j].name === $(this).attr('title')){
                     currentLesson = module_arr[j];
@@ -301,7 +302,7 @@ function C_CoursePlayer(_course) {
             }
         });
 
-	    $(".C_LMSMenuItem").fancybox({
+	    $(".C_LMSMenuItem2").fancybox({
             maxWidth    : 1054,
             maxHeight   : 768,
             fitToView   : false,

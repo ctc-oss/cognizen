@@ -42,7 +42,6 @@ function C_Login(_type) {
 			socket.emit('confirmUser', { token: myToken});
 			doResetPassword(myUser, myToken);
 		}
-
 		buildTemplate();
 	}
 

@@ -57,8 +57,6 @@ function C_LMSDash(_type) {
     function buildTemplate(){
         try { $("#gotoLMS").remove(); } catch (e) {}
 	    $stage = $('#stage');
-	    
-	    //$stage.attr('class', ' C_LMSStage');
         
         $stage.html('');
 
@@ -66,23 +64,12 @@ function C_LMSDash(_type) {
 
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
         
-        $stage.append("<div id='adminAddProgram'>view authoring page</div>");
+        //$stage.append("<div id='adminAddProgram'>view authoring page</div>");
         
-        var msg = '<div id="scrollableContent" class="box-wrap antiscroll-wrap">';
-        	msg += '<div class="box">';
-        	msg += '<div id="contentHolder" class="overthrow antiscroll-inner">';
+        var msg =  '<div id="contentHolder" class="overthrow antiscroll-inner">';
         	msg += '<div id="projList">';
-        	msg += '</div></div></div></div>';
+        	msg += '</div></div>';
         $stage.append(msg);
-        
-        $("#adminAddProgram").button({
-            icons: {
-                primary: "ui-icon-circle-plus"
-            }
-        }).click(function () {
-            dashMode = 'author'; 
-			socket.emit('checkLoginStatus');
-        });
 		
 		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
     }
@@ -98,14 +85,14 @@ function C_LMSDash(_type) {
 	    
 	    for(var i = 0; i < _data.length; i++){
 			if (_data[i].substring(0, 1) != "."){
-			    var msg = '<div class="C_LMSMenuItem2" title="'+ _data[i] +'" data-path="'+ _data[i] +'">';	
+			    var msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-path="'+ _data[i] +'">';	
 				msg += _data[i];
 				msg += '</div>';
 				$("#projList").append(msg);
 			}
 	    }
 	    
-	    $(".C_LMSMenuItem").fancybox({
+	    /*$(".C_LMSMenuItem").fancybox({
 			// maxWidth	: '95%',
 			// maxHeight	: '90%',
 			// fitToView	: false,
@@ -128,11 +115,10 @@ function C_LMSDash(_type) {
             closeClick  : false,
             openEffect  : 'elastic',
             closeEffect : 'elastic'        
-		});
+		});*/
 		
 
-		$(".C_LMSMenuItem2").click(function(){
-			//loadCourse($(this).attr('href'));
+		$(".C_LMSMenuItem").click(function(){
             dashMode = "player";
             currentCourse = $(this).attr('data-path');
             socket.emit('checkLoginStatus');

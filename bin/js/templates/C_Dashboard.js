@@ -23,7 +23,7 @@ function C_Dashboard(_type) {
     var myTimer;
     var launchItem;
     var scroller;
-    var scrollTimer;
+    //var scrollTimer;
     var launchItemParent;
 
 
@@ -129,7 +129,6 @@ function C_Dashboard(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate() {
-        var admin = user.admin;
 
         // Ensure that items are sorted as program, application, course, lesson
         proj.directories = proj.directories.sort(function (a, b) {
@@ -156,14 +155,14 @@ function C_Dashboard(_type) {
         var $stage = $('#stage');
         $stage.html('');
 
-        $stage.append("<div id='projListHeader'>my projects:</div>");
-
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
+        
+        $stage.append("<div id='projListHeader'>my projects:</div>");
 
         /*****************************************************************************
          BUILD Program Tree - It is a <UL> which is handled by the tree class in libs/jqTree - Styled in the CSS
          *****************************************************************************/
-        $stage.append('<div id="scrollableContent" class="box-wrap antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><ul id="projList" class="filetree"></ul></div></div></div>');
+        $stage.append('<div id="contentHolder" class="overthrow antiscroll-inner"><ul id="projList" class="filetree"></ul></div>');
 		//console.log(proj.directories);
         var tree_arr = [];
         //Cycle through the proj object
@@ -239,57 +238,7 @@ function C_Dashboard(_type) {
          ROOT User only button -- ONLY ROOT can add a new Program - ROOT and Program Admin can add new users to the system.
          *****************************************************************************/
 
-        var programAdmin = false;
-
-        if (!admin) {
-            // Check if user is a program admin
-            for (var i = 0; i < user.permissions.length; i++) {
-                var permission = user.permissions[i];
-                if (permission.permission == 'admin') {
-                    programAdmin = true;
-                    break;
-                }
-            }
-        }
-
-            //ADDING PROGRAMS IS ROOT ONLY
-        if (admin) {
-            $stage.append("<div id='adminAddProgram'>add program</div>");
-            $("#adminAddProgram").button({
-                icons: {
-                    primary: "ui-icon-circle-plus"
-                }
-            });
-
-            $("#adminAddProgram").click(function () {
-                registerContent("root", "root");
-            });
-        }
-        if (admin || programAdmin) {
-
-            //ROOT and admin can add users to the system.
-            $stage.append("<div id='adminAddUser'>add user</div>");
-            $("#adminAddUser").button({
-                icons: {
-                    primary: "ui-icon-circle-plus"
-                }
-            });
-
-            $("#adminAddUser").click(registerUser);
-        }
         
-        if (admin || programAdmin) {
-
-            //ROOT and admin can add users to the system.
-            $stage.append("<div id='gotoLMS'>view lms page</div>");
-            $("#gotoLMS").button({
-                icons: {
-                    primary: "ui-icon-circle-plus"
-                }
-            });
-
-            $("#gotoLMS").click(showLMS);
-        }
 
         ///////////////////////////////////////////////////////////////END ROOT ONLY ----------------------------STILL NEEDS TO BE SET UP ONCE USER TYPES ARE BEING RETURNED.  SIMPLE IF STATEMENT WILL SUFFICE
 
@@ -297,15 +246,12 @@ function C_Dashboard(_type) {
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType/*, onComplete: getUserList*/});
         }
-        scroller = $('.box-wrap').antiscroll().data('antiscroll');
+        //scroller = $('.box-wrap').antiscroll().data('antiscroll');
    }
 
     /************************************************************************************************* END OF buildTemplate*/
 
-	function showLMS(){
-		dashMode = 'lms'; 
-		socket.emit('checkLoginStatus');
-	}
+	
     /*****************************************************************************
      ADD ROLOVERS TO THE TREE MENU ITEMS
      *****************************************************************************/
@@ -317,27 +263,28 @@ function C_Dashboard(_type) {
                     $(this).addClass("programHover");
                     if(myItem.data('permission') == "admin"){
 	                    //$(this).append("<div id='myPref' class='programPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " program.'></div>");
-	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
-	                    $(this).append("<div id='myAdd' class='programAdd' title='add a course to " + $(this).parent().find("span").first().text() + "'></div>");
+	                    
 	                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myAdd' class='programAdd' title='add a course to " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
 					}
                 } else if (myItem.data('type') == "course") {
                     $(this).addClass("courseHover");
                     if(myItem.data('permission') == "admin"){
-                    	$(this).append("<div id='myOutline' class='courseOutline' title='outline the " + $(this).parent().find("span").first().text() + " course.'></div>");
-	                    $(this).append("<div id='mySearch' class='courseSearch' title='search the " + $(this).parent().find("span").first().text() + " course.'></div>");
-                        $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
-	                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
+                    	$(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myAdd' class='courseAdd' title='add a lesson to " + $(this).parent().find("span").first().text() + "'></div>");
-	                    $(this).append("<div id='myUserAdd' class='courseUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myRemove' class='courseRemove' title='remove the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='myPref' class='coursePref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='mySearch' class='courseSearch' title='search the " + $(this).parent().find("span").first().text() + " course.'></div>");
+	                    $(this).append("<div id='myOutline' class='courseOutline' title='outline the " + $(this).parent().find("span").first().text() + " course.'></div>");
 					}
                 } else {
                     $(this).addClass("projectHover");
                     if(myItem.data('permission') == "admin"){
-                        $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
-	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
+                        $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
-	                    $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
+	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
+	                    $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                }
                 }
 
@@ -500,11 +447,11 @@ function C_Dashboard(_type) {
                             }
                         });
                         myTimer = setInterval(function () {startlaunchtimer()}, 14000);
-                        $("#stage").append('<div id="preloadholder"></div>');
+                        $("#contentHolder").append('<div id="preloadholder"></div>');
 						$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     }
                 }
-                scrollTimer = setInterval(function () {scrollRefresh()}, 500);
+                //scrollTimer = setInterval(function () {scrollRefresh()}, 500);
             }
         );
     }
@@ -515,10 +462,10 @@ function C_Dashboard(_type) {
         window.clearInterval(myTimer);
     }
 
-    function scrollRefresh(){
+    /*function scrollRefresh(){
 		scroller.refresh();
         window.clearInterval(scrollTimer);
-    }
+    }*/
 
 	var moduleLessonWindow;
     /****************************************************************************************************************************END OF ROLLOVERS FOR TREE ITEMS*/
