@@ -293,7 +293,6 @@ function C_CoursePlayer(_course) {
         $stage.append(msg);
 	    
         $(".C_LMSMenuItem2").click(function(){
-            alert("Yeah, I clicked it mother-fucker!");
             for(var j = 0; j < module_arr.length; j++){
                 if(module_arr[j].name === $(this).attr('title')){
                     currentLesson = module_arr[j];
