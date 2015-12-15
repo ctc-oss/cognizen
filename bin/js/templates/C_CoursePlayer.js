@@ -80,30 +80,18 @@ function C_CoursePlayer(_course) {
 	    $("#stage").empty();
 	    $("body").append("<div id='stage2' class='C_LMSStage'></div>");
 	    $stage = $('#stage2');
-        $stage.append("<div id='gotoLMS' style='position:relative;left:80%;'>close course</div>");
-        $('#myLogin').css('visibility', 'hidden');
-        $("#gotoLMS").button({
-            icons: {
-                primary: "ui-icon-circle-plus"
-            }
-        });        
 
         $("#gotoLMS").click(function(){
             dashMode = 'lms'; 
-            $('#myLogin').removeClass('noBackground').css('visibility', 'visible');
             $("#stage2").remove();
             socket.emit('checkLoginStatus');
         });
-
-        $('#myLogin').addClass('noBackground');
-        //$stage.load(_path);
 		
 		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
     }
     
     function updateTOC(_data){
 	    //Clear the project list
-	    //$("#projList").empty();
         module_arr = [];
 	    if (transition == true) {
 			$('#stage2').css({'opacity': 0});
@@ -132,10 +120,6 @@ function C_CoursePlayer(_course) {
                  moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
                  moduleObj.indexPath = [coursePath +"/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/index.html"].join("");
                  module_arr.push(moduleObj);
-
-                 //var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
-                 //importModuleXML(currentXML);
-
             }
         }
 
@@ -143,13 +127,11 @@ function C_CoursePlayer(_course) {
         msg = '<h2 class="C_LMSCourseTitle">'+courseDisplayTitle+'</h2>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
-	    for(var i = 0; i < module_arr.length; i++){
-				
-				msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
-				
-				msg += module_arr[i].name;
-				msg += '</div>';
-				
+	    for(var i = 0; i < module_arr.length; i++){	
+			msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
+			
+			msg += module_arr[i].name;
+			msg += '</div>';
 	    }
 
         msg += '</div>';

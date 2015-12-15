@@ -55,7 +55,7 @@ function C_LMSDash(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate(){
-        try { $("#gotoLMS").remove(); } catch (e) {}
+        //try { $("#gotoLMS").remove(); } catch (e) {}
 	    $stage = $('#stage');
         
         $stage.html('');

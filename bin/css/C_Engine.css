@@ -452,6 +452,9 @@ TREE MENU STYLES
 	width: 80vw;
 	clear:both;
 	background-color: #eee;
+	border-style: solid;
+	border-width: thin;
+	border-color: #eee;
 	color: #9DA6AB;
 	font-weight: normal;
 	font-size: 14pt;
