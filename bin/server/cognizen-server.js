@@ -694,6 +694,31 @@ var Content = {
             socket.on('sendXapiStatement', function(data){
                 SocketHandler.socket(socket).sendXapiStatement(data);
             });
+
+            socket.on('sendXapiState', function (data, callback){
+                SocketHandler.socket(socket).sendXapiState(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
+            socket.on('getXapiState', function (data, callback){
+                SocketHandler.socket(socket).getXapiState(data, function (fdata){
+                    callback(fdata);
+                });
+            });  
+
+            socket.on('sendXapiActivityProfile', function (data, callback){
+                SocketHandler.socket(socket).sendXapiActivityProfile(data, function (fdata){
+                    callback(fdata);
+                });
+            }); 
+
+            socket.on('getXapiActivityProfile', function (data, callback){
+                SocketHandler.socket(socket).getXapiActivityProfile(data, function (fdata){
+                    callback(fdata);
+                });
+            });  
+                              
         });
     });
 })();

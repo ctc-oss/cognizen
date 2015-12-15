@@ -2569,15 +2569,70 @@ var SocketHandler = {
 
     },
 
-    sendXapiState: function(data){
+    sendXapiState: function(data, callback){
         var _this = this;
+        if(data.virg){
+            _this.mylrs.sendState(data.activity, data.agent, data.stateid, null, data.state, null, "*", function (err, resp, bdy) {
+                var returnData = {
+                    err : err,
+                    resp : resp,
+                    bdy : bdy
+                };
+                callback(returnData);
+            });
+        }
+        else{
+            _this.mylrs.sendState(data.activity, data.agent, data.stateid, null, data.state, adl.hash(JSON.stringify(data.matchHash)), null, function (err, resp, bdy) {
+                var returnData = {
+                    err : err,
+                    resp : resp,
+                    bdy : bdy
+                };
+                callback(returnData);
+            });            
+        }
 
-        _this.mylrs.sendState();
     },
 
-    getXapiState: function(data){
+    getXapiState: function(data, callback){
         var _this = this;
-        _this.mylrs.sendState();
+        _this.mylrs.getState(data.activity, data.agent, data.stateid, null, null, function (err, resp, bdy) {
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            callback(returnData);
+        });
+    },
+
+    sendXapiActivityProfile: function(data, callback){
+        var _this = this;
+        //new activity profile 
+        _this.mylrs.sendActivityProfile(data.activityid, data.profileid, data.profile, null, "*", function (err, resp, bdy) {
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            callback(returnData);
+        });
+
+        //TODO: update 
+        //_this.mylrs.sendActivity(data.activityid, data.profileid, data.profile, adl.hash(JSON.stringify(data.profHash)), null,function (err, resp, bdy) {} )
+    },
+
+    getXapiActivityProfile: function(data, callback){
+        var _this = this;
+
+        _this.mylrs.getActivityProfile(data.activityid, data.profileid, null, function (err, resp, bdy) {
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            callback(returnData);            
+        });
     },
 
     publishContent: function (data, callback){
