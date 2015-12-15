@@ -13,6 +13,7 @@ body{
 	background-color:#FEFEFE;
 	height: 100%;
 	width: 100%; 
+	overflow: hidden;
 }
 
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
@@ -34,7 +35,7 @@ body{
 
 #forgotSubmit{
 	position: relative;
-	margin-top: 4%;
+	margin-top: 4vh;
 	margin-right: auto;
 	margin-left: auto;
 	width: 230px;
@@ -46,8 +47,8 @@ body{
 	height: 202px;
 	margin-right: auto;
 	margin-left: auto;
-	margin-top: 20%;
-	margin-bottom: 5%;
+	margin-top: 20vh;
+	margin-bottom: 5vh;
 	background-image: url(images/cognizen_logo_final.png);
 }
 
@@ -474,6 +475,7 @@ TREE MENU STYLES
 	border-color: #eee;
 	margin-left: auto;
 	margin-right: auto;
+	overflow: hidden;
 }
 
 #logout{
