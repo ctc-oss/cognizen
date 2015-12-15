@@ -71,21 +71,6 @@ function C_Dashboard(_type) {
 	        }
         });
 
-        //Message sent from the server when they try to register an already registered e-mail account.
-        socket.on('registrationFailed', function () {
-            var myTitle = "Registration Failed";
-            var myMessage = "<p>Your registration attempt to register this user failed!</p><p>The e-mail address that you provided has already been registered.</p>";
-            doError(myTitle, myMessage);
-        });
-
-        //Message sent from the server letting the user know that their registration attempt was successful.
-        socket.on('registrationSuccess', function () {
-            socket.emit('getUserList');
-            var myTitle = "Registration Success";
-            var myMessage = "<p>You have successfully registered the user to the system!</p><p>A confirmation e-mail has been sent to their e-mail account. The user must click on the conformation link in that mail to enable their credentials before before logging into the cognizen content creation tool.</p>";
-            doError(myTitle, myMessage);
-        });
-
         socket.on('contentAdded', function (content) {
             // Find the list item, and attach the id to the data.
             $('#' + idIfyPath(content.path)).data('id', content._id);
@@ -626,7 +611,7 @@ function C_Dashboard(_type) {
     /***********************************************************************************************
      KEYBOARD EVENTS
      ***********************************************************************************************/
-
+	 
     function enableMainKeyEvents() {
         $("#adminAddProgram").bind("keyup", keyUpRegisterProgram);
         $("#adminAddUser").bind("keyup", keyUpRegisterUser);
@@ -668,7 +653,7 @@ function C_Dashboard(_type) {
             submitRegisterNewContent(currentParent, currentLevel);
         }
     }
-
+	
     function submitRegisterNewContent() {
         var myType = "course";
         var nameString = $("#myName").val().trim();
@@ -747,6 +732,7 @@ function C_Dashboard(_type) {
         }
     };
 
+/*
     function submitRegisterUser() {
         if (checkRegister() == true) {
             socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val().toLowerCase(), pass: $("#regPassword").val()});
@@ -759,6 +745,7 @@ function C_Dashboard(_type) {
             $("#dialog-registerUser").remove();
         }
     }
+*/
 
 
 	 /************************************************************************************
@@ -1005,7 +992,13 @@ function C_Dashboard(_type) {
             submitPrefUpdate(currentParent, currentLevel);
         }
     }
-
+	
+	//Pass through from the nav bar class for when creating a program. 
+	//Left it in here because the dash menu using it...
+	//There will also be a registerContent in the LMSDash...
+	this.registerContent = function(_parent, _level){
+		registerContent(_parent, _level);
+	}
     /************************************************************************************END PREFS*/
     /************************************************************************************
      REGISTER NEW CONTENT
@@ -1105,7 +1098,7 @@ function C_Dashboard(_type) {
     REGISTER NEW USERS
     ************************************************************************************/
     //Launch Register USER Dialog
-    function registerUser() {
+    /*function registerUser() {
         var registerString = '<div id="dialog-registerUser" title="Add New User">';
         	registerString += '<p class="validateTips">Add the new users details below.</p>';
         	registerString += '<label for="firstName" class="regField">first name: </label>';
@@ -1148,62 +1141,12 @@ function C_Dashboard(_type) {
                 Submit: submitRegisterUser
             }
         });
-    }
+    }*/
 
     /********************************************************************************************************************END REGISTER NEW USER*/
 
 
-    /************************************************************************************
-     CHECK THAT EMAIL IS VALID FORMAT
-     ************************************************************************************/
-    function isValidEmailAddress(emailAddress) {
-        var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
-        return pattern.test(emailAddress);
-    };
-
-    /************************************************************************************
-     checkRegister - Check that requirements for registration are met before sending to the server.
-     ************************************************************************************/
-        //Check that requirements for registration are met before sending to the server.
-    function checkRegister() {
-        $("#regError").remove();
-        if ($("#regPassword").val() == $("#regPasswordVer").val()) {
-            var myDomain = $("#regEmail").val().slice(-3);
-            if ($("#firstName").val() != "" && $("#lastName").val() != "") {
-                if (isValidEmailAddress($("#regEmail").val())) {
-                    return true;
-                } else {
-                    $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* You must register with a valid e-mail account.</div>");
-                }
-            } else {
-                $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* The name fields are mandatory.</div>");
-            }
-        } else {
-            $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* Your password entries must match.</div>");
-        }
-    }
-
-
-    /************************************************************************************
-     CHECK THAT EMAIL IS VALID FORMAT - Pop-up Box for issues from the server.
-     ************************************************************************************/
-    function doError(title, msg) {
-        $("#stage").append('<div id="dialog-error"><p>' + msg + '</p></div>');
-
-        $("#dialog-error").dialog({
-            modal: true,
-            width: 520,
-            title: title,
-            buttons: {
-                Ok: function () {
-                    $(this).dialog("close");
-                    $("#dialog-error").remove();
-                }
-            }
-        });
-    }
-
-    /************************************************************************************************* END OF REGISTRATION CODE*/
+    
 
     /*************************************************************************************************
      LEVAE PAGE CODE

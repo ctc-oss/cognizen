@@ -39,10 +39,8 @@ function C_LMSDash(_type) {
         add socket listeners - for server connectivity.
         *****************************************************************************/
         socket.on('recieveHostedProjectsFromDB', function(data) {
-	        console.log(data);
 	        updateMenu(data);
         });
-        console.log("user = " + user);//Will be used to populate real content as a parameter in the below function
     }
 
 
@@ -63,9 +61,7 @@ function C_LMSDash(_type) {
         $stage.append("<div id='projListHeader'>my courses:</div>");
 
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
-        
-        //$stage.append("<div id='adminAddProgram'>view authoring page</div>");
-        
+                
         var msg =  '<div id="contentHolder" class="overthrow antiscroll-inner">';
         	msg += '<div id="projList">';
         	msg += '</div></div>';
@@ -92,31 +88,6 @@ function C_LMSDash(_type) {
 			}
 	    }
 	    
-	    /*$(".C_LMSMenuItem").fancybox({
-			// maxWidth	: '95%',
-			// maxHeight	: '90%',
-			// fitToView	: false,
-			// width		: '95%',
-			// height		: '90%',
-			// autoSize	: false,
-			// closeClick	: false,
-			// openEffect	: 'elastic',
-			// closeEffect	: 'elastic',
-   //          autoResize: true,
-   //         iframe : {
-   //          scrolling : 'no'
-   //         }    
-            maxWidth    : 1054,
-            maxHeight   : 768,
-            fitToView   : false,
-            width       : '100%',
-            height      : '100%',
-            autoSize    : false,
-            closeClick  : false,
-            openEffect  : 'elastic',
-            closeEffect : 'elastic'        
-		});*/
-		
 
 		$(".C_LMSMenuItem").click(function(){
             dashMode = "player";

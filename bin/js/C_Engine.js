@@ -29,7 +29,7 @@ var dashMode = "author";
 var currentCourse;
 var currentLesson = {};
 var attemptId = "";
-
+var oldIE = false;
 var isBoth = true;
 
 var module_arr = [];										//Array holding all module data
@@ -187,6 +187,7 @@ function initScripts(_data){
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
+				"js/templates/C_NavBar.js",
 				"js/templates/C_LMSDash.js",
 				"js/templates/C_CoursePlayer.js",
 				"js/libs/jquery.cookie.js",
@@ -210,17 +211,13 @@ function initScripts(_data){
 	}
 }
 
-var oldIE = false;
-
 function isOldIE() {
     "use strict";
 
     // Detecting IE
-
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
-    //console.log("isOldIE = " + oldIE);
 }
 
 /****************************************************
@@ -245,58 +242,13 @@ function buildInterface(){
         console.log(user);
         if (user) {
 	        var msg = "<div id='dash-header' class='dash-header'><div class='dash-user-welcome'> Welcome back, " + user.firstName + "</div></div>";
-	        
-	        if(isBoth){
-		        msg += "<div id='dash-navbar' class='dash-navbar'></div>";
-	        }
-	        
 	        msg += "<div id='stage'></div>";
 	        
 	        $('body').append(msg);
 	        
-	        if(isBoth){
-		        var admin = user.admin;
-		        var programAdmin = false;
-				
-				
-		        if (!admin) {
-		            // Check if user is a program admin
-		            for (var i = 0; i < user.permissions.length; i++) {
-		                var permission = user.permissions[i];
-		                if (permission.permission == 'admin') {
-		                    programAdmin = true;
-		                    break;
-		                }
-		            }
-		        }
-				
-				if (admin || programAdmin) {
-					//ROOT and admin can add users to the system.
-		            $("#dash-navbar").append("<div id='adminAddUser'>add user</div>");
-		            $("#adminAddUser").click(registerUser);
-		        }
-				
-		            //ADDING PROGRAMS IS ROOT ONLY
-		        if (admin) {
-		            $("#dash-navbar").append("<div id='adminAddProgram'>add program</div>");
-		            $("#adminAddProgram").click(function () {
-		                registerContent("root", "root");
-		            });
-		        }
-		        
-		        
-		        if (admin || programAdmin) {
-					//ROOT and admin can add users to the system.
-		            $("#dash-navbar").append("<div id='gotoLMS'>hosting</div>");
-		            $("#gotoLMS").click(showLMS);
-		        }
-		        
-		        $("#dash-navbar").append("<div id='gotoAuthoring'>authoring</div>");
-		        $("#gotoAuthoring").click(function () {
-		            dashMode = 'author'; 
-					socket.emit('checkLoginStatus');
-		        });
-	        }
+			var navBar = new C_NavBar();
+			navBar.initialize();
+            
             if (dashMode === "author"){
 	            currentTemplate = new C_Dashboard(currentTemplateType);
             }
@@ -314,9 +266,6 @@ function buildInterface(){
         currentTemplate.initialize();
     });
 
-
-	
-
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
 	//if so, set them up.
 	transition = $(data).find('transition').attr('value');
@@ -326,66 +275,11 @@ function buildInterface(){
 		transitionLength = $(data).find('transitionLength').attr('value');
 	 }
 
-
 	//Load the first page.
 	loadPage();
 }
 
-/************************************************************************************
-REGISTER NEW USERS
-************************************************************************************/
-//Launch Register USER Dialog
-function registerUser() {
-    var registerString = '<div id="dialog-registerUser" title="Add New User">';
-    	registerString += '<p class="validateTips">Add the new users details below.</p>';
-    	registerString += '<label for="firstName" class="regField">first name: </label>';
-    	registerString += '<input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-    	registerString += '<label for="lastName" class="regField">last name: </label>';
-    	registerString += '<input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-    	registerString += '<label for="regEmail" class="regField">email: </label>';
-    	registerString += '<input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-    	registerString += '<label for="regPassword" class="regField">password: </label>';
-    	registerString += '<input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-    	registerString += '<label for="regPasswordVer" class="regField">verify password: </label>';
-    	registerString += '<input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
 
-    $("#stage").append(registerString);
-
-    $("#firstName").alpha();
-    $("#lastName").alpha();
-
-    $("#dialog-registerUser").dialog({
-        modal: true,
-        width: 550,
-        close: function () {
-            enableMainKeyEvents();
-            disableRegisterUserKeyEvents();
-        },
-        open: function () {
-            disableMainKeyEvents();
-            enableRegisterUserKeyEvents();
-        },
-        buttons: {
-            Cancel: function () {
-                $("#firstName").remove();
-                $("#lastName").remove();
-                $("#regEmail").remove();
-                $("#regPassword").remove();
-                $("#regPasswordVer").remove();
-                $(this).dialog("close");
-                $("#dialog-registerUser").remove();
-            },
-            Submit: submitRegisterUser
-        }
-    });
-}
-
-/********************************************************************************************************************END REGISTER NEW USER*/
-
-function showLMS(){
-	dashMode = 'lms'; 
-	socket.emit('checkLoginStatus');
-}
 
 /****************************************************
 ********************************** STEP 4 - LOAD PAGE
