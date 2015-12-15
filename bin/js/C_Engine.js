@@ -201,8 +201,7 @@ function initScripts(_data){
 				"js/libs/fancybox/jquery.fancybox-thumbs.js",
 				"js/libs/antiscroll.js",
 				"js/libs/jquery.mousewheel-3.0.6.pack.js",
-				"js/libs/xapiwrapper.min.js",
-				"js/libs/SCORMToXAPIFunctions.js"
+				"js/libs/xapiwrapper.min.js"
 				], function($) {
 	    //Once all of the external js has loaded, build the application.
 	    buildInterface();
