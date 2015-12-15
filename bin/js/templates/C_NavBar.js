@@ -180,24 +180,6 @@ function C_NavBar() {
     }
 
 
-    /************************************************************************************
-     CHECK THAT EMAIL IS VALID FORMAT - Pop-up Box for issues from the server.
-     ************************************************************************************/
-    function doError(title, msg) {
-        $("#stage").append('<div id="dialog-error"><p>' + msg + '</p></div>');
-
-        $("#dialog-error").dialog({
-            modal: true,
-            width: 520,
-            title: title,
-            buttons: {
-                Ok: function () {
-                    $(this).dialog("close");
-                    $("#dialog-error").remove();
-                }
-            }
-        });
-    }
-
+   
     /************************************************************************************************* END OF REGISTRATION CODE*/
 }
