@@ -13,21 +13,62 @@ body{
 	background-color:#FEFEFE;
 	height: 100%;
 	width: 100%; 
+	overflow: hidden;
 }
 
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 #myLogin{
 	background-color: #FEFEFE;
-	width:1024px;
-	height: 768px;
-	left: 50%;
-	top: 50%;
-	margin-left: -512px;
-	margin-top: -384px;
-	position: absolute;
+	width:90vw;
+	height: 90vh;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5vh;
+	margin-bottom: 5vh;
 	overflow: hidden;
-	background-image: url(images/background.png);
+	border-radius: 8px;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: thin;
+}
+
+#forgotSubmit{
+	position: relative;
+	margin-top: 4vh;
+	margin-right: auto;
+	margin-left: auto;
+	width: 230px;
+	display: block;
+}
+
+.loginLogo{
+	width: 400px;
+	height: 202px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 20vh;
+	margin-bottom: 5vh;
+	background-image: url(images/cognizen_logo_final.png);
+}
+
+#logForm{
+	/*position: absolute;
+	top: 315px;
+	right: 120px;*/
+	width: 430px;
+	font-weight: lighter;
+	font-family: hnl;
+	color: white;
+	padding-top: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#loginFieldSet{
+	border-color: #CCCCCC;
+	border-width: thin;
+	border-radius: 8px;
 }
 
 #myCanvas.noBackground{
@@ -228,24 +269,6 @@ body{
 	text-align: center;
 }
 
-#logForm{
-	position: absolute;
-	top: 315px;
-	right: 120px;
-	width: 430px;
-	font-weight: lighter;
-	font-family: hnl;
-	color: white;
-	padding-top: 5px;
-	
-}
-
-#loginFieldSet{
-	border-color: #CCCCCC;
-	border-width: thin;
-	border-radius: 8px;
-}
-
 .assignUserName{
 	color: #3383bb;
 	border-style:solid;
@@ -372,13 +395,6 @@ input.regText{
 	width: 150px;
 }
 
-#forgotSubmit{
-	position: absolute;
-	top: 460px;
-	right: 205px;
-	width: 230px;
-}
-
 div#loader {
 	margin: auto;
 	border: 1px solid #fff;
@@ -459,6 +475,7 @@ TREE MENU STYLES
 	border-color: #eee;
 	margin-left: auto;
 	margin-right: auto;
+	overflow: hidden;
 }
 
 #logout{

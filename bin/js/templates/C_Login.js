@@ -125,7 +125,8 @@ function C_Login(_type) {
     	*********************************************************************************/
 
 	    //Add the login form.
-		var msg = "<form id='logForm'>";
+		var msg =  "<div class='loginLogo'></div>";
+			msg += "<form id='logForm'>";
 			msg += "<fieldset id='loginFieldSet'>";
 			msg += "<label class='loginField' for='username'>email: </label>";
 			msg += "<input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'/><br><br>";
@@ -134,8 +135,9 @@ function C_Login(_type) {
 			msg += "<div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div>";
 			msg += "</fieldset>";
 			msg += "</form>";
+			msg += "<div id='forgotSubmit'>forgot password</div>";
 		
-		$("#stage").append(msg);
+		$("#myLogin").append(msg);
 
 		$("#loginSubmit").button();
 		//Add rounded corners for IE because it SUX
@@ -144,19 +146,6 @@ function C_Login(_type) {
 		}
 
 		$("#loginSubmit").click(parseLogin);
-
-		/*$("#stage").append("<div id='registerSubmit'>register</div>");
-
-		$("#registerSubmit").button();
-
-		//Add rounded corners for IE because it SUX
-		if(/msie [1-9]./.test(navigator.userAgent.toLowerCase())){
-			$("#registerSubmit").corner();
-		}
-
-		$("#registerSubmit").click(doRegister);*/
-
-		$("#stage").append("<div id='forgotSubmit'>forgot password</div>");
 
 		$("#forgotSubmit").button();
 
