@@ -78,12 +78,11 @@ function C_CoursePlayer(_course) {
      *****************************************************************************/
     function buildTemplate(){
 	    $("#stage").empty();
-	    $("body").append("<div id='stage2' class='C_LMSStage'></div>");
-	    $stage = $('#stage2');
+	    $stage = $('#stage');
 
         $("#gotoLMS").click(function(){
             dashMode = 'lms'; 
-            $("#stage2").remove();
+            $("#stage").remove();
             socket.emit('checkLoginStatus');
         });
 		
@@ -94,7 +93,7 @@ function C_CoursePlayer(_course) {
 	    //Clear the project list
         module_arr = [];
 	    if (transition == true) {
-			$('#stage2').css({'opacity': 0});
+			$('#stage').css({'opacity': 0});
      	}
         
         courseData = _data;
@@ -124,7 +123,8 @@ function C_CoursePlayer(_course) {
         }
 
 	    var msg;
-        msg = '<h2 class="C_LMSCourseTitle">'+courseDisplayTitle+'</h2>';
+        msg = '<div class="C_CourseItem">';
+        msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'</div>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
 	    for(var i = 0; i < module_arr.length; i++){	
@@ -134,7 +134,7 @@ function C_CoursePlayer(_course) {
 			msg += '</div>';
 	    }
 
-        msg += '</div>';
+        msg += '</div></div>';
 
         $stage.append(msg);
 	    
@@ -172,7 +172,7 @@ function C_CoursePlayer(_course) {
         //Called from C_Engine.js - allows for transitions - fade the page first then load the new.
     this.destroySelf = function () {
         if (transition == true) {
-            TweenMax.to($('#stage2'), transitionLength, {css: {opacity: 0}, ease: transitionType, onComplete: fadeComplete});
+            TweenMax.to($('#stage'), transitionLength, {css: {opacity: 0}, ease: transitionType, onComplete: fadeComplete});
         } else {
             fadeComplete();
         }

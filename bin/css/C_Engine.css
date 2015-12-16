@@ -14,6 +14,8 @@ body{
 	height: 100%;
 	width: 100%; 
 	overflow: hidden;
+	margin-left: 0px !important;
+	margin-right: 0px !important;
 }
 
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
@@ -82,7 +84,7 @@ body{
 
 .dash-user-welcome{
 	position: absolute;
-	right: 15px;
+	right: 17px;
 	top: 96px;
 	font-size: 10pt;
 	font-family: hnl;
@@ -143,16 +145,33 @@ body{
 .C_LMSLessonListHolder{
 	width: auto;
 	height: auto;
-	border-radius: 8px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
 	border-color: #ccc;
 	border-style: solid;
 	border-width: thin;
 	padding: 10px;
 	text-align: center;
+	background-color: #fff;
 }
 
 .C_LMSCourseTitle{
+	width: 80vw;
+	clear:both;
+	background-color: #eee;
+	border-style: solid;
+	border-width: thin;
+	border-color: #eee;
+	color: #9DA6AB;
+	font-weight: normal;
+	font-size: 14pt;
 	font-family: hnl;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	text-indent: 5px;
+	padding-bottom: 5px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .C_LMSMenuItem{
@@ -440,12 +459,20 @@ div#loader {
 	border-width: thin;
 }
 
+.C_CourseItem{
+	width: 80vw;
+	height: auto;
+	background-color: #eee;
+	color: #9DA6AB;
+	font-family: hnl;
+	border-radius: 3px;
+	clear: both;
+	font-size: 14pt;
+	margin-left: auto;
+	margin-right: auto;
+}
 
-/**********************************************************************************************
-TREE MENU STYLES
-**********************************************************************************************/
 #projListHeader{
-	/*right: 398px;*/
 	width: 80vw;
 	clear:both;
 	background-color: #eee;
@@ -481,7 +508,7 @@ TREE MENU STYLES
 #logout{
 	position: absolute;
 	top: 5px;
-	right: 10px;
+	right: 17px;
 	color: #6BCAF2 !important;
 	text-decoration: none;
 	font-weight: normal;
@@ -520,7 +547,7 @@ TREE MENU STYLES
 
 #adminAddUser{
 	position: relative;
-	right: 10px;
+	right: 2px;
 	float: right;
 	color: #eee;
 	margin-right: 15px;
@@ -565,6 +592,9 @@ TREE MENU STYLES
 	color: #6BCAF2;
 }
 
+/**********************************************************************************************
+TREE MENU STYLES
+**********************************************************************************************/
 .treeview, .treeview ul {
 	padding: 0px;
 	margin: 0px;
