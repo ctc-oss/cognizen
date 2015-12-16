@@ -114,7 +114,8 @@ function C_Dashboard(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate() {
-
+		$("#gotoLMS").removeClass('navbar-active').addClass('navbar-item');
+		$("#gotoAuthoring").addClass('navbar-active').removeClass('navbar-item'); 
         // Ensure that items are sorted as program, application, course, lesson
         proj.directories = proj.directories.sort(function (a, b) {
             var order = function(value) {

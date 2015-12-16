@@ -64,11 +64,14 @@ function C_NavBar() {
 	        
 	        if (admin || programAdmin) {
 				//ROOT and admin can add users to the system.
-	            $("#dash-navbar").append("<div id='gotoLMS'>hosting</div>");
-	            $("#gotoLMS").click(showLMS);
+	            $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
+	            $("#gotoLMS").click(function(){
+		            dashMode = 'lms';
+					socket.emit('checkLoginStatus');
+	            });
 	        }
 	        
-	        $("#dash-navbar").append("<div id='gotoAuthoring'>authoring</div>");
+	        $("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
 	        $("#gotoAuthoring").click(function () {
 	            dashMode = 'author'; 
 				socket.emit('checkLoginStatus');
@@ -143,11 +146,6 @@ function C_NavBar() {
 	    }
 	
 	/********************************************************************************************************************END REGISTER NEW USER*/
-	
-	function showLMS(){
-		dashMode = 'lms'; 
-		socket.emit('checkLoginStatus');
-	}
 	
 	/************************************************************************************
      CHECK THAT EMAIL IS VALID FORMAT

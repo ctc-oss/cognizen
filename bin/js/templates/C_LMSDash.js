@@ -53,7 +53,8 @@ function C_LMSDash(_type) {
      buildTemplate()
      *****************************************************************************/
     function buildTemplate(){
-        //try { $("#gotoLMS").remove(); } catch (e) {}
+       	$("#gotoAuthoring").removeClass('navbar-active').addClass('navbar-item');
+		$("#gotoLMS").addClass('navbar-active').removeClass('navbar-item'); 
 	    $stage = $('#stage');
         
         $stage.html('');

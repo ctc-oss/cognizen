@@ -53,9 +53,6 @@ body{
 }
 
 #logForm{
-	/*position: absolute;
-	top: 315px;
-	right: 120px;*/
 	width: 430px;
 	font-weight: lighter;
 	font-family: hnl;
@@ -485,7 +482,7 @@ TREE MENU STYLES
 	position: absolute;
 	top: 5px;
 	right: 10px;
-	color: #3383bb;
+	color: #6BCAF2 !important;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -495,6 +492,7 @@ TREE MENU STYLES
 
 #logout a{
 	text-decoration: none;
+	color: #6BCAF2 !important;
 }
 
 #logout a:visited{
@@ -535,7 +533,7 @@ TREE MENU STYLES
 	color: #6BCAF2;
 }
 
-#gotoLMS{
+.navbar-item{
 	position: relative;
 	left: 10px;
 	float: left;
@@ -546,31 +544,11 @@ TREE MENU STYLES
 	cursor: pointer;
 }
 
-#gotoLMS:hover{
-	color: #6BCAF2;
-}
-
-#gotoAuthoring{
-	position: relative;
-	left: 10px;
-	float: left;
-	color: #eee;
-	margin-left: 15px;
-	font-family: hnl;
-	cursor: hand;
-	cursor: pointer;
-}
-
-#gotoAuthoring:hover{
+.navbar-item:hover{
 	color: #6BCAF2;
 }
 
 #preloadholder{
-	/*position: absolute;
-	top: 154px;
-	right: 65px;
-	width: 550px;
-	height: 500px;*/
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -578,7 +556,14 @@ TREE MENU STYLES
 	z-index: 10000;
 }
 
-
+.navbar-active{
+	position: relative;
+	left: 10px;
+	float: left;
+	margin-left: 15px;
+	font-family: hnl;
+	color: #6BCAF2;
+}
 
 .treeview, .treeview ul {
 	padding: 0px;
