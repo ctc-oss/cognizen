@@ -486,7 +486,7 @@ function configureIndex(){
 		}
 	});
 	
-	if(!indexState){
+	if(!indexState && $(courseData).find('course').attr('section508') === 'true'){
 		accHideIndex();
 	}
 
