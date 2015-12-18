@@ -142,12 +142,61 @@ body{
 	margin-right: auto;
 }
 
+.C_CourseItem{
+	width: 80vw;
+	height: auto;
+	background-color: #eee;
+	color: #9DA6AB;
+	font-family: hnl;
+	border-radius: 15px;
+	clear: both;
+	font-size: 14pt;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 10px;
+}
+
 .C_LMSCoursePoster{
-	
+	background-color: #eee;
+	background-size: cover;
+	height: 300px;
+	width: 200px;
+	margin-left: 10px;
+	float: left;
+	margin-right: 10px;
+}
+
+.C_LMSCourseTitle{
+	width: auto;
+	color: #9DA6AB;
+	font-weight: bold;
+	font-size: 14pt;
+	font-family: hnl;
+	padding-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 15px;
+}
+
+.C_CloseCourseButton{
+	float: right;
+	background: #8E969C;
+	color: #eee;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: hand;
+    cursor: pointer;
+}
+
+.C_LMSCourseDescription {
+	font-size: 10pt;
+	margin-left: 5px;
+	margin-right: 15px;
 }
 
 .C_LMSLessonListHolder{
-	width: 80%;
+	width: 50%;
 	float: right;
 	height: auto;
 	border-bottom-left-radius: 3px;
@@ -156,27 +205,10 @@ body{
 	border-style: solid;
 	border-width: thin;
 	padding: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 	text-align: center;
 	background-color: #fff;
-}
-
-.C_LMSCourseTitle{
-	width: 80vw;
-	clear:both;
-	background-color: #eee;
-	border-style: solid;
-	border-width: thin;
-	border-color: #eee;
-	color: #9DA6AB;
-	font-weight: normal;
-	font-size: 14pt;
-	font-family: hnl;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	text-indent: 5px;
-	padding-bottom: 5px;
-	margin-left: auto;
-	margin-right: auto;
 }
 
 .C_LMSMenuItem{
@@ -201,6 +233,10 @@ body{
 .C_LMSMenuItem:hover{
 	background-color: #eee;
 	color: orange;
+}
+
+.clear-div{
+	clear: both;
 }
 
 .cp-menu{
@@ -462,19 +498,6 @@ div#loader {
 	border-color: #EEEEEE;
 	border-radius: 6px;
 	border-width: thin;
-}
-
-.C_CourseItem{
-	width: 80vw;
-	height: auto;
-	background-color: #eee;
-	color: #9DA6AB;
-	font-family: hnl;
-	border-radius: 3px;
-	clear: both;
-	font-size: 14pt;
-	margin-left: auto;
-	margin-right: auto;
 }
 
 #projListHeader{

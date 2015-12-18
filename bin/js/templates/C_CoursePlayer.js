@@ -124,7 +124,7 @@ function C_CoursePlayer(_course) {
 
 	    var msg;
         msg = '<div class="C_CourseItem">';
-        msg += '<div class="C_LMSCoursePoster"></div>';
+        msg += '<img class="C_LMSCoursePoster" src="./css/images/placeholder.jpg"></img>';
         msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'<span class="C_CloseCourseButton">X</span></div>';
         msg += '<div class="C_LMSCourseDescription">';
         msg += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae magna nulla. Integer fermentum velit ac felis blandit, at dapibus quam posuere. Nulla nisi mi, ornare id turpis ac, interdum cursus lorem. Cras in mi fermentum, vestibulum orci sit amet, accumsan ipsum. Sed venenatis id purus quis pretium. Pellentesque a quam ac ex efficitur finibus ac sit amet leo. Etiam neque tortor, accumsan id tortor non, porttitor luctus arcu. Nunc sit amet mauris lacinia, ultrices sapien vel, convallis diam. Donec nec eros ac ipsum mattis tempor nec id libero. Etiam quis auctor nibh.</p>';
@@ -140,7 +140,8 @@ function C_CoursePlayer(_course) {
 			msg += '</div>';
 	    }
 
-        msg += '</div></div>';
+        msg += '</div>';
+        msg += '<div class="clear-div"></div></div>';
 
         $stage.append(msg);
         
