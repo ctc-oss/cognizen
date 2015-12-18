@@ -142,8 +142,13 @@ body{
 	margin-right: auto;
 }
 
+.C_LMSCoursePoster{
+	
+}
+
 .C_LMSLessonListHolder{
-	width: auto;
+	width: 80%;
+	float: right;
 	height: auto;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;

@@ -124,7 +124,13 @@ function C_CoursePlayer(_course) {
 
 	    var msg;
         msg = '<div class="C_CourseItem">';
-        msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'</div>';
+        msg += '<div class="C_LMSCoursePoster"></div>';
+        msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'<span class="C_CloseCourseButton">X</span></div>';
+        msg += '<div class="C_LMSCourseDescription">';
+        msg += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae magna nulla. Integer fermentum velit ac felis blandit, at dapibus quam posuere. Nulla nisi mi, ornare id turpis ac, interdum cursus lorem. Cras in mi fermentum, vestibulum orci sit amet, accumsan ipsum. Sed venenatis id purus quis pretium. Pellentesque a quam ac ex efficitur finibus ac sit amet leo. Etiam neque tortor, accumsan id tortor non, porttitor luctus arcu. Nunc sit amet mauris lacinia, ultrices sapien vel, convallis diam. Donec nec eros ac ipsum mattis tempor nec id libero. Etiam quis auctor nibh.</p>';
+        msg += '<p>Type:<br/>Reports Generation</p>';
+        msg += '<p>Duration: 1.25 hours<br/>Assigned by: John Smith | Published: 21OCT2015 | Complete by: 01JAN2016</p>';
+        msg += '</div>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    
 	    for(var i = 0; i < module_arr.length; i++){	
@@ -137,6 +143,10 @@ function C_CoursePlayer(_course) {
         msg += '</div></div>';
 
         $stage.append(msg);
+        
+        $(".C_CloseCourseButton").click(function(){
+	       $("#gotoLMS").click(); 
+        });
 	    
         $(".C_LMSMenuItem2").click(function(){
             for(var j = 0; j < module_arr.length; j++){
