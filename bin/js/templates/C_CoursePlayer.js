@@ -159,8 +159,8 @@ function C_CoursePlayer(_course) {
         });
 
 	    $(".C_LMSMenuItem2").fancybox({
-            maxWidth    : 1054,
-            maxHeight   : 768,
+            maxWidth    : '100%',
+            maxHeight   : '100%',
             fitToView   : false,
             width       : '100%',
             height      : '100%',

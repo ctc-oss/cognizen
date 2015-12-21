@@ -13,7 +13,7 @@ body{
 	background-color:#FEFEFE;
 	height: 100%;
 	width: 100%; 
-	overflow: hidden;
+	overflow: auto;
 	margin-left: 0px !important;
 	margin-right: 0px !important;
 }
@@ -164,6 +164,7 @@ body{
 	margin-left: 10px;
 	float: left;
 	margin-right: 10px;
+	margin-bottom: 10px;
 }
 
 .C_LMSCourseTitle{
@@ -181,8 +182,9 @@ body{
 	float: right;
 	background: #8E969C;
 	color: #eee;
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
+    text-indent: 1px;
     text-align: center;
     border-radius: 50%;
     cursor: hand;
@@ -197,7 +199,8 @@ body{
 
 .C_LMSLessonListHolder{
 	width: 50%;
-	float: right;
+	/*float: right;*/
+	clear: both;
 	height: auto;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
@@ -205,7 +208,9 @@ body{
 	border-style: solid;
 	border-width: thin;
 	padding: 10px;
-	margin-right: 10px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 10px;
 	margin-bottom: 10px;
 	text-align: center;
 	background-color: #fff;
@@ -232,11 +237,12 @@ body{
 
 .C_LMSMenuItem:hover{
 	background-color: #eee;
-	color: orange;
+	color: #3383bb;
 }
 
 .clear-div{
 	clear: both;
+	padding: 2px;
 }
 
 .cp-menu{
@@ -312,7 +318,7 @@ body{
 
 .C_LMSMenuItem2:hover{
 	background-color: #eee;
-	color: orange;
+	color: #3383bb;
 }
 
 #content{
@@ -619,6 +625,8 @@ div#loader {
 	font-family: hnl;
 	color: #6BCAF2;
 }
+
+
 
 /**********************************************************************************************
 TREE MENU STYLES
