@@ -161,20 +161,25 @@ function C_NavBar() {
         //Check that requirements for registration are met before sending to the server.
     function checkRegister() {
         $("#regError").remove();
-        if ($("#regPassword").val() == $("#regPasswordVer").val()) {
-            var myDomain = $("#regEmail").val().slice(-3);
-            if ($("#firstName").val() != "" && $("#lastName").val() != "") {
-                if (isValidEmailAddress($("#regEmail").val())) {
-                    return true;
-                } else {
-                    $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* You must register with a valid e-mail account.</div>");
-                }
-            } else {
-                $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* The name fields are mandatory.</div>");
-            }
-        } else {
-            $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/><br/>* Your password entries must match.</div>");
-        }
+	    if($("#regPassword").val().length > 7){
+	        if ($("#regPassword").val() == $("#regPasswordVer").val()) {
+	            var myDomain = $("#regEmail").val().slice(-3);
+			  if($("#firstName").val() != "" && $("#lastName").val() != ""){
+		            if (isValidEmailAddress( $("#regEmail").val())) {
+		                return true;
+		            } else {
+		                $("#dialog-registerUser").append("<br/><br/><br/><div id='regError' style='color:#FF0000'>* You must register with a valid e-mail account.</div>");
+		            }
+			  }else{
+				  $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/>* The name fields are mandatory.</div>");
+			  }
+	        } else {
+	            $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/>* Your password entries must match.</div>");
+	        }
+	    }
+	    else{
+		    $("#dialog-registerUser").append("<div id='resError' style='color:#FF0000'><br/><br/><br/>* Your password must be at least 8 characters long.</div>");
+	    }  
     }
 
 

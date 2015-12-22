@@ -268,18 +268,18 @@ function C_Login(_type) {
 	    }
     }
 
-    function submitRegister(){
-    	if (checkRegister() == true) {
-    		socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val().toLowerCase(), pass: $("#regPassword").val()});
-    		$("#firstName").remove();
-			$("#lastName").remove();
-			$("#regEmail").remove();
-			$("#regPassword").remove();
-			$("#regPasswordVer").remove();
-    		$("#dialog-registerUser").dialog("close");
-			$("#dialog-registerUser").remove();
-        }
-    }
+   //  function submitRegister(){
+   //  	if (checkRegister() == true) {
+   //  		socket.emit("registerUser", { firstName: $("#firstName").val(), lastName: $("#lastName").val(), user: $("#regEmail").val().toLowerCase(), pass: $("#regPassword").val()});
+   //  		$("#firstName").remove();
+			// $("#lastName").remove();
+			// $("#regEmail").remove();
+			// $("#regPassword").remove();
+			// $("#regPasswordVer").remove();
+   //  		$("#dialog-registerUser").dialog("close");
+			// $("#dialog-registerUser").remove();
+   //      }
+   //  }
 
     function keyUpSubmitResetPass(event){
 	    if(event.which == 13 || event.keyCode == 13){
@@ -389,82 +389,6 @@ function C_Login(_type) {
 			var myMessage = "All form fields are required.</p><p>You must enter e-mail address and password before continuing.";
 			doError(myTitle, myMessage);
 		};
-    }
-
-
-    /************************************************************************************
-     REGISTER NEW USERS
-     ************************************************************************************/
-    //Launch Register Dialog
-    function doRegister() {
-        var registerString = '<div id="dialog-registerUser" title="Add New User">';
-        	registerString += '<p class="validateTips">Add the new users details below.</p>';
-        	registerString += '<label for="firstName" class="regField">first name: </label>';
-        	registerString += '<input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="lastName" class="regField">last name: </label>';
-        	registerString += '<input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regEmail" class="regField">email: </label>';
-        	registerString += '<input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regPassword" class="regField">password: </label>';
-        	registerString += '<input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regPasswordVer" class="regField">verify password: </label>';
-        	registerString += '<input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
-
-        $("#stage").append(registerString);
-        $("#firstName").alphanum();
-        $("#lastName").alphanum();
-
-        $("#dialog-registerUser").dialog({
-            modal: true,
-            width: 550,
-            close: function(){
-					enableMainKeyEvents();
-					disableRegisterKeyEvents();
-				},
-			open:  function(){
-					disableMainKeyEvents();
-					enableRegisterKeyEvents();
-				},
-            buttons: {
-                Cancel: function () {
-	                
-                	$("#firstName").remove();
-                    $("#lastName").remove();
-                    $("#regEmail").remove();
-                    $("#regPassword").remove();
-                    $("#regPasswordVer").remove();
-                    $(this).dialog("close");
-                    $("#dialog-registerUser").remove();
-                },
-                Submit: submitRegister
-            }
-        });
-    }
-
-
-    //Validate email address...
-    function isValidEmailAddress(emailAddress) {
-    	var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
-    	return pattern.test(emailAddress);
-    };
-
-    //Check that requirements for registration are met before sending to the server.
-    function checkRegister() {
-        $("#regError").remove();
-        if ($("#regPassword").val() == $("#regPasswordVer").val()) {
-            var myDomain = $("#regEmail").val().slice(-3);
-		  if($("#firstName").val() != "" && $("#lastName").val() != ""){
-	            if (isValidEmailAddress( $("#regEmail").val())) {
-	                return true;
-	            } else {
-	                $("#dialog-registerUser").append("<br/><br/><br/><div id='regError' style='color:#FF0000'>* You must register with a valid e-mail account.</div>");
-	            }
-		  }else{
-			  $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/>* The name fields are mandatory.</div>");
-		  }
-        } else {
-            $("#dialog-registerUser").append("<div id='regError' style='color:#FF0000'><br/><br/><br/>* Your password entries must match.</div>");
-        }
     }
 
     //Check that password requirements are met before sending it to the server.

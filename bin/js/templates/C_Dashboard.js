@@ -1095,59 +1095,7 @@ function C_Dashboard(_type) {
             }
         });
     }
-    /************************************************************************************
-    REGISTER NEW USERS
-    ************************************************************************************/
-    //Launch Register USER Dialog
-    /*function registerUser() {
-        var registerString = '<div id="dialog-registerUser" title="Add New User">';
-        	registerString += '<p class="validateTips">Add the new users details below.</p>';
-        	registerString += '<label for="firstName" class="regField">first name: </label>';
-        	registerString += '<input type="text" name="firstName" id="firstName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="lastName" class="regField">last name: </label>';
-        	registerString += '<input type="text" name="lastName" id="lastName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regEmail" class="regField">email: </label>';
-        	registerString += '<input type="text" name="regEmail" id="regEmail" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regPassword" class="regField">password: </label>';
-        	registerString += '<input type="password" name="regPassword" id="regPassword" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
-        	registerString += '<label for="regPasswordVer" class="regField">verify password: </label>';
-        	registerString += '<input type="password" name="regPasswordVer" id="regPasswordVer" value="" class="regText text ui-widget-content ui-corner-all" /></div>';
-
-        $("#stage").append(registerString);
-
-        $("#firstName").alpha();
-        $("#lastName").alpha();
-
-        $("#dialog-registerUser").dialog({
-            modal: true,
-            width: 550,
-            close: function () {
-                enableMainKeyEvents();
-                disableRegisterUserKeyEvents();
-            },
-            open: function () {
-                disableMainKeyEvents();
-                enableRegisterUserKeyEvents();
-            },
-            buttons: {
-                Cancel: function () {
-                    $("#firstName").remove();
-                    $("#lastName").remove();
-                    $("#regEmail").remove();
-                    $("#regPassword").remove();
-                    $("#regPasswordVer").remove();
-                    $(this).dialog("close");
-                    $("#dialog-registerUser").remove();
-                },
-                Submit: submitRegisterUser
-            }
-        });
-    }*/
-
-    /********************************************************************************************************************END REGISTER NEW USER*/
-
-
-    
+   
 
     /*************************************************************************************************
      LEVAE PAGE CODE
