@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+	<!--[if lt IE 7 ]> <html class="ie6"> <![endif]-->
+	<!--[if IE 7 ]>    <html class="ie7"> <![endif]-->
+	<!--[if IE 8 ]>    <html class="ie8"> <![endif]-->
+	<!--[if IE 9 ]>    <html class="ie9"> <![endif]-->
+	<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+	<head>
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimal-ui"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<title>Cognizen Dev Index</title>
+
+		<!--LOAD STYLES THAT LOCATION CHANGE AT PUBLISH  -->
+		<!--CSS for the media player. -->
+		<link href="../css/CoreCSS/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>
+		<!--cognizen base CSS - DO NOT CHANGE!!!! EDIT ProgramOverride.css, CourseOverride.css or ModuleOverride.css depending on level of change. -->
+		<link href="../css/CourseCSS/jqueryui/jquery-ui.min.css" rel="stylesheet"></link>
+		<link href="../css/CoreCSS/C_Engine.css" rel="stylesheet" type="text/css"/>
+		<!--CSS for the program layer - gets moved at publish time... -->
+		<script type="text/javascript">
+			var programFilename;
+			var courseFileName;
+			var moduleFileName;
+			//fix for #3594
+			var useMobile = false;
+			try{
+				if(window.matchMedia("(max-device-width: 1023px), (max-device-height: 699px)").matches) {
+					useMobile = true;
+				}
+			}
+			catch(err){}
+			
+			if(useMobile) {
+				//load mobile Override CSS files on mobile devices
+				programFilename = "../css/ProgramCSS/ProgramOverrideMobile.css";
+				courseFilename = "../css/CourseCSS/CourseOverrideMobile.css";
+				moduleFilename = "./css/ModuleCSS/ModuleOverrideMobile.css";
+			}else{
+				//load regular Override CSS files
+				programFilename = "../css/ProgramCSS/ProgramOverride.css";
+				courseFilename = "../css/CourseCSS/CourseOverride.css";
+				moduleFilename = "./css/ModuleCSS/ModuleOverride.css";
+			}
+
+			var programFileref = document.createElement("link");
+			programFileref.rel = "stylesheet";
+			programFileref.type = "text/css";
+			programFileref.href = programFilename;
+			document.getElementsByTagName("head")[0].appendChild(programFileref);
+			
+			var courseFileref = document.createElement("link");
+			courseFileref.rel = "stylesheet";
+			courseFileref.type = "text/css";
+			courseFileref.href = courseFilename;
+			document.getElementsByTagName("head")[0].appendChild(courseFileref);
+			
+			var moduleFileref = document.createElement("link");
+			moduleFileref.rel = "stylesheet";
+			moduleFileref.type = "text/css";
+			moduleFileref.href = moduleFilename;
+			document.getElementsByTagName("head")[0].appendChild(moduleFileref);
+		</script>
+		<!--  LOAD SCRIPTS  -->
+		<!-- Detect IE10 and add class to html element -->
+		<script>
+			if(Function('/*@cc_on return document.documentMode===10@*/')()){
+				document.documentElement.className+=' ie10';
+			}
+		</script>
+
+		<script type="text/javascript" src="../js/libs/jquery.min.js"></script>
+		<!-- Load everything else - what's loading can be found in C_Engine.js - Step 2. -->
+		<script data-main="../js/C_Engine" src="../js/libs/require.js"></script>
+
+
+		<!--  This loads the proper scripts if this is running INSIDE of the authoring environment -->
+		<script type="text/javascript">
+			function writeAuthoringPath(){
+				var loc = window.location.pathname;
+				var dir = loc.substring(0, loc.lastIndexOf('/'));
+				var jqueryuiPath = unescape(dir + '/../css/CourseCSS/jqueryui/jquery-ui.min.css');
+				var courseOverridePath =  (useMobile ? unescape(dir + '../css/CourseCSS/CourseOverrideMobile.css') : unescape(dir + '/../css/CourseCSS/CourseOverride.css'));
+				var programOverridePath = (useMobile ? unescape(dir + '/../../css/ProgramCSS/ProgramOverrideMobile.css') :unescape(dir + '/../../core-prog/ProgramCSS/ProgramOverride.css'));
+				var moduleOverridePath =  (useMobile ? unescape(dir + 'css/ModuleCSS/ModuleOverrideMobile.css') :unescape('css/ModuleCSS/ModuleOverride.css'));
+				var editPaths = '<link href="../../../../core-files/css/mediaElement/mediaelementplayer.css" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+ jqueryuiPath +'" rel="stylesheet"></link>';
+					editPaths += '<link href="../../../../core-files/css/C_Engine.css" rel="stylesheet" type="text/css"/>';
+					editPaths += '<link href="'+programOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+moduleOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<link href="'+courseOverridePath+'" rel="stylesheet" type="text/css"></link>';
+					editPaths += '<script type="text/javascript" src="../../../../core-files/js/libs/jquery.min.js">\x3C/script>';
+					editPaths += '<script data-main="../../../../core-files/js/C_Engine" src="../../../../core-files/js/libs/require.js">\x3C/script>';
+				document.write(editPaths);
+			}
+		</script>
+
+		<script type="text/javascript">
+			window.jQuery || writeAuthoringPath();
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

@@ -1,0 +1,840 @@
+<?xml version='1.0' encoding='utf-8'?>
+<content><courseInfo><preferences><mode value="production" /><lessonWidth value="1024" /><lessonHeight value="700" /><lockRequestDuration value="30" /><courseTitle value="USSOCOM Demo Course" /><lessonTitle value="Demo Lesson" /><lessondisplaytitle value="CTC PROPRIETARY INFORMATION" /><nextBack value="true" /><survey link="null" value="false" /><testout link="null" value="false" /><closelesson value="false" /><transition value="true" /><transitionType value="Circ.easeIn" /><transitionLength value=".3" /><progressMode value="linear" /><linear value="false" /><pageCount value="true" /><passFail value="false" /><restartOnFail value="false" /><scored value="true" /><minScore value="75" /><scorm value="true" /><scormVersion value="2004_4th" /><breadcrumb home="true" id="0" value="true" x="12" y="80" /><masterIndex showpagenumbers="false" value="true" /><docs value="false" /><home value="0" /><menu value="13" /><courseRetake value="false" /><feedback value="false" /><feedbackType value="standard" /><reloadPage value="true" /><finalLesson value="true" /><help course="false" height="750" url="media/test.png" value="false" width="800" /><tlo value="undefined" /><id value="55d233bc55978d032a000007" /><lessondisplaytitle value="CTC PROPRIETARY INFORMATION" /><search value="true" /></preferences><glossary courseGlossary="true" value="false"><glossaryitem><term>ACK</term><content>Acknowledgement</content></glossaryitem></glossary><resources /></courseInfo><pages><page audio="null" audiotranscript="false" id="32b844c8-4be4-06e4-62d9-d1238a3bc0e3" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        &lt;c&gt; Concurrent Technologies Corporation&lt;br /&gt;
+&amp;nbsp;&lt;/c&gt;
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;strong&gt;&lt;em&gt;Concurrent Technologies Corporation (CTC)&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;strong&gt;&lt;em&gt;ELearning Levels and Micro-learning&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;strong&gt;&lt;em&gt;13 &amp;nbsp;October 2015&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;strong&gt;&lt;em&gt;Prepared for Mr. John Wilcox, USSOCOM&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+      </content></page><page audio="null" audiotranscript="false" eo="undefined" id="701a557b-7bb1-a392-56c3-c6cabeaa9fbc" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        eLearning and Micro-learning examples
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;The following pages lay&amp;nbsp;out various training development and delivery options of that can be provided by&amp;nbsp;CTC. The demonstration is broken into sections:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;eLearning&amp;nbsp;
+	&lt;ul&gt;&lt;li&gt;Overview&lt;/li&gt;&lt;li&gt;Levels 1, 2 and 3 based on the Chapman Alliance Industry Standards and Benchmarks and examples&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Mirco-learning
+	&lt;ul&gt;&lt;li&gt;Overview&lt;/li&gt;&lt;li&gt;Examples&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;&lt;p style="text-align: center;"&gt;&amp;nbsp;&lt;/p&gt;
+
+      </content></page><page audio="null" audiotranscript="false" id="15d05a8c-3628-4e19-73a4-9df4b6a897a4" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        eLearning
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;&lt;strong&gt;eLearning &lt;/strong&gt;is a vast topic encompassing &amp;ldquo;learning&amp;rdquo; that happens in an electronic fashion, can be self-paced or conducted in groups and generally is provided for at a distance, hence the term &amp;ldquo;distance learning&amp;rdquo;. Within distance learning, web-based training products exist.&lt;/p&gt;&lt;p&gt;The way that industry has worked to define and describe what goes into eLearning products for DL have become commonly referred to as &amp;ldquo;levels&amp;rdquo; of content. These levels are broad definitions that establish characteristics of eLearning content and the average cost per finished hour in terms of labor hours and estimated price. Most estimates include &amp;ldquo;developer&amp;rdquo; time, but by creating a proprietary development environment that provides for development consistency and easy content updates, CTC can reduce overall costs,&amp;nbsp; while also making our content easier to update and consistent to build. The estimates included in this demo&amp;nbsp;are derived from industry standards via a study conducted by the Chapman Alliance. These standards provide government clients with a range of expected cost when it comes to pricing and scoping DL products. More information on the study that set the parameters (as shown below) are located at:&lt;em&gt;&amp;nbsp;http://www.chapmanalliance.com/howlong/.&lt;/em&gt;&lt;/p&gt;&lt;p&gt;CTC content can be deployed&amp;nbsp;as stand-alone products, hosted on any Learning Management System (LMS), available on a tablet or mobile device, and support Section 508 requirements, an American&amp;rsquo;s with Disability Act (ADA) Section devoted to electronic delivery of information.&lt;/p&gt;
+
+      </content></page><page audio="null" audiotranscript="false" id="2356c4be-875c-87a8-5f6d-f428f3707d4b" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Level 1 eLearning / Distance Learning Options
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;div&gt;Level 1 eLearning content is comprised of content pages, text, graphics, perhaps simple audio, perhaps simple video, test questions.&amp;nbsp;PowerPoint-to-eLearning often falls into this category (almost a direct conversion from existing training materials) and are basically pages with assessment.&amp;nbsp;&lt;/div&gt;&lt;table align="right" border="1" cellpadding="1" cellspacing="1" style="width: 500px;"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;/th&gt;&lt;th scope="col"&gt;Rapid Development, Simple Projects&lt;/th&gt;&lt;th scope="col"&gt;Average Typical&lt;/th&gt;&lt;th scope="col"&gt;Advanced, Complex, More Media&lt;/th&gt;&lt;th scope="col"&gt;Average Cost per Finished Hour&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Level 1 eLearning (Basic) - Content Pages and Assessments&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;49:1&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;79:1&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;125:1&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;$10K&amp;nbsp;&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 2 eLearning (Interactive) - Level 1, plus 25%+ interactive exercises&amp;nbsp;&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;127:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;184:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;267:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;$18.5K&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 3 eLearning (Advanced) - Simulations, Games, Award Winning type&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;217:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;490:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;716:1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;$50K&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;ul&gt;&lt;li&gt;Instructional design - 42%&lt;/li&gt;&lt;li&gt;Media design - 33%&lt;/li&gt;&lt;li&gt;Testing/Software dev &amp;ndash; 7%&lt;/li&gt;&lt;li&gt;Quality Assurnce - 3&lt;/li&gt;&lt;li&gt;Prog Mgmt - 7%&lt;/li&gt;&lt;li&gt;SME - 6%&lt;/li&gt;&lt;li&gt;Other - 2%&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;In the following pages, you will view a number of examples of Level 1 eLearning&amp;nbsp;content.&lt;/p&gt;&lt;p&gt;&lt;em&gt;Industry Standards via Chapman Alliance Benchmarks -&amp;nbsp;http://www.chapmanalliance.com/howlong/&lt;/em&gt;&lt;/p&gt;
+
+      </content><page audio="null" id="319fea1a-f7af-a394-4c23-bbdf1db9c67b" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static"><title>
+          Determining a Subnet Mask (Level 1 Example)
+        </title><content>
+        &lt;p&gt;There are multiple ways to determine a subnet mask. Here is a simple way to determine subnets using the power of 2&amp;#39;s.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Remember: 2&lt;sup&gt;n&lt;/sup&gt; = 2 * 2 for n number of times &amp;ndash; 2*2*2*&amp;hellip;n&amp;hellip;*2.&lt;/p&gt;&lt;p&gt;The 5 questions to ask:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;&lt;strong&gt;How many subnets does the chosen subnet mask produce?&lt;/strong&gt;&lt;ul&gt;&lt;li&gt;2&lt;sup&gt;x&lt;/sup&gt; &amp;ndash; 2 = number of subnets. X is the number of masked bits or the 1s. For example, in 11000000, the number of 1s gives 2&lt;sup&gt;2&lt;/sup&gt; &amp;ndash; 2 subnets, or (2*2) &amp;ndash; 2 = 2 subnets.&lt;br /&gt;
+  &amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;How many hosts per subnet?&lt;/strong&gt;&lt;ul&gt;&lt;li&gt;2&lt;sup&gt;y&lt;/sup&gt; &amp;ndash; 2 = number of hosts per subnet. Y is the number of unmasked bits, or the 0s. For example, in 11000000, the number of 0s gives 2&lt;sup&gt;6&lt;/sup&gt; &amp;ndash; 2 hosts, or (2*2*2*2*2*2) &amp;ndash; 2 = 62 hosts.&lt;br /&gt;
+  &amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;What are the valid subnets?&lt;/strong&gt;&lt;ul&gt;&lt;li&gt;256 &amp;ndash; subnet mask =&amp;nbsp; block size or base number. For example, 256 &amp;ndash; 192 = 64. The first subnet consists of 64 addresses, therefore the next subnet would be the base number plus itself or 64+64 = 128. This is done until the subnet mask is reached, (i.e. subnet 1 = 64, subnet 2 = 64+64 = 128 and subnet 3 = 64+64+64 = 192).&lt;br /&gt;
+  &amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;What is the broadcast address of each subnet?&lt;/strong&gt;&lt;ul&gt;&lt;li&gt;The broadcast address is all host bits turned on, which is the number immediately preceding the next subnet.&lt;br /&gt;
+  &amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;What are the valid hosts?&lt;/strong&gt;&lt;ul&gt;&lt;li&gt;Valid hosts are the numbers between the subnets, omitting all 0s and all 1s.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ol&gt;
+
+      </content></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="39cb588f-3758-f02d-908f-7985bceb9068" img="GuardBand.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          Satellite Carriers and Guard Bands&amp;nbsp;(Level 1 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Depending on the type and amount of data being transmitted, a&amp;nbsp;single&amp;nbsp;satellite carrier may not need to utilize an entire satellite transponder. When this is the case, additional satellite carriers can be placed within the transponder. For example, recall that a&amp;nbsp;TDMA carrier has 1&amp;nbsp;outbound carrier, but it has&amp;nbsp;multiple inbound carriers. These inbound carriers are&amp;nbsp;placed within the satellite transponder,&amp;nbsp;which may have&amp;nbsp;36 MHz, 54 MHz or 72 MHz bandwidth.&amp;nbsp;When multiple carriers are placed on the same transponder, they must&amp;nbsp;be separated to reduce interference. The space between the transponders and/or carriers is known as a &amp;ldquo;guard band,&amp;rdquo; as shown in the image below.&lt;/p&gt;
+
+        </content><caption>
+          Satellite Carriers and Guard Bands
+        </caption></page><page alt="Antenna Lobes" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="25607170-6868-6be5-171f-87014eca3bf0" img="antenna_lobes.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          Antenna Radiation Lobes&amp;nbsp;(Level 1 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;&lt;span style="font-size: 12pt; line-height: 115%; font-family: Arial, sans-serif;"&gt;All antenna patterns have radiation lobes; some (e.g., directional antenna patterns) are more distinct than others. These lobes may be classified into major lobes (or main lobes), minor lobe, side lobe, and back lobe&lt;/span&gt;.&amp;nbsp;&lt;span style="font-size: 12pt; line-height: 115%; font-family: Arial, sans-serif;"&gt;The image below shows the location of the lobes on the radiation beam and the 2D&amp;nbsp;graph representation of this beam.&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
+
+        </content><caption>
+          &lt;br /&gt;
+Antenna Radiation Lobes
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="b20b9074-fad3-a067-5b43-b4eb181548cc" img="signal_flow.png" layout="left" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          Signal Flow&amp;nbsp;(Level 1 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;&lt;span style="font-family: Arial, sans-serif;"&gt;RF &lt;/span&gt;signals can be either&amp;nbsp;received from space&amp;nbsp;by an&amp;nbsp;antenna and processed back to the baseband, or&amp;nbsp;sent from the baseband to be processed by the antenna into space.&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Receive Signal (RX)&lt;/strong&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p&gt;When radio wave signals are received, they bounce off the parabolic reflector (dish) and are received into a feed horn. From the feed horn, the signal is sent via waveguide&amp;nbsp;to a Low Noise Blocker (LNB) where the satellite RF frequency&amp;nbsp;is down converted to an intermediate frequency so that a modem can convert the analog signal into a digital signal.&amp;nbsp;Typically, the signal is sent from the LNB to the modem via coax cable. The digital signal&amp;nbsp;is sent from the modem&amp;nbsp;via Ethernet to the baseband.&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Transmit Signal (TX)&lt;/strong&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p&gt;When signals are transmitted they leave the baseband for the modem, and travel via coax cable from the modem to the Block Up Converter (BUC). The&amp;nbsp;BUC up converts the signal from the intermediate frequency signal into a higher RF frequency to operate on the satellite and the high power amplifier&amp;nbsp;amplifies&amp;nbsp;the signal.&amp;nbsp;The&amp;nbsp;transmission&amp;nbsp;signal continues to travel via&amp;nbsp;waveguide from the BUC towards the feed horn assembly, which may include the RF circulator&amp;nbsp;and is transmitted to the&amp;nbsp;feed&amp;nbsp;horn. Then, the signal&amp;nbsp;is reflected off the parabolic reflector out into free space.&lt;span style="font-family: Arial, sans-serif;"&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+        </content><caption>
+          Antenna Block Diagram
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="097667c9-90f8-371d-c458-7cf9ff02413d" img="SDN_M9_img_4.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          SDN Baseband Infrastructure&amp;nbsp;(Level 1 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;The baseband portion of the SDN Family of Systems has been redesigned to create commonalities across the Family of Systems. With this redesign, the systems were greatly reduced in size, weight and power consumption.&lt;/p&gt;&lt;p&gt;The SDN Family of Systems use 2 architecture types:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Routing of each classified enclave&lt;/li&gt;&lt;li&gt;Nesting of the classified enclaves. (Nesting is explained on the next page.)&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Routing of each classified enclave is as follows:&amp;nbsp;The SDN encryption layer uses either an industry standard virtual private network (VPN) on the Non-secure Internet Protocol Router Network (NIPRNet) side or&amp;nbsp;Type 1 National Security Agency (NSA)-accredited inline encryptors on the Secret Internet Protocol Router Network (SIPRNet) and&amp;nbsp;TOP SECRET&amp;nbsp;(TS).&lt;/p&gt;&lt;p&gt;The basic SDN routing&amp;nbsp;architecture&amp;nbsp;shown below includes the three (3) USSOCOM classified enclaves connectected directly to the modem satellite router: NIPR, SIPR&amp;nbsp;and TS.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          SDN Baseband Infrastructure
+        </caption></page><page alt="Advantages of Systems Integration" audio="null" enlarge="" galTransType="elastic" id="49608e1c-b111-f610-dd6e-ad492566a5f7" img="T3_M14_Img_system_integration.png" layout="right" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" popup="" prevpage="null" type="static"><title>
+          Advantages of Systems Integration&amp;nbsp;(Level 1 Example)
+        </title><content>
+              &lt;p&gt;Although every mission has different requirements, each mission requires a version of tactical communications. Over time, commanders and operators have come to rely heavily on the capabilities that SDN, TACLAN and RIS offer. Each of these systems offers a unique capability; however, when combined, these capabilities increase exponentially. As missions become more complex, the demand for integrating these systems grows to meet ever-changing mission requirements.&lt;/p&gt;&lt;p&gt;A few of the advantages to integrating these systems include:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Leverages SDN transport capability to provide Wide Area Network (WAN) and SIE access to TACLAN and the RIS&lt;/li&gt;&lt;li&gt;Provides a centralized Local Area Network (LAN) for all communications services via TACLAN&lt;/li&gt;&lt;li&gt;Interconnects down-range voice services to TACLAN and the SIE via the RIS&lt;/li&gt;&lt;li&gt;Enhances overall communications capability and flexibility.&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;
+
+            </content><caption>
+              TACLAN, SDN and RIS
+            </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page alt="image description" audio="null" enlarge="" galTransType="elastic" id="8af54601-969e-7d91-ccf7-81ed8b4380b6" img="T1_M2_Transport_System_w-discription_CR5-12.png" layout="top" nextpage="null" popalt="" popcaps="" popup="" prevpage="null"><title>
+          SSEP System Capability&amp;nbsp;(Level 1 Example)
+        </title><content>
+        &lt;p&gt;Since the SSEP is an information technology (IT) gateway, the SSEP uses the SCAMPI node to provide voice, video and data services from the SIE.&lt;/p&gt;&lt;p&gt;The SCAMPI node is the physical system that resides at each SSEP and garrison location. This node provides connections to form the SIE. The SCAMPI node is considered an Everything-over-Internet Protocol (EoIP) system which employs a flexible and modular design, with the architecture broken into four main systems:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Transport System&lt;/li&gt;&lt;li&gt;Encryption Devices&lt;/li&gt;&lt;li&gt;Data System&lt;/li&gt;&lt;li&gt;Voice System.&lt;/li&gt;&lt;/ul&gt;
+
+      </content><caption>
+        &lt;p&gt;&lt;strong&gt;SCAMPI Node&lt;/strong&gt;&lt;/p&gt;
+
+      </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page audio="null" audiotranscript="false" id="6b98d99d-8d0f-f250-252e-d06ead7e397b" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><title>
+          Remote Options File: Important Aspects&amp;nbsp;(Level 1 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;In addition to the 4 key aspects of remote options files, other important aspects are: [SECURITY], [NMS], [VLAN], [ETH0_1], [DNS_1], [DHCP_1], [ROUTE_1_0], [SAT0_1], [ETH0], [LAN],&amp;nbsp;[MODEM_PARAMETERS], [ODU],&amp;nbsp;[TIMEPLAN], [SPOOF], and [FREQ_TRANS].&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;em&gt;NOTE: &lt;/em&gt;&lt;em&gt;All IP addresses are used for training purposes and do not reflect real-world IP addresses.&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Click &lt;a href="media/SDN_M8_OptionsFiles.pdf" onclick="window.open(this.href, '', 'resizable=no,status=no,location=no,toolbar=no,menubar=no,fullscreen=no,scrollbars=no,dependent=no'); return false;"&gt;here&lt;/a&gt;&amp;nbsp;to view all options file configuration data in one document.&amp;nbsp; A portable document format (PDF) will open in a new window in the web browser. If needed, print the document for future use.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SECURITY&amp;nbsp;&lt;/strong&gt;tells the modem the password (typically set as &amp;ldquo;P@55w0rd! or in older modems &amp;ldquo;iDirect!&amp;rdquo;), and the administrator&amp;rsquo;s password.&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;[SECURITY]&lt;/strong&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;br /&gt;
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; password = $idi2$.d....$6vX2XCwBMgTqAYHsUI1PXtRA84q&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; admin_password = $idi2$.XG...$BJv5ktS.A2Pno.qM/ZLMnLofmqQ&lt;/p&gt;&lt;p&gt;&lt;strong&gt;NMS&amp;nbsp;&lt;/strong&gt;provides the modem with the NMS information of the remote modem. When building an options file, this data is automatically output through iBuilder.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;[NMS]&amp;nbsp;&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; timeout = 15&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; server_ip = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; broadcast_ip = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; keep_alive_port_number = 2860&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; NRD_server_ip = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; NRD_remote_status_port_number = 2859&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; service_monitor_interval = 1000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; download_monitor_group = 239.192.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; download_monitor_port = 9000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; download_monitor_credentials = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; is_nms_managed = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; event_server_ip = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; event_server_port = 2860&lt;/p&gt;&lt;p&gt;&lt;strong&gt;VLAN:&lt;/strong&gt;&amp;nbsp;Some modems have multiple ports on the back; the ports function as switches that can&amp;nbsp;be separated into multiple&amp;nbsp;VLANs. However, VLANs do not operate like normal-layer 3 Cisco switches. When VLANs are created through the satellite modem, the information is actually &amp;ldquo;VLANed&amp;rdquo; over the satellite instead of when it enters the satellite router.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[VLAN]&lt;/strong&gt;&amp;nbsp;&amp;nbsp;&lt;br /&gt;
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; mode = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; vid = 1&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;strong&gt;ETHO_1&amp;nbsp;&lt;/strong&gt;is a very important aspect of options files; it contains the field that assigns the IP address to the modem IP configuration&amp;nbsp;and the field that sets the subnet mask of the modem as follows:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Address field: Assigns the IP address to the modem&lt;/li&gt;&lt;li&gt;Netmask field: Sets the subnet mask of the modem&lt;/li&gt;&lt;li&gt;Rip_enabled: Should be set to 1 but doesn&amp;rsquo;t usually change&lt;strong&gt;.&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;[ETH0_1]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; address = 192.168.2.1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; netmask = 255.255.255.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rip_enabled = 1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;DNS_1&lt;/strong&gt;&amp;nbsp;tells the modem the location of the DNS server, the cache time and the time-out period. The field &amp;ldquo;dns_forward_timeout&amp;rdquo; is measured in milliseconds, so &amp;ldquo;dns_forward_timeout = 2000&amp;rdquo; means that an accessed website will time out after 2 seconds.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[DNS_1]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_enable = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_primary_server_name = Primary DNS&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_primary_server_addr = 192.168.2.1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_secondary_server_name = Secondary DNS&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_secondary_server_addr = 8.8.8.8&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_cache_size = 100&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_cache_ttl_min = 300&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_cache_ttl_max = 86400&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_forward_queue_size = 1000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dns_forward_timeout = 2000&lt;/p&gt;&lt;p&gt;&lt;strong&gt;DHCP_1&lt;/strong&gt;&amp;nbsp;either enables or disables the Dynamic Host Configuration Protocol (DHCP) mode on the satellite router&amp;rsquo;s switch. Typically, DHCP is not enabled in USSOCOM&amp;rsquo;s applications; the&amp;nbsp;open switch ports can be used&amp;nbsp;based on the open IP address that falls within the subnet mask of ETHO_1.&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;br /&gt;&lt;strong&gt;[DHCP_1]&lt;/strong&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;br /&gt;
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; dhcp_mode = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dhcp_lease_seconds = 43200&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dhcp_lease_range = 192.168.2.2-192.168.2.10&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dhcp_dns_server_ip = 192.168.2.1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dhcp_dns_server2_ip = 8.8.8.8&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dhcp_gateway_ip = 192.168.2.1&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ROUTE_1_0&lt;/strong&gt;&amp;nbsp;tells the modem the satellite&amp;#39;s route. In the example, it is labeled with the SAT0 interface, which is defined as &amp;ldquo;interface = sat0&amp;rdquo;.&lt;br /&gt;
+​&lt;br /&gt;&lt;strong&gt;[ROUTE_1_0]&lt;/strong&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;br /&gt;
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; interface = sat0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; network = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; netmask = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; gateway = 0.0.0.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; metric = 1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SAT0_1&lt;/strong&gt;&amp;nbsp;is a sub-interface that creates the satellite&amp;#39;s route, as well as the interface that will be &amp;ldquo;talking to&amp;rdquo; the iDirect hub and the PP.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[SAT0_1]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; address = 10.10.10.2&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; netmask = 255.255.255.252&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rip_enabled = 1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ETHO&amp;nbsp;&lt;/strong&gt;provides management IP information; however, in the USSOCOM configuration all modem management is conducted through port ETH0_1 (ETH0 is not used).&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[ETHO]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; interface = ixp1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; phy_count = 8&lt;/p&gt;&lt;p&gt;&lt;strong&gt;LAN&amp;nbsp;&lt;/strong&gt;assigns the IP address for the LAN, which also sets the default gateway for the DHCP server.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[LAN]&amp;nbsp;&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; lan_ip = 192.168.2.1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; lan_subnet_ip = 255.255.255.0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; lan_gw_ip = 0.0.0.0&lt;/p&gt;&lt;p&gt;&lt;strong&gt;MODEM_PARAMETERS&lt;/strong&gt;&amp;nbsp;provides the modem with both receive and transmit parameters. (Receive [rx]: frequency, acquisition timeframe in milliseconds, data rate, FEC, and spectral inversion; Transmit [tx]: frequency, data rate, FEC, spectral inversion, initial acquisition power level.)&lt;/p&gt;&lt;p&gt;&lt;strong&gt;[MODEM_PARAMETERS]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; data_port = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; loopback = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; interface_type = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_freq = 1050000000 (assigns the frequency range in L-band)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_acqrange = 600000 (assigns the acquisition time in ms)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_bitrate = 512000 (data rate the modem will be receiving)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_mode = 2&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_modtype = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_fecrate = 15 (the FEC rate for the receive side)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_scram = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_diff = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_specinv = 0 (sets the spectral inversion, to ensure the frequency range is in L-band)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_freq = 1250000000 (transmit frequency in L-band)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_bitrate = 512000 (transmit data rate)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_mode =&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_modtype = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_clksource = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_fecrate = 15 (sets the FEC rate for transmit side)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_scram = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_diff = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_specinv = 0 (sets spectral inversion to keep freq within L-band)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_power_in_dbm = -35.000000 (sets initial power level in dBm)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_fsd = 38749&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tx_spreading_factor = 1 (sets&amp;nbsp;the transmit&amp;nbsp;spreading factor which is spread spectrum technique)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rx_spreading_factor = 1(sets the receive spreading factor)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; is_demod2_active = 0&lt;/p&gt;&lt;p&gt;&lt;strong&gt;ODU&amp;nbsp;&lt;/strong&gt;tells the&amp;nbsp;modem to either enable or disable the DC power and 10 MHz clock on both the transmit and receive lines. These are used to provide power and timing to the BUC and LNB respectively. ODU also enables or disables pulse width modulation (PWM) on the transmit side, which is used for the CW carrier.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[ODU]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; music_present = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; odu_rx_dc_power = 1(initializes the DC power to power the LNB)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; odu_rx_10_mhz = 0 (initializes the 10 MHz reference clock for the LNB)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; odu_tx_dc_power = 1 (initializes the DC power for the BUC or anything in the transmit path)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; odu_tx_10_mhz = 1 (initializes the 10 MHz reference clock on the transmit side)&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; odu_disable_tx_pwm = 0 (disables the pulse width modulation)&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Timeplan&amp;nbsp;&lt;/strong&gt;provides the FEC block for the transmit and receive side.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[TIMEPLAN]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; fec_blocks_per_outroute_frame = 19&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; fec_blocks_per_inroute_frame = 19&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SPOOF&lt;/strong&gt;&amp;nbsp;tells the modem how long to wait for packet acknowledgment, the size of the receive buffer and other IP-related acknowledgment characteristics.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;[SPOOF]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_debug_level = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_passthru = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_timeout = 100&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_oos_buffer_size = 32240&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_keepalive_timeout_ms = 6000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_fwd_ack_ms_timeout = 200&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_fade_timeout = 9000000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_reap_timeout = 480000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_syn_timeout = 120000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_max_sessions = -1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_accel_connect = 1&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_accel_port = 80&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_retx_buffer_size = 52633&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_peer_retx_buffer_size = 52633&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_merge_on = 0&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; spoof_compression_on = 0&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;FREQ_TRANS&amp;nbsp;&lt;/strong&gt;provides the local oscillator for both the BUC (up_translation) and LNB (down_translation).&amp;nbsp;&lt;strong&gt;FREQ_TRANS&amp;nbsp;&lt;/strong&gt;is represented in MHz. &amp;nbsp;&lt;br /&gt;&lt;br /&gt;
+Add&amp;nbsp;&lt;strong&gt;[FREQ_TRANS]&lt;/strong&gt;&amp;nbsp;to&amp;nbsp;&lt;strong&gt;[tx_freq]&lt;/strong&gt;&amp;nbsp;and&amp;nbsp;&lt;strong&gt;[rx_freq]&lt;/strong&gt;&amp;nbsp;(under Modem_Parameters) to get the actual carrier frequency for the remote.&lt;br /&gt;&lt;strong&gt;[FREQ_TRANS] + [tx_freq]&lt;/strong&gt;&amp;nbsp;and&amp;nbsp;&lt;strong&gt;[rx_freq]&lt;/strong&gt;&amp;nbsp;(under Modem_Parameters) = actual carrier frequency for your remote.&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;br /&gt;
+​&lt;strong&gt;[FREQ_TRANS]&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; down_translation = 10750.000000&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; up_translation = 13050.000000&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+        </content></page><page attempts="1" audio="null" btnText="Submit" feedbackdisplay="pop" feedbacktype="undifferentiated" graded="false" id="17b202a8-1ab5-f881-14c6-5572e8b3066b" layout="multipleChoice" mandatory="true" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" randomize="false" timed="false" type="kc"><title>
+          Knowledge Check 1/2&amp;nbsp;(Level 1 Example)
+        </title><question>
+          &lt;p&gt;The anti-static strap should be grounded to the same equipment ground as the system. The system is grounded through a grounding rod.&lt;/p&gt;
+
+        </question><option correct="true"><content>
+            True
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="false"><content>
+            False
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><attemptresponse>
+          That is not correct.  Please try again.
+        </attemptresponse><correctresponse>
+          That is correct!
+        </correctresponse><incorrectresponse>
+          That is not correct.
+        </incorrectresponse><feedback>
+          The anti-static strap should be grounded to the same equipment ground as the system. The system is grounded through a grounding rod.
+        </feedback></page><page attempts="2" audio="null" btnText="Submit" feedbackdisplay="pop" feedbacktype="undifferentiated" graded="false" id="43fff356-25a8-6122-12f8-11496896f935" layout="multipleChoice" mandatory="true" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" randomize="false" timed="false" type="kc"><title>
+          Knowledge Check 2/2&amp;nbsp;(Level 1 Example)
+        </title><question>
+          &lt;p&gt;Which of the following are possible hazards in the work area? Select all that apply.&lt;/p&gt;
+
+        </question><option correct="true"><content>
+            Moist surfaces
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="true"><content>
+            Ungrounded power extension cables
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><attemptresponse>
+          That is not correct.  Please try again.
+        </attemptresponse><correctresponse>
+          That is correct!
+        </correctresponse><incorrectresponse>
+          That is not correct.
+        </incorrectresponse><feedback>
+          Possible hazards in the work area include: moist surfaces, ungrounded power extension cables, frayed power cords, and missing safety grounds.
+        </feedback><option correct="true"><content>
+            Frayed power cords
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="false"><content>
+            Grounded concrete pad
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="true"><content>
+            Missing safety ground
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option></page></page><page audio="null" audiotranscript="false" id="73442d75-a5fc-46c9-8e08-4ae90d3125aa" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Level 2 eLearning / Distance Learning Options
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;Level 2 (interactive) eLearning content is comprised of Level 1 eLearning plus 25% (or more) interactive exercises (allowing learners to perform virtual &amp;quot;try it&amp;quot; exercises), liberal use of multimedia is used&amp;nbsp;(audio, video, animations) and is generally a&amp;nbsp;75% direct conversion from existing training materials.&lt;/p&gt;&lt;table align="right" border="1" cellpadding="1" cellspacing="1" style="width: 500px;"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;&amp;nbsp;&lt;/th&gt;&lt;th scope="col"&gt;Rapid Development, Simple Projects&lt;/th&gt;&lt;th scope="col"&gt;Average Typical&lt;/th&gt;&lt;th scope="col"&gt;Advanced, Complex, More Media&lt;/th&gt;&lt;th scope="col"&gt;Average Cost per Finished Hour&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 1 eLearning (Basic) - Content Pages and Assessments&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;49:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;79:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;125:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;$10K&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Level 2 eLearning (Interactive) - Level 1, plus 25%+ interactive exercises&amp;nbsp;&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;127:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;184:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;267:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;$18.5K&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 3 eLearning (Advanced) - Simulations, Games, Award Winning type&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;217:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;490:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;716:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;$50K&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;ul&gt;&lt;li&gt;Instructional design - 42%&lt;/li&gt;&lt;li&gt;Media design - 33%&lt;/li&gt;&lt;li&gt;Testing/Software dev &amp;ndash; 7%&lt;/li&gt;&lt;li&gt;Quality Assurnce - 3&lt;/li&gt;&lt;li&gt;Prog Mgmt - 7%&lt;/li&gt;&lt;li&gt;SME - 6%&lt;/li&gt;&lt;li&gt;Other - 2%&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;In the following pages, you will view a number of examples of Level 2&amp;nbsp;type eLearning content.&lt;/p&gt;&lt;p&gt;&lt;em&gt;Industry Standards via Chapman Alliance Benchmarks -&amp;nbsp;http://www.chapmanalliance.com/howlong/&lt;/em&gt;&lt;/p&gt;
+
+      </content><page alt="Tip of the Spear" audio="null" audiotranscript="false" autonext="false" autoplay="false" controlType="bar" enlarge="" galTransType="elastic" h="520" id="db5db5de-15bd-373f-fd0d-58c81b8ec371" img="SOCOM_Spear.mp4" layout="graphicOnly" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" poster="null" prevpage="null" subs="null" type="static" visualtranscript="false" w="925"><title>
+          Tip of the Spear&amp;nbsp;(Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><caption>
+          Tip of the Spear Video
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="b0ac1a97-e77d-ad06-3c43-6664678ce253" img="TDMA1.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt=" !!! !!! " popcaps=" (1 of 3) TDMA inbound carriers are much like a multi-lane highway. Remote terminal data, as they are sent across the network, are like cars on the highway.!!! (2 of 3) The farther the remote terminal is from the hub, the longer it takes data to travel on its inbound carrier. At the remote terminal, data may &quot;jump&quot; to another inbound carrier (like cars changing lanes on a highway) when its time slot is open. !!!(3 of 3) Once remote terminal data take an inbound carrier, they must stay on that carrier. &lt;br/&gt; After you have finished viewing the image, click the circled &lt;strong&gt;X &lt;/strong&gt; at the top right of the pop-up window to close it. &lt;/br&gt;" poploop="false" popup="TDMA2.png,TDMA3.png,TDMA4.png" prevpage="null" type="static" visualtranscript="false"><title>
+          TDMA Burst Time Plan&amp;nbsp;(Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;TDMA allows multiple remotes to share the same satellite bandwidth, making it more efficient.&amp;nbsp;It utilizes a burst time plan to transmit data from the remotes in the most efficient manner.&lt;/p&gt;&lt;p&gt;Click the &lt;strong&gt;Expand&lt;/strong&gt; button and use the arrows to the side of each image to view an analogy of how the burst time plan works.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          TDMA
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" autonext="false" autoplay="false" controlType="bar" enlarge="" galTransType="elastic" h="396" id="e38aa7e6-476d-ad07-56a8-5bcac4a3294a" img="M7_waveCircle.mp4" layout="top" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" poster="M7_img_Wave.png" prevpage="null" subs="null" type="static" visualtranscript="false" w="916"><title>
+          Waves and Circles (Level 2 Example)&amp;nbsp;
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;To understand PSK, it is helpful to understand the relationship between waves and circles.&amp;nbsp;A sine wave can&amp;nbsp;be depicted as a unit circle because both the wave and the circle include all degrees between 0 degrees and 360 degrees. In the animation&amp;nbsp;below, the degrees of a wave are indicated in the image on the right, while the degrees of a circle are indicated on the left.&amp;nbsp;One phase of a sine wave passes through every degree between 0 and 360; therefore, the wave can be mapped on circular constellation&amp;nbsp;diagram because both include every degree between 0 and 360. &amp;nbsp;Play the animation below to see the relationship between the two (unit circle and scatter diagram) in action.&lt;/p&gt;
+
+        </content><caption>
+          Waves and Circles
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="5eb14b37-75af-7fe3-25ea-69bb9ac84f06" img="SatelliteTransponder1.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt=" !!! !!! " popcaps=" (1 of 3) A deployed warfighter transmits digital data from the remote satellite terminal. In this scenario, the data transmits 2 watts (3 decibel watt [dBW]) of power to the satellite. !!! (2 of 3) The digital data is converted into an analog signal that the satellite receives at a much lower power (for example, 0.02 watts [-17 dBW]). !!! (3 of 3) The satellite transmits the signal back to the ground by transmitting it through a high-power amplifier at the proper frequency (amplifying from 0.02 watt to the original 2 watts) so the satellite teleport can receive the signal. &lt;br/&gt; After you have finished viewing the image, click the circled &lt;strong&gt;X &lt;/strong&gt; at the top right of the pop-up window to close it." poploop="false" popup="SatelliteTransponder2.png,SatelliteTransponder3.png,SatelliteTransponder4.png" prevpage="null" type="static" visualtranscript="false"><title>
+          Bent Pipe Principle&amp;nbsp;(Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Satellite communication operates just like any other radio; however, unlike other radios, a satellite&amp;rsquo;s radio signals are received through a satellite transponder, then translated to a different frequency to be retransmitted back to the earth, creating a &amp;ldquo;bent pipe.&amp;rdquo;&amp;nbsp;The steps involved in creating this bent pipe are:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;The hub antenna transmits a signal.&lt;/li&gt;&lt;li&gt;The satellite receives an extremely low-powered signal.&lt;/li&gt;&lt;li&gt;The satellite pre-amplifies the signal.&lt;/li&gt;&lt;li&gt;The satellite translates the frequency through a down converter, as the signal is always received into the satellite at a higher frequency and transmitted from the satellite back to the ground at a lower frequency.&lt;/li&gt;&lt;li&gt;The satellite amplifies the signal for the return path. &lt;strong&gt;NOTE&lt;/strong&gt;: It must produce enough power to overcome the same atmospheric losses until the signal reaches the remote antenna terminal.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Click the &lt;strong&gt;Expand&lt;/strong&gt; button and use the arrows to the side of each image to view an example&amp;nbsp;of a satellite transponder in the context of the USSOCOM&amp;nbsp;Strategic Entry Point (SSEP).&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          Satellite Transponder
+        </caption></page><page audio="null" audiotranscript="false" galTransType="elastic" graded="false" id="166edff9-5929-c33c-644f-e9a871c8d438" layout="pathing" mandatory="false" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><branch id="89bfa67e-2409-1fac-add2-24f23bce10ae" img="defaultLeft.png" layout="textOnly" pathid="0" pathtype="home"><title>
+            SDN Family of Systems&amp;nbsp;(Level 2 Example)
+          </title><content>
+            &lt;p&gt;Delivering broadband Satellite Communications (SATCOM) connectivity to SOF, the SDN Family of Systems are&amp;nbsp;designed to extend the USSOCOM SIE to forward-deployed units. These transport systems have the ability to provide access&amp;nbsp;to existing DoD systems/networks and user applications.&amp;nbsp;These existing networks and applications include, but are not limited to:&amp;nbsp;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Global Command and Control System (GCCS)&lt;/li&gt;&lt;li&gt;Global Combat Support System (GCSS)&lt;/li&gt;&lt;li&gt;Joint Worldwide Intelligence Communications System (JWICS)&lt;/li&gt;&lt;li&gt;Secret Internet Protocol Router Network (SIPRNet)&lt;/li&gt;&lt;li&gt;Non-secure Internet Protocol Router Network (NIPRNet)&lt;/li&gt;&lt;li&gt;Defense Red Switch Network (DRSN)&lt;/li&gt;&lt;li&gt;Video Teleconferencing (VTC).&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Select each option button below to learn more about each SDN system.&amp;nbsp;After you have selected each option button, click the &lt;strong&gt;next&lt;/strong&gt; button (bottom right) to progress.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; The &lt;strong&gt;back &lt;/strong&gt;and &lt;strong&gt;next &lt;/strong&gt;buttons will not be available until all onscreen buttons have been selected to ensure you have reviewed all the content.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><option active="false" altbtntitle="" id="9f5d2258-fda8-f7a2-f964-c51884ecdba1" img="SDN-LITE" path="1" /><visualtranscript>
+            Visual transcript content
+          </visualtranscript><option active="false" altbtntitle="" id="cbb3a5e2-4b26-dbf7-22ce-8508630381e3" img="SDN-M" path="2" /><option active="false" altbtntitle="" id="6b439d58-c952-1885-1e89-9b9dd3dc5b57" img="" path="3" /><option active="false" altbtntitle="" id="d320b7f1-29a3-a8a5-a05a-b111e76be2b0" img="" path="4" /></branch><branch h="0" id="9f5d2258-fda8-f7a2-f964-c51884ecdba1" img="SDN_Lite.png" layout="left" pathid="1" pathtimg="" pathtype="branch" poster="null" w="0"><title>
+            SDN-LITE Overview
+          </title><content>
+            &lt;p&gt;The SDN-LITE&amp;nbsp;is a deployable, lightweight, and secure satellite communication system that provides voice, video and data connections to the USSOCOM SIE via a portable, small-teams kit. The SDN-LITE consists of four (4)&amp;nbsp;different versions:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;SDN-LITEv4&lt;/li&gt;&lt;li&gt;SDN-LITEv3b&lt;/li&gt;&lt;li&gt;SDN-LITEvx2&lt;/li&gt;&lt;li&gt;SDN-LITE EX-T&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Each of these systems consists of two (2) parts, the satellite portion and the baseband portion. The SDN-LITEv4 has limited throughput (1-2 users) and only provides connection to the UNCLASSIFIED and SECRET networks&lt;span style="background-color:initial"&gt;; SDN-LITE EX-T has limited throughput (1-2 users) &lt;/span&gt;and provides UNCLASSIFIED,&amp;nbsp;SECRET&amp;nbsp;and TOP SECRET&amp;nbsp;connections.&amp;nbsp;&amp;nbsp;The other 2 versions provide connectivity to&amp;nbsp;UNCLASSIFIED,&amp;nbsp;SECRET&amp;nbsp;and TOP SECRET&amp;nbsp;networks&amp;nbsp;for up to 4&amp;nbsp;users.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to learn more.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch h="0" id="cbb3a5e2-4b26-dbf7-22ce-8508630381e3" img="SDN_medium.png" layout="left" pathid="2" pathtype="branch" poster="null" w="0"><title>
+            SDN-M Overview
+          </title><content>
+            &lt;p&gt;The SDN-M&amp;nbsp;is a deployable secure satellite communications system that provides&amp;nbsp;voice, video and data connections to the USSOCOM SIE. The SDN-M is an early communications solution&amp;nbsp;used until more robust systems become available. In situations where alternative communications infrastructure are damaged, destroyed, or are otherwise unavailable, the SDN-M can serve as a primary means of communications for up to 15 users. The SDN-M provides a deployable package weighing no more than 100 pounds per case and meets federal commercial air luggage and equipment regulations. This allows SOF communicators to deploy quickly to a remote and austere location in order to provide rapid communications services to forward warfighter team members.&lt;/p&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to learn more.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript><caption /></branch><branch h="0" id="6b439d58-c952-1885-1e89-9b9dd3dc5b57" img="SDNHeavy.png" layout="left" pathid="3" pathtype="branch" poster="null" w="0"><title>
+            SDN-H Overview
+          </title><content>
+            &lt;p&gt;The SDN-H&amp;nbsp;is an deployable secure satellite communications system that provides voice, video and data connections to the USSOCOM SIE. The SDN-H provides a robust early communications solution in remote and austere locations. The SDN-H meets the mission requirements of a large-scale deployed Joint Special Operations Task Force (JSOTF), typically consisting of more than 50 users.&lt;/p&gt;&lt;p&gt;The SDN-H is an Everything-over-Internet Protocol (EoIP) system that employs a modular design with increased flexibility. It has a broadband throughput that is dependent on the size of the assigned satellite channel controlled by the SSEP. This system has the ability to provide IP network capabilities for multiple SOF unique communications and intelligence systems, such as the Tactical Local Area Network (TACLAN) and the&amp;nbsp;&lt;span style="font-family:arial,sans-serif; font-size:12pt"&gt;Distributed Common Ground System&amp;nbsp;&lt;/span&gt;(DCGS). TACLAN and DCGS are standalone local area networks (LAN); connecting these systems to the SDN-H&amp;nbsp;allows data to transfer back into the USSOCOM SIE for analyst and other support personnel to assist in forward mission functions.&lt;/p&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to learn more.&amp;nbsp;&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch h="0" id="d320b7f1-29a3-a8a5-a05a-b111e76be2b0" img="SDN_Extension.png" layout="left" pathid="4" pathtype="branch" poster="null" w="0"><title>
+            SDN-EP Overview
+          </title><content>
+            &lt;p&gt;The SDN-EP&amp;nbsp;provides wireless extension capabilities to any of the satellite SDN family of systems. The SDN-EP is used to extend voice, video and data services on the UNCLASSIFIED, SECRET and TOP SECRET networks. This system is used to extend these services over a line of sight radio in a point-to-point or a point-to-multipoint scenario. Typically this system is used to connect 2 close geographically located forward operating bases or 2 building closely located buildings wirelessly.&lt;/p&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to learn more.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="e6abfe28-64a5-a2d2-7dec-d0338a8e964b" img="defaultLeft.png" layout="textOnly" pathid="1" pathtype="branch"><title>
+            SDN-LITE System&amp;rsquo;s Architecture and Capabilities
+          </title><content>
+            &lt;p&gt;The SDN-LITE System&amp;#39;s architecture is a&amp;nbsp;portable communications package. This system comes in 4&amp;nbsp;different packages as highlighted below:&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SDN-LITEv4:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;img alt="" src="media/SDN_Litev4.png" style="float:right; height:175px; margin-bottom:-25px; margin-top:-25px; width:216px" /&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Operates on L-band using&amp;nbsp;Inmarsat&amp;rsquo;s&amp;nbsp;Broadband Global Area Network&amp;nbsp;(BGAN) satellites&lt;/li&gt;&lt;li&gt;Allows global coverage utilizing 3 satellite coverage beams&lt;/li&gt;&lt;li&gt;Delivers data rates up to 512&amp;nbsp;Megabits per second (Mbps), up to 1024 Mbps when antennas are paired&lt;/li&gt;&lt;li&gt;Provides UNCLASSIFIED and SECRET access only&lt;/li&gt;&lt;li&gt;Offers connectivity for up to 2 users to include VTC&lt;/li&gt;&lt;li&gt;When packaged, the system is approximately the size of a brief case.&lt;/li&gt;&lt;/ul&gt;&lt;p style="text-align:center"&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SDN-LITEv3b:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;img alt="" src="media/SDN_Litev3b.png" style="float:right; height:175px; width:226px" /&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provides tri-band capabilities on X-, Ku-, and Ka-bands&lt;/li&gt;&lt;li&gt;Utilizes the iDirect satellite communications platform&lt;/li&gt;&lt;li&gt;Supports UNCLASSIFIED, SECRET and TOP SECRET&amp;nbsp;connectivity&lt;/li&gt;&lt;li&gt;Provides up to 20 Mbps download rates, and up to 4 Mbps upload rates&lt;/li&gt;&lt;li&gt;Allows for multiple power source connections including both Alternating Current (AC) and Direct Current (DC)&amp;nbsp;&lt;/li&gt;&lt;li&gt;Accommodates commercial air carry-on specifications&lt;/li&gt;&lt;li&gt;Supports up to 4 users per classification enclave.&lt;/li&gt;&lt;/ul&gt;&lt;p style="text-align:center"&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;SDN-LITEvx2:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;img alt="" src="media/SDN_Litevx2.png" style="float:right; height:175px; width:212px" /&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provides dual band connectivity on X- and Ku-bands through the use of an auto-acquire satellite antenna&lt;/li&gt;&lt;li&gt;Supports UNCLASSIFIED, SECRET and TOP SECRET connectivity to include voice, video and data services&lt;/li&gt;&lt;li&gt;Supports data rates up to 40 Mbps download speeds, and 4&amp;nbsp;Mbps upload speeds&lt;/li&gt;&lt;li&gt;Utilizes the iDirect Satellite Communication platform&lt;/li&gt;&lt;li&gt;Supports up to 4&amp;nbsp;personnel on each classified enclave.&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;SDN-LITE EX-T:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Operates on L-band using&amp;nbsp;Inmarsat&amp;rsquo;s BGAN&amp;nbsp;satellites&lt;/li&gt;&lt;li&gt;Delivers data rates up to 512 Mbps, up to 1024 Mbps when antennas are paired&lt;img alt="" src="media/SDN-LITE_EXT.png" style="float:right; height:175px; width:216px" /&gt;&lt;/li&gt;&lt;li&gt;Provides UNCLASSIFIED, SECRET and TOP SECRET network access&amp;nbsp;&lt;/li&gt;&lt;li&gt;Offers connectivity for up to 2 users to include VTC&lt;/li&gt;&lt;li&gt;When packaged, the system is approximately the size of a brief case.&lt;/li&gt;&lt;/ul&gt;&lt;p style="text-align:center"&gt;&lt;em&gt;.&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to return to the Main page.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="59b958df-4281-f1e1-86f9-578938002815" img="defaultLeft.png" layout="textOnly" pathid="2" pathtype="branch"><title>
+            SDN-M System&amp;rsquo;s Architecture and Capabilitie&lt;strong&gt;s&lt;/strong&gt;
+          </title><content>
+            &lt;p&gt;The SDN-M System&amp;#39;s architecture includes a satellite antenna, baseband modules for all three classified enclaves, and voice over internet protocol (VoIP) telephones for the associated enclaves. The SDN-M routes all services through a single antenna using National Security Agency&amp;nbsp;(NSA) approved encryption devices for each classified&amp;nbsp;enclave, allowing support for a variety of missions.&lt;/p&gt;&lt;p&gt;The SDN-M provides optimized routing and switching of secure data, voice and video services with a broadband throughput currently limited by the USSOCOM Strategic Entry Point (SSEP) to 4 Mbps download and 2&amp;nbsp;Mbps upload. One of the significant differentiating features of the SDN-M is its Power-over-Ethernet (PoE) capability, which provides the user with an IP telephone mimicking a Garrison-like environment.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provides a single-button 1.2 meter auto-acquire satellite antenna&lt;/li&gt;&lt;li&gt;Utilizes the iDirect satellite communication platform with a web-based graphical user interface for satellite acquisition&lt;/li&gt;&lt;li&gt;Provides C4I capabilities connecting deployed warfighters to the USSOCOM SIE.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to return to the Main page.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="7c9f2ac5-60ef-0c76-b95f-a43f0011da7e" img="defaultLeft.png" layout="textOnly" pathid="3" pathtype="branch"><title>
+            SDN-H System&amp;rsquo;s Architecture and Capabilities
+          </title><content>
+            &lt;p&gt;The SDN-H System&amp;rsquo;s architecture includes a satellite antenna and a baseband LAN. The Baseband portion consists of 4&amp;nbsp;Baseband modules (BBM), one for each classification enclave and a spare baseband which can be used on any enclave needed, or used for a coalition LAN.&lt;/p&gt;&lt;p&gt;SDN-H provides the following features:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Utilizes a single button auto-acquire satellite antenna with the iDirect communications platform&lt;/li&gt;&lt;li&gt;Provides voice, video, and data services on the UNCLASSIFIED, SECRET and TOP SECRET enclaves&lt;/li&gt;&lt;li&gt;Provides user capabilities in excess of 50 users&lt;/li&gt;&lt;li&gt;Maintains the ability to connect to the USSOCOM, as well as other military networks such as the DISN.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to return to the Main page.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="5a510d6b-1ed3-f45b-e994-18d110119422" img="defaultLeft.png" layout="textOnly" pathid="4" pathtype="branch"><title>
+            SDN-EP System&amp;rsquo;s Architecture and Capabilities
+          </title><content>
+            &lt;p&gt;The SDN-EP System&amp;#39;s architecture is drastically different from any of the other SDN Family of Systems. This system utilizes radios that operate at either 4.4 or 5.8 GHz for a line of site wireless connection. The SDN-EP uses a baseband for each classified enclave on both sides of the radio, which can be configured in a point-to-point or point-to-multipoint configuration. The SDN-EP can extend services up to 25 miles in a point-to-point configuration or 15 miles in a point-to-multipoint configuration. The SDN-EP:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Provides a secure wireless line of sight extension of UNCLASSIFIED, SECRET and TOP SECRET connectivity&amp;nbsp;services&lt;/li&gt;&lt;li&gt;Can&amp;nbsp;be configured in a point-to-point or point-to-multipoint configuration&lt;/li&gt;&lt;li&gt;Provides an extension of up to 25 miles&lt;/li&gt;&lt;li&gt;Provides connectivity for up to 15 users.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Click the&amp;nbsp;&lt;strong&gt;Continue&lt;/strong&gt;&amp;nbsp;button to return to the Main page.&lt;/p&gt;
+
+          </content><sidebar>
+            New sidebar Content
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch></page><page alt="Sequence Launch Image" audio="null" enlarge="" galTransType="elastic" id="ef27850b-b8d9-5e51-673b-94a7c10f7921" img="sequence_launch.png" layout="left" nextpage="null" objItemId="undefined" objective="undefined" popalt=" !!! !!! !!! !!! " popcaps="(1 of 5) Login using the “&lt;strong&gt; tacexch &lt;/strong&gt;” user name.!!!(2 of 5) Select &lt;strong&gt;&lt;em&gt; Install Exchange 2010&lt;/em&gt;&lt;/strong&gt; and click &lt;strong&gt;Load&lt;/strong&gt;. !!!(3 of 5) Observe messages such as &lt;em&gt;&lt;strong&gt;Start Installation&lt;/strong&gt;&lt;/em&gt; while looking for errors.!!!(4 of 5) Observe a &lt;strong&gt;You are about to be logged off &lt;/strong&gt; prompt prior to the VM automatically rebooting.!!!(5 of 5) Observe the &lt;strong&gt;&lt;strong&gt;SUCCESS&lt;/strong&gt;&lt;/strong&gt; prompt showing the build &lt;em&gt;Successfully ran&lt;/em&gt;. The VM reboots whether or not you click &lt;strong&gt; OK&lt;/strong&gt;.&lt;br/&gt; After you have finished viewing the image, click the circled &lt;strong&gt;X &lt;/strong&gt; at the top right of the pop-up window to close it." poploop="false" popup="09_xchange_01_01.png,09_xchange_01_02.png,09_xchange_01_03.png,09_xchange_01_04.png,09_xchange_01_05.png" prevpage="null" type="static"><title>
+          Initial Exchange Load&amp;nbsp;(Level 2 Example)
+        </title><content>
+          &lt;p style="margin-left:2.5pt;"&gt;Once the Exchange server VM has been built during virtualization, it is time to actually load the Microsoft Exchange software application. &amp;nbsp;&lt;/p&gt;&lt;p style="margin-left:2.5pt;"&gt;&lt;span style="background-color: initial;"&gt;In this example you will load the Exchange software through the TACLAN &lt;em&gt;Configurator&lt;/em&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p style="margin-left:2.5pt;"&gt;&lt;span style="background-color: initial;"&gt;Remember, the Exchange server is the only server that does not use the typical &amp;ldquo;&lt;strong&gt;TACADMIN&lt;/strong&gt;&amp;rdquo; user credential. In this case, we will log-into the server using the &amp;ldquo;&lt;strong&gt;TACEXCH&lt;/strong&gt;&amp;rdquo; username. This credential was created during the initial FILO build, and uses the same password as TACADMIN.&lt;/span&gt;&lt;/p&gt;&lt;p style="margin-left:2.5pt;"&gt;Click the &lt;strong&gt;Expand&lt;/strong&gt; button and use the arrows to the side of each image to learn more.&lt;/p&gt;&lt;p&gt;&lt;strong style="background-color: initial;"&gt;DISCLAIMER:&amp;nbsp;&lt;/strong&gt;&lt;em style="background-color: initial;"&gt;The procedural examples in this module are for informational purposes only. When configuring the TACLAN system, &lt;strong&gt;follow the documented procedures in the TACLAN Installation Manual.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+
+        </content><caption>
+          Initial Exchange Load
+        </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page audio="null" audiotranscript="false" graded="false" id="a8191bb2-c0bb-f9f8-6d95-18cb4760f212" layout="pathing" mandatory="true" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><branch id="ffbf309c-d164-5e57-8cfd-dcaa73d5403b" img="defaultLeft.png" layout="sidebar" pathid="0" pathtype="home"><title>
+            Allocated Bandwidth&amp;nbsp;(Level 2 Example)
+          </title><content>
+            &lt;p&gt;The modulation scheme that is used has an effect on bandwidth. The higher the modulation scheme, either:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;More data can be sent in a fixed amount of bandwidth (fixed bandwidth: more data);&amp;nbsp;or&lt;/li&gt;&lt;li&gt;Less bandwidth is required for a fixed amount of data (fixed amount of data: less bandwidth).&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;To determine the required bandwidth for a particular satellite signal to be passed through the satellite carrier,&amp;nbsp;satellite planners use the equations below.&amp;nbsp;Consider the factors being multiplied or divided to determine&amp;nbsp;symbol rate (SR) (equation 1) and allocated bandwidth (ABW) (equation 2).&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Equation 1&lt;/strong&gt;: SR= Data Rate (DR) / Modulation Scheme (MOD) / FEC:&amp;nbsp;&lt;strong&gt;&lt;em&gt;SR = DR / (MOD) / (FEC)&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Equation 2&lt;/strong&gt;: ABW= SR * Carrier Spacing (CS) (typically 25%):&amp;nbsp;​&lt;strong&gt;&lt;em&gt;ABW = SR * CS&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Select the option button (&lt;strong&gt;ABW Scenario&lt;/strong&gt;)&amp;nbsp;below to see the equations above presented in a series of 3&amp;nbsp;scenarios.&amp;nbsp;After you have viewed&amp;nbsp;all scenarios, click the &lt;strong&gt;next&lt;/strong&gt; button (bottom right) to progress.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;NOTE: &lt;/strong&gt;The &lt;strong&gt;back&lt;/strong&gt; and &lt;strong&gt;next &lt;/strong&gt;buttons will not be available until all onscreen buttons have been selected to ensure you have reviewed all the content.&lt;/p&gt;
+
+          </content><sidebar>
+            &lt;p&gt;&lt;strong&gt;Adaptive Coding and&amp;nbsp;Modulation (ACM)&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Since higher modulation schemes (such as 8PSK) require greater fidelity on the receive signal, technological advancements have been made&amp;nbsp;to create automatic&amp;nbsp;switching of&amp;nbsp;modulation schemes when necessary. Several years ago, a satellite system would have either simply received the required signal or not. If it did not receive the signal, communications services would be interrupted until the proper receive signal was re-established. To remedy this, iDirect created ACM. Through ACM, if the satellite system does not receive the proper signal, the transmitter will reduce the modulation. The result is a slower data rate, but the communications services are not lost.&lt;br /&gt;
+&amp;nbsp;&lt;/p&gt;
+
+          </sidebar><option active="false" altbtntitle="" id="035e68fd-4ba3-2eec-c637-428a89d44366" img="" path="1" /><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="035e68fd-4ba3-2eec-c637-428a89d44366" img="defaultLeft.png" layout="sidebar" pathid="1" pathtimg="" pathtype="branch"><title>
+            ABW Scenario
+          </title><content>
+            &lt;p&gt;In this scenario, the DR&amp;nbsp;is 10 Mbps and the MOD is&amp;nbsp;16 PSK.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;STEP 1&lt;/strong&gt;: To find the SR, perform equation 1:&amp;nbsp;&lt;strong&gt;SR = DR/MOD/FEC&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+Given a DR&amp;nbsp;of 10 Mbps, a MOD of 16 PSK and a FEC&amp;nbsp;of 2/3, the SR equals&amp;nbsp;&lt;strong&gt;3.75&lt;/strong&gt;&amp;nbsp;Mega Symbols per second (MSps), which is shown in this equation:&amp;nbsp;&lt;strong&gt;3.75 MSps = 10 Mbps / 4 bits / (2/3).&amp;nbsp;&lt;/strong&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: Remember from the Binary Representation table that 16 PSK (or the MOD in this equation) is 4 bits per link; that&amp;rsquo;s why there is a &amp;ldquo;4&amp;rdquo; instead of a &amp;ldquo;16&amp;rdquo; in the MOD position of this equation.&amp;nbsp;Refer to the page titled &amp;quot;PSK and Binary Data&amp;quot; to review the table.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;STEP 2:&lt;/strong&gt; To find the ABW, perform equation 2:&amp;nbsp;&lt;strong&gt;ABW = SR * CS&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+From the solution to equation 1, it is&amp;nbsp;known that the SR is 3.75 MSps and this link has a carrier spacing of 25% so: ABW = 3.75 MSps *25% carrier spacing, or:&amp;nbsp;&lt;strong&gt;ABW = 3.75 * 1.25 which is 4.6875MHz&lt;/strong&gt;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&amp;nbsp;This link requires an Eb/N0 of 5.6dB. Remember, if&amp;nbsp;the SNR falls below the specified Eb/N0 rate, then communications may be degraded because the modem may be trying to convert noise rather than signal. Conversely, if the SNR is higher than the Eb/N0 rate, then there should be fewer errors in communications.&amp;nbsp;&lt;br /&gt;&lt;br /&gt;
+Click the&lt;strong&gt; Continue &lt;/strong&gt;button&amp;nbsp;to see what happens when the modulation scheme has to change due to rain.&amp;nbsp;&lt;/p&gt;
+
+          </content><sidebar>
+            &lt;table border="1" cellpadding="1" cellspacing="1" style="background-color:rgb(255, 255, 255); border-collapse:collapse; border:1px solid black; color:rgb(0, 0, 0); font-size:medium; margin-left:auto; margin-right:auto; margin-top:4px; width:389px"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;Equations&lt;/th&gt;&lt;th scope="col"&gt;Abbreviations&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 1:&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;SR = DR / (MOD) / (FEC)&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 2:&amp;nbsp;&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;ABW = SR * CS&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px"&gt;SR = Symbol Rate&lt;br /&gt;
+    DR = Data&amp;nbsp;Rate&lt;br /&gt;
+    MOD = Modulation Scheme&lt;br /&gt;
+    FEC = Forward Error Correction&lt;br /&gt;
+    ABW = Allocated Bandwidth&lt;/span&gt;&lt;br /&gt;&lt;span style="font-size:12px"&gt;CS = Carrier Spacing (typically 25%)&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="db3893bb-d8a9-7742-85f7-3af15e695755" img="defaultLeft.png" layout="sidebar" pathid="1" pathtype="branch"><title>
+            Fixed Data Rate
+          </title><content>
+            &lt;p&gt;Now, imagine that rain comes in and reduces the SNR to 3.8 dB (from 5.6 dB). The modem will adjust to a modulation scheme that has an Eb/N0 lower than 3.8 dB. There are 2 ways to recreate the link: either fix the DR&amp;nbsp;or fix the ABW. &amp;nbsp;&lt;br /&gt;&lt;br /&gt;
+On this page, you will learn to work with a fixed&amp;nbsp;the DR. On the next page, you will learn to work with a fixed ABW.&amp;nbsp;&lt;br /&gt;&lt;br /&gt;
+Remember that the DR is 10 Mbps (indicated on the ABW Scenario page).&amp;nbsp;The&amp;nbsp;new modulation scheme is QPSK with a FEC of 5/6 and an EbNo of 3.4 dB.&lt;br /&gt;&lt;br /&gt;
+STEP 1: Perform equation 1 to find the SR.&amp;nbsp;SR = DR / (MOD) / (FEC)&amp;nbsp;&lt;strong&gt;SR = 10 / 2 / (5/6).&lt;/strong&gt;&amp;nbsp;The solution is&amp;nbsp;&lt;strong&gt;6.&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;NOTE:&lt;/strong&gt;&amp;nbsp;Again, remember from the Binary Representation table that QPSK has 2 bits.&lt;br /&gt;&lt;br /&gt;
+STEP 2: Plug the SR (which is known to be 6 from equation 1) into equation 2:&amp;nbsp;ABW = SR * CS&lt;br /&gt;&lt;strong&gt;ABW = 6*1.25.&amp;nbsp;&lt;/strong&gt;The solution for the allocated bandwidth is 7.5 MHz.&lt;/p&gt;&lt;p&gt;As proven in this equation, changing the modulation scheme from 16-PSK 2/3 to QPSK 5/6, while keeping the data rate the same,&amp;nbsp;&lt;strong&gt;results&amp;nbsp;in using 2.8125 MHz more bandwidth&lt;/strong&gt;&amp;nbsp;on the satellite transponder. (7.5 MHz - 4.6875 MHz = 2.8125 MHz).&lt;/p&gt;&lt;p&gt;Click the &lt;strong&gt;Continue&lt;/strong&gt; button&amp;nbsp;to learn about&amp;nbsp;fixed&amp;nbsp;ABW.&amp;nbsp;&amp;nbsp;&lt;/p&gt;
+
+          </content><sidebar>
+            &lt;table border="1" cellpadding="1" cellspacing="1" style="background-color:rgb(255, 255, 255); border-collapse:collapse; border:1px solid black; color:rgb(0, 0, 0); font-family:arial,sans-serif; font-size:medium; margin-left:auto; margin-right:auto; margin-top:4px; width:389px"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;Equations&lt;/th&gt;&lt;th scope="col"&gt;Abbreviations&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 1:&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;SR = DR / (MOD) / (FEC)&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 2:&amp;nbsp;&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;ABW = SR * CS&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px"&gt;SR = Symbol Rate&lt;br /&gt;
+    DR = Data&amp;nbsp;Rate&lt;br /&gt;
+    MOD = Modulation Scheme&lt;br /&gt;
+    FEC = Forward Error Correction&lt;br /&gt;
+    ABW = Allocated Bandwidth&lt;/span&gt;&lt;br /&gt;&lt;span style="font-size:12px"&gt;CS = Carrier Spacing (typically 25%)&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch><branch id="de7f6c98-7686-af74-3c73-9bafcfd3297e" img="defaultLeft.png" layout="sidebar" pathid="1" pathtype="branch"><title>
+            Fixed Bandwidth
+          </title><content>
+            &lt;p&gt;On the previous&amp;nbsp;page, you learned&amp;nbsp;to work with fixed&amp;nbsp;DR. On this&amp;nbsp;page, you will learn to work with fixed&amp;nbsp;ABW.&amp;nbsp;&lt;br /&gt;&lt;br /&gt;
+Remember the DR is&amp;nbsp;10 Mbps. The new modulation scheme is QPSK with a FEC of 5/6 and an Eb/No of 3.4dB.&lt;/p&gt;&lt;p&gt;Consider that this equation is using a fixed bandwidth so the ABW (that was calculated in&amp;nbsp;the initial equation) will be used.&amp;nbsp;To find the new symbol rate, divide the ABW of 4.6875 by the carrier spacing of 25% as follows:&lt;/p&gt;&lt;p&gt;SR&amp;nbsp; = ABW/ CS&amp;nbsp;= 4.6875/1.25&lt;/p&gt;&lt;p&gt;So the SR equals 3.75.&lt;br /&gt;
+Now, to find the DR, plug&amp;nbsp;the known integers into equation 1:&lt;br /&gt;
+SR = DR / (MOD) / (FEC) as follows:&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+3.75 = DR / 2 / (5/6)&lt;br /&gt;
+3.75 * (5/6) = DR / 2&lt;br /&gt;
+2 * [3.75 * (5/6)] = DR&lt;br /&gt;&lt;br /&gt;
+Therefore, the new DR is: 6.25 Mbps.&amp;nbsp;As proven in this equation, changing the modulation scheme and keeping a fixed ABW&amp;nbsp;&lt;strong&gt;reduced the overall data rate from 10 Mbps to 6.25 Mbps&lt;/strong&gt;.&lt;/p&gt;&lt;p class="p1"&gt;Click the &lt;b&gt;Continue&amp;nbsp;&lt;/b&gt;button to return to the Main page.&lt;/p&gt;
+
+          </content><sidebar>
+            &lt;table border="1" cellpadding="1" cellspacing="1" style="background-color:rgb(255, 255, 255); border-collapse:collapse; border:1px solid black; color:rgb(0, 0, 0); font-family:arial,sans-serif; font-size:medium; margin-left:auto; margin-right:auto; margin-top:4px; width:389px"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;&lt;span style="font-size:12px;"&gt;Equations&lt;/span&gt;&lt;/th&gt;&lt;th scope="col"&gt;&lt;span style="font-size:12px;"&gt;Abbreviations&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 1:&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;SR = DR / (MOD) / (FEC)&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style="font-size:12px;"&gt;&lt;strong&gt;Equation 2:&amp;nbsp;&lt;/strong&gt;&lt;br /&gt;&lt;strong&gt;ABW = SR * CS&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;span style="font-size:12px"&gt;SR = Symbol Rate&lt;br /&gt;
+    DR = Data&amp;nbsp;Rate&lt;br /&gt;
+    MOD = Modulation Scheme&lt;br /&gt;
+    FEC = Forward Error Correction&lt;br /&gt;
+    ABW = Allocated Bandwidth&lt;/span&gt;&lt;br /&gt;&lt;span style="font-size:12px"&gt;CS = Carrier Spacing (typically 25%)&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+          </sidebar><visualtranscript>
+            Visual transcript content
+          </visualtranscript></branch></page><page alt="SIE Network Architecture diagram" audio="null" enlarge="" galTransType="elastic" h="600" id="06536dec-dc2f-d577-9c31-39b6e2eab3da" img="T1_M3_Fig_SIE_Network_Architecture_small-rev.png" layout="top" nextpage="null" popalt=" SIE Network Architecture diagram" popcaps="" poploop="true" popup="ImageZoom_800x600_SIE_Network-rev.swf" prevpage="null" w="800"><title>
+          SIE and SONET&amp;nbsp;(Level 2 Example)
+        </title><content>
+          &lt;p&gt;The SIE consists of multiple government agencies (e.g. Theater Special Operations Commands [TSOCs] and Component Commands [COCOMs]), including the five (5) SSEPs and one (1) Mobile SSEP (MSSEP). Each government agency is connected by a SONET circuit. SONET reduces the number of point-to-point circuits by forming a SONET ring.&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Enlarge &lt;/strong&gt;the diagram to explore the SIE architecture. Once the image is enlarged, click on the &amp;quot;Zoom In&amp;quot; and &amp;quot;Zoom Out&amp;rdquo; buttons found under the image to change your view of the image.&amp;nbsp;Pan through the image by using your mouse (click and drag on the image). After you have finished viewing the SIE architecture, click the circled X at the top right of the pop-up window to close it.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+        &lt;p&gt;&lt;br&gt;&lt;/p&gt;
+      </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page alt="image description" audio="null" enlarge="" galTransType="elastic" id="8e34899b-8103-63b0-a388-508194e1a26b" img="T1_M3_Fig_Encapsulation_n_Multiplexer-rev4.png" layout="top" nextpage="null" popalt=" Encapsulation and Multiplexing Phase 1 of 4!!! Encapsulation and Multiplexing Phase 2 of 4!!! Encapsulation and Multiplexing Phase 3 of 4!!! Encapsulation and Multiplexing Phase 4 of 4 " popcaps="&lt;p&gt;Encapsulation and Multiplexing (Phase 1 of 4)&lt;/p&gt; !!!&lt;p&gt;Encapsulation and Multiplexing (Phase 2 of 4)&lt;/p&gt; !!!&lt;p&gt;Encapsulation and Multiplexing (Phase 3 of 4)&lt;/p&gt; !!!&lt;p&gt;Encapsulation and Multiplexing (Phase 4 of 4) &lt;br /&gt; After you have finished viewing the image, click the circled &lt;strong&gt;X &lt;/strong&gt;at the top right of the pop-up window to close it.  &lt;/p&gt;  &lt;p&gt; &lt;/p&gt; " poploop="false" popup="T1_M3_Fig_Encapsulation_n_Multiplexer_pt1-rev4.png,T1_M3_Fig_Encapsulation_n_Multiplexer_pt2-rev4.png,T1_M3_Fig_Encapsulation_n_Multiplexer_pt3-rev4.png,T1_M3_Fig_Encapsulation_n_Multiplexer_pt4-rev4.png" prevpage="null"><title>
+          Encapsulation and Multiplexing&amp;nbsp;(Level 2 Example)
+        </title><content>
+        &lt;p&gt;Services enter the SONET at various data rates. SONET&amp;rsquo;s key function is its ability to receive these services regardless of their data rates and protocols. These services are then encapsulated into a new protocol called Packet over SONET (PoS), multiplexed and aggregated onto a single &amp;ldquo;pipe&amp;rdquo; (SONET).&amp;nbsp;&lt;/p&gt;
+
+      </content><caption>
+        &lt;p&gt;&lt;b&gt;Encapsulation and Multiplexer&lt;/b&gt;&lt;br&gt;&lt;/p&gt;
+      </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page audio="null" audiotranscript="false" clickall="false" h="125" id="44181001-392a-1073-9324-15fe0f9f365f" interact="click" labeled="false" layout="revealRight" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" w="125"><title>
+          Troubleshooting Key Elements&amp;nbsp;(Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Click the images to learn about 3 key elements to consider when troubleshooting remotes. These elements are responsible for 95% of the problems.&lt;/p&gt;
+
+        </content><reveal alt="Default alt text" img="Timing.png" label="label text" title="default title"><content>
+            &lt;p&gt;&lt;strong&gt;Timing&lt;/strong&gt;&lt;br /&gt;
+Geolocation is an extremely important aspect of timing within a TDMA network. iDirect&amp;rsquo;s frame start delay (burst time plan) is calculated from the geolocation. Ensure these geolocations are correct:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;The hub&lt;/li&gt;&lt;li&gt;The satellite&lt;/li&gt;&lt;li&gt;The remote.&lt;/li&gt;&lt;/ul&gt;
+
+          </content><caption>
+            Input unique option feedback.
+          </caption></reveal><reveal alt="Default alt text" img="Power.png" label="label text" title="default title"><content>
+            &lt;strong&gt;Power&lt;/strong&gt;&lt;br /&gt;
+Ensure all power settings are the appropriate amplitude and the configuration is correct, including:
+&lt;ul&gt;&lt;li&gt;Ensure the transmit power of the modem is not too high or low for the broadcast transmission to the remote&lt;/li&gt;&lt;li&gt;Verify the remote&amp;#39;s transmit to ensure it is configured correctly&lt;/li&gt;&lt;li&gt;Adjust the remote&amp;#39;s transmit power (up or down) as this can bring the remote into the network.&lt;/li&gt;&lt;/ul&gt;
+
+          </content><caption>
+            Input unique option feedback.
+          </caption></reveal><reveal alt="Default alt text" img="Frequency.png" label="label text"><content>
+            &lt;p&gt;&lt;strong&gt;Frequency&lt;/strong&gt;&lt;br /&gt;
+Ensure all frequencies within the entire network are correct, including:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Transmit frequency&lt;/li&gt;&lt;li&gt;Receive frequency&lt;/li&gt;&lt;li&gt;Local oscillators or spectral inversion (usually where problems arise).&lt;/li&gt;&lt;/ul&gt;
+
+          </content><caption>
+            Caption Input
+          </caption></reveal></page><page audio="null" audiotranscript="false" clickall="false" id="7cb38dfa-7fba-e4fb-28fd-09b5b50d5c41" interact="click" layout="tabsOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><title>
+          Polarization&amp;nbsp;(Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;The polarization of an electromagnetic wave is defined as the orientation of the electric field vector&amp;nbsp;and is either linear or circular. The polarization of an antenna transmitting in a given direction is defined as the property of an electromagnetic wave describing the time, varying direction and relative magnitude of the electric-field vector; specifically, the figure traced as a function of time by the extremity of the vector at a fixed location in space. Click each tab to learn more.&lt;/p&gt;
+
+        </content><tab id="1" title="Linear polarization ">
+          &lt;p&gt;&lt;img alt="Linear Polarization" src="media/polarization_linear.png" style="width: 447px; height: 195px; line-height: 1.6; float: right;" /&gt;&lt;strong&gt;Linear polarization &lt;/strong&gt;is the signal vector that describes the electric field at a point in space as a function of time and that is always directed along a line. The images below show 2 fields, one is said to be linear polarized in a vertical orientation and the other in a linear horizontal orientation.&lt;/p&gt;
+
+        </tab><tab id="2" title="Circular polarization">
+          &lt;p&gt;&lt;strong&gt;Circular polarization&lt;/strong&gt; is the signal vector that describes the electric field at a point in space as a function of time is directed around a circle, the field is said to be circular. Circular polarization may be clockwise (or right-handed) and counter clockwise (left-handed).&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;img alt="Circular Polarization" src="media/polarization_circular.png" style="width: 593px; height: 174px;" /&gt;&lt;/p&gt;
+
+        </tab><tab title="Co-polarization">
+          &lt;p&gt;&lt;strong&gt;Co-polarization&lt;/strong&gt; is when multiple signals and/or transmit and receive antennas have the same polarization. For optimal signal link, the polarization should be the same for both the transmitter and receiver. Therefore, if you are transmitting a right-handed circular polarized signal, the receiver would be receiving a right-hand circular polarized signal.&lt;/p&gt;&lt;p style="text-align: center;"&gt;&lt;img alt="Co-Polarization" src="media/polarization_co.png" style="width: 591px; height: 174px; margin-left: 0px; margin-right: 0px;" /&gt;&lt;/p&gt;
+
+        </tab><tab title="Cross Polarization ">
+          &lt;img alt="Cross Polarization" src="media/polarization_cross.png" style="width: 280px; height: 195px; float: right;" /&gt;&lt;p&gt;&lt;strong&gt;Cross polarization&lt;/strong&gt; is when multiple signals and/or transmit and receive antennas have orthogonal (perpendicular) polarization. For example, cross polarization is a vertical linear transmission with a horizontal linear reception; or, a right-handed circular transmission with a left-handed reception.&lt;/p&gt;
+
+        </tab></page><page audio="null" clickall="false" id="ede634b4-1ecb-cbba-6e64-ff04ca161f9c" layout="flashcard" nextpage="null" prevpage="null" randomize="false"><title>
+          System Hazard Overview - Common Hazards&amp;nbsp;(Level 2 Example)
+        </title><content>
+          &lt;p&gt;Click on each of the cards below to discover more information.&lt;/p&gt;
+
+        </content><card><term>
+            &lt;p&gt;&lt;b&gt;Heavy Lifting Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;strong&gt;&lt;em&gt;Heavy Lift Warning&lt;/em&gt;&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;
+Always use common sense when lifting or carrying equipment and equipment cases. Transit cases and components may be heavy; never lift heavy equipment alone. Enlist another person&amp;rsquo;s help if an item is too heavy to lift alone.
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Trip Hazard&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Trip Hazard&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Caution should be taken when setting up and operating systems using cords, cables and outrigger legs that can present tripping hazards.&lt;/p&gt;
+
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Motion Hazards or Pinch Points Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Motion Hazards or Pinch Points Warning&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;The antenna contains moving parts that are in motion during the acquisition and stow functions. DO NOT insert any part of the body into an area that may cause injury while the equipment is in use.&lt;/p&gt;
+
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Battery Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Battery Warning&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;The system uses components that require the use of batteries. Care should be taken to ensure batteries are not leaking any type of fluid prior to working on these components.&lt;/p&gt;
+
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Explosive Material Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Explosive Material Warning&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Explosive/flammable materials are fire hazards. Store explosive/flammable materials in authorized areas only. DO NOT store aerosol cans, cleaning solvents, etc. near system equipment.&lt;/p&gt;
+
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Hazardous Vapors Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Hazardous Vapors Warning&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Cleaning agents, aerosols&amp;nbsp;and gases under pressure or various liquids may produce vapors that can cause sickness, injury or death. DO NOT be exposed to prolonged contact with hazardous vapors.&lt;/p&gt;
+
+          </definition></card><card><term>
+            &lt;p&gt;&lt;b&gt;Cuts and Punctures Warning&lt;/b&gt;&lt;/p&gt;
+
+          </term><definition>
+            &lt;p&gt;&lt;em&gt;&lt;strong&gt;Cuts and Punctures Warning&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;&lt;p&gt;Frayed wire cables may cut or puncture unprotected skin. Wear leather gloves when handling winch-wire rope. DO NOT handle wire rope with bare hands.&lt;/p&gt;
+
+          </definition></card></page><page attempts="2" audio="null" btnText="Submit" feedbackdisplay="pop" feedbacktype="undifferentiated" graded="false" id="74a12be0-3a56-a106-e4a0-290c2a0ef14f" layout="sequence" mandatory="true" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" randomize="false" type="kc"><title>
+          Knowledge Check 1/2&amp;nbsp;(Level 2 Example)
+        </title><question>
+          &lt;p&gt;&lt;strong&gt;Directions:&amp;nbsp;&lt;/strong&gt;Place the FILO build and create domain processes steps listed below in the proper order. To do this, click an item and then drag it up or down.&amp;nbsp;&lt;/p&gt;
+
+        </question><option correct="6"><content>
+            Create Build Files and Templates
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="1"><content>
+            Connect FILO to the Network Switch
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="4"><content>
+            Select the Domain Type
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><attemptresponse>
+          Please try again.
+        </attemptresponse><correctresponse>
+          That is correct!
+        </correctresponse><incorrectresponse>
+          That is not correct.
+        </incorrectresponse><feedback>
+          Step 1: Connect FILO to the Network Switch&lt;br /&gt;
+Step 2: Configure FILO BIOS&lt;br /&gt;
+Step 3: Load FILO Image&lt;br /&gt;
+Step 4: Select the Domain Type&lt;br /&gt;
+Step 5: Set McAfee Exclusions&lt;br /&gt;
+Step 6: Create Build Files and Templates&lt;br /&gt;
+Step 7: Complete FILO Configuration
+        </feedback><option correct="2"><content>
+            Configure FILO BIOS
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="3"><content>
+            Load FILO Image
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="5"><content>
+            Set McAfee Exclusions
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option><option correct="7"><content>
+            Complete FILO Configuration
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></option></page><page attempts="2" audio="null" audiotranscript="false" btnText="Submit" feedbackdisplay="pop" feedbacktype="undifferentiated" graded="false" id="af8bb449-9da9-2637-a102-c55ff51d76c2" layout="matching" mandatory="true" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" randomize="false" type="kc" visualtranscript="false"><title>
+          Knowledge Check 2/2 (Level 2 Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><question>
+          &lt;p&gt;Place the items on the right in the order they need to be performed to begin provisioning a SDN-M by entering the associated letter in the boxes on the left.&lt;/p&gt;
+
+        </question><option correct="A">
+          Step 1
+        </option><option correct="B">
+          Step 2
+        </option><answer correct="A" img="defaultReveal.png"><content>
+            Create all configuration files&amp;nbsp;using the template (i.e. router, switch, iDirect modem, etc.)
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><answer correct="B" img="defaultReveal.png"><content>
+            E-mail configurations and cutsheets to the POCs listed on the initial SAR/GAR and instruct them&amp;nbsp;to schedule a date and time to transition services
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><attemptresponse>
+          Please try again.
+        </attemptresponse><correctresponse>
+          That is correct!
+        </correctresponse><incorrectresponse>
+          That is not correct.
+        </incorrectresponse><feedback>
+          To begin provisioning the SDN-M node, the following should be done in this order:&amp;nbsp;
+&lt;ul&gt;&lt;li&gt;Create all configuration files&amp;nbsp;using the template (i.e. router, switch, iDirect modem, etc.)&lt;/li&gt;&lt;li&gt;Develop cutsheets&lt;/li&gt;&lt;li&gt;Forward configurations and cutsheets to the GNCC for approval&lt;/li&gt;&lt;li&gt;E-mail configurations and cutsheets to the POCs listed on the initial SAR/GAR and instruct them&amp;nbsp;to schedule a date and time to transition services&lt;/li&gt;&lt;li&gt;Create the necessary Remote Routes, Security Association Database entrees&amp;nbsp;and Security Policy Database entrees in the KG-255s a couple days before the transition of services&lt;/li&gt;&lt;li&gt;Add the Calling Search Spaces, Partitions Media Gateway Control Protocol (MGCP) Gateways, Route Patterns and Cisco&amp;reg;&amp;nbsp;&amp;nbsp;phones to the Call Manager from the list of Media Access Control (MAC) addresses listed in the SAR/GAR, and assign telephone numbers from the SSEP&amp;rsquo;s range of available numbers&lt;/li&gt;&lt;li&gt;Make the necessary entrees into the Voice Exchange (VX) 1800 for support to the SDN-H, if required.&lt;/li&gt;&lt;/ul&gt;
+
+        </feedback><option correct="C">
+          Step 3
+        </option><answer correct="C" img="defaultReveal.png"><content>
+            Forward configurations and cutsheets to the GNCC for approval
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><option correct="D">
+          Step 4
+        </option><answer correct="D" img="defaultReveal.png"><content>
+            Create the necessary Remote Routes, Security Association Database entrees and Security Policy Database entrees in the KG-255s a couple days before the transition of services
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><option correct="E">
+          Step 5
+        </option><answer correct="E" img="defaultReveal.png"><content>
+            Develop cutsheets
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><option correct="F">
+          Step 6
+        </option><answer correct="F" img="defaultReveal.png"><content>
+            Add the Calling Search Spaces, Partitions Media Gateway Control Protocol (MGCP) Gateways, Route Patterns and Cisco&amp;reg;&amp;nbsp;&amp;nbsp;phones to the Call Manager from the list of Media Access Control (MAC) addresses listed in the&amp;nbsp;SAR/GAR, and assign telephone numbers from the SSEP&amp;rsquo;s range of available numbers
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer><option correct="G">
+          Step 7
+        </option><answer correct="G" img="defaultReveal.png"><content>
+            Make the necessary entrees into the Voice Exchange (VX) 1800 for support to the SDN-H, if required
+          </content><diffeed>
+            Input unique option feedback.
+          </diffeed></answer></page></page><page audio="null" audiotranscript="false" id="98eb1913-223c-24ae-602f-38493fd47494" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Level 3 eLearning / Distance Learning Options
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;Level 3 eLearning content is highly interactive, possibly simulation or serious game based, may use interactive avatars, custom interactions, and is award winning caliber courseware. &amp;nbsp;50% or less direct conversion from existing training materials.&amp;nbsp;&lt;/p&gt;&lt;table align="right" border="1" cellpadding="1" cellspacing="1" style="width: 500px;"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;&amp;nbsp;&lt;/th&gt;&lt;th scope="col"&gt;Rapid Development, Simple Projects&lt;/th&gt;&lt;th scope="col"&gt;Average Typical&lt;/th&gt;&lt;th scope="col"&gt;Advanced, Complex, More Media&lt;/th&gt;&lt;th scope="col"&gt;Average Cost per Finished Hour&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 1 eLearning (Basic) - Content Pages and Assessments&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;49:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;79:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;125:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;$10K&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;span style="color:#696969;"&gt;Level 2 eLearning (Interactive) - Level 1, plus 25%+ interactive exercises&amp;nbsp;&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;127:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;184:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;span style="color:#696969;"&gt;267:1&lt;/span&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;$18.5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;strong&gt;Level 3 eLearning (Advanced) - Simulations, Games, Award Winning type&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;217:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;490:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;716:1&lt;/strong&gt;&lt;/td&gt;&lt;td style="text-align: center;"&gt;&lt;strong&gt;$50K&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;ul&gt;&lt;li&gt;Instructional design - 42%&lt;/li&gt;&lt;li&gt;Media design - 33%&lt;/li&gt;&lt;li&gt;Testing/Software dev &amp;ndash; 7%&lt;/li&gt;&lt;li&gt;Quality Assurnce - 3&lt;/li&gt;&lt;li&gt;Prog Mgmt - 7%&lt;/li&gt;&lt;li&gt;SME - 6%&lt;/li&gt;&lt;li&gt;Other - 2%&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;In the following pages, you will view a number of examples of Level 3&amp;nbsp;type eLearning content.&lt;/p&gt;&lt;p&gt;&lt;em&gt;Industry Standards via Chapman Alliance Benchmarks -&amp;nbsp;http://www.chapmanalliance.com/howlong/&lt;/em&gt;&lt;/p&gt;
+
+      </content><page alt="FILO Configuration Report Interaction" audio="null" enlarge="" galTransType="elastic" h="585" id="d073fedf-a59d-928d-d09a-e936919f8745" img="M4_L2_img_InteractionThumb.jpg" layout="left" nextpage="null" objItemId="undefined" objective="undefined" popalt="FILO Configuration Report Interaction" popcaps="&lt;b&gt;FILO Configuration Report Interaction&lt;/b&gt;. After you have finished viewing the image, click the circled &lt;b&gt;X&lt;/b&gt; at the top right of the pop-up window to close it." poploop="false" popup="M4_L1_img_FILO_report.swf" prevpage="null" type="static" w="935"><title>
+          FILO Configurator Report&amp;nbsp;(Level 3 Example)
+        </title><content>
+          &lt;p style="margin-right: 10px;"&gt;In order to understand the various location points for cable connections generated from the FILO Configurator Report, click the&lt;strong&gt; Expand &lt;/strong&gt;button&amp;nbsp;below&amp;nbsp;the image to the right. Once enlarged, click on one item at a time in the table to view each cable&amp;#39;s insertion point on its associated piece of equipment.&lt;/p&gt;&lt;p style="margin-right: 10px;"&gt;This example showcases a SIPR stack with 2 server and 2 storage cases using Cat5e red cables. Additionally, this example shows that the TACLAN stack can get pretty complicated with all of the various cables in use. Ensuring that a stack is properly cabled up is important to a successful configuration of the system.&lt;/p&gt;
+
+        </content><caption>
+        FILO Configurator Report Interaction
+      </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page alt="image description" audio="null" autonext="false" autoplay="false" controlType="bar" enlarge="" galTransType="elastic" h="500" id="d8e8c5d3-b66d-9175-c332-fc8062ec35d3" img="module_5_and_6_sequence_02.mp4" layout="graphicOnly" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" poster="null" prevpage="null" subs="null" type="static" visualtranscript="false" w="625"><title>
+          Register the Virtual Center Console Plug-in - Video Example&amp;nbsp;(Level 3 Example)
+        </title><caption>
+          Register the Virtual Center Console Plug-in
+        </caption><visualtranscript>
+          Visual transcript content
+        </visualtranscript></page><page audio="null" autonext="false" autoplay="false" id="092fbfb9-f6a8-431c-7662-1bd895da455d" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" subs="null" type="static"><title>
+          Knowledge Check 1/1 (Level 3 Example)
+        </title><content>
+        &lt;p style="margin-right: 500px;"&gt;Using the equipment image on the right, properly connect the cables to their correct location by using your computers cursor (the arrow) to locate the start point for each connection. The active start and end point connections are indicated when your cursor arrow turns to the hand icon. When you have located the correct starting location, click and hold your cursor then drag to the correct connection point and release the cursor.&lt;/p&gt;&lt;div style="left: 0px; position: absolute; top: 10px;"&gt;&lt;object classid="clsid:D27CDB6E-AB6D-11ce-96B8-444553540001" height="520" id="CableKC1" width="920"&gt;&lt;param name="movie" value="media/Cable_KC1.swf" /&gt;&lt;param name="wmode" value="transparent" /&gt;&lt;param name="allowfullscreen" value="true" /&gt;&lt;param name="allowscriptaccess" value="always" /&gt;&lt;embed allowfullscreen="true" allowscriptaccess="always" height="520" src="media/Cable_KC1.swf" type="application/x-shockwave-flash" width="920" wmode="transparent"&gt;&lt;/embed&gt;&lt;/object&gt;&lt;/div&gt;
+
+      </content></page></page><page audio="null" audiotranscript="false" id="5c3ff9a5-7c46-cec2-058c-e30a4bd23eb2" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Micro-learning and Job Aids (Small Learning Chunks)
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;Microlearning is learning content that has been broken down into smaller chunks or sub-sets that are targeted and specific and generally are quick hit pieces. Microlearning comes in all shapes and sizes but typically are presented to learners in the form of:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Small chunks of a lesson or module, text based, a couple of pages (mini-course)
+	&lt;ul&gt;&lt;li&gt;CTC uses various templates of our content pages to create quick-hit chunks that can be distributed to learners in a variety of methods (Internet, mobile app, email, etc.)&lt;/li&gt;&lt;li&gt;These small chunks can be:
+		&lt;ul&gt;&lt;li&gt;Text Only&amp;nbsp;&lt;/li&gt;&lt;li&gt;Small Quizzes&lt;/li&gt;&lt;li&gt;Small interactions, recall-types of activities (ordering, flashcards, drag and drop associations)&lt;/li&gt;&lt;li&gt;PDF documents, checklists, etc.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Informational audio or video files, think like a podcast or YouTube&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Micro-learning can be standalone products or defined and designed components of a larger training curriculum or plan. They can be used to reinforce or augment current training materials and can be used in conjunction with them or as refreshers of knowledge, maintainers of knowledge or follow up types of engagements with learners.&lt;/p&gt;&lt;p&gt;Micro-learning industry standards and benchmarks are a little more difficult to price because of the varying nature and size of these chunks. An important consideration for micro-learning is to consider your entire training plan so that you can repurpose and reuse existing materials, interactions and deployments. CTC&amp;#39;s development platform allows for a&amp;nbsp;quick and efficient method to pick and choose from existing templates and interactions for easy chunking and delivery.&lt;/p&gt;
+
+      </content><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="dad7da22-42d0-d163-1ceb-e895b5facd68" img="TDMA1.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt=" !!! !!! " popcaps=" !!! !!! " poploop="false" popup="TDMA2.png,TDMA3.png,TDMA4.png" prevpage="null" type="static" visualtranscript="false"><title>
+          Mini-Courses (A Micro-learning Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Mini-courses are comprised of &amp;nbsp;content pages, text, graphics, perhaps simple audio, perhaps simple video, test questions. No more than 10 pages and are typically 5-30 minutes in length.&lt;/p&gt;&lt;p&gt;Interactivity level is relative to the topic being taught and can fall into elearning Levels 1-2 as denoted previously. Content is focused on a select, narrow topic (single learning objective).&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          Gallery Mini Course example
+        </caption></page><page audio="null" audiotranscript="false" id="e4a70409-70c6-9a30-7fa6-67bff130df2a" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><title>
+          Videos / Podcasts (A Micro-learning and Job Aid Example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Video and audio can be used in conjunction with one another or used separately to convey quick peices of information to include:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Steps in a process (visual and audio)
+	&lt;ul&gt;&lt;li&gt;Screen capture of steps to take in an application&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Information updates, need to know quickly
+	&lt;ul&gt;&lt;li&gt;Updates to a process with direction to updated materials&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Audio only for use with narrative information, perhaps used with deploying personnel (load up a playlist of satellite equipment tips and&amp;nbsp;tricks)&lt;/li&gt;&lt;/ul&gt;
+
+        </content></page><page alt="image description" audio="null" audiotranscript="false" autonext="false" autoplay="false" controlType="bar" enlarge="" galTransType="elastic" h="500" id="34704ff5-67b3-96e9-aaa5-9a6a847e8c9f" img="module_5_and_6_sequence_02.mp4" layout="top" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" poster="null" prevpage="null" subs="null" type="static" visualtranscript="false" w="625"><title>
+          Simple Stepped Process (Video Chunk)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Simple Stepped Process (Video Chunk) used to provide quick direct reference to a particular process or activity. Can be sent via email,&amp;nbsp;launched from a portal/website or part of a push process to a mobile application.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          SW sequence
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" autonext="false" autoplay="true" controlType="bar" enlarge="" galTransType="elastic" h="500" id="0ac5a556-91ea-dc08-e394-7e20305c123b" img="APO_150.mp4" layout="top" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" poster="null" prevpage="null" subs="null" type="static" visualtranscript="false" w="625"><title>
+          Audio only / Playlist&amp;nbsp;
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Podcasts or audio only files can be used to describe key concepts or provide awareness of information. By creating short, targeted&amp;nbsp;bursts of information, learners are guided to the most important topic areas. Great for use while traveling (ear buds), can be deployed internally to sound systems or play from the web. Organizations can create a series of podcasts for learners to use. Podcasts do not rely on internet connectivity so they can be listened to without an internet connections and can be listened to anytime on various devices.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          Audio example
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" autonext="false" autoplay="true" controlType="bar" enlarge="" eo="undefined" galTransType="elastic" h="523" id="04a8f534-959f-07c7-eaac-e00b87495501" img="AFSC-Motorcycle_Safety_PSA.mp4" layout="top" mediaLinkType="" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="false" popup="" poster="null" prevpage="null" subs="null" type="static" visualtranscript="false" w="930"><title>
+          Informational Video&amp;nbsp;
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Small (less than 2 minute) videos can be created through various means from live reports to animated sequences depending on the topic being discussed. These can serve as updates to policy, new standards or priority topics. They can be written to resonate with personnel by altering the tone and voice. Think public affairs types of announcements...that can be customized to suit the topic.&lt;/p&gt;
+
+        </content><caption>
+          Air Force Motorcycle Safety PSA
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="3a1a41d6-ddf0-0f3c-30d7-ca934a991b79" img="JVTA_FTM-Pocket-Guide.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          Flip Books (Job Aid example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;Flip books can be paper-based or electronic reference guides used as on the job aids to supplement and reinforce existing knowledge on process or procedural workflows. &amp;nbsp;&lt;/p&gt;
+
+        </content><caption>
+          Pocket-Guide
+        </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="c037b10a-032d-dc0b-8f99-c647c40341d6" img="device_layout.png" layout="top" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" prevpage="null" type="static" visualtranscript="false"><title>
+          Mobile App (A Micro-learning and Job Aid example)
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;All of the items shown in this section have the ability to be a part a mobile delivery strategy. Mobile applications can also be developed to be serve as resources for personnel ranging from stepped checklists, to troubleshooting sequences (if then, what), to full interactive manual products.&amp;nbsp;&lt;/p&gt;
+
+        </content><caption /></page><page audio="null" audiotranscript="false" id="5521ae9f-99bd-ed40-9bcb-b47f736edeec" layout="textOnly" nextpage="null" objItemId="undefined" objective="undefined" prevpage="null" type="static" visualtranscript="false"><title>
+          Contact Information
+        </title><visualtranscript>
+          Visual transcript content
+        </visualtranscript><audiotranscript>
+          Audio transcript content
+        </audiotranscript><content>
+          &lt;p&gt;For additional information, please contact:&lt;/p&gt;&lt;p&gt;Ms. Jennifer Chuba - 814-269-2857&lt;/p&gt;&lt;p&gt;chubaj@ctc.com&lt;/p&gt;
+
+        </content></page></page></pages></content>

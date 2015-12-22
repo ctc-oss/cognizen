@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<course coursedisplaytitle="USSOCOM - Training Options" help="" id="55d233a955978d032a000005" name="USSOCOM Demo Course" redmine="true" section508="true">
+  <glossary>
+    <glossaryitem>
+      <term>Course Term</term>
+      <content>Example Course Term</content>
+    </glossaryitem>
+  </glossary>
+  <sequencing choice="true" flow="false" forwardOnly="false" objectivesGlobalToSystem="false"/>
+  <item coursedisplaytitle="Demo Lesson" excludeFromPublish="false" id="55d233bc55978d032a000007" name="Demo Lesson" tlo="undefined">
+    <sequencing abandon="false" abandonAll="false" choice="true" choiceExit="true" completionSetByContent="false" continue="false" exit="false" exitAll="false" flow="false" forwardOnly="false" objectiveSetByContent="false" previous="false" rollupObjectiveMeasureWeight="1.0" rollupObjectiveSatisfied="true" rollupProgressCompletion="true" suspendAll="false" tracked="true">
+      <objectives>
+        <primaryObjective/>
+      </objectives>
+      <sequencingRules/>
+    </sequencing>
+  </item>
+</course>
