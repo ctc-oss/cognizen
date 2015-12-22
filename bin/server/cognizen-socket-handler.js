@@ -2559,14 +2559,35 @@ var SocketHandler = {
         _this.mylrs = new adl.XAPIWrapper(myconfig);
     },
 
-    sendXapiStatement: function(_stmt){
+    sendXapiStatement: function(_stmt, callback){
         var _this = this;
-
+        _this.mylrs.testConfig(function(data){
+            _this.logger.info("testConfig : " + data);
+        });
         _this.mylrs.sendStatements(_stmt, function (err, resp, bdy) {
-            _this.logger.info(resp.statusCode);
-            _this.logger.info(bdy);
+            // _this.logger.info(resp.statusCode);
+            // _this.logger.info(bdy);
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            callback(returnData);            
         });
 
+    },
+
+    getXapiStatement: function(_searchParams, callback){
+        var _this = this;
+
+        _this.mylrs.getStatements(_searchParams, null, function (err, resp, bdy) {
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            callback(returnData);            
+        });
     },
 
     sendXapiState: function(data, callback){
@@ -2602,6 +2623,7 @@ var SocketHandler = {
                 resp : resp,
                 bdy : bdy
             };
+            _this.logger.info(resp.statusCode);
             callback(returnData);
         });
     },

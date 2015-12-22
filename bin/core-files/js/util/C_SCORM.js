@@ -109,7 +109,7 @@ function checkScorm(){
 
             if(scormEntry === "resume"){
             	var suspendedQuestionResponse = scorm.get("cmi.suspend_data");
-            	debugger;
+            	//debugger;
             	var qrObject_arr = suspendedQuestionResponse.split("|");
             	for (var i = 0; i < qrObject_arr.length-1; i++) {
             		questionResponse_arr.push(jQuery.parseJSON(qrObject_arr[i]));

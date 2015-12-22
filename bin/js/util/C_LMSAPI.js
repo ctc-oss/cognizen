@@ -30,6 +30,7 @@ var cmi_suspend_data = "";//retrieveDataValue(scormVersionConfig.suspendDataElem
 var cmi_total_time = "";//retrieveDataValue(scormVersionConfig.totalTimeElement);
 
 var activity = currentLesson.path;
+var isResumed = false;
 
 var API_1484_11 = {
     Initialize : function(){
@@ -38,44 +39,41 @@ var API_1484_11 = {
       attemptId = ADL.ruuid();
 
       // // Determine whether this is a new or resumed attempt (based on cmi.entry)
-      // var entry = retrieveDataValue(scormVersionConfig.entryElement);
+      var entry = (exitSetToSuspend) ? "resume" : "ab_initio";
 
-
-      // var isResumed = (entry == "resume"); 
+      isResumed = (entry == "resume"); 
 
       // // if "resume", determine if the user issued a suspend sequencing nav 
       // // request and a terminate was called instead of a suspend and if so, fix
       // if(isResumed)
       // {
-      //    adjustFinishStatementForResume();
+         adjustFinishStatementForResume();
       // }
 
       //configure Attempt Context Activity ID
-      var cmiEntryValue = "ab_initio";
+      // if( entry == "resume" )
+      // {
+      //   if( window.localStorage[activity] == null )
+      //   {
+      //     window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
+      //   }
+      // }
+      // else
+      // {
+      //    window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
 
-      if( cmiEntryValue == "resume" )
-      {
-        if( window.localStorage[activity] == null )
-        {
-          window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
-        }
-      }
-      else
-      {
-         window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
+      //    // update the activity state with the new attempt IRI
+      //    setActivityState();
+      // } 
 
-         // update the activity state with the new attempt IRI
-         setActivityState();
-      } 
-
-      setActivityProfile()
-      setAttemptState();
+      // setActivityProfile();
+      // setAttemptState();
 
       // // Set the appropriate verb based on resumed or new attempt
       // var startVerb = isResumed ? ADL.verbs.resumed : ADL.verbs.initialized;
 
-      // // Execute the statement
-      sendSimpleStatement(ADL.verbs.initialized);      
+      // // // Execute the statement
+      // sendSimpleStatement(startVerb);      
       return "true";
 
     },
@@ -97,49 +95,72 @@ var API_1484_11 = {
         //         "scaled": 0.95
         //     }
         // };
-        socket.emit('sendXapiStatement',stmt);                
+        socket.emit('sendXapiStatement',stmt, function(data){
+          //TODO: 500 error coming back from ADL LRS
+          console.log("suspendAttempt - sendXapiStatement");
+          console.log(data.resp.statusCode);
+          console.log(data.bdy);
+        });                 
 
         return "true";
     },
     GetValue: function(_cmiElement){ 
         var returnValue = "testGet";
 
-        if(_cmiElement == "cmi.location"){
+        if(_cmiElement === "cmi.location"){
           return cmi_location;
         }
-        else if(_cmiElement == "cmi.objectives._count"){
+        else if(_cmiElement === "cmi.objectives._count"){
             returnValue = "0";
         }
-        else if(_cmiElement == "cmi.completion_status"){
+        else if(_cmiElement === "cmi.completion_status"){
           returnValue = completion;
         }
-        else if(_cmiElement == "cmi.success_status"){
+        else if(_cmiElement === "cmi.success_status"){
           returnValue = success;
         }
-        else if(_cmiElement == "cmi.score.scaled"){
+        else if(_cmiElement === "cmi.score.scaled"){
           returnValue = scoreScaled;
         }
-        else if(_cmiElement == "cmi.score.raw"){
+        else if(_cmiElement === "cmi.score.raw"){
           returnValue = scoreRaw;
         }
-        
+        else if(_cmiElement === "cmi.entry"){
+          returnValue = (exitSetToSuspend) ? "resume" : "ab_initio";
+        }
+        else if(_cmiElement === "cmi.suspend_data"){
+          returnValue = cmi_suspend_data;
+        }
+        //console.log("GetValue : " + _cmiElement + " return - " + returnValue);
         return returnValue;
     }, 
     SetValue: function(_cmiElement, _value){ 
-        if(_cmiElement == "cmi.location"){
+      //console.log("SetValue : " + _cmiElement + "(" + _value + ")");
+        if(_cmiElement === "cmi.location"){
           cmi_location = _value;
         }
-        else if(_cmiElement == "cmi.completion_status"){
+        else if(_cmiElement === "cmi.completion_status"){
           completion = _value;
         }
-        else if(_cmiElement == "cmi.success_status"){
+        else if(_cmiElement === "cmi.success_status"){
           success = _value;
         }
-        else if(_cmiElement == "cmi.score.scaled"){
+        else if(_cmiElement === "cmi.score.scaled"){
           scoreScaled = _value;
         }
-        else if(_cmiElement == "cmi.score.raw"){
+        else if(_cmiElement === "cmi.score.raw"){
           scoreRaw = _value;
+        }
+        else if(_cmiElement === "cmi.exit"){
+          if(_value === "suspend"){
+            exitSetToSuspend = true;
+          }
+          else{
+            exitSetToSuspend = false;
+          }
+        }
+        else if(_cmiElement === "cmi.suspend_data"){
+          cmi_suspend_data = _value;
         }
         return "true";
     },
@@ -157,35 +178,110 @@ var API_1484_11 = {
  *******************************************************************************/
  var adjustFinishStatementForResume = function()
  {
-    // var search = ADL.XAPIWrapper.searchParams();
-    // search['verb'] = ADL.verbs.terminated.id;
-    // search['activity'] = window.localStorage[activity];
-    // search['related_activities'] = true;
+    if(isResumed)
+    {
+      var search = ADL.XAPIWrapper.searchParams();
+      search['verb'] = ADL.verbs.terminated.id;
+      search['activity'] = window.localStorage[activity];
+      search['related_activities'] = true;
 
-    // var res = ADL.XAPIWrapper.getStatements(search);
+      //var res = ADL.XAPIWrapper.getStatements(search);
+      socket.emit('getXapiStatement',search, function (data){
+        console.log("adjustFinishStatementForResume - getXapiStatement");
+        var res = JSON.parse(data.resp.body);
+        console.log(res);
+        if (res.statements.length == 1)
+        {
+           // there is a terminate verb, so must void it and replace with suspended
+           // Note: if there is length == 0, no issue.  
+           //       if length > 1, things are very messed up. Do nothing.
+           
+           var terminateStmt = res.statements[0];
 
-    // if (res.statements.length == 1)
-    // {
-    //    // there is a terminate verb, so must void it and replace with suspended
-    //    // Note: if there is length == 0, no issue.  
-    //    //       if length > 1, things are very messed up. Do nothing.
-       
-    //    var terminateStmt = res.statements[0];
+           // send the voided statement
+           var voidedStmt = getVoidedBaseStatement();
+           voidedStmt.verb = ADL.verbs.voided;
+           voidedStmt.object.id = terminateStmt.id;
 
-    //    // send the voided statement
-    //    var voidedStmt = getVoidedBaseStatement();
-    //    voidedStmt.verb = ADL.verbs.voided;
-    //    voidedStmt.object.id = terminateStmt.id;
+           var response = ADL.XAPIWrapper.sendStatement(voidedStmt); 
 
-    //    var response = ADL.XAPIWrapper.sendStatement(voidedStmt); 
-
-    //    // send a suspended statement to replace the (voided) terminated statement
-    //    suspendAttempt(terminateStmt.timestamp);
+           // send a suspended statement to replace the (voided) terminated statement
+           suspendAttempt(terminateStmt.timestamp);
 
 
-    // }
+        }
+        else{
+          configureAttemptContextActivityID();
+        }
+      });
+    }
+    else{
+      configureAttemptContextActivityID();
+    }
 
  }
+
+
+
+/*******************************************************************************
+ **
+ ** This function is used to suspent an attempt
+ **
+ *******************************************************************************/
+ var suspendAttempt = function(timestamp)
+ {
+    //sendSimpleStatement(ADL.verbs.suspended);
+    var stmt = getBaseStatement();
+    stmt.verb = ADL.verbs.suspended;
+
+    if (timestamp != undefined && timestamp != null)
+    {
+       stmt.timestamp = timestamp;
+    }
+
+    // window.localStorage[activity] uses activity id to return the most recent
+    // attempt
+    stmt.context.contextActivities.grouping[0].id = window.localStorage[activity];
+
+    var stmtWithResult = getStmtWithResult(stmt);
+    //var response = ADL.XAPIWrapper.sendStatement(stmtWithResult); 
+    socket.emit('sendXapiStatement',stmtWithResult, function(data){
+      //TODO: 500 error coming back from ADL LRS
+      console.log("suspendAttempt - sendXapiStatement");
+      console.log(data.resp.statusCode);
+      console.log(data.bdy);
+      configureAttemptContextActivityID();
+    });      
+ }
+
+/*******************************************************************************
+ **
+ ** This function is used to get the attempt context activity (grouping) id
+ **
+ *******************************************************************************/
+ var configureAttemptContextActivityID = function ()
+ {
+    // window.localStorage[activity] uses activity id to return the most recent
+    // attempt
+    if( isResumed )
+    {
+       if( window.localStorage[activity] == null )
+       {
+          window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
+       }
+
+       // send a resume statement
+       //resumeAttempt();
+       setActivityProfile();
+    }
+    else
+    {
+       window.localStorage[activity] = activity + "?attemptId=" + ADL.ruuid();
+
+       // update the activity state with the new attempt IRI
+       setActivityState();
+    }
+ } 
 
  /*******************************************************************************
  **
@@ -293,10 +389,13 @@ var API_1484_11 = {
       agent: agent,
       stateid: constants.activityStateIri,
     };
+    console.log("setActivityState : ");
+    console.log(stateData);
     //var as = ADL.XAPIWrapper.getState(activity, agent, constants.activityStateIri);
     socket.emit('getXapiState',stateData, function (data){
-      
+      console.log("setActivityState - getXapiState");
       var as = data;
+      console.log(as);
       // First time, create a new one
       if (as.resp.statusCode == 404)
       {
@@ -305,7 +404,9 @@ var API_1484_11 = {
         stateData.matchHash = "*";
         stateData.virg = true;
         socket.emit('sendXapiState',stateData, function (data){
+          console.log("setActivityState - sendXapiState");
           console.log(data.resp.statusCode);
+          setActivityProfile();
         });
         // ADL.XAPIWrapper.sendState(activity, agent, constants.activityStateIri, null, {attempts:[attemptIri]});
       }
@@ -321,7 +422,9 @@ var API_1484_11 = {
         stateData.state.attempts.push(attemptIri);
         //state.attempts = {attempts: [attemptIri]}; 
         socket.emit('sendXapiState',stateData, function (data){
+          console.log("setActivityState - sendXapiState");
           console.log(data.resp.statusCode);
+          setActivityProfile();
         });
          //ADL.XAPIWrapper.sendState(activity, agent, constants.activityStateIri, null, newAs, ADL.XAPIWrapper.hash(asStr));         
       }
@@ -342,7 +445,9 @@ var setActivityProfile = function()
   //var ap = ADL.XAPIWrapper.getActivityProfile(activity, constants.activityProfileIri);
 
   socket.emit('getXapiActivityProfile', profile, function(data){
+    console.log("setActivityProfile - getXapiActivityProfile");
     var ap = data;
+    console.log(ap);
     if(ap.resp.statusCode == 404 )
     {
        // get comments from lms (if any)
@@ -375,9 +480,14 @@ var setActivityProfile = function()
 
       profile.profile = activityProfile;
       socket.emit('sendXapiActivityProfile',profile, function (data){
-          console.log(data.resp.statusCode);
+        console.log("setActivityProfile - sendXapiActivityProfile");
+        console.log(data.resp.statusCode);
+        setAttemptState();
       });
        //ADL.XAPIWrapper.sendActivityProfile(activity, constants.activityProfileIri, activityProfile, null, "*");
+    }
+    else{
+      setAttemptState();
     }
   });
 
@@ -428,16 +538,23 @@ var setAttemptState = function()
   if (cmi_total_time != "")
      state.total_time = cmi_total_time; 
 
+  console.log("setAttemptState : ");
+  console.log(stateData);
   socket.emit('getXapiState',stateData, function (data){
-    // First time, create a new one
+    console.log("setAttemptState - getXapiState");
     var as = data;
+    console.log(as);
     // First time, create a new one
     if (as.resp.statusCode == 404)
     {    
       stateData.state = state; 
       stateData.virg = true;
       socket.emit('sendXapiState',stateData, function (data){
+        console.log("setAttemptState - sendXapiState");
         console.log(data.resp.statusCode);
+        var startVerb = isResumed ? ADL.verbs.resumed : ADL.verbs.initialized;
+        // // Execute the statement
+        sendSimpleStatement(startVerb);  
       });      
     }
     else{
@@ -445,7 +562,11 @@ var setAttemptState = function()
       stateData.matchHash = as.bdy;
       stateData.virg = false;
       socket.emit('sendXapiState',stateData, function (data){
+        console.log("setAttemptState - sendXapiState");
         console.log(data.resp.statusCode);
+        var startVerb = isResumed ? ADL.verbs.resumed : ADL.verbs.initialized;
+        // // Execute the statement
+        sendSimpleStatement(startVerb);          
       });       
     }
   });
@@ -459,7 +580,13 @@ var sendSimpleStatement = function(verb)
 {
   var stmt = getBaseStatement();           
   stmt.verb = verb;
-  socket.emit('sendXapiStatement',stmt);
+  console.log("sendSimpleStatement : " + verb);
+  socket.emit('sendXapiStatement',stmt, function (data){
+      //TODO: 500 error coming back from ADL LRS
+      console.log("sendSimpleStatement - sendXapiStatement");
+      console.log(data.resp.statusCode);
+      console.log(data.bdy);  
+  });
 
 }
 

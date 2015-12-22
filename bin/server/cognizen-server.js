@@ -691,9 +691,17 @@ var Content = {
                 SocketHandler.socket(socket).configLrs();
             });            
 
-            socket.on('sendXapiStatement', function(data){
-                SocketHandler.socket(socket).sendXapiStatement(data);
+            socket.on('sendXapiStatement', function (data, callback){
+                SocketHandler.socket(socket).sendXapiStatement(data, function (fdata){
+                    callback(fdata);
+                });
             });
+
+            socket.on('getXapiStatement', function (data, callback){
+                SocketHandler.socket(socket).getXapiStatement(data, function (fdata){
+                    callback(fdata);
+                });
+            });             
 
             socket.on('sendXapiState', function (data, callback){
                 SocketHandler.socket(socket).sendXapiState(data, function (fdata){
