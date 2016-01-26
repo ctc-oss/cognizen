@@ -125,17 +125,17 @@ function C_Login(_type) {
     	*********************************************************************************/
 
 	    //Add the login form.
-		var msg =  "<div class='loginLogo'></div>";
+		var msg =  "<div id='loginInner'><div class='loginLogo'><img src='css/images/cognizen_logo_final.png'></div>";
 			msg += "<form id='logForm'>";
 			msg += "<fieldset id='loginFieldSet'>";
 			msg += "<label class='loginField' for='username'>email: </label>";
-			msg += "<input type='text'  id='username' class='loginText text ui-widget-content ui-corner-all'/><br><br>";
+			msg += "<input type='email' id='username' class='loginText text ui-widget-content ui-corner-all' autocapitalize='none' autocorrect='off'/><br><br>";
 			msg += "<label class='loginField' for='pass'>password: </label>";
 			msg += "<input type='password' id='pass' class='loginText text ui-widget-content ui-corner-all'/><br><br>";
-			msg += "<div style='width: 400px; margin-left: auto; margin-right:auto;' id='loginSubmit'>login</div>";
+			msg += "<div id='loginSubmit'>login</div>";
 			msg += "</fieldset>";
 			msg += "</form>";
-			msg += "<div id='forgotSubmit'>forgot password</div>";
+			msg += "<div id='forgotSubmit'>forgot password</div></div>";
 		
 		$("#myLogin").append(msg);
 
