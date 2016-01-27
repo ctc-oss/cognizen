@@ -1217,6 +1217,8 @@ var SocketHandler = {
         });
     },
 
+    
+
     _createRedmineLesson: function(name, id, course, callback){
         var _this = this;
         //create Redmine project for the lesson
@@ -1518,11 +1520,84 @@ var SocketHandler = {
 //        }
 //    },
 
+    _assignAllLessonsPermission: function (courseData, permission, callback){
+        var _this = this;
+
+        var structure_arr = [];
+        Course.findAndPopulate(courseData._id, function (err, found) {
+            if(err){
+                _this.logger.error('Error in Course findAndPopulate');
+                callback(err);
+            }
+            else{
+
+                found.getChildren(function(err, children) {
+                    if (err) {
+                        _this.logger.error('found.getChildren(): ' + err);
+                       callback(err);
+                    }
+                    else {
+                        children.forEach(function(child){
+                             var page = {
+                                lessontitle : child.name,
+                                lessonid: child._id,
+                                coursetitle : found.name,
+                                courseid: found._id,
+                                programtitle : found.getProgram().name,
+                                programid : found.getProgram()._id,
+                                contenttype : 'lesson'
+                            };
+                            structure_arr.push(page);
+                        });  
+                    }
+                    _this._assignLessonPermission(courseData, permission, structure_arr, 0, function(err){
+                        if(err)
+                        {
+                            _this.logger.error('Error in _assignLessonPermission');
+                            callback(err);
+                        }
+                        else{ 
+                            callback(); 
+                        }
+                    });                    
+                });          
+
+
+            }
+        });        
+    },
+
+    _assignLessonPermission: function(data, permission, structure_arr, index, callback){
+        var _this = this;
+
+        if(index < structure_arr.length ){
+            var lessonData = {
+                id: structure_arr[index].lessonid,
+                user: data.user
+            };
+            _this._assignContentPermissionAfterCreation(lessonData, 'lesson', permission, data.name, function (err) {
+                if (err) {
+                    _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                    _this.logger.error(err);
+                }
+                else {
+                    _this._assignLessonPermission(data, permission, structure_arr, index+1, function(err){
+                        (err) ? callback(err) : callback();
+                    });   
+                }
+            });
+        }
+        else{
+            callback();
+        }        
+        
+    },
+
     _assignContentPermissionAfterCreation: function (data, contentType, permission, name, callback) {
         var userPermission = {
             content: {
                 type: contentType,
-                id: '' + data._id,
+                id: '' + data.id,
                 name: name
             },
             users: [{id: data.user._id, permission: permission}]
@@ -2335,6 +2410,9 @@ var SocketHandler = {
                             _this.logger.error('Error in _findAndCreateRedmineProject');
                             callback(err);
                         }
+                        else{ 
+                            callback(); 
+                        }
                     });                    
                 });          
 
@@ -2368,9 +2446,7 @@ var SocketHandler = {
                         _this._createRedmineProject(_structure_arr[index].programtitle, _structure_arr[index].programid, function(){
                             _this.logger.info('Redmine project created for '+ _structure_arr[index].lessontitle);
                             _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
-                                if(err){
-                                    callback(err);
-                                }
+                                (err) ? callback(err) : callback();
                             });                            
                         });
                     }
@@ -2380,9 +2456,7 @@ var SocketHandler = {
                         // };
                         _this._createRedmineCourse(_structure_arr[index].coursetitle, _structure_arr[index].courseid, _structure_arr[index].programid, function(){
                             _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
-                                if(err){
-                                    callback(err);
-                                }
+                                (err) ? callback(err) : callback();
                             });                            
                         });
                     }
@@ -2397,9 +2471,7 @@ var SocketHandler = {
 
                         _this._createRedmineLesson(_structure_arr[index].lessontitle, _structure_arr[index].lessonid, _course, function(){
                             _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
-                                if(err){
-                                    callback(err);
-                                }
+                                (err) ? callback(err) : callback();
                             }); 
                         });
 
@@ -2407,9 +2479,7 @@ var SocketHandler = {
                 }
                 else{
                     _this._findAndCreateRedmineProject(_structure_arr, index+1, function(err){
-                        if(err){
-                            callback(err);
-                        }
+                        (err) ? callback(err) : callback();
                     });                       
                 }
 
@@ -2545,6 +2615,7 @@ var SocketHandler = {
         callback(_this.config.server);
     },
 
+    //xapi functions
     configLrs: function(){
         var _this = this;
 
@@ -2656,6 +2727,328 @@ var SocketHandler = {
             callback(returnData);            
         });
     },
+    //xapi functions end
+    //cloning functions
+
+    cloneCourse: function (data) {
+        var _this = this;
+        var origPath = data.path;
+        Course.createUnique(data, function (saved, callbackData) {
+            if (saved) {
+                _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
+                    if (err) {
+                        _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                        _this.logger.error(err);
+                    }
+                    else {
+                        fs.createFile(path.normalize(_this.Content.diskPath(callbackData.path) + '/.gitkeep'), function (err) { // Need to create an empty file so git will keep the course folder
+                            if (err) {
+                                _this.logger.error(err);
+                                _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                            } else {
+                                //setup of object for _cloneContentFiles
+                                var cloneData = {
+                                    original: {
+                                        id: data.id,
+                                        type: data.type,
+                                        parentDir: data.parentDir,
+                                        path: origPath,
+                                        parent: data.parent,
+                                        permission: data.permission,
+                                        user: data.user
+                                    },
+                                    destination:{
+                                        course: callbackData.course,
+                                        path: callbackData.path,
+                                        name: callbackData.name,
+                                        _id: callbackData._id
+                                    }
+                                };                                
+                                 _this._cloneCourseFiles(cloneData, function () {
+                                    _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+                                        _this.checkRedmineProjectStructure(callbackData._id, function (err){
+                                            if(err){
+                                                _this._socket.emit('generalError', {title: 'Redmine Error', message: 'There was an error creating the Redmine project structure.'});
+                                                _this.logger.error(err);                                                                                               
+                                            }
+                                            else{
+                                                _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', data.name, function (err) {
+                                                    if (err) {
+                                                        _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                                                        _this.logger.error(err);
+                                                    }
+                                                    else {
+                                                        _this._assignAllLessonsPermission(callbackData, 'admin', function (err) {
+                                                            if(err){
+                                                                _this._socket.emit('generalError', {title: 'Clone Error', message: 'Error occurred when assigning lesson permissions.'});
+                                                                _this.logger.error(err);                                                                
+                                                            }
+                                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                                        });
+
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                    }, function (message) {
+                                        _this._socket.emit('generalError', {title: 'Course Error', message: 'Error occurred when saving course content.'});
+                                        _this.logger.info("Error committing program content: " + message)
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                _this._socket.emit('generalError', {title: 'Course Exists', message: 'There is already a course in this program that is named ' + data.name + '. Please choose a different course name or contact the program admin to grant you access to the course.'});
+                _this.logger.info('Course already exists with name ' + data.name);
+            }
+        });
+    },
+
+    _cloneCourseFiles: function (content, callback) {
+        var _this = this;
+        var destWritePath = path.normalize(_this.Content.diskPath(content.destination.path));
+        var srcWritePath = path.normalize(_this.Content.diskPath(content.original.path));
+        var newCourseXML = destWritePath + "/course.xml";
+        var srcCourseXML = srcWritePath + '/course.xml';
+        var tokenz = content.destination.path.split("/");
+        var programName = tokenz[0];
+
+        var courseID = content.destination._id;
+        var courseName = content.destination.name;
+
+        FileUtils.copyDir(srcWritePath, destWritePath, true, function (err) {
+    
+            var data, etree;
+
+            fs.readFile(newCourseXML, function(err, data){
+                data = data.toString();
+                etree = et.parse(data);
+                //set the name and id in the course.xml
+                etree.find('./').set('name', courseName);
+                etree.find('./').set('coursedisplaytitle', courseName);
+                etree.find('./').set('id', courseID);
+
+                var itemCount = etree.findall('./item').length;
+
+                var updatedCount = 0;
+                for (var i = 0; i < itemCount; i++) {
+                    var myNode = etree.findall('./item')[i];
+                    var nodeId = myNode.get('id');
+                    var nodeName = myNode.get('name');
+
+                    var lessonData = {
+                        course: {
+                            id: courseID
+                        },
+                        id: nodeId,
+                        name: nodeName,
+                        parent: courseID,
+                        parentDir: courseName,
+                        path: destWritePath +'/'+nodeName,
+                        permission: content.original.permission,
+                        type: 'lesson',
+                        user: content.original.user
+
+                    };
+
+                    Lesson.createUnique(lessonData, function (saved, callbackData) {
+                        if (saved) {
+         
+                            var tmpContent = {
+                                course: callbackData.course,
+                                path: callbackData.path,
+                                name: callbackData.name,
+                                _id: callbackData._id,
+                                parentName: courseName
+                            };
+
+                            _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
+                                var parentName = newcontent.parentName ? newcontent.parentName : '';
+                                etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+                                etreeContent.find('./courseInfo/preferences/id').set('value', callbackData._id);
+
+                                var myItemNode = etree.findall('./item')[updatedCount];
+                                myItemNode.set('id', callbackData._id);
+
+                                if(++updatedCount == itemCount){
+
+                                    var xml = etree.write({'xml_decleration': false});
+                                    fs.outputFile(newCourseXML, xml, function (err) {
+                                        if (err) callback(err, null);                     
+                                        callback(err);
+
+                                    });                                    
+                                }
+
+                            });            
+
+                        }
+                        else 
+                        {
+                            _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
+                            _this.logger.info('Lesson already exists with name ' + data.name);
+                        }                        
+                    });                    
+
+                };                
+
+            });
+
+        });
+    },    
+
+    cloneLesson: function (data){
+        var _this = this;
+        var origPath = data.path;
+        Lesson.createUnique(data, function (saved, callbackData) {
+            if (saved) {
+                _this.Git.updateLocalContent(callbackData.fullProgram, function(err) {
+                    if (err) {
+                        _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                        _this.logger.error(err);
+                    }
+                    else {
+                        //setup of object for _cloneContentFiles
+                        //var myNewId = FileUtils.guid();
+                        var cloneData = {
+                            original: {
+                                id: data.id,
+                                type: data.type,
+                                parentDir: data.parentDir,
+                                path: origPath,
+                                parent: data.parent,
+                                permission: data.permission
+                            },
+                            destination:{
+                                course: callbackData.course,
+                                path: callbackData.path,
+                                name: callbackData.name,
+                                _id: callbackData._id
+                            }
+                        };
+
+                        _this._cloneContentFiles(cloneData, function () {
+                            _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
+                                //format dest course id for _createRedmineLesson
+                                var destCourse = {
+                                    id: callbackData.course
+                                };
+                                _this._createRedmineLesson(data.name, callbackData._id, destCourse, function(){
+                                    _this._assignContentPermissionAfterCreation(callbackData, 'lesson', 'admin', data.name, function (err) {
+                                        if (err) {
+                                            _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                                            _this.logger.error(err);
+                                        }
+                                        else {
+                                              
+                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                        }
+                                    });
+                                });
+
+                            }, function (message) {
+                                _this.logger.info("Error committing program content: " + message)
+                                _this._socket.emit('generalError', {title: 'Lesson Error', message: 'Error occurred when saving lesson content.'});
+                            });
+                        });
+                    }
+                });
+            } else {
+                _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
+                _this.logger.info('Lesson already exists with name ' + data.name);
+            }
+        });        
+    },    
+
+    _cloneContentFiles: function (content, callback) {
+        var _this = this;
+        var destWritePath = path.normalize(_this.Content.diskPath(content.destination.path));
+        var srcWritePath = path.normalize(_this.Content.diskPath(content.original.path));
+        var tokenz = content.destination.path.split("/");
+        var programName = tokenz[0];
+        var courseName = tokenz[1];
+        var root = path.normalize('../core-files');
+        var myID = content.destination._id;
+        
+        FileUtils.rmdir(destWritePath);        
+
+        FileUtils.copyDir(srcWritePath, destWritePath, true, function (err) {
+            var tmpContent = {
+                course: content.destination.course,
+                path: content.destination.path,
+                name: content.destination.name,
+                _id: content.destination._id,
+                parentName: courseName
+            };
+            _this.Content.updateContentXml(tmpContent, function(newcontent, etree) {
+                var parentName = newcontent.parentName ? newcontent.parentName : '';
+                etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+                etree.find('./courseInfo/preferences/lessonTitle').set('value', newcontent.name);
+                etree.find('./courseInfo/preferences/lessondisplaytitle').set('value', newcontent.name);
+                etree.find('./courseInfo/preferences/id').set('value', myID);
+
+                //setup srcCoursePath
+                var srcCoursePath = srcWritePath;
+                var tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\/"));
+                if(tempPath === ""){
+                    tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\\"));
+                }
+                srcCoursePath = tempPath + "/course.xml";
+
+                //setup destCoursePath
+                var destCoursePath = destWritePath;
+                tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\/"));
+                if(tempPath === ""){
+                    tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\\"));
+                }
+                destCoursePath = tempPath + "/course.xml";
+
+                //read scr course.xml
+                fs.readFile(srcCoursePath, function(err, data){
+
+                    //copy src item and update id and name
+                    var _data, etree;
+                    _data = data.toString();
+                    etree = et.parse(_data);
+
+                    var root = etree.find('./');
+                    var origItem = root.find('./item[@id="'+content.original.id+'"]');
+                    origItem.set('id', myID);
+                    origItem.set('name', newcontent.name);
+
+                    //add updated src item to dest course.xml
+                    fs.readFile(destCoursePath, function(err, data){
+                        var XML = et.XML;
+                        var ElementTree = et.ElementTree;
+                        var element = et.Element;
+                        var subElement = et.SubElement;
+                        var _data, etree;
+
+                        _data = data.toString();
+                        etree = et.parse(_data);
+
+                        var root = etree.find('./');
+                        root.append(origItem);
+
+                        etree = new ElementTree(root);
+                        var xml = etree.write({'xml_decleration': false});
+                        fs.outputFile(destCoursePath, xml, function (err) {
+                            if (err) callback(err, null);
+                            callback(err);
+                        });
+                    });
+
+                });
+
+            });
+
+        });
+    },    
+    //cloning functions end
 
     publishContent: function (data, callback){
         var _this = this;

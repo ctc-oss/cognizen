@@ -253,6 +253,83 @@ var Content = {
         });
     },
 
+    allClonableContentForUser: function(socket, clone, callback)
+    {
+        var _this = this;
+        //console.log(clone);
+        if (!clone.user || !clone.user.username) {
+            clone.user = {username: '', admin: false};
+        }
+
+        var allContent = {};
+
+        User.findOne({username: clone.user.username}).populate('permissions').exec(function (err, loggedInUser) {
+            if (!loggedInUser) {
+                var data = _this.userPermittedContent(clone.user, allContent);
+                if (callback) {
+                    callback(data);
+                }
+                else{
+                    socket.emit('receiveProjectsFromDB', data);
+                }
+            }
+            else {               
+                var deleted = [{'deleted': null}, {'deleted': false}];
+                //clone.level == 'root' then clone projects                
+                if(clone.level == 'root'){
+                    Program.find().or(deleted).exec(function (err, programs) {
+                        programs.forEach(function(program) {
+                            allContent[program.id] = program;
+                        });
+
+                        var data = _this.userPermittedContent(loggedInUser, allContent);
+                        if (callback) {
+                            callback(data);
+                        }
+                        else{
+                            socket.emit('receiveClonableFromDB', data);
+                        }
+
+                    });
+                }
+                //clone.level == 'project' then clone courses
+                else if(clone.level == 'project'){
+                    Course.find().or(deleted).populate('program').exec(function(err, courses) {
+                        courses.forEach(function(course) {
+                            allContent[course.id] = course;
+                        });
+
+                        var data = _this.userPermittedContent(loggedInUser, allContent);
+                        if (callback) {
+                            callback(data);
+                        }
+                        else{
+                            socket.emit('receiveClonableFromDB', data);
+                        }                    
+
+                    }); 
+                }
+                //clone.level == 'lesson' then clone lessons
+                else{                  
+                    Lesson.find().or(deleted).populate('course').exec(function(err, lessons) {
+                        lessons.forEach(function(lesson) {
+                            allContent[lesson.id] = lesson;
+                        });
+
+                        var data = _this.userPermittedContent(loggedInUser, allContent);
+                        if (callback) {
+                            callback(data);
+                        }
+                        else{
+                            socket.emit('receiveClonableFromDB', data);
+                        }
+                    }); 
+                }                            
+            }
+        });
+
+    },
+
     objectType: function (typeName) {
         return eval(_.str.capitalize(typeName.toLowerCase()));
     },
@@ -725,7 +802,19 @@ var Content = {
                 SocketHandler.socket(socket).getXapiActivityProfile(data, function (fdata){
                     callback(fdata);
                 });
-            });  
+            }); 
+
+            socket.on('getClonables', function (data){
+                Content.allClonableContentForUser(socket, data);
+            });
+
+            socket.on('cloneLesson', function (data){
+                SocketHandler.socket(socket).cloneLesson(data);
+            });   
+
+            socket.on('cloneCourse', function (data){
+                SocketHandler.socket(socket).cloneCourse(data);
+            });                        
                               
         });
     });

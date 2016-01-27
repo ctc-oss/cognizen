@@ -65,6 +65,11 @@ function C_Dashboard(_type) {
             buildTemplate();
         });
 
+        socket.on('receiveClonableFromDB', function (data){
+            console.log(data);
+            cloneContent(data);
+        });
+
         socket.on('updateActiveEditor', function(data){
 	        if(data.newEditor != null){
 		        //$("#"+data.courseID).find('span').first().append("nono");
@@ -97,6 +102,7 @@ function C_Dashboard(_type) {
 
         socket.on('refreshDashboard', function() {
             //$("#preloadholder").remove();
+            try{co.refreshOutlineData();} catch(e){};
             socket.emit('getProjects', user);
         });
 
@@ -252,7 +258,7 @@ function C_Dashboard(_type) {
 	                    
 	                    $(this).append("<div id='myUserAdd' class='programUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myAdd' class='programAdd' title='add a course to " + $(this).parent().find("span").first().text() + "'></div>");
-	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " program.'></div>");
+	                    $(this).append("<div id='myRemove' class='programRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
 					}
                 } else if (myItem.data('type') == "course") {
                     $(this).addClass("courseHover");
@@ -268,7 +274,7 @@ function C_Dashboard(_type) {
                     $(this).addClass("projectHover");
                     if(myItem.data('permission') == "admin"){
                         $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
-	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " project.'></div>");
+	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
 	                    $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                }
@@ -494,6 +500,155 @@ function C_Dashboard(_type) {
     }
 
     /************************************************************************************
+     CLONE CONTENT
+     ************************************************************************************/
+    function cloneContent(data)
+    {
+        if(data.directories.length == 0){
+            alert("You do not have permission to clone any content, please contact a system admin.");
+        }
+        else{
+            var type = data.directories[0].type;
+            //'+ assignParent.find("span").first().text() +'
+            var msg = '<div id="dialog-cloneContent" title="Clone "'+type+'" content"><p class="validateTips">Choose '+type+' content to copy :</p>';
+            msg += '<table id="contentSelectTable" class="contentSelectTable" border="1" align="center">';
+            msg += '<thead><tr>';
+            msg += '<th></th>';        
+            msg += '<th class="USTName">'+type+'</th>';
+            if(type === 'course'){
+                msg += '<th>project</th>';
+            }
+            else if(type === 'lesson'){
+                msg += '<th>course</th>';
+            }
+            
+            msg += '</tr></thead>';
+            msg += '<tbody>';
+            for (var i = 0; i < data.directories.length; i++){
+                msg += '<tr data-class_id="'+i+'"><td align="center"><input id="cloneRadioButton" type="radio" name="cloneRadioGroup" ></td>';
+                msg += '<td id="contentName" class="cloneContentName USTName" title="'+data.directories[i].name +'">' + data.directories[i].name + '</td>'; 
+                if(type != 'program'){
+                    msg += '<td id="contentParent" class="cloneContentParent USTName" title="'+data.directories[i].parentDir +'">' + data.directories[i].parentDir + '</td></tr>';
+                }                        
+            }
+
+            msg += '</tbody></table></div>';
+            $("#stage").append(msg);
+
+            var $table = $('table.contentSelectTable');
+            var $bodyCells = $table.find('tbody tr:first').children(), colWidth; 
+              
+            // Adjust the width of thead cells when window resizes
+            $(window).resize(function() {
+                // Get the tbody columns width array
+                colWidth = $bodyCells.map(function() {
+                    return $(this).width();
+                }).get();
+                
+                // Set the width of thead columns
+                $table.find('thead tr').children().each(function(i, v) {
+                    $(v).width(colWidth[i]);
+                });    
+            }).resize(); // Trigger resize handler
+            
+            $("#contentName").tooltip();
+            $("#contentParent").tooltip();
+
+            //Make it a dialog
+            $("#dialog-cloneContent").dialog({
+                modal: true,
+                width: 700,
+                height: 710,
+                close: function (event, ui) {
+                    $(this).dialog("close");
+                    $("#dialog-cloneContent").remove();                
+                    enableMainKeyEvents();
+                },
+                open: function (event, ui) {
+                    disableMainKeyEvents();
+                },
+                buttons: [
+                    {
+                        id:"cloneContent-cancel",
+                        text: "Cancel",
+                        title:"Cancel.",
+                        click: function(){
+                            $(this).dialog("close");
+                            $("#dialog-cloneContent").remove();
+                            enableMainKeyEvents();
+                        }
+                    },            
+                    {
+                        id:"cloneContent-submit",
+                        text: "Submit",
+                        title:"Submit.",
+                        disabled: true,
+                        click: function() {
+                            var $checkedRow = $("#contentSelectTable input[name=cloneRadioGroup]:checked");
+                            if($checkedRow.length == 0 ){
+                                //this should never happen
+                                alert("Please select content!");
+                            }
+                            else{
+                                var $selectedRow = $checkedRow.closest('tr');
+                                //console.log($selectedRow.data('class_id'));
+                                var contentToClone = data.directories[$selectedRow.data('class_id')];
+                                contentToClone.name = contentToClone.name + "copy";
+                                contentToClone.user = user;
+
+                                console.log(contentToClone);
+
+                                if(type === "lesson"){
+
+                                    contentToClone.course = {
+                                        id: currentParent.attr('id')
+                                    };
+
+                                    socket.emit("cloneLesson", contentToClone);
+                                    $("#stage").append('<div id="preloadholder"></div>');
+                                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
+                                }
+                                else if(type === "course"){
+                                    contentToClone.program = {
+                                        id: currentParent.attr('id')
+                                    };
+
+                                    socket.emit("cloneCourse", contentToClone);
+                                    $("#stage").append('<div id="preloadholder"></div>');
+                                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
+
+                                }
+
+                                // $("#stage").append('<div id="preloadholder"></div>');
+                                // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                                $(this).dialog("close");
+                                $("#dialog-cloneContent").remove();                            
+                            }
+
+                        }
+                    }                
+
+                ]            
+
+            });
+
+            $('tbody').on('change', ':radio', function(){
+                $('#cloneContent-submit').removeAttr('disabled').removeClass( 'ui-state-disabled' );
+            });
+            
+            colWidth = $bodyCells.map(function() {
+                return $(this).width();
+            }).get();
+            
+            // Set the width of thead columns
+            $table.find('thead tr').children().each(function(i, v) {
+                $(v).width(colWidth[i]);
+            });  
+        }      
+
+    }
+
+    /************************************************************************************
      ASSIGN USER TO CONTENT
      ************************************************************************************/
     function assignUser(data) {
@@ -554,6 +709,8 @@ function C_Dashboard(_type) {
             width: 700,
             height: 710,
             close: function (event, ui) {
+                $(this).dialog("close");
+                $("#dialog-assignUser").remove();
                 enableMainKeyEvents();
             },
             open: function (event, ui) {
@@ -694,10 +851,10 @@ function C_Dashboard(_type) {
             socket.emit("registerLesson", content);
         }
 
-        $("#dialog-registerContent").dialog("close");
+        $("#dialog-registerNewContent").dialog("close");
         $("#myName").remove();
         $("#myType").remove();
-        $("#dialog-registerContent").remove();
+        $("#dialog-registerNewContent").remove();
     }
 
     function submitRemoveContent() {
@@ -1002,7 +1159,8 @@ function C_Dashboard(_type) {
 	}
     /************************************************************************************END PREFS*/
     /************************************************************************************
-     REGISTER NEW CONTENT
+     REGISTER CONTENT SPLASH
+     Clone or new
      ************************************************************************************/
         //Launch Register CONTENT Dialog
     function registerContent(myParent, myLevel) {
@@ -1012,23 +1170,18 @@ function C_Dashboard(_type) {
         //Create html strings for the dialog popups, depending upon menu level.
         if (myParent == "root") {
             msg = '<div id="dialog-registerContent" title="Add New Program">';
-            msg += '<p class="validateTips">Add the new program details below.</p>';
-            msg += '<label for="myName" class="regField">name: </label>';
-            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '<p class="validateTips">Choose to clone an existing program or create a new program.</p>';
             msg += '</div>';
         } else if (myLevel == "project") {
             //WHEN WE WANT TO TURN APPLICATIONS BACK ON COMMENT OUT THE LINE BELOW AND UNCOMMENT THE LINE ABOVE.
             msg = '<div id="dialog-registerContent" title="Add New Course">';
-            msg += '<p class="validateTips">You are adding a new course to the ' + myParent.find("span").first().text() + ' program. Fill in the name for your new course.</p>';
-            msg += '<label for="myName" class="regField">name: </label>';
-            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '<p class="validateTips">Choose to clone an existing course or create a new course to the ' +
+                myParent.find("span").first().text() + ' program.</p>';
             msg += '</div>';
         } else if (myLevel == "lesson") {
             msg = '<div id="dialog-registerContent" title="Add New Lesson">';
-            msg += '<p class="validateTips">You are adding a new lesson to the ' + myParent.find("span").first().text() + ' course.</p>';
-            msg += '<p>Fill in the details below for your new lesson.</p>';
-            msg += '<label for="myName" class="regField">name: </label>';
-            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '<p class="validateTips">Choose to clone an existing lesson or create a new lesson to the ' + 
+                myParent.find("span").first().text() + ' course.</p>';
             msg += '</div>';
         }
 	   if(myParent != "root"){
@@ -1037,9 +1190,94 @@ function C_Dashboard(_type) {
 
         //Append the string to the stage
         $("#stage").append(msg);
-        $("#myName").alphanum();
+        // $("#myName").alphanum();
         //Convert string to dialog
         $("#dialog-registerContent").dialog({
+            modal: true,
+            width: 350,
+            close: function (event, ui) {
+                enableMainKeyEvents();
+                disableRegisterContentKeyEvents();
+            },
+            open: function (event, ui) {
+                disableMainKeyEvents();
+                enableRegisterContentKeyEvents()
+            },
+            buttons: [
+                {
+                    id:"registerContent-new",
+                    text: "New",
+                    title:"Create a new instance.",
+                    click: function(){
+                        $(this).dialog("close");
+                        $("#dialog-registerContent").remove();
+                        registerNewContent(currentParent, currentLevel);
+                    }
+                },            
+                {
+                    id:"registerContent-clone",
+                    text: "Clone",
+                    title:"Clone an existing instance.",
+                    click: function() {
+                        $(this).dialog("close");
+                        $("#dialog-registerContent").remove();
+                        var cloneData = {
+                            parent: currentParent,
+                            level: currentLevel,
+                            user : user
+                        };
+                        socket.emit('getClonables', cloneData);
+                    }
+                }                
+
+            ]
+        });
+
+        $(function () {
+            $(document).tooltip();
+        });
+    }
+
+    /************************************************************************************END PREFS*/
+    /************************************************************************************
+     REGISTER NEW CONTENT
+     ************************************************************************************/
+        //Launch Register CONTENT Dialog
+    function registerNewContent(myParent, myLevel) {
+        currentParent = myParent;
+        currentLevel = myLevel;
+        var msg;
+        //Create html strings for the dialog popups, depending upon menu level.
+        if (myParent == "root") {
+            msg = '<div id="dialog-registerNewContent" title="Add New Program">';
+            msg += '<p class="validateTips">Add the new program details below.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
+        } else if (myLevel == "project") {
+            //WHEN WE WANT TO TURN APPLICATIONS BACK ON COMMENT OUT THE LINE BELOW AND UNCOMMENT THE LINE ABOVE.
+            msg = '<div id="dialog-registerNewContent" title="Add New Course">';
+            msg += '<p class="validateTips">You are adding a new course to the ' + myParent.find("span").first().text() + ' program. Fill in the name for your new course.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
+        } else if (myLevel == "lesson") {
+            msg = '<div id="dialog-registerNewContent" title="Add New Lesson">';
+            msg += '<p class="validateTips">You are adding a new lesson to the ' + myParent.find("span").first().text() + ' course.</p>';
+            msg += '<p>Fill in the details below for your new lesson.</p>';
+            msg += '<label for="myName" class="regField">name: </label>';
+            msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+            msg += '</div>';
+        }
+       if(myParent != "root"){
+         parentString = myParent.find("span").first().text();
+       }
+
+        //Append the string to the stage
+        $("#stage").append(msg);
+        $("#myName").alphanum();
+        //Convert string to dialog
+        $("#dialog-registerNewContent").dialog({
             modal: true,
             width: 550,
             close: function (event, ui) {
@@ -1051,16 +1289,16 @@ function C_Dashboard(_type) {
                 enableRegisterContentKeyEvents()
             },
             buttons: [{
-                id:"registerContent-cancel",
+                id:"registerNewContent-cancel",
                 text: "Cancel",
                 click: function() {
                     $(this).dialog("close");
                     $("#myName").remove();
                     $("#myType").remove();
-                    $("#dialog-registerContent").remove();
+                    $("#dialog-registerNewContent").remove();
                 }
             },{
-                id:"registerContent-submit",
+                id:"registerNewContent-submit",
                 text: "Submit",
                 click: submitRegisterNewContent
             }]
