@@ -33,29 +33,42 @@ body{
 	border-color: #ccc;
 	border-style: solid;
 	border-width: thin;
+	display: table;
+}
+
+#loginInner{
+	display: table-cell;
+	vertical-align: middle;
 }
 
 #forgotSubmit{
 	position: relative;
 	margin-top: 4vh;
+/*	margin-bottom: 20vh;*/
 	margin-right: auto;
 	margin-left: auto;
 	width: 230px;
 	display: block;
 }
 
-.loginLogo{
-	width: 400px;
-	height: 202px;
+.loginLogo img{
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 80%;
+	max-height: 25vh;
 	margin-right: auto;
 	margin-left: auto;
-	margin-top: 20vh;
-	margin-bottom: 5vh;
-	background-image: url(images/cognizen_logo_final.png);
+/*	margin-top: 20vh;*/
+	margin-bottom: 4vh;
+/*	background-image: url(images/cognizen_logo_final.png);
+	background-size: contain;
+	background-repeat: no-repeat;*/
 }
 
 #logForm{
 	width: 430px;
+	max-width: 86vw;
 	font-weight: lighter;
 	font-family: hnl;
 	color: white;
@@ -68,6 +81,7 @@ body{
 	border-color: #CCCCCC;
 	border-width: thin;
 	border-radius: 8px;
+	-webkit-padding-before: 0.625em;
 }
 
 #myCanvas.noBackground{
@@ -386,7 +400,7 @@ td{
 
 .loginField{
 	text-align: right;
-	width: 90px;
+	width: 28%;
 	float: left;
 	font-weight: lighter;
 	font-size:100%;
@@ -394,6 +408,13 @@ td{
 	padding-right: 5px;
 	padding-top: 3px;
 	color: #9DA6AB;
+}
+
+#loginSubmit{
+	display: block;
+	width: 96%;
+	margin-left: auto; 
+	margin-right: auto;
 }
 
 .regField{
@@ -435,7 +456,7 @@ input.loginText{
 	background:#eeeeee;
 	font-size: 12pt;
 	font-family: hnl;
-	width: 300px;
+	width: 64%;
 	float: left;
 	color: #3383bb;
 }
