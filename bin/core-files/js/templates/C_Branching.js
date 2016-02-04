@@ -59,7 +59,7 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function loadBranch(_id){
-		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
+		branchCount = $(data).find("page").eq(currentPage).children("branch").length;
 		pageAccess_arr = [];
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
@@ -74,10 +74,10 @@ function C_Branching(_type) {
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
 		currentBranch = _id;
-		myContent = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("content").text();
-		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
-		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
-		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
+		myContent = $(data).find("page").eq(currentPage).children("branch").eq(_id).find("content").text();
+		branchType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("layout");
+		isComplete = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("pathcomplete");
+		currentMedia = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("img");
 		if(isComplete == "true"){
 			mandatoryInteraction = false;
 			checkNavButtons();
@@ -127,7 +127,7 @@ function C_Branching(_type) {
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia, _id);
 	        mediaHolder.loadVisualMedia();
 	    }else if(branchType == "sidebar"){
-		    var mySidebar = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").first().text();
+		    var mySidebar = $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").first().text();
 		    $('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');
 			$('#sidebar').append(mySidebar);
 
@@ -156,7 +156,7 @@ function C_Branching(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildBranchOptions(_id){
-		var branchCount = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").length;
+		var branchCount = $(data).find("page").eq(currentPage).children("branch").eq(_id).find("option").length;
 
 		if(branchCount > 0){
 			//var paletteWidth = 0;
@@ -167,8 +167,8 @@ function C_Branching(_type) {
 			}
 
 			for (var i = 0; i < branchCount; i++){
-				var buttonLabel = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
-				var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).attr("id");
+				var buttonLabel = $(data).find("page").eq(currentPage).children("branch").eq(_id).find("option").eq(i).text();
+				var buttonID = $(data).find("page").eq(currentPage).children("branch").eq(_id).find("option").eq(i).attr("id");
 				var myOption = "option"+i;
 				$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				$("#"+myOption).button().click(function(){
@@ -214,7 +214,8 @@ function C_Branching(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	function loadBranchByID(branchID){
 		for(var i = 0; i < branchCount; i++){
-			if(branchID == $(data).find("page").eq(currentPage).find("branch").eq(i).attr("id")){
+			var test = $(data).find("page").eq(currentPage).children("branch").eq(i).attr("id");
+			if(branchID == $(data).find("page").eq(currentPage).children("branch").eq(i).attr("id")){
 				loadBranch(i);
 				break;
 			}
@@ -396,7 +397,7 @@ function C_Branching(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).children("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 
 			revealMenu_arr.push(tmpID);
@@ -431,39 +432,39 @@ function C_Branching(_type) {
 
 		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").empty();
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 		if($("#layoutDrop option:selected").val() != "graphicOnly"){
 			var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").empty();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		}
 
 		if($("#layoutDrop option:selected").val() != "textOnly" && $("#layoutDrop option:selected").val() != "sidebar"){
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("w", $("#mediaWidth").val());
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("h", $("#mediaHeight").val());
 			if($("#posterFile").val() == "input poster path"){
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", "null");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("poster", "null");
 			}else{
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("poster", $("#posterFile").val());
 			}
 			if($('#isTranscript').is(':checked')){
 				var transcriptUpdate = CKEDITOR.instances["inputTranscript"].getData();
 				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
 				var transcriptDoc = new DOMParser().parseFromString('<visualtranscript></visualtranscript>', 'application/xml');
 				var transcriptCDATA = transcriptDoc.createCDATASection(transcriptUpdate);
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("visualtranscript").empty();
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("visualtranscript").append(transcriptCDATA);
 			}
 		}
 
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
-		for(var i = 0; i < $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").length; i++){
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
+		for(var i = 0; i < $(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").length; i++){
 			var optionCDATA = newRevealContent.createCDATASection($("#myBranchOption" + i).find(".dialogInput").val());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).append(optionCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(i).attr("id", $("#myBranchOption" + i).find("#branchDrop option:selected").val());
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(i).empty();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(i).append(optionCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(i).attr("id", $("#myBranchOption" + i).find("#branchDrop option:selected").val());
 		}
 	}
 
@@ -494,7 +495,7 @@ function C_Branching(_type) {
 	function removeOption(){
 		if(branchCount > 1){
 			clearCKInstances();
-			var tempID = $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("id");
+			var tempID = $(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("id");
 			var optionLength = $(data).find("page").eq(currentPage).find("option").length;
 
 			//CLEAR OUT ALL LINKS TO THIS BRANCH IN THE XML...
@@ -503,7 +504,7 @@ function C_Branching(_type) {
 					$(data).find("page").eq(currentPage).find("option").eq(i).remove();
 				}
 			}
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).remove();
 			$("#optionContainer").remove();
 			branchCount--;
 			currentBranch--;
@@ -519,75 +520,76 @@ function C_Branching(_type) {
 	function addOption(_addID, _isNew){
 		var optionLabel = parseInt(_addID) + 1;
 
+		var $branch = '';
 		if(_isNew == true){
 			$(data).find("page").eq(currentPage).append($("<branch>"));
 			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<title>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<title>"));
 			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
 			var titleCDATA = title.createCDATASection("Branch Page Title");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").append(titleCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<content>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<content>"));
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").append(contentCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<sidebar>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").append(sidebarCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<option>"));
 			var option = new DOMParser().parseFromString('<option></option>', "text/xml");
 			var optionCDATA = option.createCDATASection("New Branch Option");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").append(optionCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").first().attr("id", $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id"));
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", guid());
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").append(optionCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").first().attr("id", $(data).find("page").eq(currentPage).children("branch").eq(0).attr("id"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("id", guid());
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("success", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("pathcomplete", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout", "textOnly");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("img", "defaultLeft.png");
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
 
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text() != ""){
-			transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find('visualtranscript').text();
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).children("branch").eq(_addID).find('visualtranscript').text() != ""){
+			transcriptText = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find('visualtranscript').text();
 		}else{
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<visualtranscript>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<visualtranscript>"));
 			var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");
 			var vTransCDATA = newVisualTranscript.createCDATASection("Visual transcript content");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").append(vTransCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("visualtranscript").append(vTransCDATA);
 		}
 
-		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
-		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
-		var branchSidebar = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").text();
-		var currentLayout = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout");
+		var branchTitle = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("title").text();
+		var branchContent = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("content").text();
+		var branchSidebar = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("sidebar").text();
+		var currentLayout = $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout");
 		var success = true;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success") == "false"){
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("success") == "false"){
 			success = false;
 		}
 
-		var transcriptText = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("visualtranscript").text();
+		var transcriptText = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("visualtranscript").text();
 		//alert("coming in " + transcriptText);
 		var complete = true;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete") == "false"){
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("pathcomplete") == "false"){
 			complete = false;
 		}
 
 		var autoNext = false;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autonext") == "true"){
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("autonext") == "true"){
 			autoNext = true;
 		}
 
 		var autoPlay = false;
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("autoplay") == "true"){
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("autoplay") == "true"){
 			autoPlay = true;
 		}
 
 		var hasPoster = false;
 		var posterLink = "input poster path";
-		if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster') != "input poster path"){
+		if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('poster') != undefined && $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('poster') != "null" && $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('poster').length != 0 && $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('poster') != "input poster path"){
 	    	hasPoster = true;
-	        posterLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('poster');
+	        posterLink = $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('poster');
 	    }
 
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
@@ -600,7 +602,7 @@ function C_Branching(_type) {
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
-     		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout")){
+     		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout")){
      			msg += "<option value='"+layoutType_arr[j]+"' selected='selected'>"+layoutType_arr[j]+"</option>";
      		}else{
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
@@ -608,23 +610,23 @@ function C_Branching(_type) {
 	 	}
      	msg += "</select><br/>";
      	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
-			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != undefined && $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w') != null){
-				var mediaWidth = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('w'));
-				var mediaHeight = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('h'));
+			if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('w') != undefined && $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('w') != null){
+				var mediaWidth = parseInt($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('w'));
+				var mediaHeight = parseInt($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('h'));
 			}else{
 				var mediaWidth = 0;
 				var mediaHeight = 0;
 			}
 
 			var hasTranscript = false;
-			if($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('visualtranscript') == "true"){
+			if($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('visualtranscript') == "true"){
 				hasTranscript = true;
 			}
 
-			var subsLink = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr('subs');
+			var subsLink = $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr('subs');
 
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
-			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
 			msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 			msg += '<div id="mediaSize">';
 			msg += "<label id='mediaWidthLabel'>Media Width:</label>";
@@ -649,6 +651,8 @@ function C_Branching(_type) {
 			msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput' style='width:40%;'>" + transcriptText + "</div>";
 		}
 		msg += "<br/>";
+		console.log(branchTitle);
+		console.log(branchContent);
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
 		msg += "<div id='optionTitleText' contenteditable='true' class='dialogInput' style='padding-bottom:5px; width:60%'>" + branchTitle + "</div>";
 		if(currentLayout != "graphicOnly"){
@@ -706,7 +710,7 @@ function C_Branching(_type) {
 			}
 		});
 
-		var tempType = getFileType($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img'));
+		var tempType = getFileType($(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr('img'));
 		if(tempType == "mp4" || tempType == "swf"){
 			$("#mediaSize").show();
 		}else{
@@ -719,27 +723,27 @@ function C_Branching(_type) {
 			$("#mediaCheckboxs").hide();
 		}
 
-		var branchOptionLength = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
+		var branchOptionLength = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").length;
 
 		$("#optionContainer").append("<div id='editBranchOptionHolder'><b>branch buttons:</b><br/></div>");
 		//addBranchOptions/selectors
 		for(var i = 0; i < branchOptionLength; i++){
-			var optionText = $.trim($(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).text());
-			var optionID = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(i).attr("id");
+			var optionText = $.trim($(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").eq(i).text());
+			var optionID = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").eq(i).attr("id");
 			var msg = "<div id='myBranchOption"+ i +"' style='width:80%; margin-bottom:5px;'>";
 				msg += "<label for='optionLabel'><b>label: </b></label>";
 				msg += "<input type='text' name='optionLabel' id='optionLabel"+ i + "' title='Label user will see.' value='"+ optionText + "' data='"+i+"' class='dialogInput' style='width:250px;'/>";
 				msg += "<label for='branchDrop'  title='Set the branch link.'><b>link to: </b></label>";
 				msg += "<select name='branchDrop' id='branchDrop'>";
-				for(var k = 0; k < $(data).find("page").eq(currentPage).find("branch").length; k++){
-					msg += "<option value='"+$(data).find("page").eq(currentPage).find("branch").eq(k).attr('id')+"' data='"+i+"'>"+$(data).find("page").eq(currentPage).find("branch").eq(k).find('title').text()+"</option>"
+				for(var k = 0; k < $(data).find("page").eq(currentPage).children("branch").length; k++){
+					msg += "<option value='"+$(data).find("page").eq(currentPage).children("branch").eq(k).attr('id')+"' data='"+i+"'>"+$(data).find("page").eq(currentPage).children("branch").eq(k).find('title').text()+"</option>"
 				}
 				msg += "</select>";
 				msg += "<div id='branchOptionRemove' class='removeMedia' data='"+i+"' value='"+optionID+"' title='Click to remove this branch option'/>";
 				msg += "</div>";
 			$("#editBranchOptionHolder").append(msg);
 
-			for(var m = 0; m < $(data).find("page").eq(currentPage).find("branch").length; m++){
+			for(var m = 0; m < $(data).find("page").eq(currentPage).children("branch").length; m++){
 				if(optionID == $("#myBranchOption"+i).find($("option")).eq(m).val()){
 					$("#myBranchOption"+i).find($("option")).eq(m).attr('selected','selected');
 				}
@@ -776,7 +780,7 @@ function C_Branching(_type) {
 		});
 
 		$("#layoutDrop").change(function() {
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
@@ -850,7 +854,7 @@ function C_Branching(_type) {
 
 		$('#isTranscript').change(function(){
 			if($("#isTranscript").prop("checked") == true){
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "true");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("visualtranscript", "true");
 				$('#inputTranscriptLabel').show();
 				$('#inputTranscript').show();
 				CKEDITOR.inline( "inputTranscript", {
@@ -868,7 +872,7 @@ function C_Branching(_type) {
 			}
 			else{
 				try { CKEDITOR.instances["inputTranscript"].destroy() } catch (e) {}
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("visualtranscript", "false");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("visualtranscript", "false");
 				$('#inputTranscriptLabel').hide();
 				$('#inputTranscript').hide();
 			}
@@ -876,33 +880,33 @@ function C_Branching(_type) {
 
 		$("#isSuccess").change(function(){
 			if($(this).prop("checked") == true){
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "true");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("success", "true");
 			}else{
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("success", "false");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("success", "false");
 			}
 		});
 
 		$("#autonext").change(function(){
 			if($(this).prop("checked") == true){
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "true");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("autonext", "true");
 			}else{
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autonext", "false");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("autonext", "false");
 			}
 		});
 
 		$("#autoplay").change(function(){
 			if($(this).prop("checked") == true){
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "true");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("autoplay", "true");
 			}else{
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("autoplay", "false");
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("autoplay", "false");
 			}
 		});
 
 		$("#isComplete").change(function(){
 			if($(this).prop("checked") == true){
-				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "true");
+				$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("pathcomplete", "true");
 			}else{
-				$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
+				$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("pathcomplete", "false");
 			}
 		});
 
@@ -956,8 +960,8 @@ function C_Branching(_type) {
 		CKEDITOR.instances.optionTitleText.on('blur', function(){
 			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").empty();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
@@ -971,8 +975,8 @@ function C_Branching(_type) {
 				console.log(CKEDITOR.instances["sidebarText"].getData());
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 				var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("sidebar").empty();
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
 				clearCKInstances();
 				try { $("#optionContainer").remove(); } catch (e) {}
 				$("#branchEditDialog").dialog("close");
@@ -985,8 +989,8 @@ function C_Branching(_type) {
 			CKEDITOR.instances.optionText.on('blur', function(){
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 				var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").empty();
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
 				clearCKInstances();
 				try { $("#optionContainer").remove(); } catch (e) {}
 				$("#branchEditDialog").dialog("close");
@@ -999,19 +1003,19 @@ function C_Branching(_type) {
 	function updateBranchOption(_branchID, _optionNum){
 		var newRevealContent = new DOMParser().parseFromString('<option></option>',  "text/xml");
 		var optionCDATA = newRevealContent.createCDATASection($("#myBranchOption" + _optionNum).find(".dialogInput").val());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).empty();
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).append(optionCDATA);
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).attr("id", $("#myBranchOption" + _optionNum).find("#branchDrop option:selected").val());
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(_optionNum).empty();
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(_optionNum).append(optionCDATA);
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(_optionNum).attr("id", $("#myBranchOption" + _optionNum).find("#branchDrop option:selected").val());
 
 	}
 
 	function addNewBranchOption(_addID){
-		var newPos = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").length;
-		$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<option>"));
+		var newPos = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").length;
+		$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<option>"));
 		var option = new DOMParser().parseFromString('<option></option>', "text/xml");
 		var optionCDATA = option.createCDATASection("New Branch Option");
-		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).append(optionCDATA);
-		$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("option").eq(newPos).attr("id", $(data).find("page").eq(currentPage).find("branch").eq(0).attr("id"));
+		$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").eq(newPos).append(optionCDATA);
+		$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("option").eq(newPos).attr("id", $(data).find("page").eq(currentPage).children("branch").eq(0).attr("id"));
 		$("#optionContainer").remove();
 		$("#branchEditDialog").dialog("close");
 		$("#branchEditDialog").remove();
@@ -1020,7 +1024,7 @@ function C_Branching(_type) {
 	}
 
 	function removeBranchOption(_branchID, _optionNum, _optionID){
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("option").eq(_optionNum).remove();
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("option").eq(_optionNum).remove();
 		$("#optionContainer").remove();
 		$("#branchEditDialog").dialog("close");
 		$("#branchEditDialog").remove();
@@ -1052,8 +1056,8 @@ function C_Branching(_type) {
     function saveContentEdit(_data){
         var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
         var newCDATA=docu.createCDATASection(_data);
-        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().empty();
-        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().append(newCDATA);
+        $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("content").first().empty();
+        $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("content").first().append(newCDATA);
         sendUpdate();
     };
 
@@ -1063,8 +1067,8 @@ function C_Branching(_type) {
 	function saveSidebarEdit(_data){
 	   	var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
 	   	var newCDATA=docu.createCDATASection(_data);
-	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").empty();
-	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").append(newCDATA);
+	   	$(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").empty();
+	   	$(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
 
@@ -1072,11 +1076,11 @@ function C_Branching(_type) {
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
 	function saveBranchingEdit(_data){
-		var extra = $(data).find("page").eq(currentPage).find("branch").length;
+		var extra = $(data).find("page").eq(currentPage).children("branch").length;
 		var active = branchCount;
 		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
-			$(data).find("page").eq(currentPage).find("branch").eq(i).remove();
+			$(data).find("page").eq(currentPage).children("branch").eq(i).remove();
 		}
 
 		markIncomplete();
