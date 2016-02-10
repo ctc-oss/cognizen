@@ -597,6 +597,7 @@ function C_Dashboard(_type) {
                                 contentToClone.user = user;
 
                                 console.log(contentToClone);
+                                console.log(type);
 
                                 if(type === "lesson"){
 
@@ -605,8 +606,8 @@ function C_Dashboard(_type) {
                                     };
 
                                     socket.emit("cloneLesson", contentToClone);
-                                    $("#stage").append('<div id="preloadholder"></div>');
-                                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
+                                    // $("#stage").append('<div id="preloadholder"></div>');
+                                    // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
                                 }
                                 else if(type === "course"){
                                     contentToClone.program = {
@@ -614,13 +615,16 @@ function C_Dashboard(_type) {
                                     };
 
                                     socket.emit("cloneCourse", contentToClone);
-                                    $("#stage").append('<div id="preloadholder"></div>');
-                                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
+                                    // $("#stage").append('<div id="preloadholder"></div>');
+                                    // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
 
                                 }
+                                else if(type === 'program'){
+                                    socket.emit("cloneProgram", contentToClone);
+                                }
 
-                                // $("#stage").append('<div id="preloadholder"></div>');
-                                // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                                $("#stage").append('<div id="preloadholder"></div>');
+                                $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                                 $(this).dialog("close");
                                 $("#dialog-cloneContent").remove();                            
                             }

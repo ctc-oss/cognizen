@@ -814,7 +814,11 @@ var Content = {
 
             socket.on('cloneCourse', function (data){
                 SocketHandler.socket(socket).cloneCourse(data);
-            });                        
+            });  
+
+            socket.on('cloneProgram', function (data){
+                SocketHandler.socket(socket).cloneProgram(data);
+            })                      
                               
         });
     });

@@ -1311,6 +1311,32 @@ var SocketHandler = {
                         }
 
                     }
+                    // console.log(found);
+                    //// TODO: ///////////////////////////////////////
+                    //remove content id from parent record
+                    // var parentId = '';
+                    // var parentType = 'project';
+                    // if(_dataType === 'lesson'){
+                    //     parentType = 'course';
+                    //     parentId = found.course._id;
+                    // }
+                    // else{
+                    //     parentId = found.program._id;
+                    // }
+
+                    // var contentType = _this.Content.objectType(parentType);
+                    // console.log("contentType : " + contentType);
+                    // console.log("parentType : " + parentType);
+                    // console.log("parentId : " + parentId);
+                    // if (contentType) {
+                    //     contentType.findAndPopulate(parentId, function (err, found) { 
+                    //         if(found){
+                    //             console.log('found parent : ' + found);
+                    //         }
+                    //     });
+                    // }
+                    //////////////////////////////////////////////////////                   
+
                     _this._deleteContent(found, data.user, function(err){
                         if (err) {
                             _this.logger.error(err);
@@ -2730,6 +2756,203 @@ var SocketHandler = {
     //xapi functions end
     //cloning functions
 
+    cloneProgram: function (data){
+        var _this = this;
+       // console.log(data);
+        var origPath = data.path;
+        var originalName = data.name;
+        var nameHadInvalidChars = Utils.hasInvalidFilenameChars(data.name);
+        Program.createUnique(data, function (saved, callbackData) {
+            if (saved) {
+                _this.Git.initializeProgramRepo(callbackData, function () {
+                    //setup of object for _cloneProgramFiles
+                    var cloneData = {
+                        original: {
+                            id: data.id,
+                            type: data.type,
+                            path: origPath,
+                            permission: data.permission,
+                            user: data.user
+                        },
+                        destination:{
+                            path: callbackData.path,
+                            name: callbackData.name,
+                            _id: callbackData._id
+                        }
+                    };                       
+                    _this._cloneProgramFiles(cloneData, function () {
+                        _this.Git.commitProgramContent(callbackData, data.user, function () {
+                            //create project in Redmine
+                            _this._createRedmineProject(data.name, callbackData._id, function(){
+                                Program.findAndPopulate(callbackData._id, function (err, found) {
+
+                                    var coursesLength = found.courses.length;
+                                    for (var i = 0; i < coursesLength; i++) {
+                                        //build approprate data for each course. 
+                                        Course.findAndPopulate(found.courses[i], function (err, found){
+                                            if(found){ 
+                                                _this.checkRedmineProjectStructure(found._id, function (err){
+                                                    if(err){
+                                                        _this._socket.emit('generalError', {title: 'Redmine Error', message: 'There was an error creating the Redmine project structure.'});
+                                                        _this.logger.error(err);                                                                                               
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                    _this._assignContentPermissionAfterCreation(callbackData, 'program', 'admin', data.name, function (err) {
+                                        if (err) {
+                                            _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
+                                            _this.logger.error(err);
+                                        }
+                                        else {
+                                            _this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                           
+                                            if (nameHadInvalidChars) {
+                                                _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
+                                            }
+                                        }
+                                    });                                   
+                                });                                                                                           
+                            });                             
+
+                        }, function (message) {
+                            _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
+                            _this.logger.error("Error when creating Git Repo (1): " + message);
+                        });
+                    });
+                }, function (message) {
+                    _this._socket.emit('generalError', {title: 'Program Creation Error', message: 'Error occurred when creating Program repository.'});
+                    _this.logger.error("Error when creating Git Repo (2): " + message);
+                });
+            } else {
+                _this._socket.emit('generalError', {title: 'Program Exists', message: 'There is already a program named ' + data.name + '. Please choose a different program name or contact the ' + data.name + ' program admin to grant you access to the program.'});
+                _this.logger.info('Program already exists with name ' + data.name);
+            }
+        });
+    },
+
+    _cloneProgramFiles: function (program, callback) {
+        var _this = this;
+        var destWritePath = path.normalize(_this.Content.diskPath(program.destination.path));
+        var srcWritePath = path.normalize(_this.Content.diskPath(program.original.path));
+        var root = path.normalize('../core-files');
+
+        FileUtils.copyDir(srcWritePath, destWritePath, true, function (err){
+            Program.findAndPopulate(program.original.id, function (err, found) {
+
+                var coursesLength = found.courses.length;
+                for (var i = 0; i < coursesLength; i++) {
+                    //build approprate data for each course. 
+                    Course.findAndPopulate(found.courses[i], function (err, found){
+                        if(found){
+
+                            var newCourseXML = destWritePath + "/" + found.name + "/course.xml";                         
+                            var newCourse = {
+                                program: {
+                                    id : program.destination._id
+                                },
+                                id: found._id,
+                                name: found.name,
+                                parent: program.destination._id,
+                                parentDir: program.destination.name,
+                                path: program.destination.path + "/" + found.name,
+                                permission: program.original.permission,
+                                type: 'course',
+                                user: program.original.user 
+                            };
+                            
+                            var courseName = found.name;
+                            Course.createUnique(newCourse, function (saved, callbackData) {
+                                //probably do this for all courses
+                                //////////////////////////////
+                                var data, etree;
+                                var courseID = callbackData._id;
+                                fs.readFile(newCourseXML, function(err, data){
+                                    data = data.toString();
+                                    etree = et.parse(data);
+                                    //set the name and id in the course.xml
+                                    etree.find('./').set('name', courseName);
+                                    etree.find('./').set('coursedisplaytitle', courseName);
+                                    etree.find('./').set('id', courseID);
+
+                                    var itemCount = etree.findall('./item').length;
+
+                                    var updatedCount = 0;
+                                    for (var i = 0; i < itemCount; i++) {
+                                        var myNode = etree.findall('./item')[i];
+                                        var nodeId = myNode.get('id');
+                                        var nodeName = myNode.get('name');
+
+                                        var lessonData = {
+                                            course: {
+                                                id: courseID
+                                            },
+                                            id: nodeId,
+                                            name: nodeName,
+                                            parent: courseID,
+                                            parentDir: courseName,
+                                            path: destWritePath +'/'+nodeName,
+                                            permission: program.original.permission,
+                                            type: 'lesson',
+                                            user: program.original.user
+
+                                        };
+
+                                        Lesson.createUnique(lessonData, function (saved, callbackData) {
+                                            if (saved) {
+                             
+                                                var tmpContent = {
+                                                    course: callbackData.course,
+                                                    path: callbackData.path,
+                                                    name: callbackData.name,
+                                                    _id: callbackData._id,
+                                                    parentName: courseName
+                                                };
+
+                                                _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
+                                                    var parentName = newcontent.parentName ? newcontent.parentName : '';
+                                                    etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+                                                    etreeContent.find('./courseInfo/preferences/id').set('value', callbackData._id);
+
+                                                    var myItemNode = etree.findall('./item')[updatedCount];
+                                                    myItemNode.set('id', callbackData._id);
+
+                                                    if(++updatedCount == itemCount){
+
+                                                        var xml = etree.write({'xml_decleration': false});
+                                                        fs.outputFile(newCourseXML, xml, function (err) {
+                                                            if (err) callback(err, null);                     
+                                                            callback(err);
+
+                                                        });                                    
+                                                    }
+
+                                                });            
+
+                                            }
+                                            else 
+                                            {
+                                                _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
+                                                _this.logger.info('Lesson already exists with name ' + data.name);
+                                            }                        
+                                        });                    
+
+                                    };                
+
+                                });
+                                ////////////////////////////////////
+                            });                            
+                        }
+                    });
+
+                }
+
+            });         
+        }); 
+
+    },
+
     cloneCourse: function (data) {
         var _this = this;
         var origPath = data.path;
@@ -2763,7 +2986,7 @@ var SocketHandler = {
                                         name: callbackData.name,
                                         _id: callbackData._id
                                     }
-                                };                                
+                                };                             
                                  _this._cloneCourseFiles(cloneData, function () {
                                     _this.Git.commitProgramContent(callbackData.fullProgram, data.user, function () {
                                         _this.checkRedmineProjectStructure(callbackData._id, function (err){
