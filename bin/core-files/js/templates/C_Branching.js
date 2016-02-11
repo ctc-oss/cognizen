@@ -90,7 +90,7 @@ function C_Branching(_type) {
 		buildBranchOptions(_id);
 		checkMode();
 
-		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true" && mode=='edit'){
 			updateRedmineCommentIcon();
 		}
 

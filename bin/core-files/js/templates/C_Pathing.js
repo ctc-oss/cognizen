@@ -97,7 +97,7 @@ function C_Pathing(_type) {
 		buildBranchOptions(_id);
 		checkMode();
 
-		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"  && mode == 'edit'){
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"  && mode == 'edit' && mode=='edit'){
 			updateRedmineCommentIcon();
 		}
 
@@ -222,7 +222,7 @@ function C_Pathing(_type) {
 					loadBranchByID($(this).attr("mylink"));
 				}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
+
 			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
@@ -272,7 +272,7 @@ function C_Pathing(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
+
 			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
@@ -316,7 +316,7 @@ function C_Pathing(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
+
 			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
@@ -697,7 +697,7 @@ function C_Pathing(_type) {
 			branchCount--;
 			currentBranch--;
 			currentEditBankMember--;// = 0;
-			
+
 			$("#branchEditDialog").remove();
 			homePage_arr = [];
 			createHomePageArray(1);

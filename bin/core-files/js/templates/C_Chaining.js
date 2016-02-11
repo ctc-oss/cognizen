@@ -33,7 +33,7 @@ function C_Chaining(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-		
+
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
@@ -56,7 +56,7 @@ function C_Chaining(_type) {
 		createPageArray(currentBranch);
 		//used for debugging, commentted out when not in use
 		// for (var i = 0; i < pageOrder_arr.length; i++) {
-			
+
 		// 	console.log($(data).find("page").eq(currentPage).children("branch").eq(pageOrder_arr[i]).attr("stepnumber") + ' : ' +
 		// 		$(data).find("page").eq(currentPage).children("branch").eq(pageOrder_arr[i]).attr("steptype"));
 		// };
@@ -92,14 +92,14 @@ function C_Chaining(_type) {
 		}
 
 		pageTitle = new C_PageTitle(_id);
-		
+
 		buildContentText();
 
 		buildBranchOptions(_id);
 		checkMode();
 
-		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
-			updateRedmineCommentIcon();		
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true" && mode=='edit'){
+			updateRedmineCommentIcon();
 		}
 
 		doAccess(pageAccess_arr);
@@ -147,17 +147,17 @@ function C_Chaining(_type) {
 
 			$('#sidebar').height($('#sidebarHolder').height());
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
-			
+
 			if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
-			
+
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
 	    }
-	    
+
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -188,7 +188,7 @@ function C_Chaining(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 		        var key = event.keyCode || event.which;
-		
+
 		        if (key === 32 || key === 13) {
 		            $(this).click();
 		        }
@@ -209,12 +209,12 @@ function C_Chaining(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
+
 			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
 			        return false;
-			    });		
+			    });
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
@@ -228,7 +228,7 @@ function C_Chaining(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	function createPageArray(_id){
 		var _stepNum = parseInt($(data).find("page").eq(currentPage).children("branch").eq(_id).attr("stepnumber"));
-		var _stepType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("steptype");	
+		var _stepType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("steptype");
 
 		if(_stepNum == 0){
 			if(_stepType === "intro"){
@@ -244,20 +244,20 @@ function C_Chaining(_type) {
 					currentStep++;
 					var id = _next;
 					pageOrder_arr.push(id);
-					createPageArray(id);					
+					createPageArray(id);
 				}
 				else{
 					var id =findNextBranch('0', 'summary');
-					pageOrder_arr.push(id);				
+					pageOrder_arr.push(id);
 				}
-				 
+
 			}
 		}
 		else if(_stepType === 'teach'){
 			//always pract step 1 first after you teach a new step
 			var id = findNextBranch('1', 'practice');
 			pageOrder_arr.push(id);
-			createPageArray(id);			
+			createPageArray(id);
 		}
 		else if(_stepType === 'practice'){
 			//increment through the step practice until you reach the currentstep
@@ -295,7 +295,7 @@ function C_Chaining(_type) {
 		}
 
 		return -1;
-	}	
+	}
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ function C_Chaining(_type) {
 			}
 		}
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     checkMode - Check if authoring is needed and enable it...
@@ -371,7 +371,7 @@ function C_Chaining(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Content
 			********************************************************/
@@ -400,7 +400,7 @@ function C_Chaining(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -417,7 +417,7 @@ function C_Chaining(_type) {
 			}).tooltip();
 		}
     }
-    
+
     function updateBranchDialog(){
 	    var msg = "<div id='branchEditDialog' title='Create Branching Exercise'>";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
@@ -426,20 +426,20 @@ function C_Chaining(_type) {
 		msg += "<div id='branchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Branch Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
-		
+
 		if(!mandatory){
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		updateRevealMenu();
 
 		addOption(currentEditBankMember, false);
-		
+
 		//#3321 fixes dialog jumping issue
 		$.ui.dialog.prototype._focusTabbable = function(){};
-		
+
 		//Style it to jQuery UI dialog
 		$("#branchEditDialog").dialog({
 			autoOpen: true,
@@ -480,7 +480,7 @@ function C_Chaining(_type) {
 	        $(document).tooltip();
 	    });
     }
-    
+
     function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -524,7 +524,7 @@ function C_Chaining(_type) {
 			}
 		}
 	}
-	
+
 	function makeRevealDataStore(){
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
@@ -547,7 +547,7 @@ function C_Chaining(_type) {
 		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
@@ -671,7 +671,7 @@ function C_Chaining(_type) {
 			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("layout", "textOnly");
 			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("img", "defaultLeft.png");
 			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("stepnumber", newStepCount.toString());
-			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("steptype", "practice");	
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("steptype", "practice");
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
@@ -683,9 +683,9 @@ function C_Chaining(_type) {
 
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
 		if(parseInt($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("stepnumber")) != 0){
-			msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";		
+			msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
 		}
-				
+
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
@@ -707,22 +707,22 @@ function C_Chaining(_type) {
 			msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
 			msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		}
-		
+
 		if(currentLayout == "sidebar"){
 			msg += "<div id='sidebarInput' style='padding-bottom:5px;'><b>edit branch sidebar: </b></div>";
 			msg += "<div id='sidebarText' contenteditable='true' class='dialogInput'>" + branchSidebar + "</div>";
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
-		
+
 		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 			$("#dialogMediaBrowseButton").click(function(){
 				$(".ui-dialog").hide();
 				$(".ui-widget-overlay").hide();
-				dialogToggleMediaBrowser($("#mediaLink"));					
+				dialogToggleMediaBrowser($("#mediaLink"));
 			});
 		}
-				
+
 		$("#layoutDrop").change(function() {
 			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
@@ -731,11 +731,11 @@ function C_Chaining(_type) {
 			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
-				
+
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
-		
+
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
@@ -762,7 +762,7 @@ function C_Chaining(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
-		
+
 		if(currentLayout == "sidebar"){
 			CKEDITOR.inline( "sidebarText", {
 				toolbar: contentToolbar,
@@ -777,7 +777,7 @@ function C_Chaining(_type) {
 			    }
 			});
 		}
-		
+
 
 		CKEDITOR.instances.optionTitleText.on('blur', function(){
 			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
@@ -806,9 +806,9 @@ function C_Chaining(_type) {
 				updateBranchDialog();
 			});
 		}
-		
+
 		//$("#optionText").focusout(function(){
-		if(currentLayout != "graphicOnly"){	
+		if(currentLayout != "graphicOnly"){
 			CKEDITOR.instances.optionText.on('blur', function(){
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 				var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
@@ -822,7 +822,7 @@ function C_Chaining(_type) {
 			});
 		}
 	}
-	   
+
     function clearCKInstances(){
 		if (CKEDITOR.instances['optionText']) {
             CKEDITOR.instances.optionText.destroy();
@@ -834,13 +834,13 @@ function C_Chaining(_type) {
             CKEDITOR.instances.sidebarText.destroy();
         }
 	}
-	
+
 	function clearMainCKEInstances(){
 		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
-    
+
      /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
@@ -862,7 +862,7 @@ function C_Chaining(_type) {
 	   	$(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
-	
+
 	/**********************************************************************
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
@@ -878,7 +878,7 @@ function C_Chaining(_type) {
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM
