@@ -1062,7 +1062,7 @@ function C_Dashboard(_type) {
     function clickPublish(parent, level, selectedScorm, manifestOnly, deliverable){
 
 
-        $('#myCanvas').append('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The content is being packaged, this may take a couple of minutes</div></div>');
+        $('body').prepend('<div id="publishLoader"><div id="publishLoaderText">Please Wait.<br/><br/>The content is being packaged, this may take a couple of minutes</div></div>');
         disableRenameContentKeyEvents();
 
         var data = {
