@@ -107,10 +107,14 @@ body{
 
 .dash-navbar{
 	width: 100vw;
-	height: 20px;
+	height: 30px;
 	background-color: #8E969C;
 	clear: both;
 	margin-bottom: 10px;
+}
+
+.dash-navbar div{
+	line-height: 30px;
 }
 
 #stage {
