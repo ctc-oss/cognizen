@@ -211,11 +211,11 @@ function C_Pathing(_type) {
 
 				if(pathBtnComplete){
 					widthAdjust = 50;
-					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch btn_branchComplete' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch btn_branchComplete " + pathType + "_" + branchType + "' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				}
 				else{
 					allCompleted = false;
-					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+					$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch " + pathType + "_" + branchType + "' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 				}
 
 				$("#"+myOption).button().click(function(){
@@ -266,7 +266,7 @@ function C_Pathing(_type) {
 			}
 
 			var myOption = "option0";
-			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch " + pathType + "_" + branchType + "' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click(function(){
 				pathPageTracker--;
 				loadBranchByID($(this).attr("mylink"));
@@ -304,7 +304,7 @@ function C_Pathing(_type) {
 			}
 
 			myOption = "option1";
-			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
+			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch " + pathType + "_" + branchType + "' mylink='"+buttonID+"' role='button'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click(function(){
 				if(pathComplete && !checkPathComplete(pageId, pathId)){
 					pathCompletion_arr.push({pathid: pathId, completion: pathComplete});
