@@ -509,50 +509,52 @@ function C_Dashboard(_type) {
         }
         else{
             var type = data.directories[0].type;
-            //'+ assignParent.find("span").first().text() +'
-            var msg = '<div id="dialog-cloneContent" title="Clone "'+type+'" content"><p class="validateTips">Choose '+type+' content to copy :</p>';
-            msg += '<table id="contentSelectTable" class="contentSelectTable" border="1" align="center">';
-            msg += '<thead><tr>';
-            msg += '<th></th>';        
-            msg += '<th class="USTName">'+type+'</th>';
-            if(type === 'course'){
-                msg += '<th>project</th>';
-            }
-            else if(type === 'lesson'){
-                msg += '<th>course</th>';
-            }
-            
-            msg += '</tr></thead>';
-            msg += '<tbody>';
-            for (var i = 0; i < data.directories.length; i++){
-                msg += '<tr data-class_id="'+i+'"><td align="center"><input id="cloneRadioButton" type="radio" name="cloneRadioGroup" ></td>';
-                msg += '<td id="contentName" class="cloneContentName USTName" title="'+data.directories[i].name +'">' + data.directories[i].name + '</td>'; 
-                if(type != 'program'){
-                    msg += '<td id="contentParent" class="cloneContentParent USTName" title="'+data.directories[i].parentDir +'">' + data.directories[i].parentDir + '</td></tr>';
-                }                        
-            }
+            var msg = '<div id="dialog-cloneContent" title="Clone "'+type+'" content"><p class="validateTips">Choose '+type+' content to copy :</p><ul id="listRoot" class="filetree"></ul></div>';
+			$("#stage").append(msg);
+				
+			for (var i = 0; i < data.directories.length; i++){
+				var id = data.directories[i].id;
+				var name = data.directories[i].name;
+				var parentID = data.directories[i].parent;
+				var parent = "clone-" + data.directories[i].parent;
+				var parentDir = data.directories[i].parentDir;
+				var path = data.directories[i].path;
+				var $insertPoint = $("#listRoot");
+				
+				// lesson has 2 levels above it, course only has 1
+				if(type == "lesson") {					
+					// find the parent so you can get the ID of its parent
+					var j = 0;
+					while(parentID != proj.directories[j].id){
+						j++;
+					}
+					var grandparent = "clone-" + proj.directories[j].parent;
+					var grandparentDir = proj.directories[j].parentDir;
+					// if grandparent node does not exist, create it
+					if(!$("#" + grandparent).length){
+						$insertPoint.append('<li id="' + grandparent + '"><span class="folder">' + grandparentDir + '</span><ul></ul></li>');
+					}
+					$insertPoint = $("#" + grandparent + " > ul");
+				}
 
-            msg += '</tbody></table></div>';
-            $("#stage").append(msg);
+				// if parent node does not exist, create it
+				if(!$("#" + parent).length){
+					$insertPoint.append('<li id="' + parent + '"><span class="folder">' + parentDir + '</span><ul></ul></li>');
+				}
 
-            var $table = $('table.contentSelectTable');
-            var $bodyCells = $table.find('tbody tr:first').children(), colWidth; 
-              
-            // Adjust the width of thead cells when window resizes
-            $(window).resize(function() {
-                // Get the tbody columns width array
-                colWidth = $bodyCells.map(function() {
-                    return $(this).width();
-                }).get();
-                
-                // Set the width of thead columns
-                $table.find('thead tr').children().each(function(i, v) {
-                    $(v).width(colWidth[i]);
-                });    
-            }).resize(); // Trigger resize handler
-            
-            $("#contentName").tooltip();
-            $("#contentParent").tooltip();
+				// add radio button
+				$("#" + parent + " > ul").append('<li id="clone-' + id + '"><input data-class_id="' + i + '" id="cloneRadioButton" type="radio" name="cloneRadioGroup" >' + name + '</li>');
+			}
+			
+			// sort the list
+			$("#dialog-cloneContent ul").listorder();
+
+			// convert list to tree
+			$('#listRoot').treeview({
+				collapsed: true,
+				animated: "fast",
+				unique: true
+			});
 
             //Make it a dialog
             $("#dialog-cloneContent").dialog({
@@ -584,50 +586,44 @@ function C_Dashboard(_type) {
                         title:"Submit.",
                         disabled: true,
                         click: function() {
-                            var $checkedRow = $("#contentSelectTable input[name=cloneRadioGroup]:checked");
-                            if($checkedRow.length == 0 ){
-                                //this should never happen
-                                alert("Please select content!");
-                            }
-                            else{
-                                var $selectedRow = $checkedRow.closest('tr');
-                                //console.log($selectedRow.data('class_id'));
-                                var contentToClone = data.directories[$selectedRow.data('class_id')];
-                                contentToClone.name = contentToClone.name + "copy";
-                                contentToClone.user = user;
+                            var $selectedRow = $("input[name=cloneRadioGroup]:checked");
+							console.log($selectedRow.data('class_id'));
+							var contentToClone = data.directories[$selectedRow.data('class_id')];
+							contentToClone.name = contentToClone.name + "copy";
+							contentToClone.user = user;
 
-                                console.log(contentToClone);
-                                console.log(type);
+							console.log(contentToClone);
+							console.log(type);
 
-                                if(type === "lesson"){
+							if(type === "lesson"){
 
-                                    contentToClone.course = {
-                                        id: currentParent.attr('id')
-                                    };
+								contentToClone.course = {
+									id: currentParent.attr('id')
+								};
 
-                                    socket.emit("cloneLesson", contentToClone);
-                                    // $("#stage").append('<div id="preloadholder"></div>');
-                                    // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
-                                }
-                                else if(type === "course"){
-                                    contentToClone.program = {
-                                        id: currentParent.attr('id')
-                                    };
+								socket.emit("cloneLesson", contentToClone);
+								// $("#stage").append('<div id="preloadholder"></div>');
+								// $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
+							}
+							else if(type === "course"){
+								contentToClone.program = {
+									id: currentParent.attr('id')
+								};
 
-                                    socket.emit("cloneCourse", contentToClone);
-                                    // $("#stage").append('<div id="preloadholder"></div>');
-                                    // $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
+								socket.emit("cloneCourse", contentToClone);
+								// $("#stage").append('<div id="preloadholder"></div>');
+								// $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
 
-                                }
-                                else if(type === 'program'){
-                                    socket.emit("cloneProgram", contentToClone);
-                                }
+							}
+							else if(type === 'program'){
+								socket.emit("cloneProgram", contentToClone);
+							}
 
-                                $("#stage").append('<div id="preloadholder"></div>');
-                                $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
-                                $(this).dialog("close");
-                                $("#dialog-cloneContent").remove();                            
-                            }
+							$("#stage").append('<div id="preloadholder"></div>');
+							$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+							$(this).dialog("close");
+							$("#dialog-cloneContent").remove();                            
+                            
 
                         }
                     }                
@@ -636,18 +632,9 @@ function C_Dashboard(_type) {
 
             });
 
-            $('tbody').on('change', ':radio', function(){
+            $('#listRoot').on('change', ':radio', function(){
                 $('#cloneContent-submit').removeAttr('disabled').removeClass( 'ui-state-disabled' );
             });
-            
-            colWidth = $bodyCells.map(function() {
-                return $(this).width();
-            }).get();
-            
-            // Set the width of thead columns
-            $table.find('thead tr').children().each(function(i, v) {
-                $(v).width(colWidth[i]);
-            });  
         }      
 
     }
