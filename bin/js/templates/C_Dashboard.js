@@ -537,13 +537,16 @@ function C_Dashboard(_type) {
 					$insertPoint = $("#" + grandparent + " > ul");
 				}
 
-				// if parent node does not exist, create it
-				if(!$("#" + parent).length){
-					$insertPoint.append('<li id="' + parent + '"><span class="folder">' + parentDir + '</span><ul></ul></li>');
+				if( (type == "lesson") || (type == "course") ){
+					// if parent node does not exist, create it
+					if(!$("#" + parent).length){
+						$insertPoint.append('<li id="' + parent + '"><span class="folder">' + parentDir + '</span><ul></ul></li>');
+					}
+					$insertPoint = $("#" + parent + " > ul");
 				}
 
 				// add radio button
-				$("#" + parent + " > ul").append('<li id="clone-' + id + '"><input data-class_id="' + i + '" id="cloneRadioButton" type="radio" name="cloneRadioGroup" >' + name + '</li>');
+				$insertPoint.append('<li id="clone-' + id + '"><input data-class_id="' + i + '" id="cloneRadioButton" type="radio" name="cloneRadioGroup" >' + name + '</li>');
 			}
 			
 			// sort the list
