@@ -743,8 +743,6 @@ TREE MENU STYLES
 	display: block;
 }
 
-#listRoot.treeview span.folder:hover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-
 /*Outliner*/
 /*NESTABLE*/
 #outlinePagePrefPane{

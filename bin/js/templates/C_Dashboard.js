@@ -66,7 +66,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveClonableFromDB', function (data){
-            //console.log(data);
+            console.log(data);
             cloneContent(data);
         });
 
@@ -602,7 +602,7 @@ function C_Dashboard(_type) {
 							var contentToClone = data.directories[$selectedRow.data('class_id')];
 							contentToClone.name = contentToClone.name + "copy";
 							contentToClone.user = user;
-                            var closeDialog = true;
+                            
 							if(type === "lesson"){
 
 								contentToClone.course = {
@@ -622,7 +622,6 @@ function C_Dashboard(_type) {
 							else if(type === 'program'){
                                 var newProgName = $('#myName').val();
                                 if(newProgName.length == 0 ){
-                                    closeDialog = false;
                                     alert("A new name for the program must be provided!");
                                 }
                                 else{
@@ -630,12 +629,11 @@ function C_Dashboard(_type) {
 								    socket.emit("cloneProgram", contentToClone);
                                 }
 							}
-                            if(closeDialog){
-    							$("#stage").append('<div id="preloadholder"></div>');
-    							$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
-    							$(this).dialog("close");
-    							$("#dialog-cloneContent").remove();  
-                            }                          
+
+							$("#stage").append('<div id="preloadholder"></div>');
+							$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+							$(this).dialog("close");
+							$("#dialog-cloneContent").remove();                            
                             
 
                         }

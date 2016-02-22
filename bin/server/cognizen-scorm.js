@@ -1731,7 +1731,7 @@ var SCORM = {
 		}
 
 
-        var item = "           <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\">\n"+
+        var item = "           <item identifier=\"ITEM-"+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\">\n"+
             "               <title>"+lessonTitle+"</title>\n";
 
         //setting LMS UI hide controls
@@ -1868,7 +1868,7 @@ var SCORM = {
         item += "           </item>\n";
 
         if(itemSeq.testReview){
-			item += "             <item identifier=\""+lessonNameTrim+"After_id\" identifierref=\"RES-"+lessonNameTrim+"-Review-files\">\n"+// isvisible=\"false\">\n"+
+			item += "             <item identifier=\"ITEM-"+lessonNameTrim+"After_id\" identifierref=\"RES-"+lessonNameTrim+"-Review-files\">\n"+// isvisible=\"false\">\n"+
 			"                 <title>"+lessonTitle+" Review</title>\n"+
 			"                 <adlnav:presentation>\n"+
 			"                     <adlnav:navigationInterface>\n"+
@@ -1967,7 +1967,7 @@ var SCORM = {
 		var _this = this;
 		var lessonNameTrim = lessonName.replace(/\s+/g, '');
 		var courseNameTrim = _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "");
-        var item = "           <item identifier=\""+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\" >\n"+
+        var item = "           <item identifier=\"ITEM-"+lessonNameTrim+"_id\" identifierref=\"RES-"+lessonNameTrim+"-files\" >\n"+
             "               <title>"+lessonName+"</title>\n"+
             "               <adlnav:presentation>\n"+
             "                   <adlnav:navigationInterface>\n"+
