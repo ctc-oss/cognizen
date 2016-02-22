@@ -26,14 +26,7 @@ function C_Outline(_myItem) {
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
-	var module_arr = [];										//Array holding all module data
-																/*id: "533edfe1cb89ab0000000001"
-																name: "z9"
-																parent: "531f3654c764a5609d000003"
-																parentDir: "Course 1"
-																path: "VA/Course 1/z9"
-																permission: "admin"
-																type: "lesson"*/
+
 
     ////////////////////////////////////////////////   PAGE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -227,6 +220,8 @@ function C_Outline(_myItem) {
      -- reach out to the node server and get the path to the course.
      ************************************************************************************/
      function initOutline(){
+     	module_arr = [];
+		indexItem_arr = [];
      	loadedOutlineModules = 0;
 		socket.emit("getCoursePath", {
         	content: {
@@ -855,7 +850,6 @@ function C_Outline(_myItem) {
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
 				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
-
 			}
 			else{
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("coursedisplaytitle"));
@@ -1652,9 +1646,9 @@ function C_Outline(_myItem) {
 		}
 
 		var pd = new pp();
-		var xmlString  = pd.xml(xmlString);
+		var tempXmlString = pd.xml(xmlString);
 		var tmpPath = courseXMLPath.replace(new RegExp("%20", "g"), ' ');
-		socket.emit('updateCourseXML', { myXML: xmlString, courseXMLPath: tmpPath, commit: commit, user: user ,content: {
+		socket.emit('updateCourseXML', { myXML: tempXmlString , courseXMLPath: tmpPath, commit: commit, user: user ,content: {
         	id: courseID,
             type: currentCourseType,
             permission: currentCoursePermission
@@ -3750,7 +3744,7 @@ function C_Outline(_myItem) {
 				   var myModule = myNode.module;						
 				   var myModuleName = module_arr[myNode.module].name;
 
-	               myRemove.remove();										//Remove from xml
+	               myRemove.remove();	
 	               updateCourseXML(false);									//Push xml without commit
 
 				   for(var i = 0; i < module_arr.length; i++){				//Find by id in module_arr

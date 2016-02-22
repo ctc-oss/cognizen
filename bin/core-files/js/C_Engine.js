@@ -101,7 +101,7 @@ function initScripts(_data){
 	$('.C_LoaderText').text("Initializing scripts.");
 	courseData = _data;
 	////console.log(data);
-	
+
 	// Create new ieUserAgent object
 	var ieUserAgent = {
 	    init: function () {
@@ -194,7 +194,7 @@ function initScripts(_data){
 	    require.config({
 	        waitSeconds: 0
 	    });
-	    
+
 	    /*require([corePath + 'js/libs/socket.io.js'], function(foo){
 			io = foo;
 		});*/
@@ -289,7 +289,7 @@ function loadStreamer(){
 
 //VROOM VROOM
 function startEngine(){
-	
+
 	//Enable popups from within the dialogs.
 	$.widget("ui.dialog", $.ui.dialog, {
 		_allowInteraction: function(event) {
@@ -390,7 +390,7 @@ function buildInterface(){
 	$("#myCanvas").fitToBackgroundImage();
 
 	//Place the course title.
-	var courseTitle;	
+	var courseTitle;
 	if($(courseData).find('course').attr('coursedisplaytitle')){
 		if($(courseData).find('course').attr('coursedisplaytitle') == ""){
 			//$(data).find("coursedisplaytitle").attr("value", $(data).find("courseTitle").attr("value"));
@@ -413,26 +413,26 @@ function buildInterface(){
 
 	//Place the lesson title																	 /*************************Note: Will make this optional*/
 	var lessonTitle;
-	
+
 	if($(data).find("lessondisplaytitle").length != 0 ){
 		if($(data).find("lessondisplaytitle").attr("value") == ""){
-			$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));		
+			$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
 		}
 		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
-		
+
 	}else{
 		$(data).find("preferences").append($("<lessondisplaytitle>", data));
 		$(data).find("lessondisplaytitle").attr("value", $(data).find("lessonTitle").attr("value"));
 		lessonTitle = $(data).find("lessondisplaytitle").attr("value");
 	}
-	
+
 	if(!lessonTitle){
 		lessonTitle = $(data).find("lessonTitle").attr("value");
 	}
-	
+
 	document.title = lessonTitle;
 	$("#lessonTitle").append(lessonTitle);
-	
+
 	checkNav();
 	if(mode == "edit"){
 		addEditNav();
@@ -466,6 +466,15 @@ function buildInterface(){
 	checkDocs();
 
 	//checkScorm();
+
+	// Determine if the default page should be loaded or if a specific ID as been requested.
+	// Create a hidden element on the parent of iFrame with an id equal to startPageID,
+	// this is the id of <page> you wish to direct the course to.
+	var pageID = $("input[id$=startPageID]", window.parent.document).val();
+	if (pageID != null && pageID != ''){
+		loadPageFromID(pageID);
+	}
+
 	loadPage();
 
 	if(mode == "edit" || mode == "review"){
@@ -488,7 +497,7 @@ function buildInterface(){
 function sendUpdateWithRefresh(_type){
 	console.log("sendUpdateWithRefresh(" + _type + ")");
 	connected = socket.socket.connected;
-	
+
 	if(connected){
 		updateTotalGradedQuestions();
 		//Serialize the xml and send it to nodejs using socket.
@@ -527,7 +536,7 @@ function sendCourseUpdate(){
 		//Serialize the xml and send it to nodejs using socket.
 		var myData = $(courseData);
 		var xmlString = undefined;
-		
+
 		//IE being a beatch, as always - have handle xml differently.
 		if (window.ActiveXObject){
 	        xmlString = myData[0].xml;
@@ -537,7 +546,7 @@ function sendCourseUpdate(){
 			var oSerializer = new XMLSerializer();
 			xmlString = oSerializer.serializeToString(myData[0]);
 		}
-		
+
 		var pd = new pp();
 		var xmlString  = pd.xml(xmlString);
 		socket.emit('updateCourseXMLWithRefresh', { my: xmlString });

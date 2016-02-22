@@ -1,0 +1,410 @@
+#stage {
+	width:1004px;
+	height:612px;
+	top:64px;
+	left:10px;
+}
+
+#myCanvas{
+	background-color: #FFFFFF;
+	width: 1004px;
+	height: 700px;
+	margin: auto;
+	position: relative;
+	overflow: hidden;
+	background-image: url(images/background.png);
+}
+
+#courseTitle{
+	top : 7px;
+	left: 20px;
+	font-size : 100%;
+	font-weight: bold;
+	color:	#ffffff;
+	text-shadow: 1px 1px 2px #3f3f3f;
+	padding: 2px;
+}
+
+#lessonTitle{
+	top : 29px;
+	left: 20px;
+	color:	#ffffff;
+	text-shadow: 1px 1px 2px #3f3f3f;
+	padding: 2px;
+}
+
+.dialogInput{
+	background-color:#ffffff;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+
+.dialogInputCorrect{
+	background: #98FF97 url(images/correct.png) no-repeat right center;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.dialogInputIncorrect {
+	background: #F49D96 url(images/wrong.png) no-repeat right center;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border-top-style: inset;
+	border-top-width: 1px;
+	border-left-style: inset;
+	border-left-width: 1px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+#pageTitle{
+	font-weight: bold;
+	color: #252525;
+}
+
+.lesson{
+	position: relative;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size : 175%;
+}
+
+.lessonCon{
+	position: relative;
+}
+
+.testTop{
+	padding: -5px;
+}
+
+#scrollableContent.top .box, .text .box, .tabsLeft .box{
+	width: 930px;
+}
+
+#scrollableListPalette{
+	width: 30%;
+}
+
+#scrollableListPalette .box{
+	width: 30%;
+}
+
+.listPalette{
+	width: 30%;
+}
+
+.listItem{
+	width: 90%;
+}
+
+.clickListTextHolder{
+	width: 70%;
+}
+
+.clickListTextHolder .box{
+	width: 70%;
+}
+
+.clickListText{
+	width: 70%;
+}
+
+#scrollableContent.matching{
+	position: relative;
+	width: auto;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.matching .box{
+	width: 930px;
+}
+
+#scrollableContent.left{
+	position: relative;
+	float: left;
+	width: auto;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.right{
+	position: relative;
+	float: right;
+	width: auto;
+	right: 14px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.sidebarContent{
+	position: relative;
+	float: left;
+	width: auto;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}
+
+#scrollableContent.left .box, #scrollableContent.right .box, #scrollableContent.sidebarContent .box{
+	width: 520px;
+}
+
+#contentHolder{
+	max-width: 947px;
+	max-height: 538px;
+}
+
+#content{
+	padding-right: 10px;
+	color: #252525;
+}
+
+#sidebarHolder{
+	padding-bottom: initial;
+	border: 1px solid #3F3F3F;
+}
+
+.sidebar{
+	background-color: initial;
+}
+
+.mediaPop{
+	background: url(images/expand_button_CTC.png) no-repeat;
+	width: 87px;
+	height: 21px;
+	right: 5px;
+}
+
+.mediaPop:hover{
+	background: url(images/expand_button_hover_CTC.png) no-repeat;
+}
+
+/* FOR TABBED CONTENT */
+#tabs p{
+	margin-top: 0px;
+}
+
+#tabs.tabTop{
+	/* allow width to be set automatically and add right margin for scrollbar */
+	width: auto;
+	margin-right: 7px;
+}
+
+#content table, #tabs table{
+	box-shadow: 1px 2px 8px #3f3f3f;
+	font-size: 10pt;
+	}
+
+thead th{
+	background-color: #3f3f3f;
+	background: -webkit-linear-gradient(#232323, #3f3f3f); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#232323, #3f3f3f); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#232323, #3f3f3f); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#232323, #3f3f3f); /* Standard syntax (must be last) */
+	color: #d1b259;
+	padding: 8px;
+}
+
+tbody th{
+	background-color: #d1b259;
+	background: -webkit-linear-gradient(left, #806A2C , #D1B259); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(right, #806A2C, #D1B259); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(right, #806A2C, #D1B259); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(to right, #806A2C , #D1B259); /* Standard syntax (must be last) */
+	color: #ffffff;
+	padding: 8px;
+}
+
+td{
+	background-color: #e3dac9;
+}
+
+caption{
+	font-size: 90%;
+	font-weight: bold;
+	font-style: normal;
+	margin: 6px auto 6px auto;
+}
+
+#revealTextHolder .box {
+	width: auto !important;
+}
+
+.revealImg{
+	background-color: #3f3f3f;
+}
+
+.revealText{
+	color: #fff;
+}
+
+.clickImgText{
+	color: #3f3f3f;
+}
+
+.clickImgTextHolder{
+	border-color: #333333;
+	width: 890px;
+}
+
+.flashcard{
+	color: #fff;
+	background-color: #7C1728;
+	border: solid #F8CB12;
+}
+
+.flashcardHover{
+	background-color: #b9a774;
+}
+
+.flashcardBack{
+	background-color: #fff;
+	color: #7C1728;
+	border: solid #F8CB12;
+}
+
+.sequenceOption{
+	color: #000000;
+}
+
+#caption{
+	font-weight: bold;
+}
+
+video#videoplayer {
+	max-width: 1280px !important;
+	display: block;
+	margin: auto;
+}
+
+.questionTop{
+	width: 930px;
+}
+
+#answerOptions{
+	left: 25px;
+	max-width: 890px;
+}
+
+#answer{
+	border-style:none;
+}
+
+#answer legend{
+	visibility: hidden;
+}
+
+.option{
+	display: table;
+}
+
+.option .radio{
+	display: table-cell;
+}
+
+.option #label{
+	display: table-cell;
+}
+
+.optionHover{
+	-webkit-border-radius: 8px;
+}
+
+.optionSelected{
+	-webkit-border-radius: 8px;
+}
+
+.selectedEditBankMember{
+	background-color: red;
+}
+
+#mcSubmit{
+	width: 110px;
+}
+
+#back{
+	height: 20px;
+	top: auto;
+	bottom: 2px;
+	left: 714px;
+	font-size: 100%;
+	border: 1px solid #e3dac9;
+}
+
+#next{
+	height: 20px;
+	top: auto;
+	bottom: 2px;
+	left: 915px;
+	font-size: 100%;
+	border: 1px solid #e3dac9;
+}
+
+#back .ui-button-text{
+	padding: 0em 1em .1em 2.1em;
+}
+
+#next .ui-button-text{
+	padding: 0em 2.1em .1em 1em;
+}
+
+#back.ui-state-hover.disabled, #next.ui-state-hover.disabled{
+	background:#3f3f3f url(images/ui-bg_gloss-wave_20_3f3f3f_500x100.png) 50% 50% repeat-x;
+	color:#e3dac9
+}
+
+#pageCount{
+	top: auto;
+	bottom: 4px;
+	left: 803px;
+	width: 115px;
+	font-size: 90%;
+	color: #8c2533;
+}
+
+#indexPane{
+	top:63px;
+	left:-408px;
+}
+
+#indexTab{
+	left: 407px;
+	background: #3f3f3f url(images/index_icon.png) no-repeat center center;
+	-moz-border-bottom-right-radius : 8px;
+	-webkit-border-bottom-right-radius : 8px;
+	border-bottom-right-radius : 8px;
+	-moz-border-top-right-radius : 8px;
+	-webkit-border-top-right-radius : 8px;
+	border-top-right-radius	   : 8px;
+}
+
+#indexContent{
+	height: 600px;
+}
+.mediaBrowserPane{
+	z-index: 0;	
+}
+
+.mediaBrowserDisplay{
+	bottom				  : 0px;
+	max-height            : 675px;
+}

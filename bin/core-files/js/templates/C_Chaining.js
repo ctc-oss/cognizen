@@ -33,7 +33,7 @@ function C_Chaining(_type) {
         if(transition == true){
         	$('#stage').css({'opacity':0});
         }
-		
+
 		//Clear accessibility on page load.
         pageAccess_arr = [];
         audioAccess_arr = [];
@@ -56,9 +56,9 @@ function C_Chaining(_type) {
 		createPageArray(currentBranch);
 		//used for debugging, commentted out when not in use
 		// for (var i = 0; i < pageOrder_arr.length; i++) {
-			
-		// 	console.log($(data).find("page").eq(currentPage).find("branch").eq(pageOrder_arr[i]).attr("stepnumber") + ' : ' +
-		// 		$(data).find("page").eq(currentPage).find("branch").eq(pageOrder_arr[i]).attr("steptype"));
+
+		// 	console.log($(data).find("page").eq(currentPage).children("branch").eq(pageOrder_arr[i]).attr("stepnumber") + ' : ' +
+		// 		$(data).find("page").eq(currentPage).children("branch").eq(pageOrder_arr[i]).attr("steptype"));
 		// };
 		loadBranch(currentBranch);
    	}
@@ -69,7 +69,7 @@ function C_Chaining(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function loadBranch(_id){
-		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
+		branchCount = $(data).find("page").eq(currentPage).children("branch").length;
 		pageAccess_arr = [];
         audioAccess_arr = [];
 		try { $("#mediaHolder").remove(); } catch (e) {}
@@ -82,24 +82,24 @@ function C_Chaining(_type) {
 		//remove existing scrollable content.
 		$("#scrollableContent").remove();
 		currentBranch = _id;
-		myContent = $(data).find("page").eq(currentPage).find("branch").eq(_id).find("content").text();
-		branchType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("layout");
-		isComplete = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("pathcomplete");
-		currentMedia = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("img");
+		myContent = $(data).find("page").eq(currentPage).children("branch").eq(_id).find("content").text();
+		branchType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("layout");
+		isComplete = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("pathcomplete");
+		currentMedia = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("img");
 		if(isComplete == "true"){
 			mandatoryInteraction = false;
 			checkNavButtons();
 		}
 
 		pageTitle = new C_PageTitle(_id);
-		
+
 		buildContentText();
 
 		buildBranchOptions(_id);
 		checkMode();
 
-		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true"){
-			updateRedmineCommentIcon();		
+		if($(courseData).find("course").attr("redmine") && $(courseData).find("course").attr("redmine") == "true" && mode=='edit'){
+			updateRedmineCommentIcon();
 		}
 
 		doAccess(pageAccess_arr);
@@ -114,7 +114,7 @@ function C_Chaining(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildContentText(){
-		if(myContent != "" && branchType != "graphicOnly"){
+		if(branchType != "graphicOnly"){
 	        $('<div id="scrollableContent" class="antiscroll-wrap"><div class="box"><div id="contentHolder" class="overthrow antiscroll-inner"><div id="content"></div></div></div></div>').insertAfter("#pageTitle");
 		    addLayoutCSS(branchType);
 		    $("#contentHolder").height(stageH - ($("#scrollableContent").position().top + audioHolder.getAudioShim()));
@@ -135,7 +135,7 @@ function C_Chaining(_type) {
 		    mediaHolder = new C_VisualMediaHolder(null, branchType, currentMedia);
 	        mediaHolder.loadVisualMedia();
 	    }else if(branchType == "sidebar"){
-		    var mySidebar = $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").first().text();
+		    var mySidebar = $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").first().text();
 		    $('#stage').append('<div id="sidebarHolder" class="antiscroll-wrap"><div class="box"><div id="sidebar" class="sidebar antiscroll-inner"></div></div></div>');
 			$('#sidebar').append(mySidebar);
 
@@ -147,17 +147,17 @@ function C_Chaining(_type) {
 
 			$('#sidebar').height($('#sidebarHolder').height());
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
-			
+
 			if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
-			
+
 		}else{
 		    if(transition == true){
 	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			}
 	    }
-	    
+
 	}
 
 	/*****************************************************************************************************************************************************************************************************************
@@ -166,8 +166,8 @@ function C_Chaining(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function buildBranchOptions(_id){
-		var branchStepNum = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("stepnumber");
-		var branchStepType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("steptype");
+		var branchStepNum = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("stepnumber");
+		var branchStepType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("steptype");
 
 		//var paletteWidth = 0;
 		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
@@ -179,8 +179,8 @@ function C_Chaining(_type) {
 
 		if(branchStepType != "intro"){
 			var _backId = pageOrder_arr[pageTracker-1];
-			var buttonLabel = 'Back';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
-			var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_backId).attr("id");
+			var buttonLabel = 'Back';//$(data).find("page").eq(currentPage).children("branch").eq(_id).find("option").eq(i).text();
+			var buttonID = $(data).find("page").eq(currentPage).children("branch").eq(_backId).attr("id");
 			var myOption = "option0";
 			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
@@ -188,7 +188,7 @@ function C_Chaining(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 		        var key = event.keyCode || event.which;
-		
+
 		        if (key === 32 || key === 13) {
 		            $(this).click();
 		        }
@@ -200,8 +200,8 @@ function C_Chaining(_type) {
 
 		if(branchStepType != "summary"){
 			var _nextId = pageOrder_arr[pageTracker+1];
-			var buttonLabel = 'Next';//$(data).find("page").eq(currentPage).find("branch").eq(_id).find("option").eq(i).text();
-			var buttonID = $(data).find("page").eq(currentPage).find("branch").eq(_nextId).attr("id");
+			var buttonLabel = 'Next';//$(data).find("page").eq(currentPage).children("branch").eq(_id).find("option").eq(i).text();
+			var buttonID = $(data).find("page").eq(currentPage).children("branch").eq(_nextId).attr("id");
 			var myOption = "option1";
 			$("#buttonPalette").append("<div id='"+myOption+"' class='btn_branch' mylink='"+buttonID+"' aria-label='"+buttonLabel+"'>"+buttonLabel+"</div>");
 			$("#"+myOption).button().click({type : branchStepType} , function(event){
@@ -209,12 +209,12 @@ function C_Chaining(_type) {
 				loadBranchByID($(this).attr("mylink"));
 			}).keyup(function (event) {
 			        var key = event.keyCode || event.which;
-			
+
 			        if (key === 32 || key === 13) {
 			            $(this).click();
 			        }
 			        return false;
-			    });		
+			    });
 			//paletteWidth += $("#"+myOption).width() + 5;
 			pageAccess_arr.push($("#"+myOption));
 		}
@@ -227,8 +227,8 @@ function C_Chaining(_type) {
     ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function createPageArray(_id){
-		var _stepNum = parseInt($(data).find("page").eq(currentPage).find("branch").eq(_id).attr("stepnumber"));
-		var _stepType = $(data).find("page").eq(currentPage).find("branch").eq(_id).attr("steptype");	
+		var _stepNum = parseInt($(data).find("page").eq(currentPage).children("branch").eq(_id).attr("stepnumber"));
+		var _stepType = $(data).find("page").eq(currentPage).children("branch").eq(_id).attr("steptype");
 
 		if(_stepNum == 0){
 			if(_stepType === "intro"){
@@ -244,20 +244,20 @@ function C_Chaining(_type) {
 					currentStep++;
 					var id = _next;
 					pageOrder_arr.push(id);
-					createPageArray(id);					
+					createPageArray(id);
 				}
 				else{
 					var id =findNextBranch('0', 'summary');
-					pageOrder_arr.push(id);				
+					pageOrder_arr.push(id);
 				}
-				 
+
 			}
 		}
 		else if(_stepType === 'teach'){
 			//always pract step 1 first after you teach a new step
 			var id = findNextBranch('1', 'practice');
 			pageOrder_arr.push(id);
-			createPageArray(id);			
+			createPageArray(id);
 		}
 		else if(_stepType === 'practice'){
 			//increment through the step practice until you reach the currentstep
@@ -285,17 +285,17 @@ function C_Chaining(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	function findNextBranch(_stepNum, _stepType){
-		branchCount = $(data).find("page").eq(currentPage).find("branch").length;
+		branchCount = $(data).find("page").eq(currentPage).children("branch").length;
 		for (var i = 0; i < branchCount; i++) {
-			var _branchStepNum = $(data).find("page").eq(currentPage).find("branch").eq(i).attr("stepnumber");
-			var _branchStepType = $(data).find("page").eq(currentPage).find("branch").eq(i).attr("steptype");
+			var _branchStepNum = $(data).find("page").eq(currentPage).children("branch").eq(i).attr("stepnumber");
+			var _branchStepType = $(data).find("page").eq(currentPage).children("branch").eq(i).attr("steptype");
 			if( (_branchStepNum === _stepNum) && (_branchStepType === _stepType) ){
-				return i;//$(data).find("page").eq(currentPage).find("branch").eq(i).attr("id");
+				return i;//$(data).find("page").eq(currentPage).children("branch").eq(i).attr("id");
 			}
 		}
 
 		return -1;
-	}	
+	}
 
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -326,13 +326,13 @@ function C_Chaining(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	function loadBranchByID(branchID){
 		for(var i = 0; i < branchCount; i++){
-			if(branchID == $(data).find("page").eq(currentPage).find("branch").eq(i).attr("id")){
+			if(branchID == $(data).find("page").eq(currentPage).children("branch").eq(i).attr("id")){
 				loadBranch(i);
 				break;
 			}
 		}
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     checkMode - Check if authoring is needed and enable it...
@@ -371,7 +371,7 @@ function C_Chaining(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Content
 			********************************************************/
@@ -400,7 +400,7 @@ function C_Chaining(_type) {
 					allowedContent: true
 				});
 			}
-			
+
 			/*******************************************************
 			* Edit Question
 			********************************************************/
@@ -417,7 +417,7 @@ function C_Chaining(_type) {
 			}).tooltip();
 		}
     }
-    
+
     function updateBranchDialog(){
 	    var msg = "<div id='branchEditDialog' title='Create Branching Exercise'>";
 		msg += "<label id='label' title='Indicates if this page is must be completed before going to the next page.'><b>mandatory: </b></label>";
@@ -426,20 +426,20 @@ function C_Chaining(_type) {
 		msg += "<div id='branchMenu' class='dialogOptionMenu'><label style='position: relative; float: left; margin-right:20px; vertical-align:middle; line-height:30px;'><b>Branch Menu: </b></label></div><br/><br/>";
 		msg += "</div>";
 		$("#stage").append(msg);
-		
+
 		if(!mandatory){
 			$("#isMandatory").removeAttr('checked');
 		}else{
 			$("#isMandatory").attr('checked', 'checked');
 		}
-		
+
 		updateRevealMenu();
 
 		addOption(currentEditBankMember, false);
-		
+
 		//#3321 fixes dialog jumping issue
 		$.ui.dialog.prototype._focusTabbable = function(){};
-		
+
 		//Style it to jQuery UI dialog
 		$("#branchEditDialog").dialog({
 			autoOpen: true,
@@ -480,7 +480,7 @@ function C_Chaining(_type) {
 	        $(document).tooltip();
 	    });
     }
-    
+
     function updateRevealMenu(){
 		revealMenu_arr = [];
 		$(".questionBankItem").remove();
@@ -501,7 +501,7 @@ function C_Chaining(_type) {
 			}else if(h > 99){
 				msg += "width:45px;";
 			}
-			var cleanText = $(data).find("page").eq(currentPage).find("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
+			var cleanText = $(data).find("page").eq(currentPage).children("branch").eq(h).find("title").text().replace(/<\/?[^>]+(>|$)/g, "");//////////////////////Need to clean out html tags.....
 			msg += "' data-myID='" + h + "' title='" + cleanText + "'>" + label + "</div>";
 
 			revealMenu_arr.push(tmpID);
@@ -524,7 +524,7 @@ function C_Chaining(_type) {
 			}
 		}
 	}
-	
+
 	function makeRevealDataStore(){
 		if($("#isMandatory").prop("checked") == true){
 			$(data).find("page").eq(currentPage).attr("mandatory", "true");
@@ -536,18 +536,18 @@ function C_Chaining(_type) {
 
 		var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 		var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").empty();
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 		if($("#layoutDrop option:selected").val() != "graphicOnly"){
 			var revealCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").empty();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").append(revealCDATA);
 		}
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
-		$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("layout", $("#layoutDrop option:selected").val());
+		$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("img", $("#mediaLink").val());
 
 	}
-	
+
 	/**********************************************************************
     ** areYouSure?  Make sure that user actually intended to remove content.
     **********************************************************************/
@@ -577,20 +577,20 @@ function C_Chaining(_type) {
 
 	function removeOption(){
 		if(branchCount > 1){
-			var stepNumber = parseInt($(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("stepnumber"));
+			var stepNumber = parseInt($(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("stepnumber"));
 			if(stepNumber != 0){
 				clearCKInstances();
 
-				var _stepType = $(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr("steptype")
+				var _stepType = $(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr("steptype")
 
 				if(_stepType === "teach"){
-					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
-					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
+					$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).remove();
+					$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).remove();
 					currentEditBankMember--;
 				}
 				else{
-					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).remove();
-					$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember-1).remove();
+					$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).remove();
+					$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember-1).remove();
 					currentEditBankMember = currentEditBankMember - 2;
 				}
 
@@ -610,7 +610,7 @@ function C_Chaining(_type) {
 	function findHighestStep(){
 		var highStep = 0;
 		for (var i = 0; i < branchCount; i++) {
-			var stepNumber = parseInt($(data).find("page").eq(currentPage).find("branch").eq(i).attr("stepnumber"));
+			var stepNumber = parseInt($(data).find("page").eq(currentPage).children("branch").eq(i).attr("stepnumber"));
 			if(stepNumber > highStep){
 				highStep = stepNumber;
 			}
@@ -626,70 +626,70 @@ function C_Chaining(_type) {
 			//step teach
 			$(data).find("page").eq(currentPage).append($("<branch>"));
 			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<title>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<title>"));
 			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
 			var titleCDATA = title.createCDATASection("Chaining Step "+ newStepCount + " teach");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").append(titleCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<content>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<content>"));
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").append(contentCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).append($("<sidebar>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).find("sidebar").append(sidebarCDATA);
 
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("id", guid());
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("success", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("pathcomplete", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", "textOnly");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("img", "defaultLeft.png");
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("stepnumber", newStepCount.toString());
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("steptype", "teach");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("id", guid());
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("success", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("pathcomplete", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout", "textOnly");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("stepnumber", newStepCount.toString());
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("steptype", "teach");
 			branchCount++;
 
 			//step practice
 			var oneMore = _addID + 1;
 			$(data).find("page").eq(currentPage).append($("<branch>"));
 			var branch = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).append($("<title>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).append($("<title>"));
 			var title = new DOMParser().parseFromString('<title></title>', "text/xml");
 			var titleCDATA = title.createCDATASection("Chaining Step "+ newStepCount + " practice");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).find("title").append(titleCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).append($("<content>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).append($("<content>"));
 			var content = new DOMParser().parseFromString('<content></content>', "text/xml");
 			var contentCDATA = content.createCDATASection("New Branch Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).find("content").append(contentCDATA);
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).append($("<sidebar>"));
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).find("content").append(contentCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).append($("<sidebar>"));
 			var sidebar = new DOMParser().parseFromString('<sidebar></sidebar>', "text/xml");
 			var sidebarCDATA = content.createCDATASection("New sidebar Content");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).find("sidebar").append(sidebarCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).find("sidebar").append(sidebarCDATA);
 
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("id", guid());
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("success", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("pathcomplete", "false");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("layout", "textOnly");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("img", "defaultLeft.png");
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("stepnumber", newStepCount.toString());
-			$(data).find("page").eq(currentPage).find("branch").eq(oneMore).attr("steptype", "practice");	
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("id", guid());
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("success", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("pathcomplete", "false");
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("layout", "textOnly");
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("img", "defaultLeft.png");
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("stepnumber", newStepCount.toString());
+			$(data).find("page").eq(currentPage).children("branch").eq(oneMore).attr("steptype", "practice");
 			currentEditBankMember = _addID;
 			branchCount++;
 		}
 
-		var branchTitle = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("title").text();
-		var branchContent = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("content").text();
-		var branchSidebar = $(data).find("page").eq(currentPage).find("branch").eq(_addID).find("sidebar").text();
-		var currentLayout = $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout");
+		var branchTitle = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("title").text();
+		var branchContent = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("content").text();
+		var branchSidebar = $(data).find("page").eq(currentPage).children("branch").eq(_addID).find("sidebar").text();
+		var currentLayout = $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout");
 
 		var msg = "<div id='optionContainer' class='templateAddItem' value='"+_addID+"'>";
-		if(parseInt($(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("stepnumber")) != 0){
-			msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";		
+		if(parseInt($(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("stepnumber")) != 0){
+			msg += "<div id='optionRemove' class='removeMedia' value='"+_addID+"' title='Click to remove this branch page'/>";
 		}
-				
+
 		msg += "<label for='layoutDrop'  title='Set the page layout.'><b>set layout:</b> </label>";
      	msg += "<select name='layoutDrop' id='layoutDrop'>";
      	for(var j = 0; j < layoutType_arr.length; j++){
-     		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout")){
+     		if(layoutType_arr[j] == $(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout")){
      			msg += "<option value='"+layoutType_arr[j]+"' selected='selected'>"+layoutType_arr[j]+"</option>";
      		}else{
 	     		msg += "<option value='"+layoutType_arr[j]+"'>"+layoutType_arr[j]+"</option>";
@@ -698,7 +698,7 @@ function C_Chaining(_type) {
      	msg += "</select>&nbsp;&nbsp;";
      	if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 	     	msg += "<label for='mediaLink'><b>media: </b></label>";
-			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
+			msg += "<input type='text' name='mediaLink' id='mediaLink' title='Media for this page.' value='"+$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).attr('img')+"' class='dialogInput'/>";
 		}
 		msg += "<button id='dialogMediaBrowseButton'>browse</button><br/>";
 		msg += "<label id='optionTitleInput' style='padding-bottom:5px;'><b>edit branch title: </b></label>";
@@ -707,35 +707,35 @@ function C_Chaining(_type) {
 			msg += "<div id='optionInput' style='padding-bottom:5px;'><b>edit branch content: </b></div>";
 			msg += "<div id='optionText' contenteditable='true' class='dialogInput'>" + branchContent + "</div>";
 		}
-		
+
 		if(currentLayout == "sidebar"){
 			msg += "<div id='sidebarInput' style='padding-bottom:5px;'><b>edit branch sidebar: </b></div>";
 			msg += "<div id='sidebarText' contenteditable='true' class='dialogInput'>" + branchSidebar + "</div>";
 		}
 		msg += "</div>";
 		$("#branchEditDialog").append(msg);
-		
+
 		if(currentLayout != "sidebar" && currentLayout != "textOnly"){
 			$("#dialogMediaBrowseButton").click(function(){
 				$(".ui-dialog").hide();
 				$(".ui-widget-overlay").hide();
-				dialogToggleMediaBrowser($("#mediaLink"));					
+				dialogToggleMediaBrowser($("#mediaLink"));
 			});
 		}
-				
+
 		$("#layoutDrop").change(function() {
-			$(data).find("page").eq(currentPage).find("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
+			$(data).find("page").eq(currentPage).children("branch").eq(_addID).attr("layout", $("#layoutDrop option:selected").val());
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
 			$("#branchEditDialog").remove();
 			updateBranchDialog();
 		});
-				
+
 		$("#addBranchOption").button().click(function(){
 			addNewBranchOption($(this).attr("value"));
 		});
-		
+
 		$("#optionRemove").on('click', function(){
 			areYouSure();
 		});
@@ -762,7 +762,7 @@ function C_Chaining(_type) {
 			shiftEnterMode: CKEDITOR.ENTER_P,
 			allowedContent: true
 		});
-		
+
 		if(currentLayout == "sidebar"){
 			CKEDITOR.inline( "sidebarText", {
 				toolbar: contentToolbar,
@@ -777,13 +777,13 @@ function C_Chaining(_type) {
 			    }
 			});
 		}
-		
+
 
 		CKEDITOR.instances.optionTitleText.on('blur', function(){
 			var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 			var titleCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionTitleText"].getData());
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").empty();
-			$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").empty();
+			$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("title").append(titleCDATA);
 			clearCKInstances();
 			try { $("#optionContainer").remove(); } catch (e) {}
 			$("#branchEditDialog").dialog("close");
@@ -797,8 +797,8 @@ function C_Chaining(_type) {
 				console.log(CKEDITOR.instances["sidebarText"].getData());
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 				var sidebarCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["sidebarText"].getData());
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("sidebar").empty();
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("sidebar").append(sidebarCDATA);
 				clearCKInstances();
 				try { $("#optionContainer").remove(); } catch (e) {}
 				$("#branchEditDialog").dialog("close");
@@ -806,14 +806,14 @@ function C_Chaining(_type) {
 				updateBranchDialog();
 			});
 		}
-		
+
 		//$("#optionText").focusout(function(){
-		if(currentLayout != "graphicOnly"){	
+		if(currentLayout != "graphicOnly"){
 			CKEDITOR.instances.optionText.on('blur', function(){
 				var newRevealContent = new DOMParser().parseFromString('<branch></branch>',  "text/xml");
 				var contentCDATA = newRevealContent.createCDATASection(CKEDITOR.instances["optionText"].getData());
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").empty();
-				$(data).find("page").eq(currentPage).find("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").empty();
+				$(data).find("page").eq(currentPage).children("branch").eq(currentEditBankMember).find("content").append(contentCDATA);
 				clearCKInstances();
 				try { $("#optionContainer").remove(); } catch (e) {}
 				$("#branchEditDialog").dialog("close");
@@ -822,7 +822,7 @@ function C_Chaining(_type) {
 			});
 		}
 	}
-	   
+
     function clearCKInstances(){
 		if (CKEDITOR.instances['optionText']) {
             CKEDITOR.instances.optionText.destroy();
@@ -834,21 +834,21 @@ function C_Chaining(_type) {
             CKEDITOR.instances.sidebarText.destroy();
         }
 	}
-	
+
 	function clearMainCKEInstances(){
 		try { CKEDITOR.instances.pageTitle.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.content.destroy(); } catch (e) {}
 		try { CKEDITOR.instances.sidebar.destroy(); } catch (e) {}
 	}
-    
+
      /**********************************************************************
      **Save Content Edit - save updated content text to content.xml
      **********************************************************************/
     function saveContentEdit(_data){
         var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
         var newCDATA=docu.createCDATASection(_data);
-        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().empty();
-        $(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("content").first().append(newCDATA);
+        $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("content").first().empty();
+        $(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("content").first().append(newCDATA);
         sendUpdate();
     };
 
@@ -858,27 +858,27 @@ function C_Chaining(_type) {
 	function saveSidebarEdit(_data){
 	   	var docu = new DOMParser().parseFromString('<content></content>',  "application/xml")
 	   	var newCDATA=docu.createCDATASection(_data);
-	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").empty();
-	   	$(data).find("page").eq(currentPage).find("branch").eq(currentBranch).find("sidebar").append(newCDATA);
+	   	$(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").empty();
+	   	$(data).find("page").eq(currentPage).children("branch").eq(currentBranch).find("sidebar").append(newCDATA);
 	   	sendUpdate();
 	};
-	
+
 	/**********************************************************************
     **Save Question Edit - save updated question preferences to content.xml
     **********************************************************************/
 	function saveBranchingEdit(_data){
-		var extra = $(data).find("page").eq(currentPage).find("branch").length;
+		var extra = $(data).find("page").eq(currentPage).children("branch").length;
 		var active = branchCount;
 		//var removed = extra - active;
 		for(var i = extra + 1; i >= active; i--){
-			$(data).find("page").eq(currentPage).find("branch").eq(i).remove();
+			$(data).find("page").eq(currentPage).children("branch").eq(i).remove();
 		}
 
 		markIncomplete();
 		sendUpdateWithRefresh();
 		fadeComplete();
 	}
-	
+
 	/*****************************************************************************************************************************************************************************************************************
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     WIPE YOUR ASS AND WASH YOUR HANDS BEFORE LEAVING THE BATHROOM

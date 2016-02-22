@@ -24,13 +24,22 @@ var currentPage = 0;//Integer representing the current page
 var currentPageID; //Needed for someone is sorting pages, may change node order and then a change would be sent to the wrong xml node.
 var totalPages;//total pages in the presentation
 
-var stageX;
-var stageY;
-var stageW;
-var stageH;
-
 var socket;
+var dashMode = "author";
+var currentCourse;
+var currentLesson = {};
+var attemptId = "";
+var oldIE = false;
+var isBoth = true;
 
+var module_arr = [];										//Array holding all module data
+															/*id: "533edfe1cb89ab0000000001"
+															name: "z9"
+															parent: "531f3654c764a5609d000003"
+															parentDir: "Course 1"
+															path: "VA/Course 1/z9"
+															permission: "admin"
+															type: "lesson"*/
 
 var user = {};
 
@@ -157,7 +166,7 @@ function initScripts(_data){
 
 	// This will prevent errors on slow connections.  We might need to set it to an actual number, as 0 means no timeout.
     require.config({
-        waitSeconds: 0
+        waitSeconds: 200
     });
     
     /*require(['js/libs/socket.io.js'], function(foo){
@@ -178,9 +187,13 @@ function initScripts(_data){
 				"js/libs/greensock/TweenMax.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
+				"js/templates/C_NavBar.js",
+				"js/templates/C_LMSDash.js",
+				"js/templates/C_CoursePlayer.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
 				"js/util/C_Search.js",
+				"js/util/C_LMSAPI.js",
 				"js/libs/jquery.treeview.js",
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",
@@ -188,7 +201,8 @@ function initScripts(_data){
 				"js/libs/fancybox/jquery.fancybox.js",
 				"js/libs/fancybox/jquery.fancybox-thumbs.js",
 				"js/libs/antiscroll.js",
-				"js/libs/jquery.mousewheel-3.0.6.pack.js"
+				"js/libs/jquery.mousewheel-3.0.6.pack.js",
+				"js/libs/xapiwrapper.min.js"
 				], function($) {
 	    //Once all of the external js has loaded, build the application.
 	    buildInterface();
@@ -197,17 +211,13 @@ function initScripts(_data){
 	}
 }
 
-var oldIE = false;
-
 function isOldIE() {
     "use strict";
 
     // Detecting IE
-
     if ($('html').is('.ie6, .ie7, .ie8', '.ie9')) {
         oldIE = true;
     }
-    //console.log("isOldIE = " + oldIE);
 }
 
 /****************************************************
@@ -220,13 +230,6 @@ function buildInterface(){
 	}else{
 		socket = io.connect(null, {resource: "server", 'sync disconnect on unload' : true, 'connect timeout': 1000});
 	}
-	/*socket = io.connect(null, {	path: "/server", 
-								//'sync disconnect on unload' : true, 
-								'connect timeout': 1000,
-								'reconnect': true,
-								'reconnection delay': 500,
-								'max reconnection attempts': 10
-							});*/
 	
 	//Simple listener checking connectivity
 	socket.on('onConnect', function (data) {
@@ -234,26 +237,34 @@ function buildInterface(){
 	});
 
     socket.on('loadDashboardPage', function(status) {
+        try{$('body').empty()} catch(e){};
         user = status.user;
+        console.log(user);
         if (user) {
-            currentTemplate = new C_Dashboard(currentTemplateType);
+	        var msg = "<div id='dash-header' class='dash-header'><div class='dash-user-welcome'> Welcome back, " + user.firstName + "</div></div>";
+	        msg += "<div id='stage'></div>";
+	        
+	        $('body').append(msg);
+	        
+			var navBar = new C_NavBar();
+			navBar.initialize();
+            
+            if (dashMode === "author"){
+	            currentTemplate = new C_Dashboard(currentTemplateType);
+            }
+            else if (dashMode === 'player'){
+            	currentTemplate = new C_CoursePlayer(currentCourse);
+            }
+            else{
+	            currentTemplate = new C_LMSDash(currentTemplateType);
+            }   
         }
         else {
+	        $('body').append("<div id='myLogin'><div id='stage'></div></div>");
             currentTemplate = new C_Login(currentTemplateType);
         }
         currentTemplate.initialize();
     });
-
-
-	$('body').append("<div id='myCanvas'><div id='bg'></div><div id='stage'></div></div>");
-
-	$("#bg").fitToBackgroundImage();
-	//Utilized in many of the templates for positioning and autoScrolling
-	//DO NOT REMOVE
-	stageX = $("#stage").position().left;
-	stageY = $("#stage").position().top;
-	stageW = $("#stage").width();
-	stageH = $("#stage").height();
 
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
 	//if so, set them up.
@@ -264,11 +275,28 @@ function buildInterface(){
 		transitionLength = $(data).find('transitionLength').attr('value');
 	 }
 
-
 	//Load the first page.
 	loadPage();
 }
 
+ /************************************************************************************
+ CHECK THAT EMAIL IS VALID FORMAT - Pop-up Box for issues from the server.
+ ************************************************************************************/
+function doError(title, msg) {
+    $("#stage").append('<div id="dialog-error"><p>' + msg + '</p></div>');
+
+    $("#dialog-error").dialog({
+        modal: true,
+        width: 520,
+        title: title,
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $("#dialog-error").remove();
+            }
+        }
+    });
+}
 
 
 /****************************************************

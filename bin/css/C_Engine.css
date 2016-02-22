@@ -11,36 +11,115 @@
 body{
 	position: static;
 	background-color:#FEFEFE;
-	margin: 0px;
-	padding: 0px;
-	border: 0px;
-	outline: 0px;
 	height: 100%;
 	width: 100%; 
+	overflow: auto;
+	margin-left: 0px !important;
+	margin-right: 0px !important;
 }
 
 /* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
-#myCanvas{
+#myLogin{
 	background-color: #FEFEFE;
-	width:1024px;
-	height: 768px;
-	left: 50%;
-	top: 50%;
-	margin-left: -512px;
-	margin-top: -384px;
-	position: absolute;
+	width:90vw;
+	height: 90vh;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5vh;
+	margin-bottom: 5vh;
 	overflow: hidden;
-	background-image: url(images/background.png);
+	border-radius: 8px;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#loginInner{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#forgotSubmit{
+	position: relative;
+	margin-top: 4vh;
+/*	margin-bottom: 20vh;*/
+	margin-right: auto;
+	margin-left: auto;
+	width: 230px;
+	display: block;
+}
+
+.loginLogo img{
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 80%;
+	max-height: 25vh;
+	margin-right: auto;
+	margin-left: auto;
+/*	margin-top: 20vh;*/
+	margin-bottom: 4vh;
+/*	background-image: url(images/cognizen_logo_final.png);
+	background-size: contain;
+	background-repeat: no-repeat;*/
+}
+
+#logForm{
+	width: 430px;
+	max-width: 86vw;
+	font-weight: lighter;
+	font-family: hnl;
+	color: white;
+	padding-top: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#loginFieldSet{
+	border-color: #CCCCCC;
+	border-width: thin;
+	border-radius: 8px;
+	-webkit-padding-before: 0.625em;
+}
+
+#myCanvas.noBackground{
+	background-image: none;
+}
+
+.dash-header{
+	width:100vw;
+	height:100px;
+	background: url(images/logo.png) center center no-repeat;
+	clear: both;
+	margin-bottom: 5px;
+}
+
+.dash-user-welcome{
+	position: absolute;
+	right: 17px;
+	top: 96px;
+	font-size: 10pt;
+	font-family: hnl;
+	color:  #8E969C;
+}
+
+.dash-navbar{
+	width: 100vw;
+	height: 30px;
+	background-color: #8E969C;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+.dash-navbar div{
+	line-height: 30px;
 }
 
 #stage {
 	overflow: auto;
-	position: absolute;
-	top:0px;
-	left:0px;
-	height:768px;
-	width:1024px;
+	
 }
 
 #pageTitle{
@@ -74,6 +153,191 @@ body{
 	font-family: hnl;
 }
 
+.C_LMSStage{
+	position: none;
+	width: 95vw;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.C_CourseItem{
+	width: 80vw;
+	height: auto;
+	background-color: #eee;
+	color: #9DA6AB;
+	font-family: hnl;
+	border-radius: 15px;
+	clear: both;
+	font-size: 14pt;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 10px;
+}
+
+.C_LMSCoursePoster{
+	background-color: #eee;
+	background-size: cover;
+	height: 300px;
+	width: 200px;
+	margin-left: 10px;
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.C_LMSCourseTitle{
+	width: auto;
+	color: #9DA6AB;
+	font-weight: bold;
+	font-size: 14pt;
+	font-family: hnl;
+	padding-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 15px;
+}
+
+.C_CloseCourseButton{
+	float: right;
+	background: #8E969C;
+	color: #eee;
+    width: 21px;
+    height: 21px;
+    text-indent: 1px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: hand;
+    cursor: pointer;
+}
+
+.C_LMSCourseDescription {
+	font-size: 10pt;
+	margin-left: 5px;
+	margin-right: 15px;
+}
+
+.C_LMSLessonListHolder{
+	width: 50%;
+	/*float: right;*/
+	clear: both;
+	height: auto;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: thin;
+	padding: 10px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	background-color: #fff;
+}
+
+.C_LMSMenuItem{
+	display: block;
+	width: 99%;
+	margin-left:2px;
+	height: auto;
+	font-family: hnl;
+	background-color: #fff;
+	margin-bottom: 5px;
+	margin-top: 2px;
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	font-size: 12pt;
+	color: #7B848B;
+	border-radius: 8px;
+	cursor: pointer;
+	list-style-type: none;
+}
+
+.C_LMSMenuItem:hover{
+	background-color: #eee;
+	color: #3383bb;
+}
+
+.clear-div{
+	clear: both;
+	padding: 2px;
+}
+
+.cp-menu{
+	position: relative;
+	float:left;
+	height: 100%;
+	width: 300px;
+	background-color: #333;
+	color: #eee;
+}
+
+.cp-menu-header{
+	font-family: hnl;
+	font-size: 18pt;
+	width: 100%;
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.cp-menu-ul{
+	padding: 0;
+	margin: 0;
+}
+
+.cp-menu-link{
+	list-style: none;
+	font-family: hnl;
+	font-size: 16pt;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	margin-bottom: 2px;
+	border-top-style: solid;
+	border-top-color: #eee;
+	width: 98%;
+	margin-right: auto;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+.cp-menu-link:hover{
+	background-color: red;
+	color: aqua;
+}
+
+.cp-lesson-spot{
+	position: relative;
+	float:left;
+	width: 600px;
+	height: 100%;
+	background-color: #fff;
+}
+
+.C_LMSMenuItem2{
+	display: block;
+	width: 99%;
+	margin-left:2px;
+	height: auto;
+	font-family: hnl;
+	background-color: #fff;
+	margin-bottom: 5px;
+	margin-top: 2px;
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	font-size: 12pt;
+	color: #7B848B;
+	border-radius: 8px;
+	cursor: pointer;
+	list-style-type: none;
+}
+
+.C_LMSMenuItem2:hover{
+	background-color: #eee;
+	color: #3383bb;
+}
 
 #content{
 	position: absolute;
@@ -86,25 +350,7 @@ body{
 	text-align: center;
 }
 
-#logForm{
-	position: absolute;
-	top: 315px;
-	right: 120px;
-	width: 430px;
-	font-weight: lighter;
-	font-family: hnl;
-	color: white;
-	padding-top: 5px;
-	
-}
-
-#loginFieldSet{
-	border-color: #CCCCCC;
-	border-width: thin;
-	border-radius: 8px;
-}
-
-.assignUserName{
+.assignUserName, .cloneContentName{
 	color: #3383bb;
 	border-style:solid;
 	border-color: #EEEEEE;
@@ -113,7 +359,7 @@ body{
 	padding: 6px;	
 }
 
-.userSelectTable{
+.userSelectTable, .contentSelectTable{
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 6px;
@@ -122,9 +368,12 @@ body{
 }
 
 table.userSelectTable tbody,
-table.userSelectTable thead { display: block; }
+table.userSelectTable thead,
+table.contentSelectTable tbody,
+table.contentSelectTable thead { display: block; }
 
-table.userSelectTable tbody {
+table.userSelectTable tbody,
+table.contentSelectTable tbody {
     height: 448px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -155,7 +404,7 @@ td{
 
 .loginField{
 	text-align: right;
-	width: 90px;
+	width: 28%;
 	float: left;
 	font-weight: lighter;
 	font-size:100%;
@@ -163,6 +412,13 @@ td{
 	padding-right: 5px;
 	padding-top: 3px;
 	color: #9DA6AB;
+}
+
+#loginSubmit{
+	display: block;
+	width: 96%;
+	margin-left: auto; 
+	margin-right: auto;
 }
 
 .regField{
@@ -196,11 +452,15 @@ td{
 	font-weight: lighter;
 }
 
+ui-button-text{
+	color: #3383bb !important;
+}
+
 input.loginText{
 	background:#eeeeee;
 	font-size: 12pt;
 	font-family: hnl;
-	width: 300px;
+	width: 64%;
 	float: left;
 	color: #3383bb;
 }
@@ -224,13 +484,6 @@ input.regText{
 	top: 460px;
 	right: 245px;
 	width: 150px;
-}
-
-#forgotSubmit{
-	position: absolute;
-	top: 460px;
-	right: 205px;
-	width: 230px;
 }
 
 div#loader {
@@ -281,83 +534,140 @@ div#loader {
 	border-width: thin;
 }
 
-
-/**********************************************************************************************
-TREE MENU STYLES
-**********************************************************************************************/
 #projListHeader{
-	position: absolute;
-	top: 102px;
-	right: 398px;
+	width: 80vw;
+	clear:both;
+	background-color: #eee;
+	border-style: solid;
+	border-width: thin;
+	border-color: #eee;
 	color: #9DA6AB;
 	font-weight: normal;
-	font-size: 34pt;
+	font-size: 14pt;
 	font-family: hnl;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	text-indent: 5px;
+	padding-bottom: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#contentHolder{
+	/*right: 398px;*/
+	width: 80vw;
+	clear:both;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-style: solid;
+	border-width: thin;
+	border-color: #eee;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
 }
 
 #logout{
 	position: absolute;
-	top: 132px;
-	right: 70px;
-	color: #009DDF;
+	top: 5px;
+	right: 17px;
+	color: #6BCAF2 !important;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
-	font-size: 14pt;
+	font-size: 12pt;
 	font-family: hnl;
 }
 
 #logout a{
 	text-decoration: none;
+	color: #6BCAF2 !important;
 }
 
 #logout a:visited{
-	color: #009DDF;
+	color: #3383bb;
 }
 
 #logout a:hover{
-	color: #9DA6AB;
+	color: #7B848B;
 }
 
 #adminAddProgram{
-	position: absolute;
-	top: 660px;
-	right: 470px;
+	position: relative;
+	right: 15px;
+	float: right;
+	color: #eee;
+	margin-right: 10px;
+	font-family: hnl;
+	cursor: hand;
+	cursor: pointer;
+}
+
+#adminAddProgram:hover{
+	color: #6BCAF2;
 }
 
 #adminAddUser{
-	position: absolute;
-	top: 660px;
-	right: 65px;
+	position: relative;
+	right: 2px;
+	float: right;
+	color: #eee;
+	margin-right: 15px;
+	font-family: hnl;
+	cursor: hand;
+	cursor: pointer;
+}
+
+#adminAddUser:hover{
+	color: #6BCAF2;
+}
+
+.navbar-item{
+	position: relative;
+	left: 10px;
+	float: left;
+	color: #eee;
+	margin-left: 15px;
+	font-family: hnl;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.navbar-item:hover{
+	color: #6BCAF2;
 }
 
 #preloadholder{
-	position: absolute;
-	top: 154px;
-	right: 65px;
-	width: 550px;
-	height: 500px;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
 	z-index: 10000;
 }
 
-#scrollableContent{
-	position: absolute;
-	top: 154px;
-	right: 65px;
+.navbar-active{
+	position: relative;
+	left: 10px;
+	float: left;
+	margin-left: 15px;
+	font-family: hnl;
+	color: #6BCAF2;
 }
 
-.box, .antiscroll-inner{
-	width: 550px;
-	height: 500px;
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset
+{
+	float:none;
 }
 
-.box{
-	border-style:solid;
-	border-color: #EEEEEE;
-	border-radius: 3px;
-	border-width: thin;
+.ui-dialog .ui-dialog-buttonpane 
+{	
+	text-align: center;
 }
 
+
+/**********************************************************************************************
+TREE MENU STYLES
+**********************************************************************************************/
 .treeview, .treeview ul {
 	padding: 0px;
 	margin: 0px;
@@ -394,32 +704,23 @@ TREE MENU STYLES
 }
 
 .treeview li .programHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.programRemove {position: relative; top: -19px; left: 462px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
-.programAdd {position: relative; top: -37px; left: 482px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
-.programUserAdd {position: relative; top: -55px; left: 502px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
+.programRemove {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
+.programAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
+.programUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .treeview li .courseHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.courseOutline {position: relative; top: -19px; left: 392px; width: 18px; height: 18px; background: url(images/dash_outline.svg) no-repeat;}
-.courseSearch {position: relative; top: -37px; left: 412px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
-.coursePref {position: relative; top: -55px; left: 432px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
-.courseRemove {position: relative; top: -73px; left: 452px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
-.courseAdd {position: relative; top: -91px; left: 472px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
-.courseUserAdd {position: relative; top: -109px; left: 492px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
-/*.courseOutline {position: relative; top: -19px; left: 412px; width: 18px; height: 18px; background: url(images/dash_outline.svg) no-repeat;}
-.coursePref {position: relative; top: -37px; left: 432px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
-.courseRemove {position: relative; top: -55px; left: 452px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
-.courseAdd {position: relative; top: -73px; left: 472px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
-.courseUserAdd {position: relative; top: -91px; left: 492px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}*/
+.courseOutline {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_outline.svg) no-repeat;}
+.courseSearch {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
+.coursePref {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
+.courseRemove {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
+.courseAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_add.svg) no-repeat;}
+.courseUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.projectSearch {position: relative; top: -19px; left: 422px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
-.projectPref {position: relative; top: -37px; left: 442px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
-.projectRemove {position: relative; top: -55px; left: 462px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
-.projectUserAdd {position: relative; top: -73px; left: 482px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
-/*.projectPref {position: relative; top: -19px; left: 442px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
-.projectRemove {position: relative; top: -37px; left: 462px;width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
-.projectUserAdd {position: relative; top: -55px; left: 482px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
-*/
+.projectSearch {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
+.projectPref {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
+.projectRemove {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
+.projectUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .ui-tooltip{font-family: hnl; font-size:12pt; color: #3383bb; background-color: #EEEEEE;}
 

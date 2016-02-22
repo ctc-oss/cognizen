@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<content><courseInfo><preferences><mode value="production" /><lessonWidth value="1024" /><lessonHeight value="768" /><lockRequestDuration value="30" /><courseTitle value="hostedCourse" /><lessonTitle value="lesson1" /><lessondisplaytitle value="lesson1" /><nextBack value="true" /><survey link="null" value="false" /><testout link="null" value="false" /><closelesson value="false" /><transition value="true" /><transitionType value="Circ.easeIn" /><transitionLength value=".3" /><progressMode value="linear" /><linear value="false" /><pageCount value="true" /><passFail value="false" /><restartOnFail value="false" /><scored value="true" /><minScore value="75" /><scorm value="true" /><scormVersion value="2004_4th" /><breadcrumb home="true" id="0" value="true" x="12" y="80" /><masterIndex showpagenumbers="false" value="true" /><docs value="false" /><home value="0" /><menu value="13" /><courseRetake value="false" /><feedback value="false" /><feedbackType value="standard" /><reloadPage value="true" /><finalLesson value="false" /><help course="false" height="750" url="media/defaultTop.png" value="false" width="800" /><tlo value="undefined" /><search value="false" /><id value="566597ed73557d0000000003" /></preferences><glossary courseGlossary="true" value="false"><glossaryitem><term>ACK</term><content>Acknowledgement</content></glossaryitem></glossary><resources /></courseInfo><pages><page alt="image description" audio="" autonext="false" autoplay="false" controlType="bar" enlarge="" graded="false" h="" id="481abcd8-89f2-9759-2e2f-b3026ea20b4b" img="" layout="textOnly" nextPage="null" popalt="" popcaps="" popup="" poster="null" prevPage="null" subs="null" type="" w=""><title>
+				Objectives
+			</title><content>
+				&lt;p&gt;&lt;b&gt;Lorem Ipsum&lt;/b&gt; Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum&lt;/p&gt;
+			</content></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="dd27ccb4-6a2f-b283-a380-721cdd03e8ae" img="MLWordle.png" layout="graphicOnly" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Mobile Learning
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><caption>
+        My Caption
+      </caption></page><page alt="image description" audio="null" audiotranscript="false" enlarge="" galTransType="elastic" id="7bd704c0-ac92-140a-87c6-8097b03c4528" img="eastern.JPG" layout="right" nextpage="null" objItemId="undefined" objective="undefined" popalt="" popcaps="" poploop="true" popup="" prevpage="null" type="static" visualtranscript="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Pic left words right
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;Words on the right&lt;/p&gt;
+
+      </content><caption>
+        My Caption
+      </caption></page><page alt="image description" audio="null" audiotranscript="false" autonext="false" autoplay="false" controlType="bar" enlarge="" graded="true" h="260" id="22e05c7a-2204-cf29-42f9-15fc6cb539d2" img="defaultTop.png" indexhide="false" layout="completion" mandatory="true" mediaLinkType="" nextpage="null" objectItemId="undefined" objective="undefined" popalt=" " popcaps=" " poploop="true" popup="" poster="null" prevpage="null" retainscore="false" subs="null" type="completion" visualtranscript="false" w="350" withmedia="false" xmlns="http://www.w3.org/1999/xhtml"><title>
+        Lesson Completion
+      </title><visualtranscript>
+        Visual transcript content
+      </visualtranscript><audiotranscript>
+        Audio transcript content
+      </audiotranscript><content>
+        &lt;p&gt;New Page Content&lt;/p&gt;
+      </content><passedresponse>
+        You received a passing score for this lesson.
+      </passedresponse><failedresponse>
+        You did not receive a passing score for this lesson.
+      </failedresponse></page></pages></content>

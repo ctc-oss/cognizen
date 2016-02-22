@@ -16,12 +16,6 @@ var Utils = {
         return !!os.platform().match(/^win/);
     },
 
-    replaceInvalidFilenameChars: function(filename, replacement) {
-        if (!replacement) replacement = '';
-
-        return filename.replace(/[\\/:"*?<>|(){}&.`]+/g, replacement);
-    },
-
     hasInvalidFilenameChars: function(filename) {
         var replaced = this.replaceInvalidFilenameChars(filename);
         return replaced !== filename;
@@ -109,8 +103,13 @@ var Utils = {
 
             console.log(out.join('\n'));
         }
-    }
+    },
 
+    replaceInvalidFilenameChars: function(filename, replacement) {
+        if (!replacement) replacement = '';
+
+        return filename.replace(/[\\/:"*?<>|(){}&.`]+/g, replacement);
+    },
 
 };
 
