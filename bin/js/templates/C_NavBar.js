@@ -61,21 +61,21 @@ function C_NavBar() {
 	            });
 	        }
 	        
+	        //commented out for 1.3 release #4501
+	   //      if (admin || programAdmin) {
+				// //ROOT and admin can add users to the system.
+	   //          $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
+	   //          $("#gotoLMS").click(function(){
+		  //           dashMode = 'lms';
+				// 	socket.emit('checkLoginStatus');
+	   //          });
+	   //      }
 	        
-	        if (admin || programAdmin) {
-				//ROOT and admin can add users to the system.
-	            $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
-	            $("#gotoLMS").click(function(){
-		            dashMode = 'lms';
-					socket.emit('checkLoginStatus');
-	            });
-	        }
-	        
-	        $("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
-	        $("#gotoAuthoring").click(function () {
-	            dashMode = 'author'; 
-				socket.emit('checkLoginStatus');
-	        });
+	   //      $("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
+	   //      $("#gotoAuthoring").click(function () {
+	   //          dashMode = 'author'; 
+				// socket.emit('checkLoginStatus');
+	   //      });
         }
 	}
 	
