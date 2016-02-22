@@ -66,7 +66,7 @@ function C_Dashboard(_type) {
         });
 
         socket.on('receiveClonableFromDB', function (data){
-            console.log(data);
+            //console.log(data);
             cloneContent(data);
         });
 
@@ -548,6 +548,15 @@ function C_Dashboard(_type) {
 				// add radio button
 				$insertPoint.append('<li id="clone-' + id + '"><input data-class_id="' + i + '" id="cloneRadioButton" type="radio" name="cloneRadioGroup" >' + name + '</li>');
 			}
+
+            if( type === 'program'){
+                var inputMsg = '<br/><div id="programName" >'
+                inputMsg += '<label for="myName" class="regField">new name : </label>';
+                inputMsg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" />';
+                inputMsg += '</div>';  
+                $("#dialog-cloneContent").append(inputMsg);      
+                $('#programName').hide();        
+            }
 			
 			// sort the list
 			$("#dialog-cloneContent ul").listorder();
@@ -590,42 +599,43 @@ function C_Dashboard(_type) {
                         disabled: true,
                         click: function() {
                             var $selectedRow = $("input[name=cloneRadioGroup]:checked");
-							console.log($selectedRow.data('class_id'));
 							var contentToClone = data.directories[$selectedRow.data('class_id')];
 							contentToClone.name = contentToClone.name + "copy";
 							contentToClone.user = user;
-
-							console.log(contentToClone);
-							console.log(type);
-
+                            var closeDialog = true;
 							if(type === "lesson"){
 
 								contentToClone.course = {
 									id: currentParent.attr('id')
 								};
 
-								socket.emit("cloneLesson", contentToClone);
-								// $("#stage").append('<div id="preloadholder"></div>');
-								// $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                
+								socket.emit("cloneLesson", contentToClone);                            
 							}
 							else if(type === "course"){
 								contentToClone.program = {
 									id: currentParent.attr('id')
 								};
 
-								socket.emit("cloneCourse", contentToClone);
-								// $("#stage").append('<div id="preloadholder"></div>');
-								// $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");                                     
+								socket.emit("cloneCourse", contentToClone);                                
 
 							}
 							else if(type === 'program'){
-								socket.emit("cloneProgram", contentToClone);
+                                var newProgName = $('#myName').val();
+                                if(newProgName.length == 0 ){
+                                    closeDialog = false;
+                                    alert("A new name for the program must be provided!");
+                                }
+                                else{
+                                    contentToClone.name = newProgName;
+								    socket.emit("cloneProgram", contentToClone);
+                                }
 							}
-
-							$("#stage").append('<div id="preloadholder"></div>');
-							$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
-							$(this).dialog("close");
-							$("#dialog-cloneContent").remove();                            
+                            if(closeDialog){
+    							$("#stage").append('<div id="preloadholder"></div>');
+    							$("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+    							$(this).dialog("close");
+    							$("#dialog-cloneContent").remove();  
+                            }                          
                             
 
                         }
@@ -636,6 +646,16 @@ function C_Dashboard(_type) {
             });
 
             $('#listRoot').on('change', ':radio', function(){
+                if(type == 'program'){
+                    $('#programName').show(); 
+                }
+                else{
+                    $('#cloneContent-submit').removeAttr('disabled').removeClass( 'ui-state-disabled' );
+                }
+                
+            });
+
+            $('#myName').on('input', function(e){
                 $('#cloneContent-submit').removeAttr('disabled').removeClass( 'ui-state-disabled' );
             });
         }      

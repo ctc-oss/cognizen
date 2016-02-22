@@ -869,7 +869,6 @@ var SocketHandler = {
         var tokenz = content.path.split("/");
         var programName = tokenz[0];
         var root = path.normalize('../core-files');
-
         FileUtils.rmdir(baseWritePath);
 
         FileUtils.copyDir(path.normalize(_this.Content.diskPath(programName) + "/core-prog"), baseWritePath, function (path) {
@@ -1720,11 +1719,9 @@ var SocketHandler = {
     getCoursePath: function (data){
 		var _this = this;
         var contentType = _this.Content.objectType(data.content.type);
-
         if (contentType) {
             contentType.findAndPopulate(data.content.id, function (err, found) {
                 if (found) {
-                	//console.log(found);
                 	var program = found.getProgram();
                 	 _this.Git.updateLocalContent(program, function(err){
                 	 	if (err) {
@@ -2247,6 +2244,107 @@ var SocketHandler = {
                                             }, function(err){
                                                 _this.logger.error('_this.Git.commitProgramContent(): ' + err);
                                                 _this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
+                                            });
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    },
+
+    _renameContent: function(data, callback) {
+        //data.content.type
+        //data.content.id
+        //data.content.name
+        //data.user.username
+        //data.user.id
+        var _this = this;
+        if (data.content.type === 'program') {
+            // Don't allow this, too volatile to change the git repo at this point.
+            return;
+        }
+
+        _this.logger.info('Rename ' + data.content.type + '#' + data.content.id + '...');
+        // First, find user and content.
+        var contentType = _this.Content.objectType(data.content.type);
+
+        if (contentType) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {
+                if (found) {
+                    var serverDetails = _this.Content.serverDetails(found);
+                    var oldName = found.name;
+
+                    var oldDiskPath = _this.Content.diskPath(found.path);
+                    found.name = data.content.name;
+                    found.generatePath();
+
+                    var newDiskPath = _this.Content.diskPath(found.path);
+                    var parentDir = path.resolve(process.cwd(), newDiskPath);
+                    var myxml = parentDir + '/xml/content.xml';
+                    _this.logger.info('Moving ' + data.content.type + ' from ' + oldDiskPath + ' to ' + newDiskPath);
+
+                    if(serverDetails.running == true){
+                        //Code to update xmlPath on ContentSocket goes here...
+                        ContentSocket.stop(myxml, serverDetails.port, parentDir, _this.logger);
+                        serverDetails.running = false;
+                    }
+
+                    var itemsToSave = [found];
+
+                    found.getChildren(function(err, children) {
+                        if (err) {
+                            _this.logger.error('found.getChildren(): ' + err);
+                            callback(err);
+                            //_this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (1)'});
+                        }
+                        else {
+                            // Make sure children paths are re-generated as well.
+                            children.forEach(function(child){
+                                child.setParent(found);
+                                child.generatePath();
+                                itemsToSave.push(child);
+                            });
+
+                            Utils.saveAll(itemsToSave, function() {
+                                // Now we have to rename the folder on the disk.
+                                FileUtils.renameDir(oldDiskPath, newDiskPath, function(err) {
+                                    if (err) {
+                                        _this.logger.error('FileUtils.renameDir(): ' + err);
+                                        callback(err);
+                                        //_this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (2)'});
+                                    }
+                                    else {
+                                        //rename Redmine project for the course or lesson
+                                        redmine.updateProjectName(oldName, found._id, found.name, function(err){
+                                            if(err){
+                                                _this.logger.error("Error renaming redmine "+ data.content.type +" project: " + err);
+                                            }
+                                            else{
+                                                _this.logger.info(data.content.type + " project renamed in redmine");
+                                            }
+                                        }); 
+
+                                        _this.Content.updateAllXml(itemsToSave, function(content, etree) {
+                                            var parent = content.getParent();
+                                            //console.log("parent : " + parent.name + " content : " + content.name);
+                                            etree.find('./courseInfo/preferences/courseTitle').set('value', parent ? parent.name : '');
+                                            etree.find('./courseInfo/preferences/lessonTitle').set('value', content.name);
+                                            etree.find('./courseInfo/preferences/tlo').set('value', content.tlo);
+                                        }, function() {
+                                            // Need to git commit the program, then let the user know it is done.
+                                            _this.Git.commitProgramContent(found.getProgram(), data.user, function(){
+                                                _this.logger.info("rename commit went well.");
+                                                callback();
+                                                //_this.io.sockets.emit('refreshDashboard'); // Refresh all clients dashboards, in case they were attached to the content.
+                                                //_this._socket.emit('refreshDashboard');
+                                            }, function(err){
+                                                _this.logger.error('_this.Git.commitProgramContent(): ' + err);
+                                                callback(err);
+                                                //_this._socket.emit('generalError', {title: 'Renaming Error', message: 'Error occurred when renaming content. (3)'});
                                             });
                                         });
                                     }
@@ -2797,6 +2895,7 @@ var SocketHandler = {
                                                         _this.logger.error(err);                                                                                               
                                                     }
                                                 });
+
                                             }
                                         });
                                     }
@@ -2812,7 +2911,8 @@ var SocketHandler = {
                                                 _this._socket.emit('generalError', {title: 'Program Name Changed', message: 'The program name ' + originalName + ' contained one or more invalid filename characters.  Invalid characters were removed from the name.'});
                                             }
                                         }
-                                    });                                   
+                                    });                                      
+                                 
                                 });                                                                                           
                             });                             
 
@@ -2838,7 +2938,9 @@ var SocketHandler = {
         var srcWritePath = path.normalize(_this.Content.diskPath(program.original.path));
         var root = path.normalize('../core-files');
 
-        FileUtils.copyDir(srcWritePath, destWritePath, true, function (err){
+        FileUtils.copyDir(srcWritePath, destWritePath, function (path) {
+            return (!path.endsWith('.git'));
+        }, function (err){
             Program.findAndPopulate(program.original.id, function (err, found) {
 
                 var coursesLength = found.courses.length;
