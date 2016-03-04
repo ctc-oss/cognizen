@@ -3388,7 +3388,7 @@ var SocketHandler = {
         var contentType = _this.Content.objectType(data.content.type);
 
         if (contentType) {
-            contentType.findAndPopulate(data.content.id, function (err, found) {
+            contentType.findAndPopulate(data.content.id, function (err, found) {                
                 if (found) {
                     _this.Git.lock.runwithlock(function () {
                         if(data.content.type === 'course'){
@@ -3397,7 +3397,8 @@ var SocketHandler = {
                             var programPath = path.normalize('../programs/' + found.path + '/');
                             var contentPath = path.resolve(process.cwd(), programPath);
                             var xmlContentFile = contentPath + '/xml/content.xml';
-
+                            var hostedPath = path.normalize('../hosted/');
+                            
                             //creates the packages directory under the course dir
                             fs.mkdirs(contentPath + "/packages", function(err){
                                 if(err) return _this.logger.error(err);
@@ -3405,7 +3406,7 @@ var SocketHandler = {
                             });
 
                             //init SCORM (itemsToSave may need to be passed into init)
-                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, found, data.scorm, data.deliverable );
+                            scorm.init(_this.logger, scormDir, contentPath, hostedPath, xmlContentFile, found, data.scorm, data.deliverable );
 
                             _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){
@@ -3434,7 +3435,15 @@ var SocketHandler = {
 	                                        _this.logger.info("publish Course success.");
 	                                        _this.logger.info("---------- filepath = " + filepath);
 	                                        _this.Git.lock.release();
-	                                        callback(filepath);
+
+                                            if ( data.scorm.version == 'Hosting' ) {                                                
+                                                callback(filepath); 
+                                            }
+                                            else {
+                                                callback(filepath);    
+                                            }
+
+	                                        
 	                                    }
 
 	                                    try{
@@ -3470,8 +3479,11 @@ var SocketHandler = {
                             var programPath = path.normalize('../programs/' + found.path + '/');
                             var contentPath = path.resolve(process.cwd(), programPath);
                             var xmlContentFile = contentPath + '/xml/content.xml';
+                            var hostedPath = path.normalize('../hosted/' + found.path + '/');
 
-                            scorm.init(_this.logger, scormDir, contentPath, xmlContentFile, null, data.scorm, data.deliverable );
+                            console.log("hostedPath: " + hostedPath);                             
+
+                            scorm.init(_this.logger, scormDir, contentPath, hostedPath, xmlContentFile, null, data.scorm, data.deliverable );
 
                             _this._copyJSFiles(programPath +'/../', function (err) {
                                 if(err){

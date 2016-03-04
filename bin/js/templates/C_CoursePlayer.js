@@ -118,7 +118,11 @@ function C_CoursePlayer(_course) {
                  moduleObj.xml = null;
                  moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
                  moduleObj.indexPath = [coursePath +"/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/index.html"].join("");
-                 module_arr.push(moduleObj);
+                 moduleObj.excludeFromPublish = $(courseData).find("item").eq(y).attr("excludeFromPublish");
+                 if ( moduleObj.excludeFromPublish != null && moduleObj.excludeFromPublish == 'false' )
+                 {
+                    module_arr.push(moduleObj);
+                 }
             }
         }
 

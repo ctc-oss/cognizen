@@ -1,3 +1,4 @@
+
 var fs = require('fs-extra')
 	,et = require('elementtree')
 	,readdirp = require('readdirp')
@@ -9,7 +10,7 @@ var fs = require('fs-extra')
 var SCORM = {
     logger: {},
     scormPath: '',
-    contentPath: '',
+    contentPath: '',    
     xmlContentFile: '',
     scormVersion: '',
     courseName: '',
@@ -26,13 +27,22 @@ var SCORM = {
     reviewLines: '',
     reviewLines_arr: [],
     courseDisplayTitle: '',
-    init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, Scorm, Deliverable) {
+    hosting: false,
+    hostedPath: '',
+    init: function(logger, ScormPath, ContentPath, HostedPath, XmlContentPath, Found, Scorm, Deliverable) {
         this.logger = logger;
         this.scormPath = ScormPath;
         this.contentPath = ContentPath;
+        this.hostedPath = HostedPath;
         this.xmlContentFile = XmlContentPath;
         this.found = Found;
-        this.scormVersion = Scorm.version;
+        if ( Scorm.version == 'Hosting' ) {
+        	this.scormVersion = '2004_4th';
+        	hosting = true;
+        } else {
+        	this.scormVersion = Scorm.version;
+        	hosting = false;
+        }
         this.manonly = Scorm.manifestonly; //#2764
         this.isDeliverable = Deliverable.isDeliverable; //#2816
         this.deliverableVersion = Deliverable.version; //#2816
@@ -212,20 +222,41 @@ var SCORM = {
 							                    	}
 							                    	else{
 
-								                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-								                    		if(err){
-								                    			callback(err, null);
-								                    		}
-								                    		else{
-																_this.logger.debug("packageFolder = " + _this.packageFolder);
-																returnPath = output;
-																_this._cleanAndReturn()
-																	.then(function(data){callback(null, returnPath);}
-																		,function(err){callback(err, null);}
-																	);																								                    			
-								                    		}
+							                    		/*if ( hosting ) {
 
-								                    	});
+							                    			_this._deployScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+									                    		if(err){
+									                    			callback(err, null);
+									                    		}
+									                    		else{
+																	//_this.logger.debug("packageFolder = " + _this.packageFolder);
+																	returnPath = output;
+																	_this._cleanAndReturn()
+																		.then(function(data){callback(null, returnPath);}
+																			,function(err){callback(err, null);}
+																		);																								                    			
+									                    		}
+
+									                    	});
+
+							                    		}
+							                    		else {*/
+
+									                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+									                    		if(err){
+									                    			callback(err, null);
+									                    		}
+									                    		else{
+																	_this.logger.debug("packageFolder = " + _this.packageFolder);
+																	returnPath = output;
+																	_this._cleanAndReturn()
+																		.then(function(data){callback(null, returnPath);}
+																			,function(err){callback(err, null);}
+																		);																								                    			
+									                    		}
+
+									                    	});
+									                   /* }*/
 													}												
 
 							                    }
@@ -233,20 +264,41 @@ var SCORM = {
 							                });
 						                }
 						                else{
-						                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-					                    		if(err){
-					                    			callback(err, null);
-					                    		}
-					                    		else{
-													_this.logger.debug("packageFolder = " + _this.packageFolder);
-													returnPath = output;
-													_this._cleanAndReturn()
-														.then(function(data){callback(null, returnPath);}
-															,function(err){callback(err, null);}
-														);				                    			
-					                    		}
 
-						                	});
+				                    		if ( hosting ) {
+
+												_this._deployScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+						                    		if(err){
+						                    			callback(err, null);
+						                    		}
+						                    		else{
+														_this.logger.debug("packageFolder = " + _this.packageFolder);
+														returnPath = output;
+														_this._cleanAndReturn()
+															.then(function(data){callback(null, returnPath);}
+																,function(err){callback(err, null);}
+															);				                    			
+						                    		}
+
+							                	});
+
+				                    		}
+				                    		else {
+							                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+						                    		if(err){
+						                    			callback(err, null);
+						                    		}
+						                    		else{
+														_this.logger.debug("packageFolder = " + _this.packageFolder);
+														returnPath = output;
+														_this._cleanAndReturn()
+															.then(function(data){callback(null, returnPath);}
+																,function(err){callback(err, null);}
+															);				                    			
+						                    		}
+
+							                	});
+							                }
 						                }
 							                
 						            //close of tempcourse write function    
@@ -674,6 +726,160 @@ var SCORM = {
 
 	},
 
+	_deployScormPackage: function(res, scormBasePath, imsManifestFilePath, callback) {
+		var _this = this;
+        var scormFileVersion = _this.scormVersion.replace(/\./, '_');
+        
+        //#2816
+        if(_this.isDeliverable == true){
+        	scormFileVersion += '_'+ _this.deliverableVersion +'_'+ Utils.timestamp();
+        }
+
+        var outputFolder = _this.contentPath;
+        console.log("OUTPUT FOLDER: " + outputFolder);
+
+        //var outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
+        //var output = fs.createWriteStream(outputFile);
+        //var archive = archiver('zip');
+
+        //fired when the archiver finalized is finished
+        //output.on('close', function(){
+        //	_this.logger.info("archiver has finalized. ");
+        //	callback(null, outputFile);
+        //});
+
+        //archive.on('error', function(err) {
+        //    throw err;
+        //});
+
+        //archive.pipe(output);
+        //builds the cognizen directory
+    
+
+        res.files.forEach(function(file) {
+            var localFile = file.path.replace(/\\/g,"/");
+            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf('packages') == -1 && localFile.indexOf('index.html')){
+            	var inputFile = _this.contentPath + '/' + localFile;
+            	fs.copySync(inputFile, _this.hostedPath + _this.binDir + '/' + localFile);
+            	//archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+localFile });
+        	}
+        });
+
+		 for (var i = 0; i < _this.cssResources_arr.length; i++) {
+             fs.copySync(_this.contentPath + '/../css/' +_this.cssResources_arr[i], _this.hostedPath + _this.binDir+'/../css/'+_this.cssResources_arr[i]);
+             //archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/../css/'+_this.cssResources_arr[i] });
+        };
+
+		//add js directory to root of package
+        for (var i = 0; i < _this.jsResources_arr.length; i++) {
+             fs.copySync(_this.contentPath + '/../js/' +_this.jsResources_arr[i], _this.hostedPath + _this.binDir+'/../js/'+_this.jsResources_arr[i]);
+             //archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/../js/'+_this.jsResources_arr[i] });
+        };
+
+		var courseAttr = _this._parseCourseAttr();
+
+        //#3866
+        if(courseAttr.help != '' && courseAttr.help != undefined){
+	        fs.copySync(_this.contentPath + '/' +courseAttr.help, _this.HostedPath + _this.binDir + '/' +courseAttr.help);
+	        //archive.append(fs.createReadStream(_this.contentPath + '/' +courseAttr.help), {name: _this.binDir + '/' +courseAttr.help});
+        }
+
+        //add index.html from server incase changes were made after the course was created
+        fs.copySync(_this.scormPath + "/../index.html", _this.hostedPath + _this.binDir+'/index.html');
+        //archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/index.html'});
+
+        //adds temp content.xml file to zip
+        fs.copySync(_this.tempXmlContentFile, _this.hostedPath + _this.binDir+'/xml/content.xml');
+        //archive.append(fs.createReadStream(_this.tempXmlContentFile), { name: _this.binDir+'/xml/content.xml'});
+
+		//add course.xml file
+        fs.copySync(_this.contentPath + '/packages/tempCourse.xml', _this.hostedPath + _this.binDir+'/../'+'course.xml');
+        //archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/../'+'course.xml'}  );
+
+
+        //do not need to do scorm files if publishing to "none"
+        if(_this.scormVersion != "none")
+        {
+	        //add SCORM files
+	        readdirp({
+	                root: scormBasePath,
+	                directoryFilter: ['*'],
+	                fileFilter: [ '!.DS_Store' ]
+	            },
+	            function(fileInfo) {},
+	            function (err, res) {
+	                res.files.forEach(function(file) {
+	                    var localFile = file.path.replace(/\\/g,"/")
+	                    //console.log(lFile);
+	                    var inputFile = scormBasePath + localFile;
+	                    fs.copySync(inputFile, _this.hostedPath + localFile );
+	                    //archive.append(fs.createReadStream(inputFile), { name: localFile });
+	                });
+
+	            }
+	        );
+
+	        //add sumtotal xsd files for CTC publish
+	        if (_this._parseCourseAttr().lms === 'CTCU'){
+		        readdirp({
+		                root: _this.scormPath + '/1.2_sumtotal/',
+		                directoryFilter: ['*'],
+		                fileFilter: [ '!.DS_Store' ]
+		            },
+		            function(fileInfo) {},
+		            function (err, res) {
+		                res.files.forEach(function(file) {
+		                    var localFile = file.path.replace(/\\/g,"/")
+		                    //console.log(lFile);
+		                    var inputFile = _this.scormPath + '/1.2_sumtotal/' + localFile;
+		                    fs.copySync(inputFile, _this.hostedPath + localFile );
+		                    //archive.append(fs.createReadStream(inputFile), { name: localFile });
+		                });
+
+		            }
+		        );
+
+		        //add a index.html file that launches the cognizen/index.html file to work in SumTotal
+                var indexLaunchFile = _this._buildLaunchFile();
+                var indexFilePath = _this.scormPath + '/index.html';
+
+                fs.writeFile(indexFilePath, indexLaunchFile, function(err) {
+                    if(err) {
+                        _this.logger.error("Write file error" + err);
+                        callback(err, null);
+                    }
+                    else {
+                    	fs.copySync(indexFilePath, _this.hostedPath + 'index.html' );
+                    	//archive.append(fs.createReadStream(indexFilePath), { name: 'index.html' });
+				        fs.remove(indexFilePath, function(err){
+							if(err){
+								_this.logger.error(err);
+								callback(err, null);
+							}
+							_this.logger.info('index.html launch file removed.');
+					    });
+                    }
+
+                });
+
+	        }
+
+	        //Commented out - not needed, creating dup imsmanifest.xml files in package
+	        //add imsmanifest.xml file 
+	        //archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+		
+	        //archive.finalize();
+
+    	}
+    	//else{
+ 		//
+	    //    archive.finalize();
+    	//}
+
+    	
+
+	},
+
 	_objectivesGenerator: function(lessonTitle){
 		var _this = this;
 		///move global objectives to objective element for JKO 3rd edition player/testing needed.
@@ -833,39 +1039,49 @@ var SCORM = {
 
         var scormFileVersion = _this.scormVersion.replace(/\./, '_');
         _this.packageFolder = _this.contentPath + '/packages/';
+       
 
         //#2764
     	var outputFile = '';
     	var archive = null;
-    	if(!_this.manonly){
-    		//#2816
-	        if(_this.isDeliverable == true){
-	        	scormFileVersion += '_'+ _this.deliverableVersion +'_'+ Utils.timestamp();
-	        }
+    	
+    	if ( !hosting ) {
+			if(!_this.manonly){
+	    		//#2816
+		        if(_this.isDeliverable == true){
+		        	scormFileVersion += '_'+ _this.deliverableVersion +'_'+ Utils.timestamp();
+		        }
 
-	        outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
-	        var output = fs.createWriteStream(outputFile);
-	        archive = archiver('zip');
+		        outputFile = _this.packageFolder + _this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")+'_'+scormFileVersion+'.zip';
+		        var output = fs.createWriteStream(outputFile);
+		        archive = archiver('zip');
 
-	        //fired when the archiver finalized is finished
-	        output.on('close', function(){
-	        	_this.logger.info("archiver has finalized. ");
-	        	_this.logger.debug("packageFolder = " + outputFile);
-	        	callback(null, outputFile);
-	        	return;
-	        });
+		        //fired when the archiver finalized is finished
+		        output.on('close', function(){
+		        	_this.logger.info("archiver has finalized. ");
+		        	_this.logger.debug("packageFolder = " + outputFile);
+		        	callback(null, outputFile);
+		        	return;
+		        });
 
-	        archive.on('error', function(err) {
-	            //throw err;
-				callback(err, null);
-				return;            
-	        });
+		        archive.on('error', function(err) {
+		            //throw err;
+					callback(err, null);
+					return;            
+		        });
 
-	        archive.pipe(output);
-	    }
-	    else{
-	    	outputFile = _this.packageFolder+_this.scormVersion+'/imsmanifest.xml';
-	    }
+		        archive.pipe(output);
+		    }
+		    else{
+		    	outputFile = _this.packageFolder+_this.scormVersion+'/imsmanifest.xml';
+		    }
+    	}
+    	else
+    	{
+    		_this.hostedPath = _this.hostedPath + courseAttrs.id;
+    		// DO WE NEED THIS CALLBACK
+    		//callback(null, "HOSTING");
+    	}
 
 		_this.courseXmlExists = true;
 
@@ -887,6 +1103,9 @@ var SCORM = {
 
 			}
 		);
+
+
+		
 
     //end of generateSCORMCourse
 	},
@@ -1017,15 +1236,28 @@ var SCORM = {
 					            var localFile = file.path.replace(/\\/g,"/");
 					            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html") == -1){
 					            	var inputFile = _lessonPath + '/' + localFile;
-					            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });
+
+					            	if ( hosting ) {
+					            		fs.copySync(inputFile, _this.hostedPath + '/'+ _lessonTitle +'-Review-files/'+localFile);
+					            	} else {
+					            		archive.append(fs.createReadStream(inputFile), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/'+localFile });	
+					            	}					            	
 					        	}
 					        });
 					        //add index.html from server incase changes were made after the course was created
-					        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
+					        if ( hosting ) {
+					        	fs.copySync(_this.scormPath + "/../index.html", _this.hostedPath + '/'+ _lessonTitle +'-Review-files/index.html');		
+					        } else {
+					          	archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/index.html'});
+							}
 
 					        //add warning icon 
-					        archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
-					    
+					        if ( hosting ) {
+					        	fs.copySync(_this.scormPath + "/review/cognizen_warning_icon.png", _this.hostedPath + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png');
+			            	} else {
+			            		archive.append(fs.createReadStream(_this.scormPath + "/review/cognizen_warning_icon.png"), { name: _this.binDir + '/'+ _lessonTitle +'-Review-files/media/cognizen_warning_icon.png'});
+					    	}
+
 							//updating temp review content.xml file
 							////////////////////////////////////////////////////////////////
 					        var _review_data, _review_etree;
@@ -1066,7 +1298,11 @@ var SCORM = {
 			                var xml = _review_etree.write({'xml_decleration': false});
 			                fs.outputFile(_tempReviewFile, xml, function (err) {
 			                    if (err) callback(err, null);
-			                    archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+			                    if ( hosting ) {
+			                    	fs.copySync(_tempReviewFile, _this.hostedPath + '/'+ _lessonTitle +'-Review-files/xml/content.xml');
+			                    } else {
+			                    	archive.append(fs.createReadStream(_tempReviewFile), { name: _this.binDir+'/'+ _lessonTitle +'-Review-files/xml/content.xml'});
+			                    }
 
 			        			try{
 			        				fs.removeSync(_tempReviewFile);
@@ -1082,7 +1318,7 @@ var SCORM = {
 
 
 				    //do not need to do scorm files if publishing to "none"
-    				if(_this.scormVersion != "none"){
+    				if(_this.scormVersion != "none" && !hosting){
 	                	manifestFile += _this._add2004Item(lessonsName[count], lessonDisplayTitle, count, lArray.length, res);
 	            	}
 
@@ -1095,22 +1331,32 @@ var SCORM = {
 				            var localFile = file.path.replace(/\\/g,"/");
 				            if(localFile.indexOf('content.xml') == -1 && localFile.indexOf("index.html")){
 				            	var inputFile = _lessonPath + '/' + localFile;
-				            	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+lessonsName[count]+'/'+localFile });
+				            	if ( hosting ) {
+			                    	fs.copySync(inputFile, _this.hostedPath + '/'+lessonsName[count]+'/'+localFile );
+			                    } else {
+			                    	archive.append(fs.createReadStream(inputFile), { name: _this.binDir+'/'+lessonsName[count]+'/'+localFile });
+			                    }
+				            	
 				        	}
 				        });
 
 				        //add index.html from server incase changes were made after the course was created
-				        archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});
+				        if ( hosting ) {
+			                fs.copySync(_this.scormPath + "/../index.html", _this.hostedPath + '/'+lessonsName[count]+'/index.html');    	
+	                    } else {
+	                    	archive.append(fs.createReadStream(_this.scormPath + "/../index.html"), { name: _this.binDir+'/'+lessonsName[count]+'/index.html'});
+	                    }				        
 				    }
 
 	                if(count+1 == lArray.length){
 	                	var courseAttr = _this._parseCourseAttr();
-				        if(manifestFile != ''){
+				        if(manifestFile != '' || hosting){
 
 					        var completionLines = '';
 
 					        //if(_this.scormVersion.indexOf('USSOCOM') != -1){
 					        if(courseAttr.lms === "JKO"){
+					        	console.log("LMS == JKO");
 						        //add completion  and survey files
 						        if(courseAttr.survey === "true"){
 					                manifestFile += _this._addUSSOCOMExtra('survey');
@@ -1259,6 +1505,10 @@ var SCORM = {
 														if(!_this.manonly){
 													        archive.finalize();
 													    }
+													    
+													    if(hosting) {
+													    	callback(err, _this.hostedPath);
+													    }
 
 													});
 
@@ -1271,6 +1521,7 @@ var SCORM = {
 						        );
 					        }
 					        else{
+					        	console.log("LMS is not JKO");
 					        	manifestFile += _this._finalizeManifest(lessonsName, resourceLines, completionLines);
 					        	if(_this.scormVersion != "none"){
 					        		//this needs to be moved to a function
@@ -1296,50 +1547,79 @@ var SCORM = {
 							            else {
 											if(!_this.manonly){
 										        //add SCORM files
-										        readdirp({
-										                root: scormBasePath,
-										                directoryFilter: ['*'],
-										                fileFilter: [ '!.DS_Store' ]
-										            },
-										            function(fileInfo) {},
-										            function (err, res) {
-										                res.files.forEach(function(file) {
-										                    var localFile = file.path.replace(/\\/g,"/")
-										                    var inputFile = scormBasePath + localFile;
-										                    archive.append(fs.createReadStream(inputFile), { name: localFile });
-										                });
+										        if ( !hosting ) {
+											        readdirp({
+											                root: scormBasePath,
+											                directoryFilter: ['*'],
+											                fileFilter: [ '!.DS_Store' ]
+											            },
+											            function(fileInfo) {},
+											            function (err, res) {
+											                res.files.forEach(function(file) {
+											                    var localFile = file.path.replace(/\\/g,"/")
+											                    var inputFile = scormBasePath + localFile;											                    
+											                    archive.append(fs.createReadStream(inputFile), { name: localFile });											                    
+											                });
 
-										            }
-										        );
+											            }
+											        );
+											    }
 
 										        //#3866
 										        if(courseAttr.help != '' && courseAttr.help != undefined){
 										        	var helpPathSplit = courseAttr.help.split('..');
-											        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+											        if ( hosting ) {
+			                    						fs.copySync(_this.contentPath + helpPathSplit[1], _this.hostedPath + helpPathSplit[1]);
+								                    } else {
+								                    	archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});	
+								                    }
 										        }
 
 												//add js directory to root of package
 										        for (var i = 0; i < _this.jsResources_arr.length; i++) {
-										             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+										             if ( hosting ) {
+			                    						fs.copySync(_this.contentPath + '/../js/' +_this.jsResources_arr[i], _this.hostedPath + '/js/'+_this.jsResources_arr[i] );
+								                    } else {
+								                    	archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+								                    }
 										        };
 
 										        for (var i = 0; i < _this.cssResources_arr.length; i++) {
-												    archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+												    if ( hosting ) {
+			                    						fs.copySync(_this.contentPath + '/../css/' +_this.cssResources_arr[i], _this.hostedPath + '/css/'+_this.cssResources_arr[i] );
+								                    } else {
+								                    	archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+								                    }
 												};
 
 												for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
-												    archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+												    if ( hosting ) {
+			                    						fs.copySync(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i], _this.hostedPath + '/css/'+_this.cssCourseResources_arr[i] );
+								                    } else {
+								                    	archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+								                    }
 												};
 
 										        //add imsmanifest.xml file
-										        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+										        if ( !hosting ) {
+			                    				
+							                    	archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
+							                    }
 
 										        //add course.xml file
-										        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+										        if ( hosting ) {
+													fs.copySync(_this.contentPath + '/packages/tempCourse.xml', _this.hostedPath + '/'+'course.xml' );
+							                    } else {
+							                    	archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+							                    }
 
 							        			//adds temp content.xml file to zip
 							        			for(var j=0; j<lArray.length; j++){
-							        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+							        				if ( hosting ) {
+			                    						fs.copySync(_this.packageFolder +j+'content.xml', _this.hostedPath + '/'+lessonsName[j]+'/xml/content.xml' );
+								                    } else {
+								                    	archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+								                    }
 							        			}
 
 							        			//add review content.xml file to zip
@@ -1374,7 +1654,13 @@ var SCORM = {
 												}
 												_this.logger.info('imsmanifest.xml file removed.');
 												if(!_this.manonly){
-											        archive.finalize();
+											        if ( !hosting ) {
+								                    	archive.finalize();
+								                    }
+								                    else
+								                    {
+								                    	callback(err, _this.hostedPath);
+								                    }
 											    }
 
 											});							
@@ -1401,7 +1687,11 @@ var SCORM = {
 
 		        			//adds temp content.xml file to zip
 		        			for(var j=0; j<lArray.length; j++){
-		        				archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+		        				if ( hosting ) {
+            						fs.copySync(_this.packageFolder +j+'content.xml', _this.hostedPath + '/'+lessonsName[j]+'/xml/content.xml');
+			                    } else {
+			                    	archive.append(fs.createReadStream(_this.packageFolder +j+'content.xml'), { name: _this.binDir+'/'+lessonsName[j]+'/xml/content.xml'});
+			                    }
 		        			}
 
 		        			//create index.html file to place at the root of the package
@@ -1413,28 +1703,52 @@ var SCORM = {
 					                return;
 					            }
 
-		        				archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
+		        				if ( hosting ) {
+            						fs.copySync(tempNoneIndex, _this.hostedPath + '/index.html');
+			                    } else {
+			                    	archive.append(fs.createReadStream(tempNoneIndex), {name: _this.binDir+'/index.html'});
+			                    }
 
 						        //add course.xml file
-						        archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+						        if ( hosting ) {
+            						fs.copySync(_this.contentPath + '/packages/tempCourse.xml', _this.hostedPath + '/'+'course.xml' );
+			                    } else {
+			                    	archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/'+'course.xml'}  );
+			                    }
 
 							    //#3866
 						        if(courseAttr.help != '' && courseAttr.help != undefined){
 						        	var helpPathSplit = courseAttr.help.split('..');
-							        archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+							        if ( hosting ) {
+	            						fs.copySync(_this.contentPath + helpPathSplit[1], _this.hostedPath + helpPathSplit[1]);
+				                    } else {
+				                    	archive.append(fs.createReadStream(_this.contentPath + helpPathSplit[1]), {name: _this.binDir + helpPathSplit[1]});
+				                    }
 						        }
 
 								//add js directory to root of package
 						        for (var i = 0; i < _this.jsResources_arr.length; i++) {
-						             archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+						             if ( hosting ) {
+	            						fs.copySync(_this.contentPath + '/../js/' +_this.jsResources_arr[i], _this.hostedPath + '/js/'+_this.jsResources_arr[i] );
+				                    } else {
+				                    	archive.append(fs.createReadStream(_this.contentPath + '/../js/' +_this.jsResources_arr[i]), { name: _this.binDir+'/js/'+_this.jsResources_arr[i] });
+				                    }
 						        };
 
 						        for (var i = 0; i < _this.cssResources_arr.length; i++) {
-									archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+									if ( hosting ) {
+	            						fs.copySync(_this.contentPath + '/../css/' +_this.cssResources_arr[i], _this.hostedPath + '/css/'+_this.cssResources_arr[i] );
+				                    } else {
+				                    	archive.append(fs.createReadStream(_this.contentPath + '/../css/' +_this.cssResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssResources_arr[i] });
+				                    }
 								};
 
 								for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
-									archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+									if ( hosting ) {
+	            						fs.copySync(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i], _this.hostedPath + '/css/'+_this.cssCourseResources_arr[i] );
+				                    } else {
+				                    	archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
+				                    }
 								};
 
 			        			//remove temp course.xml
@@ -1458,7 +1772,9 @@ var SCORM = {
 
 								_this.logger.info('temp index.html file removed.');
 
-						        archive.finalize();
+						        if ( !hosting ) {
+				                    archive.finalize(); 
+				                }				               
 		        			});
 
 

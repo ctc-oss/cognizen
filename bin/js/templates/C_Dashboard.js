@@ -942,6 +942,7 @@ function C_Dashboard(_type) {
                 msg += "<select id='scormVersion'>";
                 msg += "<option>2004_4th</option>";
                 msg += "<option>2004_3rd</option>";
+                msg += "<option>Hosting</option>";
                 // msg += "<option>2004_4th_USSOCOM</option>";
                 // msg += "<option>2004_3rd_USSOCOM</option>";
                 msg += "<option>none</option>";
@@ -957,7 +958,7 @@ function C_Dashboard(_type) {
                 msg += "<select id='scormVersion'>";
                 msg += "<option>2004_4th</option>";
                 msg += "<option>2004_3rd</option>";
-                msg += "<option>1.2</option>";
+                msg += "<option>1.2</option>";                
                 //msg += "<option>1.2_CTCU</option>";
                 msg += "<option>none</option>";
 
@@ -989,9 +990,16 @@ function C_Dashboard(_type) {
                 $('#manonlyHolder').hide();
                 $('#deliverableHolder').show();
             }
+            else if($('#scormVersion').find(':selected').text() == 'Hosting'){
+                $('#manifestOnly').prop('checked', false);
+                $('#manonlyHolder').hide();
+                $('#deliverableHolder').prop('checked', false);
+                $('#deliverableHolder').hide();
+            }
             else{
                 if(!$('#deliverableActive').is(':checked')){
                     $('#manonlyHolder').show();
+                    $('#deliverableHolder').show();
                 }                    
             }
         });  
