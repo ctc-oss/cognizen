@@ -1078,7 +1078,7 @@ var SCORM = {
     	}
     	else
     	{
-    		_this.hostedPath = _this.hostedPath + courseAttrs.id;
+    		_this.hostedPath = _this.hostedPath + "_" + courseAttrs.id;
     		// DO WE NEED THIS CALLBACK
     		//callback(null, "HOSTING");
     	}
