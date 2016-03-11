@@ -234,7 +234,7 @@ body{
 	background-color: #fff;
 }
 
-.C_LMSMenuItem{
+.C_LMSMenuItem, .C_CCMenuItem{
 	display: block;
 	width: 99%;
 	margin-left:2px;
@@ -253,7 +253,7 @@ body{
 	list-style-type: none;
 }
 
-.C_LMSMenuItem:hover{
+.C_LMSMenuItem:hover, .C_CCMenuItem:hover{
 	background-color: #eee;
 	color: #3383bb;
 }
@@ -534,7 +534,7 @@ div#loader {
 	border-width: thin;
 }
 
-#projListHeader{
+#projListHeader, #courseCatalogHeader{
 	width: 80vw;
 	clear:both;
 	background-color: #eee;
@@ -565,6 +565,11 @@ div#loader {
 	margin-left: auto;
 	margin-right: auto;
 	overflow: hidden;
+}
+
+.emptyList{
+	text-align: center;
+	color: #9DA6AB;
 }
 
 #logout{
@@ -599,7 +604,6 @@ div#loader {
 	color: #eee;
 	margin-right: 10px;
 	font-family: hnl;
-	cursor: hand;
 	cursor: pointer;
 }
 
@@ -607,18 +611,17 @@ div#loader {
 	color: #6BCAF2;
 }
 
-#adminAddUser{
+#adminAddUser, #courseCatalogBtn{
 	position: relative;
 	right: 2px;
 	float: right;
 	color: #eee;
 	margin-right: 15px;
 	font-family: hnl;
-	cursor: hand;
 	cursor: pointer;
 }
 
-#adminAddUser:hover{
+#adminAddUser:hover, #courseCatalogBtn:hover{
 	color: #6BCAF2;
 }
 

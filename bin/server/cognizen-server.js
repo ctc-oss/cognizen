@@ -28,11 +28,13 @@ var mongoose = require('mongoose');
 var UserModel = require('./user-model');
 var User = UserModel.User;
 var UserPermission = UserModel.UserPermission;
+var UserEnrollment = UserModel.UserEnrollment;
 var ContentModel = require('./content-model');
 var Program = ContentModel.Program;
 var Course = ContentModel.Course;
 var Lesson = ContentModel.Lesson;
 var ContentComment = ContentModel.ContentComment;
+var HostedCourse = ContentModel.HostedCourse;
 var io;
 
 var logFolder = Utils.defaultValue(config.logFolder, './');
@@ -330,6 +332,87 @@ var Content = {
 
     },
 
+    _getEnrolledCourse: function(_enrollments, index, _allContent, callback){
+        var _this = this;
+
+        if(index < _enrollments.length){
+
+            UserEnrollment.findById(_enrollments[index]).exec(function (err, userEnrollment) {
+                if (err) {
+                    callback(err, null);
+                }
+                if (userEnrollment) {
+                    //console.log(userEnrollment);
+                    HostedCourse.findOne({contentId: userEnrollment.contentId}, function (err, course) {    
+
+                        var courseData = course.toObject();
+                        courseData.attemptId = userEnrollment.attemptId;
+                        courseData.permission = userEnrollment.permission;
+
+                        // console.log(courseData);
+                        _allContent.push(courseData);
+                        _this._getEnrolledCourse(_enrollments, index+1, _allContent, function(err, content){
+                            if(err){
+                                callback(err, null);
+                            }
+                            else{
+                                callback(null, content);
+                            }
+
+                        });                           
+
+                    });
+                }
+            });
+        }
+        else{
+            callback(null, _allContent);
+        }
+
+    },
+
+    _userEnrolledContent: function(_user, callback){
+        var _this = this;
+        
+        var allContent = []; 
+
+        _this._getEnrolledCourse(_user.enrollments, 0, allContent, function(err, content){
+            if(err){
+                callback(err, null);
+            }
+            else{
+                callback(null, content);
+            }
+        });
+
+    
+    },
+
+    getEnrolledCourses: function(socket, user, callback){
+        var _this = this;
+        if (!user || !user.username) {
+            user = {username: '', admin: false};
+        }  
+           
+
+        User.findById(user._id).exec(function (err, user) {
+            if (err) {
+                callback(err);
+            }
+            if (user) {
+                _this._userEnrolledContent(user, function(err, data){
+                    if(err){
+                        callback(err);
+                    }
+                    socket.emit('receiveEnrolledCoursesFromDB', data); 
+                });
+
+                              
+            }
+        });       
+
+    },
+
     objectType: function (typeName) {
         return eval(_.str.capitalize(typeName.toLowerCase()));
     },
@@ -585,9 +668,25 @@ var Content = {
                 Content.allContentForUser(socket, data);
             });
             
+            socket.on('getEnrolledCourses', function (data) {
+                Content.getEnrolledCourses(socket, data);
+            });
+
             socket.on('getHostedContent', function (data) {
                 SocketHandler.socket(socket).getHostedContent(data);
             });
+
+            socket.on('enrollUserInCourse', function (data) {
+                SocketHandler.socket(socket).enrollUserInCourse(data, function(err) {
+                    if (err) {
+                        logger.error(err);
+                        socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when enrolling user.'});
+                    }
+                    else {
+                        io.sockets.emit('refreshDashboard');
+                    }
+                });                
+            });            
 
             socket.on('getPermissions', function (data) {
                 SocketHandler.socket(socket).getPermissions(data);

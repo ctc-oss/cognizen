@@ -1084,6 +1084,7 @@ function C_Dashboard(_type) {
         var data = {
             content: {
                 id: currentParent.attr('id'),
+                name: currentParent.find("span").first().text(),
                 type: currentLevel
             },
             user: {

@@ -12,7 +12,9 @@ var UserSchema = new Schema({
     token: { type: String, required: true},
     active: { type: Boolean, required: true},
     admin: { type: Boolean },
-    permissions: [{type: Schema.Types.ObjectId, ref: 'UserPermission'}]
+    trainingCoordinator: { type: Boolean },
+    permissions: [{type: Schema.Types.ObjectId, ref: 'UserPermission'}],
+    enrollments: [{type: Schema.Types.ObjectId, ref: 'UserEnrollment'}]
 });
 
 var UserPermissionSchema = new Schema({
@@ -21,7 +23,16 @@ var UserPermissionSchema = new Schema({
     contentId: {type: String, required: true},
     permission: {type: String, enum: ['admin', 'editor', 'reviewer', 'client']}
 });
- 
+
+var UserEnrollmentSchema = new Schema({
+    user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+    contentType: { type: String, required: true},
+    contentId: {type: String, required: true},
+    attemptId: {type: String, required: true},
+    permission: {type: String, enum: ['admin', 'student', 'browse', 'reviewer']},
+    created: {type: Date, default: Date.now}
+});
+
 UserSchema.pre('save', function(next) {
     var user = this;
 
@@ -61,8 +72,10 @@ UserSchema.methods.toDashboardItem = function() {
 };
 var User = mongoose.model('User', UserSchema);
 var UserPermission = mongoose.model('UserPermission', UserPermissionSchema);
+var UserEnrollment = mongoose.model('UserEnrollment', UserEnrollmentSchema);
 
 module.exports = {
     User: User,
-    UserPermission: UserPermission
+    UserPermission: UserPermission,
+    UserEnrollment: UserEnrollment
 };

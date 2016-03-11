@@ -38,7 +38,7 @@ function C_LMSDash(_type) {
         /*****************************************************************************
         add socket listeners - for server connectivity.
         *****************************************************************************/
-        socket.on('recieveHostedProjectsFromDB', function(data) {
+        socket.on('receiveEnrolledCoursesFromDB', function(data) {
 	        updateMenu(data);
         });
     }
@@ -58,17 +58,16 @@ function C_LMSDash(_type) {
 	    $stage = $('#stage');
         
         $stage.html('');
-
-        $stage.append("<div id='projListHeader'>my courses:</div>");
-
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
-                
+        
+        $stage.append("<div id='projListHeader'>my courses:</div>");
+        
         var msg =  '<div id="contentHolder" class="overthrow antiscroll-inner">';
-        	msg += '<div id="projList">';
-        	msg += '</div></div>';
+        	msg += '<div id="projList"></div>';
+        	msg += '</div>';          
         $stage.append(msg);
 		
-		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
+		socket.emit('getEnrolledCourses', user);
     }
     
     function updateMenu(_data){
@@ -77,25 +76,28 @@ function C_LMSDash(_type) {
 	    if (transition == true) {
             $('#stage').css({'opacity': 0});
         }
-        
+        console.log(_data);
 	    var $stage = $('#stage');
-	    
-	    for(var i = 0; i < _data.length; i++){
-			if (_data[i].substring(0, 1) != "."){
-			    var msg = '<div class="C_LMSMenuItem" title="'+ _data[i] +'" data-path="'+ _data[i] +'">';	
-				msg += _data[i];
-				msg += '</div>';
-				$("#projList").append(msg);
-			}
-	    }
-	    
 
-		$(".C_LMSMenuItem").click(function(){
-            dashMode = "player";
-            currentCourse = $(this).attr('data-path');
-            socket.emit('checkLoginStatus');
-		});   
-	    
+        if(_data.length == 0){
+            $("#projList").append('<div class="emptyList"> You are not enrolled in any courses! View the course catalog to enroll. </div>');
+        }
+        else{
+            for(var i = 0; i < _data.length; i++){
+                var msg = '<div class="C_LMSMenuItem" title="'+ _data[i].name +'" data-path="'+ _data[i].path +'">';    
+                msg += _data[i].name;
+                msg += '</div>';
+                $("#projList").append(msg);
+            }
+            
+
+            $(".C_LMSMenuItem").click(function(){
+                dashMode = "player";
+                currentCourse = $(this).attr('data-path');
+                socket.emit('checkLoginStatus');
+            });             
+        }
+  	    
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});

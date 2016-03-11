@@ -327,15 +327,25 @@ var ContentCommentSchema = new Schema({
     status: {type: String, enum: ['new', 'inprogress', 'closed']}
 });
 
+var HostedCourseSchema = new Schema({
+    name: {type: String, required: true},
+    path: {type: String, required: true},
+    contentId: {type: String, required: true},
+    user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+    created: {type: Date, default: Date.now}
+});
+
 var Content = mongoose.model('Content', ContentSchema);
 var Program = mongoose.model('Program', ProgramSchema);
 var Course = mongoose.model('Course', CourseSchema);
 var Lesson = mongoose.model('Lesson', LessonSchema);
 var ContentComment = mongoose.model('ContentComment', ContentCommentSchema);
+var HostedCourse = mongoose.model('HostedCourse', HostedCourseSchema);
 
 module.exports = {
     Program: Program,
     Course: Course,
     Lesson: Lesson,
-    ContentComment: ContentComment
+    ContentComment: ContentComment,
+    HostedCourse: HostedCourse
 }

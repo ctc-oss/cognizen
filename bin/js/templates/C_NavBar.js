@@ -47,35 +47,43 @@ function C_NavBar() {
 	            }
 	        }
 			
-			if (admin || programAdmin) {
+			if ((admin || programAdmin) && (dashMode === 'author') || (dashMode == 'lms')) {
 				//ROOT and admin can add users to the system.
 	            $("#dash-navbar").append("<div id='adminAddUser'>add user</div>");
 	            $("#adminAddUser").click(registerUser);
 	        }
 			
 	            //ADDING PROGRAMS IS ROOT ONLY
-	        if (admin) {
+	        if (admin && dashMode === 'author') {
 	            $("#dash-navbar").append("<div id='adminAddProgram'>add program</div>");
 	            $("#adminAddProgram").click(function () {
 	                registerContent("root", "root");
 	            });
 	        }
 	        
+	        if (dashMode == 'lms') {
+	            $("#dash-navbar").append("<div id='courseCatalogBtn'>view course catalog</div>");
+	            $("#courseCatalogBtn").click(function () {
+		            dashMode = 'catalog';
+				 	socket.emit('checkLoginStatus');
+	            });
+	        }
+
+			$("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
+			$("#gotoAuthoring").click(function () {
+				dashMode = 'author'; 
+				socket.emit('checkLoginStatus');
+			});
+
 	        //commented out for 1.3 release #4501
 	         if (admin || programAdmin) {
 				 //ROOT and admin can add users to the system.
 	             $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
 	             $("#gotoLMS").click(function(){
-		             dashMode = 'lms';
+		            dashMode = 'lms';
 				 	socket.emit('checkLoginStatus');
 	             });
-	         }
-	        
-	         $("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
-	         $("#gotoAuthoring").click(function () {
-	             dashMode = 'author'; 
-				 socket.emit('checkLoginStatus');
-	         });
+	         }	         
         }
 	}
 	

@@ -190,6 +190,7 @@ function initScripts(_data){
 				"js/templates/C_NavBar.js",
 				"js/templates/C_LMSDash.js",
 				"js/templates/C_CoursePlayer.js",
+				"js/templates/C_CourseCatalog.js",
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
 				"js/util/C_Search.js",
@@ -254,6 +255,9 @@ function buildInterface(){
             }
             else if (dashMode === 'player'){
             	currentTemplate = new C_CoursePlayer(currentCourse);
+            }
+            else if (dashMode === 'catalog'){
+            	currentTemplate = new C_CourseCatalog(currentCourse);
             }
             else{
 	            currentTemplate = new C_LMSDash(currentTemplateType);

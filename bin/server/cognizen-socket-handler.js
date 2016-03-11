@@ -2,11 +2,13 @@ var Utils = require('./cognizen-utils'),
     UserModel = require('./user-model'),
     User = UserModel.User,
     UserPermission = UserModel.UserPermission,
+    UserEnrollment = UserModel.UserEnrollment,
     ContentModel = require('./content-model'),
     Program = ContentModel.Program,
     Course = ContentModel.Course,
     Lesson = ContentModel.Lesson,
     ContentComment = ContentModel.ContentComment,
+    HostedCourse = ContentModel.HostedCourse,
     fs = require('fs-extra'),
     path = require('path'),
     ffmpeg = require('fluent-ffmpeg'),
@@ -441,13 +443,56 @@ var SocketHandler = {
     
     getHostedContent: function(data){
 		var _this = this;
-		fs.readdir("../hosted/", function(err, files){
-			if (!files.length) {
-	    		console.log("empty directory!")
-	    	}else{
-		    	_this._socket.emit('recieveHostedProjectsFromDB', files);
-	    	}
-		}); 
+        HostedCourse.find(function(err, courses){
+            if(err){
+                _this.logger.error(error);
+                _this._socket.emit('generalError', {title: 'Error Retrieving Courses', message: 'An error occurred while retrieving the courses from the hosting server.'});                
+            }
+            else{
+                _this._socket.emit('recieveCourseCatalogFromDB', courses);
+            }
+        });
+
+    },
+
+    enrollUserInCourse: function (data, callback) {
+        var _this = this;
+        // First, remove all the enrollments for this content.
+        UserEnrollment.remove({contentId: data.content.id}).exec(function (err) {
+            if (err) {
+                callback(err);
+            }
+            else {
+                User.findById(data.user._id).exec(function (err, user) {
+                    if (err) {
+                        callback(err);
+                    }
+                    if (user) {
+                        var enrollment = new UserEnrollment({
+                            user: user,
+                            contentType: data.content.type,
+                            contentId: data.content.id,
+                            attemptId: FileUtils.guid(),
+                            permission: 'student'
+                        });
+                        user.enrollments.push(enrollment); 
+                        user.save(function (err) {
+                            if (err) {
+                                _this.logger.info("Problem Houston - can't save confirm." + err);
+                                callback(err);
+                            }
+                            enrollment.save(function (err){
+                                if(err){
+                                    _this.logger.info("Problem Houston - can't save confirm." + err);
+                                    callback(err);
+                                }
+                                callback();
+                            });
+                        });                                               
+                    }
+                });
+            }
+        });
     },
 
     checkLoginStatus: function() {
@@ -1175,6 +1220,33 @@ var SocketHandler = {
             }
         });   
     },
+
+    _registerHostedCourse: function (data) {
+        var _this = this;
+        //console.log(data);
+        User.findById(data.user.id).exec(function (err, user) {
+            if(err){
+                _this.logger.error("NO USER FOUND - course not added to hosted course db");
+            }
+            if (user) {
+                var newHostedCourse = new HostedCourse({
+                    name: data.name,
+                    path: data.path,
+                    contentId: data.id,
+                    user: user
+                });
+                newHostedCourse.save(function (err) {
+                    if (err) {
+                        _this.logger.error("Error saving new hosted course: " + err);
+                    }
+                    else {
+                        _this.logger.info('Hosted Course added to db');
+                    }
+                });
+
+            }
+        });        
+    },    
 
     registerLesson: function (data) {
         var _this = this;
@@ -3436,7 +3508,16 @@ var SocketHandler = {
 	                                        _this.logger.info("---------- filepath = " + filepath);
 	                                        _this.Git.lock.release();
 
-                                            if ( data.scorm.version == 'Hosting' ) {                                                
+                                            if ( data.scorm.version == 'Hosting' ) { 
+
+                                                var hostingContent = {
+                                                    path: '_' + data.content.id,
+                                                    id: data.content.id,
+                                                    name: data.content.name,
+                                                    user: data.user
+                                                };
+
+                                                _this._registerHostedCourse(hostingContent);                                               
                                                 callback(filepath); 
                                             }
                                             else {
