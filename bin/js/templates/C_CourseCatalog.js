@@ -103,7 +103,8 @@ function C_CourseCatalog(_course) {
         });   
 
         $(".C_CloseCourseButton").click(function(){
-           $("#gotoLMS").click(); 
+            dashMode = 'lms';
+            socket.emit('checkLoginStatus');
         });        
         
         //Once everything is loaded - fade page in.

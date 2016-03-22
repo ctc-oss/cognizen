@@ -2811,17 +2811,19 @@ var SocketHandler = {
         callback(_this.config.server);
     },
 
-    //xapi functions
+    retrieveHosting: function(callback){
+        var _this = this;
+        callback(_this.config.hosting);
+    },
+
+    //xapi functions    
     configLrs: function(){
         var _this = this;
 
         var myconfig = {
-            "url" : "http://cde-cognizen-vm-2.ctc.com/xapi/",
-            "auth" : {
-                "user" : "cognizen",
-                "pass" : "cognizen"
-            }
-        };
+            "url" : _this.config.lrsurl,
+            "auth" : _this.config.lrsauth
+        };    
 
         _this.mylrs = new adl.XAPIWrapper(myconfig);
     },

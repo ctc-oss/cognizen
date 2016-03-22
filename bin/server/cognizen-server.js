@@ -863,6 +863,12 @@ var Content = {
                 });
             });
 
+            socket.on('retrieveHosting', function (callback) {
+                SocketHandler.socket(socket).retrieveHosting(function(err){
+                    callback(err);
+                });
+            });
+
             socket.on('configLrs', function(){
                 SocketHandler.socket(socket).configLrs();
             });            

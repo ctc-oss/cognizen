@@ -12,7 +12,7 @@
  */
 function C_NavBar() {
 	
-	this.initialize = function () {
+	this.initialize = function (callback) {
 		//Message sent from the server when they try to register an already registered e-mail account.
         socket.on('registrationFailed', function () {
             var myTitle = "Registration Failed";
@@ -27,64 +27,80 @@ function C_NavBar() {
             var myMessage = "<p>You have successfully registered the user to the system!</p><p>A confirmation e-mail has been sent to their e-mail account. The user must click on the conformation link in that mail to enable their credentials before before logging into the cognizen content creation tool.</p>";
             doError(myTitle, myMessage);
         });
-		
-		var msg = "<div id='dash-navbar' class='dash-navbar'></div>";
-		$(msg).insertAfter(".dash-header");
-		
-		if(isBoth){
-	        var admin = user.admin;
-	        var programAdmin = false;
-			
-			
-	        if (!admin) {
-	            // Check if user is a program admin
-	            for (var i = 0; i < user.permissions.length; i++) {
-	                var permission = user.permissions[i];
-	                if (permission.permission == 'admin') {
-	                    programAdmin = true;
-	                    break;
-	                }
-	            }
-	        }
-			
-			if ((admin || programAdmin) && (dashMode === 'author') || (dashMode == 'lms')) {
-				//ROOT and admin can add users to the system.
-	            $("#dash-navbar").append("<div id='adminAddUser'>add user</div>");
-	            $("#adminAddUser").click(registerUser);
-	        }
-			
-	            //ADDING PROGRAMS IS ROOT ONLY
-	        if (admin && dashMode === 'author') {
-	            $("#dash-navbar").append("<div id='adminAddProgram'>add program</div>");
-	            $("#adminAddProgram").click(function () {
-	                registerContent("root", "root");
-	            });
-	        }
-	        
-	        if (dashMode == 'lms') {
-	            $("#dash-navbar").append("<div id='courseCatalogBtn'>view course catalog</div>");
-	            $("#courseCatalogBtn").click(function () {
-		            dashMode = 'catalog';
-				 	socket.emit('checkLoginStatus');
-	            });
-	        }
 
-			$("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
-			$("#gotoAuthoring").click(function () {
-				dashMode = 'author'; 
-				socket.emit('checkLoginStatus');
-			});
+        var isHosting = false;
+        socket.emit('retrieveHosting', function(fdata){
 
-	        //commented out for 1.3 release #4501
-	         if (admin || programAdmin) {
-				 //ROOT and admin can add users to the system.
-	             $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
-	             $("#gotoLMS").click(function(){
-		            dashMode = 'lms';
-				 	socket.emit('checkLoginStatus');
-	             });
-	         }	         
-        }
+     		if(fdata) {isHosting = true}
+     		
+     		$("#dash-navbar").remove();
+			var msg = "<div id='dash-navbar' class='dash-navbar'></div>";
+			$(msg).insertAfter(".dash-header");
+			
+			if(isBoth){
+		        var admin = user.admin;
+		        var programAdmin = false;
+				
+				
+		        if (!admin) {
+		            // Check if user is a program admin
+		            for (var i = 0; i < user.permissions.length; i++) {
+		                var permission = user.permissions[i];
+		                if (permission.permission == 'admin') {
+		                    programAdmin = true;
+		                    break;
+		                }
+		            }
+		        }
+				
+				if ((admin || programAdmin) && (dashMode === 'author') || (dashMode == 'lms')) {
+					//ROOT and admin can add users to the system.
+		            $("#dash-navbar").append("<div id='adminAddUser'>add user</div>");
+		            $("#adminAddUser").click(registerUser);
+		        }
+				
+		            //ADDING PROGRAMS IS ROOT ONLY
+		        if (admin && dashMode === 'author') {
+		            $("#dash-navbar").append("<div id='adminAddProgram'>add program</div>");
+		            $("#adminAddProgram").click(function () {
+		                registerContent("root", "root");
+		            });
+		        }
+		        
+		        if(isHosting){
+
+			        if (dashMode == 'lms') {
+			            $("#dash-navbar").append("<div id='courseCatalogBtn'>view course catalog</div>");
+			            $("#courseCatalogBtn").click(function () {
+				            dashMode = 'catalog';
+						 	socket.emit('checkLoginStatus');
+			            });
+			        }
+
+					$("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
+					$("#gotoAuthoring").click(function () {
+						dashMode = 'author'; 
+						socket.emit('checkLoginStatus');
+					});
+
+			        //commented out for 1.3 release #4501
+			        if (admin || programAdmin) {
+						//ROOT and admin can add users to the system.
+			            $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
+			            $("#gotoLMS").click(function(){
+				            dashMode = 'lms';
+						    socket.emit('checkLoginStatus');
+			            });
+			        }
+		    	}
+		        callback();	         
+	        }   
+	        else{
+	        	callback();
+	        }  		
+     	});
+
+
 	}
 	
 	function registerContent(_root, _boot){

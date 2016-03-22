@@ -150,7 +150,8 @@ function C_CoursePlayer(_course) {
         $stage.append(msg);
         
         $(".C_CloseCourseButton").click(function(){
-	       $("#gotoLMS").click(); 
+            dashMode = 'lms';
+            socket.emit('checkLoginStatus');
         });
 	    
         $(".C_LMSMenuItem2").click(function(){

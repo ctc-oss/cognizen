@@ -248,26 +248,29 @@ function buildInterface(){
 	        $('body').append(msg);
 	        
 			var navBar = new C_NavBar();
-			navBar.initialize();
+			navBar.initialize(function (){
+	            if (dashMode === "author"){
+		            currentTemplate = new C_Dashboard(currentTemplateType);
+	            }
+	            else if (dashMode === 'player'){
+	            	currentTemplate = new C_CoursePlayer(currentCourse);
+	            }
+	            else if (dashMode === 'catalog'){
+	            	currentTemplate = new C_CourseCatalog(currentCourse);
+	            }
+	            else{
+		            currentTemplate = new C_LMSDash(currentTemplateType);
+	            }  
+	            currentTemplate.initialize(); 				
+			});
             
-            if (dashMode === "author"){
-	            currentTemplate = new C_Dashboard(currentTemplateType);
-            }
-            else if (dashMode === 'player'){
-            	currentTemplate = new C_CoursePlayer(currentCourse);
-            }
-            else if (dashMode === 'catalog'){
-            	currentTemplate = new C_CourseCatalog(currentCourse);
-            }
-            else{
-	            currentTemplate = new C_LMSDash(currentTemplateType);
-            }   
         }
         else {
 	        $('body').append("<div id='myLogin'><div id='stage'></div></div>");
             currentTemplate = new C_Login(currentTemplateType);
+            currentTemplate.initialize();
         }
-        currentTemplate.initialize();
+
     });
 
 	//Check if we are using transitions.  Set in preferences xml/Content.xml
