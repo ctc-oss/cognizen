@@ -1105,37 +1105,52 @@ function C_Dashboard(_type) {
                 $('#publishLoader').remove();
             }
             else{
-                fdata = fdata.replace(/\\/g, '/');
-                var splitPath = fdata.split("/");
-    			var first = true;
-                var notYet = true;
-                var dlPath = "";
-                for(var i = 0; i < splitPath.length; i++){
-                    if(splitPath[i] == "programs"){
-                        notYet = false;
-                    }
 
-                    if(notYet == false){
-    					if(first == false){
-    						dlPath += "/";
-    					}else{
-    						first = false;
-    					}
-    					dlPath += splitPath[i];
-    				}
+                if ( selectedScorm != '' && selectedScorm == 'Hosting' )
+                {
+                    socket.emit('sendHostingMail', {
+                        user: user._id
+                    });
                 }
-                dlPath = dlPath.replace(/\s+/g, '%20');
+                else
+                {
+                    fdata = fdata.replace(/\\/g, '/');
+                    var splitPath = fdata.split("/");
+        			var first = true;
+                    var notYet = true;
+                    var dlPath = "";
+                    for(var i = 0; i < splitPath.length; i++){
+                        if(splitPath[i] == "programs"){
+                            notYet = false;
+                        }
 
-                socket.emit('sendPackageMail', {
-                    user: user._id,
-                    path: dlPath
-                });
+                        if(notYet == false){
+        					if(first == false){
+        						dlPath += "/";
+        					}else{
+        						first = false;
+        					}
+        					dlPath += splitPath[i];
+        				}
+                    }
+                    dlPath = dlPath.replace(/\s+/g, '%20');
+
+                    socket.emit('sendPackageMail', {
+                        user: user._id,
+                        path: dlPath
+                    });
+                }
 				
                 $("#dialog-updatePrefs").remove();
 
                 $('#publishLoader').remove();
 
                 var msg = '<div id="dialog-dlPackage" title="Retrieve your package"><p class="validateTips">A mail has been sent to you with a link for your package.</p><p>You can also download your content package by clicking the link below:<br/><br><a href='+dlPath+' target="_blank">GET PACKAGE</a></p></div>';
+
+                if ( selectedScorm != '' && selectedScorm == 'Hosting' )
+                {
+                    msg = '<div id="dialog-dlPackage" title="Course Published!"><p class="validateTips">Your course has been successfully published to Hosting.</p></div>';                    
+                }
 
                 //Add to stage.
                 $("#stage").append(msg);

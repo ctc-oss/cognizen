@@ -839,6 +839,10 @@ var Content = {
                 SocketHandler.socket(socket).sendPackageMail(data);
             });
 
+            socket.on('sendHostingMail', function (data) {
+                SocketHandler.socket(socket).sendHostingMail(data);
+            });
+
             socket.on('contentSaved', function (data) {
                 SocketHandler.socket(socket).contentSaved(data);
             });

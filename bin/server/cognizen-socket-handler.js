@@ -732,6 +732,22 @@ var SocketHandler = {
         });
     },
 
+    sendHostingMail: function (data) {
+        var _this = this;
+        User.findById(data.user).exec(function (err, user) {
+            if (user) {
+
+                _this.Mail.send({
+                    user: user.username,
+                    subject: "Cognizen Course Published",
+                    txtMsg: user.firstName + ", your content package has been published to Hosting.",
+                    msg: user.firstName + ",<br/><br/><p>Your content package has been published to Hosting.</p>"
+                });
+                
+            }
+        });
+    },
+
     contentSaved: function(data) {
         var _this = this;
 
