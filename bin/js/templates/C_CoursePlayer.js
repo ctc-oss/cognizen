@@ -28,6 +28,8 @@ function C_CoursePlayer(_course) {
     var scrollTimer;
     var launchItemParent;
     var $stage;
+    var allLessonsComplete = true;
+    var courseId;
     
 
 
@@ -44,7 +46,9 @@ function C_CoursePlayer(_course) {
         // socket.on('recieveHostedProjectsFromDB', function(data) {
 	       //  updateMenu(data);
         // });
-        socket.emit('configLrs');
+        //socket.emit('configLrs');
+
+
         receiveCoursePath();
 
         console.log("user = " + user);//Will be used to populate real content as a parameter in the below function
@@ -86,7 +90,7 @@ function C_CoursePlayer(_course) {
             socket.emit('checkLoginStatus');
         });
 		
-		socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
+		//socket.emit('getHostedContent', {loc: "indahuas", path: "start"});
     }
     
     function updateTOC(_data){
@@ -95,14 +99,13 @@ function C_CoursePlayer(_course) {
 	    if (transition == true) {
 			$('#stage').css({'opacity': 0});
      	}
-        
         courseData = _data;
 
         var courseDisplayTitle = $(courseData).find("course").attr("coursedisplaytitle");
         if(courseDisplayTitle == undefined){
             courseDisplayTitle = $(courseData).find("course").attr("name");
         }
-
+        courseId = $(courseData).find("course").attr("id");
         var totalModules = $(courseData).find("item").length;
 
         if(totalModules > 0){
@@ -136,11 +139,12 @@ function C_CoursePlayer(_course) {
         msg += '<p>Duration: 1.25 hours<br/>Assigned by: John Smith | Published: 21OCT2015 | Complete by: 01JAN2016</p>';
         msg += '</div>';
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
-	    
+	    allLessonsComplete = true;
 	    for(var i = 0; i < module_arr.length; i++){	
-			msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ _data[i] +'">';
+			msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">';
 			
 			msg += module_arr[i].name;
+            msg += '<div>'+ getLessonStatus(module_arr[i].path) +'</div>';
 			msg += '</div>';
 	    }
 
@@ -172,14 +176,95 @@ function C_CoursePlayer(_course) {
             autoSize    : false,
             closeClick  : false,
             openEffect  : 'fade',
-            closeEffect : 'fade' 
+            closeEffect : 'fade',
+            beforeClose: function(){
+                API_1484_11.Terminate("");
+                dashMode = 'player';
+                socket.emit('checkLoginStatus');                
+            } 
 		});
 		
+        if(allLessonsComplete){
+            alert("congrats you completed the course");
+            //set course complete in LRS
+            completeCourse(courseDisplayTitle);
+            //unenroll student from the course
+            var contentData = {
+                content: {                    
+                    id: courseId
+                },
+                user: user
+            };
+         
+            socket.emit('removeUserFromCourse', contentData );            
+        }
     
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
             TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
         }
+    }
+
+    function getLessonStatus(name){
+        var search = ADL.XAPIWrapper.searchParams();
+        search['agent'] = JSON.stringify(agent);
+        //console.log(agent);
+        search['activity'] = name + "?attemptId=" + attemptId;;
+        search['related_activities'] = true;      
+        res = ADL.XAPIWrapper.getStatements(search);
+        console.log("all learner's statements for the lesson");
+        console.log(res);
+        var _completion = "unknown";
+        if(res.statements.length != 0){
+            var lastLessonStatement = res.statements[0];
+
+            if(lastLessonStatement.result != undefined && lastLessonStatement.result != "undefined"){
+                _completion = lastLessonStatement.result.completion ? "completed" : "incomplete"; 
+            }
+        }
+
+        if(allLessonsComplete){
+            if(_completion != "completed"){
+                allLessonsComplete = false;
+            }
+        }
+
+        return _completion;
+
+    }
+
+    function completeCourse(_title){
+        var stmt =  new ADL.XAPIStatement(
+            new ADL.XAPIStatement.Agent(agent),
+            //  new ADL.XAPIStatement.Agent(ADL.XAPIWrapper.hash(user.username), user.firstName+" "+user.lastName),
+            ADL.verbs.completed,
+            new ADL.XAPIStatement.Activity(coursePath, _title, _title + ' course')
+        );  
+
+        stmt.generateId();
+        stmt.object.definition.type = 'http://adlnet.gov/expapi/activities/course';
+
+        stmt.result = {
+            "score": {
+                "scaled": 0.85
+            },
+            "success": true,
+            "completion" : true
+        };
+
+        stmt.context = {
+            "contextActivities": {
+                "category": [
+                   {
+                      "id": "https://w3id.org/xapi/adl/profiles/scorm"
+                   }
+                ]
+            }
+        };   
+        console.log("course completion");
+        console.log(stmt);
+        var response = ADL.XAPIWrapper.sendStatement(stmt);    
+        console.log(response); 
     }
 
     /*************************************************************************************************

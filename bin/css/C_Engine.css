@@ -534,7 +534,7 @@ div#loader {
 	border-width: thin;
 }
 
-#projListHeader, #courseCatalogHeader{
+#projListHeader, #courseCatalogHeader, #transcriptHeader{
 	width: 80vw;
 	clear:both;
 	background-color: #eee;
@@ -611,7 +611,7 @@ div#loader {
 	color: #6BCAF2;
 }
 
-#adminAddUser, #courseCatalogBtn{
+#adminAddUser, #courseCatalogBtn, #transcriptBtn{
 	position: relative;
 	right: 2px;
 	float: right;
@@ -621,7 +621,7 @@ div#loader {
 	cursor: pointer;
 }
 
-#adminAddUser:hover, #courseCatalogBtn:hover{
+#adminAddUser:hover, #courseCatalogBtn:hover, #transcriptBtn:hover{
 	color: #6BCAF2;
 }
 

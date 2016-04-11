@@ -457,43 +457,99 @@ var SocketHandler = {
 
     enrollUserInCourse: function (data, callback) {
         var _this = this;
-        // First, remove all the enrollments for this content.
-        UserEnrollment.remove({contentId: data.content.id}).exec(function (err) {
+
+        User.findById(data.user._id).exec(function (err, user) {
             if (err) {
                 callback(err);
             }
-            else {
-                User.findById(data.user._id).exec(function (err, user) {
-                    if (err) {
+            if (user) {
+                UserEnrollment.findOne({contentId: data.content.id, user: user._id}, function(err, resad){
+                    if(err){
                         callback(err);
                     }
-                    if (user) {
-                        var enrollment = new UserEnrollment({
-                            user: user,
-                            contentType: data.content.type,
-                            contentId: data.content.id,
-                            attemptId: FileUtils.guid(),
-                            permission: 'student'
-                        });
-                        user.enrollments.push(enrollment); 
-                        user.save(function (err) {
+                    else{
+                        if(resad != null){
+                            user.enrollments.pull(resad);
+                        }
+                        // First, remove all the enrollments for this content.
+                        UserEnrollment.remove({contentId: data.content.id, user: user._id}).exec(function (err) {
                             if (err) {
-                                _this.logger.info("Problem Houston - can't save confirm." + err);
                                 callback(err);
                             }
-                            enrollment.save(function (err){
-                                if(err){
-                                    _this.logger.info("Problem Houston - can't save confirm." + err);
-                                    callback(err);
-                                }
-                                callback();
-                            });
-                        });                                               
+                            else {                        
+                                var enrollment = new UserEnrollment({
+                                    user: user,
+                                    contentType: data.content.type,
+                                    contentId: data.content.id,
+                                    attemptId: FileUtils.guid(),
+                                    permission: 'student'
+                                });
+                                user.enrollments.push(enrollment); 
+
+                                user.save(function (err) {
+                                    if (err) {
+                                        _this.logger.info("Problem Houston - can't save confirm." + err);
+                                        callback(err);
+                                    }
+                                    enrollment.save(function (err){
+                                        if(err){
+                                            _this.logger.info("Problem Houston - can't save confirm." + err);
+                                            callback(err);
+                                        }
+                                        callback();
+                                    });
+                                }); 
+
+                            }
+                        });
                     }
+
                 });
+
             }
         });
+
     },
+
+    removeUserFromCourse: function (data, callback){
+        var _this = this;
+
+        User.findById(data.user._id).exec(function (err, user) {
+            if (err) {
+                callback(err);
+            }
+            if (user) {
+                UserEnrollment.findOne({contentId: data.content.id, user: user._id}, function(err, resad){
+                    if(err){
+                        callback(err);
+                    }
+                    else{
+                        if(resad != null){
+                            user.enrollments.pull(resad);
+                        }
+                        // First, remove all the enrollments for this content.
+                        UserEnrollment.remove({contentId: data.content.id, user: user._id}).exec(function (err) {
+                            if (err) {
+                                callback(err);
+                            }
+                            else {                        
+                                user.save(function (err) {
+                                    if (err) {
+                                        _this.logger.info("Problem Houston - can't save confirm." + err);
+                                        callback(err);
+                                    }
+                                    callback();
+                                }); 
+
+                            }
+                        });
+                    }
+
+                });
+
+            }
+        });
+    },    
 
     checkLoginStatus: function() {
         var _this = this;
@@ -1245,21 +1301,39 @@ var SocketHandler = {
                 _this.logger.error("NO USER FOUND - course not added to hosted course db");
             }
             if (user) {
-                var newHostedCourse = new HostedCourse({
-                    name: data.name,
-                    path: data.path,
-                    contentId: data.id,
-                    user: user
-                });
-                newHostedCourse.save(function (err) {
-                    if (err) {
-                        _this.logger.error("Error saving new hosted course: " + err);
+                HostedCourse.findOne({contentId: data.id}, function(err, ue){
+                    if(err){
+                        _this.logger.error("Error finding content");
                     }
-                    else {
-                        _this.logger.info('Hosted Course added to db');
+                    if(ue != null){
+                        ue.version = parseInt(ue.version) + 1;
+                        ue.save(function (err) {
+                            if (err) {
+                                _this.logger.error("Error saving new hosted course: " + err);
+                            }
+                            else {
+                                _this.logger.info('Hosted Course added to db');
+                            }
+                        }); 
+                    }
+                    else{
+                        var newHostedCourse = new HostedCourse({
+                            name: data.name,
+                            path: data.path,
+                            contentId: data.id,
+                            user: user,
+                            version: 1
+                        });
+                        newHostedCourse.save(function (err) {
+                            if (err) {
+                                _this.logger.error("Error saving new hosted course: " + err);
+                            }
+                            else {
+                                _this.logger.info('Hosted Course added to db');
+                            }
+                        });                        
                     }
                 });
-
             }
         });        
     },    
@@ -2832,7 +2906,93 @@ var SocketHandler = {
         callback(_this.config.hosting);
     },
 
-    //xapi functions    
+    //xapi functions   
+    xapiInitialize: function(data, callback){
+        var _this = this;
+        var attemptIri = data.activity + "?attemptId=" + data.attemptId
+
+        var agent = data.agent;
+
+        // see if the profile is already set
+
+        // var stateData = {
+        //   activity: data.activity,
+        //   agent: agent,
+        //   stateid: constants.activityStateIri,
+        // };
+        console.log("setActivityState : ");
+        // console.log(stateData);
+        //var as = ADL.XAPIWrapper.getState(activity, agent, constants.activityStateIri);
+        _this.mylrs.getState(data.activity, data.agent, data.stateid, null, null, function (err, resp, bdy) {
+            var returnData = {
+                err : err,
+                resp : resp,
+                bdy : bdy
+            };
+            _this.logger.info(resp.statusCodeda);
+            if(resp.statusCode == 404){
+                console.log("is 404");
+            }
+            else{
+                console.log("is not 404");
+            }
+            callback("true");
+        });
+
+        // socket.emit('getXapiState',stateData, function (data){
+        //   console.log("setActivityState - getXapiState");
+        //   var as = data;
+        //   console.log(as);
+        //   // First time, create a new one
+        //   if (as.resp.statusCode == 404)
+        //   {
+
+        //     stateData.state = {attempts: [attemptIri]}; 
+        //     stateData.matchHash = "*";
+        //     stateData.virg = true;
+        //     socket.emit('sendXapiState',stateData, function (data){
+        //       console.log("setActivityState - sendXapiState");
+        //       console.log(data.resp.statusCode);
+        //       callback();
+        //       //setActivityProfile();
+        //     });
+        //     // ADL.XAPIWrapper.sendState(activity, agent, constants.activityStateIri, null, {attempts:[attemptIri]});
+        //   }
+        //   else
+        //   {
+        //      // update state
+        //     var newAs = JSON.parse(as.bdy);
+        //     console.log(as.bdy);
+        //     stateData.state = newAs;
+        //     stateData.matchHash = as.bdy;
+        //     stateData.virg = false;
+        //     var attemptFound = false;
+        //     for (var i = 0; i < stateData.state.attempts.length; i++) {
+        //       if(stateData.state.attempts[i] === attemptIri){
+        //         attemptFound = true;
+        //       }
+
+        //     }
+        //     if(!attemptFound){
+        //       stateData.state.attempts.push(attemptIri);
+        //     }
+        //     else{
+        //       entry = "resume";
+        //     }
+            
+        //     socket.emit('sendXapiState',stateData, function (data){
+        //       console.log("setActivityState - sendXapiState");
+        //       console.log(data.resp.statusCode);
+        //       callback();
+        //       //setActivityProfile();
+        //     });
+        //      //ADL.XAPIWrapper.sendState(activity, agent, constants.activityStateIri, null, newAs, ADL.XAPIWrapper.hash(asStr));         
+              
+        //   }
+        // });
+
+    },
+
     configLrs: function(){
         var _this = this;
 

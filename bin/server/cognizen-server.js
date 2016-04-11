@@ -686,7 +686,19 @@ var Content = {
                         io.sockets.emit('refreshDashboard');
                     }
                 });                
-            });            
+            });   
+
+            socket.on('removeUserFromCourse', function (data){
+                SocketHandler.socket(socket).removeUserFromCourse(data, function(err) {
+                    if (err) {
+                        logger.error(err);
+                        socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when enrolling user.'});
+                    }
+                    else {
+                        io.sockets.emit('refreshDashboard');
+                    }
+                });                   
+            });                     
 
             socket.on('getPermissions', function (data) {
                 SocketHandler.socket(socket).getPermissions(data);
@@ -875,7 +887,14 @@ var Content = {
 
             socket.on('configLrs', function(){
                 SocketHandler.socket(socket).configLrs();
-            });            
+            });  
+
+//xapiInitialize:                      
+            socket.on('xapiInitialize', function (data, callback){
+                SocketHandler.socket(socket).xapiInitialize(data, function (fdata){
+                    callback(fdata);
+                });
+            });
 
             socket.on('sendXapiStatement', function (data, callback){
                 SocketHandler.socket(socket).sendXapiStatement(data, function (fdata){

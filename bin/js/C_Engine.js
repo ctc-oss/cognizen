@@ -29,6 +29,7 @@ var dashMode = "author";
 var currentCourse;
 var currentLesson = {};
 var attemptId = "";
+var agent = "";
 var oldIE = false;
 var isBoth = true;
 
@@ -191,6 +192,7 @@ function initScripts(_data){
 				"js/templates/C_LMSDash.js",
 				"js/templates/C_CoursePlayer.js",
 				"js/templates/C_CourseCatalog.js",
+				"js/templates/C_Transcript.js",				
 				"js/libs/jquery.cookie.js",
 				"js/util/C_Outline.js",
 				"js/util/C_Search.js",
@@ -258,6 +260,9 @@ function buildInterface(){
 	            else if (dashMode === 'catalog'){
 	            	currentTemplate = new C_CourseCatalog(currentCourse);
 	            }
+	            else if (dashMode === 'transcript'){
+	            	currentTemplate = new C_Transcript(currentCourse);
+	            }	            
 	            else{
 		            currentTemplate = new C_LMSDash(currentTemplateType);
 	            }  
@@ -341,4 +346,8 @@ function loadPageFromID(_id){
 			break;
 		}
 	}
+}
+
+function getAgent(){
+  return new ADL.XAPIStatement.Agent(ADL.XAPIWrapper.hash(user.username), user.firstName+" "+user.lastName);
 }

@@ -34,6 +34,12 @@ function C_LMSDash(_type) {
             $('#stage').css({'opacity': 0});
         }
 
+        ADL.XAPIWrapper.changeConfig({
+            'endpoint': 'http://cde-cognizen-vm-2.ctc.com/xapi/',
+            "auth" : "Basic " + toBase64('cognizen:cognizen')
+        });
+        agent = getAgent();
+
 		buildTemplate();
         /*****************************************************************************
         add socket listeners - for server connectivity.
@@ -76,7 +82,7 @@ function C_LMSDash(_type) {
 	    if (transition == true) {
             $('#stage').css({'opacity': 0});
         }
-        console.log(_data);
+
 	    var $stage = $('#stage');
 
         if(_data.length == 0){
@@ -84,18 +90,35 @@ function C_LMSDash(_type) {
         }
         else{
             for(var i = 0; i < _data.length; i++){
-                var msg = '<div class="C_LMSMenuItem" title="'+ _data[i].name +'" data-path="'+ _data[i].path +'">';    
+                var msg = '<div class="C_LMSMenuItem"><span class="C_LMSCourseItem"  title="'+ _data[i].name 
+                +'" data-path="'+ _data[i].path 
+                +'" data-attemptId="'+ _data[i].attemptId+'">';    
                 msg += _data[i].name;
+                msg += '</span><span class="C_CloseCourseButton C_LMSUnregister" data-id="'+ _data[i].contentId +'">X</span>'                
                 msg += '</div>';
                 $("#projList").append(msg);
             }
             
 
-            $(".C_LMSMenuItem").click(function(){
+            $(".C_LMSCourseItem").click(function(){
                 dashMode = "player";
                 currentCourse = $(this).attr('data-path');
+                attemptId = $(this).attr('data-attemptId');
                 socket.emit('checkLoginStatus');
-            });             
+            }); 
+
+            $(".C_LMSUnregister").click(function(){
+                var contentData = {
+                    content: {                    
+                        id: $(this).attr('data-id')
+                    },
+                    user: user
+                };
+             
+                socket.emit('removeUserFromCourse', contentData );
+            });                         
+
+
         }
   	    
 	    //Once everything is loaded - fade page in.

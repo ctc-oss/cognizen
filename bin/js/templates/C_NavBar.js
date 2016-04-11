@@ -75,6 +75,12 @@ function C_NavBar() {
 				            dashMode = 'catalog';
 						 	socket.emit('checkLoginStatus');
 			            });
+
+			            $("#dash-navbar").append("<div id='transcriptBtn'>transcript</div>");
+			            $("#transcriptBtn").click(function () {
+				            dashMode = 'transcript';
+						 	socket.emit('checkLoginStatus');
+			            });			            
 			        }
 
 					$("#dash-navbar").append("<div id='gotoAuthoring' class='navbar-item'>authoring</div>");
