@@ -90,14 +90,34 @@ function C_Transcript(_course) {
         console.log(_data);
         var $stage = $('#stage');
         
+        var msg = '<table><thead><tr><th>Title</th><th>Completion</th><th>Success</th><th>Score</th><th>Date</th></tr></thead><tbody>';
         for(var i = 0; i < _data.statements.length; i++){
             var currStatement = _data.statements[i];
-            var msg = '<div class="C_CCMenuItem" title="'+ currStatement.object.definition.name["en-US"] +'">';    
-            msg += currStatement.object.definition.name["en-US"] +" " + currStatement.result.completion 
-            + " " + currStatement.result.success + " " + currStatement.result.score.scaled + " " + currStatement.timestamp;
-            msg += '</div>';
-            $("#transcript").append(msg);
+
+            var completion = '';
+            if(currStatement.result.completion){
+            	completion = 'Complete';
+            }else{
+            	completion = 'Incomplete';
+            }
+
+            var success = '';
+            if(currStatement.result.success){
+            	success = 'Pass';
+            }else{
+            	success = 'Fail';
+            }
+
+            msg += '<tr>';
+            msg += '<td>' + currStatement.object.definition.name["en-US"] + '</td>';
+            msg += '<td>' + completion + '</td>';
+            msg += '<td>' + success + '</td>';
+            msg += '<td>' + currStatement.result.score.scaled * 100 + '%</td>';
+            msg += '<td>' + currStatement.timestamp.substring(0,10) + ' ' + currStatement.timestamp.substring(11,16) + '</td>';
+            msg += '</tr>';
         }
+        msg += '</tbody></table>';
+        $("#transcript").append(msg);
 
         $(".C_CloseCourseButton").click(function(){
             dashMode = 'lms';

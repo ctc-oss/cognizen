@@ -397,6 +397,36 @@ td{
 	width: 80px;
 }
 
+#transcript table{
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#transcript th{
+	font-family: hnl;
+	font-weight: bold;
+	background-color: #7AD2F4;
+	color: #666;
+	border-color: #CCCCCC;
+	border-radius: 0px;
+}
+
+#transcript td{
+	font-family: hnl;
+	color: #7B848B;
+	border-color: #CCCCCC;
+	border-radius: 0px;
+	width: auto;
+}
+
+#transcript tr:nth-child(even){
+	background-color: #fff;
+}
+
+#transcript tr:nth-child(odd){
+	background-color: #eee;
+}
+
 .USTName{
 	width: 200px;
 	padding: 6px;
