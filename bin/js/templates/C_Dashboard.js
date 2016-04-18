@@ -925,154 +925,164 @@ function C_Dashboard(_type) {
 	    currentParent = myParent;
 	    currentLevel = myParent.data('type');
 
-	    var msg;
-	    if (currentLevel == "program") {
-        	msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
-            msg += '<p class="validateTips">Customize your publish preferences below:</p>';
-            msg += '<p>Functionalities to be added shortly.</p>';
-            msg += '</div>';
-	    }
-        else{
-            if (currentLevel == "course") {
-                msg = '<div id="dialog-updatePrefs" title="Update Publish Prefs">';
-                msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
-                msg += "<br/><p>";
-                msg += "<form id='scormform' >";
-                msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
-                msg += "<select id='scormVersion'>";
-                msg += "<option>2004_4th</option>";
-                msg += "<option>2004_3rd</option>";
-                msg += "<option>Hosting</option>";
-                // msg += "<option>2004_4th_USSOCOM</option>";
-                // msg += "<option>2004_3rd_USSOCOM</option>";
-                msg += "<option>none</option>";
-                msg += "</select></form>";
+        socket.emit('retrieveHosting', function(fdata){
 
-            } 
-            else if (currentLevel == "lesson") {
-                msg = '<div id="dialog-updatePrefs" title="Publish Settings">';
-                msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
-                msg += "<br/><p>";
-                msg += "<form id='scormform' >";
-                msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
-                msg += "<select id='scormVersion'>";
-                msg += "<option>2004_4th</option>";
-                msg += "<option>2004_3rd</option>";
-                msg += "<option>1.2</option>";                
-                //msg += "<option>1.2_CTCU</option>";
-                msg += "<option>none</option>";
-
-            }
-
-            //common dialog options for courses and lessons
-            msg += "</select></form>";
-            msg += '<div id="manonlyHolder">';
-            msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only : </label>";
-            msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>"; 
-            msg += '</div>';
-            msg += '<div id="deliverableHolder">';
-            msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
-            msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
-            msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
-            msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";             
-            msg += '</div>';                           
-            msg += "</p>";
-            msg += '</div>';//end dialog-updatePrefs
-            enableRenameContentKeyEvents();           
-        } 
-
-         //Append the string to the stage
-        $("#stage").append(msg);
-
-        $('#scormVersion').on("change", function(){
-            if($('#scormVersion').find(':selected').text() == 'none'){
-                $('#manifestOnly').prop('checked', false);
-                $('#manonlyHolder').hide();
-                $('#deliverableHolder').show();
-            }
-            else if($('#scormVersion').find(':selected').text() == 'Hosting'){
-                $('#manifestOnly').prop('checked', false);
-                $('#manonlyHolder').hide();
-                $('#deliverableHolder').prop('checked', false);
-                $('#deliverableHolder').hide();
+            if(fdata) {isHosting = true}            
+            
+            var msg;
+            if (currentLevel == "program") {
+                msg = '<div id="dialog-updatePrefs" title="Update Program Prefs">';
+                msg += '<p class="validateTips">Customize your publish preferences below:</p>';
+                msg += '<p>Functionalities to be added shortly.</p>';
+                msg += '</div>';
             }
             else{
-                if(!$('#deliverableActive').is(':checked')){
-                    $('#manonlyHolder').show();
-                    $('#deliverableHolder').show();
-                }                    
-            }
-        });  
-
-        $('#deliverableActive').on('change', function(){
-            $('#deliverableVersionLabel').toggle();
-            $('#deliverableVersion').toggle();
-            if($('#scormVersion').find(':selected').text() == 'none'){
-                $('#manonlyHolder').hide();
-            }
-            else{
-                $('#manonlyHolder').toggle();
-            }
-        });
-
-        $('#manifestOnly').on('change', function(){
-            if($('#manifestOnly').prop('checked')){
-                $('#deliverableActive').prop('checked', false);
-                $('#deliverableHolder').hide();
-            }
-            else{
-                $('#deliverableHolder').show();
-            }
-        });
-
-        $("#dialog-updatePrefs").dialog({
-            modal: true,
-            width: 550,
-            close: function (event, ui) {
-                enableMainKeyEvents();
-                disableRenameContentKeyEvents();
-            },
-            open: function (event, ui) {
-                disableMainKeyEvents();
-                enableRenameContentKeyEvents()
-            },
-            buttons: {
-                Cancel: function () {
-                    $(this).dialog("close");
-                    /*$("#myName").remove();*/
-                    $("#myType").remove();
-                    $("#dialog-updatePrefs").remove();
-                },
-                /*Submit: function(){
-                	submitPrefUpdate(myParent, currentLevel);
-                },*/
-                Publish: function(){
-                    var publish = true;
-                    //if deliverableActive is checked then deliverableVersion must have a value
-                    if($('#deliverableActive').prop('checked') && $('#deliverableVersion').val().length == 0){
-                        publish = false;
+                if (currentLevel == "course") {
+                    msg = '<div id="dialog-updatePrefs" title="Update Publish Prefs">';
+                    msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' course below:</p>';
+                    msg += "<br/><p>";
+                    msg += "<form id='scormform' >";
+                    msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
+                    msg += "<select id='scormVersion'>";
+                    msg += "<option>2004_4th</option>";
+                    msg += "<option>2004_3rd</option>";
+                    if ( isHosting )
+                    {
+                        msg += "<option>Hosting</option>";
                     }
+                    
+                    // msg += "<option>2004_4th_USSOCOM</option>";
+                    // msg += "<option>2004_3rd_USSOCOM</option>";
+                    msg += "<option>none</option>";
+                    msg += "</select></form>";
 
-                    if(publish){
-                        var selectedScorm = $('#scormVersion').find(':selected').text();
-                        var manifestOnly = $('#manifestOnly').is(':checked');
-                        var deliverable = {
-                            isDeliverable : $('#deliverableActive').is(':checked'),
-                            version : $('#deliverableVersion').val()
-                        };
-                        clickPublish(myParent, currentLevel, selectedScorm, manifestOnly, deliverable);
+                } 
+                else if (currentLevel == "lesson") {
+                    msg = '<div id="dialog-updatePrefs" title="Publish Settings">';
+                    msg += '<p class="validateTips">Customize your publish preferences for the '+ myParent.find("span").first().text() + ' lesson below:</p>';
+                    msg += "<br/><p>";
+                    msg += "<form id='scormform' >";
+                    msg += "<label id='label' title='Set SCORM Version'>SCORM Version: </label>";
+                    msg += "<select id='scormVersion'>";
+                    msg += "<option>2004_4th</option>";
+                    msg += "<option>2004_3rd</option>";
+                    msg += "<option>1.2</option>";                
+                    //msg += "<option>1.2_CTCU</option>";
+                    msg += "<option>none</option>";
+
+                }
+
+                //common dialog options for courses and lessons
+                msg += "</select></form>";
+                msg += '<div id="manonlyHolder">';
+                msg += "<label id='label' for='manifestOnly' title='Only publish the imsmanifest.xml file'>imsmanifest.xml only : </label>";
+                msg += "<input id='manifestOnly' type='checkbox' name='manifestOnly' class='radio'/>"; 
+                msg += '</div>';
+                msg += '<div id="deliverableHolder">';
+                msg += "<label id='label' for='deliverableActive' title='Save the publish output as a deliverable'>deliverable: </label>";
+                msg += "<input id='deliverableActive' type='checkbox' name='deliverableActive' class='radio'/>";
+                msg += "<label for='deliverableVersion' id='deliverableVersionLabel' style='display:none' title='Label to indicate version (ex. v1.0)'> version : </label>";
+                msg += "<input type='text' name='deliverableVersion' id='deliverableVersion'  value='' class='dialogInput' style='width:70px;display:none'/>";             
+                msg += '</div>';                           
+                msg += "</p>";
+                msg += '</div>';//end dialog-updatePrefs
+                enableRenameContentKeyEvents();           
+            } 
+
+             //Append the string to the stage
+            $("#stage").append(msg);   
+
+            $('#scormVersion').on("change", function(){
+                if($('#scormVersion').find(':selected').text() == 'none'){
+                    $('#manifestOnly').prop('checked', false);
+                    $('#manonlyHolder').hide();
+                    $('#deliverableHolder').show();
+                }
+                else if($('#scormVersion').find(':selected').text() == 'Hosting'){
+                    $('#manifestOnly').prop('checked', false);
+                    $('#manonlyHolder').hide();
+                    $('#deliverableHolder').prop('checked', false);
+                    $('#deliverableHolder').hide();
+                }
+                else{
+                    if(!$('#deliverableActive').is(':checked')){
+                        $('#manonlyHolder').show();
+                        $('#deliverableHolder').show();
+                    }                    
+                }
+            });  
+
+            $('#deliverableActive').on('change', function(){
+                $('#deliverableVersionLabel').toggle();
+                $('#deliverableVersion').toggle();
+                if($('#scormVersion').find(':selected').text() == 'none'){
+                    $('#manonlyHolder').hide();
+                }
+                else{
+                    $('#manonlyHolder').toggle();
+                }
+            });
+
+            $('#manifestOnly').on('change', function(){
+                if($('#manifestOnly').prop('checked')){
+                    $('#deliverableActive').prop('checked', false);
+                    $('#deliverableHolder').hide();
+                }
+                else{
+                    $('#deliverableHolder').show();
+                }
+            });
+
+            $("#dialog-updatePrefs").dialog({
+                modal: true,
+                width: 550,
+                close: function (event, ui) {
+                    enableMainKeyEvents();
+                    disableRenameContentKeyEvents();
+                },
+                open: function (event, ui) {
+                    disableMainKeyEvents();
+                    enableRenameContentKeyEvents()
+                },
+                buttons: {
+                    Cancel: function () {
                         $(this).dialog("close");
                         /*$("#myName").remove();*/
-                        $("#myType").remove();                        
-                    }
-                    else{
-                        alert('Please indicate a deliverable version value.');
+                        $("#myType").remove();
+                        $("#dialog-updatePrefs").remove();
+                    },
+                    /*Submit: function(){
+                        submitPrefUpdate(myParent, currentLevel);
+                    },*/
+                    Publish: function(){
+                        var publish = true;
+                        //if deliverableActive is checked then deliverableVersion must have a value
+                        if($('#deliverableActive').prop('checked') && $('#deliverableVersion').val().length == 0){
+                            publish = false;
+                        }
+
+                        if(publish){
+                            var selectedScorm = $('#scormVersion').find(':selected').text();
+                            var manifestOnly = $('#manifestOnly').is(':checked');
+                            var deliverable = {
+                                isDeliverable : $('#deliverableActive').is(':checked'),
+                                version : $('#deliverableVersion').val()
+                            };
+                            clickPublish(myParent, currentLevel, selectedScorm, manifestOnly, deliverable);
+                            $(this).dialog("close");
+                            /*$("#myName").remove();*/
+                            $("#myType").remove();                        
+                        }
+                        else{
+                            alert('Please indicate a deliverable version value.');
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        $("#dialog-updatePrefs").tooltip();
+            $("#dialog-updatePrefs").tooltip();       
+                  
+        });        
     }
 
     function clickPublish(parent, level, selectedScorm, manifestOnly, deliverable){
