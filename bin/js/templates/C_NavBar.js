@@ -34,7 +34,7 @@ function C_NavBar() {
      		if(fdata) {isHosting = true}
      		
      		$("#dash-navbar").remove();
-			var msg = "<div id='dash-navbar' class='dash-navbar'></div>";
+			var msg = "<div id='dash-navbar' class='dash-navbar'></div><div id='dash-subnav' class='dash-subnav'></div>";
 			$(msg).insertAfter(".dash-header");
 			
 			if(isBoth){
@@ -55,13 +55,13 @@ function C_NavBar() {
 				
 				if ((admin || programAdmin) && (dashMode === 'author') || (dashMode == 'lms')) {
 					//ROOT and admin can add users to the system.
-		            $("#dash-navbar").append("<div id='adminAddUser'>add user</div>");
+		            $("#dash-subnav").append("<div id='adminAddUser'>add user</div>");
 		            $("#adminAddUser").click(registerUser);
 		        }
 				
 		            //ADDING PROGRAMS IS ROOT ONLY
 		        if (admin && dashMode === 'author') {
-		            $("#dash-navbar").append("<div id='adminAddProgram'>add program</div>");
+		            $("#dash-subnav").append("<div id='adminAddProgram'>add program</div>");
 		            $("#adminAddProgram").click(function () {
 		                registerContent("root", "root");
 		            });
@@ -70,13 +70,13 @@ function C_NavBar() {
 		        if(isHosting){
 
 			        if (dashMode == 'lms') {
-			            $("#dash-navbar").append("<div id='courseCatalogBtn'>view course catalog</div>");
+			            $("#dash-subnav").append("<div id='courseCatalogBtn'>view course catalog</div>");
 			            $("#courseCatalogBtn").click(function () {
 				            dashMode = 'catalog';
 						 	socket.emit('checkLoginStatus');
 			            });
 
-			            $("#dash-navbar").append("<div id='transcriptBtn'>transcript</div>");
+			            $("#dash-subnav").append("<div id='transcriptBtn'>transcript</div>");
 			            $("#transcriptBtn").click(function () {
 				            dashMode = 'transcript';
 						 	socket.emit('checkLoginStatus');

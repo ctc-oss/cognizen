@@ -94,7 +94,7 @@ function C_LMSDash(_type) {
                 +'" data-path="'+ _data[i].path 
                 +'" data-attemptId="'+ _data[i].attemptId+'">';    
                 msg += _data[i].name;
-                msg += '</span><span class="C_CloseCourseButton C_LMSUnregister" data-title="' + _data[i].name + '" data-id="'+ _data[i].contentId +'">X</span>'                
+                msg += '</span><div class="C_LMSUnregister" data-title="' + _data[i].name + '" data-id="'+ _data[i].contentId +'">withdraw</div>'                
                 msg += '</div>';
                 $("#projList").append(msg);
             }

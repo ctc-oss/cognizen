@@ -62,7 +62,7 @@ function C_Transcript(_course) {
         $stage.html('');
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
         
-        $stage.append('<div id="transcriptHeader" > transcript:<span class="C_CloseCourseButton"><</span></div>');
+        $stage.append('<div id="transcriptHeader" > transcript:<span class="C_CloseCourseButton">X</span></div>');
         
         var msg =  '<div id="contentHolder" class="overthrow antiscroll-inner">';
             msg += '<div id="transcript"></div>';

@@ -131,7 +131,8 @@ function C_CoursePlayer(_course) {
 
 	    var msg;
         msg = '<div class="C_CourseItem">';
-        msg += '<img class="C_LMSCoursePoster" src="./css/images/placeholder.jpg"></img>';
+        msg += '<img class="C_LMSCoursePoster" src="./css/images/placeholder.png"></img>';
+        msg += '<div class="C_LMSCourseItemContent">';
         msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'<span class="C_CloseCourseButton">X</span></div>';
         msg += '<div class="C_LMSCourseDescription">';
         msg += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae magna nulla. Integer fermentum velit ac felis blandit, at dapibus quam posuere. Nulla nisi mi, ornare id turpis ac, interdum cursus lorem. Cras in mi fermentum, vestibulum orci sit amet, accumsan ipsum. Sed venenatis id purus quis pretium. Pellentesque a quam ac ex efficitur finibus ac sit amet leo. Etiam neque tortor, accumsan id tortor non, porttitor luctus arcu. Nunc sit amet mauris lacinia, ultrices sapien vel, convallis diam. Donec nec eros ac ipsum mattis tempor nec id libero. Etiam quis auctor nibh.</p>';
@@ -141,14 +142,15 @@ function C_CoursePlayer(_course) {
 		msg += '<div id="C_LMSLessonListHolder" class="C_LMSLessonListHolder">';
 	    allLessonsComplete = true;
 	    for(var i = 0; i < module_arr.length; i++){	
-			msg += '<div class="C_LMSMenuItem2" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">';
-			
-			msg += module_arr[i].name;
-            msg += '<div>'+ getLessonStatus(module_arr[i].path) +'</div>';
+			msg += '<div class="C_LMSLessonListItem">';
+			msg += '<div class="C_LMSLessonName">' + module_arr[i].name + '</div>';
+			var lessonStatus = getLessonStatus(module_arr[i].path);
+            msg += '<img class="C_LMSLessonStatus" src="./css/images/lms_status_' + lessonStatus + '.png" title="status: ' + lessonStatus + '" alt="lesson status ' + lessonStatus + '">';
+			msg += '<div class="C_LMSLaunchButton" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">launch</div>';
 			msg += '</div>';
 	    }
 
-        msg += '</div>';
+        msg += '</div></div>';
         msg += '<div class="clear-div"></div></div>';
 
         $stage.append(msg);
@@ -158,7 +160,7 @@ function C_CoursePlayer(_course) {
             socket.emit('checkLoginStatus');
         });
 	    
-        $(".C_LMSMenuItem2").click(function(){
+        $(".C_LMSLaunchButton").click(function(){
             for(var j = 0; j < module_arr.length; j++){
                 if(module_arr[j].name === $(this).attr('title')){
                     currentLesson = module_arr[j];
@@ -167,7 +169,7 @@ function C_CoursePlayer(_course) {
             }
         });
 
-	    $(".C_LMSMenuItem2").fancybox({
+	    $(".C_LMSLaunchButton").fancybox({
             maxWidth    : '100%',
             maxHeight   : '100%',
             fitToView   : false,

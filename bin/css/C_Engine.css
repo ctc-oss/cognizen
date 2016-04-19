@@ -108,13 +108,21 @@ body{
 .dash-navbar{
 	width: 100%;
 	height: 30px;
-	background-color: #8E969C;
+	background-color: #7AD2F4;
 	clear: both;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 
 .dash-navbar div{
-	line-height: 30px;
+	font-size: 15px;
+	line-height: 26px;
+}
+
+.dash-subnav{
+	width: 100%;
+	height: 30px;
+	clear: both;
+	margin-bottom: 10px;
 }
 
 #stage {
@@ -172,17 +180,26 @@ body{
 	margin-left: auto;
 	margin-right: auto;
 	padding-top: 10px;
+	display: table;
 }
 
 .C_LMSCoursePoster{
 	background-color: #eee;
 	background-size: cover;
-	height: 300px;
-	width: 200px;
+	height: 160px;
+	width: 160px;
 	margin-left: 10px;
-	float: left;
+	/*float: left;*/
 	margin-right: 10px;
 	margin-bottom: 10px;
+	display: table-cell;
+	vertical-align: top;	
+}
+
+.C_LMSCourseItemContent{
+	display: table-cell;
+	vertical-align: top;
+	padding-right: 6px;	
 }
 
 .C_LMSCourseTitle{
@@ -191,9 +208,6 @@ body{
 	font-weight: bold;
 	font-size: 14pt;
 	font-family: hnl;
-	padding-bottom: 5px;
-	margin-left: 5px;
-	margin-right: 15px;
 }
 
 .C_CloseCourseButton{
@@ -204,20 +218,18 @@ body{
     height: 21px;
     text-indent: 1px;
     text-align: center;
+    line-height: 21px;
     border-radius: 50%;
-    cursor: hand;
     cursor: pointer;
 }
 
 .C_LMSCourseDescription {
 	font-size: 10pt;
-	margin-left: 5px;
-	margin-right: 15px;
 }
 
 .C_LMSLessonListHolder{
-	width: 50%;
-	/*float: right;*/
+	/*width: 50%;
+	float: right;*/
 	clear: both;
 	height: auto;
 	border-bottom-left-radius: 3px;
@@ -225,7 +237,7 @@ body{
 	border-color: #ccc;
 	border-style: solid;
 	border-width: thin;
-	padding: 10px;
+	padding: 0px 10px;
 	margin-right: auto;
 	margin-left: auto;
 	margin-top: 10px;
@@ -234,7 +246,11 @@ body{
 	background-color: #fff;
 }
 
-.C_LMSMenuItem, .C_CCMenuItem{
+#courseCatalog, #projList{
+	padding: 0px 10px;
+}
+
+/*.C_LMSMenuItem{
 	display: block;
 	width: 99%;
 	margin-left:2px;
@@ -252,7 +268,7 @@ body{
 	cursor: pointer;
 	list-style-type: none;
 }
-
+*/
 .C_LMSMenuItem:hover, .C_CCMenuItem:hover{
 	background-color: #eee;
 	color: #3383bb;
@@ -337,6 +353,42 @@ body{
 .C_LMSMenuItem2:hover{
 	background-color: #eee;
 	color: #3383bb;
+}
+
+.C_LMSLessonListItem, .C_CCMenuItem, .C_LMSMenuItem{
+	width: 100%;
+	border-bottom: 1px dashed black;
+	height: 44px;
+	line-height: 44px;
+	font-family: hnl;
+	font-size: 15px;
+	color: #3E5AA9;
+}
+
+.C_LMSLessonListItem:last-child, .C_CCMenuItem:last-child, .C_LMSMenuItem:last-child{
+	border-bottom: none;
+}
+
+.C_LMSLessonName{
+	float: left;
+}
+
+.C_LMSLaunchButton, .C_CCEnrollButton, .C_LMSUnregister{
+	float: right;
+	height: 30px;
+	line-height: 30px;
+	padding: 0px 6px;
+	margin: 7px;
+	color: #fff;
+	background-color: #3E5AA9;
+    cursor: pointer;
+}
+
+.C_LMSLessonStatus{
+	float: right;
+	width: 20px;
+	height: 20px;
+	margin: 12px 0px;
 }
 
 #content{
@@ -631,7 +683,7 @@ div#loader {
 	position: relative;
 	right: 15px;
 	float: right;
-	color: #eee;
+	color: #fff;
 	margin-right: 10px;
 	font-family: hnl;
 	cursor: pointer;
@@ -645,10 +697,18 @@ div#loader {
 	position: relative;
 	right: 2px;
 	float: right;
-	color: #eee;
-	margin-right: 15px;
+	padding: 3px 7px;
 	font-family: hnl;
+	font-size: 15px;
+	line-height: 15px;
+	color: #3E5AA9;
+	background: #eee;
 	cursor: pointer;
+	border-right: 1px solid #3E5AA9;
+}
+
+#dash-subnav.dash-subnav div:first-child{
+	border-right: none;
 }
 
 #adminAddUser:hover, #courseCatalogBtn:hover, #transcriptBtn:hover{
@@ -659,11 +719,15 @@ div#loader {
 	position: relative;
 	left: 10px;
 	float: left;
-	color: #eee;
-	margin-left: 15px;
+	color: #666;
+	margin-left: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
 	font-family: hnl;
 	cursor: hand;
 	cursor: pointer;
+	background-color: #E6E7E9;
+	border-top: 4px solid #7AD2F4;
 }
 
 .navbar-item:hover{
@@ -682,9 +746,12 @@ div#loader {
 	position: relative;
 	left: 10px;
 	float: left;
-	margin-left: 15px;
+	margin-left: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
 	font-family: hnl;
-	color: #6BCAF2;
+	background-color: #fff;
+	border-top: 4px solid #7AD2F4;
 }
 
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset
@@ -1659,4 +1726,51 @@ a.fancybox-expand {
 .antiscroll-inner::scrollbar {
   width: 0;
   height: 0;
+}
+
+
+@media screen and (max-width: 800px) {
+
+	#projListHeader, #courseCatalogHeader, #transcriptHeader, #contentHolder, .C_CourseItem{
+		width: 90vw;
+	}
+
+}
+
+
+@media screen and (max-width: 720px) {
+
+	#projListHeader, #courseCatalogHeader, #transcriptHeader, #contentHolder, .C_CourseItem{
+		width: 96vw;
+	}
+
+}
+
+
+@media screen and (max-width: 540px) {
+
+	#projListHeader, #courseCatalogHeader, #transcriptHeader, #contentHolder{
+		font-size: 80%;
+	}
+
+}
+
+
+@media screen and (max-width: 440px) {
+
+	#projListHeader, #courseCatalogHeader, #transcriptHeader, #contentHolder, .C_CourseItem{
+		width: 100vw;
+	}
+
+	#contentHolder{
+		overflow: auto;
+	}
+	
+	.C_LMSCoursePoster{
+		display: none;
+	}
+	
+	.C_LMSCourseItemContent{
+		padding-left: 10px;
+	}
 }
