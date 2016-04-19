@@ -851,6 +851,14 @@ var Content = {
                 SocketHandler.socket(socket).sendPackageMail(data);
             });
 
+            socket.on('sendEnrollMail', function (data) {
+                SocketHandler.socket(socket).sendEnrollMail(data);
+            });
+
+            socket.on('sendWithdrawMail', function (data) {
+                SocketHandler.socket(socket).sendWithdrawMail(data);
+            });
+
             socket.on('sendHostingMail', function (data) {
                 SocketHandler.socket(socket).sendHostingMail(data);
             });

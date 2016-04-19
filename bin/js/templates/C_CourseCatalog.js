@@ -99,7 +99,14 @@ function C_CourseCatalog(_course) {
                 user: user
             };
             console.log(contentData);
-            socket.emit('enrollUserInCourse', contentData);            
+            socket.emit('enrollUserInCourse', contentData);   
+
+            var enrollData = {
+                user: user,
+                courseName: $(this).attr('title')
+            };
+            socket.emit('sendEnrollMail', enrollData );
+
         });   
 
         $(".C_CloseCourseButton").click(function(){
