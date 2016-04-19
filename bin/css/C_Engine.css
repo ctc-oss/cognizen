@@ -212,7 +212,6 @@ body{
     text-align: center;
     line-height: 21px;
     border-radius: 50%;
-    cursor: hand;
     cursor: pointer;
 }
 
@@ -239,7 +238,11 @@ body{
 	background-color: #fff;
 }
 
-.C_LMSMenuItem, .C_CCMenuItem{
+#courseCatalog, #projList{
+	padding: 0px 10px;
+}
+
+/*.C_LMSMenuItem{
 	display: block;
 	width: 99%;
 	margin-left:2px;
@@ -257,7 +260,7 @@ body{
 	cursor: pointer;
 	list-style-type: none;
 }
-
+*/
 .C_LMSMenuItem:hover, .C_CCMenuItem:hover{
 	background-color: #eee;
 	color: #3383bb;
@@ -344,16 +347,17 @@ body{
 	color: #3383bb;
 }
 
-.C_LMSLessonListItem{
+.C_LMSLessonListItem, .C_CCMenuItem, .C_LMSMenuItem{
 	width: 100%;
 	border-bottom: 1px dashed black;
 	height: 44px;
 	line-height: 44px;
+	font-family: hnl;
 	font-size: 15px;
 	color: #3E5AA9;
 }
 
-.C_LMSLessonListItem:last-child{
+.C_LMSLessonListItem:last-child, .C_CCMenuItem:last-child, .C_LMSMenuItem:last-child{
 	border-bottom: none;
 }
 
@@ -361,7 +365,7 @@ body{
 	float: left;
 }
 
-.C_LMSLaunchButton{
+.C_LMSLaunchButton, .C_CCEnrollButton, .C_LMSUnregister{
 	float: right;
 	height: 30px;
 	line-height: 30px;
@@ -369,6 +373,7 @@ body{
 	margin: 7px;
 	color: #fff;
 	background-color: #3E5AA9;
+    cursor: pointer;
 }
 
 .C_LMSLessonStatus{
@@ -670,7 +675,7 @@ div#loader {
 	position: relative;
 	right: 15px;
 	float: right;
-	color: #eee;
+	color: #fff;
 	margin-right: 10px;
 	font-family: hnl;
 	cursor: pointer;
@@ -684,7 +689,7 @@ div#loader {
 	position: relative;
 	right: 2px;
 	float: right;
-	color: #eee;
+	color: #fff;
 	margin-right: 15px;
 	font-family: hnl;
 	cursor: pointer;

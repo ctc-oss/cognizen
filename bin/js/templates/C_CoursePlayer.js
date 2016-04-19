@@ -145,8 +145,8 @@ function C_CoursePlayer(_course) {
 			msg += '<div class="C_LMSLessonListItem">';
 			msg += '<div class="C_LMSLessonName">' + module_arr[i].name + '</div>';
 			var lessonStatus = getLessonStatus(module_arr[i].path);
-            msg += '<img class="C_LMSLessonStatus" src="./css/images/lms_status_' + lessonStatus + '.png" title="' + lessonStatus + '" alt="lesson status ' + lessonStatus + '">';
-			msg += '<div class="C_LMSLaunchButton" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">Launch</div>';
+            msg += '<img class="C_LMSLessonStatus" src="./css/images/lms_status_' + lessonStatus + '.png" title="status: ' + lessonStatus + '" alt="lesson status ' + lessonStatus + '">';
+			msg += '<div class="C_LMSLaunchButton" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">launch</div>';
 			msg += '</div>';
 	    }
 
