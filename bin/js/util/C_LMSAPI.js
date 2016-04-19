@@ -137,6 +137,18 @@ var API_1484_11 = {
         else if(_cmiElement === "cmi.suspend_data"){
             returnValue = cmi_suspend_data;
         }
+        else if(_cmiElement === "cmi.interactions._count"){
+            //pull interaction count from LRS
+            // var search = ADL.XAPIWrapper.searchParams();
+            // search['agent'] = JSON.stringify(agent);
+            // search['verb'] = ADL.verbs.responded.id;
+            // search['activity'] = attemptIri + "/interactions/";
+            // search['related_activities'] = true;      
+            // res = ADL.XAPIWrapper.getStatements(search);
+            // console.log("get interactions ??");
+            // console.log(res);
+            return "0";            
+        }
         console.log("GetValue : " + _cmiElement + " return - " + returnValue);
         return returnValue;
     }, 
@@ -170,6 +182,10 @@ var API_1484_11 = {
         else if(_cmiElement === "cmi.suspend_data"){
             cmi_suspend_data = _value;
         }
+        else if(_cmiElement.indexOf("cmi.interactions") > -1){
+            setInteraction(_cmiElement, _value);
+        }
+        
         return "true";
     },
     Commit: function(){return "true"},
@@ -514,6 +530,159 @@ var setActivityState = function(){
       }
    }
 
+   /*******************************************************************************
+   **
+   ** This function/vars is used to handle the interaction type
+   **
+   *******************************************************************************/
+   var setInteraction = function(name, value)
+   {
+      // key for interactions in local storage is scoped to an attempt
+      var interactionsKey = attemptIri + "_interactions";
+
+      // get the interactions from local storage
+      var cachedInteractionsStr = window.localStorage.getItem(interactionsKey);
+      var cachedInteractions = [];
+      if (cachedInteractions != null)
+      {
+         // get as JSON object array
+         var cachedInteractions = JSON.parse(cachedInteractionsStr);
+      }
+
+      // figure out what the set value was in the SCORM call
+      elementArray = name.split(".");
+      var intIndex = elementArray[2];
+      var subElement = elementArray[3];
+
+      if(subElement == "id")
+      {
+         // its a new interaction.  Set it in local storage
+         var newInteraction = {index:intIndex, id:value, type:"", learner_response:"", result:"", description:""};
+         
+         if(cachedInteractions != null)
+         {
+            // this is not the first interaction set
+            cachedInteractions.push(newInteraction);
+
+            // push to local storage
+            window.localStorage.setItem(interactionsKey, JSON.stringify(cachedInteractions));
+         }
+         else
+         {
+            // this is the first interaction set
+            window.localStorage.setItem(interactionsKey, JSON.stringify([newInteraction]));
+         }
+      }
+      else if(subElement == "type")
+      {
+         // find interaction with the same index and set type in JSON array
+         for (var i=0; i < cachedInteractions.length; i++)
+         {
+            if(cachedInteractions[i].index == intIndex)
+            {
+               // found matching index so update this object's type
+               cachedInteractions[i].type = value;
+
+               // update local storage
+               window.localStorage.setItem(interactionsKey, JSON.stringify(cachedInteractions));
+
+               break;
+            }
+         }
+      }
+      else if(subElement == "description")
+      {
+         // find interaction with the same index and set type in JSON array
+         for (var i=0; i < cachedInteractions.length; i++)
+         {
+            if(cachedInteractions[i].index == intIndex)
+            {
+               // found matching index so update this object's type
+               cachedInteractions[i].description = value;
+
+               // update local storage
+               window.localStorage.setItem(interactionsKey, JSON.stringify(cachedInteractions));
+
+               break;
+            }
+         }
+      }
+      else if (subElement == "learner_response" || subElement == "student_response")
+      {
+         // find interaction with the same index and set type in JSON array
+         for (var i=0; i < cachedInteractions.length; i++)
+         {
+            if(cachedInteractions[i].index == intIndex)
+            {
+               // found matching index so update this object's type
+               cachedInteractions[i].learner_response = value;
+
+               // update local storage
+               window.localStorage.setItem(interactionsKey, JSON.stringify(cachedInteractions));
+
+               // Send xAPI Statement
+               // Note: this implementation
+               var stmt = getInteractionsBaseStatement();
+               stmt.object.id = getInteractionIri(cachedInteractions[i].id);
+               stmt.context.contextActivities.grouping[0].id = window.localStorage[activity];
+
+               // set the learner's response
+               stmt.result.response = cachedInteractions[i].learner_response;
+
+               // todo: shouldn't assume en-US - implement with default if not specified, or use what was sent
+               // if(config.isScorm2004)
+               // {
+                  stmt.object.definition.description = {"en-US": cachedInteractions[i].description};
+               // }
+               
+               // set the specific interaction type
+               stmt.object.definition.interactionType = cachedInteractions[i].type;
+
+               // get any type specific JSON that an LRS *may* require
+               switch (cachedInteractions[i].type) {
+                  case "choice":
+                     stmt.object.definition.choices = [];
+                     break;
+                  case "likert":
+                     stmt.object.definition.scale = [];
+                     break;
+                  case "matching":
+                     stmt.object.definition.source = [];
+                     stmt.object.definition.target = [];
+                     break;
+                  case "performance":
+                     stmt.object.definition.steps = [];            
+                     break;
+                  case "sequencing":
+                     stmt.object.definition.choices = [];            
+                     break; 
+                  default:
+                     break;          
+               }
+
+               // todo: make the subelement that you send stmt on configurable
+               // send statement
+               console.log("interaction send statement")
+               console.log(stmt);
+               var response = ADL.XAPIWrapper.sendStatement(stmt);
+
+               // remove interaction from local storage array so its not processed again
+               cachedInteractions.splice(i, 1);
+            }
+         }         
+      }
+
+   }
+
+   /*******************************************************************************
+   **
+   ** This function is used to get an interaction iri
+   **
+   *******************************************************************************/
+   var getInteractionIri = function(interactionId)
+   {
+      return activity + "/interactions/" + encodeURIComponent(interactionId);
+   }   
 
  /*******************************************************************************
  **
@@ -581,6 +750,72 @@ var getBaseStatement = function()
     return stmt; 
 }
 
+/*******************************************************************************
+**
+** Interactions base statement
+** 
+** Must update object iri, attempt, result and interaction 
+** type/description to execute
+**
+*******************************************************************************/
+var getInteractionsBaseStatement = function()
+{
+
+    var stmt =  new ADL.XAPIStatement(
+      new ADL.XAPIStatement.Agent(ADL.XAPIWrapper.hash(user.username), user.firstName+" "+user.lastName),
+      ADL.verbs.responded,
+      new ADL.XAPIStatement.Activity("")
+    );
+    // stmt.object.definition.type = 'http://adlnet.gov/expapi/activities/cmi.interaction';
+    stmt.object = {
+           objectType:"Activity",
+           id:"",
+           definition:{
+              type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+              interactionType:"",
+              correctResponsesPattern:[]
+           }
+       };
+
+    stmt.context = {
+        contextActivities:{
+              parent:[
+                 {
+                    id:activity,
+                    objectType:"Activity",
+                    definition:{
+                       type: "http://adlnet.gov/expapi/activities/lesson"
+                    }
+                 }
+              ],
+              grouping:[
+                 {
+                    id:"",
+                    objectType:"Activity",
+                    definition:{
+                       type: "http://adlnet.gov/expapi/activities/attempt"
+                    }
+                 },
+                 {
+                    id:currentLesson.parentDir,
+                    objectType:"Activity",
+                    definition:{
+                       type: "http://adlnet.gov/expapi/activities/course"
+                    }
+                 }
+              ],
+              category:[
+                 {
+                    id:"http://adlnet.gov/xapi/profile/scorm"
+                 }
+              ]
+           }
+        };
+    stmt.result = { response: ""};    
+
+    return stmt;
+ 
+}  
 
 // var sendSimpleStatement = function(verb)
 // {

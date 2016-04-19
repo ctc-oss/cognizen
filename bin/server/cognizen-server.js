@@ -683,7 +683,7 @@ var Content = {
                         socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when enrolling user.'});
                     }
                     else {
-                        io.sockets.emit('refreshDashboard');
+                        SocketHandler.socket(socket).checkLoginStatus();
                     }
                 });                
             });   
@@ -695,7 +695,7 @@ var Content = {
                         socket.emit('generalError', {title: 'Permissions Error', message: 'Error occurred when enrolling user.'});
                     }
                     else {
-                        io.sockets.emit('refreshDashboard');
+                        SocketHandler.socket(socket).checkLoginStatus();
                     }
                 });                   
             });                     

@@ -484,8 +484,8 @@ function setInteractions(_id, _type, _response, _result, _description){
             default : 
             	var result = (_result) ? "correct":"incorrect";
             	scorm.set("cmi.interactions." + num + ".result", result);
+            	scorm.set("cmi.interactions." + num + ".description", _description);
 				scorm.set("cmi.interactions." + num + ".learner_response", _response);
-				scorm.set("cmi.interactions." + num + ".description", _description);
             	break;
         }
 

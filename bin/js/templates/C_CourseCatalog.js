@@ -99,6 +99,7 @@ function C_CourseCatalog(_course) {
                 user: user
             };
             console.log(contentData);
+            dashMode = 'lms';
             socket.emit('enrollUserInCourse', contentData);            
         });   
 

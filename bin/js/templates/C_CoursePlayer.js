@@ -131,7 +131,7 @@ function C_CoursePlayer(_course) {
 
 	    var msg;
         msg = '<div class="C_CourseItem">';
-        msg += '<img class="C_LMSCoursePoster" src="./css/images/placeholder.jpg"></img>';
+        msg += '<img class="C_LMSCoursePoster" src="./css/images/placeholder.png"></img>';
         msg += '<div class="C_LMSCourseTitle">'+courseDisplayTitle+'<span class="C_CloseCourseButton">X</span></div>';
         msg += '<div class="C_LMSCourseDescription">';
         msg += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae magna nulla. Integer fermentum velit ac felis blandit, at dapibus quam posuere. Nulla nisi mi, ornare id turpis ac, interdum cursus lorem. Cras in mi fermentum, vestibulum orci sit amet, accumsan ipsum. Sed venenatis id purus quis pretium. Pellentesque a quam ac ex efficitur finibus ac sit amet leo. Etiam neque tortor, accumsan id tortor non, porttitor luctus arcu. Nunc sit amet mauris lacinia, ultrices sapien vel, convallis diam. Donec nec eros ac ipsum mattis tempor nec id libero. Etiam quis auctor nibh.</p>';
@@ -195,7 +195,7 @@ function C_CoursePlayer(_course) {
                 },
                 user: user
             };
-         
+            dashMode = 'lms';
             socket.emit('removeUserFromCourse', contentData );            
         }
     
@@ -236,7 +236,6 @@ function C_CoursePlayer(_course) {
     function completeCourse(_title){
         var stmt =  new ADL.XAPIStatement(
             new ADL.XAPIStatement.Agent(agent),
-            //  new ADL.XAPIStatement.Agent(ADL.XAPIWrapper.hash(user.username), user.firstName+" "+user.lastName),
             ADL.verbs.completed,
             new ADL.XAPIStatement.Activity(coursePath, _title, _title + ' course')
         );  
@@ -244,11 +243,12 @@ function C_CoursePlayer(_course) {
         stmt.generateId();
         stmt.object.definition.type = 'http://adlnet.gov/expapi/activities/course';
 
+        console.log("status in completeCourse " + success + " : " + completion +" : " + scoreScaled);
         stmt.result = {
             "score": {
-                "scaled": 0.85
+                "scaled": parseFloat(scoreScaled)
             },
-            "success": true,
+            "success": (success === "passed"),
             "completion" : true
         };
 
