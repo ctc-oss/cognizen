@@ -62,7 +62,7 @@ function C_CourseCatalog(_course) {
         $stage.html('');
         $stage.append("<div id='logout'><a href='/logout'>logout</a></div>");
         
-        $stage.append('<div id="courseCatalogHeader" > course catalog:<span class="C_CloseCourseButton"><</span></div>');
+        $stage.append('<div id="courseCatalogHeader" > course catalog:<span class="C_CloseCourseButton">X</span></div>');
         
         var msg =  '<div id="contentHolder" class="overthrow antiscroll-inner">';
             msg += '<div id="courseCatalog"></div>';
@@ -82,14 +82,15 @@ function C_CourseCatalog(_course) {
         var $stage = $('#stage');
         
         for(var i = 0; i < _data.length; i++){
-            var msg = '<div class="C_CCMenuItem" title="'+ _data[i].name +'" data-path="'+ _data[i].path +'" data-id="'+ _data[i].contentId +'">';    
+            var msg = '<div class="C_CCMenuItem">';    
             msg += _data[i].name;
+            msg += '<div class="C_CCEnrollButton" title="'+ _data[i].name +'" data-path="'+ _data[i].path +'" data-id="'+ _data[i].contentId +'">enroll</div>';    
             msg += '</div>';
             $("#courseCatalog").append(msg);
         }
         
 
-        $(".C_CCMenuItem").click(function(){
+        $(".C_CCEnrollButton").click(function(){
             var contentData = {
                 content: {
                     type: 'course',
