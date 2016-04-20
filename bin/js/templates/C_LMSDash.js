@@ -94,9 +94,8 @@ function C_LMSDash(_type) {
                 +'" data-path="'+ _data[i].path 
                 +'" data-attemptId="'+ _data[i].attemptId+'">';    
                 msg += _data[i].name;
-                msg += '</span><div class="C_LMSUnregister" data-id="'+ _data[i].contentId +'">withdraw</div>';   
-                msg += '<div class="C_LMSLaunchButton" title="'+ _data[i].name +'" data-attemptId="'+ _data[i].attemptId+'" data-path="' + _data[i].path +'">launch</div>';
-                             
+                msg += '</span><div class="C_LMSUnregister" data-title="' + _data[i].name + '"data-id="'+ _data[i].contentId +'">withdraw</div>';   
+                msg += '<div class="C_LMSLaunchButton" title="'+ _data[i].name +'" data-attemptId="'+ _data[i].attemptId+'" data-path="' + _data[i].path +'">launch</div>';                            
                 msg += '</div>';
                 $("#projList").append(msg);
             }
@@ -118,6 +117,12 @@ function C_LMSDash(_type) {
                 };
              
                 socket.emit('removeUserFromCourse', contentData );
+
+                var removeData = {
+                    user: user,
+                    courseName: $(this).attr('data-title')
+                };
+                socket.emit('sendWithdrawMail', removeData );
             });                         
 
 

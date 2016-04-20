@@ -788,6 +788,30 @@ var SocketHandler = {
         });
     },
 
+    sendEnrollMail: function (data) {
+        console.log("Send Enroll Email");    
+        var _this = this;
+        var user = data.user;
+        _this.Mail.send({
+            user: user.username,
+            subject: "Cognizen Course Enrollment",
+            txtMsg: user.firstName + ", you have successfully enrolled in the course: " + data.courseName + ".",
+            msg: user.firstName + ", you have successfully enrolled in the course: " + data.courseName + "."
+        });        
+    },
+
+    sendWithdrawMail: function (data) {
+        console.log("Send Withdrawl Email");        
+        var _this = this;                     
+        var user = data.user;
+        _this.Mail.send({
+            user: user.username,
+            subject: "Cognizen Course Withdrawl",
+            txtMsg: user.firstName + ", you have successfully withdrawn from the course: " + data.courseName + ".",
+            msg: user.firstName + ", you have successfully withdrawn from the course: " + data.courseName + "."
+        });                        
+    },
+
     sendHostingMail: function (data) {
         var _this = this;
         User.findById(data.user).exec(function (err, user) {
