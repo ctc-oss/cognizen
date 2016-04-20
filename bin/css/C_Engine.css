@@ -679,21 +679,7 @@ div#loader {
 	color: #7B848B;
 }
 
-#adminAddProgram{
-	position: relative;
-	right: 15px;
-	float: right;
-	color: #fff;
-	margin-right: 10px;
-	font-family: hnl;
-	cursor: pointer;
-}
-
-#adminAddProgram:hover{
-	color: #6BCAF2;
-}
-
-#adminAddUser, #courseCatalogBtn, #transcriptBtn{
+#adminAddProgram, #adminAddUser, #courseCatalogBtn, #transcriptBtn{
 	position: relative;
 	right: 2px;
 	float: right;
@@ -711,7 +697,7 @@ div#loader {
 	border-right: none;
 }
 
-#adminAddUser:hover, #courseCatalogBtn:hover, #transcriptBtn:hover{
+#adminAddProgram:hover, #adminAddUser:hover, #courseCatalogBtn:hover, #transcriptBtn:hover{
 	color: #6BCAF2;
 }
 
