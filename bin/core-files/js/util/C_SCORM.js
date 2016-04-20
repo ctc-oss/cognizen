@@ -151,8 +151,10 @@ function completeLessonDefault(){
 
 function completeLesson(completion, success, score, remediate, attemptExceeded, suspend){
 	if(doScorm()){
-		var raw = score*100;
-
+		var raw = 0;
+		if(score != null){
+			raw = score*100;
+		}
 		if(completion){
 			scorm.status("set", "completed");	
 		}
@@ -172,8 +174,10 @@ function completeLesson(completion, success, score, remediate, attemptExceeded, 
 				scorm.set("cmi.success_status", "failed");
 			}
 
-			scorm.set("cmi.score.scaled", score.toString());
-			scorm.set("cmi.score.raw", raw.toString());
+			if(score != null){
+				scorm.set("cmi.score.scaled", score.toString());
+				scorm.set("cmi.score.raw", raw.toString());
+			}
 
 			var finalLesson = $(data).find('finalLesson').attr('value');
 
@@ -194,7 +198,7 @@ function completeLesson(completion, success, score, remediate, attemptExceeded, 
 			}
 
 		}
-		else if(scorm.VERSION === "1.2"){			
+		else if(scorm.VERSION === "1.2" && score != null){			
 			scorm.set("cmi.core.score.raw", raw.toString());
 		}
 

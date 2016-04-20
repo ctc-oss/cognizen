@@ -420,7 +420,7 @@ function C_Completion(_type) {
 				}
 				else{
 					//#3568 - don't set success_status for non scored lessons
-					completeLesson(true, 'undefined', 0, false, false, true);
+					completeLesson(true, 'undefined', null, false, false, true);
 				}
 			});
 		}

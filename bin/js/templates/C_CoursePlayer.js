@@ -29,6 +29,9 @@ function C_CoursePlayer(_course) {
     var launchItemParent;
     var $stage;
     var allLessonsComplete = true;
+    var allLessonsPassed = true;
+    var allLessonsScore = 0.0;
+    var lessonsScored = 0;
     var courseId;
     
 
@@ -145,7 +148,7 @@ function C_CoursePlayer(_course) {
 			msg += '<div class="C_LMSLessonListItem">';
 			msg += '<div class="C_LMSLessonName">' + module_arr[i].name + '</div>';
 			var lessonStatus = getLessonStatus(module_arr[i].path);
-            msg += '<img class="C_LMSLessonStatus" src="./css/images/lms_status_' + lessonStatus + '.png" title="status: ' + lessonStatus + '" alt="lesson status ' + lessonStatus + '">';
+            msg += '<img class="C_LMSLessonStatus" src="./css/images/lms_status_' + lessonStatus.completion + '.png" title="status: ' + lessonStatus.completion + '" alt="lesson status ' + lessonStatus.completion + '">';
 			msg += '<div class="C_LMSLaunchButton" title="'+ module_arr[i].name +'" data-fancybox-type="iframe" href="' + module_arr[i].indexPath + '" data-path="'+ module_arr[i].path +'">launch</div>';
 			msg += '</div>';
 	    }
@@ -162,6 +165,8 @@ function C_CoursePlayer(_course) {
 	    
         $(".C_LMSLaunchButton").click(function(){
             for(var j = 0; j < module_arr.length; j++){
+                // console.log(module_arr[j].name);
+                // console.log($(this).attr('title'));
                 if(module_arr[j].name === $(this).attr('title')){
                     currentLesson = module_arr[j];
                     break;
@@ -217,11 +222,17 @@ function C_CoursePlayer(_course) {
         console.log("all learner's statements for the lesson");
         console.log(res);
         var _completion = "unknown";
+        var _success = "unknown";
+        var _score = null;
         if(res.statements.length != 0){
             var lastLessonStatement = res.statements[0];
 
             if(lastLessonStatement.result != undefined && lastLessonStatement.result != "undefined"){
                 _completion = lastLessonStatement.result.completion ? "completed" : "incomplete"; 
+                _success = lastLessonStatement.result.success ? "passed" : "failed";
+                if(lastLessonStatement.result.score != undefined && lastLessonStatement.result.score != "undefined"){
+                    _score = lastLessonStatement.result.score.scaled;
+                }
             }
         }
 
@@ -231,7 +242,24 @@ function C_CoursePlayer(_course) {
             }
         }
 
-        return _completion;
+        if(allLessonsPassed){
+            if(_success != "passed"){
+                allLessonsPassed = false;
+            }
+        }
+
+        var result = { 
+            completion: _completion,
+            success: _success,
+        };
+
+        if(_score != null){
+            result.scorescaled = _score;
+            allLessonsScore = allLessonsScore + _score;
+            lessonsScored++;
+        }
+
+        return result;
 
     }
 
@@ -245,12 +273,11 @@ function C_CoursePlayer(_course) {
         stmt.generateId();
         stmt.object.definition.type = 'http://adlnet.gov/expapi/activities/course';
 
-        console.log("status in completeCourse " + success + " : " + completion +" : " + scoreScaled);
         stmt.result = {
             "score": {
-                "scaled": parseFloat(scoreScaled)
+                "scaled": parseFloat(allLessonsScore/lessonsScored)
             },
-            "success": (success === "passed"),
+            "success": allLessonsPassed,
             "completion" : true
         };
 
