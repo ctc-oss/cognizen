@@ -104,7 +104,7 @@ function C_CourseCatalog(_course) {
             socket.emit('enrollUserInCourse', contentData);            
         });   
 
-        $(".C_CloseCourseButton").click(function(){
+        $(".C_CloseCourseButton").unbind().click(function(){
             dashMode = 'lms';
             socket.emit('checkLoginStatus');
         });        
