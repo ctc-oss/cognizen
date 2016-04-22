@@ -112,7 +112,12 @@ function C_Transcript(_course) {
             msg += '<td>' + currStatement.object.definition.name["en-US"] + '</td>';
             msg += '<td>' + completion + '</td>';
             msg += '<td>' + success + '</td>';
-            msg += '<td>' + currStatement.result.score.scaled * 100 + '%</td>';
+            if(currStatement.result.score != undefined){
+                msg += '<td>' + currStatement.result.score.scaled * 100 + '%</td>';
+            }
+            else{
+                msg += '<td>N/A</td>';
+            }
             msg += '<td>' + currStatement.timestamp.substring(0,10) + ' ' + currStatement.timestamp.substring(11,16) + '</td>';
             msg += '</tr>';
         }
