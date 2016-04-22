@@ -174,6 +174,7 @@ function C_CoursePlayer(_course) {
             }
         });
 
+
 	    $(".C_LMSLaunchButton").fancybox({
             maxWidth    : '100%',
             maxHeight   : '100%',
@@ -184,7 +185,9 @@ function C_CoursePlayer(_course) {
             closeClick  : false,
             openEffect  : 'fade',
             closeEffect : 'fade',
+            live: false,
             beforeClose: function(){
+                console.log("beforeClose Fancybox");
                 API_1484_11.Terminate("");
                 dashMode = 'player';
                 socket.emit('checkLoginStatus');                
@@ -216,7 +219,8 @@ function C_CoursePlayer(_course) {
         var search = ADL.XAPIWrapper.searchParams();
         search['agent'] = JSON.stringify(agent);
         //console.log(agent);
-        search['activity'] = name + "?attemptId=" + attemptId;;
+        search['activity'] = name + "?attemptId=" + attemptId;
+        console.log(name + "?attemptId=" + attemptId);
         search['related_activities'] = true;      
         res = ADL.XAPIWrapper.getStatements(search);
         console.log("all learner's statements for the lesson");
@@ -228,8 +232,10 @@ function C_CoursePlayer(_course) {
             var lastLessonStatement = res.statements[0];
 
             if(lastLessonStatement.result != undefined && lastLessonStatement.result != "undefined"){
-                _completion = lastLessonStatement.result.completion ? "completed" : "incomplete"; 
-                _success = lastLessonStatement.result.success ? "passed" : "failed";
+                _completion = lastLessonStatement.result.completion ? "completed" : "incomplete";
+                if(lastLessonStatement.result.success != undefined && lastLessonStatement.result.success != "undefined"){
+                    _success = lastLessonStatement.result.success ? "passed" : "failed";
+                }
                 if(lastLessonStatement.result.score != undefined && lastLessonStatement.result.score != "undefined"){
                     _score = lastLessonStatement.result.score.scaled;
                 }
@@ -243,7 +249,7 @@ function C_CoursePlayer(_course) {
         }
 
         if(allLessonsPassed){
-            if(_success != "passed"){
+            if(_success == "failed"){
                 allLessonsPassed = false;
             }
         }
@@ -274,12 +280,15 @@ function C_CoursePlayer(_course) {
         stmt.object.definition.type = 'http://adlnet.gov/expapi/activities/course';
 
         stmt.result = {
-            "score": {
-                "scaled": parseFloat(allLessonsScore/lessonsScored)
-            },
             "success": allLessonsPassed,
             "completion" : true
         };
+
+        if(lessonsScored > 0){
+            stmt.result.score= {
+                "scaled" : parseFloat(allLessonsScore/lessonsScored)
+            };
+        }
 
         stmt.context = {
             "contextActivities": {
