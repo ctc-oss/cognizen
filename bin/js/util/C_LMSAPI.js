@@ -624,7 +624,7 @@ var setActivityState = function(){
                // Note: this implementation
                var stmt = getInteractionsBaseStatement();
                stmt.object.id = getInteractionIri(cachedInteractions[i].id);
-               stmt.context.contextActivities.grouping[0].id = window.localStorage[activity];
+               //stmt.context.contextActivities.grouping[0].id = attemptIri;
 
                // set the learner's response
                stmt.result.response = cachedInteractions[i].learner_response;
@@ -790,7 +790,7 @@ var getInteractionsBaseStatement = function()
               ],
               grouping:[
                  {
-                    id:"",
+                    id:attemptIri,
                     objectType:"Activity",
                     definition:{
                        type: "http://adlnet.gov/expapi/activities/attempt"
