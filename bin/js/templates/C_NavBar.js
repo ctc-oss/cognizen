@@ -38,22 +38,24 @@ function C_NavBar() {
 			$(msg).insertAfter(".dash-header");
 			
 			if(isBoth){
+
+				//system admins and training coordinators will have access to hosting
 		        var admin = user.admin;
-		        var programAdmin = false;
+		        var trainingCoordinator = user.trainingCoordinator;
 				
 				
-		        if (!admin) {
-		            // Check if user is a program admin
-		            for (var i = 0; i < user.permissions.length; i++) {
-		                var permission = user.permissions[i];
-		                if (permission.permission == 'admin') {
-		                    programAdmin = true;
-		                    break;
-		                }
-		            }
-		        }
+		        // if (!admin) {
+		        //     // Check if user is a program admin
+		        //     for (var i = 0; i < user.permissions.length; i++) {
+		        //         var permission = user.permissions[i];
+		        //         if (permission.permission == 'admin' && permission.contentType == 'program') {
+		        //             programAdmin = true;
+		        //             break;
+		        //         }
+		        //     }
+		        // }
 				
-				if ((admin || programAdmin) && (dashMode === 'author') || (dashMode == 'lms')) {
+				if ((admin || trainingCoordinator) && (dashMode === 'author') || (dashMode == 'lms')) {
 					//ROOT and admin can add users to the system.
 		            $("#dash-subnav").append("<div id='adminAddUser'>add user</div>");
 		            $("#adminAddUser").click(registerUser);
@@ -90,7 +92,7 @@ function C_NavBar() {
 					});
 
 			        //commented out for 1.3 release #4501
-			        if (admin || programAdmin) {
+			        if (admin || trainingCoordinator) {
 						//ROOT and admin can add users to the system.
 			            $("#dash-navbar").append("<div id='gotoLMS' class='navbar-item'>hosting</div>");
 			            $("#gotoLMS").click(function(){
