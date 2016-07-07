@@ -373,7 +373,7 @@ body{
 	float: left;
 }
 
-.C_LMSLaunchButton, .C_CCEnrollButton, .C_LMSUnregister{
+.C_LMSLaunchButton, .C_CCEnrollButton, .C_LMSUnregister, .C_ImportLaunchButton{
 	float: right;
 	height: 30px;
 	line-height: 30px;

@@ -371,6 +371,7 @@ var Content = {
 
     },
 
+
     _userEnrolledContent: function(_user, callback){
         var _this = this;
         
@@ -386,6 +387,43 @@ var Content = {
         });
 
     
+    },
+
+    _readImports: function(files, index, imports, callback){
+        var _this = this;
+
+        if(index < files.length){
+
+            var data, etree;
+
+            fs.readFile("../hosted/import/"+files[index]+"/imsmanifest.xml", function(err, data){
+                data = data.toString();
+                //console.log(data);
+                etree = et.parse(data); 
+                console.log(etree.find('.//title').text);
+                console.log(etree.find('.//resource').get('href'));
+                var courseData = {
+                    path : files[index],
+                    name : etree.find('.//title').text,
+                    href : etree.find('.//resource').get('href')
+                };
+                imports.push(courseData);
+                _this._readImports(files, index+1, imports, function(err, content){
+                    if(err){
+                        callback(err, null);
+                    }
+                    else{
+                        callback(null, content);
+                    }
+                });
+            });  
+            
+        }
+        else{
+            callback(null, imports);
+        }
+
+
     },
 
     getEnrolledCourses: function(socket, user, callback){
@@ -404,9 +442,27 @@ var Content = {
                     if(err){
                         callback(err);
                     }
-                    socket.emit('receiveEnrolledCoursesFromDB', data); 
-                });
+                    var _data = data;
+                    var imports = [];
+                    fs.readdir("../hosted/import/", function(err, files){
+                        if (err) {
+                          console.log("empty directory! " + err );
+                        }
 
+                        _this._readImports(files, 0, imports, function(err, imports){
+                            if(err){
+                                callback(err);
+                            }
+                            else{
+                                var importsObj = {imports : imports};
+                                _data.push(importsObj);
+                                socket.emit('receiveEnrolledCoursesFromDB', _data);
+                            }
+                        });
+
+                    }); 
+
+                });
                               
             }
         });       

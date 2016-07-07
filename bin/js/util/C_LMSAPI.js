@@ -194,6 +194,23 @@ var API_1484_11 = {
     GetDiagnostic: function(_cmiErrorCode){return "errorString"}
 };
 
+//SCORM 1.2 api
+var API = {
+    LMSInitialize : function(){
+      console.log("in 1.2 init");
+      return API_1484_11.Initialize();
+    },
+    LMSGetValue : function(_cmiElement) {
+      console.log("in 1.2 lmsgetvalue");
+      //convert 1.2 _cmiElements to SCORM 2004
+      return API_1484_11.GetValue(_cmiElement);
+
+    },
+    LMSFinish : function(){
+      console.log("in 1.2 finish");
+      return API_1484_11.Terminate();
+    }
+};
 
  /*******************************************************************************
  **

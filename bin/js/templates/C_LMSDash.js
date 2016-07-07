@@ -78,6 +78,7 @@ function C_LMSDash(_type) {
     
     function updateMenu(_data){
 	    //Clear the project list
+        console.log(_data);
 	    $("#projList").empty();
 	    if (transition == true) {
             $('#stage').css({'opacity': 0});
@@ -90,23 +91,49 @@ function C_LMSDash(_type) {
         }
         else{
             for(var i = 0; i < _data.length; i++){
-                var msg = '<div class="C_LMSMenuItem"><span class="C_LMSCourseItem"  title="'+ _data[i].name 
-                +'" data-path="'+ _data[i].path 
-                +'" data-attemptId="'+ _data[i].attemptId+'">';    
-                msg += _data[i].name;
-                msg += '</span><div class="C_LMSUnregister" data-title="' + _data[i].name + '"data-id="'+ _data[i].contentId +'">withdraw</div>';   
-                msg += '<div class="C_LMSLaunchButton" title="'+ _data[i].name +'" data-attemptId="'+ _data[i].attemptId+'" data-path="' + _data[i].path +'">launch</div>';                            
-                msg += '</div>';
-                $("#projList").append(msg);
+                if(!_data[i].hasOwnProperty('imports')){
+                    var msg = '<div class="C_LMSMenuItem"><span class="C_LMSCourseItem"  title="'+ _data[i].name 
+                    +'" data-path="'+ _data[i].path 
+                    +'" data-attemptId="'+ _data[i].attemptId+'">';    
+                    msg += _data[i].name;
+                    msg += '</span><div class="C_LMSUnregister" data-title="' + _data[i].name + '"data-id="'+ _data[i].contentId +'">withdraw</div>';   
+                    msg += '<div class="C_LMSLaunchButton" title="'+ _data[i].name +'" data-attemptId="'+ _data[i].attemptId+'" data-path="' + _data[i].path +'">launch</div>';                            
+                    msg += '</div>';
+                    $("#projList").append(msg);
+                }
+                else{
+                    var _imports = _data[i].imports;
+                    for(var j = 0; j < _imports.length; j++){
+                        var msg = '<div class="C_LMSMenuItem"><span class="C_LMSCourseItem"  title="'+ _imports[j].name 
+                        +'" data-path="'+ _imports[j].path 
+                        +'" data-attemptId="wmoijsomdwoekse">';    
+                        msg += _imports[j].name;
+                        msg += '</span><div class="C_LMSUnregister" data-title="' + _data[i].name + '"data-id="'+ _data[i].contentId +'">withdraw</div>';   
+                        msg += '<div class="C_ImportLaunchButton" title="'+ _imports[j].name +'" "data-attemptId="wmoijsomdwoekse"  data-href="'+ _imports[j].href+'" data-path="' + _imports[j].path +'">launch</div>';                            
+                        msg += '</div>';
+                        $("#projList").append(msg); 
+                    }                   
+                }
             }
             
 
             $(".C_LMSLaunchButton").click(function(){
                 dashMode = "player";
+                isImport = false;
                 currentCourse = $(this).attr('data-path');
                 attemptId = $(this).attr('data-attemptId');
                 socket.emit('checkLoginStatus');
             }); 
+
+            $(".C_ImportLaunchButton").click(function(){
+                dashMode = "player";
+                isImport = true;
+                currentCourse = $(this).attr('data-path');
+                attemptId = $(this).attr('data-attemptId');
+                importHref = $(this).attr('data-href');
+                importTitle = $(this).attr('title');
+                socket.emit('checkLoginStatus');
+            });
 
             $(".C_LMSUnregister").click(function(){
                 var contentData = {
