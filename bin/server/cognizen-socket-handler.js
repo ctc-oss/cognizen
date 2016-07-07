@@ -20,8 +20,8 @@ var Utils = require('./cognizen-utils'),
     util = require('util'),
 	readdirp = require('readdirp'),
 	et = require('elementtree'),
-    redmine = require('./cognizen-redmine'),
-    adl = require('adl-xapiwrapper');
+    redmine = require('./cognizen-redmine');//,
+//    adl = require('adl-xapiwrapper');
 var _ = require("underscore");
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
