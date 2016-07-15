@@ -818,7 +818,13 @@ var Content = {
 
             socket.on('cloneProgram', function (data){
                 SocketHandler.socket(socket).cloneProgram(data);
-            })                      
+            });    
+
+            socket.on('readMediaDir', function (data, callback){
+                SocketHandler.socket(socket).readMediaDir(data, function (fdata){
+                    callback(fdata);
+                });
+            });                  
                               
         });
     });
