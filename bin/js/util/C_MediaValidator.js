@@ -198,7 +198,7 @@ function C_MediaValidator(_myItem, _myParent) {
      -- build menuing system and add functionalities
      ************************************************************************************/
      function buildVMInterface(_mod){
-     	try {$("#dialog-search").dialog("close");} catch (e) {}
+     	try {$("#dialog-mv").dialog("close");} catch (e) {}
         socket.emit('readMediaDir', _mod, function(fdata){
 
             if(fdata == ''){
@@ -335,7 +335,16 @@ function C_MediaValidator(_myItem, _myParent) {
 	            },
 	            open: function (event, ui) {
 
-	            }
+	            },
+	            buttons: [
+					{
+						text: "Print",
+						title: "Prints the answer key .",
+						click: function(){
+							$('#mediaValidatorPane').printThis({pageTitle:searchTitle});
+						}
+					}
+				]	            
 	        });
 
 
