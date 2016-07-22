@@ -48,6 +48,12 @@ function C_Dashboard(_type) {
             else if (data == 'search'){
                 co = new C_Search(launchItem, launchItemParent);
             }
+            else if (data == 'media'){
+                co = new C_MediaValidator(launchItem, launchItemParent);
+            }
+            else if (data == 'answerkey'){
+                co = new C_AnswerKey(launchItem, launchItemParent);
+            }
         });
 
         /*socket.on('receiveCoursePath', function (data){
@@ -103,6 +109,9 @@ function C_Dashboard(_type) {
         socket.on('refreshDashboard', function() {
             //$("#preloadholder").remove();
             try{co.refreshOutlineData();} catch(e){};
+            try{co.refreshSearchData();} catch(e){};
+            try{co.refreshVMData();} catch(e){};
+            try{co.refreshAKData();} catch(e){};
             socket.emit('getProjects', user);
         });
 
@@ -275,8 +284,10 @@ function C_Dashboard(_type) {
                     if(myItem.data('permission') == "admin"){
                         $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
-	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " project.'></div>");
+	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                    $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
+                        $(this).append("<div id='myMediaValidator' class='projectMedia' title='validate the media files for the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
+                        $(this).append("<div id='myAnswerKey' class='projectAnswerKey' title='shows the answer key for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                }
                 }
 
@@ -409,6 +420,69 @@ function C_Dashboard(_type) {
                         duration: 200
                     }
 				});
+
+                $("#myMediaValidator").click(function () {
+                    //Add preloader
+                    myTimer = setInterval(function () {startlaunchtimer()}, 14000);
+                    $("#stage").append('<div id="preloadholder"></div>');
+                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                    launchItem = myItem;
+                    var myLevel = $(this).attr("class");
+                    //used to send course name in for module search
+                    launchItemParent = { id: myItem.parent().parent().attr('id'),
+                                        name: myItem.parent().parent().find("span").first().text() };
+                    //Check if outline is available...
+                    socket.emit('allowTool', {
+                        id : myItem.data('id'),
+                        tool : 'media',
+                        level : myLevel
+                    });
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
+
+                $("#myAnswerKey").click(function () {
+                    //Add preloader
+                    myTimer = setInterval(function () {startlaunchtimer()}, 14000);
+                    $("#stage").append('<div id="preloadholder"></div>');
+                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                    launchItem = myItem;
+                    var myLevel = $(this).attr("class");
+                    //used to send course name in for module search
+                    launchItemParent = { id: myItem.parent().parent().attr('id'),
+                                        name: myItem.parent().parent().find("span").first().text() };
+                    //Check if outline is available...
+                    socket.emit('allowTool', {
+                        id : myItem.data('id'),
+                        tool : 'answerkey',
+                        level : myLevel
+                    });
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });
+
             },
             function () {
 			 	$("#myPref").remove();
@@ -417,6 +491,8 @@ function C_Dashboard(_type) {
                 $("#myUserAdd").remove();
                 $("#myOutline").remove();
                 $("#mySearch").remove();
+                $("#myMediaValidator").remove();
+                $("#myAnswerKey").remove();
                 if (myItem.data('type') == "program") {
                     $(this).removeClass("programHover");
                 } else if (myItem.data('type') == "course") {

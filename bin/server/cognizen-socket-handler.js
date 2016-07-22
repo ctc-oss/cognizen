@@ -3375,6 +3375,26 @@ var SocketHandler = {
     },    
     //cloning functions end
 
+    readMediaDir : function(data, callback){
+        var _this = this;
+        readdirp(
+            { root: path.normalize(data.normPath + '/media'),
+                directoryFilter: [ '!.git'],
+                fileFilter: [ '!.*' ] }
+            , function(fileInfo) {
+                //console.log("---------------------------------------------------------" + fileInfo);
+            }
+            , function (err, res) {
+                // res.files.forEach(function(file) {
+                //     var localFile = file.path.replace(/\\/g,"/")
+                //     console.log(localFile);
+                //     //_this.cssResources_arr.push(localFile);
+                // });
+                callback(res.files);
+            }
+        );   
+    },
+
     publishContent: function (data, callback){
         var _this = this;
         var user = data.user.username;
