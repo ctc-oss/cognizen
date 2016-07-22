@@ -3377,6 +3377,7 @@ var SocketHandler = {
 
     readMediaDir : function(data, callback){
         var _this = this;
+        _this.logger.info("Media Dir : " + path.normalize(data.normPath + '/media'));
         readdirp(
             { root: path.normalize(data.normPath + '/media'),
                 directoryFilter: [ '!.git'],
@@ -3384,13 +3385,16 @@ var SocketHandler = {
             , function(fileInfo) {
                 //console.log("---------------------------------------------------------" + fileInfo);
             }
-            , function (err, res) {
-                // res.files.forEach(function(file) {
-                //     var localFile = file.path.replace(/\\/g,"/")
-                //     console.log(localFile);
-                //     //_this.cssResources_arr.push(localFile);
-                // });
-                callback(res.files);
+            , function (err, res) {                           
+                if (err) {
+                    _this._socket.emit('generalError', {title: 'Read media dir', message: 'Error occurred when reading media dir.'});
+                    _this.logger.error(err);
+                    callback('');
+                }
+                else{
+                    callback(res.files);                
+                }
+
             }
         );   
     },
