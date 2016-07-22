@@ -717,7 +717,8 @@ TREE MENU STYLES
 .courseUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.projectMedia {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
+.projectAnswerKey{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_answer.svg) no-repeat;}
+.projectMedia {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_validate.svg) no-repeat;}
 .projectSearch {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
 .projectPref {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
 .projectRemove {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_delete.svg) no-repeat;}
@@ -860,7 +861,36 @@ TREE MENU STYLES
 	-webkit-border-radius: 3px;
             border-radius: 3px;
 }
+
 /*end media validator*/
+
+/*media validator*/
+#answserKeyPane{
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	border-color: #eee;
+	border-width: thin;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+            border-radius: 3px;
+}
+
+/*end media validator*/
+  @media print {
+     #mediaValidatorPane{
+	    height: auto;
+	    overflow-y: auto;
+     }
+
+     #answserKeyPane{
+	    height: auto;
+	    overflow-y: auto;
+     }
+
+  }
+
 .ui-widget-content{
 	background: white;
 }

@@ -195,9 +195,11 @@ function initScripts(_data){
 				"js/util/C_Search.js",
 				"js/util/C_LMSAPI.js",
 				"js/util/C_MediaValidator.js",
+				"js/util/C_AnswerKey.js",
 				"js/libs/jquery.treeview.js",
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",
+				"js/libs/printThis.js",
 				//Lightbox for media popups and galleries.
 				"js/libs/fancybox/jquery.fancybox.js",
 				"js/libs/fancybox/jquery.fancybox-thumbs.js",
