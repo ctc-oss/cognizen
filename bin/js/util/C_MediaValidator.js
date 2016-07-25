@@ -204,148 +204,124 @@ function C_MediaValidator(_myItem, _myParent) {
             if(fdata == ''){
             	console.log("fdata is empty");
             }
+            else{
 
-            for (var k = 0; k < fdata.length; k++) {
-            	if(fdata[k].parentDir !== "edge_includes" && fdata[k].path !== "loadingIcon.gif"){
-            		mediaArr.push(fdata[k].path);
-            	}
-            }
+	            for (var k = 0; k < fdata.length; k++) {
+	            	if(fdata[k].parentDir !== "edge_includes" && fdata[k].path !== "loadingIcon.gif"){
+	            		mediaArr.push(fdata[k].path);
+	            	}
+	            }
 
-	     	var thisID;
-	     	indexItem_arr = [];
+		     	var thisID;
+		     	indexItem_arr = [];
 
-	     	var searchTitle = $(courseData).find('course').first().attr("name");
-	     	if(currentCourseType === 'lesson'){
-	     		searchTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
-	     	}
+		     	var searchTitle = $(courseData).find('course').first().attr("name");
+		     	if(currentCourseType === 'lesson'){
+		     		searchTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
+		     	}
 
-	     	var data = module_arr[0].xml;
-	     	var totalPages = $(data).find('page').length;
-	     	msg = '<div id="dialog-mv" title="Media Validator '+ searchTitle + ':">';
-		    msg += '<div id="mvPane" class="pane">'
-		    msg += '<div id="mediaValidatorPane" class="paneContent">';
-		    msg += '<h3>Preferences</h3>';
-		    var helpUrl = $(data).find('help').attr("url");
-		    var icon = validateMedia(helpUrl) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-		    msg += 'help url : ' + helpUrl + " " + icon;
-		    msg += '<hr/>';
+		     	var data = module_arr[0].xml;
+		     	var totalPages = $(data).find('page').length;
+		     	msg = '<div id="dialog-mv" title="Media Validator '+ searchTitle + ':">';
+			    msg += '<div id="mvPane" class="pane">'
+			    msg += '<div id="mediaValidatorPane" class="paneContent">';
+			    msg += '<h3>Preferences</h3>';
+			    var helpUrl = $(data).find('help').attr("url");
+			    var icon = validateMedia(helpUrl) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+			    msg += 'help url : ' + helpUrl + " " + icon;
+			    msg += '<hr/>';
 
-			for(var i = 0; i < totalPages; i++){
+				for(var i = 0; i < totalPages; i++){
 
-			 	msg += '<h3>' + $(data).find("page").eq(i).find('title').first().text() + '</h3>';
+				 	msg += '<h3>' + $(data).find("page").eq(i).find('title').first().text() + '</h3>';
 
-			 	var poster = $(data).find("page").eq(i).attr('poster');
-			 	if(typeof poster !== typeof undefined && poster !== 'null' && poster !== ''){
-			 		icon = validateMedia(poster) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-			 		msg += 'poster : ' + poster + " " + icon + '<br/>';
-			 	}
+				 	var poster = $(data).find("page").eq(i).attr('poster');
+				 	if(typeof poster !== typeof undefined && poster !== 'null' && poster !== ''){
+				 		icon = validateMedia(poster) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+				 		msg += 'poster : ' + poster + " " + icon + '<br/>';
+				 	}
 
-			 	var img = $(data).find("page").eq(i).attr('img');
-			 	if(typeof img !== typeof undefined && img !== 'null' && img !== '' && img.indexOf('http') === -1){
-			 		//var icon = validateMedia(img) !== true ? 'BLAH T' : 'BLAH F';
-			 		icon = validateMedia(img) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-			 		msg += 'img : ' + img + " " + icon + '<br/>';
+				 	var img = $(data).find("page").eq(i).attr('img');
+				 	if(typeof img !== typeof undefined && img !== 'null' && img !== '' && img.indexOf('http') === -1){
+				 		//var icon = validateMedia(img) !== true ? 'BLAH T' : 'BLAH F';
+				 		icon = validateMedia(img) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+				 		msg += 'img : ' + img + " " + icon + '<br/>';
 
-			 		//if mp4 check for .srt file
-			 		var ext = img.split('.').pop();
-			 		if(ext === 'mp4'){
-			 			var srt = img.replace(/\.[^/.]+$/, ".srt");
-			 			if($.inArray(srt, mediaArr) !== -1){
-			 				icon = validateMedia(srt) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-							msg += 'srt : ' + srt + " " + icon + '<br/>';
-			 			}
-			 		}
-			 	}
+				 		//if mp4 check for .srt file
+				 		var ext = img.split('.').pop();
+				 		if(ext === 'mp4'){
+				 			var srt = img.replace(/\.[^/.]+$/, ".srt");
+				 			if($.inArray(srt, mediaArr) !== -1){
+				 				icon = validateMedia(srt) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+								msg += 'srt : ' + srt + " " + icon + '<br/>';
+				 			}
+				 		}
+				 	}
 
-			 	var audio = $(data).find("page").eq(i).attr('audio');
-			 	if(typeof audio !== typeof undefined && audio !== 'null' && audio !== ''){
-			 		icon = validateMedia(audio) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-			 		msg += 'audio : ' + audio + " " + icon+ '<br/>';
-			 	}
+				 	var audio = $(data).find("page").eq(i).attr('audio');
+				 	if(typeof audio !== typeof undefined && audio !== 'null' && audio !== ''){
+				 		icon = validateMedia(audio) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+				 		msg += 'audio : ' + audio + " " + icon+ '<br/>';
+				 	}
 
-			 	var content = $(data).find("page").eq(i).find("content").first().text();
-			 	var contentImgLength = $($.parseHTML(content)).find("img").length;
-			 	if(contentImgLength != 0){
-			 		for (var m = 0; m < contentImgLength; m++) {
-					 	var contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");
-					 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-					 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
-			 		}
-			 	}
+				 	var content = $(data).find("page").eq(i).find("content").first().text();
+				 	var contentImgLength = $($.parseHTML(content)).find("img").length;
+				 	if(contentImgLength != 0){
+				 		for (var m = 0; m < contentImgLength; m++) {
+						 	var contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");
+						 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+				 		}
+				 	}
 
-
-
-			 	// if($(data).find("page").eq(i).find("page").length){
-
-			 	// 	for(var j = 0; j < $(data).find("page").eq(i).find("page").length; j++){
-			 	// 		msg += '<hr/>';
-					// 	msg += '<h3>subpage - ' + $(data).find("page").eq(i).find("page").eq(j).find('title').first().text() + '</h3>';
-
-					//  	var poster = $(data).find("page").eq(i).find("page").eq(j).attr('poster');
-					//  	if(typeof poster !== typeof undefined && poster !== 'null' && poster !== ''){
-					//  		msg += 'poster : ' + poster + " : " + validateMedia(poster) + '<br/>';
-					//  	}		
-
-					//  	var img = $(data).find("page").eq(i).find("page").eq(j).attr('img');
-					//  	if(typeof img !== typeof undefined && img !== 'null' && img !== ''){
-					//  		msg += 'img : ' + img + " : " + validateMedia(img) + '<br/>';
-					//  	}						 					
-						
-					//  	var audio = $(data).find("page").eq(i).find("page").eq(j).attr('audio');
-					//  	if(typeof audio !== typeof undefined && audio !== 'null' && audio !== ''){
-					//  		msg += 'audio : ' + audio + " : " + validateMedia(audio) + '<br/>';
-					//  	}						
-			 	// 	}
-
-			 	// }
-
-			 	msg += '<hr/>';
-			}
-
-			msg += '<h3>Dangling resources</h3>';
-			if(mediaArr.length != 0){
-				for (var i = 0; i < mediaArr.length; i++) {
-					msg += mediaArr[i] + '<br/>';
+				 	msg += '<hr/>';
 				}
-			}
-			else{
-				msg += 'All media is referenced.';
-			}
-		    msg += '</div>';//close the mediaValidatorPane
 
-		    msg += '</div>';//close the mv pane
-		    msg += '</div>';//close the dialog
-	        //ADD menu to stage
-	        $("#stage").append(msg);
-
-
-	        $("#dialog-mv").dialog({
-	            modal: true,
-	            width: 1024,
-	            height: 768,
-	            resizable: false,
-	            close: function (event, ui) {
-	                socket.removeAllListeners('receiveCoursePath');
-	                socket.emit("closeTool", {
-	                	id : courseID,
-	                	tool : 'media'
-	                });
-	                module_arr = [];
-	                $(this).dialog('destroy').remove();
-	            },
-	            open: function (event, ui) {
-
-	            },
-	            buttons: [
-					{
-						text: "Print",
-						title: "Prints the answer key .",
-						click: function(){
-							$('#mediaValidatorPane').printThis({pageTitle:searchTitle});
-						}
+				msg += '<h3>Dangling resources</h3>';
+				if(mediaArr.length != 0){
+					for (var i = 0; i < mediaArr.length; i++) {
+						msg += mediaArr[i] + '<br/>';
 					}
-				]	            
-	        });
+				}
+				else{
+					msg += 'All media is referenced.';
+				}
+			    msg += '</div>';//close the mediaValidatorPane
+
+			    msg += '</div>';//close the mv pane
+			    msg += '</div>';//close the dialog
+		        //ADD menu to stage
+		        $("#stage").append(msg);
+
+
+		        $("#dialog-mv").dialog({
+		            modal: true,
+		            width: 1024,
+		            height: 768,
+		            resizable: false,
+		            close: function (event, ui) {
+		                socket.removeAllListeners('receiveCoursePath');
+		                socket.emit("closeTool", {
+		                	id : courseID,
+		                	tool : 'media'
+		                });
+		                module_arr = [];
+		                $(this).dialog('destroy').remove();
+		            },
+		            open: function (event, ui) {
+
+		            },
+		            buttons: [
+						{
+							text: "Print",
+							title: "Prints the answer key .",
+							click: function(){
+								$('#mediaValidatorPane').printThis({pageTitle:searchTitle});
+							}
+						}
+					]	            
+		        });
+		    }
 
 
 			try{$("#preloadholder").remove();} catch(e){};

@@ -3377,9 +3377,13 @@ var SocketHandler = {
 
     readMediaDir : function(data, callback){
         var _this = this;
-        _this.logger.info("Media Dir : " + path.normalize(data.normPath + '/media'));
+
+        var programPath = path.normalize(data.normPath+ '/');
+        var contentPath = path.resolve(process.cwd(), programPath);
+        var mediaPath = contentPath + '/media';
+        _this.logger.info("Media Dir : " + mediaPath);
         readdirp(
-            { root: path.normalize(data.normPath + '/media'),
+            { root: mediaPath,
                 directoryFilter: [ '!.git'],
                 fileFilter: [ '!.*' ] }
             , function(fileInfo) {
