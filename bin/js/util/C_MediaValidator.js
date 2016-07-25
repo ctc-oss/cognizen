@@ -83,7 +83,7 @@ function C_MediaValidator(_myItem, _myParent) {
      -- use recieved path to load the course.xml file.
      ************************************************************************************/
      function receiveCoursePath(data){
-	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', decodeURI(data.path)].join('');
+	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', decodeURI(data.path)].join('').replace(/\\/g, "/");
 	     var xmlPath = coursePath + "/course.xml";
 	     courseXMLPath = xmlPath;
 	     $.ajax({
