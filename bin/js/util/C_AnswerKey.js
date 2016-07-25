@@ -81,7 +81,7 @@ function C_AnswerKey(_myItem, _myParent) {
      -- use recieved path to load the course.xml file.
      ************************************************************************************/
      function receiveCoursePath(data){
-	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', decodeURI(data.path)].join('');
+	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', decodeURIComponent(data.path)].join('');
 	     var xmlPath = coursePath + "/course.xml";
 	     courseXMLPath = xmlPath;
 	     $.ajax({
