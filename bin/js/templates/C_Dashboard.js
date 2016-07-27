@@ -280,15 +280,15 @@ function C_Dashboard(_type) {
 	                    $(this).append("<div id='myOutline' class='courseOutline' title='outline the " + $(this).parent().find("span").first().text() + " course.'></div>");
 					}
                 } else {
-                    $(this).addClass("projectHover");
+                    $(this).addClass("projectHover");                   
                     if(myItem.data('permission') == "admin"){
                         $(this).append("<div id='myUserAdd' class='projectUserAdd' title='manage users for " + $(this).parent().find("span").first().text() + "'></div>");
 	                    $(this).append("<div id='myRemove' class='projectRemove' title='remove the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                    $(this).append("<div id='myPref' class='projectPref' title='adjust preferences for the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                    $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
                         $(this).append("<div id='myMediaValidator' class='projectMedia' title='validate the media files for the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
-                        $(this).append("<div id='myAnswerKey' class='projectAnswerKey' title='shows the answer key for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                }
+                    $(this).append("<div id='myAnswerKey' class='projectAnswerKey' title='shows the answer key for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");                     
                 }
 
 			 $("#myOutline").click(function () {
