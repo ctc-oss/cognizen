@@ -219,7 +219,7 @@ function C_AnswerKey(_myItem, _myParent) {
 	     		searchTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
 	     	}
 
-	     	msg = '<div id="dialog-answerkey" title="Answer Key '+ searchTitle + ':">';
+	     	msg = '<div id="dialog-answerkey" title="Answer Key (Beta) : '+ searchTitle + ':">';
 		    msg += '<div id="akPane" class="pane">'
 		    msg += '<div id="answerKeyPane" class="paneContent">';
 

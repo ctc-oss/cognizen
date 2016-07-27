@@ -222,7 +222,7 @@ function C_MediaValidator(_myItem, _myParent) {
 
 		     	var data = module_arr[0].xml;
 		     	var totalPages = $(data).find('page').length;
-		     	msg = '<div id="dialog-mv" title="Media Validator '+ searchTitle + ':">';
+		     	msg = '<div id="dialog-mv" title="Media Validator (Beta) : '+ searchTitle + ':">';
 			    msg += '<div id="mvPane" class="pane">'
 			    msg += '<div id="mediaValidatorPane" class="paneContent">';
 			    msg += '<h3>Preferences</h3>';
