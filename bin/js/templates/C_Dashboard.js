@@ -459,7 +459,9 @@ function C_Dashboard(_type) {
                     $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
                     launchItem = myItem;
                     var myLevel = $(this).attr("class");
-                    //used to send course name in for module search
+                    //used to send project name in for c_answerKey
+                    currentProject = myItem.parent().parent().parent().parent().find("span").first().text();
+                    
                     launchItemParent = { id: myItem.parent().parent().attr('id'),
                                         name: myItem.parent().parent().find("span").first().text() };
                     //Check if outline is available...
