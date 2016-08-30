@@ -774,7 +774,7 @@ function C_QuestionBank(_type) {
 
 		$("#questionEditText").append($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).find("question").text());
 
-		$("#removeBankItem").click(removeBankItem).tooltip();
+		$("#removeBankItem").click(areYouSure).tooltip();
 
 		CKEDITOR.inline( "questionEditText", {
 			toolbar: contentToolbar,
@@ -1019,6 +1019,31 @@ function C_QuestionBank(_type) {
 		}
 		tmpObj.option_arr = tmpOptionArray;
 		return tmpObj;
+	}
+
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this question from the page.">'+
+			'<p class="validateTips">Are you sure that you want to remove this question from your page?<br/><br/>This cannot be undone!</div>');
+
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeBankItem();
+	                $(this).dialog("close");
+                }
+            }
+        });
 	}
 
 	function removeOption(_id){
