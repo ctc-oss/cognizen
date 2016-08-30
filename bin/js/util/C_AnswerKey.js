@@ -242,7 +242,14 @@ function C_AnswerKey(_myItem, _myParent) {
 			 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
 			 				var optionCount = $(data).find("page").eq(i).find("option").length;
 							for(var j = 0; j < optionCount; j++){
-								msg += $(data).find("page").eq(i).find("option").eq(j).find("content").text();
+								var answerText = $(data).find("page").eq(i).find("option").eq(j).find("content").text();
+								if(answerText.indexOf("src=") != -1){
+									var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+searchTitle+"/media/";
+									msg += answerText.replace("media/",	mediaPathRes);
+								}
+								else{
+									msg += answerText;
+								}
 								var icon = $(data).find("page").eq(i).find("option").eq(j).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 								msg += icon + '<br/>';
 							}		 				
@@ -253,7 +260,14 @@ function C_AnswerKey(_myItem, _myParent) {
 							for(var j = 0; j < optionCount; j++){	
 								msg += $(data).find("page").eq(i).find("option").eq(j).text();
 								var optionCorrect =  $(data).find("page").eq(i).find("option").eq(j).attr('correct');
-								msg += ' = ' + $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").find("content").text();
+								var answerText = $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").find("content").text();
+								if(answerText.indexOf("src=") != -1){
+									var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+searchTitle+"/media/";
+									msg += ' = ' + answerText.replace("media/",	mediaPathRes);
+								}
+								else{
+									msg += ' = ' + answerText;
+								}
 								msg += '<br/>';
 							}	 				
 			 				break;
@@ -282,7 +296,14 @@ function C_AnswerKey(_myItem, _myParent) {
 								msg += '<br/>' + qNum + '. ' + $(data).find("page").eq(i).find("bankitem").eq(j).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
 				 				var bankOptionCount = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").length;
 								for(var k = 0; k < bankOptionCount; k++){
-									msg += $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).find("content").text();
+									var answerText = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).find("content").text();
+									if(answerText.indexOf("src=") != -1){
+										var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+searchTitle+"/media/";
+										msg += answerText.replace("media/",	mediaPathRes);
+									}
+									else{
+										msg += answerText;
+									}									
 									var icon = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 									msg += icon + '<br/>';
 								}								

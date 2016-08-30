@@ -1934,6 +1934,7 @@ var SocketHandler = {
 		var moduleUser_arr = [];
 		var activeToolEditor = null;
         var activeTool = null;
+        console.log(data);
 
 		for(var i = 0; i < activeEdit_arr.length; i++){
 			if(data.id == activeEdit_arr[i].courseID || data.id == activeEdit_arr[i].lessonID){
@@ -1945,7 +1946,7 @@ var SocketHandler = {
 		}
 
 		for(var j = 0; j < activeTool_arr.length; j++){
-			if(data.id == activeTool_arr[j].courseID || data.id == activeEdit_arr[i].lessonID){
+			if(data.id == activeTool_arr[j].courseID || data.id == activeTool_arr[i].lessonID){
 				allow = false;
 				activeToolEditor = activeTool_arr[j].username;
                 activeTool = activeTool_arr[j].tool;
@@ -1968,10 +1969,10 @@ var SocketHandler = {
 			var tmpObj = new Object();
 			if(data.level == "projectSearch"){
 				tmpObj.lessonID = data.id;
-				tmpObj.courseID = null;
+				tmpObj.courseID = "NA";
 			}else{
 				tmpObj.courseID = data.id;
-				tmpObj.lessonID = null;
+				tmpObj.lessonID = "NA";
 			}
 			
 			var sessionId = _this.SocketSessions.sessionIdFromSocket(_this._socket);

@@ -68,7 +68,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	}
 	
 	if($(data).find("page").eq(currentPage).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find('visualtranscript').text() != ""){
-		transcriptText = $(data).find("page").eq(currentPage).find('visualtranscript').text();
+		transcriptText = $(data).find("page").eq(currentPage).find('visualtranscript').eq(0).text();
 	}else{
 		$(data).find("page").eq(currentPage).append($("<visualtranscript>"));
 		var newVisualTranscript = new DOMParser().parseFromString('<visualtranscript></visualtranscript>',  "application/xml");

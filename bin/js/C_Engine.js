@@ -23,6 +23,7 @@ var transitionLength = 1;
 var currentPage = 0;//Integer representing the current page
 var currentPageID; //Needed for someone is sorting pages, may change node order and then a change would be sent to the wrong xml node.
 var totalPages;//total pages in the presentation
+var currentProject = "";
 
 var socket;
 var dashMode = "author";

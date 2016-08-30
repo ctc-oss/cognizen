@@ -774,7 +774,7 @@ function C_QuestionBank(_type) {
 
 		$("#questionEditText").append($(data).find("page").eq(currentPage).find("bankitem").eq(currentEditBankMember).find("question").text());
 
-		$("#removeBankItem").click(removeBankItem).tooltip();
+		$("#removeBankItem").click(areYouSure).tooltip();
 
 		CKEDITOR.inline( "questionEditText", {
 			toolbar: contentToolbar,
@@ -952,30 +952,9 @@ function C_QuestionBank(_type) {
 					}
 				}
 			]
-			// {
-			// 	AddQuestion: function(){
-			// 		var tmpObj = makeQuestionDataStore();
-			// 		saveQuestionEdit(tmpObj);
-			// 		addQuestion(bankLength);
-			// 	},
-			// 	AddOption: function(){
-			// 		addOption(optionEdit_arr.length, true);
-			// 	},
-			// 	Done: function(){
-			// 		var tmpObj = makeQuestionDataStore();
-			// 		saveBankEdit(tmpObj);
-			// 		$("#questionEditDialog").dialog("close");
-			// 	}
-			// },
-			// close: function(){
-			// 	$("#questionEditDialog").remove();
-			// }
+
 		});
 
-		//adds tooltips to the edit dialog buttons
-	    // $('button').eq(3).attr('title', 'Adds a new question.');
-	    // $('button').eq(4).attr('title', 'Adds a new matching option.');
-	    // $('button').eq(5).attr('title', 'Closes the edit dialog.');
 	    $(function () {
 	        $(document).tooltip();
 	    });
@@ -1042,6 +1021,31 @@ function C_QuestionBank(_type) {
 		return tmpObj;
 	}
 
+	/**********************************************************************
+    ** areYouSure?  Make sure that user actually intended to remove content.
+    **********************************************************************/
+	function areYouSure(){
+		$("#stage").append('<div id="dialog-removeContent" title="Remove this question from the page.">'+
+			'<p class="validateTips">Are you sure that you want to remove this question from your page?<br/><br/>This cannot be undone!</div>');
+
+	    $("#dialog-removeContent").dialog({
+            modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-removeContent").remove();
+            },
+            buttons: {
+                Cancel: function () {
+                    $(this).dialog("close");
+                },
+                Remove: function(){
+	                removeBankItem();
+	                $(this).dialog("close");
+                }
+            }
+        });
+	}
+
 	function removeOption(_id){
 		for(var i = 0; i < optionEdit_arr.length; i++){
 			if(_id == $("#"+optionEdit_arr[i]+"Container").attr("value")){
@@ -1056,11 +1060,13 @@ function C_QuestionBank(_type) {
 
 	function removeBankItem(){
 		if(bankLength > 1){
-			$(data).find("pages").eq(currentPage).find("bankitem").eq(currentEditBankMember).remove();
+			$(data).find("page").eq(currentPage).children("bankitem").eq(currentEditBankMember).remove();
 			bankLength--;
 			$("#questionEditDialog").remove();
 			optionEdit_arr = [];
-			currentEditBankMember = 0;
+			if(currentEditBankMember != 0){
+				currentEditBankMember--;
+			}
 			updateQuestionEditDialog();
 		}else{
 			alert("you must have at least one bank item.");
