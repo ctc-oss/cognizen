@@ -451,13 +451,18 @@ function setObjectiveSuccess(objId, success, eo){
 function getObjectiveSuccess(objId){
 	if(doScorm()){
 		var objIndex = findObjective(objId);
-        switch(scorm.version){
-            case "1.2" : 
-            	return scorm.get("cmi.objectives." + objIndex + ".status");
-            //2004	
-            default : 
-				return scorm.get("cmi.objectives." + objIndex + ".success_status");
-            	
+		if(objIndex != -1){
+	        switch(scorm.version){
+	            case "1.2" : 
+	            	return scorm.get("cmi.objectives." + objIndex + ".status");
+	            //2004	
+	            default : 
+					return scorm.get("cmi.objectives." + objIndex + ".success_status");
+	            	
+	        }
+        }
+        else{
+        	return "undefined";
         }		
 	}
 	else{
@@ -529,7 +534,8 @@ function findObjective(objId)
 	        }
 	    }
 
-	    if (objIndex == -1) {
+	    //don't create objectives in JKO
+	    if ($(courseData).find("course").attr("lms") != "JKO" && objIndex == -1) {
 	        objIndex = num;
 	        scorm.set("cmi.objectives." + objIndex + ".id", encodedObjId);
 	    }
