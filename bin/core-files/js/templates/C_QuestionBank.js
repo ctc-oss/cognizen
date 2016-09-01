@@ -360,7 +360,7 @@ function C_QuestionBank(_type) {
 		}
 
 		doAccess(pageAccess_arr);
-		console.log(pageAccess_arr);
+		//console.log(pageAccess_arr);
 	}
 
 	//Called if the user closes the popup instead of proceed
@@ -380,15 +380,15 @@ function C_QuestionBank(_type) {
 					option_arr[parseInt(temp_arr[k])].find("input").prop("checked", "checked");
 					if(option_arr[parseInt(temp_arr[k])].find('input').attr("value") == "false"){
 						tempCorrect = false;
-						option_arr[temp_arr[k]].addClass("optionIncorrect");
+						(graded) ? option_arr[temp_arr[k]].addClass("optionIncorrectGraded") : option_arr[temp_arr[k]].addClass("optionIncorrect");
 					}else{
-						option_arr[temp_arr[k]].addClass("optionCorrect");
+						(graded) ? option_arr[temp_arr[k]].addClass("optionCorrectGraded") : option_arr[temp_arr[k]].addClass("optionCorrect");
 					}
 				}
 				if(questionResponse_arr[i].correct == false){
 					for(var j = 0; j < option_arr.length; j++){
 						if(option_arr[j].find("input").attr("value") == "true"){
-							option_arr[j].addClass("optionCorrect");
+							(graded) ? option_arr[j].addClass("optionCorrectGraded") : option_arr[j].addClass("optionCorrect");
 						}
 					}
 				}

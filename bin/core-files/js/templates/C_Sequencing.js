@@ -227,9 +227,9 @@ function C_Sequencing(_type) {
 				for(var k = 0; k < temp_arr.length; k++){
 					if(temp_arr[k] != k + 1){
 						tempCorrect = false;
-						$("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionIncorrect");
+						(graded) ? $("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionIncorrectGraded") : $("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionIncorrect");
 					}else{
-						$("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionCorrect");
+						(graded) ? $("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionCorrectGraded") : $("#sequenceHolder").find(".sequenceOption").eq(k).addClass("optionCorrect");
 					}
 				}
 			}

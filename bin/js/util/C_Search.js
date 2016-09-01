@@ -74,6 +74,7 @@ function C_Search(_myItem, _myParent) {
      ************************************************************************************/
      function initSearch(){
      	loadedSearchModules = 0;
+     	module_arr = [];
      	var tmpCourseId = courseID;
      	if(currentCourseType === 'lesson'){
      		tmpCourseId = _myParent.id;
@@ -187,10 +188,8 @@ function C_Search(_myItem, _myParent) {
      ************************************************************************************/
      function importSearchModuleItemComplete(_data){
 	     for(var i = 0; i < module_arr.length; i++){
-	     	//removes special characters from content.xml lessonTitle attr so it can be compared to the 
-	     	//name attr from course.xml that is limited to alphanumberic
-	     	var strippedContentLessonTitle = $(_data).find("lessonTitle").attr("value").replace(/[^\w\s]/gi, '');
-		     if(strippedContentLessonTitle == module_arr[i].name){
+	     	//#4929 updated to compare ids instead of names
+		     if($(_data).find("id").attr("value") == module_arr[i].id){
 			     module_arr[i].xml = _data;
 		     }
 	     }
@@ -342,6 +341,7 @@ function C_Search(_myItem, _myParent) {
                 	id : courseID,
                 	tool : 'search'
                 });
+                module_arr = [];
                 $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {

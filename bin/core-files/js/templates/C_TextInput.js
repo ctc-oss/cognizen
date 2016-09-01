@@ -201,7 +201,7 @@ function C_TextInput(_type) {
 								{
 									$('#fb'+textInputQuestion_obj.question).html('Correct, the answer is '+ textInputQuestion_obj.userAnswer).css("color", "green");
 									$('#'+textInputQuestion_obj.question).removeClass();
-									$('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
+									(graded) ? $('#'+textInputQuestion_obj.question).addClass("dialogInputCorrectGraded") : $('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
 									$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
 								}
 								else{
@@ -220,7 +220,7 @@ function C_TextInput(_type) {
 
 									$('#fb'+textInputQuestion_obj.question).html(textInputQuestion_obj.feedback).css("color", "red");
 									$('#'+textInputQuestion_obj.question).removeClass();
-									$('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");
+									(graded) ? $('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrectGraded") : $('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");
 								}
 							}
 							else{
@@ -371,7 +371,7 @@ function C_TextInput(_type) {
 											$('#fb'+textInputQuestion_obj.question).html('Correct, the answer is '+ qAnswers[0]).css("color", "green");
 										}
 										$('#'+textInputQuestion_obj.question).removeClass();
-										$('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
+										(graded) ? $('#'+textInputQuestion_obj.question).addClass("dialogInputCorrectGraded") : $('#'+textInputQuestion_obj.question).addClass("dialogInputCorrect");
 										$("#"+textInputQuestion_obj.question).attr("disabled", "disabled");
 									}
 									else{
@@ -392,7 +392,7 @@ function C_TextInput(_type) {
 											allComplete = false;
 										}
 										$('#'+textInputQuestion_obj.question).removeClass();
-										$('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");
+										(graded) ? $('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrectGraded") : $('#'+textInputQuestion_obj.question).addClass("dialogInputIncorrect");
 
 									}
 

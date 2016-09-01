@@ -357,15 +357,15 @@ function C_MultipleChoiceFancy(_type) {
 					option_arr[temp_arr[k]].find(".mcf_option_label").addClass("mcf_option_label_selected");
 					if(option_arr[temp_arr[k]].attr("value") == "false"){
 						tempCorrect = false;
-						option_arr[temp_arr[k]].addClass("optionIncorrect");
+						(graded) ? option_arr[temp_arr[k]].addClass("optionIncorrectGraded") : option_arr[temp_arr[k]].addClass("optionIncorrect");
 					}else{
-						option_arr[temp_arr[k]].addClass("optionCorrect");
+						(graded) ? option_arr[temp_arr[k]].addClass("optionCorrectGraded") : option_arr[temp_arr[k]].addClass("optionCorrect");
 					}
 				}
 				if(questionResponse_arr[i].correct == false){
 					for(var j = 0; j < option_arr.length; j++){
 						if(option_arr[j].attr("value") == "true"){
-							option_arr[j].addClass("optionCorrect");
+							(graded) ? option_arr[j].addClass("optionCorrectGraded") : option_arr[j].addClass("optionCorrect");
 						}
 					}
 				}
