@@ -366,7 +366,7 @@ function C_Matching(_type) {
 
 						if(option_arr[k].data("myMatch") != userMap){
 							tempCorrect = false;
-							option_arr[k].addClass("optionIncorrect");
+							(graded) ? option_arr[k].addClass("optionIncorrectGraded") : option_arr[k].addClass("optionIncorrect");
 							//Find the correct answer to display.
 							var correctDisplay = "";
 							for(var l = 0; l < answer_arr.length; l++){
@@ -378,16 +378,16 @@ function C_Matching(_type) {
 							//$("<span style='position: relative; float: left; margin-top: 2px; margin-right: 5px;'><b>" + correctDisplay + "  </b></span>").insertBefore(option_arr[k].find('input'));
 							option_arr[k].prepend("<span style='position: relative; float: left; margin-top: 2px; margin-right: 5px;'><b>" + correctDisplay + "  </b></span>");
 						}else{
-							option_arr[k].addClass("optionCorrect");
+							(graded) ? option_arr[k].addClass("optionCorrectGraded") : option_arr[k].addClass("optionCorrect");
 						}
 					}else{
 						var tempDrag = temp_arr[k].drag;
 						var tempDrop = temp_arr[k].drop;
 						if($("#" + tempDrop).data("matchID") != $("#" + tempDrag).data("myMatch")){
 							tempCorrect = false;
-							$("#" + tempDrag).addClass("optionIncorrect");
+							(graded) ? $("#" + tempDrag).addClass("optionIncorrectGraded") : $("#" + tempDrag).addClass("optionIncorrect");
 						}else{
-							$("#" + tempDrag).addClass("optionCorrect");
+							(graded) ? $("#" + tempDrag).addClass("optionCorrectGraded") : $("#" + tempDrag).addClass("optionCorrect");
 						}
 						$("#" + tempDrag).css({"top":temp_arr[k].top, "left":temp_arr[k].left, "position":"absolute"});
 						TweenMax.to($("#" + tempDrag), 1, {css:{scaleX:.5, scaleY:.5}});

@@ -198,10 +198,10 @@ function C_Slider(_type) {
 				
 				var tempCorrect = questionResponse_arr[i].correct;
 				if(tempCorrect){
-					$("#display").addClass("optionCorrect");
+					(graded) ? $("#display").addClass("optionCorrectGraded") : $("#display").addClass("optionCorrect");
 				}
 				else{
-					$("#display").addClass("optionIncorrect");
+					(graded) ? $("#display").addClass("optionIncorrectGraded") : $("#display").addClass("optionIncorrect");
 				}
 				break;
 			}

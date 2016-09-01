@@ -304,7 +304,7 @@ h1#lessonTitle{
 }
 
 
-.dialogInputCorrect{
+.dialogInputCorrect, .dialogInputCorrectGraded{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -317,7 +317,7 @@ h1#lessonTitle{
 	padding-right: 8px;
 }
 
-.dialogInputIncorrect {
+.dialogInputIncorrect, .dialogInputIncorrectGraded {
 	background: #F49D96 url(images/wrong.png) no-repeat right center;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -2147,14 +2147,14 @@ MULTIPLE CHOICE LAYOUTS
 	cursor: pointer;
 }
 
-.optionCorrect{
+.optionCorrect, .optionCorrectGraded{
 	background: #98FF97 url(images/correct.png) no-repeat right center;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
 
-.optionIncorrect{
+.optionIncorrect, .optionIncorrectGraded{
 	background: #F49D96 url(images/wrong.png) no-repeat right center;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -4548,7 +4548,7 @@ a.fancybox-expand {
 			padding: 5px;
 		}
 
-		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect{
+		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect, .dialogInputCorrectGraded, .dialogInputIncorrectGraded{
 			max-width: 95%;
 		}
 
