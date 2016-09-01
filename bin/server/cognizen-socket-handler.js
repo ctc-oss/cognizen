@@ -1934,7 +1934,7 @@ var SocketHandler = {
 		var moduleUser_arr = [];
 		var activeToolEditor = null;
         var activeTool = null;
-        console.log(data);
+        _this.logger.info(data);
 
 		for(var i = 0; i < activeEdit_arr.length; i++){
 			if(data.id == activeEdit_arr[i].courseID || data.id == activeEdit_arr[i].lessonID){

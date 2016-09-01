@@ -177,10 +177,8 @@ function C_AnswerKey(_myItem, _myParent) {
      ************************************************************************************/
      function importAKModuleItemComplete(_data){
 	     for(var i = 0; i < module_arr.length; i++){
-	     	//removes special characters from content.xml lessonTitle attr so it can be compared to the 
-	     	//name attr from course.xml that is limited to alphanumberic
-	     	var strippedContentLessonTitle = $(_data).find("lessonTitle").attr("value").replace(/[^\w\s]/gi, '');
-		     if(strippedContentLessonTitle == module_arr[i].name){
+	     	//#4929 updated to compare ids instead of names
+		     if($(_data).find("id").attr("value") == module_arr[i].id){
 			     module_arr[i].xml = _data;
 		     }
 	     }
