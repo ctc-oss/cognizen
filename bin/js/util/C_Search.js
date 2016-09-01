@@ -74,6 +74,7 @@ function C_Search(_myItem, _myParent) {
      ************************************************************************************/
      function initSearch(){
      	loadedSearchModules = 0;
+     	module_arr = [];
      	var tmpCourseId = courseID;
      	if(currentCourseType === 'lesson'){
      		tmpCourseId = _myParent.id;
@@ -340,6 +341,7 @@ function C_Search(_myItem, _myParent) {
                 	id : courseID,
                 	tool : 'search'
                 });
+                module_arr = [];
                 $(this).dialog('destroy').remove();
             },
             open: function (event, ui) {
