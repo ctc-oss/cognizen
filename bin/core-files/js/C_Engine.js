@@ -450,11 +450,11 @@ function buildInterface(){
 	if($(data).find('search').length == 0){
 
 		$(data).find("preferences").append($('<search>', data));
-		$(data).find("closelesson").attr("value", "false");
-
+		$(data).find("search").attr("value", "false");
 		searchEnabled = false;
 	}else{
-		if($(data).find('search').attr('value') == "false"){
+		var searchValue = $(data).find('search').attr('value');
+		if(searchValue == "false" || searchValue == undefined){
 			searchEnabled = false;
 		}else{
 			searchEnabled = true;
