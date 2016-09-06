@@ -2981,7 +2981,7 @@ var SocketHandler = {
 
                                     var itemCount = etree.findall('./item').length;
 
-                                    var updatedCount = 0;
+                                    var lessonsDataArr = [];
                                     for (var i = 0; i < itemCount; i++) {
                                         var myNode = etree.findall('./item')[i];
                                         var nodeId = myNode.get('id');
@@ -3002,46 +3002,22 @@ var SocketHandler = {
 
                                         };
 
-                                        Lesson.createUnique(lessonData, function (saved, callbackData) {
-                                            if (saved) {
-                             
-                                                var tmpContent = {
-                                                    course: callbackData.course,
-                                                    path: callbackData.path,
-                                                    name: callbackData.name,
-                                                    _id: callbackData._id,
-                                                    parentName: courseName
-                                                };
+                                        lessonsDataArr.push(lessonData);               
 
-                                                _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
-                                                    var parentName = newcontent.parentName ? newcontent.parentName : '';
-                                                    etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
-                                                    etreeContent.find('./courseInfo/preferences/id').set('value', callbackData._id);
+                                    }; 
 
-                                                    var myItemNode = etree.findall('./item')[updatedCount];
-                                                    myItemNode.set('id', callbackData._id);
-
-                                                    if(++updatedCount == itemCount){
-
-                                                        var xml = etree.write({'xml_decleration': false});
-                                                        fs.outputFile(newCourseXML, xml, function (err) {
-                                                            if (err) callback(err, null);                     
-                                                            callback(err);
-
-                                                        });                                    
-                                                    }
-
-                                                });            
-
-                                            }
-                                            else 
-                                            {
-                                                _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
-                                                _this.logger.info('Lesson already exists with name ' + data.name);
-                                            }                        
-                                        });                    
-
-                                    };                
+                                    _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
+                                        if(err){
+                                            callback(err, null)
+                                        }
+                                        else{
+                                            var xml = etree.write({'xml_decleration': false});
+                                            fs.outputFile(newCourseXML, xml, function (err) {
+                                                if (err) callback(err, null);                     
+                                                callback(err);
+                                            }); 
+                                        } 
+                                    });                                                    
 
                                 });
                                 ////////////////////////////////////
@@ -3145,6 +3121,7 @@ var SocketHandler = {
 
         var courseID = content.destination._id;
         var courseName = content.destination.name;
+        _this.logger.info("_cloneCourseFiles : " + content.destination.name + " : " + content.destination._id);
 
         FileUtils.copyDir(srcWritePath, destWritePath, true, function (err) {
     
@@ -3158,9 +3135,9 @@ var SocketHandler = {
                 etree.find('./').set('coursedisplaytitle', courseName);
                 etree.find('./').set('id', courseID);
 
+                var lessonsDataArr = [];
                 var itemCount = etree.findall('./item').length;
 
-                var updatedCount = 0;
                 for (var i = 0; i < itemCount; i++) {
                     var myNode = etree.findall('./item')[i];
                     var nodeId = myNode.get('id');
@@ -3181,51 +3158,70 @@ var SocketHandler = {
 
                     };
 
-                    Lesson.createUnique(lessonData, function (saved, callbackData) {
-                        if (saved) {
-         
-                            var tmpContent = {
-                                course: callbackData.course,
-                                path: callbackData.path,
-                                name: callbackData.name,
-                                _id: callbackData._id,
-                                parentName: courseName
-                            };
+                    lessonsDataArr.push(lessonData);
 
-                            _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
-                                var parentName = newcontent.parentName ? newcontent.parentName : '';
-                                etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
-                                etreeContent.find('./courseInfo/preferences/id').set('value', callbackData._id);
+                };        
 
-                                var myItemNode = etree.findall('./item')[updatedCount];
-                                myItemNode.set('id', callbackData._id);
-
-                                if(++updatedCount == itemCount){
-
-                                    var xml = etree.write({'xml_decleration': false});
-                                    fs.outputFile(newCourseXML, xml, function (err) {
-                                        if (err) callback(err, null);                     
-                                        callback(err);
-
-                                    });                                    
-                                }
-
-                            });            
-
-                        }
-                        else 
-                        {
-                            _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
-                            _this.logger.info('Lesson already exists with name ' + data.name);
-                        }                        
-                    });                    
-
-                };                
+                _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
+                    if(err){
+                        callback(err, null)
+                    }
+                    else{
+                        var xml = etree.write({'xml_decleration': false});
+                        fs.outputFile(newCourseXML, xml, function (err) {
+                            if (err) callback(err, null);                     
+                            callback(err);
+                        }); 
+                    } 
+                });        
 
             });
 
         });
     },    
+
+    _createClonedLessons: function(lessonsDataArr, courseName, etree, itemCount, index, callback){
+        var _this = this;
+
+        Lesson.createUnique(lessonsDataArr[index], function (saved, callbackData) {
+            if (saved) {
+
+                var tmpContent = {
+                    course: callbackData.course,
+                    path: callbackData.path,
+                    name: callbackData.name,
+                    _id: callbackData._id,
+                    parentName: courseName
+                };
+                console.log(tmpContent);
+                _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
+                    var parentName = newcontent.parentName ? newcontent.parentName : '';
+                    etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
+                    etreeContent.find('./courseInfo/preferences/id').set('value', callbackData._id);
+
+                    var myItemNode = etree.findall('./item')[index];
+                    myItemNode.set('id', callbackData._id);
+
+                    if(++index == itemCount){
+                        callback(null);                                 
+                    }
+                    else{
+                        _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, index, function(err){
+                            if (err) callback(err, null);                     
+                            callback(err);
+                        });
+                    }
+
+                });            
+
+            }
+            else 
+            {
+                _this._socket.emit('generalError', {title: 'Lesson Exists', message: 'There is already a lesson in this course that is named ' + data.name + '. Please choose a different lesson name or contact the program admin to grant you access to the course.'});
+                _this.logger.info('Lesson already exists with name ' + data.name);
+            }                        
+        }); 
+    },
 
     cloneLesson: function (data){
         var _this = this;
