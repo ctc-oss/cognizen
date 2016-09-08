@@ -186,6 +186,9 @@ function C_QuestionBank(_type) {
 		if($(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr('randomize') == "true"){
 			randomize = true;
 		}
+		else{
+			randomize = false; //#4943
+		}
 		pageTitle = new C_PageTitle();
 		if(toComplete > 1){
 			$("#pageTitle").text($("#pageTitle").text() + " (question " + (questionsComplete + 1)  + " of " + toComplete + ")");
