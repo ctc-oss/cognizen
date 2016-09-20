@@ -173,6 +173,8 @@ function C_QuestionBank(_type) {
 	}
 
 	function buildTemplate(){
+		//reset option_arr #4964
+		option_arr = [];
 		attemptsAllowed = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr('attempts');
 		feedbackType = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr('feedbacktype');
 		feedbackDisplay = $(data).find("page").eq(currentPage).find("bankitem").eq(bankitem).attr('feedbackdisplay');
