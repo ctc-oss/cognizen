@@ -1439,18 +1439,18 @@ function clickPublish(){
 }
 
 function checkSurvey(){
-	try{ $("#survey").remove();} catch(e){}
+	try{ $("#surveyButton").remove();} catch(e){}
 	//Survey button.
 	if($(data).find('survey').attr('value')){
 		surveyLink = $(data).find('survey').attr('link');
 		if($(data).find('survey').attr('value') == "true"){
 			hasSurvey = true;
-			$("#myCanvas").append("<button id='survey' aria-label='Click here to take a survey.'>COMMENT</button>");
+			$("#myCanvas").append("<div id='surveyPane' class='surveyPane'><div id='surveyButton' class='C_Survey' role='button' aria-lable='Click here to take a survey.' title='Click here to take a survey.'></div></div>");
 		}else{
 			hasSurvey = false;
 		}
 
-		$("#survey").button().click(function(){
+		$("#surveyButton").click(function(){
 			if(surveyLink == "null"){
 				alert("The link for the survey has not been set.");
 			}else{
@@ -1464,18 +1464,18 @@ function checkSurvey(){
 }	//End survey
 
 function checkTestOut(){
-	try{ $("#testOut").remove();} catch(e){}
+	try{ $("#testOutButton").remove();} catch(e){}
 	//Test Out button.
 	if($(data).find('testout').attr('value')){
 		testLink = $(data).find('testout').attr('link');
 		if($(data).find('testout').attr('value') == "true"){
 			testOut = true;
-			$("#myCanvas").append("<button id='testOut' aria-label='Click here to got directly to the test.'>TEST OUT</button>");
+			$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");
 		}else{
 			testOut = false;
 		}
 
-		$("#testOut").button().click(function(){
+		$("#testOutButton").click(function(){
 			if(testLink == "null"){
 				alert("The link for the test has not been set.");
 			}else{
@@ -1494,11 +1494,11 @@ function checkTestOut(){
 
 
 function checkCloseLesson(){
-	try{ $("#closeLesson").remove();} catch(e){}
+	try{ $("#closeLessonButton").remove();} catch(e){}
 	if(closeLesson){
-		$("#myCanvas").append("<button id='closeLesson' title='Click here close your lesson.'>CLOSE LESSON</button>");
+		$("#myCanvas").append("<div id='closeLessonPane' class='closeLessonPane'><div id='closeLessonButton' class='C_CloseLesson' role='button' aria-lable='Click here close your lesson.' title='Click here close your lesson.'></div></div>");
 
-		$("#closeLesson").button().click(function(){
+		$("#closeLessonButton").click(function(){
 			//#3550 updated to call scorm call.
 			//#3568
 			var isScored = 'false';

@@ -367,7 +367,7 @@ function buildInterface(){
 	}
 	if (isMobile){
 		//console.log("mobile site");
-		$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='panes'></div></div>");
+		$('body').append("<div id='myCanvas'><div id='stage'></div><div id='courseTitle'></div><div id='lessonTitle'></div><div id='icon'></div><div id='panes'></div></div>");
 	}else{
 		//console.log("desktop site");
 		$('body').append("<div id='outer'><div id='inner'><div id='myCanvas'><h1 id='courseTitle'></h1><h1 id='lessonTitle'></h1><div id='stage'></div><div id='panes'></div></div></div></div>");
