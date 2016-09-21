@@ -272,6 +272,9 @@ function C_Completion(_type) {
 			$("#contentHolder").addClass("text");
 		}
 
+		// Moved audioHolder declare to be before showScoreEdit() resolves #4965
+        audioHolder = new C_AudioHolder();
+
 		showScoreEdit();
 
 		determineReviewList();
@@ -448,8 +451,6 @@ function C_Completion(_type) {
 		//$("#content").attr("aria-label", $("#content").text().replace(/'/g, ""));
         //pageAccess_arr.push($("#content"));
         pageAccess_arr.push($("#completionButton"));
-
-        audioHolder = new C_AudioHolder();
 
         checkMode();
 
