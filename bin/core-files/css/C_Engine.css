@@ -127,12 +127,12 @@ blockquote
 #courseTitle{
 	position : absolute;
 	top : 5px;
-	right: 10px;
+	left : 125px;
 	opacity : 1;
 	overflow : auto;
 	font-size : 150%;
-	font-weight: normal;
-	color:	#EEEEEE;
+	font-weight: bold;
+	color:	#464646;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -144,12 +144,12 @@ h1#courseTitle{
 #lessonTitle{
 	position : absolute;
 	top : 37px;
-	right: 10px;
+	left: 125px;
 	opacity : 1;
 	overflow : auto;
 	font-size : 100%;
-	font-weight: normal;
-	color:	#3383BB;
+	font-weight: bold;
+	color:	#464646;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -1506,43 +1506,67 @@ MEDIA LAYOUTS
 
 }
 
-#closeLesson{
-	position: absolute;
-	top: 68px;
-	right: 260px;
-	height: 20px;
+.closeLessonPane{
+	position				: absolute;
+	right					: 5px;
+	top						: 5px;
+	overflow				: visible;
+	z-index					: 10;
 }
 
-#closeLesson .ui-button-text{
-	padding: 0em 1em .1em 1em;
-	font-size: 9pt;
-	/*font-family: "Arial Black", Gadget, sans-serif;*/
+.C_CloseLesson{
+	position				: relative;
+	float					: right;
+	width					: 20px;
+	height					: 20px;
+	background				: url(images/course_close.svg) no-repeat;
+	cursor					: hand;
 }
 
-#survey{
-	position: absolute;
-	top: 68px;
-	right: 20px;
-	height: 20px;
+.C_CloseLesson:hover{
+	background				: url(images/course_close_hover.svg) no-repeat;
 }
 
-#survey .ui-button-text{
-	padding: 0em 1em .1em 1em;
-	font-size: 9pt;
-	/*font-family: "Arial Black", Gadget, sans-serif;*/
+.surveyPane{
+	position				: absolute;
+	right					: 30px;
+	top						: 35px;
+	overflow				: visible;
 }
 
-#testOut{
-	position: absolute;
-	top: 68px;
-	right: 140px;
-	height: 20px;
+.C_Survey{
+	position				: relative;
+	float					: right;
+	width					: 20px;
+	height					: 20px;
+	background				: url(images/course_comment.svg) no-repeat;
+	cursor					: hand;
+	cursor					: pointer;
 }
 
-#testOut .ui-button-text{
-	padding: 0em 1em .1em 1em;
-	font-size: 9pt;
-	/*font-family: "Arial Black", Gadget, sans-serif;*/
+.C_Survey:hover{
+	background				: url(images/course_comment_hover.svg) no-repeat;
+}
+
+.testOutPane{
+	position				: absolute;
+	right					: 5px;
+	top						: 35px;
+	overflow				: visible;
+}
+
+.C_TestOut{
+	position				: relative;
+	float					: right;
+	width					: 20px;
+	height					: 20px;
+	background				: url(images/course_testout.svg) no-repeat;
+	cursor					: hand;
+	cursor					: pointer;
+}
+
+.C_TestOut:hover{
+	background				: url(images/course_testout_hover.svg) no-repeat;
 }
 
 .mediaBrowserScaleWarning{
@@ -1925,13 +1949,13 @@ div.chartjs{
 	float					: right;
 	width					: 28px;
 	height					: 25px;
-	background				: url(images/transcript_icon_open.png) no-repeat;
+	background				: url(images/course_transcript_open.svg) no-repeat;
 	cursor					: hand;
 	cursor					: pointer;
 }
 
 .C_TranscriptActive{
-	background				: url(images/transcript_icon_close.png) no-repeat;
+	background				: url(images/course_transcript_close.svg) no-repeat;
 }
 
 .transcriptDisplay{
@@ -1956,6 +1980,7 @@ div.chartjs{
 	padding               	: 5px;
 	margin-right		  	: -22px;
 	padding-right		  	: 22px;
+	z-index : 10;
 }
 
 #scrollableTranscript{
@@ -2521,6 +2546,9 @@ ESSAY COMPARE LAYOUTS
 	position:absolute;
 	top:720px;
 	left: 695px;
+}
+#back.disabled{
+	background: #c0cfde;
 }
 
 #help.disabled, #back.disabled{
@@ -3739,6 +3767,7 @@ a.fancybox-expand {
 		color: #464646;
 		background-color: #A6DDED;
 		border-bottom: 2px solid #9DA6AB;
+
 	}
 
 	#lessonTitle{
@@ -3758,6 +3787,19 @@ a.fancybox-expand {
 		line-height: 30px;
 		color: #464646;
 		background-color: #7CD2F2;
+	}
+
+	#icon{
+		position : fixed;
+		width: 50px;
+		height: 50px;
+		opacity: 1;
+		overflow: auto;
+		text-align: left;
+		right: 15px;
+		top: 5px;
+		bottom: auto;
+		background	: url(images/icon.svg) no-repeat;		
 	}
 
 	#pageTitle{
@@ -4663,6 +4705,8 @@ a.fancybox-expand {
 			width: 16.667%;
 			height: 40px;
 			background-size: auto 75%;
+			border-left: 1px solid #3f3f3f;
+    		border-right: 1px solid #3f3f3f;			
 		}
 
 		#back{
@@ -4671,6 +4715,8 @@ a.fancybox-expand {
 			width: 16.667%;
 			height: 40px;
 			background-size: auto 75%;
+			border-left: 1px solid #3f3f3f;
+    		border-right: 1px solid #3f3f3f;
 		}
 
 		#next{
@@ -4679,6 +4725,8 @@ a.fancybox-expand {
 			width: 16.667%;
 			height: 40px;
 			background-size: auto 75%;
+			border-left: 1px solid #3f3f3f;
+    		border-right: 1px solid #3f3f3f;			
 		}
 
 		#pageCount{
@@ -4698,6 +4746,8 @@ a.fancybox-expand {
 			width: 16.667%;
 			height: 40px;
 			background-size: auto 75%;
+			border-left: 1px solid #3f3f3f;
+    		border-right: 1px solid #3f3f3f;			
 		}
 
 		#indexContent{
@@ -4711,6 +4761,8 @@ a.fancybox-expand {
 			height: 40px;
 			background-size: auto 75%;
 			margin: 0px;
+			border-left: 1px solid #3f3f3f;
+    		border-right: 1px solid #3f3f3f;			
 		}
 
 		/************** END BOTTOM NAV **************/
