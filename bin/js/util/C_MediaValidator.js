@@ -272,6 +272,16 @@ function C_MediaValidator(_myItem, _myParent) {
 				 		}
 				 	}
 
+				 	// #4968
+				 	var contentHrefLength = $($.parseHTML(content)).find("a").length;
+				 	if(contentHrefLength != 0){
+				 		for(var n=0; n < contentHrefLength; n++){
+				 			var contentHref = $($.parseHTML(content)).find("a").eq(n).attr("href");
+						 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';				 			
+				 		}
+				 	}
+
 				 	msg += '<hr/>';
 				}
 
