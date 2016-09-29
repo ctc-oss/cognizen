@@ -1217,6 +1217,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				}
 			}
 
+			//#4971 reset poster attr when not a video
+			$(data).find("page").eq(currentPage).attr("poster", "null");
+
 			 $("#stage").append("<div id='swfDialog' title='Input SWF Stats'><div>SWF Width: <input id='swfWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>SWF Height: <input id='swfHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight+ " style='width:15%;'/></div></div>");
 			 $("#swfDialog").dialog({
                 autoOpen: true,
@@ -1234,6 +1237,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			});
 		}else if(mediaType == "jpg" || mediaType == "gif" || mediaType == "png" || mediaType == "jpeg" || mediaType == "JPG" || mediaType == "PNG" || mediaType == "GIF" || mediaType == "svg" || mediaType == "SVG"){
             $(data).find("page").eq(currentPage).attr("img", imgPath);
+            //#4971 reset poster attr when not a video
+			$(data).find("page").eq(currentPage).attr("poster", "null");
 		}else if(mediaType == "html" || mediaType == "HTML" || mediatType == "htm" || mediaType == "HTM"){
 			$(data).find("page").eq(currentPage).attr("img", imgPath);
 
@@ -1243,6 +1248,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					mediaHeight = parseInt($(data).find("page").eq(currentPage).attr('h'));
 				}
 			}
+
+			//#4971 reset poster attr when not a video
+			$(data).find("page").eq(currentPage).attr("poster", "null");			
 
 			$("#stage").append("<div id='htmlDialog' title='Input Page Information'><div>HTML Width: <input id='htmlWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div><div>HTML Height: <input id='htmlHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div></div>");
 			 $("#htmlDialog").dialog({
