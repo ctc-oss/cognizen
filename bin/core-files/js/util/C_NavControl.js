@@ -158,21 +158,33 @@ function ncInitialize(){
 
 function checkNav(){
 	//Style is tied to the selected jquery ui theme set in index.
-	nextBack = $(data).find('nextBack').attr('value');
-	if(nextBack == "true"){
-		nextBack = true;
-		$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.' role='button'>back</button><button id='next' aria-label='Next - proceed to the next page.' role='button' >next</button>");
-	}
+
 
 	//Check if we are using page counter - if so, set it up.
 	//Positioning can be updated in css/C_Engine.css
+	var mobilePageCountVal = '';
 	pageCount = $(data).find('pageCount').attr('value');
 	if(pageCount == "true"){
 		pageCount = true;
-		$('#myCanvas').append("<div id='pageCount'></div>");
+		if(isMobile){
+			mobilePageCountVal = "<div id='pageCount'></div>";
+		}
+		else{
+			$('#myCanvas').append("<div id='pageCount'></div>");
+		}
 		updatePageCount();
 	}
 
+	nextBack = $(data).find('nextBack').attr('value');
+	if(nextBack == "true"){
+		nextBack = true;
+		if (isMobile) {
+			$("#nav-panes").append("<button id='back' aria-label='Back - Return to the previous page.' role='button'>back</button>"+mobilePageCountVal+"<button id='next' aria-label='Next - proceed to the next page.' role='button' >next</button>");			
+		}
+		else{
+			$("#myCanvas").append("<button id='back' aria-label='Back - Return to the previous page.' role='button'>back</button><button id='next' aria-label='Next - proceed to the next page.' role='button' >next</button>");			
+		}
+	}
 
 	if(!$(data).find('closelesson').attr('value')){
 
@@ -1445,7 +1457,12 @@ function checkSurvey(){
 		surveyLink = $(data).find('survey').attr('link');
 		if($(data).find('survey').attr('value') == "true"){
 			hasSurvey = true;
-			$("#myCanvas").append("<div id='surveyPane' class='surveyPane'><div id='surveyButton' class='C_Survey' role='button' aria-lable='Click here to take a survey.' title='Click here to take a survey.'></div></div>");
+			if(isMobile){
+				$("#optional-panes").append("<div id='surveyPane' class='surveyPane'><div id='surveyButton' class='C_Survey' role='button' aria-lable='Click here to take a survey.' title='Click here to take a survey.'></div></div>");
+			}
+			else{
+				$("#myCanvas").append("<div id='surveyPane' class='surveyPane'><div id='surveyButton' class='C_Survey' role='button' aria-lable='Click here to take a survey.' title='Click here to take a survey.'></div></div>");
+			}
 		}else{
 			hasSurvey = false;
 		}
@@ -1470,7 +1487,12 @@ function checkTestOut(){
 		testLink = $(data).find('testout').attr('link');
 		if($(data).find('testout').attr('value') == "true"){
 			testOut = true;
-			$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");
+			if(isMobile){
+				$("#optional-panes").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");
+			}
+			else{
+				$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");				
+			}
 		}else{
 			testOut = false;
 		}
@@ -1553,7 +1575,13 @@ function checkHelp(){
 	}
 	if(helpButton == true){
 		if($("#help").length == 0){
-			$('#myCanvas').append("<button id='help' title='Access help information.'>help</button>");
+			if(isMobile){
+				$('#optional-panes').append("<button id='help' title='Access help information.'>help</button>");	
+			}
+			else{
+				$('#myCanvas').append("<button id='help' title='Access help information.'>help</button>");				
+			}
+
 			//Style the Help button and give it its listener
 			$("#help").button({
 				icons:{
@@ -1863,7 +1891,7 @@ function updatePageCount(){
 		$('#pageCount').text(tempPage + "/" + totalPages);
 	}
 	else if(isMobile){
-		$('#pageCount').text(tempPage + " of " + totalPages);
+		$('#pageCount').text(tempPage + "/" + totalPages);
 	}
 	else{
 		$('#pageCount').text("Page " + tempPage + " of " + totalPages);

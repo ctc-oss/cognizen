@@ -51,14 +51,12 @@
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#474647" points="13.2,7.1 13.2,8.2 19.9,8.2 19.9,7.1 13.2,7.1 			"/>
 		</g>
 	</g>
-	<g id="user_guide_hover" display="none">
-		<path display="inline" fill="#EEEEEE" d="M11.4,21.7l-0.9,0l-1-0.5l-1-0.3l-1.1-0.2l-1.1-0.1l-6,0V3.4l6-1.5L7.4,2l1.2,0.2
-			l1.1,0.3l1,0.4h0.5l1-0.4l1.1-0.3L14.5,2l1.2-0.1l6,1.5v17.2h-6.1l-1.1,0.1l-1.1,0.2l-1,0.3L11.4,21.7z M10.7,21h0.5l1-0.4
-			l1.1-0.4l1.2-0.2l1.2-0.1l5.3,0V4l-5.3-1.3l-1.1,0L13.5,3l-1,0.3l-1.2,0.4l-0.8,0l-1-0.4L8.4,3L7.3,2.8l-1,0L1,4v15.9h5.3L7.5,20
-			l1.2,0.2l1.1,0.3L10.7,21z"/>
-		<polygon display="inline" fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="10.6,4.5 10.6,21.7 11.4,21.7 
-			11.4,4.5 10.6,4.5 		"/>
-		<g display="inline">
+	<g id="user_guide_hover">
+		<path fill="#EEEEEE" d="M11.4,21.7l-0.9,0l-1-0.5l-1-0.3l-1.1-0.2l-1.1-0.1l-6,0V3.4l6-1.5L7.4,2l1.2,0.2l1.1,0.3l1,0.4h0.5l1-0.4
+			l1.1-0.3L14.5,2l1.2-0.1l6,1.5v17.2h-6.1l-1.1,0.1l-1.1,0.2l-1,0.3L11.4,21.7z M10.7,21h0.5l1-0.4l1.1-0.4l1.2-0.2l1.2-0.1l5.3,0
+			V4l-5.3-1.3l-1.1,0L13.5,3l-1,0.3l-1.2,0.4l-0.8,0l-1-0.4L8.4,3L7.3,2.8l-1,0L1,4v15.9h5.3L7.5,20l1.2,0.2l1.1,0.3L10.7,21z"/>
+		<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="10.6,4.5 10.6,21.7 11.4,21.7 11.4,4.5 10.6,4.5 		"/>
+		<g>
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="2.2,11 2.2,12.1 8.9,12.1 8.9,11 2.2,11 			"/>
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="2.2,14.9 2.2,16.1 8.9,16.1 8.9,14.9 2.2,14.9 			"/>
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="2.2,7.1 2.2,8.2 8.9,8.2 8.9,7.1 2.2,7.1 			"/>
@@ -68,13 +66,13 @@
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="13.2,7.1 13.2,8.2 19.9,8.2 19.9,7.1 13.2,7.1 			"/>
 		</g>
 	</g>
-	<g id="index_1_">
-		<rect x="7" y="4.8" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="5.7" r="2"/>
-		<rect x="7" y="11" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="12" r="2"/>
-		<rect x="7" y="17.3" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="18.3" r="2"/>
+	<g id="index_1_" display="none">
+		<rect x="7" y="4.8" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="5.7" r="2"/>
+		<rect x="7" y="11" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="12" r="2"/>
+		<rect x="7" y="17.3" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="18.3" r="2"/>
 	</g>
 	<g id="index_hover" display="none">
 		<rect x="7" y="4.8" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>

@@ -43,11 +43,19 @@ function checkGlossary(){
 		}else{
 			msg += "<div id='glossaryTab' class='paneTab' role='button' aria-label='click here to toggle the glossary currently closed' title='click here to toggle the glossary'/>";
 		}
-			msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
-			msg += "<div id='glossaryContent' class='glossaryContent'>";
-			msg += "<div id='glossaryClose' title='click here to close the glossary' tabindex='1' role='button' aria-label='click here to close glossary'/>";
-			msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
-		$('#panes').append(msg);
+
+		msg += "<div id='glossaryTerms' class='glossaryTerms'></div>";
+		msg += "<div id='glossaryContent' class='glossaryContent'>";
+		msg += "<div id='glossaryClose' title='click here to close the glossary' tabindex='1' role='button' aria-label='click here to close glossary'/>";
+		msg += "<div id='glossaryDef' tabindex='0'><span style='font-size: 80%; font-style: italic;'>Click on a term at left to view the definition.</span></div></div></div>";
+		
+		if(isMobile){
+			$('#optional-panes').append(msg);
+		}
+		else{
+			$('#panes').append(msg);			
+		}
+
 		$('#glossaryTab').click(toggleGlossary).keypress(function(event) {
 			var chCode = ('charCode' in event) ? event.charCode : event.keyCode;
 		    if (chCode == 32 || chCode == 13){

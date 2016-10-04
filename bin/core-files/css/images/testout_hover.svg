@@ -68,13 +68,13 @@
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="13.2,7.1 13.2,8.2 19.9,8.2 19.9,7.1 13.2,7.1 			"/>
 		</g>
 	</g>
-	<g id="index_1_">
-		<rect x="7" y="4.8" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="5.7" r="2"/>
-		<rect x="7" y="11" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="12" r="2"/>
-		<rect x="7" y="17.3" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="18.3" r="2"/>
+	<g id="index_1_" display="none">
+		<rect x="7" y="4.8" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="5.7" r="2"/>
+		<rect x="7" y="11" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="12" r="2"/>
+		<rect x="7" y="17.3" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="18.3" r="2"/>
 	</g>
 	<g id="index_hover" display="none">
 		<rect x="7" y="4.8" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>
@@ -147,9 +147,9 @@
 			</g>
 		</g>
 	</g>
-	<g id="testout_hover" display="none">
-		<path display="inline" fill="#EDEDED" d="M22,21.6H0V2.4h22V21.6z M0.8,20.8h20.4V3.2H0.8V20.8z"/>
-		<g id="off_3_" display="inline">
+	<g id="testout_hover">
+		<path fill="#EDEDED" d="M22,21.6H0V2.4h22V21.6z M0.8,20.8h20.4V3.2H0.8V20.8z"/>
+		<g id="off_3_">
 			<g>
 				<path fill="#EDEDED" d="M17.6,8.5c0.1-0.1,0.1-0.4,0-0.5l-1.5-1.5c-0.1-0.1-0.4-0.1-0.5,0l-6.8,6.9c-0.1,0.1-0.4,0.1-0.5,0l-2-2
 					c-0.1-0.1-0.4-0.1-0.5,0L4.4,13c-0.1,0.1-0.1,0.4,0,0.5l4,4c0.1,0.1,0.4,0.1,0.5,0L17.6,8.5z"/>

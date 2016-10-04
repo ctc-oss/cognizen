@@ -3712,6 +3712,11 @@ a.fancybox-expand {
 		outline: 0px;
 	}
 
+	/*hide author icons*/
+	.btn_comment, .btn_requestLock{
+		left: -350px;
+	}
+
 	/* myCanvas is where we mount the stage (holds all content) and the UI (next/back, background image, indexes and well... all items that are on screen at all times.)*/
 
 	#myCanvas{
@@ -3791,13 +3796,13 @@ a.fancybox-expand {
 
 	#icon{
 		position : fixed;
-		width: 50px;
-		height: 50px;
+		width: 60px;
+		height: 60px;
 		opacity: 1;
 		overflow: auto;
 		text-align: left;
-		right: 15px;
-		top: 5px;
+		right: 5px;
+		top: 0px;
 		bottom: auto;
 		background	: url(images/icon.svg) no-repeat;		
 	}
@@ -4159,7 +4164,12 @@ a.fancybox-expand {
 	/**************************************************************************************
 	BOTTOM NAV
 	**************************************************************************************/
-
+	.closeLessonPane{
+		position				: absolute;
+		right					: -500px;
+		overflow				: visible;
+		z-index					: 10;
+	}
 	#survey{
 		position: fixed;
 		top: 55px;
@@ -4191,6 +4201,20 @@ a.fancybox-expand {
 		background: linear-gradient(#A6DDED, #7CD2F2, #7CD2F2);
 		border-top: 2px solid #9DA6AB;
 	}
+
+	#optional-panes{
+		position: fixed;
+		width : 55%;
+		left : 15%;
+		height : inherit;
+	}	
+
+	#nav-panes{
+		position: fixed;
+		width : 30%;
+		left : 70%;
+		height : inherit;
+	}	
 
 	#back{
 		position: fixed;
@@ -4272,7 +4296,7 @@ a.fancybox-expand {
 		width: 80px;
 		height: 50px;
 		line-height: 50px;
-		font-size: 15px;
+		font-size: 10px;
 		font-weight: bold;
 		color: #464646;
 	}
@@ -4342,8 +4366,6 @@ a.fancybox-expand {
 		width: 50%;
 		height: 100%;
 	}
-	
-	
 
 	#glossaryContent{
 		width: 50%;
@@ -4355,10 +4377,53 @@ a.fancybox-expand {
 		-moz-border-top-right-radius: 8px;
 		-webkit-border-top-right-radius: 8px;
 		border-top-right-radius: 8px;
+	}	
+	
+	#surveyPane{
+		bottom: 52px;
+		position: fixed;
+		top: 0px;
+		left: -100%;
+		width: 100%;
 	}
 
-	/************************************************************** BOTTOM NAV END *****/
+	#surveyButton{
+		position: fixed;
+		left: 170px !important;
+		top: auto;
+		bottom: 0px;
+		width: 50px;
+		height: 50px;
+		background: transparent url(images/comment.svg) no-repeat center center;
+		background-size: auto 60%;
+		border: none;
+		border-radius: 0px;
+	}	
 
+	#testOutPane{
+		bottom: 52px;
+		position: fixed;
+		top: 0px;
+		left: -100%;
+		width: 100%;
+	}
+
+	#testOutButton{
+		position: fixed;
+		left: 220px !important;
+		top: auto;
+		bottom: 0px;
+		width: 50px;
+		height: 50px;
+		background: transparent url(images/testout.svg) no-repeat center center;
+		background-size: auto 60%;
+		border: none;
+		border-radius: 0px;
+	}	
+
+
+
+	/************************************************************** BOTTOM NAV END *****/
 
 
 	/*******************************************************************
@@ -4528,42 +4593,9 @@ a.fancybox-expand {
 			font-size: 100%;
 		}
 
-		#survey{
-			display: none;
-		}
-
-		#testOut{
-			display: none;
-		}
-
-		#back{
-			top: auto;
-			bottom: 0px;
-			left: 40%;
-			right: auto;
-			width: 20%;
-			height: 40px;
-			margin: 0px;
-		}
-
-		#next{
-			top: auto;
-			bottom: 0px;
-			left: 80%;
-			right: auto;
-			width: 20%;
-			height: 40px;
-			margin: 0px;
-		}
-
-		#help{
-			top: auto;
-			bottom: 0px;
-			left: 20%;
-			right: auto;
-			width: 20%;
-			height: 40px;
-			margin: 0px;
+		#icon{
+			width: 50px;
+			height: 50px;
 		}
 
 		#mediaHolder.graphic{
@@ -4592,33 +4624,6 @@ a.fancybox-expand {
 
 		.dialogInput, .dialogInputCorrect, .dialogInputIncorrect, .dialogInputCorrectGraded, .dialogInputIncorrectGraded{
 			max-width: 95%;
-		}
-
-	/*index pane specific*/
-		#indexPane{
-			left: -100%;
-			width: 95%;
-			bottom: 42px;
-		}
-
-		#indexContent{
-			width: 100%;
-		}
-
-		/*glossary pane specific*/
-		#glossaryPane{
-			bottom: 42px;
-		}
-
-		#glossaryTerms{
-			width: 100%;
-			max-width: none;
-		}
-		
-		#glossaryContent{
-			width: 100%;
-			max-width: none;
-			left: 0px;
 		}
 
 		#addPage{
@@ -4663,12 +4668,6 @@ a.fancybox-expand {
 			margin-left: 3%;
 			margin-right: 3%;
 		}
-	/*
-		.flashcard{
-			width: 240px;
-			font-size: 11pt;
-		}
-	*/
 
 		.clickListTextHolder{
 			border-radius: 8px;
@@ -4699,71 +4698,140 @@ a.fancybox-expand {
 			height: 40px;
 		}
 
-		#help{
-			left: 33.333%;
-			right: auto;
-			width: 16.667%;
-			height: 40px;
-			background-size: auto 75%;
+		#survey{
+			display: none;
+		}
+
+		#testOut{
+			display: none;
+		}
+
+		#nav-panes{
 			border-left: 1px solid #3f3f3f;
-    		border-right: 1px solid #3f3f3f;			
 		}
 
 		#back{
-			left: 50%;
+			position: relative;
+			left: 8%;
 			right: auto;
 			width: 16.667%;
 			height: 40px;
-			background-size: auto 75%;
-			border-left: 1px solid #3f3f3f;
-    		border-right: 1px solid #3f3f3f;
-		}
-
-		#next{
-			left: 66.667%;
-			right: auto;
-			width: 16.667%;
-			height: 40px;
-			background-size: auto 75%;
-			border-left: 1px solid #3f3f3f;
-    		border-right: 1px solid #3f3f3f;			
+			background-size: auto 60%;
 		}
 
 		#pageCount{
-			left: 83.333%;
+			position: relative;
+			left: 25%;
 			right: auto;
-			width: 16.667%;
+			top : -40px;
+			width: 50%;
 			height: 40px;
 			line-height: 40px;
-			font-size: 13px;
+			font-size: 10px;
 			font-weight: bold;
 			margin: 0px;
 		}
 
-		#indexTab{
-			left: 0%;
+		#next{
+			position: relative;
+			left: 80%;
+			right: auto;
+			top : -80px;
+			width: 16.667%;
+			height: 40px;
+			background-size: auto 60%;	
+		}		
+
+		#help{
+			position : relative;
+			left: 25%;
 			right: auto;
 			width: 16.667%;
 			height: 40px;
-			background-size: auto 75%;
-			border-left: 1px solid #3f3f3f;
-    		border-right: 1px solid #3f3f3f;			
+			background-size: auto 60%;
+		}
+
+		#indexPane{
+			left: -100%;
+			width: 95%;
+			bottom: 42px;
+		}
+
+		#indexContent{
+			width: 100%;
+		}
+
+		#indexTab{
+/*			position : relative;
+			float : right;*/
+/*			top: -40px;*/
+			left: 0%;
+			right: auto;
+/*			width: 16.667%;*/
+			height: 40px;
+			background-size: auto 60%;	
 		}
 
 		#indexContent{
 			bottom: 0px;
 		}
 
+		/*glossary pane specific*/
+		#glossaryPane{
+			bottom: 42px;
+		}
+
+		#glossaryTerms{
+			width: 100%;
+			max-width: none;
+		}
+		
+		#glossaryContent{
+			width: 100%;
+			max-width: none;
+			left: 0px;
+		}
+
+
 		#glossaryTab{
-			left: 16.667% !important;
+/*			position : relative;
+			float : right;
+			top: -40px;*/
+			left: 11% !important;
 			right: auto;
 			width: 16.667%;
 			height: 40px;
-			background-size: auto 75%;
-			margin: 0px;
-			border-left: 1px solid #3f3f3f;
-    		border-right: 1px solid #3f3f3f;			
+			background-size: auto 60%;
+			margin: 0px;	
 		}
+
+		#testOutPane{
+			position : relative;
+			bottom: 42px;
+		}
+
+		#testOutButton{
+			left: 55% !important;
+			right: auto;
+			width: 16.667%;
+			height: 40px;
+			background-size: auto 60%;
+			margin: 0px;	
+		}
+
+		#surveyPane{
+			position : relative;
+			bottom: 42px;
+		}
+
+		#surveyButton{
+			left: 40% !important;
+			right: auto;
+			width: 16.667%;
+			height: 40px;
+			background-size: auto 60%;
+			margin: 0px;
+		}		
 
 		/************** END BOTTOM NAV **************/
 
