@@ -68,13 +68,13 @@
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="13.2,7.1 13.2,8.2 19.9,8.2 19.9,7.1 13.2,7.1 			"/>
 		</g>
 	</g>
-	<g id="index_1_">
-		<rect x="7" y="4.8" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="5.7" r="2"/>
-		<rect x="7" y="11" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="12" r="2"/>
-		<rect x="7" y="17.3" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="18.3" r="2"/>
+	<g id="index_1_" display="none">
+		<rect x="7" y="4.8" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="5.7" r="2"/>
+		<rect x="7" y="11" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="12" r="2"/>
+		<rect x="7" y="17.3" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="18.3" r="2"/>
 	</g>
 	<g id="index_hover" display="none">
 		<rect x="7" y="4.8" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>
@@ -164,13 +164,13 @@
 		<rect x="3.4" y="9.1" display="inline" fill="#474647" width="15" height="1.2"/>
 		<rect x="3.4" y="12" display="inline" fill="#474647" width="15" height="1.2"/>
 	</g>
-	<g id="comment_hover" display="none">
-		<path display="inline" fill="#EEEEEE" d="M9.9,23v-6.1h-7c-1.6,0-2.9-1.4-2.9-3V5.4c0-1.7,1.3-3,2.9-3h16.3c1.6,0,2.9,1.4,2.9,3
-			v8.5c0,1.7-1.3,3-2.9,3h-3.5L9.9,23z M2.9,3.2c-1.1,0-2,1-2,2.2v8.5c0,1.2,0.9,2.2,2,2.2h7.8v4.9l4.5-4.9h3.9c1.1,0,2-1,2-2.2V5.4
+	<g id="comment_hover">
+		<path fill="#EEEEEE" d="M9.9,23v-6.1h-7c-1.6,0-2.9-1.4-2.9-3V5.4c0-1.7,1.3-3,2.9-3h16.3c1.6,0,2.9,1.4,2.9,3v8.5
+			c0,1.7-1.3,3-2.9,3h-3.5L9.9,23z M2.9,3.2c-1.1,0-2,1-2,2.2v8.5c0,1.2,0.9,2.2,2,2.2h7.8v4.9l4.5-4.9h3.9c1.1,0,2-1,2-2.2V5.4
 			c0-1.2-0.9-2.2-2-2.2H2.9z"/>
-		<rect x="3.4" y="6.2" display="inline" fill="#EEEEEE" width="15" height="1.2"/>
-		<rect x="3.4" y="9.1" display="inline" fill="#EEEEEE" width="15" height="1.2"/>
-		<rect x="3.4" y="12" display="inline" fill="#EEEEEE" width="15" height="1.2"/>
+		<rect x="3.4" y="6.2" fill="#EEEEEE" width="15" height="1.2"/>
+		<rect x="3.4" y="9.1" fill="#EEEEEE" width="15" height="1.2"/>
+		<rect x="3.4" y="12" fill="#EEEEEE" width="15" height="1.2"/>
 	</g>
 </g>
 <g id="tablet_icons_for_dev" display="none">

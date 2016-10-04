@@ -176,6 +176,7 @@ function updatePageIssues(create){
 			 	msg += "<option>In Progress</option>";
 			 	msg += "<option>Resolved</option>";
 			 	msg += "<option>Feedback</option>";
+			 	msg += "<option>Tested</option>";			 	
 			 	msg += "<option>Closed</option>";
 			 	msg += "<option>Rejected</option>";
 			 	msg += "</select></div> ";
@@ -288,6 +289,7 @@ function updatePageIssues(create){
 				     	issuesMsg += "<option>In Progress</option>";
 				     	issuesMsg += "<option>Resolved</option>";
 				     	issuesMsg += "<option>Feedback</option>";
+				     	issuesMsg += "<option>Tested</option>";
 				     	issuesMsg += "<option>Closed</option>";
 				     	issuesMsg += "<option>Rejected</option>";
 				     	issuesMsg += "</select></div> ";
@@ -520,6 +522,9 @@ function findStatusId(name){
 	}
 	else if(name == "Rejected"){
 		myStatusId = 6;
+	}
+	else if(name == "Tested"){
+		myStatusId = 7;
 	}
 	return myStatusId;	
 }

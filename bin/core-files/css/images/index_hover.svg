@@ -68,21 +68,21 @@
 			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#EEEEEE" points="13.2,7.1 13.2,8.2 19.9,8.2 19.9,7.1 13.2,7.1 			"/>
 		</g>
 	</g>
-	<g id="index_1_">
-		<rect x="7" y="4.8" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="5.7" r="2"/>
-		<rect x="7" y="11" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="12" r="2"/>
-		<rect x="7" y="17.3" fill="#474647" width="14.8" height="2.2"/>
-		<circle fill="#474647" cx="2.2" cy="18.3" r="2"/>
+	<g id="index_1_" display="none">
+		<rect x="7" y="4.8" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="5.7" r="2"/>
+		<rect x="7" y="11" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="12" r="2"/>
+		<rect x="7" y="17.3" display="inline" fill="#474647" width="14.8" height="2.2"/>
+		<circle display="inline" fill="#474647" cx="2.2" cy="18.3" r="2"/>
 	</g>
-	<g id="index_hover" display="none">
-		<rect x="7" y="4.8" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>
-		<circle display="inline" fill="#EEEEEE" cx="2.2" cy="5.7" r="2"/>
-		<rect x="7" y="11" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>
-		<circle display="inline" fill="#EEEEEE" cx="2.2" cy="12" r="2"/>
-		<rect x="7" y="17.3" display="inline" fill="#EEEEEE" width="14.8" height="2.2"/>
-		<circle display="inline" fill="#EEEEEE" cx="2.2" cy="18.3" r="2"/>
+	<g id="index_hover">
+		<rect x="7" y="4.8" fill="#EEEEEE" width="14.8" height="2.2"/>
+		<circle fill="#EEEEEE" cx="2.2" cy="5.7" r="2"/>
+		<rect x="7" y="11" fill="#EEEEEE" width="14.8" height="2.2"/>
+		<circle fill="#EEEEEE" cx="2.2" cy="12" r="2"/>
+		<rect x="7" y="17.3" fill="#EEEEEE" width="14.8" height="2.2"/>
+		<circle fill="#EEEEEE" cx="2.2" cy="18.3" r="2"/>
 	</g>
 	<g id="glossary_1_" display="none">
 		<g display="inline">
