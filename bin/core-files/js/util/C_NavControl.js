@@ -1488,10 +1488,10 @@ function checkTestOut(){
 		if($(data).find('testout').attr('value') == "true"){
 			testOut = true;
 			if(isMobile){
-				$("#optional-panes").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");
+				$("#optional-panes").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to go directly to the test.' title='Click here to go directly to the test.'></div></div>");
 			}
 			else{
-				$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");				
+				$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to go directly to the test.' title='Click here to go directly to the test.'></div></div>");				
 			}
 		}else{
 			testOut = false;
