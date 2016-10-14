@@ -282,6 +282,15 @@ function C_MediaValidator(_myItem, _myParent) {
 				 		}
 				 	}
 
+				 	var revealLength = $(data).find("page").eq(i).find("reveal").length;
+				 	if (revealLength != 0){
+				 		for(var o=0; o < revealLength; o++){
+				 			var revealImg = $(data).find("page").eq(i).find("reveal").eq(o).attr("img");
+						 	icon = validateMedia(revealImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						 	msg += 'reveal image : ' + revealImg + " " + icon + '<br/>';						 			
+				 		}
+				 	}
+
 				 	msg += '<hr/>';
 				}
 
