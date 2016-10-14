@@ -1740,6 +1740,8 @@ function clickBack(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	//	#4981
+    $('#back').removeClass("ui-state-focus");
 	currentBranch = 0;
 	currentPage--;
 	currentTemplate.destroySelf();
@@ -1753,6 +1755,8 @@ function clickNext(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	//	#4981
+    $('#next').removeClass("ui-state-focus");
 	currentBranch = 0;
 	currentPage++;
 	currentTemplate.destroySelf();

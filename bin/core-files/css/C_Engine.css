@@ -2548,15 +2548,15 @@ ESSAY COMPARE LAYOUTS
 	top:720px;
 	left: 695px;
 }
-#back.disabled{
+#back.disabled, #next.disabled{
 	background: #c0cfde;
 }
 
-#help.disabled, #back.disabled{
+#help.disabled, #back.disabled, #next.disabled{
 	opacity: 0.2;
 }
 
-#help.disabled:hover, #back.disabled:hover{
+#help.disabled:hover, #back.disabled:hover, #next.disabled:hover{
 	opacity: 0.2;
 }
 
@@ -2564,14 +2564,6 @@ ESSAY COMPARE LAYOUTS
 	position:absolute;
 	top:720px;
 	left: 900px;
-}
-
-#next.disabled{
-	opacity: 0.2;
-}
-
-#next.disabled:hover{
-	opacity: 0.2;
 }
 
 #pageCount{
