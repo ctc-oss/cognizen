@@ -1467,7 +1467,7 @@ function checkSurvey(){
 			hasSurvey = false;
 		}
 
-		$("#surveyButton").click(function(){
+		$("#surveyButton").tooltip().click(function(){
 			if(surveyLink == "null"){
 				alert("The link for the survey has not been set.");
 			}else{
@@ -1497,7 +1497,7 @@ function checkTestOut(){
 			testOut = false;
 		}
 
-		$("#testOutButton").click(function(){
+		$("#testOutButton").tooltip().click(function(){
 			if(testLink == "null"){
 				alert("The link for the test has not been set.");
 			}else{
@@ -1520,7 +1520,7 @@ function checkCloseLesson(){
 	if(closeLesson){
 		$("#myCanvas").append("<div id='closeLessonPane' class='closeLessonPane'><div id='closeLessonButton' class='C_CloseLesson' role='button' aria-lable='Click here close your lesson.' title='Click here close your lesson.'></div></div>");
 
-		$("#closeLessonButton").click(function(){
+		$("#closeLessonButton").tooltip().click(function(){
 			//#3550 updated to call scorm call.
 			//#3568
 			var isScored = 'false';
@@ -1601,7 +1601,7 @@ function checkHelp(){
 			helpURL = $(data).find('help').attr('url');
 		}
 
-		$("#help").click(function() {
+		$("#help").tooltip().click(function() {
 			window.open(unescape(dir + "/" +helpURL), 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
 	}

@@ -1521,6 +1521,7 @@ MEDIA LAYOUTS
 	height					: 20px;
 	background				: url(images/course_close.svg) no-repeat;
 	cursor					: hand;
+	cursor                  : pointer; 
 }
 
 .C_CloseLesson:hover{
