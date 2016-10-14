@@ -1467,7 +1467,7 @@ function checkSurvey(){
 			hasSurvey = false;
 		}
 
-		$("#surveyButton").click(function(){
+		$("#surveyButton").tooltip().click(function(){
 			if(surveyLink == "null"){
 				alert("The link for the survey has not been set.");
 			}else{
@@ -1488,16 +1488,16 @@ function checkTestOut(){
 		if($(data).find('testout').attr('value') == "true"){
 			testOut = true;
 			if(isMobile){
-				$("#optional-panes").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");
+				$("#optional-panes").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to go directly to the test.' title='Click here to go directly to the test.'></div></div>");
 			}
 			else{
-				$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to got directly to the test.' title='Click here to got directly to the test.'></div></div>");				
+				$("#myCanvas").append("<div id='testOutPane' class='testOutPane'><div id='testOutButton' class='C_TestOut' role='button' aria-lable='Click here to go directly to the test.' title='Click here to go directly to the test.'></div></div>");				
 			}
 		}else{
 			testOut = false;
 		}
 
-		$("#testOutButton").click(function(){
+		$("#testOutButton").tooltip().click(function(){
 			if(testLink == "null"){
 				alert("The link for the test has not been set.");
 			}else{
@@ -1520,7 +1520,7 @@ function checkCloseLesson(){
 	if(closeLesson){
 		$("#myCanvas").append("<div id='closeLessonPane' class='closeLessonPane'><div id='closeLessonButton' class='C_CloseLesson' role='button' aria-lable='Click here close your lesson.' title='Click here close your lesson.'></div></div>");
 
-		$("#closeLessonButton").click(function(){
+		$("#closeLessonButton").tooltip().click(function(){
 			//#3550 updated to call scorm call.
 			//#3568
 			var isScored = 'false';
@@ -1601,7 +1601,7 @@ function checkHelp(){
 			helpURL = $(data).find('help').attr('url');
 		}
 
-		$("#help").click(function() {
+		$("#help").tooltip().click(function() {
 			window.open(unescape(dir + "/" +helpURL), 'helpWindow', 'menubar=0, status=0, toolbar=0, resizable=1, scrollbars=1, width='+helpWidth+', height='+helpHeight+'');
 		});
 	}
@@ -1740,6 +1740,8 @@ function clickBack(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	//	#4981
+    $('#back').removeClass("ui-state-focus");
 	currentBranch = 0;
 	currentPage--;
 	currentTemplate.destroySelf();
@@ -1753,6 +1755,8 @@ function clickNext(){
 	if(glossaryState == true){
 		toggleGlossary();
 	}
+	//	#4981
+    $('#next').removeClass("ui-state-focus");
 	currentBranch = 0;
 	currentPage++;
 	currentTemplate.destroySelf();
