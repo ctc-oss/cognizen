@@ -267,8 +267,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(contentImgLength != 0){
 				 		for (var m = 0; m < contentImgLength; m++) {
 						 	var contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");
-						 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+						 	if(typeof contentImg !== typeof undefined && contentImg !== 'null' && contentImg !== ''){
+							 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+						 	}
 				 		}
 				 	}
 
@@ -277,8 +279,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(contentHrefLength != 0){
 				 		for(var n=0; n < contentHrefLength; n++){
 				 			var contentHref = $($.parseHTML(content)).find("a").eq(n).attr("href");
-						 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';				 			
+				 			if(typeof contentHref !== typeof undefined && contentHref !== 'null' && contentHref !== ''){
+							 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';		
+						 	}		 			
 				 		}
 				 	}
 
@@ -288,8 +292,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(questionImgLength != 0){
 				 		for (var o = 0; o < questionImgLength; o++) {
 				 			var questionImg = $($.parseHTML(question)).find("img").eq(o).attr("src");
-						 	icon = validateMedia(questionImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'question img : ' + questionImg + " " + icon + '<br/>';				 			
+				 			if(typeof questionImg !== typeof undefined && questionImg !== 'null' && questionImg !== ''){	
+							 	icon = validateMedia(questionImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'question img : ' + questionImg + " " + icon + '<br/>';
+						 	}				 			
 				 		}
 				 	}
 
@@ -297,8 +303,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(questionHrefLength != 0){
 				 		for (var p = 0; p < questionHrefLength; p++) {
 				 			var questionHref = $($.parseHTML(question)).find("a").eq(p).attr("href");
-						 	icon = validateMedia(questionHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'content href : ' + questionHref+ " " + icon + '<br/>';					 			
+				 			if(typeof questionHref !== typeof undefined && questionHref !== 'null' && questionHref !== ''){	
+							 	icon = validateMedia(questionHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'content href : ' + questionHref+ " " + icon + '<br/>';	
+						 	}				 			
 				 		}
 				 	}
 
@@ -319,8 +327,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if (revealLength != 0){
 				 		for(var o=0; o < revealLength; o++){
 				 			var revealImg = $(data).find("page").eq(i).find("reveal").eq(o).attr("img");
-						 	icon = validateMedia(revealImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'reveal image : ' + revealImg + " " + icon + '<br/>';						 			
+				 			if(typeof revealImg !== typeof undefined && revealImg !== 'null' && revealImg !== ''){	
+							 	icon = validateMedia(revealImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'reveal image : ' + revealImg + " " + icon + '<br/>';						 	
+						 	}		
 				 		}
 				 	}
 
