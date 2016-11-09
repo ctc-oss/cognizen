@@ -282,6 +282,39 @@ function C_MediaValidator(_myItem, _myParent) {
 				 		}
 				 	}
 
+				 	/////#4998/////
+				 	var question = $(data).find("page").eq(i).find("question").first().text();
+				 	var questionImgLength = $($.parseHTML(question)).find("img").length;
+				 	if(questionImgLength != 0){
+				 		for (var o = 0; o < questionImgLength; o++) {
+				 			var questionImg = $($.parseHTML(question)).find("img").eq(o).attr("src");
+						 	icon = validateMedia(questionImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						 	msg += 'question img : ' + questionImg + " " + icon + '<br/>';				 			
+				 		}
+				 	}
+
+				 	var questionHrefLength = $($.parseHTML(question)).find("a").length;
+				 	if(questionHrefLength != 0){
+				 		for (var p = 0; p < questionHrefLength; p++) {
+				 			var questionHref = $($.parseHTML(question)).find("a").eq(p).attr("href");
+						 	icon = validateMedia(questionHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						 	msg += 'content href : ' + questionHref+ " " + icon + '<br/>';					 			
+				 		}
+				 	}
+
+				 	var answerLength = $(data).find("page").eq(i).find("answer").length;
+				 	if(answerLength != 0){
+				 		for (var q = 0; q < answerLength; q++) {
+				 			var answerImg = $(data).find("page").eq(i).find("answer").eq(q).attr('img');
+							if(typeof answerImg !== typeof undefined && answerImg !== 'null' && answerImg !== ''){	
+							 	icon = validateMedia(answerImg ) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'answer img : ' + answerImg + " " + icon + '<br/>';									
+							}			 			
+				 		}
+
+				 	}
+				 	/////#4998/////
+
 				 	var revealLength = $(data).find("page").eq(i).find("reveal").length;
 				 	if (revealLength != 0){
 				 		for(var o=0; o < revealLength; o++){
