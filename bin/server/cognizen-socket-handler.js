@@ -2964,64 +2964,74 @@ var SocketHandler = {
                                 type: 'course',
                                 user: program.original.user 
                             };
+
+                            // #4994 Clone alt lesson titles and alt course titles
+                            var srcCourseXML = srcWritePath + "/" + found.name + '/course.xml';
                             
-                            var courseName = found.name;
-                            Course.createUnique(newCourse, function (saved, callbackData) {
-                                //probably do this for all courses
-                                //////////////////////////////
-                                var data, etree;
-                                var courseID = callbackData._id;
-                                fs.readFile(newCourseXML, function(err, data){
-                                    data = data.toString();
-                                    etree = et.parse(data);
-                                    //set the name and id in the course.xml
-                                    etree.find('./').set('name', courseName);
-                                    etree.find('./').set('coursedisplaytitle', courseName);
-                                    etree.find('./').set('id', courseID);
+                            fs.readFile(srcCourseXML, function(err, data){
 
-                                    var itemCount = etree.findall('./item').length;
+                                data = data.toString();
+                                etree = et.parse(data);
+                                var srcCourseDisplayTitle = etree.find('./').get('coursedisplaytitle');
 
-                                    var lessonsDataArr = [];
-                                    for (var i = 0; i < itemCount; i++) {
-                                        var myNode = etree.findall('./item')[i];
-                                        var nodeId = myNode.get('id');
-                                        var nodeName = myNode.get('name');
+                                var courseName = found.name;
+                                Course.createUnique(newCourse, function (saved, callbackData) {
+                                    //probably do this for all courses
+                                    //////////////////////////////
+                                    var data, etree;
+                                    var courseID = callbackData._id;
+                                    fs.readFile(newCourseXML, function(err, data){
+                                        data = data.toString();
+                                        etree = et.parse(data);
+                                        //set the name and id in the course.xml
+                                        etree.find('./').set('name', courseName);
+                                        etree.find('./').set('coursedisplaytitle', srcCourseDisplayTitle);
+                                        etree.find('./').set('id', courseID);
 
-                                        var lessonData = {
-                                            course: {
-                                                id: courseID
-                                            },
-                                            id: nodeId,
-                                            name: nodeName,
-                                            parent: courseID,
-                                            parentDir: courseName,
-                                            path: destWritePath +'/'+nodeName,
-                                            permission: program.original.permission,
-                                            type: 'lesson',
-                                            user: program.original.user
+                                        var itemCount = etree.findall('./item').length;
 
-                                        };
+                                        var lessonsDataArr = [];
+                                        for (var i = 0; i < itemCount; i++) {
+                                            var myNode = etree.findall('./item')[i];
+                                            var nodeId = myNode.get('id');
+                                            var nodeName = myNode.get('name');
 
-                                        lessonsDataArr.push(lessonData);               
+                                            var lessonData = {
+                                                course: {
+                                                    id: courseID
+                                                },
+                                                id: nodeId,
+                                                name: nodeName,
+                                                parent: courseID,
+                                                parentDir: courseName,
+                                                path: destWritePath +'/'+nodeName,
+                                                permission: program.original.permission,
+                                                type: 'lesson',
+                                                user: program.original.user
 
-                                    }; 
+                                            };
 
-                                    _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
-                                        if(err){
-                                            callback(err, null)
-                                        }
-                                        else{
-                                            var xml = etree.write({'xml_decleration': false});
-                                            fs.outputFile(newCourseXML, xml, function (err) {
-                                                if (err) callback(err, null);                     
-                                                callback(err);
-                                            }); 
-                                        } 
-                                    });                                                    
+                                            lessonsDataArr.push(lessonData);               
 
-                                });
-                                ////////////////////////////////////
-                            });                            
+                                        }; 
+
+                                        _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
+                                            if(err){
+                                                callback(err, null)
+                                            }
+                                            else{
+                                                var xml = etree.write({'xml_decleration': false});
+                                                fs.outputFile(newCourseXML, xml, function (err) {
+                                                    if (err) callback(err, null);                     
+                                                    callback(err);
+                                                }); 
+                                            } 
+                                        });                                                    
+
+                                    });
+                                    ////////////////////////////////////
+                                }); 
+                            });                           
                         }
                     });
 
@@ -3126,54 +3136,62 @@ var SocketHandler = {
         FileUtils.copyDir(srcWritePath, destWritePath, true, function (err) {
     
             var data, etree;
+            // #4994 Clone alt lesson titles and alt course titles
+            fs.readFile(srcCourseXML, function(err, data){
 
-            fs.readFile(newCourseXML, function(err, data){
                 data = data.toString();
                 etree = et.parse(data);
-                //set the name and id in the course.xml
-                etree.find('./').set('name', courseName);
-                etree.find('./').set('coursedisplaytitle', courseName);
-                etree.find('./').set('id', courseID);
+                var srcCourseDisplayTitle = etree.find('./').get('coursedisplaytitle');
 
-                var lessonsDataArr = [];
-                var itemCount = etree.findall('./item').length;
+                fs.readFile(newCourseXML, function(err, data){
+                    data = data.toString();
+                    etree = et.parse(data);
+                    //set the name and id in the course.xml
+                    etree.find('./').set('name', courseName);
+                    etree.find('./').set('coursedisplaytitle', srcCourseDisplayTitle);
+                    etree.find('./').set('id', courseID);
 
-                for (var i = 0; i < itemCount; i++) {
-                    var myNode = etree.findall('./item')[i];
-                    var nodeId = myNode.get('id');
-                    var nodeName = myNode.get('name');
+                    var lessonsDataArr = [];
+                    var itemCount = etree.findall('./item').length;
 
-                    var lessonData = {
-                        course: {
-                            id: courseID
-                        },
-                        id: nodeId,
-                        name: nodeName,
-                        parent: courseID,
-                        parentDir: courseName,
-                        path: destWritePath +'/'+nodeName,
-                        permission: content.original.permission,
-                        type: 'lesson',
-                        user: content.original.user
+                    for (var i = 0; i < itemCount; i++) {
+                        var myNode = etree.findall('./item')[i];
+                        var nodeId = myNode.get('id');
+                        var nodeName = myNode.get('name');
 
-                    };
+                        var lessonData = {
+                            course: {
+                                id: courseID
+                            },
+                            id: nodeId,
+                            name: nodeName,
+                            parent: courseID,
+                            parentDir: courseName,
+                            path: destWritePath +'/'+nodeName,
+                            permission: content.original.permission,
+                            type: 'lesson',
+                            user: content.original.user
 
-                    lessonsDataArr.push(lessonData);
+                        };
 
-                };        
+                        lessonsDataArr.push(lessonData);
 
-                _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
-                    if(err){
-                        callback(err, null)
-                    }
-                    else{
-                        var xml = etree.write({'xml_decleration': false});
-                        fs.outputFile(newCourseXML, xml, function (err) {
-                            if (err) callback(err, null);                     
-                            callback(err);
-                        }); 
-                    } 
-                });        
+                    };        
+
+                    _this._createClonedLessons(lessonsDataArr, courseName, etree, itemCount, 0, function(err){
+                        if(err){
+                            callback(err, null)
+                        }
+                        else{
+                            var xml = etree.write({'xml_decleration': false});
+                            fs.outputFile(newCourseXML, xml, function (err) {
+                                if (err) callback(err, null);                     
+                                callback(err);
+                            }); 
+                        } 
+                    });        
+
+                });
 
             });
 
@@ -3193,7 +3211,7 @@ var SocketHandler = {
                     _id: callbackData._id,
                     parentName: courseName
                 };
-                console.log(tmpContent);
+
                 _this.Content.updateContentXml(tmpContent, function(newcontent, etreeContent) {
                     var parentName = newcontent.parentName ? newcontent.parentName : '';
                     etreeContent.find('./courseInfo/preferences/courseTitle').set('value', parentName);
@@ -3295,7 +3313,6 @@ var SocketHandler = {
         var courseName = tokenz[1];
         var root = path.normalize('../core-files');
         var myID = content.destination._id;
-        
         FileUtils.rmdir(destWritePath);        
 
         FileUtils.copyDir(srcWritePath, destWritePath, true, function (err) {
@@ -3310,61 +3327,72 @@ var SocketHandler = {
                 var parentName = newcontent.parentName ? newcontent.parentName : '';
                 etree.find('./courseInfo/preferences/courseTitle').set('value', parentName);
                 etree.find('./courseInfo/preferences/lessonTitle').set('value', newcontent.name);
-                etree.find('./courseInfo/preferences/lessondisplaytitle').set('value', newcontent.name);
                 etree.find('./courseInfo/preferences/id').set('value', myID);
 
-                //setup srcCoursePath
-                var srcCoursePath = srcWritePath;
-                var tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\/"));
-                if(tempPath === ""){
-                    tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\\"));
-                }
-                srcCoursePath = tempPath + "/course.xml";
-
-                //setup destCoursePath
-                var destCoursePath = destWritePath;
-                tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\/"));
-                if(tempPath === ""){
-                    tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\\"));
-                }
-                destCoursePath = tempPath + "/course.xml";
-
-                //read scr course.xml
-                fs.readFile(srcCoursePath, function(err, data){
-
-                    //copy src item and update id and name
-                    var _data, etree;
+                // #4994 Clone alt lesson titles and alt course titles
+                var srcContentXml = srcWritePath + '/xml/content.xml';
+                fs.readFile(srcContentXml, function(err, data){
+                    var _data, _etree;
                     _data = data.toString();
-                    etree = et.parse(_data);
+                    _etree = et.parse(_data);
+                    var srcLessonDisplayTitle = _etree.find('./courseInfo/preferences/lessondisplaytitle').get('value');
+                    
+                    etree.find('./courseInfo/preferences/lessondisplaytitle').set('value', srcLessonDisplayTitle);
 
-                    var root = etree.find('./');
-                    var origItem = root.find('./item[@id="'+content.original.id+'"]');
-                    origItem.set('id', myID);
-                    origItem.set('name', newcontent.name);
+                    //setup srcCoursePath
+                    var srcCoursePath = srcWritePath;
+                    var tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\/"));
+                    if(tempPath === ""){
+                        tempPath = srcCoursePath.substr(0, srcCoursePath.lastIndexOf("\\"));
+                    }
+                    srcCoursePath = tempPath + "/course.xml";
 
-                    //add updated src item to dest course.xml
-                    fs.readFile(destCoursePath, function(err, data){
-                        var XML = et.XML;
-                        var ElementTree = et.ElementTree;
-                        var element = et.Element;
-                        var subElement = et.SubElement;
+                    //setup destCoursePath
+                    var destCoursePath = destWritePath;
+                    tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\/"));
+                    if(tempPath === ""){
+                        tempPath = destCoursePath.substr(0, destCoursePath.lastIndexOf("\\"));
+                    }
+                    destCoursePath = tempPath + "/course.xml";
+
+                    //read scr course.xml
+                    fs.readFile(srcCoursePath, function(err, data){
+
+                        //copy src item and update id and name
                         var _data, etree;
-
                         _data = data.toString();
                         etree = et.parse(_data);
 
                         var root = etree.find('./');
-                        root.append(origItem);
+                        var origItem = root.find('./item[@id="'+content.original.id+'"]');
+                        origItem.set('id', myID);
+                        origItem.set('name', newcontent.name);
 
-                        etree = new ElementTree(root);
-                        var xml = etree.write({'xml_decleration': false});
-                        fs.outputFile(destCoursePath, xml, function (err) {
-                            if (err) callback(err, null);
-                            callback(err);
+                        //add updated src item to dest course.xml
+                        fs.readFile(destCoursePath, function(err, data){
+                            var XML = et.XML;
+                            var ElementTree = et.ElementTree;
+                            var element = et.Element;
+                            var subElement = et.SubElement;
+                            var _data, etree;
+
+                            _data = data.toString();
+                            etree = et.parse(_data);
+
+                            var root = etree.find('./');
+                            root.append(origItem);
+
+                            etree = new ElementTree(root);
+                            var xml = etree.write({'xml_decleration': false});
+                            fs.outputFile(destCoursePath, xml, function (err) {
+                                if (err) callback(err, null);
+                                callback(err);
+                            });
                         });
+
                     });
 
-                });
+                }); //end fs.readFile(srcContentXML)
 
             });
 
