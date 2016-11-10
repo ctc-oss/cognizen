@@ -241,7 +241,6 @@ function C_MediaValidator(_myItem, _myParent) {
 
 				 	var img = $(data).find("page").eq(i).attr('img');
 				 	if(typeof img !== typeof undefined && img !== 'null' && img !== '' && img.indexOf('http') === -1){
-				 		//var icon = validateMedia(img) !== true ? 'BLAH T' : 'BLAH F';
 				 		icon = validateMedia(img) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 				 		msg += 'img : ' + img + " " + icon + '<br/>';
 
@@ -267,8 +266,10 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(contentImgLength != 0){
 				 		for (var m = 0; m < contentImgLength; m++) {
 						 	var contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");
-						 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+						 	if(typeof contentImg !== typeof undefined && contentImg !== 'null' && contentImg !== '' && contentImg.indexOf('http') === -1){
+							 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+						 	}
 				 		}
 				 	}
 
@@ -277,17 +278,60 @@ function C_MediaValidator(_myItem, _myParent) {
 				 	if(contentHrefLength != 0){
 				 		for(var n=0; n < contentHrefLength; n++){
 				 			var contentHref = $($.parseHTML(content)).find("a").eq(n).attr("href");
-						 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';				 			
+				 			if(typeof contentHref !== typeof undefined && contentHref !== 'null' && contentHref !== '' && 
+				 				contentHref.indexOf('http') === -1 && contentHref.indexOf('mailto:') === -1){
+							 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';		
+						 	}		 			
 				 		}
 				 	}
+
+				 	/////#4998/////
+				 	var question = $(data).find("page").eq(i).find("question").first().text();
+				 	var questionImgLength = $($.parseHTML(question)).find("img").length;
+				 	if(questionImgLength != 0){
+				 		for (var o = 0; o < questionImgLength; o++) {
+				 			var questionImg = $($.parseHTML(question)).find("img").eq(o).attr("src");
+				 			if(typeof questionImg !== typeof undefined && questionImg !== 'null' && questionImg !== '' && questionImg.indexOf('http') === -1){	
+							 	icon = validateMedia(questionImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'question img : ' + questionImg + " " + icon + '<br/>';
+						 	}				 			
+				 		}
+				 	}
+
+				 	var questionHrefLength = $($.parseHTML(question)).find("a").length;
+				 	if(questionHrefLength != 0){
+				 		for (var p = 0; p < questionHrefLength; p++) {
+				 			var questionHref = $($.parseHTML(question)).find("a").eq(p).attr("href");
+				 			if(typeof questionHref !== typeof undefined && questionHref !== 'null' && questionHref !== '' && 
+				 				questionHref.indexOf('http') === -1 && questionHref.indexOf('mailto:') === -1){	
+							 	icon = validateMedia(questionHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'question href : ' + questionHref+ " " + icon + '<br/>';	
+						 	}				 			
+				 		}
+				 	}
+
+				 	var answerLength = $(data).find("page").eq(i).find("answer").length;
+				 	if(answerLength != 0){
+				 		for (var q = 0; q < answerLength; q++) {
+				 			var answerImg = $(data).find("page").eq(i).find("answer").eq(q).attr('img');
+							if(typeof answerImg !== typeof undefined && answerImg !== 'null' && answerImg !== '' && answerImg.indexOf('http') === -1){	
+							 	icon = validateMedia(answerImg ) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'answer img : ' + answerImg + " " + icon + '<br/>';									
+							}			 			
+				 		}
+
+				 	}
+				 	/////#4998/////
 
 				 	var revealLength = $(data).find("page").eq(i).find("reveal").length;
 				 	if (revealLength != 0){
 				 		for(var o=0; o < revealLength; o++){
 				 			var revealImg = $(data).find("page").eq(i).find("reveal").eq(o).attr("img");
-						 	icon = validateMedia(revealImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-						 	msg += 'reveal image : ' + revealImg + " " + icon + '<br/>';						 			
+				 			if(typeof revealImg !== typeof undefined && revealImg !== 'null' && revealImg !== '' && revealImg.indexOf('http') === -1){	
+							 	icon = validateMedia(revealImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							 	msg += 'reveal image : ' + revealImg + " " + icon + '<br/>';						 	
+						 	}		
 				 		}
 				 	}
 

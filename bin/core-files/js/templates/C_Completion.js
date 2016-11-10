@@ -407,6 +407,24 @@ function C_Completion(_type) {
 			}
 		}
 		else if(doScorm()){
+			//#4993 handles user leaving completion page before clicking continue
+			scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
+            if(score_obj.passed){
+                scorm.status("set", "completed");    
+                scorm.set("cmi.success_status", "passed");    
+            }
+            else{
+                scorm.status("set", "incomplete");
+                scorm.set("cmi.success_status", "failed");
+            }
+
+            //do not write score if no pages are graded
+            if(isScored === "true"){
+            	scorm.set("cmi.score.scaled", score_obj.score.toString());
+            	var raw = score_obj.score*100;
+            	scorm.set("cmi.score.raw", raw.toString());
+        	}
+
 			$('<div id="completionButton">Continue</div>').insertAfter("#scoreFeedback");
 			$("#completionButton").css({"width": "200px"});  //moved to css file
 			$("#completionButton").button().click(function(){
@@ -414,9 +432,14 @@ function C_Completion(_type) {
 				if(isScored === "true"){
 					//#3219 updated to use passed status to set completions, parameter 1
 					//#3568 reverted change for #3219 except for CTCU courses
-					if(scormVersion === '1.2_CTCU' || lms === 'CTCU' || lms === 'NEL') {
+					if(scormVersion === '1.2_CTCU' || lms === 'CTCU') {
 						completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false, false);
 					}
+                    else if(lms === 'NEL'){
+                        scorm.set("adl.nav.request", "continue");
+                        scorm.set("cmi.exit", "normal");
+                        scorm.API.getHandle().Terminate("");                        
+                    }					
 					else{
 						completeLesson(completed, score_obj.passed, score_obj.score, false, false, false);
 					}

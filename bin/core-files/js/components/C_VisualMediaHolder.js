@@ -22,6 +22,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     var mediaHeight = 0;
     var mediaLinkType;
     var popLoop = true;
+    var hideVideoVolumeControls = false;
 
     var mediaType = "";
 	var hasPop = false;
@@ -54,6 +55,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	var oldIE = false;
 
     //Populate Key Variables
+    if($(data).find("page").eq(currentPage).attr('hideVideoVolumeControls') == "true"){
+		hideVideoVolumeControls = true;
+	}    
+
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
 		autoNext = true;
 	}
@@ -340,12 +345,18 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				}
 			}(jQuery));
 			
+			var featuresArr = ['playpause','current','progress','duration','volume','fullscreen'];
+			if(hideVideoVolumeControls){
+				featuresArr = ['playpause','current','progress','duration','fullscreen'];
+			}
+
 			if (oldIE) {
 				// IE 8, 9 or 10 - prefer Flash or Silverlight
 				$('#videoplayer').mediaelementplayer({
 					//mode: 'auto_plugin', // tries Flash/Silverlight first before trying HTML5
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
+					features: featuresArr,
 					success: function(player, node) {
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
@@ -361,11 +372,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					}
 				});
 			}else{
+				
 				// decent browser - prefer HTML5 video
 				$('#videoplayer').mediaelementplayer({
 					//mode: 'auto_plugin',
 					enablePluginSmoothing: true,
 					enableKeyboard: true,
+					features: featuresArr,
 					success: function(player, node) {
 						//If autoNext then move to next page upon completion.
 						if(autoNext == true){
@@ -1083,6 +1096,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
 			msg += "<label id='label'>autonext: </label>";
 			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
+			msg += "<label id='label'>Hide Video Volume Controls: </label>";
+			msg += "<input id='hideVideoVolumeControls' type='checkbox' name='hideVideoVolumeControls' class='radio' value='true'/></input><br/>";
 			msg += "<label id='label'>poster: </label>";
 			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
 			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ tmpPoster + "' defaultValue='"+ tmpPoster + "' style='width:40%;'/>";
@@ -1105,6 +1120,10 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 			if(autoNext == true){
 				$("#autonext").attr("checked", "checked");
+			}
+
+			if(hideVideoVolumeControls == true){
+				$("#hideVideoVolumeControls").attr("checked", "checked");
 			}
 			
 			if(hasPoster == true){
@@ -1200,6 +1219,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 						}else{
 							$(data).find("page").eq(currentPage).attr("autonext", "false");
 						}
+
+						if($("#hideVideoVolumeControls").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "true");
+						}else{
+							$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "false");
+						}
+
 						$(data).find("page").eq(currentPage).attr("controlType", "bar");
 						$("#videoDialog").remove();
 						sendUpdateWithRefresh();
