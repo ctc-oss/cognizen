@@ -1157,21 +1157,21 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			//TODO add tooltips
 			var msg = "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div id='videoDialog' title='Input Video Stats'>";
-			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
+			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' title='Add the video width by px' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
 			msg += '<span id="videoWidthError" class="error">The value must be a numeric value</span><br/>';
-			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div>";
+			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' title='Add the video height by px' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div>";
 			msg += '<span id="videoHeightError" class="error">The value must be a numeric value</span><br/>';
-			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true' title='The video will begin once the page is loaded'/></input>";
 			msg += "<label id='label'> autoplay</label><br/>";			
-			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input>";
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true' title='The next page to be loaded once the video is complete'/></input>";
 			msg += "<label id='label'> autonext</label><br/>";			
-			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
+			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true' title='Adds poster to be displayed while the video loads'/></input>";
 			msg += "<label id='label'> poster</label>";			
-			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ tmpPoster + "' defaultValue='"+ tmpPoster + "' style='width:40%;'/>";
+			msg += "<input id='posterFile' class='dialogInput' type='text' title='Enter the name of the poster file' value='"+ tmpPoster + "' defaultValue='"+ tmpPoster + "' style='width:40%;'/>";
 			msg += "<br/>";
-			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
+			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true' title='Enables CC functionality with .srt files'/></input>";
 			msg += "<label id='label'> subtitles: </label>";			
-			msg += "<input id='subFile' class='dialogInput' type='text' value='"+ tmpSubs + "' defaultValue='"+ tmpSubs + "' style='width:40%;'/>";
+			msg += "<input id='subFile' class='dialogInput' type='text' title='Enter the name of the srt file' value='"+ tmpSubs + "' defaultValue='"+ tmpSubs + "' style='width:40%;'/>";
 			msg += '<h4>Hide Video Controls</h4>';
 			msg += '<table><tr><th style="text-align:center">Select All</th>';
 			msg += '<th style="text-align:center">Play/Pause</th>';
@@ -1181,13 +1181,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			msg += '<th style="text-align:center">Volume </th>';
 			msg += '<th style="text-align:center">Fullscreen</th>';
 			msg += '</tr>';
-			msg += '<tr><td style="text-align:center"><input id="hideAllVideoControls" type="checkbox" name="hideAllVideoControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoPlayPauseControls" type="checkbox" name="hideVideoPlayPauseControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoCurrentControls" type="checkbox" name="hideVideoCurrentControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoProgressControls" type="checkbox" name="hideVideoProgressControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoDurationControls" type="checkbox" name="hideVideoDurationControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoVolumeControls" type="checkbox" name="hideVideoVolumeControls" class="radio" value="true"></td>';
-			msg += '<td style="text-align:center"><input id="hideVideoFullscreenControls" type="checkbox" name="hideVideoFullscreenControls" class="radio" value="true"></td>';
+			msg += '<tr><td style="text-align:center"><input id="hideAllVideoControls" type="checkbox" name="hideAllVideoControls" class="radio" value="true" title="Hides all the video player controls if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoPlayPauseControls" type="checkbox" name="hideVideoPlayPauseControls" class="radio" value="true" title="Hides the play/pause video player control if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoCurrentControls" type="checkbox" name="hideVideoCurrentControls" class="radio" value="true" title="Hides the current video time indicator if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoProgressControls" type="checkbox" name="hideVideoProgressControls" class="radio" value="true" title="Hides the progress bar if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoDurationControls" type="checkbox" name="hideVideoDurationControls" class="radio" value="true" title="Hides the duration video time indicator if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoVolumeControls" type="checkbox" name="hideVideoVolumeControls" class="radio" value="true" title="Hides the video volume control if selected"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoFullscreenControls" type="checkbox" name="hideVideoFullscreenControls" class="radio" value="true" title="Hides the fullscreen player control if selected"></td>';
 			msg += '</tr></table>';
 			msg += "</div>";
 			$("#loader").append(msg);
@@ -1238,13 +1238,13 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 			$("#hideAllVideoControls").change(function(){
 				if($("#hideAllVideoControls").prop("checked") == true){
-					$("#hideAllVideoControls").attr("checked", "checked");
-					$("#hideVideoPlayPauseControls").attr("checked", "checked");
-					$("#hideVideoCurrentControls").attr("checked", "checked");
-					$("#hideVideoProgressControls").attr("checked", "checked");
-					$("#hideVideoDurationControls").attr("checked", "checked");
-					$("#hideVideoVolumeControls").attr("checked", "checked");
-					$("#hideVideoFullscreenControls").attr("checked", "checked");
+					$("#hideAllVideoControls").prop("checked", true);
+					$("#hideVideoPlayPauseControls").prop("checked", true);
+					$("#hideVideoCurrentControls").prop("checked", true);
+					$("#hideVideoProgressControls").prop("checked", true);
+					$("#hideVideoDurationControls").prop("checked", true);
+					$("#hideVideoVolumeControls").prop("checked", true);
+					$("#hideVideoFullscreenControls").prop("checked", true);
 				}
 				else{
 					$("#hideAllVideoControls").attr("checked", false);
@@ -1255,7 +1255,23 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					$("#hideVideoVolumeControls").attr("checked", false);
 					$("#hideVideoFullscreenControls").attr("checked", false);
 				}
-			});							
+			});		
+
+			$("#hideVideoPlayPauseControls, #hideVideoCurrentControls, #hideVideoProgressControls,"+
+			  "#hideVideoDurationControls, #hideVideoVolumeControls, #hideVideoFullscreenControls").change(function(){
+			  	if($("#hideAllVideoControls").prop("checked") == true){
+			  		if( $("#hideVideoPlayPauseControls").prop("checked") == false ||
+						$("#hideVideoCurrentControls").prop("checked") == false ||
+						$("#hideVideoProgressControls").prop("checked") == false ||
+						$("#hideVideoDurationControls").prop("checked") == false ||
+						$("#hideVideoVolumeControls").prop("checked") == false ||
+						$("#hideVideoFullscreenControls").prop("checked") == false)
+			  		{
+			  			$("#hideAllVideoControls").attr("checked", false);
+			  		}
+
+			  	}
+			});					
 			
 			if(hasPoster == true){
 				$("#poster").attr("checked", "checked");
@@ -1402,7 +1418,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 						sendUpdateWithRefresh();
 						currentTemplate.fadeComplete();
 					}
-				});
+				}).tooltip();
 		}else if(mediaType == "swf"){
              //If its a swf we have to set it's width and height! - very imoprtant or shit get funky homey....
 			 $(data).find("page").eq(currentPage).attr("img", imgPath);
