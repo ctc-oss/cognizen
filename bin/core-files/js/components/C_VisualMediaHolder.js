@@ -22,7 +22,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     var mediaHeight = 0;
     var mediaLinkType;
     var popLoop = true;
-    var hideVideoVolumeControls = false;
+    var hideVideoPlayPauseControls = false;
+	var hideVideoCurrentControls = false;
+	var hideVideoProgressControls = false;
+	var hideVideoDurationControls =  false;
+	var hideVideoVolumeControls = false;
+	var hideVideoFullscreenControls = false;
 
     var mediaType = "";
 	var hasPop = false;
@@ -55,9 +60,33 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	var oldIE = false;
 
     //Populate Key Variables
+
+
+
+
+    if($(data).find("page").eq(currentPage).attr("hideVideoPlayPauseControls") == "true"){
+		hideVideoPlayPauseControls = true;
+	}    
+
+    if($(data).find("page").eq(currentPage).attr("hideVideoCurrentControls") == "true"){
+		hideVideoCurrentControls= true;
+	} 
+
+    if($(data).find("page").eq(currentPage).attr("hideVideoProgressControls") == "true"){
+		hideVideoProgressControls = true;
+	} 	  
+  
+    if($(data).find("page").eq(currentPage).attr("hideVideoDurationControls") == "true"){
+		hideVideoDurationControls = true;
+	} 	
+
     if($(data).find("page").eq(currentPage).attr('hideVideoVolumeControls') == "true"){
 		hideVideoVolumeControls = true;
 	}    
+
+    if($(data).find("page").eq(currentPage).attr("hideVideoFullscreenControls" ) == "true"){
+		hideVideoFullscreenControls = true;
+	} 
 
     if($(data).find("page").eq(currentPage).attr('autonext') == "true"){
 		autoNext = true;
@@ -346,8 +375,47 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			}(jQuery));
 			
 			var featuresArr = ['playpause','current','progress','duration','volume','fullscreen'];
+
+			if(hideVideoPlayPauseControls){
+				var index = featuresArr.indexOf('playpause');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
+			}
+
+			if(hideVideoCurrentControls){
+				var index = featuresArr.indexOf('current');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
+			}							
+
+			if(hideVideoProgressControls){
+				var index = featuresArr.indexOf('progress');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
+			}	
+
+			if(hideVideoDurationControls){
+				var index = featuresArr.indexOf('duration');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
+			}	
+
 			if(hideVideoVolumeControls){
-				featuresArr = ['playpause','current','progress','duration','fullscreen'];
+				var index = featuresArr.indexOf('volume');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
+			}
+	
+			if(hideVideoFullscreenControls){
+				var index = featuresArr.indexOf('fullscreen');
+				if(index > -1){ 
+					featuresArr.splice(index, 1);
+				}
 			}
 
 			if (oldIE) {
@@ -1086,25 +1154,41 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 			}else{
 				tmpSubs = tmpPath+ ".srt";
 			}
+			//TODO add tooltips
 			var msg = "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div id='videoDialog' title='Input Video Stats'>";
 			msg += "<div>Video Width: <input id='videoWidth' class='dialogInput' type='text' value="+ mediaWidth + " defaultValue="+ mediaWidth + " style='width:15%;'/></div>";
 			msg += '<span id="videoWidthError" class="error">The value must be a numeric value</span><br/>';
 			msg += "<div>Video Height: <input id='videoHeight' class='dialogInput' type='text' value="+ mediaHeight + " defaultValue="+ mediaHeight + " style='width:15%;'/></div>";
 			msg += '<span id="videoHeightError" class="error">The value must be a numeric value</span><br/>';
-			msg += "<label id='label'>autoplay: </label>";
-			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input><br/>";
-			msg += "<label id='label'>autonext: </label>";
-			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input><br/>";
-			msg += "<label id='label'>Hide Video Volume Controls: </label>";
-			msg += "<input id='hideVideoVolumeControls' type='checkbox' name='hideVideoVolumeControls' class='radio' value='true'/></input><br/>";
-			msg += "<label id='label'>poster: </label>";
+			msg += "<input id='autoplay' type='checkbox' name='autoplay' class='radio' value='true'/></input>";
+			msg += "<label id='label'> autoplay</label><br/>";			
+			msg += "<input id='autonext' type='checkbox' name='autonext' class='radio' value='true'/></input>";
+			msg += "<label id='label'> autonext</label><br/>";			
 			msg += "<input id='poster' type='checkbox' name='hasPoster' class='radio' value='true'/></input>";
+			msg += "<label id='label'> poster</label>";			
 			msg += "<input id='posterFile' class='dialogInput' type='text' value='"+ tmpPoster + "' defaultValue='"+ tmpPoster + "' style='width:40%;'/>";
 			msg += "<br/>";
-			msg += "<label id='label'>subtitles: </label>";
 			msg += "<input id='subs' type='checkbox' name='hasSubs' class='radio' value='true'/></input>";
+			msg += "<label id='label'> subtitles: </label>";			
 			msg += "<input id='subFile' class='dialogInput' type='text' value='"+ tmpSubs + "' defaultValue='"+ tmpSubs + "' style='width:40%;'/>";
+			msg += '<h4>Hide Video Controls</h4>';
+			msg += '<table><tr><th style="text-align:center">Select All</th>';
+			msg += '<th style="text-align:center">Play/Pause</th>';
+			msg += '<th style="text-align:center">Current</th>';
+			msg += '<th style="text-align:center">Progress</th>';
+			msg += '<th style="text-align:center">Duration</th>';
+			msg += '<th style="text-align:center">Volume </th>';
+			msg += '<th style="text-align:center">Fullscreen</th>';
+			msg += '</tr>';
+			msg += '<tr><td style="text-align:center"><input id="hideAllVideoControls" type="checkbox" name="hideAllVideoControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoPlayPauseControls" type="checkbox" name="hideVideoPlayPauseControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoCurrentControls" type="checkbox" name="hideVideoCurrentControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoProgressControls" type="checkbox" name="hideVideoProgressControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoDurationControls" type="checkbox" name="hideVideoDurationControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoVolumeControls" type="checkbox" name="hideVideoVolumeControls" class="radio" value="true"></td>';
+			msg += '<td style="text-align:center"><input id="hideVideoFullscreenControls" type="checkbox" name="hideVideoFullscreenControls" class="radio" value="true"></td>';
+			msg += '</tr></table>';
 			msg += "</div>";
 			$("#loader").append(msg);
 
@@ -1122,9 +1206,56 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 				$("#autonext").attr("checked", "checked");
 			}
 
-			if(hideVideoVolumeControls == true){
+			if(hideVideoPlayPauseControls == true){		
+				$("#hideVideoPlayPauseControls").attr("checked", "checked");
+			}
+
+			if(hideVideoCurrentControls == true){		
+				$("#hideVideoCurrentControls").attr("checked", "checked");
+			}
+
+			if(hideVideoProgressControls == true){		
+				$("#hideVideoProgressControls").attr("checked", "checked");
+			}
+
+			if(hideVideoDurationControls == true){		
+				$("#hideVideoDurationControls").attr("checked", "checked");
+			}
+
+			if(hideVideoVolumeControls == true){		
 				$("#hideVideoVolumeControls").attr("checked", "checked");
 			}
+
+			if(hideVideoFullscreenControls == true){		
+				$("#hideVideoFullscreenControls").attr("checked", "checked");
+			}
+
+			if(hideVideoPlayPauseControls == true && hideVideoCurrentControls == true && 
+				hideVideoProgressControls == true && hideVideoDurationControls == true && 
+				hideVideoVolumeControls == true && hideVideoFullscreenControls == true){		
+				$("#hideAllVideoControls").attr("checked", "checked");
+			}
+
+			$("#hideAllVideoControls").change(function(){
+				if($("#hideAllVideoControls").prop("checked") == true){
+					$("#hideAllVideoControls").attr("checked", "checked");
+					$("#hideVideoPlayPauseControls").attr("checked", "checked");
+					$("#hideVideoCurrentControls").attr("checked", "checked");
+					$("#hideVideoProgressControls").attr("checked", "checked");
+					$("#hideVideoDurationControls").attr("checked", "checked");
+					$("#hideVideoVolumeControls").attr("checked", "checked");
+					$("#hideVideoFullscreenControls").attr("checked", "checked");
+				}
+				else{
+					$("#hideAllVideoControls").attr("checked", false);
+					$("#hideVideoPlayPauseControls").attr("checked", false);
+					$("#hideVideoCurrentControls").attr("checked", false);
+					$("#hideVideoProgressControls").attr("checked", false);
+					$("#hideVideoDurationControls").attr("checked", false);
+					$("#hideVideoVolumeControls").attr("checked", false);
+					$("#hideVideoFullscreenControls").attr("checked", false);
+				}
+			});							
 			
 			if(hasPoster == true){
 				$("#poster").attr("checked", "checked");
@@ -1180,6 +1311,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
             	autoOpen: true,
             	dialogClass: "no-close",
 				modal: true,
+				width: 600,
 				buttons: [ { text: "Save", click: function() {$( this ).dialog( "close" ); } }],
 					close: function(){
 						var strippedPath = "";
@@ -1220,10 +1352,49 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 							$(data).find("page").eq(currentPage).attr("autonext", "false");
 						}
 
-						if($("#hideVideoVolumeControls").prop("checked") == true){
+						if($("#hideAllVideoControls").prop("checked") == true){
+							$(data).find("page").eq(currentPage).attr("hideVideoPlayPauseControls", "true");
+							$(data).find("page").eq(currentPage).attr("hideVideoCurrentControls", "true");
+							$(data).find("page").eq(currentPage).attr("hideVideoProgressControls", "true");
+							$(data).find("page").eq(currentPage).attr("hideVideoDurationControls", "true");
 							$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "true");
+							$(data).find("page").eq(currentPage).attr("hideVideoFullscreenControls", "true");
 						}else{
-							$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "false");
+							if($("#hideVideoPlayPauseControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoPlayPauseControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoPlayPauseControls", "false");
+							}
+
+							if($("#hideVideoCurrentControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoCurrentControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoCurrentControls", "false");
+							}
+
+							if($("#hideVideoProgressControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoProgressControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoProgressControls", "false");
+							}														
+
+							if($("#hideVideoDurationControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoDurationControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoDurationControls", "false");
+							}
+
+							if($("#hideVideoVolumeControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoVolumeControls", "false");
+							}
+
+							if($("#hideVideoFullscreenControls").prop("checked") == true){
+								$(data).find("page").eq(currentPage).attr("hideVideoFullscreenControls", "true");
+							}else{
+								$(data).find("page").eq(currentPage).attr("hideVideoFullscreenControls", "false");
+							}														
 						}
 
 						$(data).find("page").eq(currentPage).attr("controlType", "bar");
