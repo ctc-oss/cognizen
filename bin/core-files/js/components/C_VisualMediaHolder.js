@@ -462,6 +462,9 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					}
 				});
 			}
+			if(featuresArr.length == 0){
+				$(".mejs-controls").addClass("hide-controls");
+			}
 
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES
