@@ -462,6 +462,11 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					}
 				});
 			}
+			if(featuresArr.length == 0){
+				//$('#videoplayer').hideControls();
+				//$(".mejs-controls").addClass("mejs-offscreen");
+				$(".mejs-controls").addClass("hide-controls");
+			}
 
 			doAccess(pageAccess_arr);
         }else{////////////////////////////////////////////////IMAGES

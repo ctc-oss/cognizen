@@ -12,6 +12,10 @@ body{
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+.hide-controls{
+	visibility:hidden !important; 
+}
+
 /* Style a bit the inline editables. */
 .cke_editable.cke_editable_inline
 {
