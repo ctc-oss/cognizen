@@ -86,6 +86,12 @@ function checkScorm(){
 			scorm.status("set", "completed");
 			if(scorm.version != "1.2"){
 				scorm.set("cmi.success_status", "passed");
+				//#5012 If a SCO (lesson) has been passed and a score.scaled has been recorded to the 
+				//global objective the value stored in the objective needs to be set to cmi.score.scaled
+				var objScoreScaled = scorm.get("cmi.objectives."+_objIndex+".score.scaled");
+				if( objScoreScaled != undefined && objScoreScaled != null && objScoreScaled != ""){
+					scorm.set("cmi.score.scaled", objScoreScaled);
+				}					
 			}
 		}
 		else{
