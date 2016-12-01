@@ -437,7 +437,8 @@ function C_Completion(_type) {
 					}
                     else if(lms === 'NEL'){
                         scorm.set("adl.nav.request", "continue");
-                        scorm.set("cmi.exit", "normal");
+                        //#5013 - If a lessson is not passed cmi.exit will be set to suspend.  This avoids a new attempt on parent nodes. 
+                        score_obj.passed ? scorm.set("cmi.exit", "normal") : scorm.set("cmi.exit", "suspend");
                         scorm.API.getHandle().Terminate("");                        
                     }					
 					else{
