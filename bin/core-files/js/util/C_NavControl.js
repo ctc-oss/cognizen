@@ -1536,12 +1536,41 @@ function checkCloseLesson(){
 				if(currentTemplateType == "completion"){
 					if(isScored === "true"){
 						var _score_obj = getFinalScore();
-						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU' || $(courseData).find("course").attr("lms") == 'NEL') {
+						//#5017 Close Lesson not persisting score
+						if($(data).find("page").eq(currentPage).attr('retainscore') == "true"){
+							var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
+							if($(data).find("page").eq(currentPage).attr('review') === "true"){
+								var reviewStrip = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '').split("Review");
+								_lessonTitle = reviewStrip[0];
+
+							}
+
+							var _objIndex = findObjective(_lessonTitle.replace(/[^\w\s]/gi, '')+"_satisfied");
+					      	var savedScore = scorm.get("cmi.objectives."+_objIndex+".score.scaled");
+					      	var numSavedScore = 0;
+
+							if(savedScore.length != 0){
+								numSavedScore = Math.round(parseFloat(savedScore) * 100);
+								if(numSavedScore >= _score_obj.minScore){
+									_score_obj.passed = true;
+									_score_obj.score = savedScore;
+									_score_obj.scorePercent = numSavedScore;
+								}
+							}
+						}
+						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU'){
 							completeLesson(_score_obj.passed, _score_obj.passed, _score_obj.score, false, false, false);
+						}
+						else if($(courseData).find("course").attr("lms") == 'NEL'){
+							scorm.set("adl.nav.request", "continue");
+							//#5013 - If a lessson is not passed cmi.exit will be set to suspend.  This avoids a new attempt on parent nodes.
+							_score_obj.passed ? scorm.set("cmi.exit", "normal") : scorm.set("cmi.exit", "suspend");
+							scorm.API.getHandle().Terminate("");
 						}
 						else{
 							completeLesson(true, _score_obj.passed, _score_obj.score, false, false, false);
 						}
+						//end #5017 fix
 					}
 					else{
 						//#3568 - don't set success_status for non scored lessons
