@@ -159,7 +159,7 @@ function C_Completion(_type) {
 			//retain score if already passed #3589
 			if(retainScore){
 				if(review === "true"){
-					var reviewStrip = _lessonTitle.split("Review");
+					var reviewStrip = lessonTitle.split("Review");
 					lessonTitle = reviewStrip[0];
 
 				}	
@@ -408,22 +408,19 @@ function C_Completion(_type) {
 		}
 		else if(doScorm()){
 			//#4993 handles user leaving completion page before clicking continue
-			scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
-            if(score_obj.passed){
-                scorm.status("set", "completed");    
-                scorm.set("cmi.success_status", "passed");    
-            }
-            else{
-                scorm.status("set", "incomplete");
-                scorm.set("cmi.success_status", "failed");
-            }
 
             //do not write score if no pages are graded
+            //#5016 - fix for Lessons that do not have any graded pages are setting success_status to failed 
             if(isScored === "true"){
-            	scorm.set("cmi.score.scaled", score_obj.score.toString());
-            	var raw = score_obj.score*100;
-            	scorm.set("cmi.score.raw", raw.toString());
+				score_obj.passed ? scorm.set("cmi.success_status", "passed") : scorm.set("cmi.success_status", "failed");
+				score_obj.passed ? scorm.status("set", "completed") : scorm.status("set", "incomplete");
+	         	scorm.set("cmi.score.scaled", score_obj.score.toString());
+	         	var raw = score_obj.score*100;
+	         	scorm.set("cmi.score.raw", raw.toString());
         	}
+			else{
+				score_obj.passed ? scorm.status("set", "completed") : scorm.status("set", "incomplete");
+			}
 
 			$('<div id="completionButton">Continue</div>').insertAfter("#scoreFeedback");
 			$("#completionButton").css({"width": "200px"});  //moved to css file
