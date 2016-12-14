@@ -1537,7 +1537,7 @@ function checkCloseLesson(){
 					if(isScored === "true"){
 						var _score_obj = getFinalScore();
 						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU' || $(courseData).find("course").attr("lms") == 'NEL') {
-							completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false, false);
+							completeLesson(_score_obj.passed, _score_obj.passed, _score_obj.score, false, false, false);
 						}
 						else{
 							completeLesson(true, _score_obj.passed, _score_obj.score, false, false, false);
