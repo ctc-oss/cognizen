@@ -112,22 +112,35 @@ function checkScorm(){
                 	location = scorm.get("cmi.location");
                 	break;
             }
-
-            if(scormEntry === "resume"){
-            	var suspendedQuestionResponse = scorm.get("cmi.suspend_data");
-            	//debugger;
-            	var qrObject_arr = suspendedQuestionResponse.split("|");
-            	for (var i = 0; i < qrObject_arr.length-1; i++) {
-            		questionResponse_arr.push(jQuery.parseJSON(qrObject_arr[i]));
-            	};
-            	
+            if($(courseData).find("course").attr("lms") != "ADLS"){
+	            if(scormEntry === "resume"){
+	            	var suspendedQuestionResponse = scorm.get("cmi.suspend_data");
+	            	var qrObject_arr = suspendedQuestionResponse.split("|");
+	            	for (var i = 0; i < qrObject_arr.length-1; i++) {
+	            		questionResponse_arr.push(jQuery.parseJSON(qrObject_arr[i]));
+	            	};
+	            	
+					if(location != ""){
+						buildTrackingArray();
+						loadPageFromID(location);
+						rejoinTracking(location);
+					}            	
+	            }
+        	}
+        	else{
 				if(location != ""){
-					//figure out what is going on here.
+	            	var suspendedQuestionResponse = scorm.get("cmi.suspend_data");
+	            	var qrObject_arr = suspendedQuestionResponse.split("|");
+	            	for (var i = 0; i < qrObject_arr.length-1; i++) {
+	            		questionResponse_arr.push(jQuery.parseJSON(qrObject_arr[i]));
+	            	};
+	            	
+	                markResume = true;
 					buildTrackingArray();
 					loadPageFromID(location);
 					rejoinTracking(location);
-				}            	
-            }
+				}  
+        	}
 
 		}
 	}

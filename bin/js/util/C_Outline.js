@@ -807,6 +807,7 @@ function C_Outline(_myItem) {
 		     	msg += "<option>JKO</option>";
 		     	msg += "<option>CTCU</option>";
 		     	msg += "<option>NEL</option>";
+		     	msg += "<option>ADLS</option>";
 		     	msg += "</select> ";
 				//end div for lmsAccord
 				msg += '</div>';
