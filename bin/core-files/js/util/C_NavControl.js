@@ -1865,31 +1865,59 @@ function enableIndex(){
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-	if(assessment && !checkQuestionComplete()){
+	debugger;
+	console.log(currentPageID);
+	var questionsComplete = checkQuestionComplete();
+
+	//#5020 if completion page and all graded questions are complete then disable index and back
+	if(currentTemplateType == "completion"){
+		if(checkAllGradedComplete()){
+			disableIndex();
+			disableHome();
+			disableBack();
+		}
+		else{
+			enableIndex();
+			enableHome();
+			enableBack();
+		}
+	}
+	else if(currentPage == 0){
+		disableBack();
+	}
+	else if(assessment && !questionsComplete){
 		disableIndex();
 		disableHome();
-	}else{
+		disableBack();
+	}
+	else{
+		if(markResume == true){
+			markResume = false;
+		}
+
 		enableIndex();
 		enableHome();
-	}
+		enableBack();
+
+	}	
 
 	if(mode == "edit" && indexDisabled == true){
 		mandatoryInteraction = false;
 		enableIndex();
 	}
 
-	if(currentPage == 0 || (assessment == true && !checkQuestionComplete())){
-		disableBack();
-	}else{
-		var _cmi = 'cmi.core.entry';
-		if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
-			_cmi = 'cmi.entry';
-		}
-		if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
-			enableBack();
-			markResume = false;
-		}
-	}
+	// if(currentPage == 0 || (assessment == true && !questionsComplete)){
+	// 	disableBack();
+	// }else{
+	// 	var _cmi = 'cmi.core.entry';
+	// 	if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
+	// 		_cmi = 'cmi.entry';
+	// 	}
+	// 	if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
+	// 		enableBack();
+	// 		markResume = false;
+	// 	}
+	// }
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
@@ -2096,6 +2124,16 @@ function checkQuestionComplete(){
 	return isComplete;
 }
 
+function checkAllGradedComplete(){
+	var isComplete = true;
+	for(var i = 0; i < questionResponse_arr.length; i++){
+		if(questionResponse_arr[i].graded == true && questionResponse_arr[i].complete != true){
+			isComplete = false;
+		}
+	}
+	return isComplete;
+}
+
 function updateTextInputQuestionResponse(_questionObj){
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
@@ -2236,13 +2274,14 @@ this.loadPage = function(){
 		}
 	}
 
+	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
+	currentPageID = $(data).find("page").eq(currentPage).attr("id");
+
 	//currentBranch = 0;
 	//Check if nave buttons should be disabled.
 	checkNavButtons();
 	updatePageCount();
 
-	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
-	currentPageID = $(data).find("page").eq(currentPage).attr("id");
 	if(isScorm){
 		if(scorm.VERSION == "1.2"){
 			scorm.set("cmi.core.lesson_location", currentPageID);
