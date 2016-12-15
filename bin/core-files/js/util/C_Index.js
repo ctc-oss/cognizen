@@ -286,20 +286,32 @@ function addItemInfo(pageId, pageNumDisplay, thisId, i, title){
 	var indexString = "";
 	if(mode == "edit"){
 		indexString += '<div class="dd-handle dd3-handle">Drag</div>';	
-	}
-	indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">';
-	
-	if(showPageNumbers){
-		indexString += pageNumDisplay + '. ';
-	}
-	indexString += title;
-	
-	if (mode == "edit" || mode == "review"){
+		
+		indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">';
+		
+		if(showPageNumbers){
+			indexString += pageNumDisplay + '. ';
+		}
+		indexString += title;
+		
 		indexString += '<div id="commentSpot"></div>';
 	}
-	
-	if (mode != "edit"){
-		indexString += '<div id="statusSpot" class="dd-status dd3-status"></div>';
+
+	else if($(data).find("page").eq(i).attr("indexhide") != "true" ){	
+		indexString += '<div id="'+thisId+'" class="dd3-content" tag="'+i+'" myID="'+pageId+'" role="button" tabindex="1">';
+		
+		if(showPageNumbers){
+			indexString += pageNumDisplay + '. ';
+		}
+		indexString += title;
+		
+		if (mode == "review"){
+			indexString += '<div id="commentSpot"></div>';
+		}
+		
+		if (mode != "edit"){
+			indexString += '<div id="statusSpot" class="dd-status dd3-status"></div>';
+		}
 	}
 	return indexString;
 }
