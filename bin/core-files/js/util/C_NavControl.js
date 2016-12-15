@@ -1536,12 +1536,41 @@ function checkCloseLesson(){
 				if(currentTemplateType == "completion"){
 					if(isScored === "true"){
 						var _score_obj = getFinalScore();
-						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU' || $(courseData).find("course").attr("lms") == 'NEL') {
-							completeLesson(score_obj.passed, score_obj.passed, score_obj.score, false, false, false);
+						//#5017 Close Lesson not persisting score
+						if($(data).find("page").eq(currentPage).attr('retainscore') == "true"){
+							var _lessonTitle = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '');
+							if($(data).find("page").eq(currentPage).attr('review') === "true"){
+								var reviewStrip = $(data).find('lessonTitle').attr('value').replace(/\s+/g, '').split("Review");
+								_lessonTitle = reviewStrip[0];
+
+							}
+
+							var _objIndex = findObjective(_lessonTitle.replace(/[^\w\s]/gi, '')+"_satisfied");
+					      	var savedScore = scorm.get("cmi.objectives."+_objIndex+".score.scaled");
+					      	var numSavedScore = 0;
+
+							if(savedScore.length != 0){
+								numSavedScore = Math.round(parseFloat(savedScore) * 100);
+								if(numSavedScore >= _score_obj.minScore){
+									_score_obj.passed = true;
+									_score_obj.score = savedScore;
+									_score_obj.scorePercent = numSavedScore;
+								}
+							}
+						}
+						if($(data).find('scormVersion').attr('value') === '1.2_CTCU' || $(courseData).find("course").attr("lms") == 'CTCU'){
+							completeLesson(_score_obj.passed, _score_obj.passed, _score_obj.score, false, false, false);
+						}
+						else if($(courseData).find("course").attr("lms") == 'NEL'){
+							scorm.set("adl.nav.request", "continue");
+							//#5013 - If a lessson is not passed cmi.exit will be set to suspend.  This avoids a new attempt on parent nodes.
+							_score_obj.passed ? scorm.set("cmi.exit", "normal") : scorm.set("cmi.exit", "suspend");
+							scorm.API.getHandle().Terminate("");
 						}
 						else{
 							completeLesson(true, _score_obj.passed, _score_obj.score, false, false, false);
 						}
+						//end #5017 fix
 					}
 					else{
 						//#3568 - don't set success_status for non scored lessons
@@ -1836,31 +1865,59 @@ function enableIndex(){
 
 //Turns the next/back button off for first/last page.
 function checkNavButtons(){
-	if(assessment && !checkQuestionComplete()){
+	debugger;
+	console.log(currentPageID);
+	var questionsComplete = checkQuestionComplete();
+
+	//#5020 if completion page and all graded questions are complete then disable index and back
+	if(currentTemplateType == "completion"){
+		if(checkAllGradedComplete()){
+			disableIndex();
+			disableHome();
+			disableBack();
+		}
+		else{
+			enableIndex();
+			enableHome();
+			enableBack();
+		}
+	}
+	else if(currentPage == 0){
+		disableBack();
+	}
+	else if(assessment && !questionsComplete){
 		disableIndex();
 		disableHome();
-	}else{
+		disableBack();
+	}
+	else{
+		if(markResume == true){
+			markResume = false;
+		}
+
 		enableIndex();
 		enableHome();
-	}
+		enableBack();
+
+	}	
 
 	if(mode == "edit" && indexDisabled == true){
 		mandatoryInteraction = false;
 		enableIndex();
 	}
 
-	if(currentPage == 0 || (assessment == true && !checkQuestionComplete())){
-		disableBack();
-	}else{
-		var _cmi = 'cmi.core.entry';
-		if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
-			_cmi = 'cmi.entry';
-		}
-		if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
-			enableBack();
-			markResume = false;
-		}
-	}
+	// if(currentPage == 0 || (assessment == true && !questionsComplete)){
+	// 	disableBack();
+	// }else{
+	// 	var _cmi = 'cmi.core.entry';
+	// 	if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
+	// 		_cmi = 'cmi.entry';
+	// 	}
+	// 	if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
+	// 		enableBack();
+	// 		markResume = false;
+	// 	}
+	// }
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
@@ -2067,6 +2124,16 @@ function checkQuestionComplete(){
 	return isComplete;
 }
 
+function checkAllGradedComplete(){
+	var isComplete = true;
+	for(var i = 0; i < questionResponse_arr.length; i++){
+		if(questionResponse_arr[i].graded == true && questionResponse_arr[i].complete != true){
+			isComplete = false;
+		}
+	}
+	return isComplete;
+}
+
 function updateTextInputQuestionResponse(_questionObj){
 	for(var i = 0; i < questionResponse_arr.length; i++){
 		if(currentPageID == questionResponse_arr[i].id){
@@ -2207,13 +2274,14 @@ this.loadPage = function(){
 		}
 	}
 
+	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
+	currentPageID = $(data).find("page").eq(currentPage).attr("id");
+
 	//currentBranch = 0;
 	//Check if nave buttons should be disabled.
 	checkNavButtons();
 	updatePageCount();
 
-	currentTemplateType = $(data).find("page").eq(currentPage).attr('layout');
-	currentPageID = $(data).find("page").eq(currentPage).attr("id");
 	if(isScorm){
 		if(scorm.VERSION == "1.2"){
 			scorm.set("cmi.core.lesson_location", currentPageID);
