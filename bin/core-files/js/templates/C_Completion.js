@@ -408,7 +408,7 @@ function C_Completion(_type) {
 		}
 		else if(doScorm()){
 			//#4993 handles user leaving completion page before clicking continue
-
+			scorm.set("cmi.location", $(data).find("page").eq(0).attr("id"));
             //do not write score if no pages are graded
             //#5016 - fix for Lessons that do not have any graded pages are setting success_status to failed 
             if(isScored === "true"){
