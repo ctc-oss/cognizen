@@ -59,6 +59,7 @@ function C_QuestionBank(_type) {
     var questionDisplay_arr = [];
     var questionsComplete = 0; //
     var score_arr = [];
+    var showAllOverride = false;
 
 
     //Defines a public method - notice the difference between the private definition below.
@@ -77,6 +78,8 @@ function C_QuestionBank(_type) {
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
 			mandatory = false;
 		}
+debugger;
+		showAllOverride = $(courseData).find("course").attr("showall");
 
 		selectbankitems();
 	}
@@ -126,7 +129,7 @@ function C_QuestionBank(_type) {
 		}
 
 		//This is undefined for old question banks so always false.
-		if($(data).find("page").eq(currentPage).attr("showall") == "true"){
+		if($(data).find("page").eq(currentPage).attr("showall") == "true" || showAllOverride == "true" ){
 			showAll = true;
 			toComplete = bankLength;
 		}

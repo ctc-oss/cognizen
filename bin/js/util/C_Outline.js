@@ -786,8 +786,10 @@ function C_Outline(_myItem) {
 			msg += '<div><b>Section 508:</b></div>';
 			msg += addToggle("section508", "Enable content to follow Section 508 standards.");
 	     	msg += "<div><b>Redmine:</b></div>";
-			msg += addToggle("redmine", "Enable the use of Redmine for commenting.");			
-			msg += '</div>';
+			msg += addToggle("redmine", "Enable the use of Redmine for commenting.");	
+	     	msg += "<div><b>ShowAll:</b></div>";
+			msg += addToggle("showall", "Override lesson settings to show all questionbank questions.");					
+			msg += '</div>';//end general div
 	     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
 			msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
 			msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
@@ -844,7 +846,7 @@ function C_Outline(_myItem) {
 				updateCourseXML();
 			});
 
-			//handle seeting of coursedisplaytitle if not set and setting the value based off of the xml
+			//handle setting of coursedisplaytitle if not set and setting the value based off of the xml
 			if(!$(courseData).find('course').attr('coursedisplaytitle')){
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
 				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
@@ -854,14 +856,14 @@ function C_Outline(_myItem) {
 				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("coursedisplaytitle"));
 			}
 
-			//on change of the section508 toggle update the course xml 
+			//on change of the coursedisplaytitle toggle update the course xml 
 			$('#out_courseDisplayTitle').on('change', function(){
 				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
 				updateCourseXML();
 			}).css({'width': '500px', 'color': '#3383bb;'});
 
 
-			//handle seeting of section 508 if not set and setting the value based off of the xml
+			//handle setting of section 508 if not set and setting the value based off of the xml
 			if(!$(courseData).find('course').attr('section508')){
 				$('#section508').prop('checked', true);
 				$(courseData).find('course').attr('section508', 'true');
@@ -882,6 +884,31 @@ function C_Outline(_myItem) {
 				}
 				else{
 					$(courseData).find('course').attr('section508', 'false');
+				}
+				updateCourseXML();
+			});
+
+			//handle setting of showall if not set and setting the value based off of the xml
+			if(!$(courseData).find('course').attr('showall')){
+				$('#showall').prop('checked', false);
+				$(courseData).find('course').attr('showall', 'false');
+				updateCourseXML();
+
+			}
+			else if($(courseData).find('course').attr('showall') === 'true'){
+				$('#showall').prop('checked', true);
+			}
+			else{
+				$('#showall').prop('checked', false);
+			}
+
+			//on change of the  toggle update the course xml 
+			$('#showall').on('change', function(){
+				if($('#showall').prop('checked')){
+					$(courseData).find('course').attr('showall', 'true');
+				}
+				else{
+					$(courseData).find('course').attr('showall', 'false');
 				}
 				updateCourseXML();
 			});

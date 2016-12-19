@@ -1727,7 +1727,7 @@ function updateTotalGradedQuestions(){
 	for(var i = 0; i < totalPages; i++){
 		if( ($(data).find("page").eq(i).attr('type') == 'kc') && ($(data).find("page").eq(i).attr('graded') == 'true') ){
 			if($(data).find("page").eq(i).attr('layout') == 'questionBank' && $(data).find("page").eq(i).attr('tocomplete') != undefined){
-				if($(data).find("page").eq(i).attr('showall') == 'false'){
+				if($(data).find("page").eq(i).attr('showall') == 'false' && $(courseData).find("course").attr("showall") == 'false'){
 					totalGradedQuestions += parseInt($(data).find("page").eq(i).attr('tocomplete'));
 				}
 				else{
