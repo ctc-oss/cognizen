@@ -62,13 +62,13 @@ function ncInitialize(){
 			if($(data).find("page").eq(i).attr('type') == 'kc'){
 				var isMulti = false;
 				if($(data).find("page").eq(i).attr('layout') == 'questionBank'){
-					if(parseInt($(data).find("page").eq(i).attr('tocomplete')) > 1 || $(data).find("page").eq(i).attr('showall') == "true"){
+					if(parseInt($(data).find("page").eq(i).attr('tocomplete')) > 1 || $(data).find("page").eq(i).attr('showall') == "true" || $(courseData).find("course").attr("showall") == 'true'){
 						isMulti = true;
 					}
 				}
 				if($(data).find("page").eq(i).attr('layout') == 'questionBank' && isMulti){
 					var howMany = 0;
-					if($(data).find("page").eq(i).attr('showall') == "true"){
+					if($(data).find("page").eq(i).attr('showall') == "true" || $(courseData).find("course").attr("showall") == 'true'){
 						howMany = $(data).find("page").eq(i).find("bankitem").length;
 					}else{
 						howMany = parseInt($(data).find("page").eq(i).attr('tocomplete'));
