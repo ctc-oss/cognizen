@@ -1727,7 +1727,7 @@ function updateTotalGradedQuestions(){
 	for(var i = 0; i < totalPages; i++){
 		if( ($(data).find("page").eq(i).attr('type') == 'kc') && ($(data).find("page").eq(i).attr('graded') == 'true') ){
 			if($(data).find("page").eq(i).attr('layout') == 'questionBank' && $(data).find("page").eq(i).attr('tocomplete') != undefined){
-				if($(data).find("page").eq(i).attr('showall') == 'false'){
+				if($(data).find("page").eq(i).attr('showall') == 'false' && $(courseData).find("course").attr("showall") == 'false'){
 					totalGradedQuestions += parseInt($(data).find("page").eq(i).attr('tocomplete'));
 				}
 				else{
@@ -1904,20 +1904,10 @@ function checkNavButtons(){
 	if(mode == "edit" && indexDisabled == true){
 		mandatoryInteraction = false;
 		enableIndex();
-	}
+		enableHome();
+		enableBack();
 
-	// if(currentPage == 0 || (assessment == true && !questionsComplete)){
-	// 	disableBack();
-	// }else{
-	// 	var _cmi = 'cmi.core.entry';
-	// 	if($(data).find('scormVersion').attr('value').substring(0,4) == "2004"){
-	// 		_cmi = 'cmi.entry';
-	// 	}
-	// 	if(backDisabled == true || scorm.get(_cmi) == "resume" || markResume == true){
-	// 		enableBack();
-	// 		markResume = false;
-	// 	}
-	// }
+	}
 
 	if(currentPage == totalPages -1 || mandatoryInteraction == true){
 		disableNext();
