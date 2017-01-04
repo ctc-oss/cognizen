@@ -22,7 +22,6 @@ function C_Outline(_myItem) {
     var courseXMLPath;											//Path to the course.xml
     var refreshExpected = false;								//Toggle on refreshes coming in - true when needed.
 
-
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
@@ -373,7 +372,7 @@ function C_Outline(_myItem) {
         $("#dialog-outline").dialog({
             modal: true,
             width: 1024,
-            height: 768,
+            height: 798,
             resizable: false,
             close: function (event, ui) {
                 socket.removeAllListeners('receiveCoursePath');
@@ -814,6 +813,14 @@ function C_Outline(_myItem) {
 				//end div for lmsAccord
 				msg += '</div>';
 			}
+			//#3727 Add course_metadata.xml updating
+	    	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Metadata Options</h3>";
+	     	msg += '<div id="metadataAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';
+			msg += '<div><b>Import Metadata:</b></div>';
+			msg += addToggle("importmetadata", "Enable external metadata file to be added to the imsmanifest.xml. Ex: course_metadata.xml");	     	
+			msg += "<input id='metadatafile' type='file' disabled/>";
+			//end div for metadataAccord
+			msg += '</div>';			
 			//end div for accordion
 			msg += '</div>';
 
@@ -1046,6 +1053,52 @@ function C_Outline(_myItem) {
 			    $(courseData).find("course").attr("targetaudience", $("#targetAudience").val().replace('<p>', '').replace('</p>', '').trim());
 			    updateCourseXML();
 		    }).css({'width': '500px', 'color': '#3383bb;'});	    
+
+			//set importmetadata to default if not set and set importmetadata based off of value in xml
+			if(!$(courseData).find("course").attr("importmetadata")){
+				$('#importmetadata').prop('checked', false);
+				$(courseData).find("course").attr("importmetadata", "false");
+				$('#metadatafile').prop('disabled', true);
+				updateCourseXML();
+			}
+			else if($(courseData).find("course").attr("importmetadata") === "true"){
+				$('#importmetadata').prop('checked', true);
+				$('#metadatafile').prop('disabled', false);
+			}
+			else{
+				$('#importmetadata').prop('checked', false);			
+				$('#metadatafile').prop('disabled', true);
+
+			}
+
+			//update the xml when the importmetadata toggle is changed
+			$('#importmetadata').on('change', function(){
+				if($('#importmetadata').prop('checked')){
+					$(courseData).find("course").attr("importmetadata", "true");
+					$('#metadatafile').prop('disabled', false);
+				}
+				else{
+					$(courseData).find("course").attr("importmetadata", "false");
+					$('#metadatafile').prop('disabled', true);
+				}
+				updateCourseXML();
+			});		 
+
+			$('#metadatafile').change(function(e) { 
+				console.log(e.target.files[0]);
+
+				var file = e.target.files[0];
+				var stream = ss.createStream(/* {hightWaterMark: 16 * 1024} */);
+				ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path:"", track: "media"});
+				var blobStream = ss.createBlobReadStream(file/* , {hightWaterMark: 16 * 1024} */);
+				// var size = 0;
+				// blobStream.on('data', function(chunk) {
+				// 	size += chunk.length;
+				// 	$("#uploadProgress").progressbar("value", Math.floor(size / file.size * 100))
+				// });
+				blobStream.pipe(stream);				
+
+			});			   
 
 			/*$("#out_courseObjective").on("change", function(){
 			 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------

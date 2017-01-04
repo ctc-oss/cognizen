@@ -32,6 +32,7 @@ var currentLesson = {};
 var attemptId = "";
 var oldIE = false;
 var isBoth = true;
+var ss;
 
 var module_arr = [];										//Array holding all module data
 															/*id: "533edfe1cb89ab0000000001"
@@ -209,10 +210,19 @@ function initScripts(_data){
 				"js/libs/xapiwrapper.min.js"
 				], function($) {
 	    //Once all of the external js has loaded, build the application.
-	    buildInterface();
+	    loadStreamer();
 
 	});
 	}
+}
+
+function loadStreamer(){
+	require(['js/libs/socket.io-stream.js'], function (foo) {
+		debugger;
+   		ss = foo;
+   		ss.forceBase64 = true;
+		buildInterface();
+	});
 }
 
 function isOldIE() {
