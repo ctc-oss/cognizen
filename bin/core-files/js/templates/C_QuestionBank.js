@@ -78,7 +78,7 @@ function C_QuestionBank(_type) {
 		if($(data).find("page").eq(currentPage).attr('mandatory') == "false"){
 			mandatory = false;
 		}
-debugger;
+
 		showAllOverride = $(courseData).find("course").attr("showall");
 
 		selectbankitems();
@@ -581,33 +581,61 @@ debugger;
 			if(tempCorrect == true || attemptsMade == attemptsAllowed){
 				questionsComplete++;
 				if(questionsComplete === toComplete){
-					$( "#dialog-attemptResponse" ).dialog({
-						modal: true,
-						width: standardWidth,
-						dialogClass: "no-close",
-						buttons: {
-							Close: function(){
-								disableOptions();
-								$( this ).dialog( "close" );
+					//#5023 don't use close button for NEL courses
+					var _lms = $(courseData).find("course").attr("lms");
+					if(_lms != 'NEL'){
+						$( "#dialog-attemptResponse" ).dialog({
+							modal: true,
+							width: standardWidth,
+							dialogClass: "no-close",
+							buttons: {
+								Close: function(){
+									disableOptions();
+									$( this ).dialog( "close" );
+								},
+								Next: function(){
+									$( this ).dialog( "close" );
+									$("#next").click();
+								}
 							},
-							Next: function(){
-								$( this ).dialog( "close" );
-								$("#next").click();
+							open: function(){
+								$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
+								$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
+							},
+							close: function(){
+								if(isLinear == true){
+									updateTracking();
+								}
+								mandatoryInteraction = false;
+								checkNavButtons();
+								$("#dialog-attemptResponse").remove();
 							}
-						},
-						open: function(){
-							$('.ui-dialog-buttonpane').find('button:contains("Close")').addClass('feedback-close-button');
-							$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
-						},
-						close: function(){
-							if(isLinear == true){
-								updateTracking();
+						});						
+					}
+					else{
+						$( "#dialog-attemptResponse" ).dialog({
+							modal: true,
+							width: standardWidth,
+							dialogClass: "no-close",
+							buttons: {
+								Next: function(){
+									$( this ).dialog( "close" );
+									$("#next").click();
+								}
+							},
+							open: function(){
+								$('.ui-dialog-buttonpane').find('button:contains("Next")').addClass('feedback-proceed-button');
+							},
+							close: function(){
+								if(isLinear == true){
+									updateTracking();
+								}
+								mandatoryInteraction = false;
+								checkNavButtons();
+								$("#dialog-attemptResponse").remove();
 							}
-							mandatoryInteraction = false;
-							checkNavButtons();
-							$("#dialog-attemptResponse").remove();
-						}
-					});
+						});
+					}
 				}else{
 					$( "#dialog-attemptResponse" ).dialog({
 						modal: true,
