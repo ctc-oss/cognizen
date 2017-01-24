@@ -820,11 +820,15 @@ var Content = {
                 SocketHandler.socket(socket).cloneProgram(data);
             });    
 
-            socket.on('readMediaDir', function (data, callback){
-                SocketHandler.socket(socket).readMediaDir(data, function (fdata){
+            socket.on('readDir', function (data, callback){
+                SocketHandler.socket(socket).readDir(data, function (fdata){
                     callback(fdata);
                 });
-            });                  
+            });   
+
+            socket.on('removeMetadata', function(data){
+                SocketHandler.socket(socket).removeMetadata(data);
+            });                           
                               
         });
     });

@@ -217,7 +217,19 @@ var SocketHandler = {
 		                        trackPath = "/../css/CourseCSS/";
 	                        }else if(data.track == "lesson"){
 		                        trackPath = "/css/";
-	                        }
+	                        }else if(data.track == "metadata"){
+                                trackPath = "/metadata/";
+                            }
+
+                            var dirCheck = path.normalize(_this.Content.diskPath(found.path) + trackPath);
+
+                            fs.ensureDir(dirCheck, function (err) {
+                                if(err){
+                                   _this.logger.error('Error ensureDir : ' + err);
+                                }
+                                // dir has now been created, including the directory it is to be placed in
+                            })
+
                             var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + cleanName);
 							var fileSplit = cleanName.split(".");
 							var mediaType = fileSplit[fileSplit.length - 1];
@@ -3400,12 +3412,12 @@ var SocketHandler = {
     },    
     //cloning functions end
 
-    readMediaDir : function(data, callback){
+    readDir : function(data, callback){
         var _this = this;
 
-        var programPath = path.normalize(data.normPath+ '/');
+        var programPath = path.normalize(data.path + '/');
         var contentPath = path.resolve(process.cwd(), programPath);
-        var mediaPath = contentPath + '/media';
+        var mediaPath = contentPath + '/' + data.track;
         _this.logger.info("Media Dir : " + mediaPath);
         readdirp(
             { root: mediaPath,
@@ -3416,8 +3428,10 @@ var SocketHandler = {
             }
             , function (err, res) {                           
                 if (err) {
-                    _this._socket.emit('generalError', {title: 'Read media dir', message: 'Error occurred when reading media dir.'});
-                    _this.logger.error(err);
+                    if(data.track != 'metadata'){
+                        _this._socket.emit('generalError', {title: 'Read media dir', message: 'Error occurred when reading media dir.'});
+                        _this.logger.error(err);
+                    }
                     callback('');
                 }
                 else{
@@ -3427,6 +3441,36 @@ var SocketHandler = {
             }
         );   
     },
+
+    removeMetadata: function(data) {
+        var _this = this;
+        var type = data.type;
+        var id = data.id;
+        var contentType = _this.Content.objectType(type);
+        var folderPath = "/metadata/"
+        // if(data.track == "media"){
+        //     folderPath = "/media/"
+        // }else if(data.track == "core"){
+        //     folderPath = "/../../core-prog/"
+        // }else if(data.track == "course"){
+        //     folderPath = "/../css/"
+        // }else if(data.track == "lesson"){
+        //     folderPath = "/css/"
+        // }
+
+        if (contentType) {
+            contentType.findById(id, function (err, found) {
+                if (found) {
+                    var contentPath = path.normalize(_this.Content.diskPath(found.path) + folderPath + data.file);
+                    fs.unlink(contentPath, function (err) {
+                        if (err) throw err;
+                        console.log('successfully deleted metadata file at: ' + contentPath);
+                        _this._socket.emit('removeMetadataComplete');
+                    });
+                }
+            });
+        }
+    },    
 
     publishContent: function (data, callback){
         var _this = this;

@@ -197,7 +197,7 @@ function C_MediaValidator(_myItem, _myParent) {
      ************************************************************************************/
      function buildVMInterface(_mod){
      	try {$("#dialog-mv").dialog("close");} catch (e) {}
-        socket.emit('readMediaDir', _mod, function(fdata){
+        socket.emit('readDir', {path: _mod.normPath, track: 'media'}, function(fdata){
 
             if(fdata == ''){
             	console.log("fdata is empty");

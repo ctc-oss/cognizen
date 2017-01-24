@@ -372,6 +372,10 @@ function uploadFile(_file){
 
 	var file = _file;
 	var stream = ss.createStream(/* {hightWaterMark: 16 * 1024} */);
+	console.log('Outliner uploadFile id : ' + urlParams['id']);
+	console.log('Outliner uploadFile type : ' + urlParams['type']);
+	console.log('Outliner uploadFile path : ' + relPath);
+	console.log('Outliner uploadFile track : ' + folderTrack);
 	ss(cognizenSocket).emit('upload-media', stream, {size: file.size, name: file.name, id: urlParams['id'], type: urlParams['type'], path: relPath, track: folderTrack});
 	var blobStream = ss.createBlobReadStream(file/* , {hightWaterMark: 16 * 1024} */);
 	var size = 0;

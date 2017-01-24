@@ -773,6 +773,27 @@ TREE MENU STYLES
             border-radius: 3px;
 }
 
+.metadataDownload {
+	position: relative;
+	float: right;
+	right: 5px;
+	margin-left: 5px;
+	width: 15px;
+	height: 15px;
+	background: url(images/mbDownload.png) no-repeat;
+	cursor: hand;
+}
+
+.metadataRemove {
+	position: relative;
+	float: right;
+	width: 15px;
+	height: 15px;
+	margin-left: 5px;
+	background: url(images/mbRemove.png) no-repeat;
+	cursor: hand;
+}
+
 /*Search*/
 
 
