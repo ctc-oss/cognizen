@@ -26,6 +26,7 @@ var SCORM = {
     reviewLines: '',
     reviewLines_arr: [],
     courseDisplayTitle: '',
+    metadataFiles_arr: [],
     init: function(logger, ScormPath, ContentPath, XmlContentPath, Found, Scorm, Deliverable) {
         this.logger = logger;
         this.scormPath = ScormPath;
@@ -47,6 +48,7 @@ var SCORM = {
 		_this.cssResources_arr = [];
         //clear js arr
         _this.jsResources_arr = [];
+		_this.metadataFiles_arr = [];
 
 		readdirp(
             { root: _this.contentPath + '/../css',
@@ -75,186 +77,204 @@ var SCORM = {
 		                    //console.log(localFile);
 		                    _this.jsResources_arr.push(localFile);
 		                });
-
-		        		//console.log(_this.scormVersion);
-				        readdirp(
-				            { root: _this.contentPath,
-				                directoryFilter: [ '!server', '!scorm', '!.git', '!js', '!CoreCSS'],
+		                // add metadata files #3727
+		                readdirp(
+		                	{ root: _this.contentPath + '/../metadata',
+				                directoryFilter: [ '!.git'],
 				                fileFilter: [ '!.*' ] }
 				            , function(fileInfo) {
 				                //console.log("---------------------------------------------------------" + fileInfo);
 				            }
 				            , function (err, res) {
+				            	if(res != null){
+					                res.files.forEach(function(file) {
+					                    var localFile = file.path.replace(/\\/g,"/")
+					                    _this.metadataFiles_arr.push(localFile);
+					                });
+				            	}
 
-				            	//copy content.xml file to temp location
-				            	_this.packageFolder = _this.contentPath + '/packages/';
-				            	_this.tempXmlContentFile = _this.packageFolder + 'content.xml';
-						        try{
-							        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
-							    }
-							    catch(err){
-							    	_this.logger.error("Copy content xml file error : " + err);
-							    	callback(err, null);
-							    }
+						        readdirp(
+						            { root: _this.contentPath,
+						                directoryFilter: [ '!server', '!scorm', '!.git', '!js', '!CoreCSS'],
+						                fileFilter: [ '!.*' ] }
+						            , function(fileInfo) {
+						                //console.log("---------------------------------------------------------" + fileInfo);
+						            }
+						            , function (err, res) {
 
-								var data, etree;
-						       	try{
-						        	data = fs.readFileSync(_this.tempXmlContentFile).toString();
-						        }
-						        catch(err){
-						        	_this.logger.error("Error reading temp content xml file : " + err);
-						        	callback(err,null);
-						        }
+						            	//copy content.xml file to temp location
+						            	_this.packageFolder = _this.contentPath + '/packages/';
+						            	_this.tempXmlContentFile = _this.packageFolder + 'content.xml';
+								        try{
+									        fs.copySync(_this.xmlContentFile, _this.tempXmlContentFile);//, function(err){
+									    }
+									    catch(err){
+									    	_this.logger.error("Copy content xml file error : " + err);
+									    	callback(err, null);
+									    }
 
-						        etree = et.parse(data);
+										var data, etree;
+								       	try{
+								        	data = fs.readFileSync(_this.tempXmlContentFile).toString();
+								        }
+								        catch(err){
+								        	_this.logger.error("Error reading temp content xml file : " + err);
+								        	callback(err,null);
+								        }
 
-						        //set mode to production and scorm version in temp content.xml
-				                etree.find('./courseInfo/preferences/mode').set('value','production');
-				                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
-				                etree.find('./courseInfo/preferences/finalLesson').set('value','true');
-				                if(_this.scormVersion === 'none'){
-				                	etree.find('./courseInfo/preferences/scorm').set('value','false');
-				                }
-				                var xml = etree.write({'xml_decleration': false});
-				                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
-				                    if (err) callback(err, null);
+								        etree = et.parse(data);
 
-									_this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-
-				                    var lessonDisplayTitle = '';
-
-				                    //#3904
-				                    try{
-				                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
-				                    }
-				                    catch(err){
-				                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
-				                    }
-
-				                    if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
-				                    	_this.courseDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
-				                    }
-				                    else{
-				                    	_this.courseDisplayTitle = lessonDisplayTitle;
-				                    }
-								    
-								    //find the objectives in the pages.
-								    var pageCount = etree.findall('./pages/page').length;
-
-								    //#3604
-								    _this._populateObjectivesArr(pageCount, etree, _this.courseName, 0);
-
-							        var courseXmlFile = path.normalize(_this.contentPath + "/../course.xml");
-							        var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
-							        try{
-					                    fs.copySync(courseXmlFile, tempCourseXmlFile);//, function(err){
-					                }
-					                catch(err){
-				                        _this.logger.error("Copy course xml file error : " + err);
-				                        callback(err, null);
-					                }
-
-						            try{
-				                        var _courseData = fs.readFileSync(tempCourseXmlFile).toString();
-							            _this.courseData = et.parse(_courseData);
-							        }
-							        catch(err){
-							            _this.logger.error("Error reading temp course xml file : " + err);
-							            callback(err,null);
-							        }
-
-							        //set all testReview attributes to false
-								    var itemCount = _this.courseData.findall('./item').length;
-
-								    for (var i = 0; i < itemCount; i++) {
-								    	var myNode = _this.courseData.findall('./item')[i];
-								    	var mySeq = myNode.find('.sequencing');
-								    	mySeq.set('testReview', 'false');
-								    }
-
-					                
-					                var xmlCourse = _this.courseData.write({'xml_decleration': false});
-					                fs.outputFile(tempCourseXmlFile, xmlCourse, function (err) {
-					                    if (err) callback(err, null);
-
-				                    	var returnPath = '';
-									    var imsManifestFilePath = '';
-									    //do not need to do scorm files if publishing to "none"
-				        				if(_this.scormVersion != "none"){
-							                var manifestFile = _this._populateManifest(res);
-
-							                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
-
-							                // if(_this.scormVersion === '1.2_CTCU'){
-							                // 	scormBasePath = _this.scormPath + '/1.2/';
-							                // }
-
-							                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
-
-							                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
-							                    if(err) {
-							                        _this.logger.error("Write file error" + err);
-							                        callback(err, null);
-							                    }
-							                    else {
-							                    	if(_this.manonly){
-
-							                    		_this._writeManifest(_this.contentPath+ '/packages/', imsManifestFilePath)
-								                    		.then(function(data){
-								                    			returnPath = data;
-																_this._cleanAndReturn()
-																	.then(function(data){callback(null, returnPath);}
-																		,function(err){callback(err, null);}
-																	);								                    			
-								                    		}
-								                    			,function(err){callback(err,null);}
-								                    		);
-							                    	}
-							                    	else{
-
-								                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-								                    		if(err){
-								                    			callback(err, null);
-								                    		}
-								                    		else{
-																_this.logger.debug("packageFolder = " + _this.packageFolder);
-																returnPath = output;
-																_this._cleanAndReturn()
-																	.then(function(data){callback(null, returnPath);}
-																		,function(err){callback(err, null);}
-																	);																								                    			
-								                    		}
-
-								                    	});
-													}												
-
-							                    }
-
-							                });
+								        //set mode to production and scorm version in temp content.xml
+						                etree.find('./courseInfo/preferences/mode').set('value','production');
+						                etree.find('./courseInfo/preferences/scormVersion').set('value', _this.scormVersion);
+						                etree.find('./courseInfo/preferences/finalLesson').set('value','true');
+						                if(_this.scormVersion === 'none'){
+						                	etree.find('./courseInfo/preferences/scorm').set('value','false');
 						                }
-						                else{
-						                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
-					                    		if(err){
-					                    			callback(err, null);
-					                    		}
-					                    		else{
-													_this.logger.debug("packageFolder = " + _this.packageFolder);
-													returnPath = output;
-													_this._cleanAndReturn()
-														.then(function(data){callback(null, returnPath);}
-															,function(err){callback(err, null);}
-														);				                    			
-					                    		}
+						                var xml = etree.write({'xml_decleration': false});
+						                fs.outputFile(_this.tempXmlContentFile, xml, function (err) {
+						                    if (err) callback(err, null);
 
-						                	});
-						                }
+											_this.courseName = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+
+						                    var lessonDisplayTitle = '';
+
+						                    //#3904
+						                    try{
+						                     lessonDisplayTitle = etree.find('.courseInfo/preferences/lessondisplaytitle').get('value');
+						                    }
+						                    catch(err){
+						                    	_this.logger.error("lessondisplaytitle does not exist in the content.xml : " + err);
+						                    }
+
+						                    if(lessonDisplayTitle == '' || lessonDisplayTitle == undefined){
+						                    	_this.courseDisplayTitle = etree.find('.courseInfo/preferences/lessonTitle').get('value');
+						                    }
+						                    else{
+						                    	_this.courseDisplayTitle = lessonDisplayTitle;
+						                    }
+										    
+										    //find the objectives in the pages.
+										    var pageCount = etree.findall('./pages/page').length;
+
+										    //#3604
+										    _this._populateObjectivesArr(pageCount, etree, _this.courseName, 0);
+
+									        var courseXmlFile = path.normalize(_this.contentPath + "/../course.xml");
+									        var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
+									        try{
+							                    fs.copySync(courseXmlFile, tempCourseXmlFile);//, function(err){
+							                }
+							                catch(err){
+						                        _this.logger.error("Copy course xml file error : " + err);
+						                        callback(err, null);
+							                }
+
+								            try{
+						                        var _courseData = fs.readFileSync(tempCourseXmlFile).toString();
+									            _this.courseData = et.parse(_courseData);
+									        }
+									        catch(err){
+									            _this.logger.error("Error reading temp course xml file : " + err);
+									            callback(err,null);
+									        }
+
+									        //set all testReview attributes to false
+										    var itemCount = _this.courseData.findall('./item').length;
+
+										    for (var i = 0; i < itemCount; i++) {
+										    	var myNode = _this.courseData.findall('./item')[i];
+										    	var mySeq = myNode.find('.sequencing');
+										    	mySeq.set('testReview', 'false');
+										    }
+
 							                
-						            //close of tempcourse write function    
-						            });
-				                //close of temp countent write function
-				                });
-				            }
-				        );
+							                var xmlCourse = _this.courseData.write({'xml_decleration': false});
+							                fs.outputFile(tempCourseXmlFile, xmlCourse, function (err) {
+							                    if (err) callback(err, null);
+
+						                    	var returnPath = '';
+											    var imsManifestFilePath = '';
+											    //do not need to do scorm files if publishing to "none"
+						        				if(_this.scormVersion != "none"){
+									                var manifestFile = _this._populateManifest(res);
+
+									                var scormBasePath = _this.scormPath + '/' + _this.scormVersion + '/';
+
+									                // if(_this.scormVersion === '1.2_CTCU'){
+									                // 	scormBasePath = _this.scormPath + '/1.2/';
+									                // }
+
+									                imsManifestFilePath = scormBasePath + 'imsmanifest.xml';
+
+									                fs.writeFile(imsManifestFilePath, manifestFile, function(err) {
+									                    if(err) {
+									                        _this.logger.error("Write file error" + err);
+									                        callback(err, null);
+									                    }
+									                    else {
+									                    	if(_this.manonly){
+
+									                    		_this._writeManifest(_this.contentPath+ '/packages/', imsManifestFilePath)
+										                    		.then(function(data){
+										                    			returnPath = data;
+																		_this._cleanAndReturn()
+																			.then(function(data){callback(null, returnPath);}
+																				,function(err){callback(err, null);}
+																			);								                    			
+										                    		}
+										                    			,function(err){callback(err,null);}
+										                    		);
+									                    	}
+									                    	else{
+
+										                    	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+										                    		if(err){
+										                    			callback(err, null);
+										                    		}
+										                    		else{
+																		_this.logger.debug("packageFolder = " + _this.packageFolder);
+																		returnPath = output;
+																		_this._cleanAndReturn()
+																			.then(function(data){callback(null, returnPath);}
+																				,function(err){callback(err, null);}
+																			);																								                    			
+										                    		}
+
+										                    	});
+															}												
+
+									                    }
+
+									                });
+								                }
+								                else{
+								                	_this._zipScormPackage(res, scormBasePath, imsManifestFilePath, function(err, output){
+							                    		if(err){
+							                    			callback(err, null);
+							                    		}
+							                    		else{
+															_this.logger.debug("packageFolder = " + _this.packageFolder);
+															returnPath = output;
+															_this._cleanAndReturn()
+																.then(function(data){callback(null, returnPath);}
+																	,function(err){callback(err, null);}
+																);				                    			
+							                    		}
+
+								                	});
+								                }
+									                
+								            //close of tempcourse write function    
+								            });
+						                //close of temp countent write function
+						                });
+						            }
+						        );
+
+							}
+
+						);
 		            }
 		        );
 	        }
@@ -269,6 +289,7 @@ var SCORM = {
 	    var courseAttr = _this._parseCourseAttr();
          
         var _lms = courseAttr.lms;
+        var _metadata = courseAttr.importmetadata;
 
 	    manifest = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 
@@ -295,8 +316,12 @@ var SCORM = {
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 3rd Edition</schemaversion>\n";
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
+	        if(_metadata === 'true'){
+	        	if(_this.metadataFiles_arr.length != 0){
+	        		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+	        			manifest +="		<adlcp:location>"+_this.metadataFiles_arr[i]+"</adlcp:location>\n";
+	        		}
+	        	}
 	        }    
 	        manifest += "   </metadata>\n";
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
@@ -353,8 +378,12 @@ var SCORM = {
 	        manifest += "   <metadata>\n"+
 	            "       <schema>ADL SCORM</schema>\n"+
 	            "       <schemaversion>2004 4th Edition</schemaversion>\n";
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
+	        if(_metadata === 'true'){
+	        	if(_this.metadataFiles_arr.length != 0){
+	        		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+	        			manifest +="		<adlcp:location>"+_this.metadataFiles_arr[i]+"</adlcp:location>\n";
+	        		}
+	        	}
 	        }    
 	        manifest += "   </metadata>\n";	            
 	        manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
@@ -407,8 +436,12 @@ var SCORM = {
 	        manifest +='<metadata>\n'+
 	            '   <schema>ADL SCORM</schema>\n'+
 	            '   <schemaversion>1.2</schemaversion>\n';
-	        if(_lms === 'NEL'){
-	        	manifest +="		<adlcp:location>course_metadata.xml</adlcp:location>\n";
+	        if(_metadata === 'true'){
+	        	if(_this.metadataFiles_arr.length != 0){
+	        		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+	        			manifest +="		<adlcp:location>"+_this.metadataFiles_arr[i]+"</adlcp:location>\n";
+	        		}
+	        	}
 	        }    
 	        manifest += "   </metadata>\n";	            
 	        manifest +='<organizations default="'+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +'">\n'+
@@ -595,10 +628,16 @@ var SCORM = {
 		//add course.xml file
         archive.append(fs.createReadStream(_this.contentPath + '/packages/tempCourse.xml'), { name: _this.binDir+'/../'+'course.xml'}  );
 
-
         //do not need to do scorm files if publishing to "none"
         if(_this.scormVersion != "none")
         {
+
+	        if(courseAttr.importmetadata == 'true' && _this.metadataFiles_arr.length != 0){
+	    		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+	    			archive.append(fs.createReadStream(_this.contentPath + '/../metadata/' + _this.metadataFiles_arr[i]), { name: _this.binDir+'/../'+_this.metadataFiles_arr[i]}  );
+	    		}
+	    	}  
+
 	        //add SCORM files
 	        readdirp({
 	                root: scormBasePath,
@@ -748,6 +787,7 @@ var SCORM = {
         _this.cssCourseResources_arr = [];
         _this.reviewLines = '';
         _this.reviewLines_arr = [];
+        _this.metadataFiles_arr = [];
 
         var courseXmlFile = path.normalize(_this.contentPath + "/course.xml");
         var tempCourseXmlFile = _this.contentPath + '/packages/tempCourse.xml';
@@ -927,13 +967,39 @@ var SCORM = {
                     //console.log(localFile);
                     _this.jsResources_arr.push(localFile);
                 });
+
+				_this._exploreMetadataDir(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
+			}
+		)
+	},
+
+	_exploreMetadataDir: function(callback, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
+		var _this = this;
+
+	    // add metadata files #3727
+	    readdirp(
+	    	{ root: _this.contentPath + '/metadata',
+	            directoryFilter: [ '!.git'],
+	            fileFilter: [ '!.*' ] }
+	        , function(fileInfo) {
+	            //console.log("---------------------------------------------------------" + fileInfo);
+	        }
+	        , function (err, res) {
+	        	if(res != null){
+	                res.files.forEach(function(file) {
+	                    var localFile = file.path.replace(/\\/g,"/")
+	                    _this.metadataFiles_arr.push(localFile);
+	                });
+	        	}
+
 			    //do not need to do scorm files if publishing to "none"
 				if(_this.scormVersion != "none"){
 			    	manifestFile = _this._startManifest();
 			    }
-				_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);
-			}
-		)
+				_this._recurseLessons(callback, 0, lessonsArray, manifestFile, resourceLines, lessonsName, archive, outputFile);	        	
+	        }
+	    )
+
 	},
 
 	_recurseLessons: function(callback, count, lArray, manifestFile, resourceLines, lessonsName, archive, outputFile){
@@ -1213,6 +1279,12 @@ var SCORM = {
 												             archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
 												        };
 
+												        if(courseAttr.importmetadata == 'true' && _this.metadataFiles_arr.length != 0){
+												    		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+												    			archive.append(fs.createReadStream(_this.contentPath + '/metadata/' + _this.metadataFiles_arr[i]), { name: _this.binDir+'/../'+_this.metadataFiles_arr[i]}  );
+												    		}
+												    	}  
+
 												        //add imsmanifest.xml file
 												        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
 
@@ -1330,6 +1402,12 @@ var SCORM = {
 												for (var i = 0; i < _this.cssCourseResources_arr.length; i++) {
 												    archive.append(fs.createReadStream(_this.contentPath + '/css/' +_this.cssCourseResources_arr[i]), { name: _this.binDir+'/css/'+_this.cssCourseResources_arr[i] });
 												};
+
+										        if(courseAttr.importmetadata == 'true' && _this.metadataFiles_arr.length != 0){
+										    		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+										    			archive.append(fs.createReadStream(_this.contentPath + '/metadata/' + _this.metadataFiles_arr[i]), { name: _this.binDir+'/../'+_this.metadataFiles_arr[i]}  );
+										    		}
+										    	}  												
 
 										        //add imsmanifest.xml file
 										        archive.append(fs.createReadStream(imsManifestFilePath), { name: 'imsmanifest.xml'});
@@ -1643,9 +1721,7 @@ var SCORM = {
 
 	    var objectivesGlobalToSystem = etree.find('.sequencing').get('objectivesGlobalToSystem');
 
-	   	var courseAttr = _this._parseCourseAttr();
-
-	         
+	   	var courseAttr = _this._parseCourseAttr();     
 
         var manifest;
 
@@ -1676,8 +1752,14 @@ var SCORM = {
 	    else{
 	    	// Courses currently can not be published to 1.2, probably remove else
 	    }
-	    if(courseAttr.lms === "NEL"){
-	    	manifest += "		<adlcp:location>course_metadata.xml</adlcp:location>\n";
+	    if(courseAttr.importmetadata === 'true'){
+
+        	if(_this.metadataFiles_arr.length != 0){
+        		for (var i = 0; i < _this.metadataFiles_arr.length; i++) {
+        			manifest +="		<adlcp:location>"+_this.metadataFiles_arr[i]+"</adlcp:location>\n";
+        		}
+        	}
+	    	
 	    }  
 	    manifest += "   </metadata>\n";
         manifest += "   <organizations default=\""+encodeURIComponent(_this.courseName.replace(/\s+/g, '').replace(/\(|\)/g, "")) +"\">\n"+
@@ -1957,7 +2039,8 @@ var SCORM = {
 			survey : myNode.get('survey'),
 			certificate : myNode.get('certificate'),
 			displaytitle : myNode.get('coursedisplaytitle'),
-			help : myNode.get('help')
+			help : myNode.get('help'),
+			importmetadata : myNode.get('importmetadata')
 		};
 
 		return courseAttr;

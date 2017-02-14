@@ -22,7 +22,6 @@ function C_Outline(_myItem) {
     var courseXMLPath;											//Path to the course.xml
     var refreshExpected = false;								//Toggle on refreshes coming in - true when needed.
 
-
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
@@ -238,7 +237,7 @@ function C_Outline(_myItem) {
      -- use recieved path to load the course.xml file.
      ************************************************************************************/
      function receiveCoursePath(data){
-	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', data.path].join('');
+	     coursePath = [window.location.protocol, '//', window.location.host, '/programs/', decodeURIComponent(data.path)].join('').replace(/\\/g, "/");
 	     var xmlPath = coursePath + "/course.xml";
 	     courseXMLPath = xmlPath;
 	     $.ajax({
@@ -373,7 +372,7 @@ function C_Outline(_myItem) {
         $("#dialog-outline").dialog({
             modal: true,
             width: 1024,
-            height: 768,
+            height: 798,
             resizable: false,
             close: function (event, ui) {
                 socket.removeAllListeners('receiveCoursePath');
@@ -769,302 +768,398 @@ function C_Outline(_myItem) {
      	socket.emit('retrieveServer', function(fdata){
      		serverVersion = fdata;
 
-	     	$("#outlinePagePrefPane").empty();
-		    var msg = "<div name='out_courseHead' id='out_courseHead' class='outlineCourseEditHeader'><b>Course Preferences: " + $(courseData).find('course').first().attr("name") + "</b></div><br/>";
-		    msg += "<div id='accordion'>";
-	     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
-	     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
-			msg += "<div><b>Details:</b></div>";
-			msg += "<label for='out_courseTitle'>course title: </label>";
-			msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
-			msg += "<label for='out_courseDisplayTitle'>alt course title: </label>";
-			msg += '<input type="text" name="out_courseDisplayTitle" id="out_courseDisplayTitle" title="Input course title as you would like it to appear." class="text ui-widget-content ui-corner-all" /> <br/>';			
-			msg += "<label for='targetAudience'>target audience: </label>";
-			msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			msg += "<label for='instructionalGoal'>instructional goal: </label>";
-			msg += '<textarea rows="4" cols="50" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
-			msg += '<div><b>Section 508:</b></div>';
-			msg += addToggle("section508", "Enable content to follow Section 508 standards.");
-	     	msg += "<div><b>Redmine:</b></div>";
-			msg += addToggle("redmine", "Enable the use of Redmine for commenting.");	
-	     	msg += "<div><b>ShowAll:</b></div>";
-			msg += addToggle("showall", "Override lesson settings to show all questionbank questions.");					
-			msg += '</div>';//end general div
-	     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
-			msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
-			msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
-			msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
-			msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
-			msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
-			msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");
-			msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';
-			//end div for sequencing
-			msg += '</div>';
-			if(serverVersion != 'VA'){
-		    	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>LMS Options</h3>";
-		     	msg += '<div id="lmsAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';
-		     	msg += "<label for='lms'>Set preferred LMS: </label>";
-		     	msg += "<select name='lms' id='lms' title='Set the preferred LMS to be used for deployment.'>";
-		     	msg += "<option>none</option>";
-		     	msg += "<option>JKO</option>";
-		     	msg += "<option>CTCU</option>";
-		     	msg += "<option>NEL</option>";
-		     	msg += "<option>ADLS</option>";
-		     	msg += "</select> ";
-				//end div for lmsAccord
+			var pathSplit = coursePath.split('/programs');
+			var _normPath = '../programs' + pathSplit[1];  
+   		
+			socket.emit('readDir', {path: _normPath, track: 'metadata'}, function(fdata){
+
+				var metadataArr = [];
+	            if(fdata == ''){
+	            	console.log("fdata is empty");
+	            }
+	            else{
+
+		            for (var k = 0; k < fdata.length; k++) {
+		            	metadataArr.push(fdata[k].path);
+		            }		           
+
+		        }
+
+		     	$("#outlinePagePrefPane").empty();
+			    var msg = "<div name='out_courseHead' id='out_courseHead' class='outlineCourseEditHeader'><b>Course Preferences: " + $(courseData).find('course').first().attr("name") + "</b></div><br/>";
+			    msg += "<div id='accordion'>";
+		     	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
+		     	msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
+				msg += "<div><b>Details:</b></div>";
+				msg += "<label for='out_courseTitle'>course title: </label>";
+				msg += '<input type="text" name="out_courseTitle" id="out_courseTitle" title="Update the course title." value="'+ $(courseData).find('course').first().attr("name") + '" class="text ui-widget-content ui-corner-all" /> <br/>';
+				msg += "<label for='out_courseDisplayTitle'>alt course title: </label>";
+				msg += '<input type="text" name="out_courseDisplayTitle" id="out_courseDisplayTitle" title="Input course title as you would like it to appear." class="text ui-widget-content ui-corner-all" /> <br/>';			
+				msg += "<label for='targetAudience'>target audience: </label>";
+				msg += '<textarea rows="4" cols="50" name="targetAudience" id="targetAudience" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
+				msg += "<label for='instructionalGoal'>instructional goal: </label>";
+				msg += '<textarea rows="4" cols="50" name="instructionalGoal" id="instructionalGoal" title="Update the instructional goal for the course." value="undefined" class="text ui-widget-content ui-corner-all"></textarea>';
+				msg += '<div><b>Section 508:</b></div>';
+				msg += addToggle("section508", "Enable content to follow Section 508 standards.");
+		     	msg += "<div><b>Redmine:</b></div>";
+				msg += addToggle("redmine", "Enable the use of Redmine for commenting.");	
+		     	msg += "<div><b>ShowAll:</b></div>";
+				msg += addToggle("showall", "Override lesson settings to show all questionbank questions.");					
+				msg += '</div>';//end general div
+		     	msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
+				msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
+				msg += addToggle("objectivesGlobalToSystem", "Enable shared global objective information for the lifetime of the learner in the system.");
+				msg += '<br/><div id="controlModes" title="Determine what type of navigation is allowed by the user." style="float:left"><b>Determine what type of navigation is allowed by the user:</b></div>';
+				msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children.");
+				msg += addToggle("flow", "Enable previous and next buttons for navigating among this activity’s children.");
+				msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity. Previous requests and using the table of contents go backwards is prohibited.");
+				msg += 	'<br/><br/><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" style="float:left">Sequencing Definition Model</a>';
+				//end div for sequencing
 				msg += '</div>';
-			}
-			//end div for accordion
-			msg += '</div>';
+				if(serverVersion != 'VA'){
+			    	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>LMS Options</h3>";
+			     	msg += '<div id="lmsAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';
+			     	msg += "<label for='lms'>Set preferred LMS: </label>";
+			     	msg += "<select name='lms' id='lms' title='Set the preferred LMS to be used for deployment.'>";
+			     	msg += "<option>none</option>";
+			     	msg += "<option>JKO</option>";
+			     	msg += "<option>CTCU</option>";
+			     	msg += "<option>NEL</option>";
+			     	msg += "<option>ADLS</option>";
+			     	msg += "</select> ";
+					//end div for lmsAccord
+					msg += '</div>';
+				}
+				//#3727 Add course_metadata.xml updating
+		    	msg += "<h3 style='padding: .2em .2em .2em 2.2em'>Metadata Options</h3>";
+		     	msg += '<div id="metadataAccord" style="font-size:100%; padding: 1em 1em; color:#666666">';
+				msg += '<div><b>Import Metadata:</b></div>';
+				msg += addToggle("importmetadata", "Enable external metadata file to be added to the imsmanifest.xml. Ex: course_metadata.xml");	     	
+				msg += '<br/><div id="uploadMetadata" title="Upload new metadata files." style="float:left"><b>Upload Metadata:</b></div>';
+				msg += "<div style='clear: both'><input id='metadatafile' type='file' disabled/></div><br/>";
+				msg += '<div><b>Manage Metadata:</b></div><div id="metadataFiles">';				
+				if(metadataArr.length != 0){
+					for (var i = 0; i < metadataArr.length; i++) {
+						msg += '<div id="metadataFile'+i+'" data-id="'+metadataArr[i]+'">' + metadataArr[i];
+						msg += "<div id='metadataRemove' class='metadataRemove' title='delete this item'></div>";							
+						msg += "<a  target='_blank' href=" + _normPath + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
+						msg +='</div>';//metadataFile+i end
+					}
+				}
+				//end div for metadataFiles
+				msg += '</div>';
+				//end div for metadataAccord
+				msg += '</div>';			
+				//end div for accordion
+				msg += '</div>';
 
-			$("#outlinePagePrefPane").append(msg);
-			$("#out_courseTitle").alphanum();
+				$("#outlinePagePrefPane").append(msg);
+				$("#out_courseTitle").alphanum();
 
-			//set redmine to default if not set and set redmine based off of value in xml
-			if(!$(courseData).find("course").attr("redmine")){
-				$('#redmine').prop('checked', false);
-				$(courseData).find("course").attr("redmine", "false");
-				updateCourseXML();
-			}
-			else if($(courseData).find("course").attr("redmine") === "true"){
-				$('#redmine').prop('checked', true);
-				checkRedmineStructure($(courseData).find('course').first().attr("id"));
-			}
-			else{
-				$('#redmine').prop('checked', false);
-			}
-
-			//update the xml when the redmine toggle is changed
-			$('#redmine').on('change', function(){
-				if($('#redmine').prop('checked')){
-					$(courseData).find("course").attr("redmine", "true");
+				//set redmine to default if not set and set redmine based off of value in xml
+				if(!$(courseData).find("course").attr("redmine")){
+					$('#redmine').prop('checked', false);
+					$(courseData).find("course").attr("redmine", "false");
+					updateCourseXML();
+				}
+				else if($(courseData).find("course").attr("redmine") === "true"){
+					$('#redmine').prop('checked', true);
 					checkRedmineStructure($(courseData).find('course').first().attr("id"));
 				}
 				else{
-					$(courseData).find("course").attr("redmine", "false");
-				}
-				updateCourseXML();
-			});
-
-			//handle setting of coursedisplaytitle if not set and setting the value based off of the xml
-			if(!$(courseData).find('course').attr('coursedisplaytitle')){
-				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
-				updateCourseXML();
-			}
-			else{
-				$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("coursedisplaytitle"));
-			}
-
-			//on change of the coursedisplaytitle toggle update the course xml 
-			$('#out_courseDisplayTitle').on('change', function(){
-				$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
-				updateCourseXML();
-			}).css({'width': '500px', 'color': '#3383bb;'});
-
-
-			//handle setting of section 508 if not set and setting the value based off of the xml
-			if(!$(courseData).find('course').attr('section508')){
-				$('#section508').prop('checked', true);
-				$(courseData).find('course').attr('section508', 'true');
-				updateCourseXML();
-
-			}
-			else if($(courseData).find('course').attr('section508') === 'true'){
-				$('#section508').prop('checked', true);
-			}
-			else{
-				$('#section508').prop('checked', false);
-			}
-
-			//on change of the section508 toggle update the course xml 
-			$('#section508').on('change', function(){
-				if($('#section508').prop('checked')){
-					$(courseData).find('course').attr('section508', 'true');
-				}
-				else{
-					$(courseData).find('course').attr('section508', 'false');
-				}
-				updateCourseXML();
-			});
-
-			//handle setting of showall if not set and setting the value based off of the xml
-			if(!$(courseData).find('course').attr('showall')){
-				$('#showall').prop('checked', false);
-				$(courseData).find('course').attr('showall', 'false');
-				updateCourseXML();
-
-			}
-			else if($(courseData).find('course').attr('showall') === 'true'){
-				$('#showall').prop('checked', true);
-			}
-			else{
-				$('#showall').prop('checked', false);
-			}
-
-			//on change of the  toggle update the course xml 
-			$('#showall').on('change', function(){
-				if($('#showall').prop('checked')){
-					$(courseData).find('course').attr('showall', 'true');
-				}
-				else{
-					$(courseData).find('course').attr('showall', 'false');
-				}
-				updateCourseXML();
-			});
-
-			//set objectivesGlobalToSystem based off value in xml
-			if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
-				$('#objectivesGlobalToSystem').prop('checked',true);
-			}
-			else{
-				$('#objectivesGlobalToSystem').prop('checked',false);
-			}
-
-			//update the xml when objectivesGlobalToSystem toggle is changed
-			$("#objectivesGlobalToSystemRadio").on("change", function(){
-			   if($('#objectivesGlobalToSystem').prop('checked')){
-				   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "true");
-			   } else{
-				   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "false");
-			   }
-			   updateCourseXML();
-			});
-
-			//set choice based off value in xml
-			if($(courseData).find('sequencing').first().attr("choice") === "true"){
-				$('#choice').prop('checked',true);
-			}
-			else{
-				$('#choice').prop('checked',false);
-			}
-
-			//update the xml when choice toggle is changed
-			$("#choiceRadio").on("change", function(){
-			   if($('#choice').prop('checked')){
-				   $(courseData).find('sequencing').first().attr("choice", "true");
-			   } else{
-				   $(courseData).find('sequencing').first().attr("choice", "false");
-			   }
-			   updateCourseXML();
-			});
-
-			//set flow based off value in xml
-			if($(courseData).find('sequencing').first().attr("flow") === "true"){
-				$('#flow').prop('checked',true);
-			}
-			else{
-				$('#flow').prop('checked',false);
-			}
-
-			//update the xml when flow toggle is changed
-			$("#flowRadio").on("change", function(){
-			   if($('#flow').prop('checked')){
-				   $(courseData).find('sequencing').first().attr("flow", "true");
-			   } else{
-				   $(courseData).find('sequencing').first().attr("flow", "false");
-			   }
-			   updateCourseXML();
-			});
-
-			//set forwardOnly based off value in xml
-			if($(courseData).find('sequencing').first().attr("forwardOnly") === "true"){
-				$('#forwardOnly').prop('checked',true);
-			}
-			else{
-				$('#forwardOnly').prop('checked',false);
-			}
-
-			//update the xml when forwardOnly toggle is changed
-			$("#forwardOnlyRadio").on("change", function(){
-			   if($('#forwardOnly').prop('checked')){
-				   $(courseData).find('sequencing').first().attr("forwardOnly", "true");
-			   } else{
-				   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
-			   }
-			   updateCourseXML();
-			});
-
-			$("#out_courseTitle").on("change", function(){
-				//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
-				var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
-				currentMenuItem.text(titleUpdate);
-				$('#out_courseHead').text("Course Preferences: " + titleUpdate);
-				$('#courseIndexHotspot').text(titleUpdate);
-				$('#dialog-outline').dialog('option', 'title', 'Outline ' + titleUpdate + ':');
-				$(courseData).find('course').first().attr("name", titleUpdate);
-				//$(courseData).attr("name", titleUpdate);
-				updateCourseXML();
-
-				var data = {
-		            content: {
-		                id: courseID,
-		                type: currentCourseType,
-		                name: titleUpdate
-		            },
-		            user: {
-		                id: user._id,
-		                username: user.username
-		            }
-		        };
-
-		        socket.emit('renameContent', data);
-			}).css({'width': '500px', 'color': '#3383bb;'});
-
-			if(serverVersion != 'VA'){
-				//set lms based off value in xml
-				if($(courseData).find("course").attr("lms")){
-					$("#lms").val($(courseData).find("course").attr("lms"));
+					$('#redmine').prop('checked', false);
 				}
 
-				// update the xml when the lms drop is changed
-			    $("#lms").on("change", function(){
-				    $(courseData).find("course").attr("lms", $("#lms").val());
-				    setLmsAccord();
-				    updateCourseXML();
-			    });
-			}
-
-			//set instructional goal based off value in xml
-			if($(courseData).find("course").attr("instructionalgoal")){
-				$("#instructionalGoal").val($(courseData).find("course").attr("instructionalgoal"));
-			}
-
-			// update the xml when the instructional goal is changed
-		    $("#instructionalGoal").on("change", function(){
-			    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());
-			    updateCourseXML();
-		    }).css({'width': '500px', 'color': '#3383bb;'});
-
-			//set target audience based off value in xml
-			if($(courseData).find("course").attr("targetaudience")){
-				$("#targetAudience").val($(courseData).find("course").attr("targetaudience"));
-			}
-
-			// update the xml when the target audience is changed
-		    $("#targetAudience").on("change", function(){
-			    $(courseData).find("course").attr("targetaudience", $("#targetAudience").val().replace('<p>', '').replace('</p>', '').trim());
-			    updateCourseXML();
-		    }).css({'width': '500px', 'color': '#3383bb;'});	    
-
-			/*$("#out_courseObjective").on("change", function(){
-			 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
-			 	var titleUpdate = $("#out_pageObjective").val().trim();
-			   	$(module_arr[i].xml).find('page').eq(j).attr('objective', titleUpdate);
-				updateModuleXML(currentPageParentModule);
-			}).css({'width': '500px', 'color': '#3383bb;'});*/
-
-			$(function () {
-				//$("div[id$='Radio']").buttonset();
-				$( document ).tooltip();
-				//set up jquerui accordion
-				$("#accordion").accordion({
-					collapsible: true,
-					heightStyle: "content"
+				//update the xml when the redmine toggle is changed
+				$('#redmine').on('change', function(){
+					if($('#redmine').prop('checked')){
+						$(courseData).find("course").attr("redmine", "true");
+						checkRedmineStructure($(courseData).find('course').first().attr("id"));
+					}
+					else{
+						$(courseData).find("course").attr("redmine", "false");
+					}
+					updateCourseXML();
 				});
-				//sets up lmsAccord div based off of lms identified
-				setLmsAccord();
-			});     		
+
+				//handle setting of coursedisplaytitle if not set and setting the value based off of the xml
+				if(!$(courseData).find('course').attr('coursedisplaytitle')){
+					$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("name"));
+					$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
+					updateCourseXML();
+				}
+				else{
+					$('#out_courseDisplayTitle').val($(courseData).find('course').first().attr("coursedisplaytitle"));
+				}
+
+				//on change of the coursedisplaytitle toggle update the course xml 
+				$('#out_courseDisplayTitle').on('change', function(){
+					$(courseData).find('course').attr('coursedisplaytitle', $('#out_courseDisplayTitle').val().trim());
+					updateCourseXML();
+				}).css({'width': '500px', 'color': '#3383bb;'});
+
+
+				//handle setting of section 508 if not set and setting the value based off of the xml
+				if(!$(courseData).find('course').attr('section508')){
+					$('#section508').prop('checked', true);
+					$(courseData).find('course').attr('section508', 'true');
+					updateCourseXML();
+
+				}
+				else if($(courseData).find('course').attr('section508') === 'true'){
+					$('#section508').prop('checked', true);
+				}
+				else{
+					$('#section508').prop('checked', false);
+				}
+
+				//on change of the section508 toggle update the course xml 
+				$('#section508').on('change', function(){
+					if($('#section508').prop('checked')){
+						$(courseData).find('course').attr('section508', 'true');
+					}
+					else{
+						$(courseData).find('course').attr('section508', 'false');
+					}
+					updateCourseXML();
+				});
+
+				//handle setting of showall if not set and setting the value based off of the xml
+				if(!$(courseData).find('course').attr('showall')){
+					$('#showall').prop('checked', false);
+					$(courseData).find('course').attr('showall', 'false');
+					updateCourseXML();
+
+				}
+				else if($(courseData).find('course').attr('showall') === 'true'){
+					$('#showall').prop('checked', true);
+				}
+				else{
+					$('#showall').prop('checked', false);
+				}
+
+				//on change of the  toggle update the course xml 
+				$('#showall').on('change', function(){
+					if($('#showall').prop('checked')){
+						$(courseData).find('course').attr('showall', 'true');
+					}
+					else{
+						$(courseData).find('course').attr('showall', 'false');
+					}
+					updateCourseXML();
+				});
+
+				//set objectivesGlobalToSystem based off value in xml
+				if($(courseData).find('sequencing').first().attr("objectivesGlobalToSystem") === "true"){
+					$('#objectivesGlobalToSystem').prop('checked',true);
+				}
+				else{
+					$('#objectivesGlobalToSystem').prop('checked',false);
+				}
+
+				//update the xml when objectivesGlobalToSystem toggle is changed
+				$("#objectivesGlobalToSystemRadio").on("change", function(){
+				   if($('#objectivesGlobalToSystem').prop('checked')){
+					   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "true");
+				   } else{
+					   $(courseData).find('sequencing').first().attr("objectivesGlobalToSystem", "false");
+				   }
+				   updateCourseXML();
+				});
+
+				//set choice based off value in xml
+				if($(courseData).find('sequencing').first().attr("choice") === "true"){
+					$('#choice').prop('checked',true);
+				}
+				else{
+					$('#choice').prop('checked',false);
+				}
+
+				//update the xml when choice toggle is changed
+				$("#choiceRadio").on("change", function(){
+				   if($('#choice').prop('checked')){
+					   $(courseData).find('sequencing').first().attr("choice", "true");
+				   } else{
+					   $(courseData).find('sequencing').first().attr("choice", "false");
+				   }
+				   updateCourseXML();
+				});
+
+				//set flow based off value in xml
+				if($(courseData).find('sequencing').first().attr("flow") === "true"){
+					$('#flow').prop('checked',true);
+				}
+				else{
+					$('#flow').prop('checked',false);
+				}
+
+				//update the xml when flow toggle is changed
+				$("#flowRadio").on("change", function(){
+				   if($('#flow').prop('checked')){
+					   $(courseData).find('sequencing').first().attr("flow", "true");
+				   } else{
+					   $(courseData).find('sequencing').first().attr("flow", "false");
+				   }
+				   updateCourseXML();
+				});
+
+				//set forwardOnly based off value in xml
+				if($(courseData).find('sequencing').first().attr("forwardOnly") === "true"){
+					$('#forwardOnly').prop('checked',true);
+				}
+				else{
+					$('#forwardOnly').prop('checked',false);
+				}
+
+				//update the xml when forwardOnly toggle is changed
+				$("#forwardOnlyRadio").on("change", function(){
+				   if($('#forwardOnly').prop('checked')){
+					   $(courseData).find('sequencing').first().attr("forwardOnly", "true");
+				   } else{
+					   $(courseData).find('sequencing').first().attr("forwardOnly", "false");
+				   }
+				   updateCourseXML();
+				});
+
+				$("#out_courseTitle").on("change", function(){
+					//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
+					var titleUpdate = $("#out_courseTitle").val().replace('<p>', '').replace('</p>', '').trim();
+					currentMenuItem.text(titleUpdate);
+					$('#out_courseHead').text("Course Preferences: " + titleUpdate);
+					$('#courseIndexHotspot').text(titleUpdate);
+					$('#dialog-outline').dialog('option', 'title', 'Outline ' + titleUpdate + ':');
+					$(courseData).find('course').first().attr("name", titleUpdate);
+					//$(courseData).attr("name", titleUpdate);
+					updateCourseXML();
+
+					var data = {
+			            content: {
+			                id: courseID,
+			                type: currentCourseType,
+			                name: titleUpdate
+			            },
+			            user: {
+			                id: user._id,
+			                username: user.username
+			            }
+			        };
+
+			        socket.emit('renameContent', data);
+				}).css({'width': '500px', 'color': '#3383bb;'});
+
+				if(serverVersion != 'VA'){
+					//set lms based off value in xml
+					if($(courseData).find("course").attr("lms")){
+						$("#lms").val($(courseData).find("course").attr("lms"));
+					}
+
+					// update the xml when the lms drop is changed
+				    $("#lms").on("change", function(){
+					    $(courseData).find("course").attr("lms", $("#lms").val());
+					    setLmsAccord();
+					    updateCourseXML();
+				    });
+				}
+
+				//set instructional goal based off value in xml
+				if($(courseData).find("course").attr("instructionalgoal")){
+					$("#instructionalGoal").val($(courseData).find("course").attr("instructionalgoal"));
+				}
+
+				// update the xml when the instructional goal is changed
+			    $("#instructionalGoal").on("change", function(){
+				    $(courseData).find("course").attr("instructionalgoal", $("#instructionalGoal").val().replace('<p>', '').replace('</p>', '').trim());
+				    updateCourseXML();
+			    }).css({'width': '500px', 'color': '#3383bb;'});
+
+				//set target audience based off value in xml
+				if($(courseData).find("course").attr("targetaudience")){
+					$("#targetAudience").val($(courseData).find("course").attr("targetaudience"));
+				}
+
+				// update the xml when the target audience is changed
+			    $("#targetAudience").on("change", function(){
+				    $(courseData).find("course").attr("targetaudience", $("#targetAudience").val().replace('<p>', '').replace('</p>', '').trim());
+				    updateCourseXML();
+			    }).css({'width': '500px', 'color': '#3383bb;'});	    
+
+				//set importmetadata to default if not set and set importmetadata based off of value in xml
+				if(!$(courseData).find("course").attr("importmetadata")){
+					$('#importmetadata').prop('checked', false);
+					$(courseData).find("course").attr("importmetadata", "false");
+					$('#metadatafile').prop('disabled', true);
+					updateCourseXML();
+				}
+				else if($(courseData).find("course").attr("importmetadata") === "true"){
+					$('#importmetadata').prop('checked', true);
+					$('#metadatafile').prop('disabled', false);
+				}
+				else{
+					$('#importmetadata').prop('checked', false);			
+					$('#metadatafile').prop('disabled', true);
+
+				}
+
+				//update the xml when the importmetadata toggle is changed
+				$('#importmetadata').on('change', function(){
+					if($('#importmetadata').prop('checked')){
+						$(courseData).find("course").attr("importmetadata", "true");
+						$('#metadatafile').prop('disabled', false);
+					}
+					else{
+						$(courseData).find("course").attr("importmetadata", "false");
+						$('#metadatafile').prop('disabled', true);
+					}
+					
+					updateCourseXML();
+				});		 
+
+				$('#metadatafile').change(function(e) { 
+
+					socket.on('mediaBrowserUploadComplete', refreshMetadataList);
+
+					var file = e.target.files[0];
+
+					if(file != undefined){
+						var stream = ss.createStream(/* {hightWaterMark: 16 * 1024} */);
+						ss(socket).emit('upload-media', stream, {size: file.size, name: file.name, id: courseID, type: 'course', path:"", track: "metadata"});
+						var blobStream = ss.createBlobReadStream(file/* , {hightWaterMark: 16 * 1024} */);
+
+						blobStream.pipe(stream);
+
+						socket.emit('contentSaved', {
+							content: {type: 'course', id: courseID},
+							user: {id: user._id}
+						});	
+					}	
+
+				});	
+
+				$(".metadataRemove").click(function(){
+					checkRemoveMetadata($(this).parent().attr("data-id"));
+				});						   
+
+				/*$("#out_courseObjective").on("change", function(){
+				 	//ADD CODE TO PROPERLY RENAME LESSON ---------------------------------------------------------------------------------------------------------------
+				 	var titleUpdate = $("#out_pageObjective").val().trim();
+				   	$(module_arr[i].xml).find('page').eq(j).attr('objective', titleUpdate);
+					updateModuleXML(currentPageParentModule);
+				}).css({'width': '500px', 'color': '#3383bb;'});*/
+
+				$(function () {
+					//$("div[id$='Radio']").buttonset();
+					$( document ).tooltip();
+					//set up jquerui accordion
+					$("#accordion").accordion({
+						collapsible: true,
+						heightStyle: "content"
+					});
+					//sets up lmsAccord div based off of lms identified
+					setLmsAccord();
+				});     				        
+
+			});
+
      	});
 
      }
@@ -1125,6 +1220,108 @@ function C_Outline(_myItem) {
 		}
 
 	}
+
+	/**
+	* Launch Dialog to confirm removal of media.
+	*
+	* @method checkRemoveMetadata
+	* @param {String} server path and name of file to be removed.
+	*/
+	function checkRemoveMetadata(_file){
+		//Create the Dialog
+		$("#stage").append("<div id='dialog-removePage' title='Remove Metadata file'><p>Are you sure that you want to remove " + _file + " from this project?</p></div>");
+		//Style it to jQuery UI dialog
+		$("#dialog-removePage").dialog({
+			modal: true,
+			width: 550,
+			close: function(event, ui){
+				$("dialog-removePage").remove();
+			},
+			buttons: {
+				Yes: function(){
+					removeMetadata(_file);
+					$( this ).dialog( "close" );
+				},
+				No: function(){
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	}
+
+	/**
+	* Function to remove selected media.
+	*
+	* @method removeMetadata
+	* @param _file {Boolean} path to file to remove
+	*/
+	function removeMetadata(_file){
+		socket.on('removeMetadataComplete', removeMetadataComplete);
+
+		socket.emit('removeMetadata', {file: _file, type: 'course', id: courseID, track: 'metadata'});
+	}
+
+	/**
+	* Function to to update once removal of media is complete.
+	*
+	* @method removeMetadataComplete
+	*/
+	function removeMetadataComplete(){
+
+		try { socket.removeListener('removeMetadataComplete', removeMetadataComplete); } catch (e) {}
+		//Commit GIT when complete.
+		socket.emit('contentSaved', {
+			content: {type: 'course', id: courseID},
+			user: {id: user._id}
+		});	
+
+		refreshMetadataList();  		
+
+	}
+
+	/**
+	* Function to refresh the metadata list
+	*
+	* @method refreshMetadataList
+	*/
+	function refreshMetadataList(){
+
+		var pathSplit = coursePath.split('/programs');
+		var _normPath = '../programs' + pathSplit[1];
+		
+		socket.emit('readDir', {path: _normPath, track: 'metadata'}, function(fdata){
+
+			var metadataArr = [];
+            if(fdata == ''){
+            	console.log("fdata is empty");
+            }
+            else{
+
+	            for (var k = 0; k < fdata.length; k++) {
+	            	metadataArr.push(fdata[k].path);
+	            }
+
+	            var msg = '';
+				if(metadataArr.length != 0){
+					for (var i = 0; i < metadataArr.length; i++) {
+						msg += '<div id="metadataFile'+i+'" data-id="'+metadataArr[i]+'">' + metadataArr[i];
+						msg += "<div id='metadataRemove' class='metadataRemove' title='delete this item'></div>";							
+						msg += "<a  target='_blank' href=" + _normPath + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
+						msg +='</div>';//metadataFile+i end
+					}
+				}
+
+				$("#metadataFiles").empty();
+				$("#metadataFiles").append(msg);	       
+
+				$(".metadataRemove").click(function(){
+					checkRemoveMetadata($(this).parent().attr("data-id"));
+				});					     		           
+
+	        }
+	    });		
+	}	
+
 
      /****************************************************************
      * Display editable Module Preferences.
