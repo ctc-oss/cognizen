@@ -17,3 +17,4 @@ post-update
 bin/server/config.json
 bin/server/cognizen.plist
 exec-test.js
+*.iml
