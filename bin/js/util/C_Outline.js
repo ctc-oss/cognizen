@@ -1127,10 +1127,6 @@ function C_Outline(_myItem) {
 
 						blobStream.pipe(stream);
 
-						socket.emit('contentSaved', {
-							content: {type: 'course', id: courseID},
-							user: {id: user._id}
-						});	
 					}	
 
 				});	
@@ -1269,11 +1265,6 @@ function C_Outline(_myItem) {
 	function removeMetadataComplete(){
 
 		try { socket.removeListener('removeMetadataComplete', removeMetadataComplete); } catch (e) {}
-		//Commit GIT when complete.
-		socket.emit('contentSaved', {
-			content: {type: 'course', id: courseID},
-			user: {id: user._id}
-		});	
 
 		refreshMetadataList();  		
 
@@ -1289,6 +1280,14 @@ function C_Outline(_myItem) {
 		var pathSplit = coursePath.split('/programs');
 		var _normPath = '../programs' + pathSplit[1];
 		
+		try { socket.removeListener('mediaBrowserUploadComplete', refreshMetadataList);} catch (e) {}
+
+		//Commit GIT when complete.
+		socket.emit('contentSaved', {
+			content: {type: 'course', id: courseID},
+			user: {id: user._id}
+		});	
+
 		socket.emit('readDir', {path: _normPath, track: 'metadata'}, function(fdata){
 
 			var metadataArr = [];
