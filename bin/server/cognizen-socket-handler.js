@@ -222,113 +222,115 @@ var SocketHandler = {
                             }
 
                             var dirCheck = path.normalize(_this.Content.diskPath(found.path) + trackPath);
-
-                            fs.ensureDir(dirCheck, function (err) {
+                            var contentPath = path.resolve(process.cwd(), dirCheck);
+                            _this.logger.info('DIRCHECK : ' + contentPath);
+                            fs.ensureDir(contentPath, function (err) {
                                 if(err){
                                    _this.logger.error('Error ensureDir : ' + err);
                                 }
                                 // dir has now been created, including the directory it is to be placed in
+
+                                var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + cleanName);
+                                var fileSplit = cleanName.split(".");
+                                var mediaType = fileSplit[fileSplit.length - 1];
+                                
+                                var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "asf"];
+                                var convertableVectorTypes = ["eps"];
+                                var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
+                                var archiveTypes = ["zip"];
+                                if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                    tmpSock.sio.emit("mediaBrowserConversionStart");
+                                    //Convert files
+                                    var convertedFileName;
+                                    var convertedPathName;
+                                    var convertedPath;
+                                    //VIDEO CONVERSION
+                                    if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                        convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp4';
+                                        convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp4';
+                                        convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
+                                        var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
+                                            .toFormat('mp4')
+                                            .withVideoBitrate('1200k')
+                                            .withVideoCodec('libx264')
+                                            .withAudioBitrate('160k')
+                                            .withAudioCodec('libfaac')
+                                            .withAudioChannels(2)
+                                            .onCodecData(function (codecinfo) {
+                                                _this.logger.info(codecinfo);
+                                                tmpSock.sio.emit('mediaInfo', codecinfo);
+                                            })
+                                       //used for ffmpeg on windows machine
+                                       //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
+
+                                    }else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                        convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp3';
+                                        convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp3';
+                                        convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
+                                        var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
+                                            .toFormat('mp3')
+                                            .withAudioCodec('libmp3lame')
+                                            .withAudioChannels(2)
+                                            .onCodecData(function (codecinfo) {
+                                                _this.logger.info(codecinfo);
+                                                tmpSock.sio.emit('mediaInfo', codecinfo);
+                                            })
+                                    }
+                                    proc.onProgress(function (progress) {
+                                        tmpSock.sio.emit('mediaBrowserConversionProgress', progress);
+                                    })
+                                    .saveToFile(convertedPathName, function (stdout, stderr) {
+                                        if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
+                                        if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
+
+                                        var stream = fs.createReadStream(convertedPathName);
+                                        stream.pipe(fs.createWriteStream(convertedPath));
+
+                                        var had_error = false;
+                                        stream.on('error', function(err){
+                                            had_error = true;
+                                        });
+
+                                        stream.on('close', function(){
+                                            if (!had_error) fs.unlink(filename);
+                                            fs.unlink(convertedPathName, function (err) {
+                                                _this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
+                                                tmpSock.sio.emit('mediaBrowserUploadComplete', convertedPath);
+                                            });
+                                        })
+                                    });
+                                }else if(archiveTypes.indexOf(mediaType.toLowerCase()) >= 0){
+                                    var zip = new unzip(filename);
+                                    var zipEntries = zip.getEntries();
+                                    zipEntries.forEach(function(entry) {
+                                        var entryName = entry.entryName;
+                                        var pathSplit = contentPath.split("/");
+                                        pathSplit.pop();
+                                        var extractPath = "";
+                                        for(var i = 0; i < pathSplit.length; i++){
+                                            extractPath += (pathSplit[i] + "/");
+                                        }
+                                        zip.extractEntryTo(entryName, path.normalize(extractPath), true, true);
+                                    });
+                                    fs.unlink(filename, function (err) {
+                                        tmpSock.sio.emit('mediaBrowserUploadComplete', "zip");
+                                    });
+                                }else{
+                                    var stream = fs.createReadStream(filename);
+                                    stream.pipe(fs.createWriteStream(contentPath));
+                                    var had_error = false;
+                                    stream.on('error', function(err){
+                                        had_error = true;
+                                    });
+        
+                                    stream.on('close', function(){
+                                        //Remove item from tmp folder after moving it over.
+                                        if (!had_error) fs.unlink(filename);
+                                        tmpSock.sio.emit('mediaBrowserUploadComplete', contentPath);
+                                    });
+                                }                                
                             })
 
-                            var contentPath = path.normalize(_this.Content.diskPath(found.path) + trackPath + data.path + cleanName);
-							var fileSplit = cleanName.split(".");
-							var mediaType = fileSplit[fileSplit.length - 1];
-							
-							var convertableVideoTypes = ["ogv", "avi", "mov", "wmv", "flv", "webm", "f4v", "mpg", "mpeg", "asf"];
-                            var convertableVectorTypes = ["eps"];
-                            var convertableAudioTypes = ["wav", "ogg", "m4a", "aiff", "flac", "wma"];
-                            var archiveTypes = ["zip"];
-                            if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0 || convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                tmpSock.sio.emit("mediaBrowserConversionStart");
-                                //Convert files
-                                var convertedFileName;
-                                var convertedPathName;
-                                var convertedPath;
-                                //VIDEO CONVERSION
-                                if (convertableVideoTypes.indexOf(mediaType.toLowerCase()) >= 0){
-                                	convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp4';
-									convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp4';
-									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp4'; // Strip the old extension off, and put the mp4 extension on.
-                                	var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
-                                    	.toFormat('mp4')
-										.withVideoBitrate('1200k')
-										.withVideoCodec('libx264')
-										.withAudioBitrate('160k')
-										.withAudioCodec('libfaac')
-										.withAudioChannels(2)
-										.onCodecData(function (codecinfo) {
-                                        	_this.logger.info(codecinfo);
-											tmpSock.sio.emit('mediaInfo', codecinfo);
-										})
-                                   //used for ffmpeg on windows machine
-                                   //proc.setFfmpegPath('C:/ffmpeg-20140723-git-a613257-win64-static/bin/ffmpeg.exe')
-
-								}else if(convertableAudioTypes.indexOf(mediaType.toLowerCase()) >= 0){
-									convertedFileName = cleanName.replace(/\.[^/.]+$/, '') + '.mp3';
-									convertedPathName = filename.replace(/\.[^/.]+$/, '') + '.mp3';
-									convertedPath = contentPath.replace(/\.[^/.]+$/, '') + '.mp3';
-									var proc = new ffmpeg({ source: filename, timeout: 300, priority: 2 })
-                                    	.toFormat('mp3')
-										.withAudioCodec('libmp3lame')
-										.withAudioChannels(2)
-										.onCodecData(function (codecinfo) {
-                                        	_this.logger.info(codecinfo);
-											tmpSock.sio.emit('mediaInfo', codecinfo);
-										})
-								}
-                                proc.onProgress(function (progress) {
-                                	tmpSock.sio.emit('mediaBrowserConversionProgress', progress);
-								})
-								.saveToFile(convertedPathName, function (stdout, stderr) {
-                                	if (stdout) _this.logger.error('FFMPEG STDOUT: ' + stdout);
-                                    if (stderr) _this.logger.error('FFMPEG STDERR: ' + stderr);
-
-									var stream = fs.createReadStream(convertedPathName);
-                                    stream.pipe(fs.createWriteStream(convertedPath));
-
-									var had_error = false;
-									stream.on('error', function(err){
-										had_error = true;
-									});
-
-									stream.on('close', function(){
-                                        if (!had_error) fs.unlink(filename);
-	                                    fs.unlink(convertedPathName, function (err) {
-	                                    	_this.logger.info("FILE HAS BEEN MOVED AFTER CONVERSION");
-                                        	tmpSock.sio.emit('mediaBrowserUploadComplete', convertedPath);
-                                        });
-									})
-								});
-							}else if(archiveTypes.indexOf(mediaType.toLowerCase()) >= 0){
-								var zip = new unzip(filename);
-                            	var zipEntries = zip.getEntries();
-                            	zipEntries.forEach(function(entry) {
-								    var entryName = entry.entryName;
-								    var pathSplit = contentPath.split("/");
-								    pathSplit.pop();
-								    var extractPath = "";
-								    for(var i = 0; i < pathSplit.length; i++){
-									    extractPath += (pathSplit[i] + "/");
-								    }
-								    zip.extractEntryTo(entryName, path.normalize(extractPath), true, true);
-								});
-								fs.unlink(filename, function (err) {
-                                	tmpSock.sio.emit('mediaBrowserUploadComplete', "zip");
-                                });
-                            }else{
-	                            var stream = fs.createReadStream(filename);
-	                            stream.pipe(fs.createWriteStream(contentPath));
-	                            var had_error = false;
-	                            stream.on('error', function(err){
-	                                had_error = true;
-	                            });
-	
-	                            stream.on('close', function(){
-		                            //Remove item from tmp folder after moving it over.
-	                                if (!had_error) fs.unlink(filename);
-	                                tmpSock.sio.emit('mediaBrowserUploadComplete', contentPath);
-	                            });
-                            }
 						}
 					});
 				}
