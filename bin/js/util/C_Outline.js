@@ -841,8 +841,8 @@ function C_Outline(_myItem) {
 				if(metadataArr.length != 0){
 					for (var i = 0; i < metadataArr.length; i++) {
 						msg += '<div id="metadataFile'+i+'" data-id="'+metadataArr[i]+'">' + metadataArr[i];
-						msg += "<div id='metadataRemove' class='metadataRemove' title='delete this item'></div>";							
-						msg += "<a  target='_blank' href=" + _normPath + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
+						msg += "<div id='metadataRemove' class='metadataRemove' title='delete this item'></div>";						
+						msg += "<a  target='_blank' href=" + encodeURI(_normPath) + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
 						msg +='</div>';//metadataFile+i end
 					}
 				}
@@ -1305,7 +1305,7 @@ function C_Outline(_myItem) {
 					for (var i = 0; i < metadataArr.length; i++) {
 						msg += '<div id="metadataFile'+i+'" data-id="'+metadataArr[i]+'">' + metadataArr[i];
 						msg += "<div id='metadataRemove' class='metadataRemove' title='delete this item'></div>";							
-						msg += "<a  target='_blank' href=" + _normPath + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
+						msg += "<a  target='_blank' href=" + encodeURI(_normPath) + '/metadata/' +metadataArr[i]+ " download id='downloadMetadata' class='metadataDownload' title='download this item'></a>";				
 						msg +='</div>';//metadataFile+i end
 					}
 				}
