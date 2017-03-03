@@ -54,6 +54,9 @@ function C_Dashboard(_type) {
             else if (data == 'answerkey'){
                 co = new C_AnswerKey(launchItem, launchItemParent);
             }
+            else if (data == 'print'){
+                co = new C_Print(launchItem, launchItemParent);
+            }            
         });
 
         /*socket.on('receiveCoursePath', function (data){
@@ -112,6 +115,7 @@ function C_Dashboard(_type) {
             try{co.refreshSearchData();} catch(e){};
             try{co.refreshVMData();} catch(e){};
             try{co.refreshAKData();} catch(e){};
+            try{co.refreshPrintData();} catch(e){};
             socket.emit('getProjects', user);
         });
 
@@ -288,7 +292,8 @@ function C_Dashboard(_type) {
 	                    $(this).append("<div id='mySearch' class='projectSearch' title='search the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
                         $(this).append("<div id='myMediaValidator' class='projectMedia' title='validate the media files for the " + $(this).parent().find("span").first().text() + " lesson.'></div>");
 	                }
-                    $(this).append("<div id='myAnswerKey' class='projectAnswerKey' title='shows the answer key for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");                     
+                    $(this).append("<div id='myAnswerKey' class='projectAnswerKey' title='shows the answer key for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");
+                    $(this).append("<div id='myPrint' class='projectPrint' title='shows the print version for the  " + $(this).parent().find("span").first().text() + " lesson.'></div>");                     
                 }
 
 			 $("#myOutline").click(function () {
@@ -485,6 +490,39 @@ function C_Dashboard(_type) {
                     }
                 });
 
+                $("#myPrint").click(function () {
+                    //Add preloader
+                    myTimer = setInterval(function () {startlaunchtimer()}, 14000);
+                    $("#stage").append('<div id="preloadholder"></div>');
+                    $("#preloadholder").addClass("C_Modal C_ModalPreloadGraphic");
+                    launchItem = myItem;
+                    var myLevel = $(this).attr("class");
+                    //used to send project name in for c_print
+                    currentProject = myItem.parent().parent().parent().parent().find("span").first().text();
+                    
+                    launchItemParent = { id: myItem.parent().parent().attr('id'),
+                                        name: myItem.parent().parent().find("span").first().text() };
+                    //Check if outline is available...
+                    socket.emit('allowTool', {
+                        id : myItem.data('id'),
+                        tool : 'print',
+                        level : myLevel
+                    });
+                }).hover(
+                    function () {
+                        hoverSubNav = true;
+                    },
+                    function () {
+                        hoverSubNav = false;
+                    }
+                ).tooltip({
+                    show: {
+                        delay: 1500,
+                        effect: "fadeIn",
+                        duration: 200
+                    }
+                });                
+
             },
             function () {
 			 	$("#myPref").remove();
@@ -495,6 +533,7 @@ function C_Dashboard(_type) {
                 $("#mySearch").remove();
                 $("#myMediaValidator").remove();
                 $("#myAnswerKey").remove();
+                $("#myPrint").remove();
                 if (myItem.data('type') == "program") {
                     $(this).removeClass("programHover");
                 } else if (myItem.data('type') == "course") {
