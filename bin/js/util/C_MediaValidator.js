@@ -252,10 +252,14 @@ function C_MediaValidator(_myItem, _myParent) {
 							}
 
 						 	var branchContent = $(data).find("page").eq(i).children("branch").eq(h).find("content").first().text();
-						 	var branchContentImgLength = $($.parseHTML(branchContent)).find("img").length;
+						 	var branchContentImgLength = 0;
+						 	try{ branchContentImgLength = $($.parseXML(branchContent)).find("img").length;} 
+						 	catch(e) {branchContentImgLength = $($.parseHTML(branchContent)).find("img").length;}
 						 	if(branchContentImgLength != 0){
 						 		for (var m = 0; m < branchContentImgLength; m++) {
-								 	var branchContentImg = $($.parseHTML(branchContent)).find("img").eq(m).attr("src");
+								 	var branchContentImg = '';
+								 	try{ branchContentImg = $($.parseXML(branchContent)).find("img").eq(m).attr("src");} 
+								 	catch(e) {branchContentImg = $($.parseHTML(branchContent)).find("img").eq(m).attr("src");}
 								 	if(typeof branchContentImg !== typeof undefined && branchContentImg !== 'null' && branchContentImg !== '' && branchContentImg.indexOf('http') === -1){
 									 	icon = validateMedia(branchContentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 									 	msg += 'content img : ' + branchContentImg + " " + icon + '<br/>';
@@ -263,10 +267,14 @@ function C_MediaValidator(_myItem, _myParent) {
 						 		}
 						 	}
 
-						 	var branchContentHrefLength = $($.parseHTML(branchContent)).find("a").length;
+						 	var branchContentHrefLength = 0;
+						 	try{branchContentHrefLength = $($.parseXML(branchContent)).find("a").length;} 
+						 	catch(e) {branchContentHrefLength = $($.parseHTML(branchContent)).find("a").length;}
 						 	if(branchContentHrefLength != 0){
 						 		for(var n=0; n < branchContentHrefLength; n++){
-						 			var branchContentHref = $($.parseHTML(branchContent)).find("a").eq(n).attr("href");
+						 			var branchContentHref = '';
+						 			try{branchContentHref = $($.parseXML(branchContent)).find("a").eq(n).attr("href");} 
+						 			catch(e) {branchContentHref = $($.parseHTML(branchContent)).find("a").eq(n).attr("href");}
 						 			if(typeof branchContentHref !== typeof undefined && branchContentHref !== 'null' && branchContentHref !== '' && 
 						 				branchContentHref.indexOf('http') === -1 && branchContentHref.indexOf('mailto:') === -1){
 									 	icon = validateMedia(branchContentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
@@ -276,10 +284,14 @@ function C_MediaValidator(_myItem, _myParent) {
 						 	}							 									
 							
 						 	var sidebar = $(data).find("page").eq(i).children("branch").eq(h).find("sidebar").first().text();
-						 	var sidebarImgLength = $($.parseHTML(sidebar)).find("img").length;
+						 	var sidebarImgLength = 0;
+						 	try{sidebarImgLength = $($.parseXML(sidebar)).find("img").length;} 
+						 	catch(e) {sidebarImgLength = $($.parseHTML(sidebar)).find("img").length;}
 						 	if(sidebarImgLength != 0){
 						 		for (var m = 0; m < sidebarImgLength; m++) {
-								 	var sidebarImg = $($.parseHTML(sidebar)).find("img").eq(m).attr("src");
+								 	var sidebarImg = '';
+								 	try{sidebarImg = $($.parseXML(sidebar)).find("img").eq(m).attr("src");} 
+								 	catch(e) {sidebarImg = $($.parseHTML(sidebar)).find("img").eq(m).attr("src");}
 								 	if(typeof sidebarImg !== typeof undefined && sidebarImg !== 'null' && sidebarImg !== '' && sidebarImg.indexOf('http') === -1){
 									 	icon = validateMedia(sidebarImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 									 	msg += 'sidebar img : ' + sidebarImg + " " + icon + '<br/>';
@@ -287,10 +299,14 @@ function C_MediaValidator(_myItem, _myParent) {
 						 		}
 						 	}
 
-						 	var sidebarHrefLength = $($.parseHTML(sidebar)).find("a").length;
+						 	var sidebarHrefLength = 0;
+						 	try{sidebarHrefLength = $($.parseXML(sidebar)).find("a").length;} 
+						 	catch(e) {sidebarHrefLength = $($.parseHTML(sidebar)).find("a").length;}
 						 	if(sidebarHrefLength != 0){
 						 		for(var n=0; n < sidebarHrefLength; n++){
-						 			var sidebarHref = $($.parseHTML(sidebar)).find("a").eq(n).attr("href");
+						 			var sidebarHref = '';
+						 			try{ sidebarHref = $($.parseXML(sidebar)).find("a").eq(n).attr("href");} 
+						 			catch(e) {sidebarHref = $($.parseHTML(sidebar)).find("a").eq(n).attr("href");}
 						 			if(typeof sidebarHref !== typeof undefined && sidebarHref !== 'null' && sidebarHref !== '' && 
 						 				sidebarHref.indexOf('http') === -1 && sidebarHref.indexOf('mailto:') === -1){
 									 	icon = validateMedia(sidebarHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
@@ -334,37 +350,52 @@ function C_MediaValidator(_myItem, _myParent) {
 					 		msg += 'audio : ' + audio + " " + icon+ '<br/>';
 					 	}
 
-					 	var content = $(data).find("page").eq(i).find("content").first().text();
-					 	var contentImgLength = $($.parseHTML(content)).find("img").length;
-					 	if(contentImgLength != 0){
-					 		for (var m = 0; m < contentImgLength; m++) {
-							 	var contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");
-							 	if(typeof contentImg !== typeof undefined && contentImg !== 'null' && contentImg !== '' && contentImg.indexOf('http') === -1){
-								 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-								 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
-							 	}
-					 		}
-					 	}
+					 	if(type != 'matching'){
+					 		debugger;
+						 	var content = $(data).find("page").eq(i).find("content").first().text();
+						 	var contentImgLength = 0;
+						 	try{contentImgLength = $($.parseXML(content)).find("img").length;}
+						 	catch(e) { contentImgLength = $($.parseHTML(content)).find("img").length;}
+						 	if(contentImgLength != 0){
+						 		for (var m = 0; m < contentImgLength; m++) {
+								 	var contentImg = '';
+								 	try{contentImg = $($.parseXML(content)).find("img").eq(m).attr("src");} 
+								 	catch(e) {contentImg = $($.parseHTML(content)).find("img").eq(m).attr("src");}
+								 	if(typeof contentImg !== typeof undefined && contentImg !== 'null' && contentImg !== '' && contentImg.indexOf('http') === -1){
+									 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+									 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+								 	}
+						 		}
+						 	}
 
-					 	// #4968
-					 	var contentHrefLength = $($.parseHTML(content)).find("a").length;
-					 	if(contentHrefLength != 0){
-					 		for(var n=0; n < contentHrefLength; n++){
-					 			var contentHref = $($.parseHTML(content)).find("a").eq(n).attr("href");
-					 			if(typeof contentHref !== typeof undefined && contentHref !== 'null' && contentHref !== '' && 
-					 				contentHref.indexOf('http') === -1 && contentHref.indexOf('mailto:') === -1){
-								 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-								 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';		
-							 	}		 			
-					 		}
+						 	// #4968
+						 	var contentHrefLength = 0;
+						 	try{contentHrefLength = $($.parseXML(content)).find("a").length;} 
+						 	catch(e) {contentHrefLength = $($.parseHTML(content)).find("a").length;}
+						 	if(contentHrefLength != 0){
+						 		for(var n=0; n < contentHrefLength; n++){
+						 			var contentHref = '';
+						 			try{contentHref = $($.parseXML(content)).find("a").eq(n).attr("href");} 
+						 			catch(e) {contentHref = $($.parseHTML(content)).find("a").eq(n).attr("href");}
+						 			if(typeof contentHref !== typeof undefined && contentHref !== 'null' && contentHref !== '' && 
+						 				contentHref.indexOf('http') === -1 && contentHref.indexOf('mailto:') === -1){
+									 	icon = validateMedia(contentHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+									 	msg += 'content href : ' + contentHref + " " + icon + '<br/>';		
+								 	}		 			
+						 		}
+						 	}
 					 	}
 
 					 	// sidebar #5035
 					 	var sidebar = $(data).find("page").eq(i).find("sidebar").first().text();
-					 	var sidebarImgLength = $($.parseHTML(sidebar)).find("img").length;
+					 	var sidebarImgLength = 0;
+					 	try{sidebarImgLength = $($.parseXML(sidebar)).find("img").length;} 
+					 	catch(e) {sidebarImgLength = $($.parseHTML(sidebar)).find("img").length;}
 					 	if(sidebarImgLength != 0){
 					 		for (var m = 0; m < sidebarImgLength; m++) {
-							 	var sidebarImg = $($.parseHTML(sidebar)).find("img").eq(m).attr("src");
+							 	var sidebarImg = '';
+							 	try{sidebarImg = $($.parseXML(sidebar)).find("img").eq(m).attr("src");} 
+							 	catch(e) {sidebarImg = $($.parseHTML(sidebar)).find("img").eq(m).attr("src");}
 							 	if(typeof sidebarImg !== typeof undefined && sidebarImg !== 'null' && sidebarImg !== '' && sidebarImg.indexOf('http') === -1){
 								 	icon = validateMedia(sidebarImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 								 	msg += 'sidebar img : ' + sidebarImg + " " + icon + '<br/>';
@@ -372,10 +403,14 @@ function C_MediaValidator(_myItem, _myParent) {
 					 		}
 					 	}
 
-					 	var sidebarHrefLength = $($.parseHTML(sidebar)).find("a").length;
+					 	var sidebarHrefLength = 0;
+					 	try{sidebarHrefLength = $($.parseXML(sidebar)).find("a").length;} 
+					 	catch(e) {sidebarHrefLength = $($.parseHTML(sidebar)).find("a").length;}
 					 	if(sidebarHrefLength != 0){
 					 		for(var n=0; n < sidebarHrefLength; n++){
-					 			var sidebarHref = $($.parseHTML(sidebar)).find("a").eq(n).attr("href");
+					 			var sidebarHref = '';
+					 			try{sidebarHref = $($.parseXML(sidebar)).find("a").eq(n).attr("href");} 
+					 			catch(e) {sidebarHref = $($.parseHTML(sidebar)).find("a").eq(n).attr("href");}
 					 			if(typeof sidebarHref !== typeof undefined && sidebarHref !== 'null' && sidebarHref !== '' && 
 					 				sidebarHref.indexOf('http') === -1 && sidebarHref.indexOf('mailto:') === -1){
 								 	icon = validateMedia(sidebarHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
@@ -386,10 +421,14 @@ function C_MediaValidator(_myItem, _myParent) {
 
 					 	/////#4998/////
 					 	var question = $(data).find("page").eq(i).find("question").first().text();
-					 	var questionImgLength = $($.parseHTML(question)).find("img").length;
+					 	var questionImgLength = 0;
+					 	try{questionImgLength = $($.parseXML(question)).find("img").length;} 
+					 	catch(e) {questionImgLength = $($.parseHTML(question)).find("img").length;}
 					 	if(questionImgLength != 0){
 					 		for (var o = 0; o < questionImgLength; o++) {
-					 			var questionImg = $($.parseHTML(question)).find("img").eq(o).attr("src");
+					 			var questionImg = '';
+					 			try{questionImg = $($.parseXML(question)).find("img").eq(o).attr("src");} 
+					 			catch(e) {questionImg = $($.parseHTML(question)).find("img").eq(o).attr("src");}
 					 			if(typeof questionImg !== typeof undefined && questionImg !== 'null' && questionImg !== '' && questionImg.indexOf('http') === -1){	
 								 	icon = validateMedia(questionImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 								 	msg += 'question img : ' + questionImg + " " + icon + '<br/>';
@@ -397,10 +436,14 @@ function C_MediaValidator(_myItem, _myParent) {
 					 		}
 					 	}
 
-					 	var questionHrefLength = $($.parseHTML(question)).find("a").length;
+					 	var questionHrefLength = 0;
+					 	try{questionHrefLength = $($.parseXML(question)).find("a").length;} 
+					 	catch(e) {questionHrefLength = $($.parseHTML(question)).find("a").length;}
 					 	if(questionHrefLength != 0){
 					 		for (var p = 0; p < questionHrefLength; p++) {
-					 			var questionHref = $($.parseHTML(question)).find("a").eq(p).attr("href");
+					 			var questionHref = '';
+					 			try{questionHref = $($.parseXML(question)).find("a").eq(p).attr("href");} 
+					 			catch(e) {questionHref = $($.parseHTML(question)).find("a").eq(p).attr("href");}
 					 			if(typeof questionHref !== typeof undefined && questionHref !== 'null' && questionHref !== '' && 
 					 				questionHref.indexOf('http') === -1 && questionHref.indexOf('mailto:') === -1){	
 								 	icon = validateMedia(questionHref) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
@@ -416,7 +459,23 @@ function C_MediaValidator(_myItem, _myParent) {
 								if(typeof answerImg !== typeof undefined && answerImg !== 'null' && answerImg !== '' && answerImg.indexOf('http') === -1){	
 								 	icon = validateMedia(answerImg ) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 								 	msg += 'answer img : ' + answerImg + " " + icon + '<br/>';									
-								}			 			
+								}	
+								// #5036
+								var answerContent = $(data).find("page").eq(i).find("answer").eq(q).find("content").first().text();
+							 	var contentImgLength = 0;
+							 	try{ contentImgLength = $($.parseXML(answerContent)).find("img").length;} 
+							 	catch(err) {contentImgLength = $($.parseHTML(answerContent)).find("img").length;}
+							 	if(contentImgLength != 0){
+							 		for (var m = 0; m < contentImgLength; m++) {
+							 			var contentImg = '';
+							 			try{ contentImg = $($.parseXML(answerContent)).find("img").eq(m).attr("src");} 
+							 			catch(err) {contentImg = $($.parseHTML(answerContent)).find("img").eq(m).attr("src");}
+									 	if(typeof contentImg !== typeof undefined && contentImg !== 'null' && contentImg !== '' && contentImg.indexOf('http') === -1){
+										 	icon = validateMedia(contentImg) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+										 	msg += 'content img : ' + contentImg + " " + icon + '<br/>';
+									 	}
+							 		}
+							 	}									 			
 					 		}
 
 					 	}
