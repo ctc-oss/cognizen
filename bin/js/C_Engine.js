@@ -218,7 +218,6 @@ function initScripts(_data){
 
 function loadStreamer(){
 	require(['js/libs/socket.io-stream.js'], function (foo) {
-		debugger;
    		ss = foo;
    		ss.forceBase64 = true;
 		buildInterface();
