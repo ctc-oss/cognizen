@@ -161,9 +161,9 @@ function C_Branching(_type) {
 		if(branchCount > 0){
 			//var paletteWidth = 0;
 			if(branchType == "top" || branchType == "graphicOnly"){
-				$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
+				$("<div id='buttonPalette' class='buttonPalette'></div><br/><br/>").insertAfter("#mediaHolder");
 			}else{
-				$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#content");
+				$("<div id='buttonPalette' class='buttonPalette'></div><br/><br/>").insertAfter("#content");
 			}
 
 			for (var i = 0; i < branchCount; i++){
