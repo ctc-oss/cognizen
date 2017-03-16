@@ -1948,7 +1948,7 @@ var SocketHandler = {
 		var moduleUser_arr = [];
 		var activeToolEditor = null;
         var activeTool = null;
-        _this.logger.info(data);
+        _this.logger.info('AllowTool : ' + data.id + ' tool - ' + data.tool);
 
 		for(var i = 0; i < activeEdit_arr.length; i++){
 			if(data.id == activeEdit_arr[i].courseID || data.id == activeEdit_arr[i].lessonID){
@@ -1960,7 +1960,8 @@ var SocketHandler = {
 		}
 
 		for(var j = 0; j < activeTool_arr.length; j++){
-			if(data.id == activeTool_arr[j].courseID || data.id == activeTool_arr[i].lessonID){
+            _this.logger.info('activeTool data - '+ j +' : courseid -' + activeTool_arr[j].courseID +' lessonid -' + activeTool_arr[j].lessonID +' tool -' + activeTool_arr[j].tool +' username -' + activeTool_arr[j].username);
+			if(data.id == activeTool_arr[j].courseID || data.id == activeTool_arr[j].lessonID){
 				allow = false;
 				activeToolEditor = activeTool_arr[j].username;
                 activeTool = activeTool_arr[j].tool;

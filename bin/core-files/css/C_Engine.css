@@ -167,7 +167,7 @@ h1#lessonTitle{
 	z-index: 5;
 	width: 18px;
 	height: 18px;
-	background: url(images/editMenu.png) no-repeat;
+	background: url(images/editMenu.svg) no-repeat;
 	cursor: hand;
 	cursor: pointer;
 }
@@ -178,7 +178,7 @@ h1#lessonTitle{
 	z-index: 5;
 	width: 18px;
 	height: 18px;
-	background: url(images/editMedia.png) no-repeat;
+	background: url(images/editMedia.svg) no-repeat;
 	cursor: hand;
 	cursor: pointer;
 }
@@ -186,7 +186,7 @@ h1#lessonTitle{
 .btn_edit_audio{
 	width: 18px;
 	height: 18px;
-	background: url(images/editAudio.png) no-repeat;
+	background: url(images/editAudio.svg) no-repeat;
 	cursor: hand;
 	cursor: pointer;
 }
@@ -1488,7 +1488,7 @@ MEDIA LAYOUTS
 
 .mediaPop{
 	position: relative;
-	background: url(images/img-enlarge.png) no-repeat;
+	background: url(images/img-enlarge.svg) no-repeat;
 	right: 10px;
 	float: right;
 	width: 86px;
@@ -1497,6 +1497,9 @@ MEDIA LAYOUTS
 	cursor: pointer;
 	z-index: 5;
 	margin-left: 4px;
+}
+.mediaPop:hover{
+	background: url(images/img-enlarge_hover.svg) no-repeat;
 }
 
 #centerMe{
@@ -2700,7 +2703,7 @@ ESSAY COMPARE LAYOUTS
 	left: 407px;
 	width: 35px;
 	height: 40px;
-	background: #eeeeee url(images/paneTabIndex.png) no-repeat center center;
+	background: #eeeeee url(images/paneTabIndex.svg) no-repeat center center;
 	cursor: hand;
 	cursor: pointer;
 }
@@ -2857,7 +2860,7 @@ ESSAY COMPARE LAYOUTS
 .pageRemove {position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/mb_delete.svg) no-repeat;}
 .dirRemove {position: absolute; top: 1px; right: 2px; width: 20px; height: 20px; background: #E8E8E8 url(images/mb_delete.svg) no-repeat;}
 .glossaryTermRemove{position: absolute; top: 2.5px; right: 2px; width: 24px; height: 24px; background: #fff url(images/mb_delete.svg) no-repeat;}
-.glossaryTermEdit{position: absolute; top: 2.5px; right: 27px; width: 24px; height: 24px; background: #fff url(images/editMenu.png) no-repeat;}
+.glossaryTermEdit{position: absolute; top: 2.5px; right: 27px; width: 24px; height: 24px; background: #fff url(images/editMenu.svg) no-repeat;}
 
 .dd3-content:hover { color: #2ea8e5; background: #fff; }
 
@@ -2914,7 +2917,7 @@ ESSAY COMPARE LAYOUTS
 	left: 703px;
 	width: 35px;
 	height: 40px;
-	background: #eeeeee url(images/paneTabGlossary.png) no-repeat center center;
+	background: #eeeeee url(images/paneTabGlossary.svg) no-repeat center center;
 }
 
 #glossaryTerms{

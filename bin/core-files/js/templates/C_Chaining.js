@@ -171,9 +171,9 @@ function C_Chaining(_type) {
 
 		//var paletteWidth = 0;
 		if(branchType == "top" || branchType == "bottom" || branchType == "graphicOnly"){
-			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#mediaHolder");
+			$("<div id='buttonPalette' class='buttonPalette'></div><br/><br/>").insertAfter("#mediaHolder");
 		}else{
-			$("<div id='buttonPalette' class='buttonPalette'></div>").insertAfter("#content");
+			$("<div id='buttonPalette' class='buttonPalette'></div><br/><br/>").insertAfter("#content");
 		}
 
 
