@@ -717,6 +717,7 @@ TREE MENU STYLES
 .courseUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
+.projectPrint{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_print.svg) no-repeat;}
 .projectAnswerKey{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_answer.svg) no-repeat;}
 .projectMedia {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_validate.svg) no-repeat;}
 .projectSearch {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
@@ -870,8 +871,8 @@ TREE MENU STYLES
 
 /*end search*/
 
-/*media validator*/
-#mediaValidatorPane{
+/*dashboard panes*/
+#mediaValidatorPane, #answerKeyPane, #printPane{
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -883,34 +884,131 @@ TREE MENU STYLES
             border-radius: 3px;
 }
 
-/*end media validator*/
-
-/*media validator*/
-#answserKeyPane{
-	position: relative;
-	width: 100%;
-	height: 100%;
-	overflow: auto;
-	border-color: #eee;
-	border-width: thin;
-	border-style: solid;
-	-webkit-border-radius: 3px;
-            border-radius: 3px;
+/*dashboard panes*/
+@media all {
+    .page-break { display: none; }
 }
 
-/*end media validator*/
-  @media print {
-     #mediaValidatorPane{
-	    height: auto;
-	    overflow-y: auto;
-     }
+/*print preview*/
+#pageTitle.print{
+	position: static;
+	/*width: 745px;
+	top: auto;
+	left: auto;	*/
+}
 
-     #answserKeyPane{
-	    height: auto;
-	    overflow-y: auto;
-     }
+/*#printPage{
+	background-color: #FFFFFF;
+	width: 1024px;
+	height: 768px;
+	margin: auto;
+	position: relative;
+	overflow: hidden;
+	background-image: url(images/backgroundPrint.png);
+}*/
 
-  }
+img.print{
+	max-width: 750px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img.print.part{
+	max-width: 500px;
+}
+
+#pageTitle.print, #caption.print{
+	text-align: center;
+}
+
+.contentHolder.print{
+	float: left;
+}
+
+.contentLeft.print{
+	float: left; 
+	max-width: 510px;
+}
+
+.contentRight.print{
+	float: right; 
+	max-width: 510px;
+}
+
+.mediaHolder.print{
+	float: left; 
+	max-width: 500px;
+}
+
+#sidebarHolder {
+	right: 0px;
+	max-width: 100%;
+	padding: 0px;
+	margin: 0px 0px 10px 10px;
+	float: left;
+}
+
+/*.left{
+	position: relative;
+	float: left;
+	left: 50px;
+	border-style: hidden;
+	outline: none;
+}*/
+
+table{
+	border: 1px solid black;
+	border-collapse: collapse;
+	margin-top: 4px;
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+table p{
+	margin-bottom: 0px;
+}
+
+table.center{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+thead th{
+	font-weight: bold;
+	background-color: #E0E0E0;
+	vertical-align: middle;
+	padding: 4px;
+	text-align: center;
+}
+
+tbody th{
+	font-weight: bold;
+	background-color: #E0E0E0;
+	vertical-align: middle;
+	padding: 4px;
+	border: 1px solid black;
+}
+
+td{
+	vertical-align: middle;
+	text-align: left;
+	padding: 4px;
+	background-color: #FFFFFF;
+	border: 1px solid black;
+}
+
+caption{
+	caption-side: bottom;
+	padding: 4px;
+	font-size: 85%;
+	text-align: center;
+	color: #000000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: italic;
+}
+
+/*print preview*/
 
 .ui-widget-content{
 	background: white;
