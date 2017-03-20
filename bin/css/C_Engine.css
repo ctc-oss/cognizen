@@ -717,7 +717,7 @@ TREE MENU STYLES
 .courseUserAdd {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_manage.svg) no-repeat;}
 
 .treeview li .projectHover{color: #3383bb; background-color: #EEEEEE; cursor: pointer; -moz-border-radius: 3px; border-radius: 3px; height: 23px;}
-.projectPrint{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_preferences.svg) no-repeat;}
+.projectPrint{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_print.svg) no-repeat;}
 .projectAnswerKey{position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_answer.svg) no-repeat;}
 .projectMedia {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_validate.svg) no-repeat;}
 .projectSearch {position: relative; float: right; margin-right: 3px; margin-top: 2px; width: 18px; height: 18px; background: url(images/dash_search.svg) no-repeat;}
