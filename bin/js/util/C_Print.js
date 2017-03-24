@@ -23,6 +23,9 @@ function C_Print(_myItem, _myParent) {
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalPrintModules;									//Number of modules in course
     var loadedPrintModules;									//Variable to track how many module xml files have been loaded.
+    var pageCount = 0;
+ 	var courseDisplayTitle;
+ 	var lessonDisplayTitle;
 
     $(document).ready(function(){
     	initPrint();
@@ -200,408 +203,490 @@ function C_Print(_myItem, _myParent) {
      	indexItem_arr = [];
 
      	var data = module_arr[0].xml;
-     	//var totalPages = $(data).find('page[type="kc"]').length;
      	var totalPages = $(data).find('page').length;
 
-	    // if(totalPages == 0){
-	    // 	alert('No pages contain assessment based pages in this lesson.');
-		   //  socket.removeAllListeners('receiveCoursePath');
-     //        socket.emit("closeTool", {
-     //        	id : courseID,
-     //        	tool : 'print'
-     //        });
-     //        module_arr = [];
-	    // }
-//	    else{
-	     	var lessonTitle = $(courseData).find('course').first().attr("name");
-	     	if(currentCourseType === 'lesson'){
-	     		lessonTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
-	     	}
+     	var lessonTitle = $(courseData).find('course').first().attr("name");
+     	if(currentCourseType === 'lesson'){
+     		lessonTitle = $(courseData).find("item[id='"+courseID+"']").attr("name");
+     	}
 
-	     	msg = '<div id="dialog-print" title="Print Lesson (Beta) : '+ lessonTitle + ':">';
-		    msg += '<div id="ptPane" class="pane">'
-		    msg += '<div id="printPane" class="paneContent">';
-		    msg += '<div id="lessonTitle" class="print">' + lessonTitle + '</div>';
-			for(var i = 0; i < totalPages; i++){
-//				totalPages = $(data).find('page').length;
-				var myContent = $(data).find("page").eq(i).find("content").first().text();
-		 		msg += '<div id="printPage"><div id="pageTitle" class="print" role="heading">' + $(data).find("page").eq(i).find('title').first().text() + '</div>';
-		 		var layout = $(data).find("page").eq(i).attr('layout');
-		 		if($(data).find("page").eq(i).attr('type') === 'kc'){
-					var attempts = $(data).find("page").eq(i).attr('attempts');
-					if(typeof attempts === typeof undefined){ attempts = 'N/A'}
-			 		var graded = $(data).find("page").eq(i).attr('graded') !== "true" ? 'Not Graded' : 'Graded';
-			 		var mandatory = $(data).find("page").eq(i).attr('mandatory') !== "true" ? 'Not Mandatory' : 'Mandatory';
-			 		var randomize = $(data).find("page").eq(i).attr('randomize') !== "true" ? 'Not Randomized' : 'Randomized';
-			 		msg += layout + " : Num Attempts - " + attempts + " : " + graded + " : " + mandatory + ' : Answers are ' + randomize +'<br/>'; 
-			 	}
+     	courseDisplayTitle = $(courseData).find('course').attr('coursedisplaytitle');
+     	lessonDisplayTitle = $(data).find("lessondisplaytitle").attr("value");
 
-		 		console.log(layout);
-		 		switch(layout){
-		 			case 'multipleChoice':
-		 			case 'multipleChoiceMedia':
-		 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
-		 				var optionCount = $(data).find("page").eq(i).find("option").length;
-						for(var j = 0; j < optionCount; j++){
-							var answerText = $(data).find("page").eq(i).find("option").eq(j).find("content").text();
+     	msg = '<div id="dialog-print" title="Print Lesson (Beta) : '+ lessonTitle + ':">';
+	    msg += '<div id="ptPane" class="pane">'
+	    msg += '<div id="printPane" class="paneContent">';
+	    msg += '</div>';//close the printPane
+
+	    msg += '</div>';//close the ptpane
+	    msg += '</div>';//close the dialog
+        //ADD menu to stage
+        $("#stage").append(msg);
+
+		for(var i = 0; i < totalPages; i++){
+			msg = '';
+			msg += '<div class="print-container">';
+			msg += '<div id="print-header" class="print">';
+			msg += '<div id="logo" class="print"></div>';
+			msg += '<div id="title-block" class="print"><div id="header-space" class="print"></div>';
+			msg += '<div id="courseTitle" class="print">' + courseDisplayTitle + '</div>';
+			msg += '<div id="lessonTitle" class="print">' + lessonDisplayTitle + '</div>';
+			msg += '</div>'; //end title-block
+			msg += '</div>';//end print-header
+	 		msg += '<div id="printPage"><div id="pageTitle" class="print" role="heading">' + $(data).find("page").eq(i).find('title').first().text() + '</div>';
+
+	 		var myContent = $(data).find("page").eq(i).find("content").first().text();
+	 		var layout = $(data).find("page").eq(i).attr('layout');
+	 		if($(data).find("page").eq(i).attr('type') === 'kc'){
+				var attempts = $(data).find("page").eq(i).attr('attempts');
+				if(typeof attempts === typeof undefined){ attempts = 'N/A'}
+		 		var graded = $(data).find("page").eq(i).attr('graded') !== "true" ? 'Not Graded' : 'Graded';
+		 		var mandatory = $(data).find("page").eq(i).attr('mandatory') !== "true" ? 'Not Mandatory' : 'Mandatory';
+		 		var randomize = $(data).find("page").eq(i).attr('randomize') !== "true" ? 'Not Randomized' : 'Randomized';
+		 		msg += layout + " : Num Attempts - " + attempts + " : " + graded + " : " + mandatory + ' : Answers are ' + randomize +'<br/>'; 
+		 	}
+
+	 		console.log(layout);
+	 		switch(layout){
+	 			case 'multipleChoice':
+	 			case 'multipleChoiceMedia':
+	 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+	 				var optionCount = $(data).find("page").eq(i).find("option").length;
+					for(var j = 0; j < optionCount; j++){
+						var answerText = $(data).find("page").eq(i).find("option").eq(j).find("content").text();
+						if(answerText.indexOf("src=") != -1){
+							var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+lessonTitle+"/media/";
+							msg += answerText.replace("media/",	mediaPathRes);
+						}
+						else{
+							msg += answerText;
+						}
+						var icon = $(data).find("page").eq(i).find("option").eq(j).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+						msg += icon + '<br/>';
+					}		 				
+	 				break;
+	 			case "multipleChoiceFancy":	
+		 			msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';	
+		 			break;		 				
+	 			case 'matching':
+	 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+	 				var optionCount = $(data).find("page").eq(i).find("option").length;
+					for(var j = 0; j < optionCount; j++){	
+						msg += $(data).find("page").eq(i).find("option").eq(j).text();
+						var optionCorrect =  $(data).find("page").eq(i).find("option").eq(j).attr('correct');
+						var answerText = $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").find("content").text();
+						if(answerText.indexOf("src=") != -1){
+							var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+lessonTitle+"/media/";
+							msg += ' = ' + answerText.replace("media/",	mediaPathRes);
+						}
+						else{
+							msg += ' = ' + answerText;
+						}
+						msg += '<br/>';
+					}	 				
+	 				break;
+	 			case 'matchingDrag':
+	 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+	 				var optionCount = $(data).find("page").eq(i).find("option").length;
+					for(var j = 0; j < optionCount; j++){	
+						msg += $(data).find("page").eq(i).find("option").eq(j).text();
+						var optionCorrect =  $(data).find("page").eq(i).find("option").eq(j).attr('correct');
+						msg += ' = ' + $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").attr('img');
+						msg += '<br/>';
+					}			 			
+	 				break;
+	 			case 'questionBank':
+					var showall = $(data).find("page").eq(i).attr('showall') !== "true" ? 'showall off' : 'showall on';
+					var numToComplete = $(data).find("page").eq(i).attr('tocomplete');
+					var bankCount = $(data).find("page").eq(i).find("bankitem").length;
+					msg += showall + ' : Num of questions is ' + bankCount + ' : Number of questions to complete is ' + numToComplete; 
+
+					for (var j = 0; j < bankCount; j++) {
+						msg += '<hr style="border-top: dotted 2px;" />';
+						var bankAttempt =  $(data).find("page").eq(i).find("bankitem").eq(j).attr("attempts");
+						var bankRandomize = $(data).find("page").eq(i).find("bankitem").eq(j).attr("randomize") !== 'true' ? 'Not Randomized' : 'Randomized';
+						msg += 'Num Attempts - ' + bankAttempt + ' : Answers are ' +  bankRandomize + '<br/>';
+						var qNum = j+1;
+						msg += '<br/>' + qNum + '. ' + $(data).find("page").eq(i).find("bankitem").eq(j).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+		 				var bankOptionCount = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").length;
+						for(var k = 0; k < bankOptionCount; k++){
+							var answerText = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).find("content").text();
 							if(answerText.indexOf("src=") != -1){
 								var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+lessonTitle+"/media/";
 								msg += answerText.replace("media/",	mediaPathRes);
 							}
 							else{
 								msg += answerText;
-							}
-							var icon = $(data).find("page").eq(i).find("option").eq(j).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+							}									
+							var icon = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
 							msg += icon + '<br/>';
-						}		 				
-		 				break;
-		 			case "multipleChoiceFancy":	
-			 			msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';	
-			 			break;		 				
-		 			case 'matching':
-		 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
-		 				var optionCount = $(data).find("page").eq(i).find("option").length;
-						for(var j = 0; j < optionCount; j++){	
-							msg += $(data).find("page").eq(i).find("option").eq(j).text();
-							var optionCorrect =  $(data).find("page").eq(i).find("option").eq(j).attr('correct');
-							var answerText = $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").find("content").text();
-							if(answerText.indexOf("src=") != -1){
-								var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+lessonTitle+"/media/";
-								msg += ' = ' + answerText.replace("media/",	mediaPathRes);
-							}
-							else{
-								msg += ' = ' + answerText;
-							}
-							msg += '<br/>';
-						}	 				
-		 				break;
-		 			case 'matchingDrag':
-		 				msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
-		 				var optionCount = $(data).find("page").eq(i).find("option").length;
-						for(var j = 0; j < optionCount; j++){	
-							msg += $(data).find("page").eq(i).find("option").eq(j).text();
-							var optionCorrect =  $(data).find("page").eq(i).find("option").eq(j).attr('correct');
-							msg += ' = ' + $(data).find("page").eq(i).find("answer[correct="+optionCorrect+"]").attr('img');
-							msg += '<br/>';
-						}			 			
-		 				break;
-		 			case 'questionBank':
-						var showall = $(data).find("page").eq(i).attr('showall') !== "true" ? 'showall off' : 'showall on';
-						var numToComplete = $(data).find("page").eq(i).attr('tocomplete');
-						var bankCount = $(data).find("page").eq(i).find("bankitem").length;
-						msg += showall + ' : Num of questions is ' + bankCount + ' : Number of questions to complete is ' + numToComplete; 
-
-						for (var j = 0; j < bankCount; j++) {
-							msg += '<hr style="border-top: dotted 2px;" />';
-							var bankAttempt =  $(data).find("page").eq(i).find("bankitem").eq(j).attr("attempts");
-							var bankRandomize = $(data).find("page").eq(i).find("bankitem").eq(j).attr("randomize") !== 'true' ? 'Not Randomized' : 'Randomized';
-							msg += 'Num Attempts - ' + bankAttempt + ' : Answers are ' +  bankRandomize + '<br/>';
-							var qNum = j+1;
-							msg += '<br/>' + qNum + '. ' + $(data).find("page").eq(i).find("bankitem").eq(j).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
-			 				var bankOptionCount = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").length;
-							for(var k = 0; k < bankOptionCount; k++){
-								var answerText = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).find("content").text();
-								if(answerText.indexOf("src=") != -1){
-									var mediaPathRes = "programs/"+currentProject+"/"+$(courseData).find('course').first().attr("name")+"/"+lessonTitle+"/media/";
-									msg += answerText.replace("media/",	mediaPathRes);
-								}
-								else{
-									msg += answerText;
-								}									
-								var icon = $(data).find("page").eq(i).find("bankitem").eq(j).find("option").eq(k).attr('correct') !== "true" ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-								msg += icon + '<br/>';
-							}								
-						}
-		 				break;	
-	 				case 'sequence':
-		 				var optionCount = $(data).find("page").eq(i).find("option").length;
-						for(var j = 0; j < optionCount; j++){	
-							var optionOrder = j+1;
-							optionOrder = optionOrder.toString();
-							msg += $(data).find("page").eq(i).find("option[correct="+optionOrder+"]").find("content").text();
-							msg += '<br/>';
-						}		 					
-	 					break;
-	 				case 'textInput':
-	 					var questionCount = $(data).find("page").eq(i).find("question").length;
-	 					for (var j = 0; j < questionCount; j++) {
-	 						msg += '<hr style="border-top: dotted 2px;" />';
-	 						msg += 'Num Attempts - ' + $(data).find("page").eq(i).find("question").eq(j).attr('attempts') + '<br/>';
-	 						msg += '<br/>' + $(data).find("page").eq(i).find("question").eq(j).find('content').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
-	 						var acceptedResponseCount = $(data).find("page").eq(i).find("question").eq(j).find("acceptedresponse").length;
-	 						msg += 'Accepted Responses : <br/>';
-	 						for (var k = 0; k < acceptedResponseCount; k++) {
-	 							msg += $(data).find("page").eq(i).find("question").eq(j).find('acceptedresponse').eq(k).text() + '<br/>';
-	 						}
-	 					}
-	 					break;	
- 					case 'slider':
- 						msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						msg += $(data).find("page").eq(i).find('slider').first().find('content').text()+ '<br/>';
- 						msg += $(data).find("page").eq(i).find('slider').attr('correctanswer');
- 						break;
- 					case "essayCompare":	
- 						msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						msg += '<h3>Expert Response</h3>';
- 						msg += $(data).find("page").eq(i).find('correctresponse').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						break	 						
- 					case "textOnly":	
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						break;	
- 					case "completion":
- 					case "graphicOnly":
- 					case "bottom":
- 					    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
- 						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
- 						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-				        var parts = myImage.split('.'), i, l;
-				        var last = parts.length; 
-				        var mediaType = (parts[last - 1]);	
-				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-				        	msg += '<img class="print" alt="" src="'+myImage+'" >';
-				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-						    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
-						        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
-						        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
-								var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
-								for (var j = 0; j < media_arr.length; j++) {								
-									msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
-									msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
-								}
-						    }				        	        	
-				        }	
-				        msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '<br/>';				
- 						break;	
- 					case "top":	
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '<br/>';
- 					    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
- 						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
- 						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-				        var parts = myImage.split('.'), i, l;
-				        var last = parts.length; 
-				        var mediaType = (parts[last - 1]);	
-				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-				        	msg += '<img class="print" alt="" src="'+myImage+'" >';
-				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-						    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
-						        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
-						        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
-								var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
-								for (var j = 0; j < media_arr.length; j++) {								
-									msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
-									msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
-								}
-						    }				        	        	
-				        }					        				
- 						break;	
- 					case "left":
- 						msg += '<br/><div class="contentHolder print">';
- 						msg += '<div class="contentLeft print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>' ;
- 						//msg += displayMedia(lessonTitle, i);
- 						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
- 						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-				        var parts = myImage.split('.'), i, l;
-				        var last = parts.length; 
-				        var mediaType = (parts[last - 1]);	
-				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-				        	msg += '<div class="mediaHolder print">';
-				        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
-				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-						    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
-						        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
-						        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
-								var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
-								for (var j = 0; j < media_arr.length; j++) {								
-									msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
-									msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
-								}
-						    }
-						    msg += '</div>';				        	        	
-				        }	
-				        msg += '</div>';				        				
- 						break;	
- 					case "right":
- 						msg += '<br/><div class="contentHolder print">';
- 						//msg += displayMedia(lessonTitle, i);
- 						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
- 						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-				        var parts = myImage.split('.'), i, l;
-				        var last = parts.length; 
-				        var mediaType = (parts[last - 1]);	
-				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-				        	msg += '<div class="mediaHolder print">';
-				        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
-				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-						    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
-						        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
-						        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
-								var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
-								for (var j = 0; j < media_arr.length; j++) {								
-									msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
-									msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
-								}
-						    }
-						    msg += '</div>';				        	        	
-				        }	
- 						msg += '<div class="contentRight print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>' ;				        
-				        msg += '</div>';	 
-				        break;					
- 					case "sidebar":	
- 						msg += '<br/><div class="contentHolder print">';
- 						msg += '<br/>' + '<div class="contentLeft print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>';
- 						msg += '<div id="sidebarHolder"><div id="sidebar" class="sidebar">'+$(data).find("page").eq(i).find("sidebar").first().text()+'</div></div></div>';
- 						break;
- 					case "clickImage":	
- 					case "revealRight":
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						var revealCount = $(data).find("page").eq(i).find("reveal").length;
- 						var mediaWidth = $(data).find("page").eq(i).attr('w');
-						var mediaHeight = $(data).find("page").eq(i).attr('h');
-						var labeled = false;
-						if($(data).find("page").eq(i).attr('labeled') == "true"){
-							labeled = true;
-						}
- 						for(var j = 0; j < revealCount; j++){
-							var currentImg = $(data).find("page").eq(i).find("reveal").eq(j).attr("img");
-							var tmpContent = $(data).find("page").eq(i).find("reveal").eq(j).find("content").text();
-							var tmpCaption = $(data).find("page").eq(i).find("reveal").eq(j).find("caption").text(); 	
-							msg += "<img src='"+coursePath + "/" + lessonTitle + "/media/"+currentImg+"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/>";	
-							if(labeled){
-								msg += "<div id='mediaLabel' class='mediaLabel'>"+$(data).find("page").eq(i).find("reveal").eq(j).attr("label")+"</div>";
-							}
-							msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
-							msg += '<br/>';										
- 						}
- 						break;
- 					case "tabsOnly":
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						var tabCount = $(data).find("page").eq(i).find("tab").length;
- 						for(var j = 0; j < tabCount; j++){
-							var currentTitle = $(data).find("page").eq(i).find("tab").eq(j).attr("title");
-							msg += '<h3>' + currentTitle + '</h3>';
-							var tmpContent = $(data).find("page").eq(i).find("tab").eq(j).text();
-							msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
-							msg += '<br/>';										
- 						}
- 						break;		
- 					case "tabsLeft":
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						msg += '<div class="contentLeft print" >';
- 						var tabCount = $(data).find("page").eq(i).find("tab").length;
- 						for(var j = 0; j < tabCount; j++){
-							var currentTitle = $(data).find("page").eq(i).find("tab").eq(j).attr("title");
-							msg += '<h3>' + currentTitle + '</h3>';
-							var tmpContent = $(data).find("page").eq(i).find("tab").eq(j).text();
-							msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
-							msg += '<br/>';										
- 						}
- 						msg += '</div>';//contentLeft print
- 						//msg += displayMedia(lessonTitle, i);
- 						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
- 						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-				        var parts = myImage.split('.'), i, l;
-				        var last = parts.length; 
-				        var mediaType = (parts[last - 1]);	
-				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-				        	msg += '<div class="mediaHolder print">';
-				        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
-				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-						    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
-						        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
-						        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
-								var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
-								for (var j = 0; j < media_arr.length; j++) {								
-									msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
-									msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
-								}
-						    }
-						    msg += '</div>';				        	        	
-				        } 						
- 						break;	 
- 					case "clickListRevealText":	
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						var revealCount = $(data).find("page").eq(i).find("reveal").length;
- 						for(var j = 0; j < revealCount; j++){
-							var tmpContent = $(data).find("page").eq(i).find("reveal").eq(j).find("content").text();
-							var tmpTitle = $(data).find("page").eq(i).find("reveal").eq(j).find("title").text(); 
-							msg += '<h3>' + tmpTitle + '</h3>';	
-							msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
-							msg += '<br/>';										
- 						}
- 						break;
- 					case "flashcard":
- 						msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
- 						var cardCount = $(data).find("page").eq(i).find("card").length;
- 						for(var j = 0; j < cardCount; j++){
-							var tmpTerm = $(data).find("page").eq(i).find("card").eq(j).find("term").text();
-							var tmpDefinition = $(data).find("page").eq(i).find("card").eq(j).find("definition").text(); 
-							msg += '<h3>' + tmpTerm + '</h3>';	
-							msg += 	tmpDefinition.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
-							msg += '<br/>';										
- 						}
- 						break; 						 																
- 					case "branching":
- 						msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						break;	
- 					case "pathing":	 
- 						msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						break;	
- 					case "chaining":
- 						msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
- 						break;		 					 						 						 						 								 							 							 						 							 													 					
-		 		}
-
-			 	msg += '<br clear="all"/><hr/>';
-				msg += '<div class="page-break"></div>';
-				msg += '</div>';//printPage div
-
-
-			}
-		    msg += '</div>';//close the printKeyPane
-
-		    msg += '</div>';//close the mv pane
-		    msg += '</div>';//close the dialog
-	        //ADD menu to stage
-	        $("#stage").append(msg);
-
-
-	        $("#dialog-print").dialog({
-	            modal: true,
-	            width: 1075,
-	            height: 768,
-	            resizable: false,
-	            close: function (event, ui) {
-	                socket.removeAllListeners('receiveCoursePath');
-	                socket.emit("closeTool", {
-	                	id : courseID,
-	                	tool : 'print'
-	                });
-	                module_arr = [];
-	                $(this).dialog('destroy').remove();
-	            },
-	            open: function (event, ui) {
-
-	            },
-	            buttons: [
-					{
-						text: "Print",
-						title: "Prints the lesson .",
-						click: function(){
-							$('#printPane').printThis({
-								//pageTitle:lessonTitle,
-								importStyle: true,
-								loadCSS: 'css/C_Print.css'
-							});
-						}
+						}								
 					}
-				]
-	        });			
-//		}
+	 				break;	
+ 				case 'sequence':
+	 				var optionCount = $(data).find("page").eq(i).find("option").length;
+					for(var j = 0; j < optionCount; j++){	
+						var optionOrder = j+1;
+						optionOrder = optionOrder.toString();
+						msg += $(data).find("page").eq(i).find("option[correct="+optionOrder+"]").find("content").text();
+						msg += '<br/>';
+					}		 					
+ 					break;
+ 				case 'textInput':
+ 					var questionCount = $(data).find("page").eq(i).find("question").length;
+ 					for (var j = 0; j < questionCount; j++) {
+ 						msg += '<hr style="border-top: dotted 2px;" />';
+ 						msg += 'Num Attempts - ' + $(data).find("page").eq(i).find("question").eq(j).attr('attempts') + '<br/>';
+ 						msg += '<br/>' + $(data).find("page").eq(i).find("question").eq(j).find('content').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+ 						var acceptedResponseCount = $(data).find("page").eq(i).find("question").eq(j).find("acceptedresponse").length;
+ 						msg += 'Accepted Responses : <br/>';
+ 						for (var k = 0; k < acceptedResponseCount; k++) {
+ 							msg += $(data).find("page").eq(i).find("question").eq(j).find('acceptedresponse').eq(k).text() + '<br/>';
+ 						}
+ 					}
+ 					break;	
+				case 'slider':
+					msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					msg += $(data).find("page").eq(i).find('slider').first().find('content').text()+ '<br/>';
+					msg += $(data).find("page").eq(i).find('slider').attr('correctanswer');
+					break;
+				case "essayCompare":	
+					msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					msg += '<h3>Expert Response</h3>';
+					msg += $(data).find("page").eq(i).find('correctresponse').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					break	 						
+				case "textOnly":	
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					break;	
+				case "completion":
+				case "graphicOnly":
+				case "bottom":
+				    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
+					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+			        var parts = myImage.split('.'), i, l;
+			        var last = parts.length; 
+			        var mediaType = (parts[last - 1]);	
+			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+			        	msg += '<img class="print" alt="" src="'+myImage+'" >';
+			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+					    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
+					        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
+					        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
+							var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
+							for (var j = 0; j < media_arr.length; j++) {	
+								//create a new page for every image in gallery
+								msg += splitPage($(data).find("page").eq(i).find('title').first().text());
+													
+								msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
+								msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
+							}
+					    }				        	        	
+			        }	
+			        msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '<br/>';				
+					break;	
+				case "top":	
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '<br/>';
+				    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
+					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+			        var parts = myImage.split('.'), i, l;
+			        var last = parts.length; 
+			        var mediaType = (parts[last - 1]);	
+			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+			        	msg += '<img class="print" alt="" src="'+myImage+'" >';
+			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+					    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
+					        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
+					        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
+							var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
+							for (var j = 0; j < media_arr.length; j++) {								
+								msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
+								msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
+							}
+					    }				        	        	
+			        }					        				
+					break;	
+				case "left":
+					msg += '<br/><div class="contentHolder print">';
+					msg += '<div class="contentLeft print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>' ;
+					//msg += displayMedia(lessonTitle, i);
+					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+			        var parts = myImage.split('.'), i, l;
+			        var last = parts.length; 
+			        var mediaType = (parts[last - 1]);	
+			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+			        	msg += '<div class="mediaHolder print">';
+			        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
+			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+					    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
+					        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
+					        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
+							var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
+							for (var j = 0; j < media_arr.length; j++) {								
+								msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
+								msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
+							}
+					    }
+					    msg += '</div>';				        	        	
+			        }	
+			        msg += '</div>';				        				
+					break;	
+				case "right":
+					msg += '<br/><div class="contentHolder print">';
+					//msg += displayMedia(lessonTitle, i);
+					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+			        var parts = myImage.split('.'), i, l;
+			        var last = parts.length; 
+			        var mediaType = (parts[last - 1]);	
+			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+			        	msg += '<div class="mediaHolder print">';
+			        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
+			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+					    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
+					        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
+					        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
+							var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
+							for (var j = 0; j < media_arr.length; j++) {								
+								msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
+								msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
+							}
+					    }
+					    msg += '</div>';				        	        	
+			        }	
+					msg += '<div class="contentRight print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>' ;				        
+			        msg += '</div>';	 
+			        break;					
+				case "sidebar":	
+					msg += '<br/><div class="contentHolder print">';
+					msg += '<br/>' + '<div class="contentLeft print" >' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>';
+					msg += '<div id="sidebarHolder"><div id="sidebar" class="sidebar">'+$(data).find("page").eq(i).find("sidebar").first().text()+'</div></div></div>';
+					break;
+				case "clickImage":	
+				case "revealRight":
+					msg += myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					var revealCount = $(data).find("page").eq(i).find("reveal").length;
+					var mediaWidth = $(data).find("page").eq(i).attr('w');
+					var mediaHeight = $(data).find("page").eq(i).attr('h');
+					var labeled = false;
+					if($(data).find("page").eq(i).attr('labeled') == "true"){
+						labeled = true;
+					}
+					
+					for(var j = 0; j < revealCount; j++){
+						var currentImg = $(data).find("page").eq(i).find("reveal").eq(j).attr("img");
+						var tmpContent = $(data).find("page").eq(i).find("reveal").eq(j).find("content").text();
+						var tmpCaption = $(data).find("page").eq(i).find("reveal").eq(j).find("caption").text();
+						msg += '<div class="contentHolder print reveal">';
+						msg += '<div class="mediaHolder print">'; 	
+						msg += "<img class=\"print part\" src='"+coursePath + "/" + lessonTitle + "/media/"+currentImg+"' width='"+ mediaWidth +"' height='"+ mediaHeight +"'/>";	
+						if(labeled){
+							msg += "<div id='mediaLabel' class='mediaLabel'>"+$(data).find("page").eq(i).find("reveal").eq(j).attr("label")+"</div>";
+						}
+						msg += '</div>';
+						msg += '<div class="contentRight print" >' + tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/") + '</div>' ;	
+						msg += '</div>';					
+						msg += '<br/>';										
+					}
+
+			        
+					break;
+				case "tabsOnly":
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					var tabCount = $(data).find("page").eq(i).find("tab").length;
+					for(var j = 0; j < tabCount; j++){
+						//create a new page for every tab.
+						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
+
+						var currentTitle = $(data).find("page").eq(i).find("tab").eq(j).attr("title");				        			
+						msg += '<h3>' + currentTitle + '</h3>';	
+						var tmpContent = $(data).find("page").eq(i).find("tab").eq(j).text();											
+						msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");				
+									
+					}
+					break;		
+				case "tabsLeft":
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					msg += '<div class="contentLeft print" >';
+					var tabCount = $(data).find("page").eq(i).find("tab").length;
+					for(var j = 0; j < tabCount; j++){
+						var currentTitle = $(data).find("page").eq(i).find("tab").eq(j).attr("title");
+						msg += '<h3>' + currentTitle + '</h3>';
+						var tmpContent = $(data).find("page").eq(i).find("tab").eq(j).text();
+						msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+						msg += '<br/>';										
+					}
+					msg += '</div>';//contentLeft print
+					//msg += displayMedia(lessonTitle, i);
+					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+			        var parts = myImage.split('.'), i, l;
+			        var last = parts.length; 
+			        var mediaType = (parts[last - 1]);	
+			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+			        	msg += '<div class="mediaHolder print">';
+			        	msg += '<img class="print part"  alt="" src="'+myImage+'" >';
+			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+					    if($(data).find("page").eq(i).attr('popup') != "" && $(data).find("page").eq(i).attr('popup') != undefined){
+					        var media_arr = $(data).find("page").eq(i).attr('popup').split(",");
+					        var caption_arr = $(data).find("page").eq(i).attr('popcaps').split("!!!");
+							var alt_arr = $(data).find("page").eq(i).attr('popalt').split("!!!");
+							for (var j = 0; j < media_arr.length; j++) {								
+								msg += '<img class="print part" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +media_arr[j]+'" >';
+								msg += '<br/><div id="caption" class="print"> ' + caption_arr[j] + '</div><br/>';
+							}
+					    }
+					    msg += '</div>';				        	        	
+			        } 						
+					break;	 
+				case "clickListRevealText":	
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					var revealCount = $(data).find("page").eq(i).find("reveal").length;
+					for(var j = 0; j < revealCount; j++){
+						var tmpContent = $(data).find("page").eq(i).find("reveal").eq(j).find("content").text();
+						var tmpTitle = $(data).find("page").eq(i).find("reveal").eq(j).find("title").text(); 
+						msg += '<h3>' + tmpTitle + '</h3>';	
+						msg += 	tmpContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+						//msg += '<br/>';										
+					}
+					break;
+				case "flashcard":
+					msg += '<br/>' + myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+					var cardCount = $(data).find("page").eq(i).find("card").length;
+					for(var j = 0; j < cardCount; j++){
+						var tmpTerm = $(data).find("page").eq(i).find("card").eq(j).find("term").text();
+						var tmpDefinition = $(data).find("page").eq(i).find("card").eq(j).find("definition").text(); 
+						msg += '<h3>' + tmpTerm + '</h3>';	
+						msg += 	tmpDefinition.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
+						//msg += '<br/>';										
+					}
+					break; 						 																
+				case "branching":
+					msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					break;	
+				case "pathing":	 
+					msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					break;	
+				case "chaining":
+					msg += '<br/>' + $(data).find("page").eq(i).find('question').text().trim().replace(/<[\/]{0,1}(p)[^><]*>/ig,"") + '<br/>';
+					break;		 					 						 						 						 								 							 							 						 							 													 					
+	 		}
+
+			msg += '</div>';//printPage div
+			msg += '</div>'; //container div
+			$("#printPane").append(msg);
+
+		}
+
+		$('div[id="printPage"]').each(function() {
+		    var len = $(this).outerHeight();
+		    if (len >= 450) {
+		        var splitElements = getElementsAfterSplit($(this), 450);
+
+		        $(this).append(getFooter());
+
+		        var pageTitle = $(this).find('#pageTitle').html();
+		        splitElements.push(getFooter());
+		        $(this).parent().after($('<div class="print-container">'
+		        	+'<div id="print-header" class="print">'
+		        	+'<div id="logo" class="print"></div>'
+		        	+'<div id="title-block" class="print"><div id="header-space" class="print"></div>'
+		        	+'<div id="courseTitle" class="print">' + courseDisplayTitle + '</div>'
+		        	+'<div id="lessonTitle" class="print">' + lessonDisplayTitle + '</div>'
+		        	+'</div></div>'
+		        	+'<div id="printPage"><div id="pageTitle" class="print" role="heading">'+pageTitle+'</div>'
+		        	+'</div></div>').append(splitElements));
+
+		    }
+		    else{
+		    	//if footer already exists don't add one
+		    	if($(this).find('div[id="footer"]').length == 0){
+		    		$(this).append(getFooter());
+		    	}
+		    }
+		});		
+
+        $("#dialog-print").dialog({
+            modal: true,
+            width: 1075,
+            height: 768,
+            resizable: false,
+            close: function (event, ui) {
+                socket.removeAllListeners('receiveCoursePath');
+                socket.emit("closeTool", {
+                	id : courseID,
+                	tool : 'print'
+                });
+                module_arr = [];
+                $(this).dialog('destroy').remove();
+            },
+            open: function (event, ui) {
+
+            },
+            buttons: [
+				{
+					text: "Print",
+					title: "Prints the lesson .",
+					click: function(){
+						$('#printPane').printThis({
+							//pageTitle:lessonTitle,
+							importStyle: true,
+							loadCSS: 'css/C_Print.css'
+						});
+					}
+				}
+			]
+        });			
+
 
 		try{$("#preloadholder").remove();} catch(e){};
 
      }
 
+    function getElementsAfterSplit(item, h) {
+	    var st = 0; //st = space total
+	    var set = [];
+	    $(item).children().each(function(i, l) {
+	    	// console.log($(this));
+	    	// console.log($(this).height());
+	    	// console.log(st);
+	        if (st + $(this).height() <= h) {
+	            st = st + $(this).height();
+	        } else {
+	        	// console.log('Split ' + st);
+	            set.push($(this));
+	        }
+	    });
+	    return set;
+	}
+
+	function getFooter(){
+		//pageCount is impossible
+		//pageCount = pageCount + 1;
+    	var footer = '<br clear="all"/>';//<hr/>';
+		footer += '<div id="footer" class="print">Page </div>';
+		footer += '<hr/><div class="page-break"></div>';		
+		return footer;
+	}
+
+	function splitPage(_pageTitle){
+		var msg = '';
+		//end the previous print-container
+		msg += getFooter();			        
+        msg +='</div></div>';//end printPage end print-container	
+
+        msg += '<div class="print-container">';
+        msg +='<div id="print-header" class="print">';
+        msg +='<div id="logo" class="print"></div>';
+        msg +='<div id="title-block" class="print"><div id="header-space" class="print"></div>';
+        msg +='<div id="courseTitle" class="print">' + courseDisplayTitle + '</div>';
+        msg +='<div id="lessonTitle" class="print">' + lessonDisplayTitle + '</div>';
+        msg +='</div></div>';//end title-block //end print-header
+        msg +='<div id="printPage"><div id="pageTitle" class="print" role="heading">'+_pageTitle+'</div>';	
+        return msg;		
+	}
   //    function displayMedia(_lessonTitle, i){
   //    	var msg = '';
 		// var mediaLink = $(data).find("page").eq(i).attr('img');	 	
