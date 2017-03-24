@@ -8,15 +8,16 @@
 
 	@page {
 		size: letter landscape;
+		margin: 0.2cm;
 	}
 
-	@page :left {
-		margin: 0.3cm;
+/*	@page :left {
+		margin: 0.2cm;
 	}
 
 	@page :right {
-		margin: 0.8cm;
-	}
+		margin: 0.2cm;
+	}*/
 	
 	header nav, footer {
 		display: none;
@@ -45,7 +46,12 @@
 	    margin-right: auto;	
 	}
 
-	#pageTitle.print, #caption.print{
+/*	#pageTitle.print, #caption.print{
 		text-align: center;
+	}*/
+
+	#footer.print {
+	    position:fixed;bottom:0;
+	    width:100%;
 	}
 }
