@@ -633,7 +633,8 @@ function C_Print(_myItem, _myParent) {
 						$('#printPane').printThis({
 							//pageTitle:lessonTitle,
 							importStyle: true,
-							loadCSS: 'css/C_Print.css'
+							loadCSS: 'css/C_Print.css',
+							printDelay: 667,
 						});
 					}
 				}
