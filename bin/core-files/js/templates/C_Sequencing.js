@@ -190,7 +190,12 @@ function C_Sequencing(_type) {
 		}
 
 		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
+			// fade stage in
+       		$('#stage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength
+       		});
 		}
 		doAccess(pageAccess_arr, true);
 		
@@ -341,7 +346,14 @@ function C_Sequencing(_type) {
 						if(type == "matchingDrag"){
 							drops = 0;
 							for(var i=0; i<option_arr.length; i++){
-								TweenMax.to(option_arr[i], transitionLength, {css:{top:0, scaleX: 1, scaleY: 1, left:0}, ease:transitionType});
+								option_arr[i].velocity({
+									top: 0, 
+									scaleX: 1, 
+									scaleY: 1, 
+									left: 0
+								}, {
+									duration: transitionLength
+								});
 								option_arr[i].unbind("mouseenter mouseleave");
 							}
 							drop_arr = [];
@@ -733,7 +745,13 @@ function C_Sequencing(_type) {
 
 
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		// fade stage out
+		$('#stage').velocity({
+			opacity: 0
+		}, {
+			duration: transitionLength,
+			complete: fadeComplete()
+		});
     }
 
     this.fadeComplete = function(){

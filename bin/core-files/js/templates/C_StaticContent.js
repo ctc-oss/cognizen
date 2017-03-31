@@ -90,8 +90,13 @@ function C_StaticContent(_type) {
         if(type == "textOnly"){
             checkMode();
             if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
-            }
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
+             }
             doAccess(pageAccess_arr);
         }else if(type == "sidebar"){
         	if(isMobile){
@@ -113,7 +118,12 @@ function C_StaticContent(_type) {
 			}
             checkMode();
             if(transition == true){
-                TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
             }
             doAccess(pageAccess_arr);
         }else{
@@ -241,7 +251,13 @@ function C_StaticContent(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
     	if(transition == true){
-            TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			// fade stage out
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete()
+			});
 		}else{
             fadeComplete();
 		}

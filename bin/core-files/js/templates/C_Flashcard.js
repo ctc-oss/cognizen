@@ -143,7 +143,13 @@ function C_Flashcard(_type) {
 		$("#flashcardHolder").height($("#card0").height());
 
 		if(transition == true){
-			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
+			// fade stage in
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength,
+				complete: checkMode()
+			});
 		}else{
 			checkMode();
 		}
@@ -195,25 +201,38 @@ function C_Flashcard(_type) {
 				var initialPos = $(this).position().left;
 				var initialPosPercent = initialPos / cardHolderWidth * 100 + "%";
 
-				TweenMax.to($(this), .2, {rotationY:90, left:'50%', zIndex: myIndex, onComplete:function(target){
-					target.empty();
-					target.removeAttr("role");
-					tempID = "cardBackText" + myIndex;
-					target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</div>");
-					$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
-					target.addClass("flashcardBack");
-					target.css('left', 'auto');
-					if(isMobilePhone){
-						target.click(function(){
-							this.remove();
+				$(this).velocity({
+					rotationY: 90, 
+					left: '50%', 
+					zIndex: myIndex
+				}, {
+					duration: 200,
+					complete: function(target){
+						target.empty();
+						target.removeAttr("role");
+						tempID = "cardBackText" + myIndex;
+						target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</div>");
+						$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
+						target.addClass("flashcardBack");
+						target.css('left', 'auto');
+						if(isMobilePhone){
+							target.click(function(){
+								this.remove();
+							});
+						}
+						target.velocity({
+							rotationY: 0, 
+							right: initialPosPercent
+						}, {
+							duration: 200
+						});
+						$("#" + tempID).focus();
+						target.blur(function(){
+							$(this).attr("tabindex", "-1");
 						});
 					}
-					TweenMax.to(target, .2, {rotationY:0, right: initialPosPercent});
-					$("#" + tempID).focus();
-					target.blur(function(){
-						$(this).attr("tabindex", "-1");
-					});
-				}, onCompleteParams:[$(this)]});
+				});
+				
 				myIndex++;
 				cardClicks++;
 				if(currentCard == 0){
@@ -548,7 +567,13 @@ function C_Flashcard(_type) {
 
 	this.destroySelf = function() {
 	   if(transition == true){
-	   		TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			// fade stage out
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete()
+			});
 	   	}else{
 		   	fadeComplete();
 	   	}

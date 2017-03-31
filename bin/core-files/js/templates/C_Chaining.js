@@ -149,12 +149,22 @@ function C_Chaining(_type) {
 			$('#sidebar').attr('aria-label', $('#sidebar').text());
 
 			if(transition == true){
-	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
 			}
 
 		}else{
 		    if(transition == true){
-	            TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
 			}
 	    }
 
@@ -886,7 +896,13 @@ function C_Chaining(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
     	if(transition == true){
-            TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			// fade stage out
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete()
+			});
 		}else{
             fadeComplete();
 		}

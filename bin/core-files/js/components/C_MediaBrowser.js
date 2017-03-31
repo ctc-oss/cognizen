@@ -150,11 +150,24 @@ function toggleMediaBrowser(){
 		$("#mediaBrowserPane").append("<div id='mediaBrowserDisplay' class='mediaBrowserDisplay'></div>");
 		var displayWidth = $(".mediaBrowserDisplay").css("max-width");
 		var displayHeight = $(".mediaBrowserDisplay").css("max-height");
-		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: displayWidth, height: displayHeight}, ease:transitionType, onComplete: addDisplay});
+		// fade stage in
+		$('#mediaBrowserDisplay').velocity({
+			width: displayWidth, 
+			height: displayHeight
+		}, {
+			duration: transitionLength,
+			complete: addDisplay()
+		});
 	}else{
 		//Tween transcript closed then remove text
 		$("#mediaBrowserDisplay").empty();
-		TweenMax.to($('#mediaBrowserDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeMediaBrowserDisplay});
+		$('#mediaBrowserDisplay').velocity({
+			width: 0, 
+			height: 0
+		}, {
+			duration: transitionLength,
+			complete: removeMediaBrowserDisplay()
+		});
 		if(fromDialog){
 			fromDialog = false;
 			$(".ui-dialog").show();
@@ -882,7 +895,11 @@ function mediaBrowserLoadAudioPreview(_fp){
 
             player.addEventListener('loadeddata', function(e){
 	            $("#mediaBrowserPreview").removeClass("C_Loader");
-				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
+				$('#mediaBrowserPreviewMediaHolder').velocity({
+					opacity: 1
+				}, {
+					duration: 500
+				});
             }, false);
 
             player.addEventListener('loadedmetadata', function(e){
@@ -919,7 +936,11 @@ function mediaBrowserLoadVideoPreview(_fp){
 		        }
 				//tween fade in after loaded and positioned.
 				$("#mediaBrowserPreview").removeClass("C_Loader");
-				TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
+				$('#mediaBrowserPreviewMediaHolder').velocity({
+					opacity: 1
+				}, {
+					duration: 500
+				});
 			}, false);
 		}
 	});
@@ -935,7 +956,11 @@ function mediaBrowserLoadVideoPreview(_fp){
 function mediaBrowserLoadSWFPreview(_fp){
     $("#mediaBrowserPreviewMediaHolder").flash({swf:_fp,width:300,height:200});
     $("#mediaBrowserPreview").removeClass("C_Loader");
-    TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
+	$('#mediaBrowserPreviewMediaHolder').velocity({
+		opacity: 1
+	}, {
+		duration: 500
+	});
 }
 
 /**
@@ -967,7 +992,11 @@ function mediaBrowserLoadImagePreview(_fp){
 			$(img).height($(img).height() * heightScale);
 	        $("#mediaBrowserPreviewMediaHolder").append("<div class='mediaBrowserScaleWarning'>This media is being viewed at " + Math.floor(heightScale * 100) + "% to fit preview area.");
         }
-        TweenMax.to($('#mediaBrowserPreviewMediaHolder'), .5, {css:{opacity:1}, ease:transitionType});
+		$('#mediaBrowserPreviewMediaHolder').velocity({
+			opacity: 1
+		}, {
+			duration: 500
+		});
     }).attr('src', _fp).attr('id', 'myImage');
 }
 

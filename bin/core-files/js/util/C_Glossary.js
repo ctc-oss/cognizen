@@ -536,20 +536,37 @@ function toggleGlossary(){
 		glossaryState = true;
 		$("#glossaryTab").attr("aria-label", "click here to close content glossary currently open");
 //		gimmeGlosPos(); // moved to checkGlossary
-		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:0}, ease:transitionType});
+		$('#glossaryPane').velocity({
+			left: 0
+		}, {
+			duration: transitionLength
+		});
 		accShowGlossary();
 		$("#glossaryDef").focus();
 		if(isMobile){
 			// if tab is not against the left edge of the screen at start, tween it to the right edge of the pane when the pane opens
 			var tabPos = $('#glossaryPane').width();
-			TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:tabPos}, ease:transitionType});
+			$('#glossaryTab').velocity({
+				left: tabPos
+			}, {
+				duration: transitionLength
+			});
 		}
 	}
 	else{
 		// close
 		glossaryState = false;
-		TweenMax.to($('#glossaryPane'), transitionLength, {css:{left:glossaryClosePos}, ease:transitionType, onComplete:accHideGlossary});
-		TweenMax.to($('#glossaryTab'), transitionLength, {css:{left:glossaryTabPos}, ease:transitionType});
+		$('#glossaryPane').velocity({
+			left: glossaryClosePos
+		}, {
+			duration: transitionLength,
+			complete: accHideGlossary()
+		});
+		$('#glossaryTab').velocity({
+			left: glossaryTabPos
+		}, {
+			duration: transitionLength
+		});
 		$("#glossaryTab").attr("aria-label", "click here to open content glossary currently closed");
 	}
 }

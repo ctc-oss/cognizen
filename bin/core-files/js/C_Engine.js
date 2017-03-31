@@ -202,7 +202,7 @@ function initScripts(_data){
 		require([
 			//Funtionality/utilities
 					corePath +"js/libs/jqueryui/jquery-ui.min.js",
-					corePath +"js/libs/fancybox/jquery.fancybox.js",
+					corePath +"js/libs/jquery.magnific-popup.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities
 					corePath +"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 					corePath +"js/libs/overthrow.min.js",
@@ -210,7 +210,7 @@ function initScripts(_data){
 					ckAdapath,
 					corePath +"js/libs/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
 					corePath +"js/libs/mediaElement/mediaelement-and-player.js", //Our audio and video solution
-					corePath +"js/libs/greensock/TweenMax.min.js", //Our animation library.
+					corePath +"js/libs/velocity.min.js", //Our animation library.
 					corePath +"js/libs/jquery.swfobject.1-1-1.min.js", //Method to embed .swf files.
 					corePath +"js/libs/jquery.nestable.js",
 					corePath +"js/libs/jquery.browser.js",
@@ -268,10 +268,7 @@ function initScripts(_data){
 					corePath +"js/util/C_UtilFunctions.js",
 			//Give mouse super powers.
 					corePath +"js/libs/jquery.mousewheel-3.0.6.pack.js",
-					corePath +"js/libs/antiscroll.js",
-			//Lightbox for media popups and galleries.
-
-					corePath +"js/libs/fancybox/jquery.fancybox-thumbs.js"
+					corePath +"js/libs/antiscroll.js"
 		], loadStreamer);
 	}
 	if((ieUserAgent.renderVersion < 10) || (document.documentMode < 10)){

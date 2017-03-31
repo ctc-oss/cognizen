@@ -16,7 +16,7 @@ var currentTemplate;//Object representing the current template - many can have t
 var currentTemplateType;//String tracking the page type i.e. An instance of the most common template C_StaticContent() takes a type("left", "top", "text", "right", "bottom"). This allows one class to handle multiple layouts instead of creating much redundant code.
 var transition = false;//Boolean set in xml/preferences section - true - animated transitions  false - jump cut from page to page.
 var transitionType;
-var transitionLength = 1;
+var transitionLength = 1000;
 
 var pageCount = false;
 var currentPage = 0;//Integer representing the current page
@@ -304,7 +304,8 @@ function checkNav(){
 	if(transition == "true"){
 		transition = true;
 		transitionType = $(data).find('transitionType').attr('value');
-		transitionLength = $(data).find('transitionLength').attr('value');
+		transitionLength = $(data).find('transitionLength').attr('value') * 1000;  // new animation library needs transition length in ms, not seconds
+		console.log("transitionLength: " + transitionLength);
 	 }
 
 	 if(nextBack){

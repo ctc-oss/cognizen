@@ -320,7 +320,12 @@ function C_MultipleChoice(_type) {
 		}
 
 		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
+			// fade stage in
+       		$('#stage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength
+       		});
 		}
 		doAccess(pageAccess_arr);
 		if(isTimed && mode != "edit"){
@@ -1075,7 +1080,13 @@ function C_MultipleChoice(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		// fade stage out
+		$('#stage').velocity({
+			opacity: 0
+		}, {
+			duration: transitionLength,
+			complete: fadeComplete()
+		});
     }
 
     this.fadeComplete = function() {

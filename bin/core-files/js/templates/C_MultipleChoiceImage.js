@@ -87,7 +87,13 @@ function C_MultipleChoiceImage(_type) {
 		//needed to properly postion the options...  Some questions are longer than others... Question height registers as
 		//zero if invisible...
 		if(transition == true){
-			TweenMax.to($('#stage'), 1, {css:{opacity:1}, ease:Power2.easeIn, onComplete:placeOptions});
+			// fade stage in
+       		$('#stage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength,
+       			complete: placeOptions
+       		});
 		}
 	}
 	
@@ -190,7 +196,11 @@ function C_MultipleChoiceImage(_type) {
 			placemcSubmit();
 		}
 		if(transition == true){
-			TweenMax.to($("#answerOptionsImage"), 1, {css:{opacity:1}, ease:Power2.easeIn});
+       		$('#answerOptionsImage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength
+       		});
 		}
 	}
 	
@@ -339,7 +349,13 @@ function C_MultipleChoiceImage(_type) {
 	}
 	
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), 1, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		// fade stage out
+		$('#stage').velocity({
+			opacity: 0
+		}, {
+			duration: transitionLength,
+			complete: fadeComplete()
+		});
     }
     // fadeComplete() moved to C_UtilFunctions.js
 

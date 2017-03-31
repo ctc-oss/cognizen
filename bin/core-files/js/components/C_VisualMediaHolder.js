@@ -167,15 +167,27 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 	
 	function toggleTranscript(){
 		if(transcriptState){
-			//Tween transcript open then add text TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
 			$("#transcriptPane").append("<div id='transcriptDisplay' class='transcriptDisplay'></div>");
 			var displayWidth = $(".transcriptDisplay").css("max-width");
 			var displayHeight = $(".transcriptDisplay").css("max-height");
-			TweenMax.to($('#transcriptDisplay'), transitionLength, {css:{width: displayWidth, height: displayHeight}, ease:transitionType, onComplete: displayTranscriptText});
+			$('.transcriptDisplay').velocity({
+				width: displayWidth, 
+				height: displayHeight
+			}, {
+				duration: transitionLength,
+				complete: displayTranscriptText
+			});
 		}else{
 			//Tween transcript closed then remove text
 			$("#transcriptDisplay").empty();
-			TweenMax.to($('#transcriptDisplay'), transitionLength, {css:{width: 0, height: 0}, ease:transitionType, onComplete: removeTranscriptDisplay});
+			$('.transcriptDisplay').velocity({
+				width: 0, 
+				height: 0
+			}, {
+				duration: transitionLength,
+				complete: removeTranscriptDisplay
+			});
+
 		}
 	}
 	
@@ -526,132 +538,114 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     }
 
     function setupGallery(mediaType){
+    	var galleryItems_arr = [];
 		var tempItem;
 		var tempCaption;
+		var itemType;
+
 		if(largeImg != ""){
-			tempItem = "media/" + largeImg;
-			tempCaption = myCaption;
-		}else{
-			tempItem = "media/" + media_arr[0];
-			tempCaption = caption_arr[0];
-		}
-		var hasSWF = false;
-		var hasHTML = false;
-
-		var checkFile = tempItem.split('.'), i, l;
-        var last = checkFile.length;
-        var thisType = (checkFile[last - 1]);
-		if(thisType == "swf"){
-			hasSWF = true;
-		}
-		
-		if(thisType == "html"){
-			hasHTML = true;
+			// add enlargement and caption to beginning of arrays
+			media_arr.unshift(largeImg);
+			caption_arr.unshift(myCaption.trim());
 		}
 
-		var mediaPopString = "<div id='myImgList' class='imglist'><a id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' href='"+tempItem+"' title='click to view enlarged media'><img src='"+tempItem+"' style='opacity: 0; width: 10px; height: 10px;' title='click to view enlarged media' alt='Click to view gallery.' /></a>";
+		var mediaPopString = "<div id='myImgList' class='imglist'><div id='mediaPop' rel='mediaPop' class='mediaPop'  tabindex='1' title='click to view enlarged media'></div>";
 
-		if(media_arr.length > 0){
-			mediaPopString += "<span style='display:none;'>";
-			var startPoint;
-			if(largeImg == ""){
-				startPoint = 1;
+		for(var i = 0; i < media_arr.length; i++){
+			var thisType = getExtension(media_arr[i]).toUpperCase();
+			if(thisType == "JPG" || thisType == "PNG" || thisType == "SVG" || thisType == "GIF"){
+				itemType = "image";
+			}else if(thisType == "MP4" || thisType == "SWF"){
+				itemType = "inline";
 			}else{
-				startPoint = 0;
+				itemType = "iframe";
+			}
+
+			var item = {
+				src: "media/" + media_arr[i],
+				title: caption_arr[i],
+				type: itemType
+			};
+			
+			if(thisType == "MP4"){
+				var count = i + 1;
+				item.src = 	'<div class="mfp-video-holder">'+
+								'<button title="Close (Esc)" type="button" class="mfp-close">×</button>'+
+								'<video id="videoplayer" class="mejs-player" controls preload="auto">'+
+									'<source type="video/mp4" src="media/' + media_arr[i] + '">'+
+								'</video>'+
+								'<div class="mfp-bottom-bar">'+
+									'<div class="mfp-title">' + item.title + '</div>'+
+									'<div class="mfp-counter">' + count + ' of ' + media_arr.length + '</div>'+
+								'</div>'+
+							'</div>';
+			}else if(thisType == "SWF"){
+				$("body").data("swf-path", "media/" + media_arr[i]);
+				var count = i + 1;
+				item.src = 	'<div class="mfp-video-holder">'+
+								'<button title="Close (Esc)" type="button" class="mfp-close">×</button>'+
+								'<div id="swf-popup"></div>'+
+								'<div class="mfp-bottom-bar">'+
+									'<div class="mfp-title">' + item.title + '</div>'+
+									'<div class="mfp-counter">' + count + ' of ' + media_arr.length + '</div>'+
+								'</div>'+
+							'</div>';
 			}
 			
-			//$("#stage").append( "<div id='acc_gallery' class='acc-skipIndex'></div>");
-			for(var i = startPoint; i < media_arr.length; i++){
-				//var accID = "acc" + i;
-				//$("#acc_gallery").append("<div id='"+accID+"' aria-label='Picture Alt Text: "+alt_arr[i]+" With a Caption reading:"+caption_arr[i]+"'></div>");
-				//pageAccess_arr.push($("#"+accID));
-				if(hasHTML){
-					mediaPopString += "<a rel='mediaPop' class='iframe' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
-				}else{
-					mediaPopString += "<a rel='mediaPop' data-fancybox-group='gallery' href='media/"+ media_arr[i] + "' title='"+ caption_arr[i] + "'></a>";
-				}
-				var checkFile = media_arr[i].split('.'), i, l;
-		        var last = checkFile.length;
-		        var thisType = (checkFile[last - 1]);
-				if(thisType == "swf"){
-					hasSWF = true;
-				}
-				
-				if(thisType == "html"){
-					hasHTML = true;
-				}
-			}
-			mediaPopString += "</span>";
+			galleryItems_arr.push(item);
 		}
 
-		mediaPopString += "</div>";
 		$(mediaPopString).insertAfter("#loader");
 		pageAccess_arr.push($("#mediaPop"));
-		if(!hasSWF && !hasHTML){
-			$("[rel='mediaPop']").fancybox({
-				caption : {
-					type : 'inside'
+
+		$("[rel='mediaPop']").magnificPopup({
+			items: galleryItems_arr,
+			closeOnContentClick: false,
+			mainClass: 'mfp-with-zoom mfp-img-mobile',
+			image: {
+				verticalFit: true//,
+			},
+			iframe: {
+				// add caption and page number, which are not included in iframe markup by default
+				markup: '<div class="mfp-iframe-scaler">'+
+							'<div class="mfp-close"></div>'+
+							'<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'+
+							'<div class="mfp-bottom-bar" style="margin-top:3px;">'+
+								'<div class="mfp-title" style="position:absolute;"></div>'+
+								'<div class="mfp-counter"></div>'+
+							'</div>'+
+						'</div>' 
+			},
+			gallery: {
+				enabled: true, 
+				preload: [0,1], 
+				navigateByImgClick: false
+			},
+			callbacks: {
+				change: function(){
+					console.log("currItem:  " + this.currItem.src);
+					// get file extension
+					var thisType = getExtension(this.currItem.src).toUpperCase();
+					if(thisType.indexOf("MP4") >= 0){
+						findVideoSize(0);
+					}else if(thisType.indexOf("SWF") >= 0){
+						var swfPath = $("body").data("swf-path");
+						console.log(swfPath);
+						setTimeout(loadSWF, 50, swfPath);
+					}
 				},
-				openEffect  : 'elastic',
-				closeEffect : 'elastic',
-				nextEffect  : galleryTransitionType,
-				prevEffect  : galleryTransitionType,
-				loop		: popLoop,
-				maxHeight	: 768,
-				maxWidth	: 1024,
-				helpers : {
-					title : tempCaption,
-					thumbs: {
-						width  : 50,
-	                  	height : 50,
-	                  	source  : function(current) {
-		                    return $(current.element).data('thumbnail');
-		                }
+/*				close: function(){
+					try{
+						// pause and remove mediaelementplayer
+						player.pause();
+						player.remove();
+					}
+					catch(err) {
+						console.log("No video player.  " + err);
 					}
 				}
-			});
-		}
-
-		if(hasSWF){
-
-			$("[rel='mediaPop']").fancybox({
-				caption : {
-				type : 'inside'
-				},
-				openEffect  : 'elastic',
-				closeEffect : 'elastic',
-				nextEffect  : galleryTransitionType,
-				prevEffect  : galleryTransitionType,
-				loop		: popLoop,
-				maxHeight	: 768,
-				maxWidth	: 1024,
-				helpers : {
-					title : tempCaption,
-					thumbs: {
-						width  : 50,
-	                  	height : 50,
-	                  	source  : function(current) {
-		                    return $(current.element).data('thumbnail');
-		                }
-					}
-				},
-				width	:  	parseInt($(data).find("page").eq(currentPage).attr('w')),
-				height 	:	parseInt($(data).find("page").eq(currentPage).attr('h'))
-			});
-		}
-		
-		if(hasHTML){
-			console.log("hasHTML")
-			$("[rel='mediaPop']").fancybox({
-				'width'         : '75%',
-			    'height'        : '75%',
-			    'autoScale'     : false,
-			    'transitionIn'  : 'none',
-			    'transitionOut' : 'none',
-			    'type'          : 'iframe'
-			});
-		}
-		
+*/			}
+		});
 		if(!hasTouch){
 			$("#myImgList").tooltip();
 		}
@@ -666,6 +660,33 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		    }
         });
 	}
+
+
+
+	function loadSWF(swfPath){
+		// swf is not being properly sized
+    	$("#swf-popup").flash(swfPath);
+    	$('.mfp-video-holder').width( $("#swf-popup object").width() );
+    }
+    
+    
+           				
+	function findVideoSize(attempts) {
+		var vidWidth = $('.mfp-video-holder #videoplayer').width();
+		if(vidWidth > 0) {
+			$('.mfp-video-holder').width(vidWidth);
+			$('.mfp-video-holder #videoplayer').mediaelementplayer();
+		} else {
+			if(attempts < 20) {
+				attempts++;
+				setTimeout(findVideoSize, 50, attempts);
+			} else {
+				console.log("unable to find video dimensions");
+			}
+		}
+	}
+	
+        
 
 	function setCaption(){
         if(rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
@@ -698,7 +719,12 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		})
 
 		if(transition == true && type != "completion"){
-        	TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			// fade stage in
+       		$('#stage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength
+       		});
         }
 
         if(type == "top" || type == "bottom"){

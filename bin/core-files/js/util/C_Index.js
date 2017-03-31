@@ -710,7 +710,11 @@ function toggleIndex(){
 		closeGlossary(); // close glossary if it's open
 		indexState = true;
 //		gimmeIndexPos(); // moved to checkIndex
-		TweenMax.to($('#indexPane'), transitionLength, {css:{left:0}, ease:transitionType});
+		$('#indexPane').velocity({
+			left: 0
+		}, {
+			duration: transitionLength
+		});
 		$("#C_Index").css("visibility", "visible");
 		$("#searchTerm").css("visibility", "visible");
 		$("#searchButton").css("visibility", "visible");
@@ -720,7 +724,12 @@ function toggleIndex(){
 	else{
 		// close
 		indexState = false;
-		TweenMax.to($('#indexPane'), transitionLength, {css:{left:indexClosePos}, ease:transitionType, onComplete:accHideIndex});
+		$('#indexPane').velocity({
+			left: indexClosePos
+		}, {
+			duration: transitionLength,
+			complete: accHideIndex()
+		});
 		if(mode != "edit"){
 			$("#pageTitle").focus();
 		}

@@ -142,24 +142,46 @@ function C_Reveal(_type) {
 			if(interact == "click"){
 				//HOVER FUNCITONALITY FOR CLICK INTERACT
 				$("#"+revID).hover(function(){
-					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:$(this).width() + 20}, ease:transitionType});
+					if(type == "revealRight" || type == "revealLeft"){
+						$(this).velocity({
+							width: $(this).width() + 20
+						}, {
+							duration: transitionLength
+						});
 					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).height() + 20}, ease:transitionType});
+						$(this).velocity({
+							height: $(this).height() + 20
+						}, {
+							duration: transitionLength
+						});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).height() + 20, top: $(this).position().bottom + 20}, ease:transitionType});
-					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:$(this).width() + 20}, ease:transitionType});
+						$(this).velocity({
+							height: $(this).height() + 20, 
+							top: $(this).position().bottom + 20
+						}, {
+							duration: transitionLength
+						});
 					}
 				},function(){
-					if(type == "revealRight"){
-						TweenMax.to($(this), transitionLength, {css:{width:$(this).data("myWidth")}, ease:transitionType});
+					if(type == "revealRight" || type == "revealLeft"){
+						$(this).velocity({
+							width: $(this).data("myWidth")
+						}, {
+							duration: transitionLength
+						});
 					}else if(type == "revealBottom"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).data("myHeight")}, ease:transitionType});
+						$(this).velocity({
+							height: $(this).data("myHeight")
+						}, {
+							duration: transitionLength
+						});
 					}else if (type == "revealTop"){
-						TweenMax.to($(this), transitionLength, {css:{height:$(this).data("myHeight"), bottom: $(this).data("myTop")}, ease:transitionType});
-					}else if (type == "revealLeft"){
-						TweenMax.to($(this), transitionLength, {css:{width:$(this).data("myWidth")}, ease:transitionType});
+						$(this).velocity({
+							height: $(this).data("myHeight"),
+							bottom: $(this).data("myTop")
+						}, {
+							duration: transitionLength
+						});
 					}
 				//CLICK FUNCTIONALITY FOR CLICK INTERACT ----- ANIMATE THE OPENING
 				}).click(function(){
@@ -173,28 +195,18 @@ function C_Reveal(_type) {
 					$(this).unbind('mouseenter mouseleave click');
 					//REVEAL RIGHT CLICK
 					if(type == "revealRight" || type == "revealLeft"){
-						TweenMax.to(
-							$(this),
-							transitionLength,
-							{css:{width:"95%"},
-							ease:transitionType,
-							onComplete: showRevealText,
-							onCompleteParams:[
-								$(this).attr("id"),
-								$(this).data("myText")
-							]
+						$(this).velocity({
+							width: "95%"
+						}, {
+							duration: transitionLength,
+							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
 						});
 					}else if (type == "revealBottom" || "revealTop"){
-						TweenMax.to(
-							$(this),
-							transitionLength,
-							{css:{height:$("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100},
-							ease:transitionType,
-							onComplete: showRevealText,
-							onCompleteParams:[
-								$(this).attr("id"),
-								$(this).data("myText")
-							]
+						$(this).velocity({
+							height: $("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100
+						}, {
+							duration: transitionLength,
+							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
 						});
 					}
 				}).keypress(function(event) {
@@ -216,28 +228,18 @@ function C_Reveal(_type) {
 					}
 					$(this).unbind('mouseenter mouseleave');
 					if(type == "revealRight" || type == "revealLeft"){
-						TweenMax.to(
-							$(this),
-							transitionLength,
-							{css:{width:"95%"},
-							ease:transitionType,
-							onComplete: showRevealText,
-							onCompleteParams:[
-								$(this).attr("id"),
-								$(this).data("myText")
-							]
+						$(this).velocity({
+							width: "95%"
+						}, {
+							duration: transitionLength,
+							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
 						});
 					}else if (type == "revealBottom" || "revealTop"){
-						TweenMax.to(
-							$(this),
-							transitionLength,
-							{css:{height:$("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100},
-							ease:transitionType,
-							onComplete: showRevealText,
-							onCompleteParams:[
-								$(this).attr("id"),
-								$(this).data("myText")
-							]
+						$(this).velocity({
+							height: $("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100
+						}, {
+							duration: transitionLength,
+							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
 						});
 					}
 				});
@@ -251,7 +253,12 @@ function C_Reveal(_type) {
 
 		checkMode();
 		if(transition == true){
-			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			// fade stage in
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength
+			});
 		}
 
 		doAccess(pageAccess_arr);
@@ -302,7 +309,11 @@ function C_Reveal(_type) {
 			msg += "<div id='"+currentSelected+"Text' class='revealText antiscroll-inner' style='max-width: " + mediaWidth + "px;'>" + currentShowText + "</div></div></div>";
 		}
 
-		TweenMax.to($("#" + currentSelected + "Text"), transitionLength, {css:{opacity:1}, ease:transitionType});
+		$("#" + currentSelected + "Text").velocity({
+			opacity: 1
+		}, {
+			duration: transitionLength
+		});
 		$(this).scrubContent();
 
 		// if(isIE){
@@ -721,7 +732,13 @@ function C_Reveal(_type) {
     *****************************************************************************************************************************************************************************************************************/
     this.destroySelf = function() {
 	   if(transition == true){
-	   		TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			// fade stage out
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete()
+			});
 	   	}else{
 		   	fadeComplete();
 	   	}
