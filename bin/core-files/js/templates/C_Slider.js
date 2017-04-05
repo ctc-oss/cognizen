@@ -738,7 +738,7 @@ function C_Slider(_type) {
 			opacity: 0
 		}, {
 			duration: transitionLength,
-			complete: fadeComplete()
+			complete: fadeComplete
 		});
     }
 

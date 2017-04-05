@@ -201,7 +201,7 @@ function C_Unity3D(_type) {
 				opacity: 0
 			}, {
 				duration: transitionLength,
-				complete: fadeComplete()
+				complete: fadeComplete
 			});
 	   	}else{
 		   	fadeComplete();
@@ -221,7 +221,7 @@ function C_Unity3D(_type) {
 					opacity: 1
 				}, {
 					duration: transitionLength,
-					complete: showCaptionEdit()
+					complete: showCaptionEdit
 				});
 			}
 		}

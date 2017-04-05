@@ -1165,7 +1165,7 @@ function C_Matching(_type) {
 			opacity: 0
 		}, {
 			duration: transitionLength,
-			complete: fadeComplete()
+			complete: fadeComplete
 		});
     }
 

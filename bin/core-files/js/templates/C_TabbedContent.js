@@ -173,7 +173,7 @@ function C_TabbedContent(_type) {
 					opacity: 1
 				}, {
 					duration: transitionLength,
-					complete: checkMode()
+					complete: checkMode
 				});
 			}else{
 				checkMode();
@@ -512,7 +512,7 @@ function C_TabbedContent(_type) {
 				opacity: 0
 			}, {
 				duration: transitionLength,
-				complete: fadeComplete()
+				complete: fadeComplete
 			});
 	   	}else{
 		   	fadeComplete();

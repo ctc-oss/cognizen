@@ -201,6 +201,7 @@ function initScripts(_data){
 		//GATHERING AND LOADING ALL OF THE ENGINE PARTS
 		require([
 			//Funtionality/utilities
+					corePath +"js/libs/jquery.min.js",
 					corePath +"js/libs/jqueryui/jquery-ui.min.js",
 					corePath +"js/libs/jquery.magnific-popup.js",
 					corePath +"js/libs/SCORM_API_wrapper.js", //SCORM capabilities

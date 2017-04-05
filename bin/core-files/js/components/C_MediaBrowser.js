@@ -156,7 +156,7 @@ function toggleMediaBrowser(){
 			height: displayHeight
 		}, {
 			duration: transitionLength,
-			complete: addDisplay()
+			complete: addDisplay
 		});
 	}else{
 		//Tween transcript closed then remove text
@@ -166,7 +166,7 @@ function toggleMediaBrowser(){
 			height: 0
 		}, {
 			duration: transitionLength,
-			complete: removeMediaBrowserDisplay()
+			complete: removeMediaBrowserDisplay
 		});
 		if(fromDialog){
 			fromDialog = false;

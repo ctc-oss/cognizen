@@ -728,7 +728,7 @@ function toggleIndex(){
 			left: indexClosePos
 		}, {
 			duration: transitionLength,
-			complete: accHideIndex()
+			complete: accHideIndex
 		});
 		if(mode != "edit"){
 			$("#pageTitle").focus();

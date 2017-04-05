@@ -1110,7 +1110,7 @@ function C_Branching(_type) {
 				opacity: 0
 			}, {
 				duration: transitionLength,
-				complete: fadeComplete()
+				complete: fadeComplete
 			});
 		}else{
             fadeComplete();

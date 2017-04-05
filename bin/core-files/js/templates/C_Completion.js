@@ -482,7 +482,7 @@ function C_Completion(_type) {
 				opacity: 1
 			}, {
 				duration: transitionLength,
-				complete: removeLoader()
+				complete: removeLoader
 			});
         }else{
 	        $(".C_Loader").remove();
@@ -941,7 +941,7 @@ function C_Completion(_type) {
 				opacity: 0
 			}, {
 				duration: transitionLength,
-				complete: fadeComplete()
+				complete: fadeComplete
 			});
 		}else{
             fadeComplete();

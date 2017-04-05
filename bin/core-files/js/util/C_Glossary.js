@@ -560,7 +560,7 @@ function toggleGlossary(){
 			left: glossaryClosePos
 		}, {
 			duration: transitionLength,
-			complete: accHideGlossary()
+			complete: accHideGlossary
 		});
 		$('#glossaryTab').velocity({
 			left: glossaryTabPos

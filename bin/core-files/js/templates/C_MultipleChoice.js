@@ -1085,7 +1085,7 @@ function C_MultipleChoice(_type) {
 			opacity: 0
 		}, {
 			duration: transitionLength,
-			complete: fadeComplete()
+			complete: fadeComplete
 		});
     }
 

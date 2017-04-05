@@ -354,7 +354,7 @@ function C_MultipleChoiceImage(_type) {
 			opacity: 0
 		}, {
 			duration: transitionLength,
-			complete: fadeComplete()
+			complete: fadeComplete
 		});
     }
     // fadeComplete() moved to C_UtilFunctions.js

@@ -827,7 +827,7 @@ function C_Categories(_type) {
 			opacity: 0
 		}, {
 			duration: transitionLength,
-			complete: fadeComplete()
+			complete: fadeComplete
 		});
     }
     
