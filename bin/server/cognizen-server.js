@@ -828,7 +828,11 @@ var Content = {
 
             socket.on('removeMetadata', function(data){
                 SocketHandler.socket(socket).removeMetadata(data);
-            });                           
+            });    
+
+            socket.on('getResourcePackage', function (data){
+                SocketHandler.socket(socket).getResourcePackage(data);
+            });                                       
                               
         });
     });
