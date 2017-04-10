@@ -425,7 +425,7 @@ function C_Print(_myItem, _myParent) {
 					msg += '<br/>' + _myContent + '<br/>';
 
 					if($(data).find("page").eq(i).attr('enlarge') != undefined && $(data).find("page").eq(i).attr('enlarge') != "" && $(data).find("page").eq(i).attr('enlarge') != " "){
-				        var largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+				        var largeImg = $(data).find("page").eq(i).attr('enlarge');
 						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
 											
 						msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +largeImg+'" >';					        
@@ -464,7 +464,7 @@ function C_Print(_myItem, _myParent) {
 			        }	
 
 					if($(data).find("page").eq(i).attr('enlarge') != undefined && $(data).find("page").eq(i).attr('enlarge') != "" && $(data).find("page").eq(i).attr('enlarge') != " "){
-				        var largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+				        var largeImg = $(data).find("page").eq(i).attr('enlarge');
 						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
 											
 						msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +largeImg+'" >';					        
@@ -494,7 +494,7 @@ function C_Print(_myItem, _myParent) {
 			        msg += '</div>';//contentholder
 
 					if($(data).find("page").eq(i).attr('enlarge') != undefined && $(data).find("page").eq(i).attr('enlarge') != "" && $(data).find("page").eq(i).attr('enlarge') != " "){
-				        var largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+				        var largeImg = $(data).find("page").eq(i).attr('enlarge');
 						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
 											
 						msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +largeImg+'" >';					        
@@ -528,7 +528,7 @@ function C_Print(_myItem, _myParent) {
 			        msg += '</div>';//contentholder
 
 					if($(data).find("page").eq(i).attr('enlarge') != undefined && $(data).find("page").eq(i).attr('enlarge') != "" && $(data).find("page").eq(i).attr('enlarge') != " "){
-				        var largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+				        var largeImg = $(data).find("page").eq(i).attr('enlarge');
 						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
 											
 						msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +largeImg+'" >';					        
@@ -616,7 +616,7 @@ function C_Print(_myItem, _myParent) {
 					}
 					
 					if($(data).find("page").eq(i).attr('enlarge') != undefined && $(data).find("page").eq(i).attr('enlarge') != "" && $(data).find("page").eq(i).attr('enlarge') != " "){
-				        var largeImg = $(data).find("page").eq(currentPage).attr('enlarge');
+				        var largeImg = $(data).find("page").eq(i).attr('enlarge');
 						msg += splitPage($(data).find("page").eq(i).find('title').first().text());
 											
 						msg += '<img class="print" alt="" src="'+coursePath + "/" + lessonTitle + "/media/" +largeImg+'" >';					        
