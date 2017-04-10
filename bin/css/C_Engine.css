@@ -367,19 +367,24 @@ body{
 	padding: 6px;
 }
 
-table.userSelectTable tbody,
-table.userSelectTable thead,
-table.contentSelectTable tbody,
-table.contentSelectTable thead { display: block; }
+#dialog-assignUser table.userSelectTable tbody,
+#dialog-assignUser table.userSelectTable thead,
+#dialog-assignUser table.contentSelectTable tbody,
+#dialog-assignUser table.contentSelectTable thead { display: block; }
 
-table.userSelectTable tbody,
-table.contentSelectTable tbody {
+#dialog-assignUser table.userSelectTable tbody,
+#dialog-assignUser table.contentSelectTable tbody {
     height: 448px;
     overflow-y: auto;
     overflow-x: hidden;
+
 }
 
-th{
+#dialog-assignUser table{
+	border-collapse: inherit;
+}
+
+#dialog-assignUser th{
 	font-weight: lighter;
 	border-style:solid;
 	border-color: #CCCCCC;
@@ -388,7 +393,7 @@ th{
 	padding: 6px;
 }
 
-td{
+#dialog-assignUser td{
 	border-style:solid;
 	border-color: #EEEEEE;
 	border-radius: 6px;
@@ -884,10 +889,34 @@ TREE MENU STYLES
             border-radius: 3px;
 }
 
+.resource-holder{
+  	height: 100px;
+  	min-width: 300px;
+	background: url(images/playMedia.svg) center center no-repeat;
+	background-color: #ffffff;	
+}
+
+.resource-holder.audio{
+	height: 20px;
+  	min-width: 30px;
+  	float: right;
+}
+
+.resource-name{
+	text-align: center;
+}
+
+.resource-name.audio{
+	float: right;
+	height: 25px;
+}
+
 /*dashboard panes*/
 @media all {
     .page-break { display: none; }
 }
+
+#printPage a:after{content:" (" attr(href) ") ";font-size:0.8em;font-weight:normal;}
 
 .print-container{
 	position:relative;
@@ -971,7 +1000,7 @@ img.print.part{
 	text-align: center;
 }
 
-.contentHolder.print{
+.contentHolder.print, .matchingHolder.print{
 	float: left;
 }
 
@@ -1001,6 +1030,20 @@ img.print.part{
 	padding: 0px;
 	margin: 0px 0px 10px 10px;
 	float: left;
+}
+
+.options.print{
+	float: left; 
+	max-width: 510px;
+	width: 510px;
+	padding: 5px;
+}
+
+.answers.print{
+    float: right;
+    max-width: 500px;
+    width: 500px;
+    text-align: right;
 }
 
 /*.left{

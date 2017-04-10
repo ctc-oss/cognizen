@@ -8,16 +8,8 @@
 
 	@page {
 		size: letter landscape;
-		margin: 0.2cm;
+		margin: 0.2cm;	
 	}
-
-/*	@page :left {
-		margin: 0.2cm;
-	}
-
-	@page :right {
-		margin: 0.2cm;
-	}*/
 	
 	header nav, footer {
 		display: none;

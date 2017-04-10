@@ -18,7 +18,8 @@ var Utils = require('./cognizen-utils'),
     util = require('util'),
 	readdirp = require('readdirp'),
 	et = require('elementtree'),
-    redmine = require('./cognizen-redmine');//,
+    redmine = require('./cognizen-redmine'),
+    archiver = require('archiver');//,
 //    adl = require('adl-xapiwrapper');
 var _ = require("underscore");
 _.str = require('underscore.string');
@@ -3473,7 +3474,60 @@ var SocketHandler = {
                 }
             });
         }
-    },    
+    },
+
+    getResourcePackage: function (data){
+        var _this = this;
+
+        var lessonPath = path.normalize(data._mod.normPath + '/');
+        var contentPath = path.resolve(process.cwd(), lessonPath);
+        var mediaPath = lessonPath + '/media';
+        _this.logger.info("Media Dir : " + mediaPath);
+
+        readdirp(
+            { root: mediaPath,
+                directoryFilter: [],
+                fileFilter: [ '!.*' ] }
+            , function(fileInfo) {
+                //console.log("---------------------------------------------------------" + fileInfo);
+            }
+            , function (err, res) {
+                var outputFile = lessonPath + '/packages/'+data._mod.name+'PrintResources.zip';
+                var output = fs.createWriteStream(outputFile);
+                var archive = archiver('zip');
+
+                //fired when the archiver finalized is finished
+                output.on('close', function(){
+                    _this.logger.info("archiver has finalized. ");
+                    //callback(null, outputFile);
+                    _this._socket.emit('receiveResourcePackage', {
+                        path: outputFile,
+                        mod: data._mod
+                    });                    
+                });
+
+                archive.on('error', function(err) {
+                    _this.logger.error(err);
+                    _this._socket.emit('generalError', {title: 'Generating SCORM Course', message: err});                    
+
+                });
+
+                archive.pipe(output);
+                //builds the cognizen directory
+                res.files.forEach(function(file) {
+                    var localFile = file.path.replace(/\\/g,"/");
+                    if(localFile.indexOf('index.html')){
+                        var inputFile = mediaPath + '/' + localFile;
+                        archive.append(fs.createReadStream(inputFile), { name: localFile });
+                    }
+                });
+
+                archive.finalize();
+
+            }
+        );
+
+    },        
 
     publishContent: function (data, callback){
         var _this = this;
