@@ -185,7 +185,9 @@ function C_Categories(_type) {
 				opacity: 1
 			}, {
 				duration: transitionLength,
-				complete: placeQuestion(currentQuestion)
+				complete: function(){
+					placeQuestion(currentQuestion);
+				}
 			});
 		}else{
 			placeQuestion(currentQuestion);
@@ -252,7 +254,9 @@ function C_Categories(_type) {
 				opacity: 0
 			}, {
 				duration: 2000,
-				complete: fadeDisplayResult(_selection)
+				complete: function(){
+					fadeDisplayResult(_selection);
+				}
 			});
 		}else{
 			question_arr[cycleQuestion].correct = false;
@@ -265,7 +269,9 @@ function C_Categories(_type) {
 				opacity: 0
 			}, {
 				duration: 2000,
-				complete: fadeDisplayResult(_selection)
+				complete: function(){
+					fadeDisplayResult(_selection);
+				}
 			});
 		}
 		$('#displayResult').velocity({
@@ -281,7 +287,9 @@ function C_Categories(_type) {
 			opacity: 0
 		}, {
 			duration: 500,
-			complete: removeDisplayResult(_selection)
+			complete: function(){
+				removeDisplayResult(_selection);
+			}
 		});
 	}
 	
