@@ -199,14 +199,18 @@ function C_Reveal(_type) {
 							width: "95%"
 						}, {
 							duration: transitionLength,
-							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
+							complete: function(){
+								showRevealText( $(this).attr("id"), $(this).data("myText") );
+							}
 						});
 					}else if (type == "revealBottom" || "revealTop"){
 						$(this).velocity({
 							height: $("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100
 						}, {
 							duration: transitionLength,
-							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
+							complete: function(){
+								showRevealText( $(this).attr("id"), $(this).data("myText") );
+							}
 						});
 					}
 				}).keypress(function(event) {
@@ -232,14 +236,18 @@ function C_Reveal(_type) {
 							width: "95%"
 						}, {
 							duration: transitionLength,
-							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
+							complete: function(){
+								showRevealText( $(this).attr("id"), $(this).data("myText") );
+							}
 						});
 					}else if (type == "revealBottom" || "revealTop"){
 						$(this).velocity({
 							height: $("#stage").height() - $("#contentHolder").position().top - $("#imgPalette").position().top - 100
 						}, {
 							duration: transitionLength,
-							complete: showRevealText( $(this).attr("id"), $(this).data("myText") )
+							complete: function(){
+								showRevealText( $(this).attr("id"), $(this).data("myText") );
+							}
 						});
 					}
 				});

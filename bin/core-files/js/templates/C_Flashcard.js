@@ -128,7 +128,7 @@ function C_Flashcard(_type) {
 				}
 			}
 
-			$("#" + tempID).css({'left': leftPos + i*0.4 + '%'});
+			$("#" + tempID).css({'left': leftPos + i*0.5 + '%'});
 			//Postion the text within the card.
 			$("#" + tempTextID).css({'top': ($("#" + tempID).height() - $("#"+tempTextID).height())/2});
 
@@ -148,7 +148,7 @@ function C_Flashcard(_type) {
 				opacity: 1
 			}, {
 				duration: transitionLength,
-				complete: checkMode()
+				complete: checkMode
 			});
 		}else{
 			checkMode();
@@ -200,28 +200,30 @@ function C_Flashcard(_type) {
 				// calculate new left position in percent
 				var initialPos = $(this).position().left;
 				var initialPosPercent = initialPos / cardHolderWidth * 100 + "%";
+				var centerPos = (cardHolderWidth - $(this).width()) / 2 + "px";
 
 				$(this).velocity({
-					rotationY: 90, 
-					left: '50%', 
+					rotateY: '90deg', 
+					left: centerPos, 
 					zIndex: myIndex
 				}, {
 					duration: 200,
-					complete: function(target){
+					complete: function(){
+						var target = $(this);
 						target.empty();
 						target.removeAttr("role");
 						tempID = "cardBackText" + myIndex;
 						target.append("<div id='"+tempID+"' class='cardText'>"+target.data("myDef")+"</div>");
 						$("#" + tempID).css({'top': (target.height() - $("#" + tempID).height())/2});
 						target.addClass("flashcardBack");
-						target.css('left', 'auto');
+						target.css({'left': 'auto', 'right': centerPos});
 						if(isMobilePhone){
 							target.click(function(){
 								this.remove();
 							});
 						}
 						target.velocity({
-							rotationY: 0, 
+							rotateY: '0deg', 
 							right: initialPosPercent
 						}, {
 							duration: 200
