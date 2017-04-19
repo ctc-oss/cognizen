@@ -673,8 +673,16 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
            				
 	function findVideoSize(attempts) {
 		var vidWidth = $('.mfp-video-holder #videoplayer').width();
+		
 		if(vidWidth > 0) {
+			containerWidth = $('.mfp-content').width();
+			if(vidWidth > containerWidth){
+				// video is too wide, need to scale it down
+				vidWidth = containerWidth * 0.9;
+			}
 			$('.mfp-video-holder').width(vidWidth);
+			$('.mfp-video-holder #videoplayer').width('100%');
+			$('.mfp-video-holder #videoplayer').height('100%');
 			$('.mfp-video-holder #videoplayer').mediaelementplayer();
 		} else {
 			if(attempts < 20) {
@@ -686,7 +694,7 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 		}
 	}
 	
-        
+
 
 	function setCaption(){
         if(rootType != 'branching'  && rootType != "pathing" && rootType != "chaining"){
