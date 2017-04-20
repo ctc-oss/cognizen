@@ -665,8 +665,14 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 	function loadSWF(swfPath){
 		// swf is not being properly sized
-    	$("#swf-popup").flash(swfPath);
-    	$('.mfp-video-holder').width( $("#swf-popup object").width() );
+		var containerWidth = $('.mfp-wrap').width() * 0.86;
+		var containerHeight = $('.mfp-wrap').height() * 0.84;
+		$(".mfp-video-holder").width(containerWidth);
+    	$("#swf-popup").flash({
+    		swf: swfPath,
+    		width: containerWidth,
+    		height: containerHeight
+    	});
     }
     
     
