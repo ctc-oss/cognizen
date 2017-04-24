@@ -992,7 +992,14 @@ function C_QuestionBank(_type) {
 		});
 
 	    $(function () {
+	        $('.questionBankItem').tooltip({
+				  position: {
+				    my: "center bottom",
+				    at: "right top"
+				  }
+				});	    	
 	        $(document).tooltip();
+
 	    });
 	}
 
