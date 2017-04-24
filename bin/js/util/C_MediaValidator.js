@@ -224,11 +224,13 @@ function C_MediaValidator(_myItem, _myParent) {
 		     	msg = '<div id="dialog-mv" title="Media Validator (Beta) : '+ searchTitle + ':">';
 			    msg += '<div id="mvPane" class="pane">'
 			    msg += '<div id="mediaValidatorPane" class="paneContent">';
-			    //msg += '<h3>Preferences</h3>';
+
 			    msg += '<div id="allGood"></div>';
-			    var helpUrl = $(data).find('help').attr("url");
-			    var icon = validateMedia(helpUrl) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
-			    msg += 'help url : ' + helpUrl + " " + icon;
+			    if($(data).find('help').attr('value') === 'true'){
+				    var helpUrl = $(data).find('help').attr("url");
+				    var icon = validateMedia(helpUrl) !== true ? '<img src="css/images/wrong.png"/>' : '<img src="css/images/correct.png"/>';
+				    msg += 'help url : ' + helpUrl + " " + icon;
+				}
 			    msg += '<hr/>';
 
 				for(var i = 0; i < totalPages; i++){
