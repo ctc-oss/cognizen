@@ -178,6 +178,7 @@ function initScripts(_data){
 	//LOADING IN ALL OF THE EXTERNAL JS FILES
 	require([	//Already included in require.js
 				//Funtionality
+				"js/libs/jquery.min.js",
 				"js/libs/jqueryui/jquery-ui.min.js", //Theming engine.
 				"js/libs/jquery.ui.touch-punch.min.js", //Adds touch drag to touchscreen devices.
 				"js/libs/socket.io/socket.io.min.js",
@@ -204,8 +205,7 @@ function initScripts(_data){
 				"js/libs/jquery.corner.js",
 				"js/libs/printThis.js",
 				//Lightbox for media popups and galleries.
-				"js/libs/fancybox/jquery.fancybox.js",
-				"js/libs/fancybox/jquery.fancybox-thumbs.js",
+				"js/libs/jquery.magnific-popup.js",
 				"js/libs/antiscroll.js",
 				"js/libs/jquery.mousewheel-3.0.6.pack.js",
 				"js/libs/xapiwrapper.min.js"

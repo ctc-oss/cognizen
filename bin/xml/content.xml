@@ -5,7 +5,7 @@
 			<mode value="prod"/>
 			<transition value="true"/>
 			<transitionType value="Power2.easeIn"/>
-			<transitionLength value=".5"/>
+			<transitionLength value="500"/>
 			<contentX value="0"/>
 			<contentY value="71"/>
 			<contentW value="1024"/>

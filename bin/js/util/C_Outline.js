@@ -2587,23 +2587,25 @@ function C_Outline(_myItem) {
 			if(pageTypeExamples[i].type == mediaType){
 				for(var j = 0; j < pageTypeExamples[i].images.length; j++){
 					var tempObj = new Object();
-					tempObj.href = "media/examples/"+ pageTypeExamples[i].images[j];
+					tempObj.src = "media/examples/"+ pageTypeExamples[i].images[j];
 					tempObj.title = mediaType + " example";
 					img_arr.push(tempObj);
 				}
 
-				$.fancybox.open(img_arr, {
-			        padding : 0,
-			        caption : {
-						type : 'inside'
+				$.magnificPopup.open({
+					items: img_arr,
+					type: 'image',
+					closeOnContentClick: false,
+					mainClass: 'mfp-with-zoom mfp-img-mobile',
+					image: {
+						verticalFit: true
 					},
-					openEffect  : 'elastic',
-					closeEffect : 'elastic',
-					nextEffect  : 'elastic',
-					prevEffect  : 'elastic',
-					maxHeight	: 1024,
-					maxWidth	: 768
-			    });
+					gallery: {
+						enabled: true, 
+						preload: [0,1], 
+						navigateByImgClick: false
+					}
+				});
 
 			    return false;
 

@@ -199,8 +199,7 @@ function initScripts(_data){
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",
 				//Lightbox for media popups and galleries.
-				"js/libs/fancybox/jquery.fancybox.js",
-				"js/libs/fancybox/jquery.fancybox-thumbs.js",
+				"js/libs/jquery.magnific-popup.js",
 				"js/libs/antiscroll.js",
 				"js/libs/jquery.mousewheel-3.0.6.pack.js",
 				"js/libs/xapiwrapper.min.js"

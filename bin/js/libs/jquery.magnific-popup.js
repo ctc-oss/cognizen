@@ -370,7 +370,7 @@ MagnificPopup.prototype = {
 			}
 
 			// Trap the focus in popup
-			_document.on('focusin' + EVENT_NS, mfp._onFocusIn);
+//			_document.on('focusin' + EVENT_NS, mfp._onFocusIn);
 
 		}, 16);
 
