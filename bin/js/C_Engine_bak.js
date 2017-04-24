@@ -187,7 +187,7 @@ function initScripts(_data){
 				"js/libs/pretty-data.js",
 				"js/libs/jquery.alphanum.js",
 				"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
-				"js/libs/greensock/TweenMax.min.js", //Our animation library.
+				"js/libs/velocity.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
 				"js/templates/C_LMSDash.js",

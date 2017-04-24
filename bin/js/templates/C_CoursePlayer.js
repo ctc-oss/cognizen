@@ -173,7 +173,11 @@ function C_CoursePlayer(_course) {
     
 	    //Once everything is loaded - fade page in.
         if (transition == true) {
-            TweenMax.to($stage, transitionLength, {css: {opacity: 1}, ease: transitionType});
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength
+			});
         }
     }
 
@@ -183,7 +187,12 @@ function C_CoursePlayer(_course) {
         //Called from C_Engine.js - allows for transitions - fade the page first then load the new.
     this.destroySelf = function () {
         if (transition == true) {
-            TweenMax.to($('#stage'), transitionLength, {css: {opacity: 0}, ease: transitionType, onComplete: fadeComplete});
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete
+			});
         } else {
             fadeComplete();
         }
