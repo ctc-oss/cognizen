@@ -405,22 +405,24 @@ function C_Print(_myItem, _myParent) {
 				case "completion":
 				case "graphicOnly":
 				case "bottom":
-				    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
-					var mediaLink = $(data).find("page").eq(i).attr('img');	 	
-					var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
-			        var parts = myImage.split('.'), i, l;
-			        var last = parts.length; 
-			        var mediaType = (parts[last - 1]);	
-			        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
-			        	msg += '<img class="print" alt="" src="'+myImage+'" >';
-			        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
-			        }
-			        else{
-			        	resources_arr.push(mediaLink);			        	
-			        	msg += '<div class="resource-holder"></div><br/>';
-			        	msg += '<div class="resource-name">['+ resources_arr.length + '] ' +  mediaLink + '</div>';
-			        }	
-
+					var withMedia = $(data).find("page").eq(i).attr('withmedia');
+					if(withMedia != 'false'){
+					    msg += '<div id="graphicHolder" class="antiscroll-wrap"><div class="box"><div id="mediaHolder" class="antiscroll-inner"> <div id="loader" class="loading" alt="' + $(data).find("page").eq(i).attr('alt') + '"></div></div></div></div>';
+						var mediaLink = $(data).find("page").eq(i).attr('img');	 	
+						var myImage = coursePath + "/" + lessonTitle + "/media/" + mediaLink;
+				        var parts = myImage.split('.'), i, l;
+				        var last = parts.length; 
+				        var mediaType = (parts[last - 1]);	
+				        if(mediaType != 'swf' && mediaType != 'html' && mediaType != 'htm' && mediaType != 'mp4' && mediaType != 'youtube'){
+				        	msg += '<img class="print" alt="" src="'+myImage+'" >';
+				        	msg += '<br/><div id="caption" class="print"> ' + $(data).find("page").eq(i).find('caption').first().text() + '</div><br/>';
+				        }
+				        else{
+				        	resources_arr.push(mediaLink);			        	
+				        	msg += '<div class="resource-holder"></div><br/>';
+				        	msg += '<div class="resource-name">['+ resources_arr.length + '] ' +  mediaLink + '</div>';
+				        }	
+					}
 					var _myContent = myContent.replace(/media/g, coursePath + "/" + lessonTitle + "/media/");
 					msg += '<br/>' + _myContent + '<br/>';
 
