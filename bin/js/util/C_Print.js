@@ -662,6 +662,7 @@ function C_Print(_myItem, _myParent) {
 				case "pathing":	 
 				case "chaining":
 					//TODO
+					msg += 'Under construction! At this time the Print functionality does not support this template.';
 					break;		 					 						 						 						 								 							 							 						 							 													 					
 	 		}
 
