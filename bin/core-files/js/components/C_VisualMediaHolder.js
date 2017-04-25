@@ -49,7 +49,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     var transcriptState = false;
 
 	var galleryEdit_arr = [];
-	var galleryTransitionType = "elastic";
 	var myCaption = $(data).find("page").eq(currentPage).find('caption').first().text();
 
 	var favoriteTypes = ["mp4", "swf", "jpg", "png", "html", "htm", "gif", "jpeg", "mp3", "svg"];
@@ -94,11 +93,6 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 
 	if($(data).find("page").eq(currentPage).attr('autoplay') == "true"){
 		autoPlay = true;
-	}
-	if($(data).find("page").eq(currentPage).attr("galTransType")){
-		galleryTransitionType = $(data).find("page").eq(currentPage).attr("galTransType");
-	}else{
-		$(data).find("page").eq(currentPage).attr("galTransType", galleryTransitionType);
 	}
 	
 	if($(data).find("page").eq(currentPage).find('visualtranscript').text() != undefined && $(data).find("page").eq(currentPage).find('visualtranscript').text() != ""){
@@ -792,16 +786,8 @@ function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
 					msg += "<div id='inputTranscript' type='text' contenteditable='true' class='dialogInput'>" + transcriptText + "</div>";
 					msg += "<label id='label' title='Selecting sets gallerys to loop (when reaching end and hitting next, go to first).'>loop gallery: </label>";
 					msg += "<input id='isLoop' type='checkbox' name='enableGalleryLoop' class='radio' value='true'/>";
-					msg += "<label id='label' title='Select the gallery transition type.' for='galTranType'>gallery transition type: </label>";
-					msg += "<select id='galTranType' name='galTranType'>";
-					msg += "<option>elastic</option>";
-					msg += "<option>fade</option>";
-					msg += "<option>none</option>";
-					msg += "</select>";
 	            	msg += "<br/><br/></div>";
 	            	$("#stage").append(msg);
-	            	
-	            	$("#galTranType").val(galleryTransitionType);
 					
 	                if(largeImg == ""){
 						$("#isEnlargeable").removeAttr('checked');

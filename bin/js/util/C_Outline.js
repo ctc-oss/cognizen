@@ -1397,48 +1397,8 @@ function C_Outline(_myItem) {
      	msg += "<option>production</option>";
      	msg += "<option>review</option>";
      	msg += "<option>edit</option>";
-     	msg += "</select><br/>"
+     	msg += "</select><br/><br/>";
 		msg += "<div><b>Transitions:</b></div>";
-     	msg += "<label for='transition'>set tranition type: </label>";
-     	msg += "<select name='transition' id='transition'>";
-     	msg += "<option>none</option>";
-     	msg += "<option>Back.easeIn</option>";
-     	msg += "<option>Back.easeInOut</option>";
-     	msg += "<option>Back.easeOut</option>";
-     	msg += "<option>Bounce.easeIn</option>";
-     	msg += "<option>Bounce.easeInOut</option>";
-     	msg += "<option>Bounce.easeOut</option>";
-     	msg += "<option>Circ.easeIn</option>";
-     	msg += "<option>Circ.easeInOut</option>";
-     	msg += "<option>Circ.easeOut</option>";
-     	msg += "<option>Ease.easeIn</option>";
-     	msg += "<option>Ease.easeInOut</option>";
-     	msg += "<option>Ease.easeOut</option>";
-     	msg += "<option>Elastic.easeIn</option>";
-     	msg += "<option>Elastic.easeInOut</option>";
-     	msg += "<option>Elastic.easeOut</option>";
-     	msg += "<option>Expo.easeIn</option>";
-     	msg += "<option>Expo.easeInOut</option>";
-     	msg += "<option>Expo.easeOut</option>";
-     	msg += "<option>Linear.easeIn</option>";
-     	msg += "<option>Linear.easeInOut</option>";
-     	msg += "<option>Linear.easeOut</option>";
-     	msg += "<option>Quad.easeIn</option>";
-     	msg += "<option>Quad.easeInOut</option>";
-     	msg += "<option>Quad.easeOut</option>";
-     	msg += "<option>Quart.easeIn</option>";
-     	msg += "<option>Quart.easeInOut</option>";
-     	msg += "<option>Quart.easeOut</option>";
-     	msg += "<option>Quint.easeIn</option>";
-     	msg += "<option>Quint.easeInOut</option>";
-     	msg += "<option>Quint.easeOut</option>";
-     	msg += "<option>Sine.easeIn</option>";
-     	msg += "<option>Sine.easeInOut</option>";
-     	msg += "<option>Sine.easeOut</option>";
-     	msg += "<option>Strong.easeIn</option>";
-     	msg += "<option>Strong.easeInOut</option>";
-     	msg += "<option>Strong.easeOut</option>";
-     	msg += "</select> ";
      	msg += "<label for='transitionDuration'>transition duration (s): </label>";
         msg += '<input type="text" name="transitionDuration" id="transitionDuration" value="'+ $(module_arr[_id].xml).find('transitionLength').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<br/><br/>";
@@ -1499,7 +1459,6 @@ function C_Outline(_myItem) {
 	    //Set module settings.
 	    //Mode
 		$("#mode option:contains(" + $(module_arr[_id].xml).find('mode').attr("value") + ")").attr('selected', 'selected');
-		$("#transition").val($(module_arr[_id].xml).find('transitionType').attr("value"));
 
 		//set restartOnFail
 		if($(module_arr[_id].xml).find('restartOnFail').attr("value") === "true"){
@@ -1627,18 +1586,6 @@ function C_Outline(_myItem) {
 	    $("#mode").on("change", function(){
 		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
 		    updateModuleXML(_id);
-	    });
-
-	    $("#transition").on("change", function(){
-		    $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
-		    if($("#transition").val() == "none"){
-				$(module_arr[_id].xml).find('transition').attr("value", false);
-		    }else{
-				$(module_arr[_id].xml).find('transition').attr("value", true);
-				$(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
-		    }
-		    updateModuleXML(_id);
-
 	    });
 
 	    $("#transitionDuration").on("change", function(){
