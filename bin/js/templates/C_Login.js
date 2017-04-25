@@ -169,7 +169,11 @@ function C_Login(_type) {
 
 		//If transitions are true then fade the page in now that it is built.
 		if(transition == true){
-			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType});
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength
+			});
 		}
     }
 
@@ -409,7 +413,12 @@ function C_Login(_type) {
     //All classes have to have a destroySelf and fadeComplete to unload before the next page loads.
     this.destroySelf = function() {
 	   if(transition == true){
-	   		TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete
+			});
 	   	}else{
 		   	fadeComplete();
 	   	}

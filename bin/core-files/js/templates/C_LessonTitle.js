@@ -46,7 +46,13 @@ function C_LessonTitle(_type) {
 		audioHolder = new C_AudioHolder();
 		        
         if(transition == true){
-			TweenMax.to($('#stage'), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:checkMode});
+			// fade stage in
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength,
+				complete: checkMode
+			});
         }else{
         	checkMode();
         }
@@ -127,7 +133,13 @@ function C_LessonTitle(_type) {
     *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
     	if(transition == true){
-            TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:transitionType, onComplete:fadeComplete});
+			// fade stage out
+			$('#stage').velocity({
+				opacity: 0
+			}, {
+				duration: transitionLength,
+				complete: fadeComplete
+			});
 		}else{
             fadeComplete();
 		}

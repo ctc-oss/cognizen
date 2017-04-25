@@ -80,23 +80,23 @@ function C_Outline(_myItem) {
     var pageTypeExamples = [
 		{
 			"type" : "textOnly",
-			"images" : ["ex_textOnly.png", "ex_TextOnly1.png"]
+			"images" : ["ex_textOnly.png"]
 		},
 		{
 			"type" : "mediaOnly",
-			"images" : ["ex_graphicOnly.png", "ex_GraphicOnly_Video.png", "ex_GraphicOnly1.png"]
+			"images" : ["ex_graphicOnly.png"]
 		},
 		{
 			"type" : "textAboveMedia",
-			"images" : ["ex_TextTop.png", "ex_TextTop1.png", "ex_TextTop2.png",  "ex_TextTop3.png"]
+			"images" : ["ex_TextTop.png"]
 		},
 		{
 			"type" : "textLeftofMedia",
-			"images" : ["ex_TextLeft.png","ex_TextLeft1.png", "ex_TextLeft2.png", "ex_TextLeft3.png", "ex_TextLeft4.png", "ex_TextLeft5.png", "ex_TextLeft6.png",]
+			"images" : ["ex_TextLeft.png"]
 		},
 		{
 			"type" : "textRightofMedia",
-			"images" : ["ex_TextRight.png", "ex_TextRight_VideoLeft.png", "ex_TextRight1.png", "ex_TextRight2.png", "ex_TextRight3.png",]
+			"images" : ["ex_TextRight.png"]
 		},
 		{
 			"type" : "textBelowMedia",
@@ -108,39 +108,39 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "clickImageFullText",
-			"images" : ["ex_clickImage.png", "ex_ClickImage1.png", "ex_ClickImage2.png"]
+			"images" : ["ex_clickImage.png"]
 		},
 		{
 			"type" : "textAboveTabs",
-			"images" : ["ex_Tabs.png", "ex_Tabs_1.png", "ex_Tabs_1a.png", "ex_Tabs_2.png", "ex_Tabs_3.png", "ex_Tabs_A.png"]
+			"images" : ["ex_Tabs.png"]
 		},
 		{
 			"type" : "tabsLeftMediaRight",
-			"images" : ["ex_tabsLeft.png", "ex_TabsLeft1.png"]
+			"images" : ["ex_tabsLeft.png"]
 		},
 		{
 			"type" : "clickImageRevealText",
-			"images" : ["ex_revealRight.png", "ex_RevealRight1.png", "ex_RevealLeft_1A.png", "ex_RevealLeft_1B.png", "ex_RevealBottom0.png", "ex_RevealBottom.png", "ex_RevealBottom2.png"]
+			"images" : ["ex_revealRight.png"]
 		},
 		{
 			"type" : "flashcard",
-			"images" : ["ex_flashCards.png", "ex_FlashCards1.png", "ex_GraphicFlashCards.png"]
+			"images" : ["ex_FlashCards.png"]
 		},
 		{
 			"type" : "dragOrdering",
-			"images" : ["ex_sequence.png", "ex_Sequence1.png", "ex_Sequence2.png"]
+			"images" : ["ex_sequence.png"]
 		},
 		{
 			"type" : "multipleChoice",
-			"images" : ["ex_multipleChoice.png", "ex_MultipleChoice1.png", "ex_MultipleChoice2.png"]
+			"images" : ["ex_multipleChoice.png"]
 		},
 		{
 			"type" : "multipleChoiceMedia",
-			"images" : ["ex_MultipleChoiceMedia1.png", "ex_MultipleChoiceMedia2.png", "ex_MultipleChoiceMedia3.png", "ex_MultipleChoiceMedia4.png"]
+			"images" : ["ex_MultipleChoiceMedia.png"]
 		},
 		{
 			"type" : "matching",
-			"images" : ["ex_matching.png", "ex_MatchingMedia1.png", "ex_MatchingMedia2.png"]
+			"images" : ["ex_MatchingMedia1.png"]
 		},
 		{
 			"type" : "questionBank",
@@ -156,15 +156,15 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "inputExpertCompare",
-			"images" : ["ex_essayCompare.png", "ex_EssayCompare_Answers3.png"]
+			"images" : ["ex_EssayCompare_Answers.png"]
 		},
 		{
 			"type" : "clickListFullText",
-			"images" : ["ex_clickListRevealText.png", "ex_ClickListRevealText1.png"]
+			"images" : ["ex_clickListRevealText.png"]
 		},
 		{
 			"type" : "branchingDecisions",
-			"images" : ["Ex_Branching1.PNG", "Ex_Branching2.PNG", "Ex_Branching3.PNG", "Ex_Branching4.PNG", "Ex_Branching5.PNG", "Ex_Branching6.PNG", "Ex_Branching7.PNG", "Ex_Branching8.PNG", "Ex_Branching9.PNG"]
+			"images" : ["ex_Branching1.png", "ex_Branching2.png", "ex_Branching3.png", "ex_Branching4.png"]
 		},
 		{
 			"type" : "dragSlider",
@@ -172,11 +172,11 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "branchingPractice",
-			"images" : ["ex_Chaining.PNG", "ex_Chaining1.PNG", "ex_Chaining2.PNG"]
+			"images" : ["ex_Chaining.png", "ex_Chaining2.png", "ex_Chaining3.png", "ex_Chaining4.png", "ex_Chaining5.png"]
 		},
 		{
 			"type" : "branchingLinearPaths",
-			"images" : ["ex_Pathing1.png", "ex_Pathing2.png", "ex_Pathing3.png"]
+			"images" : ["ex_Pathing1.png", "ex_Pathing2.png", "ex_Pathing3.png","ex_Pathing4.png", "ex_Pathing5.png", "ex_Pathing6.png"]
 		}		
 
 	];
@@ -1397,48 +1397,8 @@ function C_Outline(_myItem) {
      	msg += "<option>production</option>";
      	msg += "<option>review</option>";
      	msg += "<option>edit</option>";
-     	msg += "</select><br/>"
+     	msg += "</select><br/><br/>";
 		msg += "<div><b>Transitions:</b></div>";
-     	msg += "<label for='transition'>set tranition type: </label>";
-     	msg += "<select name='transition' id='transition'>";
-     	msg += "<option>none</option>";
-     	msg += "<option>Back.easeIn</option>";
-     	msg += "<option>Back.easeInOut</option>";
-     	msg += "<option>Back.easeOut</option>";
-     	msg += "<option>Bounce.easeIn</option>";
-     	msg += "<option>Bounce.easeInOut</option>";
-     	msg += "<option>Bounce.easeOut</option>";
-     	msg += "<option>Circ.easeIn</option>";
-     	msg += "<option>Circ.easeInOut</option>";
-     	msg += "<option>Circ.easeOut</option>";
-     	msg += "<option>Ease.easeIn</option>";
-     	msg += "<option>Ease.easeInOut</option>";
-     	msg += "<option>Ease.easeOut</option>";
-     	msg += "<option>Elastic.easeIn</option>";
-     	msg += "<option>Elastic.easeInOut</option>";
-     	msg += "<option>Elastic.easeOut</option>";
-     	msg += "<option>Expo.easeIn</option>";
-     	msg += "<option>Expo.easeInOut</option>";
-     	msg += "<option>Expo.easeOut</option>";
-     	msg += "<option>Linear.easeIn</option>";
-     	msg += "<option>Linear.easeInOut</option>";
-     	msg += "<option>Linear.easeOut</option>";
-     	msg += "<option>Quad.easeIn</option>";
-     	msg += "<option>Quad.easeInOut</option>";
-     	msg += "<option>Quad.easeOut</option>";
-     	msg += "<option>Quart.easeIn</option>";
-     	msg += "<option>Quart.easeInOut</option>";
-     	msg += "<option>Quart.easeOut</option>";
-     	msg += "<option>Quint.easeIn</option>";
-     	msg += "<option>Quint.easeInOut</option>";
-     	msg += "<option>Quint.easeOut</option>";
-     	msg += "<option>Sine.easeIn</option>";
-     	msg += "<option>Sine.easeInOut</option>";
-     	msg += "<option>Sine.easeOut</option>";
-     	msg += "<option>Strong.easeIn</option>";
-     	msg += "<option>Strong.easeInOut</option>";
-     	msg += "<option>Strong.easeOut</option>";
-     	msg += "</select> ";
      	msg += "<label for='transitionDuration'>transition duration (s): </label>";
         msg += '<input type="text" name="transitionDuration" id="transitionDuration" value="'+ $(module_arr[_id].xml).find('transitionLength').attr("value") + '" class="text ui-widget-content ui-corner-all" /> ';
      	msg += "<br/><br/>";
@@ -1499,7 +1459,6 @@ function C_Outline(_myItem) {
 	    //Set module settings.
 	    //Mode
 		$("#mode option:contains(" + $(module_arr[_id].xml).find('mode').attr("value") + ")").attr('selected', 'selected');
-		$("#transition").val($(module_arr[_id].xml).find('transitionType').attr("value"));
 
 		//set restartOnFail
 		if($(module_arr[_id].xml).find('restartOnFail').attr("value") === "true"){
@@ -1627,18 +1586,6 @@ function C_Outline(_myItem) {
 	    $("#mode").on("change", function(){
 		    $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
 		    updateModuleXML(_id);
-	    });
-
-	    $("#transition").on("change", function(){
-		    $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
-		    if($("#transition").val() == "none"){
-				$(module_arr[_id].xml).find('transition').attr("value", false);
-		    }else{
-				$(module_arr[_id].xml).find('transition').attr("value", true);
-				$(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
-		    }
-		    updateModuleXML(_id);
-
 	    });
 
 	    $("#transitionDuration").on("change", function(){
@@ -2587,23 +2534,25 @@ function C_Outline(_myItem) {
 			if(pageTypeExamples[i].type == mediaType){
 				for(var j = 0; j < pageTypeExamples[i].images.length; j++){
 					var tempObj = new Object();
-					tempObj.href = "media/examples/"+ pageTypeExamples[i].images[j];
+					tempObj.src = "media/examples/"+ pageTypeExamples[i].images[j];
 					tempObj.title = mediaType + " example";
 					img_arr.push(tempObj);
 				}
 
-				$.fancybox.open(img_arr, {
-			        padding : 0,
-			        caption : {
-						type : 'inside'
+				$.magnificPopup.open({
+					items: img_arr,
+					type: 'image',
+					closeOnContentClick: false,
+					mainClass: 'mfp-with-zoom mfp-img-mobile',
+					image: {
+						verticalFit: true
 					},
-					openEffect  : 'elastic',
-					closeEffect : 'elastic',
-					nextEffect  : 'elastic',
-					prevEffect  : 'elastic',
-					maxHeight	: 1024,
-					maxWidth	: 768
-			    });
+					gallery: {
+						enabled: true, 
+						preload: [0,1], 
+						navigateByImgClick: false
+					}
+				});
 
 			    return false;
 

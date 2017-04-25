@@ -187,7 +187,7 @@ function initScripts(_data){
 				"js/libs/pretty-data.js",
 				"js/libs/jquery.alphanum.js",
 				"js/C_DynamicBackgroundImage.js", //Allows us to set an image background on all browsers
-				"js/libs/greensock/TweenMax.min.js", //Our animation library.
+				"js/libs/velocity.min.js", //Our animation library.
 				"js/templates/C_Login.js", //Secure login mechanism.
 				"js/templates/C_Dashboard.js",
 				"js/templates/C_LMSDash.js",
@@ -199,8 +199,7 @@ function initScripts(_data){
 				"js/libs/listorder-min.js",
 				"js/libs/jquery.corner.js",
 				//Lightbox for media popups and galleries.
-				"js/libs/fancybox/jquery.fancybox.js",
-				"js/libs/fancybox/jquery.fancybox-thumbs.js",
+				"js/libs/jquery.magnific-popup.js",
 				"js/libs/antiscroll.js",
 				"js/libs/jquery.mousewheel-3.0.6.pack.js",
 				"js/libs/xapiwrapper.min.js"

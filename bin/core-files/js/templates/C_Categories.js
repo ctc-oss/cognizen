@@ -110,7 +110,12 @@ function C_Categories(_type) {
 		
 		if(isComplete && mode != "edit"){
 			if(cycle){
-				TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
 				doPageCompleteCycle();
 			}else{
 				for(var k=0; k<questionResponse_arr.length; k++){
@@ -120,7 +125,12 @@ function C_Categories(_type) {
 						break;
 					}
 				}
-				TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
+				// fade stage in
+				$('#stage').velocity({
+					opacity: 1
+				}, {
+					duration: transitionLength
+				});
 				doPageCompleteNoCycle();
 			}
 		}else{
@@ -171,7 +181,14 @@ function C_Categories(_type) {
 		
 		
 		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType, onComplete:placeQuestion, onCompleteParams:[currentQuestion] });
+			$('#stage').velocity({
+				opacity: 1
+			}, {
+				duration: transitionLength,
+				complete: function(){
+					placeQuestion(currentQuestion);
+				}
+			});
 		}else{
 			placeQuestion(currentQuestion);
 		}
@@ -190,7 +207,13 @@ function C_Categories(_type) {
 		var myLabel = question_arr[_id].content;
 		$("#categoryOptionHolder").append("<div id='categoryOptionItem' class='categoryOptionItem' value='" + myCorrect + "'>"+myLabel+"</div>");
 		$("#categoryOptionItem").css({'top': ($("#categoryOptionHolder").height() - $("#categoryOptionItem").height())/2, 'transform':'scale(.1)', '-webkit-transform': 'scale(.1)', '-ms-transform':'scale(.1)', 'opacity': '0'});
-		TweenMax.to($("#categoryOptionItem"), 1, {css:{scaleX:1, scaleY:1, opacity: 1}});
+		$('#categoryOptionItem').velocity({
+			scaleX: 1, 
+			scaleY: 1, 
+			opacity: 1
+		}, {
+			duration: 1000
+		});
 		enableAnswerButtons();
 	}
 	
@@ -225,21 +248,49 @@ function C_Categories(_type) {
 			question_arr[cycleQuestion].correct = true;
 			_selection.addClass("categoryCorrect");
 			$("#displayResult").addClass("categoryDisplayCorrect");
-			TweenMax.to($("#categoryOptionItem"), 2, {css:{scaleX:4, scaleY:4, opacity: 0}, ease:transitionType, onComplete:fadeDisplayResult, onCompleteParams:[_selection]});
+			$('#categoryOptionItem').velocity({
+				scaleX: 4, 
+				scaleY: 4, 
+				opacity: 0
+			}, {
+				duration: 2000,
+				complete: function(){
+					fadeDisplayResult(_selection);
+				}
+			});
 		}else{
 			question_arr[cycleQuestion].correct = false;
 			$("#categoryTrackingMenuItem" + cycleQuestion).addClass("categoryTrackingMenuItemIncorrect");
 			_selection.addClass("categoryIncorrect");
 			$("#displayResult").addClass("categoryDisplayIncorrect");
-			TweenMax.to($("#categoryOptionItem"), 2, {css:{scaleX:.1, scaleY:.1, opacity: 0}, ease:transitionType, onComplete:fadeDisplayResult, onCompleteParams:[_selection]});
+			$('#categoryOptionItem').velocity({
+				scaleX: .1, 
+				scaleY: .1, 
+				opacity: 0
+			}, {
+				duration: 2000,
+				complete: function(){
+					fadeDisplayResult(_selection);
+				}
+			});
 		}
-		TweenMax.to($("#displayResult"), .5, {css:{opacity: 1}, ease:transitionType});
-		
+		$('#displayResult').velocity({
+			opacity: 1
+		}, {
+			duration: 500
+		});
 	}
 		
 	function fadeDisplayResult(_selection){
 		$("#categoryOptionItem").remove();
-		TweenMax.to($("#displayResult"), .5, {css:{opacity: 0}, ease:transitionType, onComplete:removeDisplayResult, onCompleteParams:[_selection]});
+		$('#displayResult').velocity({
+			opacity: 0
+		}, {
+			duration: 500,
+			complete: function(){
+				removeDisplayResult(_selection);
+			}
+		});
 	}
 	
 	function removeDisplayResult(_selection){
@@ -780,7 +831,12 @@ function C_Categories(_type) {
     ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     *****************************************************************************************************************************************************************************************************************/
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		$('#stage').velocity({
+			opacity: 0
+		}, {
+			duration: transitionLength,
+			complete: fadeComplete
+		});
     }
     
     this.fadeComplete = function() {

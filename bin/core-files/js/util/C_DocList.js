@@ -57,13 +57,20 @@ function toggleDoc(){
 	if(docState == false){
 		docState = true;
 		gimmeDocPos();
-		TweenMax.to($('#docPane'), transitionLength, {css:{left:0}, ease:transitionType});
-
+		$('#docPane').velocity({
+			left: 0
+		}, {
+			duration: transitionLength
+		});
 
 	}
 	else{
 		docState = false;
-		TweenMax.to($('#docPane'), transitionLength, {css:{left:docClosePos}, ease:transitionType});
+		$('#docPane').velocity({
+			left: docClosePos
+		}, {
+			duration: transitionLength
+		});
 
 	}
 }

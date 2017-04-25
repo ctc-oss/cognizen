@@ -235,7 +235,12 @@ function C_Matching(_type) {
 					activeClass: "ui-state-hover",
 					hoverClass: "ui-state-active",
 					start: function(event, ui){
-						TweenMax.to(ui.draggable, 1, {css:{scaleX:1, scaleY:1}, ease:Bounce.easeOut, duration: 0.5});
+						ui.draggable.velocity({
+							scaleX: 1, 
+							scaleY: 1
+						}, {
+							duration: 500
+						});
 					},
 					drop: function(event, ui){
 						var updateMove = false;
@@ -262,13 +267,28 @@ function C_Matching(_type) {
 						}
 						ui.draggable.hover(
 							function(){
-								TweenMax.to($(this), 1, {css:{scaleX:1, scaleY:1}, ease:Bounce.easeOut, duration: 0.5});
+								$(this).velocity({
+									scaleX: 1, 
+									scaleY: 1
+								}, {
+									duration: 500
+								});
 							},
 							function(){
-								TweenMax.to($(this), 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeIn, duration: 0.5});
+								$(this).velocity({
+									scaleX: .5, 
+									scaleY: .5
+								}, {
+									duration: 500
+								});
 							}
 						);
-						TweenMax.to(ui.draggable, 1, {css:{scaleX:.5, scaleY:.5}, ease:Bounce.easeOut, duration: 0.5});
+						ui.draggable.velocity({
+							scaleX: .5, 
+							scaleY: .5
+						}, {
+							duration: 500
+						});
 					}
 				});
 			}
@@ -323,7 +343,12 @@ function C_Matching(_type) {
 		}
 
 		if(transition == true){
-			TweenMax.to($("#stage"), transitionLength, {css:{opacity:1}, ease:transitionType});
+			// fade stage in
+       		$('#stage').velocity({
+       			opacity: 1
+       		}, {
+       			duration: transitionLength
+       		});
 		}
 
 		doAccess(pageAccess_arr);
@@ -390,7 +415,12 @@ function C_Matching(_type) {
 							(graded) ? $("#" + tempDrag).addClass("optionCorrectGraded") : $("#" + tempDrag).addClass("optionCorrect");
 						}
 						$("#" + tempDrag).css({"top":temp_arr[k].top, "left":temp_arr[k].left, "position":"absolute"});
-						TweenMax.to($("#" + tempDrag), 1, {css:{scaleX:.5, scaleY:.5}});
+						$("#" + tempDrag).velocity({
+							scaleX: .5, 
+							scaleY: .5
+						}, {
+							duration: 1000
+						});
 						$("#" + tempDrag).removeClass("ui-draggable");
 					}
 				}
@@ -588,7 +618,14 @@ function C_Matching(_type) {
 						if(type == "matchingDrag"){
 							drops = 0;
 							for(var i=0; i<option_arr.length; i++){
-								TweenMax.to(option_arr[i], transitionLength, {css:{top:0, scaleX: 1, scaleY: 1, left:0}, ease:transitionType});
+								option_arr[i].velocity({
+									top: 0, 
+									scaleX: 1, 
+									scaleY: 1, 
+									left: 0
+								}, {
+									duration: transitionLength
+								});
 								option_arr[i].unbind("mouseenter mouseleave");
 							}
 							drop_arr = [];
@@ -625,7 +662,14 @@ function C_Matching(_type) {
 						drops = 0;
 						var tempStatementY = 0;
 						for(var i=0; i<option_arr.length; i++){
-							TweenMax.to(option_arr[i], transitionLength, {css:{top:tempStatementY, scaleX: 1, scaleY: 1, left:0}, ease:transitionType});
+							option_arr[i].velocity({
+								top: tempStatementY, 
+								scaleX: 1, 
+								scaleY: 1, 
+								left: 0
+							}, {
+								duration: transitionLength
+							});
 							tempStatementY += option_arr[i].height() + 20;
 						}
 						drop_arr = [];
@@ -1116,7 +1160,13 @@ function C_Matching(_type) {
 
 
 	this.destroySelf = function() {
-		 TweenMax.to($('#stage'), transitionLength, {css:{opacity:0}, ease:Power2.easeIn, onComplete:fadeComplete});
+		// fade stage out
+		$('#stage').velocity({
+			opacity: 0
+		}, {
+			duration: transitionLength,
+			complete: fadeComplete
+		});
     }
 
     this.fadeComplete = function(){
