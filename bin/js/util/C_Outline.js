@@ -165,7 +165,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "branchingDecisions",
-			"images" : ["ex_Branching1.png", "ex_Branching2.png", "ex_Branching3.png", "ex_Branching4.png"]
+			"images" : ["ex_Branching1x.png", "ex_Branching2x.png", "ex_Branching3x.png", "ex_Branching4x.png"]
 		},
 		{
 			"type" : "dragSlider",
@@ -173,7 +173,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "branchingPractice",
-			"images" : ["ex_Chaining.png", "ex_Chaining2.png", "ex_Chaining3.png", "ex_Chaining4.png", "ex_Chaining5.png"]
+			"images" : ["ex_Chaining1x.png", "ex_Chaining2x.png", "ex_Chaining3.png", "ex_Chaining4.png", "ex_Chaining5.png"]
 		},
 		{
 			"type" : "branchingLinearPaths",
