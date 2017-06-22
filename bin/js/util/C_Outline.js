@@ -46,7 +46,7 @@ function C_Outline(_myItem) {
 	var pageType_arr = ["textOnly", "mediaOnly", "textAboveMedia", "textLeftofMedia", "textRightofMedia", "textBelowMedia", "sidebar", "clickImageFullText",
 	 "textAboveTabs", "tabsLeftMediaRight", "clickImageRevealText", "flashcard", "dragOrdering", "multipleChoice", "multipleChoiceMedia", "matching",
 	 "questionBank", "completion", "branchingDecisions", "branchingLinearPaths", "branchingPractice", "inputAnswer", "inputExpertCompare",
-	 "clickListFullText", "dragSlider"];
+	 "clickListFullText", "dragSlider", "multipleChoiceFancy"];
 
 	var templateNameMap = {};	
 	//#3600 Updated template names
@@ -76,6 +76,7 @@ function C_Outline(_myItem) {
 	templateNameMap[pageType_arr[22]] = 'essayCompare';
 	templateNameMap[pageType_arr[23]] = 'clickListRevealText';
 	templateNameMap[pageType_arr[24]] = 'slider';	
+	templateNameMap[pageType_arr[25]] = 'multipleChoiceFancy';
 
     var pageTypeExamples = [
 		{
@@ -144,7 +145,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "questionBank",
-			"images" : ["ex_multipleChoice.png"]
+			"images" : ["ex_questionBank.png"]
 		},
 		{
 			"type" : "completion",
@@ -177,6 +178,10 @@ function C_Outline(_myItem) {
 		{
 			"type" : "branchingLinearPaths",
 			"images" : ["ex_Pathing1.png", "ex_Pathing2.png", "ex_Pathing3.png","ex_Pathing4.png", "ex_Pathing5.png", "ex_Pathing6.png"]
+		},
+		{
+			"type" : "multipleChoiceFancy",
+			"images" : ["ex_multipleChoiceFancy.png"]
 		}		
 
 	];
