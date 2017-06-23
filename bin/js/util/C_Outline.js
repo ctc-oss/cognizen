@@ -165,7 +165,7 @@ function C_Outline(_myItem) {
 		},
 		{
 			"type" : "branchingDecisions",
-			"images" : ["ex_Branching1x.png", "ex_Branching2x.png", "ex_Branching3x.png", "ex_Branching4x.png"]
+			"images" : ["Ex_Branching1x.png", "Ex_Branching2x.png", "Ex_Branching3x.png", "Ex_Branching4x.png"]
 		},
 		{
 			"type" : "dragSlider",
