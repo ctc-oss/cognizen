@@ -934,13 +934,32 @@ var SocketHandler = {
 							etree = et.parse(_data);
 
 					        var root = etree.find('./');
+console.log("content._id : "+content._id);
+console.log("content.fromParentItem :" + content.fromParentItem);
+console.log("content.parentId : " + content.parentId);
+                            var myItem = root; 
+                            //if from content.fromParentItem true add to parent item
+                            if(content.fromParentItem == true){                                     
+                                var itemCount = etree.findall('./item').length;
+                                for (var i = 0; i < itemCount; i++) {
+                                    var myNode = etree.findall('./item')[i];
 
-					        var item = subElement(root, 'item');
+                                    var nodeId = myNode.get('id');
+                                    if(nodeId == content.parentId){
+                                        console.log("found item node : " + myNode);
+                                        myItem = myNode;
+                                        break;
+                                    }
+                                };
+                            }
+
+					        var item = subElement(myItem, 'item');
 					        item.set("name", content.name);
 					        item.set("id", content._id);
 	                        item.set("tlo", tloValue);
                             //item.set("coursedisplaytitle", content.name);
                             item.set("excludeFromPublish", 'false');
+                            item.set("parent", 'false');
 					        var sequencing = subElement(item, "sequencing");
 					        sequencing.set("choice", "true");
 					        sequencing.set("flow", "false");
@@ -1230,8 +1249,6 @@ var SocketHandler = {
             }
         });
     },
-
-    
 
     _createRedmineLesson: function(name, id, course, callback){
         var _this = this;

@@ -981,6 +981,7 @@ function C_Dashboard(_type) {
                 id: currentParent.attr('id')
             };
             content.parentName = parentString;
+            content.fromParentItem = false;
             socket.emit("registerLesson", content);
         }
 

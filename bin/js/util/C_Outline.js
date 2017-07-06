@@ -25,7 +25,9 @@ function C_Outline(_myItem) {
     ////////////////////////////////////////////////   MODULE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     var totalOutlineModules;									//Number of modules in course
     var loadedOutlineModules;									//Variable to track how many module xml files have been loaded.
-
+	var totalOutlineLessonModules;                              //Number of lesson modules in the course
+	var parent_arr = [];
+	var tempModule_arr = [];
 
     ////////////////////////////////////////////////   PAGE LEVEL VARIABLES   \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -202,6 +204,8 @@ function C_Outline(_myItem) {
     function refreshOutlineData(){
 	    if(refreshExpected == true){
 		   module_arr = [];
+		   tempModule_arr = [];
+		   parent_arr = [];
 		   indexItem_arr = [];
 		   loadedOutlineModules = 0;
 		   refreshExpected = false;
@@ -225,7 +229,9 @@ function C_Outline(_myItem) {
      ************************************************************************************/
      function initOutline(){
      	module_arr = [];
+     	tempModule_arr = [];
 		indexItem_arr = [];
+		parent_arr = [];
      	loadedOutlineModules = 0;
 		socket.emit("getCoursePath", {
         	content: {
@@ -265,25 +271,50 @@ function C_Outline(_myItem) {
      function importOutlineItems(_data){
 	     courseData = _data;
 	     totalOutlineModules = $(courseData).find("item").length;
+         totalOutlineLessonModules = $(courseData).find("item[parent='false']").length;	     
+
+	     //handles legacy course.xml
+	     if(totalOutlineLessonModules == 0){
+	     	totalOutlineLessonModules = totalOutlineModules;
+		 }
 
 	     if(totalOutlineModules > 0){
 	     	for(var y = 0; y < totalOutlineModules; y++){
-	     		 var moduleObj = new Object();
+	     		if($(courseData).find("item").eq(y).attr("parent") != 'true') {
+					var moduleObj = new Object();
 
-		 		 moduleObj.name = $(courseData).find("item").eq(y).attr("name");
-		 		 moduleObj.id = $(courseData).find("item").eq(y).attr("id");
-		 		 moduleObj.parent = courseID;
-		 		 moduleObj.parentDir = coursePath;
-		 		 moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
-		 		 moduleObj.xml = null;
-		 		 moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
-		 		 module_arr.push(moduleObj);
+					moduleObj.name = $(courseData).find("item").eq(y).attr("name");
+					moduleObj.id = $(courseData).find("item").eq(y).attr("id");
+					moduleObj.parent = courseID;
+					moduleObj.parentDir = coursePath;
+					moduleObj.path = coursePath + "/" +$(courseData).find("item").eq(y).attr("name");
+					moduleObj.xml = null;
+					moduleObj.xmlPath = ["/", encodeURIComponent($(courseData).find("item").eq(y).attr("name").trim()), "/xml/content.xml"].join("");
+					module_arr.push(moduleObj);
 
-		 		 var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
-		 		 importModuleXML(currentXML);
+					var currentXML = [coursePath, "/", encodeURIComponent($(courseData).find("item").eq(y).attr("name")), "/xml/content.xml"].join("");
+					importModuleXML(currentXML);
+		 		}
+                else{
+	     			//parent module list
+					var parentObj = new Object();
+                    parentObj.name = $(courseData).find("item").eq(y).attr("name");
+                    parentObj.id = $(courseData).find("item").eq(y).attr("id");
+                    parentObj.parent = courseID;
+                    parentObj.parentDir = coursePath;
+                    var numOfChildren = $(courseData).find("item").eq(y).find("item").length;
+                    parentObj.numChildren = numOfChildren;
+                    var childId_arr = [];
+                    for(var r = 0; r < numOfChildren; r++){
+						childId_arr.push($(courseData).find("item").eq(y).find("item").eq(r).attr("id"));
+					}
+					parentObj.children = childId_arr;
+					parent_arr.push(parentObj);
+				}		 		
 	     	}
+	     	buildOutlineInterface();
 		 }else{
-			 buildOutlineInterface();
+			buildOutlineInterface();
 		 }
      }
 
@@ -348,9 +379,16 @@ function C_Outline(_myItem) {
 		msg += '<ol class="dd-list">';
 
 	    //ADD MODULE and PAGES LEVEL  ----- Calls a separate function for cleanliness
-	    for(var i = 0; i < module_arr.length; i++){
-	     	msg += buildOutlineModule(i);
-     	}
+	    tempModule_arr = module_arr.slice();
+		if(parent_arr.length > 0){
+            for(var i = 0; i < parent_arr.length; i++){
+                msg += buildParentOutlineModule(parent_arr[i]);
+            }
+		}
+
+        for(var i = 0; i < tempModule_arr.length; i++){
+             msg += buildOutlineModule(i, tempModule_arr);
+        }
 
      	msg += '</ol></li></ol>';
      	msg += '</div>';
@@ -360,7 +398,6 @@ function C_Outline(_myItem) {
 	    msg += '</div>';//close the dialog
         //ADD menu to stage
         $("#stage").append(msg);
-
 
         //Apply nestable capabilities
         $('#C_Index').nestable({maxDepth: 4})
@@ -466,8 +503,12 @@ function C_Outline(_myItem) {
         //START WITH COURSE SELECTED
         $("#courseIndexHotspot").click();
 
+        if(parent_arr.length > 0) {
+        	addParentClicks();
+        }
+
         //MODULE BUTTON LISTENERS
-        addModuleClicks();
+        addModuleClicks(module_arr);
 
 		//Pages
 		addPageClicks();
@@ -475,35 +516,54 @@ function C_Outline(_myItem) {
 		try{$("#preloadholder").remove();} catch(e){};
      }
 
+     function buildParentOutlineModule(_parentObj){
+         console.log(parent_arr);
+         console.log(_parentObj);
+         var indexString = '<li id="'+_parentObj.id+'" class="dd-item dd3-item outlineModuleItem" data-id="'+ _parentObj.id +'">';
+         indexString += '<div class="dd-handle dd3-handle"></div>';
+         indexString += '<div id="parent'+ _parentObj.id + 'IndexHotspot" class="dd3-content" data-id="'+ _parentObj.id +'">'+ _parentObj.name +'</div>';
+         indexString += '<ol class="dd-list">';
+         for(var i = 0; i < _parentObj.numChildren; i++){
+         	//use module_arr to buildOutlineModule so module_arr stays intact
+         	var childIndex = getModuleIndex(_parentObj.children[i]);
+         	indexString += buildOutlineModule(childIndex, module_arr);
+
+         	var tempChildIndex = getTempModuleIndex(_parentObj.children[i]);
+         	tempModule_arr.splice(tempChildIndex, 1);
+		 }
+         indexString += '</ol></li>';
+         return indexString;
+	 }
+
      /*****************************************************************
      buildOutlineModule - builds the index for the module.
      Retruns a string representing the module and it's pages.
      Called for each module in buildOutlineInterface()
      *****************************************************************/
-     function buildOutlineModule(_id){
-	     var data = module_arr[_id].xml;
+     function buildOutlineModule(_id, _arr){
+	     var data = _arr[_id].xml;
 	     var thisID;
 		 var moduleIndexItem_arr = [];
 		 var totalPages = $(data).find('page').length;
-		 var indexString = '<li id="'+module_arr[_id].id+'" class="dd-item dd3-item outlineModuleItem" data-id="'+ module_arr[_id].id +'">';
-		 indexString += '<div class="dd-handle dd3-handle">Drag</div>';
-		 indexString += '<div id="module'+ _id + 'IndexHotspot" class="dd3-content" data-id="'+ module_arr[_id].id +'">'+$(data).find("lessonTitle").attr("value") +'</div>';
+		 var indexString = '<li id="'+_arr[_id].id+'" class="dd-item dd3-item outlineModuleItem" data-id="'+ _arr[_id].id +'">';
+		 indexString += '<div class="dd-handle dd3-handle"></div>';
+		 indexString += '<div id="module'+ _arr[_id].id  + 'IndexHotspot" class="dd3-content" data-id="'+ _arr[_id].id +'">'+$(data).find("lessonTitle").attr("value") +'</div>';
 		 indexString += '<ol class="dd-list">';
 		 for(var i = 0; i < totalPages; i++){
-		 	thisID = "module"+ _id + "indexMenuItem" + i;
+		 	thisID = "module"+ _arr[_id].id + "indexMenuItem" + i;
 		 	var pageID = $(data).find("page").eq(i).attr("id");
 		 	indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+pageID+'">';
-			indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			indexString += '<div class="dd-handle dd3-handle"></div>';
 			indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div>';
 			moduleIndexItem_arr.push("#" + thisID);
 		 	if($(data).find("page").eq(i).find("page").length){
 		 		indexString += '<ol class="dd-list">';
 
 		 		for(var j = 0; j < $(data).find("page").eq(i).find("page").length; j++){
-			 		thisID = "module"+ _id + "indexMenuItem" + i + "lessonItem" + j;
+			 		thisID = "module"+ _arr[_id].id + "indexMenuItem" + i + "lessonItem" + j;
 			 		pageID = $(data).find("page").eq(i).find("page").eq(j).attr("id");
 			 		indexString += '<li id="'+pageID+'" class="dd-item dd3-item" data-id="'+pageID+'">';
-			 		indexString += '<div class="dd-handle dd3-handle">Drag</div>';
+			 		indexString += '<div class="dd-handle dd3-handle"></div>';
 			 		indexString += '<div id="'+thisID+'" class="dd3-content" myID="'+pageID+'">'+ $(data).find("page").eq(i).find("page").eq(j).find('title').first().text() +/*'<div id="commentSpot"></div>*/'</div></li>';
 					moduleIndexItem_arr.push("#" + thisID);
 		 		}
@@ -518,13 +578,32 @@ function C_Outline(_myItem) {
 		return indexString;
      }
 
+    /************************************************************************************
+     addParentClicks()
+     -- Add listeners to the menu times for the course parent module buttons
+     ************************************************************************************/
+    function addParentClicks(){
+        for(var j = 0; j < parent_arr.length; j++){
+            $("#parent"+parent_arr[j].id+"IndexHotspot").click(function(){
+                if(hoverSubNav == false){
+                    //Call for when a module is clicked.
+                    try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
+                    currentMenuItem = $(this);
+                    currentMenuItem.addClass("dd3-selected");
+                    displayParentModuleData($(this).attr("data-id"));
+                }
+            });
+            addOutlineRollovers($("#parent"+parent_arr[j].id+"IndexHotspot"), "parent");
+        }
+    }
+
      /************************************************************************************
      addModuleClicks()
      -- Add listeners to the menu times for the course module buttons
      ************************************************************************************/
-     function addModuleClicks(){
-	      for(var j = 0; j < module_arr.length; j++){
-	        $("#module"+j+"IndexHotspot").click(function(){
+    function addModuleClicks(_arr){
+		for(var j = 0; j < _arr.length; j++){
+			$("#module"+_arr[j].id+"IndexHotspot").click(function(){
 				if(hoverSubNav == false){
 					//Call for when a module is clicked.
 					try { currentMenuItem.addClass("dd3-visited"); } catch (e) {}
@@ -533,9 +612,9 @@ function C_Outline(_myItem) {
 					displayModuleData($(this).attr("data-id"));
 				}
 			});
-			addOutlineRollovers($("#module"+j+"IndexHotspot"), "module");
+			addOutlineRollovers($("#module"+_arr[j].id+"IndexHotspot"), "module");
 		}
-     }
+    }
 
      /************************************************************************************
      addPageClicks()
@@ -1326,6 +1405,328 @@ function C_Outline(_myItem) {
 	    });		
 	}	
 
+    /****************************************************************
+     * Display editable  Parent Module Preferences.
+     ****************************************************************/
+    function displayParentModuleData(_id){
+        //Find which array item to push to....
+		_id = getParentModuleIndex(_id);
+
+        //parentObj.name = $(courseData).find("item").eq(y).attr("name");
+        //parentObj.id = $(courseData).find("item").eq(y).attr("id");
+
+        $("#outlinePagePrefPane").empty();
+        var msg = "<div id='header' class='outlineModuleEditHeader'><b>Parent Module Preferences: " + parent_arr[_id].name + "</b></div><br/>";
+        msg += "<div id='accordion'>";
+        msg += "<h3 style='padding: .2em .2em .2em 2.2em'>General</h3>";
+        msg += '<div id="general" style="font-size:100%; padding: 1em 1em; color:#666666">';
+        msg += "<div><b>Details:</b></div>";
+        msg += "<label for='lessonTitle'>lesson title: </label>";
+        msg += '<input type="text" name="lessonTitle" id="lessonTitle" title="Update the lesson title." value="'+ parent_arr[_id].name + '" class="text ui-widget-content ui-corner-all" /> ';
+        msg += "<div>"
+        msg += "<div><b>exclude from publish</b></div>";
+        msg += addToggle("excludeFromPublish", "Exclude this lesson from being published with the course");
+        msg += "</div>";
+        //end general div
+        msg += '</div>';
+        msg += '<h3 style="padding: .2em .2em .2em 2.2em">SCORM 2004 Sequencing</h3>';
+        msg += '<div id="sequencing" style="font-size:100%; padding: 1em 1em; color:#666666">';
+        msg += '<br/><br/><div id="controlModes" title="" style="float:left;"><b>Determine what type of navigation is allowed by the user:</b></div>';
+        msg += addToggle("choice", "Enable the table of contents for navigating among this activity’s children:");
+        msg += addToggle("flow", "Enable previous and next LMS navigation buttons for navigating among this activity’s children:");
+        msg += addToggle("forwardOnly", "Restricts the user to only moving forward through the children of this activity: (Previous requests and using the table of contents go backwards is prohibited.)");
+        //msg += addToggle("choiceExit", "Can the learner jump out of this activity using a choice request?");
+        msg += '<br/><div id="sequencingRules" title="" style="float:left;"><b>Specify if-then conditions that determine which activities are available for delivery and which activity should be delivered next.: </b></div>';
+        msg += addToggle("notAttemptHidden", "Hide the item in the TOC until it has been attempted:");
+        //msg += '<label title="Hide the item in the TOC until it has been attempted." style="width:350px; float:left;" >Hide in table of contents until attempted : </label>';
+        //msg += '<input type="checkbox" id="notAttemptHiddenCheckbox" style="float:left;"/><label for="notAttemptHiddenCheckbox" title="Add/Remove rule.">toggle</label>';
+        msg += '<br/><br/><div id="rollupControls" title="" style="float:left;"><b>Determine which activities participate in status rollup and how their status is weighted in relation to other activities: </b></div>';
+        msg += addToggle("rollupObjectiveSatisfied", "Specifies whether this activity should count towards satisfaction rollup:");
+        msg += '<label for="rolluOobjectiveMeasureWeight" title="" style="float:left">Assign a weight to the score for this activity to be used in rollup.:  </label>';
+        msg += '<input id="rollupObjectiveMeasureWeight" name="rollupObjectiveMeasureWeight" style="width:350px; float:left;"/>';
+        msg += addToggle("rollupProgressCompletion", "Specifies whether this activity should count towards completion rollup:");
+        msg += '<br/><div id="deliveryControls" title="" style="float:left;"><b>Allow for non-communicative content to be delivered and sequenced:</b></div>';
+        msg += addToggle("tracked", "Is data tracked for this activity:");
+        msg += addToggle("completionSetByContent", "If false, the sequencer will automatically mark the activity as completed if it does not report any completion status.");
+        msg += addToggle("objectiveSetByContent", "If false, the sequencer will automatically mark the activity as satisfied if it does not report any satisfaction status.");
+        msg += '<br/><div id="reviewModule" title="If this is a test module, a test review module can be added that displays all of the missed objectives from the test.'
+            +' This adds the module at publish time to the final SCORM package." style="float:left;"><b>Add test review module after this module:</b></div>';
+        msg += addToggle("testReview", "Specifies if a test review module should follow this module:");
+        msg += 	'<br/><div style="float:left;"><a href="http://scorm.com/scorm-explained/technical-scorm/sequencing/sequencing-definition-model/" target="_blank" >Sequencing Definition Model</a></div>';
+
+
+        //end sequencing div
+        msg += '</div>';
+        //end accordion div
+        msg += '</div>';
+        $("#outlinePagePrefPane").append(msg);
+        $("#lessonTitle").alphanum();
+        //Set module settings.
+
+
+        //moved to here so it could be used in setting of id in module.xml
+        var lessonMatchID;
+        for (var i=0; i < totalOutlineLessonModules; i++){
+            //handles legacy course.xml files
+            var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+                _itemData = $(courseData).find("item");
+            }
+            if(currentMenuItem.attr("data-id") == _itemData.eq(i).attr("id")){
+                lessonMatchID = _itemData.eq(i).attr("id");
+                break;
+            }
+        }
+
+        // //set lesson id on module.xml if doesn't exist
+        // if(!$(module_arr[_id].xml).find('id').attr('value')){
+        //     $(module_arr[_id].xml).find("preferences").append($('<id>', module_arr[_id].xml));
+        //     $(module_arr[_id].xml).find('id').attr('value', lessonMatchID);
+        //     updateModuleXML(_id);
+        // }
+
+        //Listeners for Module Settings
+        //MODULE TITLE CHANGE
+        $("#lessonTitle").on("change", function(){
+            //Updated module title in edit pane header
+            $("#header").html("<b>Module Preferences: " + $("#lessonTitle").val().trim() + "</b>");
+            //Update module name in module.xml
+            $(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
+            updateModuleXML(_id, false);
+
+            //handles legacy course.xml files
+            var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+                _itemData = $(courseData).find("item");
+            }
+            //find and update module title in course.xml
+            for(var j = 0; j < _itemData.length; j++){
+                if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+                    _itemData.eq(j).attr('name', $("#lessonTitle").val().trim());
+                    updateCourseXML(false);
+                    break;
+                }
+
+            }
+
+
+            //Update title in menu
+            currentMenuItem.text($("#lessonTitle").val().trim());
+
+            //Send to server for rename
+            var data = {
+                content: {
+                    id: lessonMatchID,
+                    type: "lesson",
+                    name: $("#lessonTitle").val().trim()
+                },
+                user: {
+                    id: user._id,
+                    username: user.username
+                }
+            };
+
+            socket.emit('renameContent', data);
+
+            //Update the array after making changes.
+            module_arr[_id].name = $("#lessonTitle").val().trim();
+            var pathSplitter = module_arr[_id].path.split("/");
+            pathSplitter[pathSplitter.length - 1] = $("#lessonTitle").val().trim();
+            module_arr[_id].path = pathSplitter.join("/");
+
+            var xmlpathSplitter = module_arr[_id].xmlPath.split("/");
+            xmlpathSplitter[1] = $("#lessonTitle").val().trim();
+            module_arr[_id].xmlPath = xmlpathSplitter.join("/")
+
+        }).css({'width': '500px', 'color': '#3383bb;'});
+        //END MODULE TITLE CHANGE
+
+        $('#lessonDisplayTitle').on('change', function(){
+            $(module_arr[_id].xml).find('lessondisplaytitle').attr("value", $("#lessonDisplayTitle").val().trim());
+            updateModuleXML(_id);
+        }).css({'width': '500px', 'color': '#3383bb;'});
+
+        //module tlo change
+        $("#tlo").on("change", function(){
+            $(module_arr[_id].xml).find('tlo').attr('value', $('#tlo').val().trim());
+            updateModuleXML(_id);
+
+            //handles legacy course.xml files
+            var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+                _itemData = $(courseData).find("item");
+            }
+            //find and update module tlo in course.xml
+            for(var j = 0; j < _itemData.length; j++){
+                if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+                    _itemData.eq(j).attr('tlo', $('#tlo').val().trim());
+                    updateCourseXML(false);
+                    break;
+                }
+
+            }
+
+        }).css({'width': '500px', 'color': '#3383bb;'});
+
+
+        $("#mode").on("change", function(){
+            $(module_arr[_id].xml).find('mode').attr("value", $("#mode").val());
+            updateModuleXML(_id);
+        });
+
+        $("#transition").on("change", function(){
+            $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
+            if($("#transition").val() == "none"){
+                $(module_arr[_id].xml).find('transition').attr("value", false);
+            }else{
+                $(module_arr[_id].xml).find('transition').attr("value", true);
+                $(module_arr[_id].xml).find('transitionType').attr("value", $("#transition").val());
+            }
+            updateModuleXML(_id);
+
+        });
+
+        $("#transitionDuration").on("change", function(){
+            $(module_arr[_id].xml).find('transitionLength').attr("value", $("#transitionDuration").val());
+            updateModuleXML(_id);
+        }).css({'width': '50px', 'color': '#3383bb;'});
+
+        $("#lockDuration").on("change", function(){
+            $(module_arr[_id].xml).find('lockRequestDuration').attr("value", $("#lockDuration").val());
+            updateModuleXML(_id);
+        }).css({'width': '50px', 'color': '#3383bb;'});
+
+        $("#lessonWidth").on("change", function(){
+            $(module_arr[_id].xml).find('lessonWidth').attr("value", $("#lessonWidth").val());
+            updateModuleXML(_id);
+        }).css({'width': '50px', 'color': '#3383bb;'});
+
+        $("#lessonHeight").on("change", function(){
+            $(module_arr[_id].xml).find('lessonHeight').attr("value", $("#lessonHeight").val());
+            updateModuleXML(_id);
+        }).css({'width': '50px', 'color': '#3383bb;'});
+
+        $("#minScore").on("change", function(){
+            $(module_arr[_id].xml).find('minScore').attr("value", $("#minScore").val());
+            updateModuleXML(_id);
+        }).css({'width': '50px', 'color': '#3383bb;'});
+
+        $("#restartOnFail").on("change", function(){
+            if($('#restartOnFail').prop('checked')){
+                $(module_arr[_id].xml).find('restartOnFail').attr("value", "true");
+            } else{
+                $(module_arr[_id].xml).find('restartOnFail').attr("value", "false");
+            }
+            updateModuleXML(_id);
+        });
+
+        //handles legacy course.xml files
+        var _itemData = $(courseData).find("item[parent='false']");
+        if($(courseData).find("item[parent='false']").length == 0){
+            _itemData = $(courseData).find("item");
+        }
+
+        //find the index number for the item
+        var modIndex = 0;
+        for(var j = 0; j < _itemData.length; j++){
+            if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+                modIndex = j+1;
+            }
+        }
+
+        //set sequencing toggles based off of xml
+        //setToggle("choice", modIndex);
+        //setToggle("flow", modIndex);
+        //setToggle("forwardOnly", modIndex);
+        setToggle("excludeFromPublish", modIndex-1, "item");
+        setToggle("choiceExit", modIndex);
+        setToggle("previous", modIndex);
+        setToggle("continue", modIndex);
+        setToggle("exit", modIndex);
+        setToggle("exitAll", modIndex);
+        setToggle("abandon", modIndex);
+        setToggle("abandonAll", modIndex);
+        setToggle("suspendAll", modIndex);
+        setToggle("tracked", modIndex);
+        setToggle("completionSetByContent", modIndex);
+        setToggle("objectiveSetByContent", modIndex);
+        setToggle("rollupObjectiveSatisfied", modIndex);
+        setToggle("rollupProgressCompletion", modIndex);
+        setToggle("testReview", modIndex);
+
+        if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value') === "true"){
+            $('#notAttemptHidden').prop('checked',true);
+        }
+        else{
+            $('#notAttemptHidden').prop('checked',false);
+        }
+
+        //update the xml when toggles are changed
+        //toggleChange("choice", modIndex);
+        //toggleChange("flow", modIndex);
+        //toggleChange("forwardOnly", modIndex);
+        toggleChange("excludeFromPublish", modIndex-1, "item");
+        toggleChange("choiceExit", modIndex);
+        toggleChange("previous", modIndex);
+        toggleChange("continue", modIndex);
+        toggleChange("exit", modIndex);
+        toggleChange("exitAll", modIndex);
+        toggleChange("abandon", modIndex);
+        toggleChange("abandonAll", modIndex);
+        toggleChange("suspendAll", modIndex);
+        toggleChange("tracked", modIndex);
+        toggleChange("completionSetByContent", modIndex);
+        toggleChange("objectiveSetByContent", modIndex);
+        toggleChange("rollupObjectiveSatisfied", modIndex);
+        toggleChange("rollupProgressCompletion", modIndex);
+        toggleChange("testReview", modIndex);
+
+        $('#notAttemptHidden').on("change", function(){
+            if($(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').length == 0){
+                $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').append($('<notattempthidden/>', courseData));
+            }
+
+            if($('#notAttemptHidden').prop('checked')){
+                $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "true");
+            } else{
+                $(courseData).find('sequencing').eq(modIndex).find('sequencingRules').find('notattempthidden').attr('value', "false");
+            }
+            updateCourseXML();
+        });
+
+        var currentROMWeight = $("#rollupObjectiveMeasureWeight").val();
+        $(function () {
+            //$("div[id$='Radio']").buttonset();
+            $("input[id$='Checkbox']").button();
+
+            //setup for rollupObjectiveMeasureWeight spinner
+            $("#rollupObjectiveMeasureWeight").spinner({
+                step: 0.01,
+                numberFormat: "n",
+                max: 1,
+                min: 0,
+                stop: function(event, ui){
+                    if(currentROMWeight != $("#rollupObjectiveMeasureWeight").val()){
+                        currentROMWeight = $("#rollupObjectiveMeasureWeight").val();
+                        $(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight", $("#rollupObjectiveMeasureWeight").val());
+                        updateCourseXML();
+                    }
+                }
+            }).val($(courseData).find('sequencing').eq(modIndex).attr("rollupObjectiveMeasureWeight"));
+
+            //prevent user manual input in spinner
+            $("#rollupObjectiveMeasureWeight").bind("keydown", function (event){
+                event.preventDefault();
+            });
+
+            //set up jquerui accordion
+            $("#accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+        });
+
+    }
 
      /****************************************************************
      * Display editable Module Preferences.
@@ -1472,13 +1873,18 @@ function C_Outline(_myItem) {
 
 	    //set tlo to default if not set
 	    if(!$(module_arr[_id].xml).find('tlo').attr('value')){
-	    	//forloop coursedata to find item....
-			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
-					if(!$(courseData).find("item").eq(j).attr('tlo')){
+			//handles legacy course.xml files
+			var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+            	_itemData = $(courseData).find("item");
+			}
+            //forloop coursedata to find item....
+			for(var j = 0; j < _itemData.length; j++){
+				if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+					if(!_itemData.eq(j).attr('tlo')){
 						$(module_arr[_id].xml).find("preferences").append($('<tlo>',module_arr[_id].xml));
 						$(module_arr[_id].xml).find('tlo').attr('value', 'undefined');
-						$(courseData).find("item").eq(j).attr('tlo', 'undefined');
+                        _itemData.eq(j).attr('tlo', 'undefined');
 						updateModuleXML(_id);
 						updateCourseXML(false);
 						$('#tlo').val('undefined');
@@ -1486,9 +1892,9 @@ function C_Outline(_myItem) {
 					}
 					else{
 						$(module_arr[_id].xml).find("preferences").append($('<tlo>', module_arr[_id].xml));
-						$(module_arr[_id].xml).find('tlo').attr('value', $(courseData).find("item").eq(j).attr('tlo'));
+						$(module_arr[_id].xml).find('tlo').attr('value', _itemData.eq(j).attr('tlo'));
 						updateModuleXML(_id);
-						$('#tlo').val($(courseData).find("item").eq(j).attr('tlo'));
+						$('#tlo').val(_itemData.eq(j).attr('tlo'));
 					}
 				}
 
@@ -1500,9 +1906,14 @@ function C_Outline(_myItem) {
 
 	    //moved to here so it could be used in setting of id in module.xml
 		var lessonMatchID;
-		for (var i=0; i < totalOutlineModules; i++){
-			if(currentMenuItem.attr("data-id") == $(courseData).find("item").eq(i).attr("id")){
-				lessonMatchID = $(courseData).find("item").eq(i).attr("id");
+		for (var i=0; i < totalOutlineLessonModules; i++){
+            //handles legacy course.xml files
+            var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+                _itemData = $(courseData).find("item");
+            }
+			if(currentMenuItem.attr("data-id") == _itemData.eq(i).attr("id")){
+				lessonMatchID = _itemData.eq(i).attr("id");
 				break;
 			}
 		}
@@ -1523,10 +1934,16 @@ function C_Outline(_myItem) {
 			$(module_arr[_id].xml).find('lessonTitle').attr("value", $("#lessonTitle").val().trim());
 			updateModuleXML(_id, false);
 			
+			//handles legacy course.xml files
+			var _itemData = $(courseData).find("item[parent='false']");
+			if($(courseData).find("item[parent='false']").length == 0){
+				_itemData = $(courseData).find("item");
+			}
+
 			//find and update module title in course.xml
-			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
-					$(courseData).find("item").eq(j).attr('name', $("#lessonTitle").val().trim());
+			for(var j = 0; j < _itemData.length; j++){
+				if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+					_itemData.eq(j).attr('name', $("#lessonTitle").val().trim());
 					updateCourseXML(false);
 					break;
 				}
@@ -1575,10 +1992,15 @@ function C_Outline(_myItem) {
 			$(module_arr[_id].xml).find('tlo').attr('value', $('#tlo').val().trim());
 			updateModuleXML(_id);
 
+            //handles legacy course.xml files
+            var _itemData = $(courseData).find("item[parent='false']");
+            if($(courseData).find("item[parent='false']").length == 0){
+                _itemData = $(courseData).find("item");
+            }
 			//find and update module tlo in course.xml
-			for(var j = 0; j < $(courseData).find("item").length; j++){
-				if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
-					$(courseData).find("item").eq(j).attr('tlo', $('#tlo').val().trim());
+			for(var j = 0; j < _itemData.length; j++){
+				if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+					_itemData.eq(j).attr('tlo', $('#tlo').val().trim());
 					updateCourseXML(false);
 					break;
 				}
@@ -1627,10 +2049,16 @@ function C_Outline(_myItem) {
 		   updateModuleXML(_id);
 	    });
 
+         //handles legacy course.xml files
+         var _itemData = $(courseData).find("item[parent='false']");
+         if($(courseData).find("item[parent='false']").length == 0){
+             _itemData = $(courseData).find("item");
+         }
+
 	    //find the index number for the item
 	    var modIndex = 0;
-		for(var j = 0; j < $(courseData).find("item").length; j++){
-			if($(courseData).find("item").eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+		for(var j = 0; j < _itemData.length; j++){
+			if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
 				modIndex = j+1;
 			}
 		}
@@ -1900,11 +2328,18 @@ function C_Outline(_myItem) {
 			        if($(module_arr[i].xml).find('page').eq(j).attr("type") == "kc"){
 						msg += "<label for='objItemId' title='Name of the modules or lesson the objective is mapped to.'>module or lesson mapped (highest level): </label>";
 				     	msg += "<select name='objItemId' id='objItemId'>";
+
+                        //handles legacy course.xml files
+                        var _itemData = $(courseData).find("item[parent='false']");
+                        if($(courseData).find("item[parent='false']").length == 0){
+                            _itemData = $(courseData).find("item");
+                        }
+
 				     	//for loop through items in course.xml
-						for(var k = 0; k < $(courseData).find("item").length; k++){
-							var itemId = $(courseData).find("item").eq(k).attr('id');
-							var itemName = $(courseData).find("item").eq(k).attr('name');
-							var itemTLO = $(courseData).find("item").eq(k).attr('tlo');
+						for(var k = 0; k < _itemData.length; k++){
+							var itemId = _itemData.eq(k).attr('id');
+							var itemName = _itemData.eq(k).attr('name');
+							var itemTLO = _itemData.eq(k).attr('tlo');
 							msg += '<option value ="'+itemId+'"';
 							if(itemId == $(module_arr[i].xml).find('id').attr('value')){
 								msg += ' selected';
@@ -2004,10 +2439,15 @@ function C_Outline(_myItem) {
 		            $("#outlineRemove").attr("title", "Remove this page from your module.");
 		            $("#outlineAdd").attr("title", "Add a new page to your module.");
 	            }
+	            else if (_level == "parent"){
+                    $(this).append("<div id='outlineAdd' class='outlineModuleAdd'></div><div id='outlineRemove' class='outlineModuleRemove'></div>");
+                    $("#outlineRemove").attr("title", "Remove this module from your course.");
+                    $("#outlineAdd").attr("title", "Add a new lesson to your module.");
+				}
 
 	            //ADD ADD NAV
 	            $("#outlineAdd").click(function(){
-	            	if(_level == "module"){
+	            	if(_level == "module" || _level == "parent"){
 	            		addLessonToModule(myItem.attr("data-id"));
 	            	}else{
 		            	addPageToModule(myItem.attr("myID"));
@@ -2029,7 +2469,7 @@ function C_Outline(_myItem) {
 
 	            //ADD REMOVE NAV
 	            $("#outlineRemove").click(function(){
-	            	if(_level == "module"){
+	            	if(_level == "module" || _level == "parent"){
 	            		removeModuleFromCourse(myItem.attr("data-id"));
 	            	}else{
 		            	removePageFromModule(myItem.attr("myID"), myItem);
@@ -2072,9 +2512,28 @@ function C_Outline(_myItem) {
 		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
 		msg += '<label for="tlo" class="regField">tlo: </label>';
 		msg += '<input type="text" name="tlo" id="tlo" value="" class="regText text ui-widget-content ui-corner-all" />';
+		msg += addToggle("parent", "Create a parent item that has no content, only children lessons.");	
 		msg += '</div>';
 		$("#stage").append(msg);
 		$("#myName").alphanum();
+
+         //handles legacy course.xml files
+         var _itemData = $(courseData).find("item[parent='false']");
+         if($(courseData).find("item[parent='false']").length == 0){
+             _itemData = $(courseData).find("item");
+         }
+
+	    //find the index number for the item
+	    var modIndex = 0;
+		for(var j = 0; j < _itemData.length; j++){
+			if(_itemData.eq(j).attr('name') == currentMenuItem.text().replace(/[^\w\s]/gi, '')){
+				modIndex = j+1;
+			}
+		}
+
+		setToggle("parent", modIndex-1, "item");
+		toggleChange("parent", modIndex-1, "item");
+
 		$("#dialog-registerContent").dialog({
         	modal: true,
             width: 550,
@@ -2094,10 +2553,38 @@ function C_Outline(_myItem) {
 			            course: {
 			                id: courseID
 			            },
-			            parentName: myItem.find("span").first().text()
+			            parentName: myItem.find("span").first().text(),
+			            //fromParentItem: $('#parent').prop('checked'),
+			            fromParentItem: false,
+			            parentId: myItem.attr("data-id")
 			        };
-			        socket.emit("registerLesson", content);
+
+			        var isParentItem = $('#parent').prop('checked')
+			        if(isParentItem){
+			        	//socket.emit("createParentItem", content);
+						var itemCount = $(courseData).find("item").length;
+						$(courseData).find("course").append($("<item>"));
+						var newItem = new DOMParser().parseFromString('<item></item>',  "text/xml");
+						var itemCDATA = newItem.createCDATASection("");
+						$(courseData).find("item").eq(itemCount).find("item").append(itemCDATA);						
+						$(courseData).find("item").eq(itemCount).attr("name", content.name);	
+						$(courseData).find("item").eq(itemCount).attr("id", guid());
+						var tloValue = "undefined";
+			            if(content.tlo != ""){
+			                tloValue = content.tlo;
+			            }
+						$(courseData).find("item").eq(itemCount).attr("tlo", tloValue);
+						$(courseData).find("item").eq(itemCount).attr("excludeFromPublish", 'false');
+						$(courseData).find("item").eq(itemCount).attr("parent", 'true');
+						updateCourseXML();	
+						refreshExpected = true;				        	
+			        }
+			        else{
+			        	socket.emit("registerLesson", content);
+        	
+			    	}
 			        $(this).dialog("close");								    //Close dialog.
+			 		refreshOutlineData();
                 },
                 Cancel: function () {
                 	$(this).dialog("close");
@@ -2114,6 +2601,48 @@ function C_Outline(_myItem) {
 	************************************************************************************************/
 	function addLessonToModule(_id){
 		console.log("_id = " + _id);
+		var  msg = '<div id="dialog-registerContent" title="Add New Lesson">';
+		msg += '<p class="validateTips">You are adding a new lesson to the ' + myItem.find("span").first().text() + ' module.</p>';
+		msg += '<p>Fill in the details below for your new lesson.</p>';
+		msg += '<label for="myName" class="regField">name: </label>';
+		msg += '<input type="text" name="myName" id="myName" value="" class="regText text ui-widget-content ui-corner-all" /><br/>';
+		msg += '<label for="tlo" class="regField">tlo: </label>';
+		msg += '<input type="text" name="tlo" id="tlo" value="" class="regText text ui-widget-content ui-corner-all" />';
+		msg += '</div>';
+		$("#stage").append(msg);
+		$("#myName").alphanum();
+
+		$("#dialog-registerContent").dialog({
+        	modal: true,
+            width: 550,
+            close: function (event, ui) {
+                $("#dialog-registerContent").remove();
+            },
+            buttons: {
+                Submit: function(){
+                	//Build the module data object to submit to the server.
+                	refreshExpected = true;
+                	var nameString = $("#myName").val();
+                	var tloString = $('#tlo').val();
+                	var content = {
+			            name: nameString,
+			            tlo: tloString,
+			            user: user,
+			            course: {
+			                id: courseID
+			            },
+			            parentName: myItem.find("span").first().text(),
+			            fromParentItem: true,
+			            parentId : _id
+			        };
+			        socket.emit("registerLesson", content);
+			        $(this).dialog("close");								    //Close dialog.
+                },
+                Cancel: function () {
+                	$(this).dialog("close");
+                }
+            }
+        });		
 	}
 
 	/************************************************************************************************
@@ -3150,6 +3679,98 @@ function C_Outline(_myItem) {
 
 			break;
 
+		case "multipleChoiceFancy":
+			$(myXML).find("page").eq(newPage).append($("<question>"));
+			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
+			var myQuestionCDATA = myQuestion.createCDATASection("<p>Input a question.</p>");
+			$(myXML).find("page").eq(newPage).find("question").append(myQuestionCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option1 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<content>"));
+			var content1 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option1CDATA = content1.createCDATASection("Answer Option 1");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("content").append(option1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).append($("<diffeed>"));
+			var diffFeed1 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed1CDATA = diffFeed1.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(0).find("diffeed").append(difFeed1CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(0).attr("correct", "true");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option2 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<content>"));
+			var content2 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option2CDATA = content2.createCDATASection("Answer Option 2");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("content").append(option2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).append($("<diffeed>"));
+			var diffFeed2 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed2CDATA = diffFeed2.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(1).find("diffeed").append(difFeed2CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(1).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).append($("<option>"));
+			var option3 = new DOMParser().parseFromString('<option></option>',  "text/xml");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).append($("<content>"));
+			var content3 = new DOMParser().parseFromString('<content></content>', "text/xml");
+			var option3CDATA = content3.createCDATASection("Answer Option 3");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).find("content").append(option3CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(2).append($("<diffeed>"));
+			var diffFeed3 = new DOMParser().parseFromString('<diffeed></diffeed>', "text/xml");
+			var difFeed3CDATA = diffFeed3.createCDATASection("Input unique option feedback.");
+			$(myXML).find("page").eq(newPage).find("option").eq(2).find("diffeed").append(difFeed3CDATA);
+			$(myXML).find("page").eq(newPage).find("option").eq(2).attr("correct", "false");
+			
+			$(myXML).find("page").eq(newPage).append($("<attemptresponse>"));
+			var myAttemptResponse = new DOMParser().parseFromString('<attemptresponse></attemptresponse>',  "text/xml");
+			var myAttemptResponseCDATA = myAttemptResponse.createCDATASection("Please try again.");
+			$(myXML).find("page").eq(newPage).find("attemptresponse").append(myAttemptResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<correctresponse>"));
+			var myCorrectResponse = new DOMParser().parseFromString('<correctresponse></correctresponse>',  "text/xml");
+			var myCorrectResponseCDATA = myCorrectResponse.createCDATASection("That is correct!");
+			$(myXML).find("page").eq(newPage).find("correctresponse").append(myCorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<incorrectresponse>"));
+			var myIncorrectResponse = new DOMParser().parseFromString('<incorrectresponse></incorrectresponse>',  "text/xml");
+			var myIncorrectResponseCDATA = myIncorrectResponse.createCDATASection("That is not correct.");
+			$(myXML).find("page").eq(newPage).find("incorrectresponse").append(myIncorrectResponseCDATA);
+			
+			$(myXML).find("page").eq(newPage).append($("<feedback>"));
+			var myFeedback = new DOMParser().parseFromString('<feedback></feedback>',  "text/xml");
+			var myFeedbackCDATA = myFeedback.createCDATASection("Input your feedback here.");
+			$(myXML).find("page").eq(newPage).find("feedback").append(myFeedbackCDATA);
+			
+			$(myXML).find("page").eq(newPage).attr("img", "defaultQuestion.png");
+			$(myXML).find("page").eq(newPage).attr("alt", "input image description");
+			$(myXML).find("page").eq(newPage).attr("visualtranscript", "false");
+			$(myXML).find("page").eq(newPage).attr("audiotranscript", "false");
+			$(myXML).find("page").eq(newPage).attr("objective", "undefined"); 
+			$(myXML).find("page").eq(newPage).attr("objItemId", "undefined");
+			$(myXML).find("page").eq(newPage).attr("feedbacktype", "undifferentiated");
+			$(myXML).find("page").eq(newPage).attr("feedbackdisplay", "pop");
+			$(myXML).find("page").eq(newPage).attr("audio", "null");
+			$(myXML).find("page").eq(newPage).attr("btnText", "Submit");
+			$(myXML).find("page").eq(newPage).attr("poploop", "true");
+			$(myXML).find("page").eq(newPage).attr("attempts", 2);
+			$(myXML).find("page").eq(newPage).attr("graded", false);
+			$(myXML).find("page").eq(newPage).attr("mandatory", true);
+			$(myXML).find("page").eq(newPage).attr("randomize", false);
+			$(myXML).find("page").eq(newPage).attr("timed", false);
+			$(myXML).find("page").eq(newPage).attr("timerlength", "10"); 
+			$(myXML).find("page").eq(newPage).attr("type", "kc");
+			
+			var userSelection_arr = [];
+			var question_obj = new Object();
+			question_obj.complete = false;
+			question_obj.correct = null;
+			question_obj.graded = false;
+			question_obj.id = myID;
+			question_obj.userAnswer = userSelection_arr;
+			questionResponse_arr.push(question_obj);
+			
+			break;
+
 		case "multipleChoiceMedia":
 			$(myXML).find("page").eq(newPage).append($("<question>"));
 			var myQuestion = new DOMParser().parseFromString('<question></question>',  "text/xml");
@@ -4036,6 +4657,60 @@ function C_Outline(_myItem) {
 		});		
 	} 
 
+    /************************************************************************************************
+	 * Function :   getModuleIndex
+	 * params : _id - id of the item
+	 * Description : returns the id from the module_arr of the id
+     */
+    function getModuleIndex(_id){
+    	var arr_length = module_arr.length;
+    	var index = 0;
+    	for(var i = 0; i < arr_length; i++){
+    		if(module_arr[i].id == _id){
+    			index = i;
+			}
+		}
+
+		return index;
+
+	}
+
+    /************************************************************************************************
+	 * Function :   getTempModuleIndex
+	 * params : _id - id of the item
+	 * Description : returns the id from the tempModule_arr of the id
+     */
+    function getTempModuleIndex(_id){
+
+    	var arr_length = tempModule_arr.length;
+    	var index = 0;
+    	for(var i = 0; i < arr_length; i++){
+    		if(tempModule_arr[i].id == _id){
+    			index = i;
+			}
+		}
+
+		return index;
+
+	}
+
+    /************************************************************************************************
+     * Function :   getParentModuleIndex
+     * params : _id - id of the parent item
+     * Description : returns the id from the parent_arr of the id
+     */
+    function getParentModuleIndex(_id){
+        var arr_length = parent_arr.length;
+        var index = 0;
+        for(var i = 0; i < arr_length; i++){
+            if(parent_arr[i].id == _id){
+                index = i;
+            }
+        }
+
+        return index;
+
+    }
 
 	/************************************************************************************************
 	Function: 		s4
