@@ -202,8 +202,8 @@ function C_Print(_myItem, _myParent) {
 
 
      function packageModuleResources(_mod){
-     	console.log(_mod.xml);
-		socket.emit("getResourcePackage", {_mod});     	
+     	console.log(_mod);
+		socket.emit("getResourcePackage", {_mod:_mod});     	
      }
 
      /************************************************************************************
