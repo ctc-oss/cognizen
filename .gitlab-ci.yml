@@ -1,0 +1,26 @@
+image: docker:latest
+
+develop:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.ctc.com
+    - docker build --build-arg http_proxy="$HTTP_PROXY" --build-arg https_proxy="$HTTP_PROXY" -t docker.ctc.com/cognizen/cognizen:$CI_BUILD_REF_NAME .
+    - docker push docker.ctc.com/cognizen/cognizen:$CI_BUILD_REF_NAME
+    - docker rmi docker.ctc.com/cognizen/cognizen:$CI_BUILD_REF_NAME
+  only:
+    - branches
+  except:
+    - master
+  tags:
+    - containers
+
+latest:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.ctc.com
+    - docker build --build-arg http_proxy="$HTTP_PROXY" --build-arg https_proxy="$HTTP_PROXY" -t docker.ctc.com/cognizen/cognizen .
+    - docker push docker.ctc.com/cognizen/cognizen
+  only:
+    - master
+  tags:
+    - containers
