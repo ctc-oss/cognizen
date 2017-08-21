@@ -3492,7 +3492,7 @@ var SocketHandler = {
                 //console.log("---------------------------------------------------------" + fileInfo);
             }
             , function (err, res) {
-                var outputFile = lessonPath + '/packages/'+data._mod.name+'PrintResources.zip';
+                var outputFile = lessonPath.replace(/\\/g,"/") + '/packages/'+data._mod.name+'PrintResources.zip';
                 var output = fs.createWriteStream(outputFile);
                 var archive = archiver('zip');
 
