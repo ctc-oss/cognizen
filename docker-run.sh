@@ -1,24 +1,53 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 cat > config.json <<EOF
 {   
-    "url": "$COGNIZEN_URL",
-    "mailServer": "$COGNIZEN_MAIL_SERVER",
-    "adminEmail": "$COGNIZEN_ADMIN_EMAIL",
+    "url": "http://localhost:8080",
+    "mailServer": "localhost",
+    "adminEmail": "admin@example.com",
     "ssl": false,
     "port": 8080,
-    "logFolder": "./",
-    "dbUrl": "$COGNIZEN_DB_URL",
-    "dbUsername": "$COGNIZEN_DB_USERNAME",
-    "dbPassword": "$COGNIZEN_DB_PASSWORD",
+    "logFolder": "/tmp/",
+    "dbUrl": "mongodb://172.17.0.1:27017/cognizen",
+    "dbUsername": "",
+    "dbPassword": "$",
     "uploadTempDir": "/tmp/cognizen",
-    "redmineHost": $COGNIZEN_REDMINE_HOST,
-    "redminePort": $COGNIZEN_REDMINE_PORT,
-    "redmineApiKey": $COGNIZEN_REDMINE_API_KEY,
-    "redmineProtocal": $COGNIZEN_REDMINE_PROTOCOL,
-    "redmineProtocol": $COGNIZEN_REDMINE_PROTOCOL
+    "redmineHost": "",
+    "redminePort": "",
+    "redmineApiKey": "",
+    "redmineProtocal": ""
 }
 EOF
 
 cat config.json
-node cognizen-server.js
+
+touch /tmp/cognizen.log
+echoerr() { if [[ ${QUIET} -ne 1 ]]; then echo "$@" 1>&2; fi }
+
+start_cognizen(){
+      echo "start_cognizen"
+      node cognizen-server.js
+}
+wait_on(){
+   local url="$1"
+
+    echoerr "waiting on $url"
+#    until $(curl -s -o /dev/null --fail "$url"); do
+    pgrep mongo
+    while [[ $? -ne 0 ]]; do
+        echoerr "waiting on $url"
+        sleep 5
+    done
+}
+
+when_ready(){
+    wait_on "http://172.17.0.1:27017/cognizen"
+    "$@"
+
+}
+main() {
+    when_ready start_cognizen &
+    tail -f /tmp/cognizen.log
+}
+
+main "$@"

@@ -1,0 +1,12 @@
+version: '2'
+services:
+  cognizen:
+    image: cognizen
+    ports:
+      - 8080:8080
+  mongo:
+    image: mongo:3.2
+    ports:
+      - 27017:27017
+    links:
+    - cognizen
