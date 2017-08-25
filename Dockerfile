@@ -15,6 +15,8 @@ RUN npm install
 RUN apk update \
  && apk add bash curl git
 
+RUN npm install https://github.com/stackdot/NodeJS-Git-Server
+
 RUN chown -R root:root /usr/src/app && chmod -R ug+rwX /usr/src/app
 
 COPY docker-run.sh /usr/src/app/server/run.sh

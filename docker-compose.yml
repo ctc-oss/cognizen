@@ -4,6 +4,9 @@ services:
     image: cognizen
     ports:
       - 8080:8080
+      - 22800:22800
+      - 22898:22898
+      - 22801:22801
   mongo:
     image: mongo:3.2
     ports:
