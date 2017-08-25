@@ -10,6 +10,8 @@ RUN mkdir -p /usr/src/app
 COPY ./bin /usr/src/app
 
 WORKDIR /usr/src/app/server
+RUN mkdir -p /usr/src/app/server/repos
+
 RUN npm install
 
 RUN apk update \

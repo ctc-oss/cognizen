@@ -28,6 +28,15 @@ start_cognizen(){
       echo "start_cognizen"
       node cognizen-server.js
 }
+
+add_admin(){
+    echo "add_admin"
+#    mongo cognizen --eval "db.users.insert({firstName: 'Cognizen', lastName: 'Admin', username: 'admin@cognizen.com',
+#    token:'MY_MlHiBG6gBE6N8XZxOXrirtedMyGPHotbgk2GIv8rXIgS7vNMXH2dvAx4JIxjx',
+#    password:'$2a$10$JbxIXej/0yO.ytrQCC1yI.fwO.oFrb4M8nUI2alOEG3ezLU/RTr2K', admin:'true', active:'true'})"
+    start_cognizen
+}
+
 wait_on(){
    local url="$1"
 
@@ -46,7 +55,7 @@ when_ready(){
 
 }
 main() {
-    when_ready start_cognizen &
+    when_ready add_admin &
     tail -f /tmp/cognizen.log
 }
 
