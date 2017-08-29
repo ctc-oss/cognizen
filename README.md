@@ -52,7 +52,35 @@ Supported OS Versions	Supported Browsers	Tested Devices
 *	Galaxy S5
 *	Double Power 7” tablet
 
+## Install
+```commandline
+docker build -t cognizen --build-arg http_proxy=http://server41.ctc.com:3128 --build-arg https_proxy=http://server41.ctc.com:3128 .
+```
 
+```commandline
+docker start cognizen_mongo_1
+docker exec -it cognizen_mongo_1 /bin/bash 
+```
+```bash
+mongo
+use cognizen
+db.users.insert({firstName: "Cognizen", lastName: "Admin", username: "admin@cognizen.com", token:"MY_MlHiBG6gBE6N8XZxOXrirtedMyGPHotbgk2GIv8rXIgS7vNMXH2dvAx4JIxjx", password:"c0gn1z3n", admin:"true", active:"true"})
+exit
+```
+```commandline
+docker-compose -f docker-compose-redmine.yml up
+```
+Login to Redmine (localhost:10083) as admin (username:admin, pwd: admin) 
+
+Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
+http://www.redmine.org/attachments/download/13167/enable_rest_api.png
+
+Copy API access key : Click on "My account" -: Show API access key -: Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
+
+```commandline
+docker-compose up
+```
+  
 ## References
 *	Technologies (Link to Cognizen OS technologies.doc) http://ctcportal.ctc.com/sites/Morrison/Cognizen/SitePages/Home.aspx?RootFolder=%2Fsites%2FMorrison%2FCognizen%2FShared%20Documents%2F1%2E0%20Project%20Management%2F1%2E2%20Tasks%2FFY%2017%20Tasks%2FCognizen%20and%20Open%20Sourcing&FolderCTID=0x0120009AE8EAFB4986514B9EC46E21C7133807&View={5F834AC4-DC00-4BFC-80F7-FA60DDA0EC5F}
 

@@ -2,20 +2,20 @@
 
 cat > config.json <<EOF
 {   
-    "url": "http://localhost:8080",
-    "mailServer": "localhost",
-    "adminEmail": "admin@example.com",
-    "ssl": false,
-    "port": 8080,
-    "logFolder": "/tmp/",
-    "dbUrl": "mongodb://172.17.0.1:27017/cognizen",
+    "url": "$COGNIZEN_URL",
+    "mailServer": "$COGNIZEN_MAIL_SERVER",
+    "adminEmail": "$COGNIZEN_ADMIN_EMAIL",
+    "ssl": $COGNIZEN_SSL,
+    "port": $COGNIZEN_PORT,
+    "logFolder": "$COGNIZEN_LOG_DIR",
+    "dbUrl": "$COGNIZEN_DB_URL",
     "dbUsername": "",
-    "dbPassword": "$",
-    "uploadTempDir": "/tmp/cognizen",
-    "redmineHost": "",
-    "redminePort": "",
-    "redmineApiKey": "",
-    "redmineProtocal": ""
+    "dbPassword": "",
+    "server" : "$COGNIZEN_SERVER",
+    "uploadTempDir": "$COGNIZEN_UPLOAD_DIR",
+    "redmineHost": "$COGNIZEN_REDMINE_HOST",
+    "redmineApiKey": "$COGNIZEN_REDMINE_API_KEY",
+    "redmineProtocal": "$COGNIZEN_REDMINE_PROTOCOL"
 }
 EOF
 
@@ -31,6 +31,7 @@ start_cognizen(){
 
 add_admin(){
     echo "add_admin"
+    # TODO: figure out how to add initial admin.
 #    mongo cognizen --eval "db.users.insert({firstName: 'Cognizen', lastName: 'Admin', username: 'admin@cognizen.com',
 #    token:'MY_MlHiBG6gBE6N8XZxOXrirtedMyGPHotbgk2GIv8rXIgS7vNMXH2dvAx4JIxjx',
 #    password:'$2a$10$JbxIXej/0yO.ytrQCC1yI.fwO.oFrb4M8nUI2alOEG3ezLU/RTr2K', admin:'true', active:'true'})"

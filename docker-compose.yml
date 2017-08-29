@@ -7,9 +7,14 @@ services:
       - 22800:22800
       - 22898:22898
       - 22801:22801
+    links:
+      - mongo:db
+
   mongo:
     image: mongo:3.2
     ports:
       - 27017:27017
-    links:
-    - cognizen
+
+  ffmpeg:
+    image: jrottenberg/ffmpeg:3.2-alpine
+
