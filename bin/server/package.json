@@ -2,8 +2,8 @@
   "name": "cognizen",
   "version": "0.0.1",
   "engines": {
-    "node": "0.10.x",
-    "npm": "2.1.x"
+    "node": "6.11.x",
+    "npm": "3.10.x"
   },
   "dependencies": {
     "adl-xapiwrapper": "^0.2.1",
