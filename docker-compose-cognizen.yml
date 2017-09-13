@@ -1,0 +1,19 @@
+cognizen:
+  image: cognizen
+  ports:
+    - 8080:8080
+    - 22800:22800
+    - 22898:22898
+    - 22801:22801
+  links:
+    - mongo:db
+#    - redmine
+
+mongo:
+  image: mongo:3.2
+  ports:
+    - 27017:27017
+
+ffmpeg:
+  image: jrottenberg/ffmpeg:3.2-alpine
+
