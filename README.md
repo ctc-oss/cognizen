@@ -62,7 +62,7 @@ docker-compose up
 Login to Redmine (localhost:10083) as admin (username:admin, pwd: admin) 
 
 Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
-http://www.redmine.org/attachments/download/13167/enable_rest_api.png
+![rest](http://www.redmine.org/attachments/download/13167/enable_rest_api.png)
 
 Copy API access key : Click on "My account" -: Show API access key -: Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
 
