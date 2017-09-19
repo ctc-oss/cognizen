@@ -51,10 +51,10 @@ redmine:
   - IMAP_SSL=true
   - IMAP_INTERVAL=30
 
-#  ports:
-#  - "10083:80"
-#  volumes:
-#  - /srv/docker/redmine/redmine:/home/redmine/data
+  ports:
+  - "10083:80"
+  volumes:
+  - /srv/docker/redmine/redmine:/home/redmine/data
 #
 #    redmine:
 #      image: redmine

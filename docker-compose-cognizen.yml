@@ -7,7 +7,7 @@ cognizen:
     - 22801:22801
   links:
     - mongo:db
-#    - redmine
+    - redmine
 
 mongo:
   image: mongo:3.2

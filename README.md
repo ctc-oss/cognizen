@@ -56,7 +56,28 @@ Supported OS Versions	Supported Browsers	Tested Devices
 ```commandline
 docker build -t cognizen --build-arg http_proxy=http://server41.ctc.com:3128 --build-arg https_proxy=http://server41.ctc.com:3128 .
 ```
+```commandline
+docker-compose up
+```
+Login to Redmine (localhost:10083) as admin (username:admin, pwd: admin) 
 
+Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
+http://www.redmine.org/attachments/download/13167/enable_rest_api.png
+
+Copy API access key : Click on "My account" -: Show API access key -: Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
+
+From Administration add a user: 
+Login - admin@cognizen.com  
+First name - admin
+Last name - cognizen
+email - admin@cognizen.com 
+administrator - check
+
+From Administration add Group:
+Name - Cognizen Admins
+Users - add "admin cognizen"
+
+In another terminal
 ```commandline
 docker-compose -f docker-compose.yml -f docker-compose-cognizen.yml up cognizen mongo
 ```
@@ -74,16 +95,7 @@ This will set the admin username to 'admin@cognizen.com' and the password to 'co
 
 Access Cognizen at localhost:8080
 
-<!-- ```commandline
-docker-compose up
-```
-Login to Redmine (localhost:10083) as admin (username:admin, pwd: admin) 
 
-Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
-http://www.redmine.org/attachments/download/13167/enable_rest_api.png
-
-Copy API access key : Click on "My account" -: Show API access key -: Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
--->
   
 ## References
 *	Technologies (Link to Cognizen OS technologies.doc) http://ctcportal.ctc.com/sites/Morrison/Cognizen/SitePages/Home.aspx?RootFolder=%2Fsites%2FMorrison%2FCognizen%2FShared%20Documents%2F1%2E0%20Project%20Management%2F1%2E2%20Tasks%2FFY%2017%20Tasks%2FCognizen%20and%20Open%20Sourcing&FolderCTID=0x0120009AE8EAFB4986514B9EC46E21C7133807&View={5F834AC4-DC00-4BFC-80F7-FA60DDA0EC5F}
