@@ -46,10 +46,12 @@ Compared to industry standards developing distance learning products and analyzi
 
 * Clone the cognizen repo
 * From a terminal window in cognizen/bin/server directory, run the following command:
+
 ```commandline
 npm install
 ```
 ALT:
+
 ```commandline
 npm install --link
 ```
@@ -116,33 +118,33 @@ Login to Redmine (Use localhost:10083 with Docker configuration) as admin (usern
 * Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
 ![rest](http://www.redmine.org/attachments/download/13167/enable_rest_api.png)
 
-* Copy API access key : Click on "My account" -: Show API access key -: 
-  For Manual Install :
-  Copy key and paste into config.json file as "redmineApiKey"
-  For Docker configuration :
+* Copy API access key : Click on "My account" -: Show API access key -: <br>
+  For Manual Install :<br>
+  Copy key and paste into config.json file as "redmineApiKey"<br>
+  For Docker configuration :<br>
   Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
 
-* From Administration add a user: 
-  Login - admin@cognizen.com  
-  First name - admin
-  Last name - cognizen
-  email - admin@cognizen.com 
-  administrator - check
+* From Administration add a user: <br>
+  Login - admin@cognizen.com  <br>
+  First name - admin<br>
+  Last name - cognizen<br>
+  email - admin@cognizen.com <br>
+  administrator - check <br>
 
-* From Administration add Group:
-  Name - Cognizen Admins
-  Users - add "admin cognizen"
+* From Administration add Group: <br>
+  Name - Cognizen Admins<br>
+  Users - add "admin cognizen"<br>
 
-* Set custom fields 
-  Administration -:  Custom Fields -:
-  Add "New custom field" -: Select "Issues" 
-  Name - Page Title
-  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"
-  Check all Trackers
-  Add "New custom field" -: Select "Issues" 
-  Name - Page Id
-  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"
-  Check all Trackers
+* Set custom fields <br>
+  Administration -:  Custom Fields -:<br>
+  Add "New custom field" -: Select "Issues"<br>
+  Name - Page Title<br>
+  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"<br>
+  Check all Trackers<br>
+  Add "New custom field" -: Select "Issues"<br>
+  Name - Page Id<br>
+  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"<br>
+  Check all Trackers<br>
 
 ### FFmpeg configuration
 ```
