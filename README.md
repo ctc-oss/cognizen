@@ -40,51 +40,68 @@ Compared to industry standards developing distance learning products and analyzi
 *	Cloning: What is it and why is it good?
 
 
-## Cognizen Mobile Support
-Supported OS Versions	Supported Browsers	Tested Devices
-*	Android 4.2.2 and newer
-*	iOS 7.1 and newer	•	Android browser
-*	Chrome
-*	Safari	•	iPad 
-*	iPad mini
-*	iPhone 5
-*	iPhone 6 Plus
-*	Galaxy S5
-*	Double Power 7” tablet
-
 ## Install
+
+### Manual Instructions
+
+* Clone the cognizen repo
+* From a terminal window in cognizen/bin/server directory, run the following command:
+```commandline
+npm install
+```
+ALT:
+```commandline
+npm install --link
+```
+* Make a copy of the cognizen/bin/server/config.json.template file, and call it config.json.  This will be your local configuration options.
+* Make any appropriate changes in that file, such as port, ssl, database username/password, etc..
+* Take the cognizen/bin/server/siofu-server.js file, rename it to server.js and replace the server.js in node-modules/socket.io-file-upload/ (probably installed globally and linked in node-modules, depending upon your install) with this one. This npm was updated and differs from the npm install - file uploads will not work without this!!!!!
+
+* Install MongoDB - https://docs.mongodb.com/v3.2/installation/
+  - see instructions in section Mongodb Setup original admin user for cognizen install
+
+* Install FFmpeg - https://www.ffmpeg.org/download.html
+ - see FFmepg configuration
+
+* Install Redmine (optional but recommended)
+	https://www.redmine.org/projects/redmine/wiki/redmineinstall or https://bitnami.com/stack/redmine/installer
+  - see instructions Redmine configuration
+
+* Update cognizen/bin/server/config.json file to point to the appropriate values
+  - ex. url, mailServer, adminEmail, ssl, port, logFolder, dbUrl, dbUsername, dbPassword, uploadTempDir, redmineHost, redmineApiKey, redmineProtocol
+
+* Run the following command from cognizen/bin/server directory to start the cognizen-server
+
+        node cognizen-server.js
+This will start up the cognizen server, the static server, and the git server in one fell swoop. Access Cognizen at localhost:<config port>
+
+### Docker Instructions
+
 ```commandline
 docker build -t cognizen --build-arg http_proxy=http://server41.ctc.com:3128 --build-arg https_proxy=http://server41.ctc.com:3128 .
 ```
 ```commandline
 docker-compose up
 ```
-Login to Redmine (localhost:10083) as admin (username:admin, pwd: admin) 
-
-Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
-![rest](http://www.redmine.org/attachments/download/13167/enable_rest_api.png)
-
-Copy API access key : Click on "My account" -: Show API access key -: Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
-
-From Administration add a user: 
-Login - admin@cognizen.com  
-First name - admin
-Last name - cognizen
-email - admin@cognizen.com 
-administrator - check
-
-From Administration add Group:
-Name - Cognizen Admins
-Users - add "admin cognizen"
+ - see instructions Redmine configuration
 
 In another terminal
 ```commandline
 docker-compose -f docker-compose.yml -f docker-compose-cognizen.yml up cognizen mongo
 ```
+
+TODO: FFmepg
+
 In another terminal
 ```commandline
 docker exec -it cognizen_mongo_1 /bin/bash 
 ```
+ - see instructions in section Mongodb Setup original admin user for cognizen install
+
+
+Access Cognizen at localhost:8080
+
+### Mongodb Setup original admin user for cognizen install
 ```bash
 mongo
 use cognizen
@@ -93,11 +110,83 @@ exit
 ```
 This will set the admin username to 'admin@cognizen.com' and the password to 'cognizen'.
 
-Access Cognizen at localhost:8080
+### Redmine configuration
+Login to Redmine (Use localhost:10083 with Docker configuration) as admin (username:admin, pwd: admin) 
 
+* Enable Rest web service : Administration -: Settings -: Authentication -: Check "Enable REST web service" then click "Save"
+![rest](http://www.redmine.org/attachments/download/13167/enable_rest_api.png)
 
-  
-## References
-*	Technologies (Link to Cognizen OS technologies.doc) http://ctcportal.ctc.com/sites/Morrison/Cognizen/SitePages/Home.aspx?RootFolder=%2Fsites%2FMorrison%2FCognizen%2FShared%20Documents%2F1%2E0%20Project%20Management%2F1%2E2%20Tasks%2FFY%2017%20Tasks%2FCognizen%20and%20Open%20Sourcing&FolderCTID=0x0120009AE8EAFB4986514B9EC46E21C7133807&View={5F834AC4-DC00-4BFC-80F7-FA60DDA0EC5F}
+* Copy API access key : Click on "My account" -: Show API access key -: 
+  For Manual Install :
+  Copy key and paste into config.json file as "redmineApiKey"
+  For Docker configuration :
+  Copy key and paste into DockerFile as COGNIZEN_REDMINE_API_KEY ENV
 
+* From Administration add a user: 
+  Login - admin@cognizen.com  
+  First name - admin
+  Last name - cognizen
+  email - admin@cognizen.com 
+  administrator - check
 
+* From Administration add Group:
+  Name - Cognizen Admins
+  Users - add "admin cognizen"
+
+* Set custom fields 
+  Administration -:  Custom Fields -:
+  Add "New custom field" -: Select "Issues" 
+  Name - Page Title
+  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"
+  Check all Trackers
+  Add "New custom field" -: Select "Issues" 
+  Name - Page Id
+  Check "Required", "For all projects", "Used s a filter", "Searchable" and Visible "to any users"
+  Check all Trackers
+
+### FFmpeg configuration
+```
+./configure --enable-gpl --enable-version3 --enable-nonfree --enable-postproc --enable-libaacplus \
+--enable-libass --enable-libcelt --enable-libfaac --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame \
+--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-openssl \
+--enable-libopus --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-libvo-aacenc \
+--enable-libvorbis --enable-libvpx --enable-libx264 --enable-libxvid --prefix=/usr/local
+
+```
+
+## Server Side File Descriptions
+
+All important files used to power the server are in the file format name of cognizen-[function].js.  Purposes are as follows:
+
+1. **cognizen-server.js** - Main entry point for the server
+    - Configures logging
+    - Configures all internal ports for the proxy, Git, and socket connections
+    - Configures SSL
+    - Connects to Mail configuration
+    - Holds some of the logic to determine user permissions on content
+    - Contains utility functions
+    - Maps socket calls to functions
+    - Starts up all of the servers, sockets, and proxies
+
+2. **cognizen-git.js** - Contains all the logic to start and maintain the Cognizen Git server for the program repositories
+    * Allows developers to easily interact with a program and its corresponding Git repository on the server
+    * Creates Git repositories for new programs
+    * Allows commits of Git repositories
+    * Has utility methods to deal with lock files, etc.
+
+3. **cognizen-mail.js** - Mail server connection and sending functionality
+    * Reads configuration of mail from config.json to connect to outgoing mail server
+    * Sends mail
+
+4. **cognizen-redmine.js** - Handles rest calls to Redmine for handling of page level commenting
+
+5. **cognizen-scorm.js** - Consolidated functionality to create SCORM packages from Cognizen content
+    * Can generate SCORM packages for single lessons or entire courses
+
+6. **cognizen-socket-handler.js** - Handler code for socket events
+    * Contains a function mapped to each socket emit to handle the request, and return a response
+    * Functions are mapped within cognizen-server.js, but all logic is contained in this file
+
+7. **cognizen-utils.js** - General utility file for Cognizen server
+    * File to place utility functions that are general to all cognizen server files
+    * Contains utility functions such as command line commands, string manipulation, operating system checks, date/time functions, and database functions
