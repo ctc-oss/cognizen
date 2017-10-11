@@ -1,4 +1,4 @@
-FROM node:argon-alpine
+FROM node:boron-alpine
 
 RUN mkdir -p /usr/src/app
 COPY ./bin /usr/src/app
@@ -12,7 +12,9 @@ RUN apk update \
  && apk add bash curl git
 
 RUN chown -R root:root /usr/src/app && chmod -R ug+rwX /usr/src/app \
- && chown -R root:root /usr/src/app/server/repos && chmod -R ug+rwX /usr/src/app/server/repos
+ && chown -R root:root /usr/src/app/server/repos && chmod -R ug+rwX /usr/src/app/server/repos \
+ && chown -R root:root /tmp && chmod -R ug+rwX /tmp \
+ && chown -R root:root /usr/src/app/programs && chmod -R ug+rwX /usr/src/app/programs
 
 
 RUN git config --system user.email admin@example.com \
@@ -33,7 +35,7 @@ ENV COGNIZEN_URL=http://localhost:8080 \
     COGNIZEN_DB_USERNAME="" \
     COGNIZEN_DB_PASSWORD="" \
     COGNIZEN_SERVER=CTC \
-    COGNIZEN_UPLOAD_DIR=/tmp/cognizen \
+    COGNIZEN_UPLOAD_DIR=/tmp \
     COGNIZEN_REDMINE_HOST=redmine \
     COGNIZEN_REDMINE_API_KEY=34052c19ea0e92001fd20ea1e7c3c9784d2fb75e \
     COGNIZEN_REDMINE_PROTOCOL=http
