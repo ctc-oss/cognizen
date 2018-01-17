@@ -1,3 +1,8 @@
+/*!
+ * cognizen-server
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var config = require('./config.json');
 var Utils = require('./cognizen-utils');
 

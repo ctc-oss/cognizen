@@ -1,3 +1,8 @@
+/*!
+ * cognizen-utils
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var os = require('os');
 
 var Utils = {

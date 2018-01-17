@@ -3,14 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *	
  *      Houses Houses SCORM functionality
- *  	Version: 0.5
- *		Date Created: 10/19/13
- *		Created by: Philip Double
- *		Date Updated: 10/19/13
- *		Updated by: Philip Double
- *		History: Moved all glossary functionality into its own js file.
- *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
- *				- Optimize code.
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 
 

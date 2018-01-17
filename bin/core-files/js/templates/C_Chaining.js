@@ -2,13 +2,9 @@
  * C_Chaining
  * This class creates a template multi-page chaining scenarios.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: Version 1.0
- * DATE: 2015-1-15
- * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved.
+ * ©Concurrent Technologies Corporation 2018
  *
- * @author: Philip Double, doublep@ctc.com
  */
 function C_Chaining(_type) {
 	var type = _type;

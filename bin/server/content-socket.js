@@ -1,3 +1,8 @@
+/*!
+ * content-socket
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var http = require('http');
 var fs = require('fs-extra');
 var et = require('elementtree');

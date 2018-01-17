@@ -1,3 +1,8 @@
+/*!
+ * content-model
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var mongoose = require('mongoose'),
     extend = require('mongoose-schema-extend'),
     Schema = mongoose.Schema,

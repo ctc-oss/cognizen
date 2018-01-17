@@ -1,3 +1,8 @@
+/*!
+ * user-model
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');

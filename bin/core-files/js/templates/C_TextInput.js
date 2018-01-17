@@ -2,13 +2,8 @@
  * C_TextInput
  * This class creates a template for TextInput questions.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2014-4-28
- * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved.
- *
- * @author: Tyler Shumaker, shumaket@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  *
  * This function allows for multiple parameters including:
  * 		1.

@@ -1,14 +1,8 @@
 /*!
  * C_Engine
  * This file is the Main js file for the Cognizen
- * VERSION: Cognizen 1.0
- * VERSION DATE: 3/1/2013
- * CREATION DATE: 2013-01-16
- * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 
 //VARIABLES

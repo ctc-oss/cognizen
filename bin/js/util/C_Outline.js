@@ -3,11 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *
  *      Houses functionality to create course structure and sequencing
- *  	Version: 0.5
- *		Date Created: 07/12/14
- *		Created by: Philip Double
- *		Date Updated: 07/28/14
- *		Updated by: Philip Double
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 function C_Outline(_myItem) {
 

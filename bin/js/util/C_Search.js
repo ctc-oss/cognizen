@@ -3,8 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *
  *      Houses functionality to search course and lessons
- *  	Version: 0.5
- *		Date Created: 09/11/15
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 function C_Search(_myItem, _myParent) {
 

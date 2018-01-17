@@ -1,14 +1,9 @@
 /*!
- * C_TextLeft
+ * C_Unity3D
  * This class creates a template for a text top / image bottom layout.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2012-12-16
- * JavaScript
  *
- * Copyright (c) 2012, CTC. All rights reserved. 
- * 
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_Unity3D(_type) {
 

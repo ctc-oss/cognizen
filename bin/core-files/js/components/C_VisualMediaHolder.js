@@ -1,3 +1,9 @@
+/*!
+ * C_VisualMediaHolder
+ *
+ * ©Concurrent Technologies Corporation 2018
+ *
+ */
 function C_VisualMediaHolder(callback, _type, _mediaLink, _id){
     //Define Variables
     var type;

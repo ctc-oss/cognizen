@@ -1,3 +1,8 @@
+/*!
+ * cognizen-mail
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var nodemailer = require("nodemailer");
 
 var Mail = {

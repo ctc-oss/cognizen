@@ -2,13 +2,9 @@
  * C_TextTop
  * This class creates a template for a text top / image bottom layout.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2012-12-16
- * JavaScript
  *
- * Copyright (c) 2012, CTC. All rights reserved. 
- * 
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
+ *
  * @example: o_obj = new someObj();
  *			 alert(o_obj.publicVar);//alerts "public"
  *	         o_obj.publicVar = 'new';

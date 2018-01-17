@@ -1,3 +1,9 @@
+/*!
+ * C_PageTitle
+ *
+ * ©Concurrent Technologies Corporation 2018
+ *
+ */
 function C_PageTitle(_id){
 	 var rootType = $(data).find("page").eq(currentPage).attr('layout');
 	 var myPageTitle;//Title of this page.

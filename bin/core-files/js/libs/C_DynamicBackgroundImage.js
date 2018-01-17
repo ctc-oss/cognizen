@@ -2,8 +2,7 @@
  *  jQuery Dynamic Background Image Plugin
  *  Requires jQuery v1.2.6 or later
  *
- *
- *  Version: 1.0
+ *  ©Concurrent Technologies Corporation 2018
  */
 (function($)
 {

@@ -1,3 +1,8 @@
+/*
+ *    C_LMSAPI
+ *
+ *    ©Concurrent Technologies Corporation 2018
+ */
 var constants = {
   activityProfileIri:"http://adlnet.gov/xapi/profile/scorm/activity-profile",
   activityStateIri:"http://adlnet.gov/xapi/profile/scorm/activity-state",

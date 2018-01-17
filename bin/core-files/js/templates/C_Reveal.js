@@ -2,12 +2,8 @@
  * C_Reveal
  * This class creates a template for placing clickable images - reaveals text.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2013-03-04
  *
- * Copyright (c) 2013, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_Reveal(_type) {
 	var type = _type;

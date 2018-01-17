@@ -1,12 +1,7 @@
 /*!
  * C_Completion
- * VERSION: Version 1.0
- * DATE: 2014-01-10
- * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_Completion(_type) {
 	var type = _type;

@@ -3,15 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *	
  *      Houses glossary functionality for cognizen
- *  	Version: 0.5
- *		Date Created: 10/19/13
- *		Created by: Philip Double
- *		Date Updated: 7/2/15
- *		Updated by: Ryan Dingman
- *		History: 	Updates to make glossary work on tablets
- 					Moved all glossary functionality into its own js file.
- *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
- *				- Optimize code.
+ *      ©Concurrent Technologies Corporation 2018
+ *
  */
 
 var glossary = false;

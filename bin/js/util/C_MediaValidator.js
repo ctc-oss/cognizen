@@ -3,8 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *
  *      Houses functionality to validate all referenced and unreferenced media
- *  	Version: 0.5
- *		Date Created: 07/11/16
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 function C_MediaValidator(_myItem, _myParent) {
 

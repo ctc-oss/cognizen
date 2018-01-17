@@ -2,13 +2,8 @@
  * C_Pathing
  * This class creates a template pathing scenarios.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: Version 1.0
- * DATE: 2015-04-02
- * JavaScript
  *
- * Copyright (c) 2015, CTC. All rights reserved.
- *
- * @author: Tyler Shumaker, shumaket@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_Pathing(_type) {
 	var type = _type;
