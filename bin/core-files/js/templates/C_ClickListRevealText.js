@@ -2,12 +2,8 @@
  * C_ClickListRevealText
  * This class creates a template for placing a list of terms that reveals  text in set box.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2014-09-01
  *
- * Copyright (c) 2014, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_ClickListRevealText(_type) {
 	var type = _type;

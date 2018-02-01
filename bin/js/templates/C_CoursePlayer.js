@@ -2,11 +2,8 @@
  * C_CoursePlayer
  * Dashboard for the cognizen tool
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 0.1
- * DATE: 2013-04-26
- * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved.
+ * ©Concurrent Technologies Corporation 2018
  *
  */
 

@@ -1,3 +1,8 @@
+/*
+ *  	C_Lock
+ *
+ *      ©Concurrent Technologies Corporation 2018
+ */
 var justRelinquishedLock = false;
 
 function updateActiveEditor(data){

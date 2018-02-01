@@ -1,3 +1,8 @@
+/*!
+ * cognizen-socket-handler
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var Utils = require('./cognizen-utils'),
     UserModel = require('./user-model'),
     User = UserModel.User,

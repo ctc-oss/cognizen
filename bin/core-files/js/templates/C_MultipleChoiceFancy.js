@@ -2,13 +2,8 @@
  * C_MultipleChoiceFancy
  * This class creates a template for multipleChoice type questions.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2015-10-8
- * JavaScript
  *
- * Copyright (c) 2015, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  *
  * This function allows for multiple parameters including:
  * 		1. Number of attempts: defaults to 1

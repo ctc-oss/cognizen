@@ -1,8 +1,12 @@
 /**
+* C_MediaBrowser
 * Creates a media browser allowing users to view, preview and select content in the media folder as well as uploading to the server.
 *
 * @class MediaBrowser
 * @constructor addMediaBrowser
+*
+* ©Concurrent Technologies Corporation 2018
+*
 */
 
 /**

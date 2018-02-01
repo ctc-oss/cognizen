@@ -192,3 +192,10 @@ All important files used to power the server are in the file format name of cogn
 7. **cognizen-utils.js** - General utility file for Cognizen server
     * File to place utility functions that are general to all cognizen server files
     * Contains utility functions such as command line commands, string manipulation, operating system checks, date/time functions, and database functions
+
+## License
+Cognizen is licensed under the [GNU General Public License, Version 3](LICENSE.txt).
+
+## Contributor License Agreement
+
+Before accepting a contribution, we ask that you provide us a Contributor License Agreement. If you are making your contribution as part of work for your employer, please follow the guidelines on submitting a [Corporate Contributor License Agreement](ccla.txt). If you are making your contribution as an individual, you can submit a digital [Individual Contributor License Agreement](icla.txt).

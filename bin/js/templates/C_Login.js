@@ -1,13 +1,8 @@
 /*
  * C_Login
  * This class creates a template for a basic animated login process.
- * VERSION: version 1.0
- * DATE: 2013/03/22
- * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_Login(_type) {
 	//Allows us to add variations for different types without creating a whole new login.

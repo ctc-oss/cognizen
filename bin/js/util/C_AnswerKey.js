@@ -3,8 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *
  *      Pulls out all question data from the lesson and displays answer key.
- *  	Version: 0.5
- *		Date Created: 07/11/16
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 function C_AnswerKey(_myItem, _myParent) {
 

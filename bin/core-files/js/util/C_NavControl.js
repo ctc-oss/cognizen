@@ -2,15 +2,9 @@
  *  	C_NavControl
  *  	Requires jQuery v1.9 or later
  *
- *      Houses index functionality for cognizen
- *  	Version: 0.5
- *		Date Created: 10/19/13
- *		Created by: Philip Double
- *		Date Updated: 10/19/13
- *		Updated by: Philip Double
- *		History: Moved all glossary functionality into its own js file.
- *		Todo: 	- Turn this into a plugin.  This did reside in C_Engine which was becoming unruly.
- *				- Optimize code.
+ *      Houses navigation functionality for cognizen
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 var currentTemplate;//Object representing the current template - many can have types, which are a parameter for those classes.
 var currentTemplateType;//String tracking the page type i.e. An instance of the most common template C_StaticContent() takes a type("left", "top", "text", "right", "bottom"). This allows one class to handle multiple layouts instead of creating much redundant code.

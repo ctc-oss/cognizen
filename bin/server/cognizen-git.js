@@ -1,3 +1,8 @@
+/*!
+ * cognizen-git
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var GitServer = require('git-server'),
     Utils = require('./cognizen-utils'),
     fs = require('fs-extra'),

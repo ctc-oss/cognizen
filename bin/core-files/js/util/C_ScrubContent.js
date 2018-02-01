@@ -3,7 +3,8 @@
  *  	Requires jQuery v1.9 or later
  *	
  *   This function is run after content fields have been created.  Checks for specific .classes which then are formatted properly from their html code.	
- *  	Version: 1.0
+ *
+ *      ©Concurrent Technologies Corporation 2018
  */
 (function($){
 	//Running a simple test.

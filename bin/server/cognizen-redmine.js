@@ -1,3 +1,8 @@
+/*!
+ * cognizen-redmine
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var promised = require('promised-redmine');
 var Utils = require('./cognizen-utils');
 

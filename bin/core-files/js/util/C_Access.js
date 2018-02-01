@@ -1,12 +1,8 @@
 /*
  *  	C_Access
  *		Home for Accessibility functionalities (used across templates).
- *  	Version: 0.5
- *		Date Created: 10/07/14
- *		Created by: Philip Double
- *		Date Updated: 10/07/14
- *		Updated by: Philip Double
- *		History:
+ *
+ *      ©Concurrent Technologies Corporation 2018
  *		Function List:
  				//Gerate the urlParams Variable
  				@doAccessibility(items)

@@ -1,3 +1,8 @@
+/*!
+ * cognizen-scorm
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var fs = require('fs-extra')
 	,et = require('elementtree')
 	,readdirp = require('readdirp')

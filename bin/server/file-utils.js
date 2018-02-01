@@ -1,3 +1,8 @@
+/*!
+ * file-utils
+ *
+ * ©Concurrent Technologies Corporation 2018
+ */
 var fs = require('fs-extra');
 var ncp = require('ncp').ncp;
 ncp.limit = 100;

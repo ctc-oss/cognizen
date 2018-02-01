@@ -1,4 +1,10 @@
-function C_AudioHolder(){
+/*!
+ * C_AudioHolder
+ *
+ * ©Concurrent Technologies Corporation 2018
+ *
+ */
+ function C_AudioHolder(){
 	var type = $(data).find("page").eq(currentPage).attr('layout');
 	var autoPlay = false;//Boolean: true - attached media plays on load.  false - user interaction required to play media.
     var autoNext = false;//Boolean: true - next page loads automatically upon media completion.  false - user interaction required to load the next page.

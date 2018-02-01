@@ -2,12 +2,9 @@
  * C_Chain
  * This class creates a template for placing grouping a collection of pages to appear as a single page.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: alpha 1.0
- * DATE: 2014-10-06
  *
- * Copyright (c) 2014, CTC. All rights reserved. 
+ * ©Concurrent Technologies Corporation 2018
  * 
- * @author: Philip Double, doublep@ctc.com
  */
  
  function C_Chain(_type) {

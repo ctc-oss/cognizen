@@ -2,13 +2,8 @@
  * C_StaticContent
  * This class creates a template for a all non-Interactive content (text/images/swfs).
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: Version 1.0
- * DATE: 2013-05-10
- * JavaScript
  *
- * Copyright (c) 2013, CTC. All rights reserved.
- *
- * @author: Philip Double, doublep@ctc.com
+ * ©Concurrent Technologies Corporation 2018
  */
 function C_StaticContent(_type) {
 	var type = _type;

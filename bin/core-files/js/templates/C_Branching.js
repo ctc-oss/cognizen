@@ -2,13 +2,10 @@
  * C_Branching
  * This class creates a template multi-page branching scenarios.
  * Must be added to the template switch statement in the C_Engine!!!!!!!!!!!
- * VERSION: Version 1.0
- * DATE: 2014-11-21
  * JavaScript
  *
- * Copyright (c) 2014, CTC. All rights reserved.
+ * ©Concurrent Technologies Corporation 2018
  *
- * @author: Philip Double, doublep@ctc.com
  */
 function C_Branching(_type) {
 	var type = _type;
