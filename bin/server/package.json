@@ -10,7 +10,7 @@
     "adm-zip": "0.4.x",
     "archiver": "0.4.x",
     "bcrypt-nodejs": "0.0.3",
-    "connect": "2.8.x",
+    "connect": "2.x",
     "cookie": "0.1.x",
     "cookie-parser": "1.x",
     "d.js": "^0.7.3",
